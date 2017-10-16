@@ -13,7 +13,7 @@ import ArrowUpIcon from "material-ui-icons/ArrowUpward";
 import ArrowDownIcon from "material-ui-icons/ArrowDownward";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 
-import NavLink from "../Components/Sub/NavLink";
+import NavLink from "../Components/Routing/NavLink";
 
 import { accountsUpdate } from "../Actions/accounts";
 import { userLogin } from "../Actions/user";

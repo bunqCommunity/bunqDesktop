@@ -6,7 +6,7 @@ import List, { ListSubheader } from "material-ui/List";
 
 import AccountListItem from "./AccountListItem";
 
-import { paymentsUpdate } from "../Actions/payments";
+import { paymentsUpdate } from "../../Actions/payments";
 
 class AccountList extends React.Component {
     constructor(props, context) {
@@ -35,7 +35,10 @@ class AccountList extends React.Component {
 
         if (this.props.accounts !== false) {
             accounts = this.props.accounts.map(account => (
-                <AccountListItem account={account} />
+                <AccountListItem
+                    BunqJSClient={this.props.BunqJSClient}
+                    account={account.MonetaryAccountBank}
+                />
             ));
         }
 

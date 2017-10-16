@@ -2,9 +2,10 @@ import React from "react";
 import { connect } from "react-redux";
 import { ListItem, ListItemText } from "material-ui/List";
 import Avatar from "material-ui/Avatar";
+import AttachmentImage from "../../Components/AttachmentImage";
 
-import { paymentsUpdate } from "../Actions/payments.js";
-import { accountsSelectAccount } from "../Actions/accounts.js";
+import { paymentsUpdate } from "../../Actions/payments.js";
+import { accountsSelectAccount } from "../../Actions/accounts.js";
 
 const styles = {
     bigAvatar: {
@@ -43,10 +44,12 @@ class AccountListItem extends React.Component {
                 onClick={this.fetchPaymentsHandler(account.id)}
             >
                 <Avatar style={styles.bigAvatar}>
-                    <img
+                    <AttachmentImage
                         width={60}
-                        src={`/api/attachment/${account.avatar.image[0]
-                            .attachment_public_uuid}`}
+                        BunqJSClient={this.props.BunqJSClient}
+                        imageUUID={
+                            account.avatar.image[0].attachment_public_uuid
+                        }
                     />
                 </Avatar>
                 <ListItemText

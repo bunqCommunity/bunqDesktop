@@ -8,8 +8,8 @@ import {
 import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
 
-import NavLink from "../Components/Sub/NavLink";
-import AttachmentImage from "./AttachmentImage";
+import NavLink from "../../Components/Routing/NavLink";
+import AttachmentImage from "../../Components/AttachmentImage";
 
 const styles = {
     smallAvatar: {

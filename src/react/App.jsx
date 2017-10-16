@@ -3,7 +3,7 @@ import { Provider } from "react-redux";
 import { HashRouter } from "react-router-dom";
 
 import Routes from "./Routes.jsx";
-import Main from "./Components/Main.jsx";
+import Main from "./Components/Layout.jsx";
 import Store from "./Store.jsx";
 
 export default class App extends React.Component {

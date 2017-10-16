@@ -1,12 +1,12 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 
-import PrivateRoute from "./Components/Sub/PrivateRoute";
-import PublicRoute from "./Components/Sub/PublicRoute";
-import ComponentLoader from "./Components/Sub/ComponentLoader";
+import PrivateRoute from "./Components/Routing/PrivateRoute";
+import PublicRoute from "./Components/Routing/PublicRoute";
+import ComponentLoader from "./Components/CodeSplitting/ComponentLoader";
 
 const Dashboard = ComponentLoader(() =>
-    import(/* webpackChunkName: "dashboard" */ "./Pages/Dashboard")
+    import(/* webpackChunkName: "dashboard" */ "./Pages/Dashboard/Dashboard.jsx")
 );
 const Login = ComponentLoader(() =>
     import(/* webpackChunkName: "login" */ "./Pages/Login")

@@ -4,11 +4,11 @@ import Helmet from "react-helmet";
 import Paper from "material-ui/Paper";
 import Button from "material-ui/Button";
 import Grid from "material-ui/Grid";
-import PaymentList from "../Components/PaymentList";
-import AccountList from "../Components/AccountList";
+import PaymentList from "./PaymentList";
+import AccountList from "./AccountList";
 
-import { userLogin, userLogout } from "../Actions/user";
-import { accountsUpdate } from "../Actions/accounts";
+import { userLogout } from "../../Actions/user";
+import { accountsUpdate } from "../../Actions/accounts";
 
 const styles = {
     btn: {
@@ -23,9 +23,9 @@ class Dashboard extends React.Component {
     }
 
     componentDidMount() {
-        this.props.updateAccounts();
+        this.props.updateAccounts(this.props.user.id);
     }
-
+    
     render() {
         return (
             <Grid container spacing={16}>
@@ -45,7 +45,7 @@ class Dashboard extends React.Component {
 
                 <Grid item xs={12} md={4}>
                     <Paper>
-                        <AccountList />
+                        <AccountList BunqJSClient={this.props.BunqJSClient} />
                     </Paper>
                 </Grid>
 
@@ -65,11 +65,11 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, ownProps) => {
+    const { BunqJSClient } = ownProps;
     return {
-        loginUser: (id, type) => dispatch(userLogin(id, type)),
         logoutUser: () => dispatch(userLogout()),
-        updateAccounts: () => dispatch(accountsUpdate())
+        updateAccounts: userId => dispatch(accountsUpdate(BunqJSClient, userId))
     };
 };
 

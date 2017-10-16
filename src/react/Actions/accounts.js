@@ -1,5 +1,3 @@
-import axios from "axios";
-import Utils from "../Helpers/Utils";
 const Logger = require("../Helpers/Logger");
 
 export function accountsSetInfo(accounts) {
@@ -11,23 +9,19 @@ export function accountsSetInfo(accounts) {
     };
 }
 
-export function accountsUpdate() {
+export function accountsUpdate(BunqJSClient, userId) {
     return dispatch => {
-        Logger.error("accounts api not implemented");
-        // dispatch(accountsLoading());
-        // axios
-        //     .get(`/api/accounts`)
-        //     .then(response => response.data)
-        //     .then(json => {
-        //         if (Utils.validateJSON(json)) {
-        //             dispatch(accountsSetInfo(json));
-        //         }
-        //         dispatch(accountsNotLoading());
-        //     })
-        //     .catch(err => {
-        //         Logger.trace(err);
-        //         dispatch(accountsNotLoading());
-        //     });
+        dispatch(accountsLoading());
+        BunqJSClient.api.monetaryAccount
+            .list(userId)
+            .then(accounts => {
+                dispatch(accountsSetInfo(accounts));
+                dispatch(accountsNotLoading());
+            })
+            .catch(err => {
+                Logger.trace(err);
+                dispatch(accountsNotLoading());
+            });
     };
 }
 

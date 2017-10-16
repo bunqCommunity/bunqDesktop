@@ -5,8 +5,8 @@ import Divider from "material-ui/Divider";
 import { LinearProgress } from "material-ui/Progress";
 
 import PaymentListItem from "./PaymentListItem";
-import ClearBtn from "./FilterComponents/ClearFilter";
-import DisplayDrawerBtn from "./FilterComponents/DisplayDrawer";
+import ClearBtn from "../../Components/FilterComponents/ClearFilter";
+import DisplayDrawerBtn from "../../Components/FilterComponents/DisplayDrawer";
 
 class PaymentList extends React.Component {
     constructor(props, context) {
