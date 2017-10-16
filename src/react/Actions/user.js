@@ -16,9 +16,6 @@ export function userLogin(BunqJSClient, type, updated = false) {
     return dispatch => {
         dispatch(userLoading());
         BunqJSClient.getUser(type, updated).then(user => {
-
-            console.log("selected user", user);
-
             dispatch(userNotLoading());
             dispatch(userInitialCheck());
             if (user !== undefined) {
