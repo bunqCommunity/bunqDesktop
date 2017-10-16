@@ -31,7 +31,7 @@ app.on("ready", () => {
     const mainWindow = createWindow("main", {
         webPreferences: { webSecurity: false },
         width: 1000,
-        height: 60011
+        height: 800
     });
 
     mainWindow.loadURL(

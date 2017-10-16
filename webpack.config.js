@@ -7,10 +7,7 @@ const PRODUCTION = process.env.NODE_ENV === "production";
 const DEVELOPMENT = !PRODUCTION;
 
 const SRC_DIR = path.resolve(__dirname, "src/react");
-const BUILD_DIR = path.resolve(
-    __dirname,
-    PRODUCTION ? "dist/react" : "app/react"
-);
+const BUILD_DIR = path.resolve(__dirname, "app/react");
 const OUTPUT_DIR = "./";
 
 let config = {
