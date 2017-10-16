@@ -6,7 +6,7 @@ import App from "./App";
 require("../scss/main.scss");
 
 // move to remote npm later
-import BunqJSClient from "../../../BunqJSClient/index";
+import BunqJSClient from "../../../BunqJSClient/index.ts";
 
 // create a new bunq js client and inject into the app
 const BunqJSClientInstance = new BunqJSClient(store);
