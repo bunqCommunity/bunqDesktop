@@ -14,10 +14,9 @@ import ArrowDownIcon from "material-ui-icons/ArrowDownward";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 
 import NavLink from "../Components/Routing/NavLink";
+import AttachmentImage from "../Components/AttachmentImage";
 
-import { accountsUpdate } from "../Actions/accounts";
-import { userLogin } from "../Actions/user";
-import { paymentInfoUpdate } from "../Actions/payment_info";
+import { paymentsUpdate } from "../Actions/payment_info";
 
 const styles = {
     btn: {},
@@ -37,18 +36,20 @@ class PaymentInfo extends React.Component {
 
     componentDidMount() {
         const { paymentId } = this.props.match.params;
-        this.props.updatePayment(this.props.accountsSelectedAccount, paymentId);
+        this.props.updatePayment(
+            this.props.user.id,
+            this.props.accountsSelectedAccount,
+            paymentId
+        );
     }
 
     getBasicInfo(info) {
         let result = {};
 
         result.avatar = info.avatar;
-        result.icon_uri =
-            "https://static.useresponse.com/public/bunq/avatars/default-avatar.svg";
+        result.imageUUID = false;
         if (result.avatar) {
-            result.icon_uri = `/api/attachment/${result.avatar.image[0]
-                .attachment_public_uuid}`;
+            result.imageUUID = result.avatar.image[0].attachment_public_uuid;
         }
         result.displayName = info.display_name;
         result.iban = info.iban;
@@ -58,6 +59,7 @@ class PaymentInfo extends React.Component {
 
     render() {
         const { accountsSelectedAccount, payment, paymentLoading } = this.props;
+
         // we require a selected account before we can display payment information
         if (accountsSelectedAccount === false) {
             // no account_id set
@@ -95,7 +97,11 @@ class PaymentInfo extends React.Component {
                     justify={"center"}
                 >
                     <Grid item xs={12} sm={5} style={styles.textCenter}>
-                        <img width={90} src={personalInfo.icon_uri} />
+                        <AttachmentImage
+                            width={90}
+                            BunqJSClient={this.props.BunqJSClient}
+                            imageUUID={personalInfo.imageUUID}
+                        />
                         <h3>{personalInfo.displayName}</h3>
                     </Grid>
 
@@ -126,7 +132,11 @@ class PaymentInfo extends React.Component {
                     </Grid>
 
                     <Grid item xs={12} sm={5} style={styles.textCenter}>
-                        <img width={90} src={counterPartyInfo.icon_uri} />
+                        <AttachmentImage
+                            width={90}
+                            BunqJSClient={this.props.BunqJSClient}
+                            imageUUID={counterPartyInfo.imageUUID}
+                        />
                         <h3>{counterPartyInfo.displayName}</h3>
                     </Grid>
 
@@ -196,12 +206,13 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, ownProps) => {
+    const { BunqJSClient } = ownProps;
     return {
-        loginUser: (id, type) => dispatch(userLogin(id, type)),
-        updateAccounts: () => dispatch(accountsUpdate()),
-        updatePayment: (account_id, payment_id) =>
-            dispatch(paymentInfoUpdate(account_id, payment_id))
+        updatePayment: (user_id, account_id, payment_id) =>
+            dispatch(
+                paymentsUpdate(BunqJSClient, user_id, account_id, payment_id)
+            )
     };
 };
 

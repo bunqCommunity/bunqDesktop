@@ -20,16 +20,16 @@ class AccountListItem extends React.Component {
         this.state = {};
     }
 
-    fetchPaymentsHandler(accountId) {
+    fetchPaymentsHandler = accountId => {
         return () => {
             if (!this.props.paymentsLoading) {
                 // select this account
                 this.props.selectAccount(accountId);
                 // fetch all payments for the account
-                this.props.updatePayments(accountId);
+                this.props.updatePayments(this.props.user.id, accountId);
             }
         };
-    }
+    };
 
     render() {
         const account = this.props.account;
@@ -63,13 +63,16 @@ class AccountListItem extends React.Component {
 
 const mapStateToProps = state => {
     return {
+        user: state.user.user,
         paymentsLoading: state.payments.loading
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, ownProps) => {
+    const { BunqJSClient } = ownProps;
     return {
-        updatePayments: accountId => dispatch(paymentsUpdate(accountId)),
+        updatePayments: (userId, accountId) =>
+            dispatch(paymentsUpdate(BunqJSClient, userId, accountId)),
         selectAccount: acountId => dispatch(accountsSelectAccount(acountId))
     };
 };

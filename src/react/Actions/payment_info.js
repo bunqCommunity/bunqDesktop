@@ -1,36 +1,30 @@
-import axios from "axios";
-import Utils from "../Helpers/Utils";
 const Logger = require("../Helpers/Logger");
 
-export function paymentInfoSetInfo(payment, account_id) {
+export function paymentInfoSetInfo(payment, account_id, payment_id) {
     // return the action
     return {
         type: "PAYMENT_INFO_SET_INFO",
         payload: {
             payment: payment,
-            account_id: account_id
+            account_id: account_id,
+            payment_id: payment_id,
         }
     };
 }
 
-export function paymentInfoUpdate(account_id, payment_id) {
+export function paymentsUpdate(BunqJSClient, user_id, account_id, payment_id) {
     return dispatch => {
-        Logger.error("Payment info api not implemented");
-        // dispatch(paymentInfoLoading());
-        // axios
-        //     .get(`/api/payment/${account_id}/${payment_id}`)
-        //     .then(response => response.data)
-        //     .then(json => {
-        //         if (Utils.validateJSON(json)) {
-        //             dispatch(paymentInfoSetInfo(json, account_id, payment_id));
-        //         }
-        //         // update payment info and stop loading state
-        //         dispatch(paymentInfoNotLoading());
-        //     })
-        //     .catch(err => {
-        //         Logger.trace(err);
-        //         dispatch(paymentInfoNotLoading());
-        //     });
+        dispatch(paymentInfoLoading());
+        BunqJSClient.api.payment
+            .get(user_id, account_id, payment_id)
+            .then(paymentInfo => {
+                dispatch(paymentInfoSetInfo(paymentInfo, account_id, payment_id));
+                dispatch(paymentInfoNotLoading());
+            })
+            .catch(err => {
+                Logger.trace(err);
+                dispatch(paymentInfoNotLoading());
+            });
     };
 }
 

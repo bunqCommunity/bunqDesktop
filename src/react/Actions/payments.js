@@ -1,5 +1,3 @@
-import axios from "axios";
-import Utils from "../Helpers/Utils";
 const Logger = require("../Helpers/Logger");
 
 export function paymentsSetInfo(payments, account_id) {
@@ -13,24 +11,19 @@ export function paymentsSetInfo(payments, account_id) {
     };
 }
 
-export function paymentsUpdate(account_id) {
+export function paymentsUpdate(BunqJSClient, user_id, account_id) {
     return dispatch => {
-        Logger.error("payments list api not implemented");
-        // dispatch(paymentsLoading());
-        // axios
-        //     .get(`/api/payments/${account_id}`)
-        //     .then(response => response.data)
-        //     .then(json => {
-        //         if (Utils.validateJSON(json)) {
-        //             // update payments info and stop loading state
-        //             dispatch(paymentsSetInfo(json, account_id));
-        //         }
-        //         dispatch(paymentsNotLoading());
-        //     })
-        //     .catch(err => {
-        //         Logger.trace(err);
-        //         dispatch(paymentsNotLoading());
-        //     });
+        dispatch(paymentsLoading());
+        BunqJSClient.api.payment
+            .list(user_id, account_id)
+            .then(payments => {
+                dispatch(paymentsSetInfo(payments, account_id));
+                dispatch(paymentsNotLoading());
+            })
+            .catch(err => {
+                Logger.trace(err);
+                dispatch(paymentsNotLoading());
+            });
     };
 }
 

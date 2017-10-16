@@ -15,12 +15,13 @@ class PaymentList extends React.Component {
     }
 
     paymentFilter = payment => {
+        const paymentInfo = payment.Payment;
         if (this.props.paymentType === "received") {
-            if (payment.amount.value <= 0) {
+            if (paymentInfo.amount.value <= 0) {
                 return false;
             }
         } else if (this.props.paymentType === "sent") {
-            if (payment.amount.value >= 0) {
+            if (paymentInfo.amount.value >= 0) {
                 return false;
             }
         }
@@ -40,7 +41,7 @@ class PaymentList extends React.Component {
                 .filter(this.paymentFilter)
                 .map(payment => (
                     <PaymentListItem
-                        payment={payment}
+                        payment={payment.Payment}
                         BunqJSClient={this.props.BunqJSClient}
                     />
                 ));
