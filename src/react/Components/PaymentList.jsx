@@ -38,7 +38,12 @@ class PaymentList extends React.Component {
         if (this.props.payments !== false) {
             payments = this.props.payments
                 .filter(this.paymentFilter)
-                .map(payment => <PaymentListItem payment={payment} />);
+                .map(payment => (
+                    <PaymentListItem
+                        payment={payment}
+                        BunqJSClient={this.props.BunqJSClient}
+                    />
+                ));
         }
 
         return (

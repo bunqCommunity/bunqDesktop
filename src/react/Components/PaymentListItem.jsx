@@ -9,6 +9,7 @@ import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
 
 import NavLink from "../Components/Sub/NavLink";
+import AttachmentImage from "./AttachmentImage";
 
 const styles = {
     smallAvatar: {
@@ -28,10 +29,11 @@ class PaymentListItem extends React.Component {
 
         let icon_uri =
             "https://static.useresponse.com/public/bunq/avatars/default-avatar.svg";
-        let avatar = payment.counterparty_alias.avatar;
-        if (avatar) {
-            icon_uri = `/api/attachment/${avatar.image[0]
-                .attachment_public_uuid}`;
+        let imageUUID = false;
+        if (payment.counterparty_alias.avatar) {
+            imageUUID =
+                payment.counterparty_alias.avatar.image[0]
+                    .attachment_public_uuid;
         }
         const displayName = payment.counterparty_alias.display_name;
         const paymentDate = new Date(payment.created).toLocaleString();
@@ -44,7 +46,11 @@ class PaymentListItem extends React.Component {
         return [
             <ListItem button to={`/payment/${payment.id}`} component={NavLink}>
                 <Avatar style={styles.smallAvatar}>
-                    <img width={50} src={icon_uri} />
+                    <AttachmentImage
+                        width={50}
+                        BunqJSClient={this.props.BunqJSClient}
+                        imageUUID={imageUUID}
+                    />
                 </Avatar>
                 <ListItemText primary={displayName} secondary={paymentDate} />
                 <ListItemSecondaryAction>

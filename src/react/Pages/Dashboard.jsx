@@ -51,7 +51,7 @@ class Dashboard extends React.Component {
 
                 <Grid item xs={12} md={8}>
                     <Paper>
-                        <PaymentList />
+                        <PaymentList BunqJSClient={this.props.BunqJSClient} />
                     </Paper>
                 </Grid>
             </Grid>

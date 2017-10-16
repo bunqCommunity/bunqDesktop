@@ -1,7 +1,3 @@
-import axios from "axios";
-import Utils from "../Helpers/Utils";
-const Logger = require("../Helpers/Logger");
-
 import { paymentInfoClear } from "./payment_info";
 import { paymentsClear } from "./payments";
 import { usersClear } from "./users";
@@ -16,26 +12,19 @@ export function userSetInfo(user) {
     };
 }
 
-export function userLogin(id, type) {
+export function userLogin(BunqJSClient, type, updated = false) {
     return dispatch => {
-        Logger.error("login api not implemented");
-        // dispatch(userLoading());
-        // axios
-        //     .post("/api/login", {
-        //         id: id,
-        //         type: type
-        //     })
-        //     .then(response => response.data)
-        //     .then(json => {
-        //         if (Utils.validateJSON(json)) {
-        //             dispatch(userSetInfo(json.user));
-        //         }
-        //         dispatch(userNotLoading());
-        //     })
-        //     .catch(err => {
-        //         Logger.trace(err);
-        //         dispatch(userNotLoading());
-        //     });
+        dispatch(userLoading());
+        BunqJSClient.getUser(type, updated).then(user => {
+
+            console.log("selected user", user);
+
+            dispatch(userNotLoading());
+            dispatch(userInitialCheck());
+            if (user !== undefined) {
+                dispatch(userSetInfo(user));
+            }
+        });
     };
 }
 
@@ -45,11 +34,6 @@ export function userLogout() {
         dispatch({
             type: "USER_LOGOUT"
         });
-        // clear info from most reducers
-        dispatch(paymentInfoClear());
-        dispatch(accountsClear());
-        dispatch(paymentsClear());
-        dispatch(usersClear());
     };
 }
 

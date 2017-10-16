@@ -37,6 +37,7 @@ export default (state = defaultState, action) => {
             };
 
         case "USERS_CLEAR":
+        case "REGISTRATION_CLEAR_API_KEY":
             return {
                 users: [],
                 loading: false,

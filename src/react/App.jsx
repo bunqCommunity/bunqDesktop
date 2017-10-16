@@ -16,7 +16,10 @@ export default class App extends React.Component {
         return (
             <Provider store={Store()}>
                 <HashRouter>
-                    <Main routesComponent={Routes} />
+                    <Main
+                        routesComponent={Routes}
+                        BunqJSClient={this.props.BunqJSClient}
+                    />
                 </HashRouter>
             </Provider>
         );

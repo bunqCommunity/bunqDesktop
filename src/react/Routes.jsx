@@ -60,7 +60,10 @@ export default class Routes extends React.Component {
                             path="/payment/:paymentId"
                             user={this.props.user}
                             render={props => (
-                                <PaymentInfo {...props} {...this.props.childProps} />
+                                <PaymentInfo
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
                             )}
                         />
 

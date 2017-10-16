@@ -42,6 +42,7 @@ export default (state = defaultState, action) => {
             };
 
         case "ACCOUNTS_CLEAR":
+        case "REGISTRATION_CLEAR_API_KEY":
             store.remove("accounts");
             store.remove("selected_account");
             return {

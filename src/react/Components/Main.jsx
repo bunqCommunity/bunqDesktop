@@ -7,18 +7,18 @@ import Grid from "material-ui/Grid";
 import Button from "material-ui/Button";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import createMuiTheme from "material-ui/styles/createMuiTheme";
+import Logger from "../Helpers/Logger";
 
 import DefaultThemeConfig from "../Themes/DefaultTheme";
-const DefaultTheme = createMuiTheme(DefaultThemeConfig);
 
-// move to remote npm later
-import BunqJSClient from "../../../../BunqJSClient/index";
+const DefaultTheme = createMuiTheme(DefaultThemeConfig);
 
 // redux actions
 import { userLogin } from "../Actions/user.js";
 import { closeModal } from "../Actions/modal.js";
 import { closeSnackbar, openSnackbar } from "../Actions/snackbar.js";
 import { openModal } from "../Actions/modal";
+import { usersUpdate } from "../Actions/users";
 
 class Main extends React.Component {
     constructor(props, context) {
@@ -27,30 +27,70 @@ class Main extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.user !== false) {
-            // refresh user to make sure it is still available
-            this.props.loginUser(this.props.user.id, this.props.user.type);
+        this.props.BunqJSClient.run(this.props.apiKey).then(() => {
+            Logger.debug("Initial BunqJSClient setup finished");
+
+            this.props.usersUpdate();
+            // if (this.props.user !== false) {
+            //     Logger.debug("Logging in selected user");
+            //     // refresh user to make sure it is still available
+            //     this.props.loginUser(this.props.user.type);
+            // }
+        });
+    }
+
+    componentWillUpdate(nextProps, nextState) {
+        if (
+            this.props.apiKey !== nextProps.apiKey &&
+            nextProps.apiKey !== false
+        ) {
+            // api key was modified
+            this.setupBunqClient(
+                nextProps.apiKey,
+                nextProps.deviceName
+            ).then(() => {
+                Logger.debug("Setup client for new api key");
+            });
+        }
+    }
+
+    setupBunqClient = async (apiKey, deviceName) => {
+        try {
+            await this.props.BunqJSClient.run(apiKey);
+        } catch (exception) {
+            Logger.log(exception);
+            return false;
+        }
+        try {
+            await this.props.BunqJSClient.install();
+        } catch (exception) {
+            Logger.log(exception);
+            return false;
+        }
+        try {
+            await this.props.BunqJSClient.registerDevice(deviceName);
+        } catch (exception) {
+            Logger.log(exception);
+            return false;
+        }
+        try {
+            await this.props.BunqJSClient.registerSession();
+        } catch (exception) {
+            Logger.log(exception);
+            return false;
         }
 
-        this.BunqJSClient = new BunqJSClient(this.props.dispatch);
-    }
-
-    async setupBunqClient() {
-        await this.BunqJSClient.run(this.props.apiKey);
-
-        await this.BunqJSClient.install();
-
-        await this.BunqJSClient.registerDevice(this.props.deviceName);
-
-        await this.BunqJSClient.registerSession();
-    }
+        // setup finished with no errors
+        this.props.usersUpdate();
+    };
 
     render() {
         const childProps = {
             // uniqueness to help with triggering route change animations
             key: this.props.location.pathname,
             // give all routes access to bunq-js-client
-            BunqJSClient: this.BunqJSClient,
+            BunqJSClient: this.props.BunqJSClient,
+            setupBunqClient: this.setupBunqClient,
 
             // modal and snackbar helpers
             openModal: this.props.openModal,
@@ -60,7 +100,7 @@ class Main extends React.Component {
         const RouteComponent = this.props.routesComponent;
         return (
             <MuiThemeProvider theme={DefaultTheme}>
-                <Grid container spacing={24} justify={"center"}>
+                <Grid container spacing={16} justify={"center"}>
                     <Dialog
                         title={this.props.modalTitle}
                         actions={[
@@ -117,7 +157,8 @@ const mapStateToProps = store => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, ownProps) => {
+    const { BunqJSClient } = ownProps;
     return {
         closeSnackbar: () => dispatch(closeSnackbar()),
         openSnackbar: (message, duration = 4000) =>
@@ -126,8 +167,12 @@ const mapDispatchToProps = dispatch => {
         closeModal: () => dispatch(closeModal()),
         openModal: (message, title) => dispatch(openModal(message, title)),
 
-        loginUser: (id, type) => dispatch(userLogin(id, type)),
-        dispatch
+        // selects an account from the BunqJSClient user list based on type
+        loginUser: type => dispatch(userLogin(BunqJSClient, type)),
+
+        // get latest user list from BunqJSClient
+        usersUpdate: (updated = false) =>
+            dispatch(usersUpdate(BunqJSClient, updated))
     };
 };
 

@@ -17,7 +17,7 @@
   },
   "scripts": {
     "webpack": "cross-env NODE_ENV=production webpack --progress --colors",
-    "webpack:dev": "cross-env NODE_ENV=development webpack --debug --watch --progress --colors",
+    "dev": "cross-env NODE_ENV=development webpack --debug --watch --progress --colors",
     "postinstall": "install-app-deps",
     "build": "gulp build",
     "prerelease": "gulp build --env=production && yarn run webpack",
@@ -69,6 +69,7 @@
     "gulp-watch": "^4.3.11",
     "html-webpack-plugin": "^2.26.0",
     "istanbul": "^0.4.5",
+    "localforage": "^1.5.2",
     "loglevel": "^1.4.1",
     "material-ui": "1.0.0-beta.12",
     "material-ui-icons": "^1.0.0-beta.10",

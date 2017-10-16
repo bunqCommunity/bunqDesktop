@@ -28,6 +28,7 @@ export default (state = defaultState, action) => {
             };
 
         case "PAYMENT_INFO_CLEAR":
+        case "REGISTRATION_CLEAR_API_KEY":
             return {
                 payment: false,
                 account_id: 0,

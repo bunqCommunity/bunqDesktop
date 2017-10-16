@@ -1,5 +1,3 @@
-const Logger = require("../Helpers/Logger");
-
 export function registrationSetApiKey(api_key) {
     return {
         type: "REGISTRATION_SET_API_KEY",
@@ -18,8 +16,12 @@ export function registrationSetDeviceName(device_name) {
     };
 }
 
-export function registrationClearApiKey() {
-    return {
-        type: "REGISTRATION_CLEAR_API_KEY"
+export function registrationClearApiKey(BunqJSClient) {
+    return dispatch => {
+        BunqJSClient.destroySession().then(_ => {
+            dispatch({
+                type: "REGISTRATION_CLEAR_API_KEY"
+            });
+        });
     };
 }
