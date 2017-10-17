@@ -46,7 +46,7 @@ class Login extends React.Component {
         super(props, context);
         this.state = {
             users: [],
-            productionMode: false,
+            sandboxMode: false,
             apiKey: "",
             apiKeyValid: false,
             deviceName: "My Device",
@@ -63,7 +63,7 @@ class Login extends React.Component {
             this.setState({ deviceName: this.props.deviceName });
         }
         this.setState({
-            productionMode: this.props.environment === "PRODUCTION"
+            sandboxMode: this.props.environment === "SANDBOX"
         });
 
         this.validateInputs(this.props.apiKey, this.props.deviceName);
@@ -91,11 +91,8 @@ class Login extends React.Component {
 
         if (this.state.deviceNameValid && this.state.apiKeyValid) {
             this.props.setDeviceName(this.state.deviceName);
-            const currentSelectedEnvironmnent = this.state.productionMode
-                ? "PRODUCTION"
-                : "SANDBOX";
             this.props.setEnvironment(
-                this.state.productionMode ? "PRODUCTION" : "SANDBOX"
+                this.state.sandboxMode ? "SANDBOX" : "PRODUCTION"
             );
             this.props.setApiKey(this.state.apiKey);
         }
@@ -123,7 +120,7 @@ class Login extends React.Component {
         );
     };
     handleCheckboxChange = (event, checked) => {
-        this.setState({ productionMode: checked });
+        this.setState({ sandboxMode: checked });
     };
 
     validateInputs = (apiKey, deviceName) => {
@@ -193,9 +190,9 @@ class Login extends React.Component {
             );
         }
 
-        const currentSelectedEnvironmnent = this.state.productionMode
-            ? "PRODUCTION"
-            : "SANDBOX";
+        const currentSelectedEnvironmnent = this.state.sandboxMode
+            ? "SANDBOX"
+            : "PRODUCTION";
         // if apikey is unchanged and environment is unchanged we don't allow user to set apikey
         const unchangedApiKeyEnvironment =
             this.state.apiKey === this.props.apiKey &&
@@ -213,10 +210,10 @@ class Login extends React.Component {
                             <Typography type="headline" component="h2">
                                 Enter your API Key
                             </Typography>
-                            <p>
+                            <Typography type="caption">
                                 In the Bunq app go to your Profile > Security >
                                 API Keys and generate a new key
-                            </p>
+                            </Typography>
                             <Input
                                 style={styles.apiInput}
                                 error={!this.state.apiKeyValid}
@@ -225,6 +222,10 @@ class Login extends React.Component {
                                 hint="Your personal API key"
                                 onChange={this.handleKeyChange}
                                 value={this.state.apiKey}
+                                disabled={
+                                    // unchanged api key
+                                    this.state.apiKey === this.props.apiKey
+                                }
                             />
                             <Input
                                 style={styles.apiInput}
@@ -241,12 +242,12 @@ class Login extends React.Component {
                             />
                             <FormControlLabel
                                 style={styles.environmentToggle}
-                                label="Enable production mode?"
+                                label="Enable sandbox mode?"
                                 control={
                                     <Switch
-                                        checked={this.state.productionMode}
+                                        checked={this.state.sandboxMode}
                                         onChange={this.handleCheckboxChange}
-                                        aria-label="enable or disable production mode"
+                                        aria-label="enable or disable sandbox mode"
                                     />
                                 }
                             />

@@ -12,6 +12,7 @@ import ArrowForwardIcon from "material-ui-icons/ArrowForward";
 import ArrowUpIcon from "material-ui-icons/ArrowUpward";
 import ArrowDownIcon from "material-ui-icons/ArrowDownward";
 import CircularProgress from "material-ui/Progress/CircularProgress";
+import Typography from "material-ui/Typography";
 
 import NavLink from "../Components/Routing/NavLink";
 import AttachmentImage from "../Components/AttachmentImage";
@@ -115,7 +116,9 @@ class PaymentInfo extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                             imageUUID={personalInfo.imageUUID}
                         />
-                        <h3>{personalInfo.displayName}</h3>
+                        <Typography type="subheading">
+                            {personalInfo.displayName}
+                        </Typography>
                     </Grid>
 
                     <Grid
@@ -150,7 +153,11 @@ class PaymentInfo extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                             imageUUID={counterPartyInfo.imageUUID}
                         />
-                        <h3>{counterPartyInfo.displayName}</h3>
+
+                        <Typography type="subheading">
+                            {counterPartyInfo.displayName}
+                        </Typography>
+
                     </Grid>
 
                     <Grid item xs={12}>
