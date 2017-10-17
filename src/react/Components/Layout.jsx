@@ -16,7 +16,13 @@ import Slide from "material-ui/transitions/Slide";
 
 import Logger from "../Helpers/Logger";
 import DefaultThemeConfig from "../Themes/DefaultTheme";
+import DarkThemeConfig from "../Themes/DarkTheme";
 const DefaultTheme = createMuiTheme(DefaultThemeConfig);
+const DarkTheme = createMuiTheme(DarkThemeConfig);
+const ThemeList = {
+    DefaultTheme,
+    DarkTheme
+};
 
 // redux actions
 import { userLogin } from "../Actions/user.js";
@@ -36,6 +42,9 @@ class Main extends React.Component {
     }
 
     componentDidMount() {
+        // DEBUG function
+        window.setTheme = this.props.setTheme;
+
         if (this.props.apiKey !== false) {
             this.props.BunqJSClient
                 .run(this.props.apiKey, [], this.props.environment)
@@ -147,8 +156,19 @@ class Main extends React.Component {
 
         const RouteComponent = this.props.routesComponent;
         return (
-            <MuiThemeProvider theme={DefaultTheme}>
-                <Grid container spacing={16} justify={"center"}>
+            <MuiThemeProvider theme={ThemeList[this.props.theme]}>
+                <Grid
+                    container
+                    spacing={16}
+                    justify={"center"}
+                    style={{
+                        backgroundColor:
+                            ThemeList[this.props.theme].palette.background
+                                .default,
+                        padding: 16,
+                        margin: 0
+                    }}
+                >
                     <Dialog
                         open={this.props.modalOpen}
                         transition={<Slide direction="up" />}
@@ -192,6 +212,8 @@ class Main extends React.Component {
 
 const mapStateToProps = store => {
     return {
+        theme: store.theme.theme,
+
         apiKey: store.registration.api_key,
         environment: store.registration.environment,
         deviceName: store.registration.device_name,
@@ -213,6 +235,8 @@ const mapStateToProps = store => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
+        setTheme: theme => dispatch(setTheme(theme)),
+
         closeSnackbar: () => dispatch(closeSnackbar()),
         openSnackbar: (message, duration = 4000) =>
             dispatch(openSnackbar(message, duration)),

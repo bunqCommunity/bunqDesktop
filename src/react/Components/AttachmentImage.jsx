@@ -5,7 +5,7 @@ import Logger from "../Helpers/Logger";
 const defaultImageUrl =
     "https://static.useresponse.com/public/bunq/avatars/default-avatar.svg";
 
-class AttachmentImage extends React.PureComponent {
+class AttachmentImage extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
