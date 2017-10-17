@@ -1,5 +1,14 @@
-# BunqDesktop
-A desktop implementation for Bunq's API. This app does everything within the application so you don't have to worry about sharing your API key with anyone else!
+<p align="center">
+ <img align="center" src="https://user-images.githubusercontent.com/6953846/31667539-047c0916-b350-11e7-81ab-fff2535af83f.png" />
+</p>
+<h3 align="center">
+A desktop implementation for Bunq's API. This app does everything within the application so you don't have to worry about 
+sharing your API key with anyone else!</h3>
+
+<hr/>   
+
+## Download
+Download the latest version of Bunq Desktop from the [GitHub releases page.](https://github.com/BunqCommunity/BunqDesktop/releases)
 
 ## Development
 Clone the BunqJSClient (Temporarily until I create a proper release on the npm registry)
