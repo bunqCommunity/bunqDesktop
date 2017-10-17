@@ -46,8 +46,12 @@ class PaymentInfo extends React.Component {
         }
     }
 
-    componentWillUpdate() {
-        if (this.props.initialBunqConnect) {
+    componentWillUpdate(nextProps, nextState) {
+        if (
+            this.props.initialBunqConnect &&
+            this.props.match.params.paymentId !==
+                nextProps.match.params.paymentId
+        ) {
             const { paymentId } = this.props.match.params;
             this.props.updatePayment(
                 this.props.user.id,
@@ -157,7 +161,6 @@ class PaymentInfo extends React.Component {
                         <Typography type="subheading">
                             {counterPartyInfo.displayName}
                         </Typography>
-
                     </Grid>
 
                     <Grid item xs={12}>
