@@ -5,7 +5,7 @@ import Logger from "../Helpers/Logger";
 const defaultImageUrl =
     "https://static.useresponse.com/public/bunq/avatars/default-avatar.svg";
 
-class AttachmentImage extends React.Component {
+class AttachmentImage extends React.PureComponent {
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -14,11 +14,20 @@ class AttachmentImage extends React.Component {
     }
 
     componentDidMount() {
+        this._isMounted = true;
         if (!this.props.imageUUID) {
             this.setState({ imageUrl: defaultImageUrl });
             return;
         }
 
+        this.checkImage();
+    }
+
+    componentDidUpdate(nextProps, nextState) {
+        this.checkImage();
+    }
+
+    checkImage = () => {
         // configure the localforage instance
         localforage.config({
             driver: localforage.INDEXEDDB, // Force WebSQL; same as using setDriver()
@@ -42,11 +51,12 @@ class AttachmentImage extends React.Component {
             // remove the fallback timeout
             clearTimeout(this.timeout);
         });
-    }
+    };
 
     componentWillUnmount() {
         // reset timeout before unmount
         clearTimeout(this.timeout);
+        this._isMounted = false;
     }
 
     loadImage = async () => {
@@ -68,9 +78,11 @@ class AttachmentImage extends React.Component {
                 const base64Url = `data:image/png;base64,${imageBase64}`;
 
                 // set the url first
-                this.setState({
-                    imageUrl: base64Url
-                });
+                if (this._isMounted) {
+                    this.setState({
+                        imageUrl: base64Url
+                    });
+                }
 
                 // store the full url in storage
                 await localforage.setItem(storageKey, base64Url);
@@ -82,10 +94,11 @@ class AttachmentImage extends React.Component {
         }
 
         // set the url
-        this.setState({
-            imageUrl: base64UrlStored
-        });
-
+        if (this._isMounted) {
+            this.setState({
+                imageUrl: base64UrlStored
+            });
+        }
         return true;
     };
 
