@@ -6,10 +6,15 @@ html {
     height: 100vh;
 }
 
+header {
+    padding-top: 50px;
+    -webkit-user-select: none;
+    -webkit-app-region: drag;
+}
+
 body {
     background: url(https://static.useresponse.com/public/bunq/my-interface/bunq-colours-bar-2.png) no-repeat;
     height: calc(100vh - 50px);
-    padding-top: 50px;
     background-size: 100%;
     width: 100%;
 }
