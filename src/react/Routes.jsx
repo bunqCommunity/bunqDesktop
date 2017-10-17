@@ -3,23 +3,12 @@ import { Route, Switch } from "react-router-dom";
 
 import PrivateRoute from "./Components/Routing/PrivateRoute";
 import PublicRoute from "./Components/Routing/PublicRoute";
-import ComponentLoader from "./Components/CodeSplitting/ComponentLoader";
 
-const Dashboard = ComponentLoader(() =>
-    import(/* webpackChunkName: "dashboard" */ "./Pages/Dashboard/Dashboard.jsx")
-);
-const Login = ComponentLoader(() =>
-    import(/* webpackChunkName: "login" */ "./Pages/Login")
-);
-const Pay = ComponentLoader(() =>
-    import(/* webpackChunkName: "pay" */ "./Pages/Pay")
-);
-const PaymentInfo = ComponentLoader(() =>
-    import(/* webpackChunkName: "paymentinfo" */ "./Pages/PaymentInfo")
-);
-const NotFound = ComponentLoader(() =>
-    import(/* webpackChunkName: "notfound" */ "./Pages/NotFound")
-);
+import Dashboard from "./Pages/Dashboard/Dashboard";
+import Login from "./Pages/Login";
+import Pay from "./Pages/Pay";
+import PaymentInfo from "./Pages/PaymentInfo";
+import NotFound from "./Pages/NotFound";
 
 // router react component
 export default class Routes extends React.Component {

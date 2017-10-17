@@ -16,6 +16,17 @@ export function registrationSetDeviceName(device_name) {
     };
 }
 
+export function registrationSetEnvironment(environment) {
+    if (environment !== "PRODUCTION" && environment !== "SANDBOX")
+        environment = "SANDBOX";
+    return {
+        type: "REGISTRATION_SET_ENVIRONMENT",
+        payload: {
+            environment: environment
+        }
+    };
+}
+
 export function registrationClearApiKey(BunqJSClient) {
     return dispatch => {
         BunqJSClient.destroySession().then(_ => {

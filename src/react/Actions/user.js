@@ -1,8 +1,3 @@
-import { paymentInfoClear } from "./payment_info";
-import { paymentsClear } from "./payments";
-import { usersClear } from "./users";
-import { accountsClear } from "./accounts";
-
 export function userSetInfo(user) {
     return {
         type: "USER_SET_INFO",
@@ -44,4 +39,8 @@ export function userNotLoading() {
 
 export function userInitialCheck() {
     return { type: "USER_INITIAL_CHECK" };
+}
+
+export function userClear() {
+    return { type: "USER_CLEAR" };
 }

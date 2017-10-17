@@ -4,7 +4,9 @@ import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
 import Input from "material-ui/Input";
 import Button from "material-ui/Button";
+import Switch from "material-ui/Switch";
 import Avatar from "material-ui/Avatar";
+import { FormControlLabel } from "material-ui/Form";
 import Card, { CardHeader, CardContent } from "material-ui/Card";
 import AttachmentImage from "../Components/AttachmentImage";
 import { userLogin } from "../Actions/user";
@@ -13,7 +15,8 @@ import { Typography } from "material-ui";
 import {
     registrationClearApiKey,
     registrationSetApiKey,
-    registrationSetDeviceName
+    registrationSetDeviceName,
+    registrationSetEnvironment
 } from "../Actions/registration";
 
 const styles = {
@@ -29,6 +32,9 @@ const styles = {
         width: "100%",
         marginTop: 20
     },
+    environmentToggle: {
+        marginTop: 10
+    },
     smallAvatar: {
         width: 50,
         height: 50
@@ -40,6 +46,7 @@ class Login extends React.Component {
         super(props, context);
         this.state = {
             users: [],
+            productionMode: false,
             apiKey: "",
             apiKeyValid: false,
             deviceName: "My Device",
@@ -55,6 +62,10 @@ class Login extends React.Component {
         if (this.props.deviceName !== false) {
             this.setState({ deviceName: this.props.deviceName });
         }
+        this.setState({
+            productionMode: this.props.environment === "PRODUCTION"
+        });
+
         this.validateInputs(this.props.apiKey, this.props.deviceName);
     }
 
@@ -80,6 +91,12 @@ class Login extends React.Component {
 
         if (this.state.deviceNameValid && this.state.apiKeyValid) {
             this.props.setDeviceName(this.state.deviceName);
+            const currentSelectedEnvironmnent = this.state.productionMode
+                ? "PRODUCTION"
+                : "SANDBOX";
+            this.props.setEnvironment(
+                this.state.productionMode ? "PRODUCTION" : "SANDBOX"
+            );
             this.props.setApiKey(this.state.apiKey);
         }
     };
@@ -105,6 +122,9 @@ class Login extends React.Component {
             _ => this.validateInputs(this.state.apiKey, this.state.deviceName)
         );
     };
+    handleCheckboxChange = (event, checked) => {
+        this.setState({ productionMode: checked });
+    };
 
     validateInputs = (apiKey, deviceName) => {
         this.setState({
@@ -116,7 +136,7 @@ class Login extends React.Component {
         });
     };
 
-    selectAccount = (type) => {
+    selectAccount = type => {
         return () => {
             this.props.loginUser(type, true);
         };
@@ -173,6 +193,14 @@ class Login extends React.Component {
             );
         }
 
+        const currentSelectedEnvironmnent = this.state.productionMode
+            ? "PRODUCTION"
+            : "SANDBOX";
+        // if apikey is unchanged and environment is unchanged we don't allow user to set apikey
+        const unchangedApiKeyEnvironment =
+            this.state.apiKey === this.props.apiKey &&
+            currentSelectedEnvironmnent === this.props.environment;
+
         return (
             <Grid container spacing={16} justify={"center"}>
                 <Helmet>
@@ -192,6 +220,7 @@ class Login extends React.Component {
                             <Input
                                 style={styles.apiInput}
                                 error={!this.state.apiKeyValid}
+                                placeholder="API Key"
                                 label="API Key"
                                 hint="Your personal API key"
                                 onChange={this.handleKeyChange}
@@ -200,6 +229,7 @@ class Login extends React.Component {
                             <Input
                                 style={styles.apiInput}
                                 error={!this.state.deviceNameValid}
+                                placeholder="Device Name"
                                 label="Device Name"
                                 hint="Device name so you can recognize it later"
                                 onChange={this.handleNameChange}
@@ -209,11 +239,21 @@ class Login extends React.Component {
                                     this.state.apiKey === this.props.apiKey
                                 }
                             />
+                            <FormControlLabel
+                                style={styles.environmentToggle}
+                                label="Enable production mode?"
+                                control={
+                                    <Switch
+                                        checked={this.state.productionMode}
+                                        onChange={this.handleCheckboxChange}
+                                        aria-label="enable or disable production mode"
+                                    />
+                                }
+                            />
                             <Button
                                 raised
                                 disabled={
-                                    // unchanged api key
-                                    this.state.apiKey === this.props.apiKey ||
+                                    unchangedApiKeyEnvironment ||
                                     // invalid inputs
                                     this.state.apiKeyValid === false ||
                                     this.state.deviceNameValid === false ||
@@ -224,7 +264,11 @@ class Login extends React.Component {
                                 style={styles.loginButton}
                                 onClick={this.setRegistration}
                             >
-                                Set API Key
+                                {this.props.apiKey === false ? (
+                                    "Set API Key"
+                                ) : (
+                                    "Update API key"
+                                )}
                             </Button>
                             {clearBtn}
                         </CardContent>
@@ -240,6 +284,7 @@ class Login extends React.Component {
 const mapStateToProps = state => {
     return {
         apiKey: state.registration.api_key,
+        environment: state.registration.environment,
         deviceName: state.registration.device_name,
         users: state.users.users,
         user: state.user.user,
@@ -252,6 +297,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         clearApiKey: () => dispatch(registrationClearApiKey(BunqJSClient)),
         setApiKey: api_key => dispatch(registrationSetApiKey(api_key)),
+        setEnvironment: environment =>
+            dispatch(registrationSetEnvironment(environment)),
         setDeviceName: device_name =>
             dispatch(registrationSetDeviceName(device_name)),
 

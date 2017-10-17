@@ -3,11 +3,18 @@ const store = require("store");
 const api_keyDefault =
     store.get("api_key") !== undefined ? store.get("api_key") : false;
 const device_nameDefault =
-    store.get("device_name") !== undefined ? store.get("device_name") : "My Device";
+    store.get("device_name") !== undefined
+        ? store.get("device_name")
+        : "My Device";
+const environmentDefault =
+    store.get("environment") !== undefined
+        ? store.get("environment")
+        : "SANDBOX";
 
 export const defaultState = {
     api_key: api_keyDefault,
     device_name: device_nameDefault,
+    environment: environmentDefault
 };
 
 export default (state = defaultState, action) => {
@@ -23,6 +30,12 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 device_name: action.payload.device_name
+            };
+        case "REGISTRATION_SET_ENVIRONMENT":
+            store.set("environment", action.payload.environment);
+            return {
+                ...state,
+                environment: action.payload.environment
             };
 
         case "REGISTRATION_CLEAR_API_KEY":

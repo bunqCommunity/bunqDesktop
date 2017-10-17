@@ -1,16 +1,21 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import Dialog from "material-ui/Dialog";
 import Snackbar from "material-ui/Snackbar";
 import Grid from "material-ui/Grid";
 import Button from "material-ui/Button";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import createMuiTheme from "material-ui/styles/createMuiTheme";
+import Dialog, {
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle
+} from "material-ui/Dialog";
+import Slide from "material-ui/transitions/Slide";
+
 import Logger from "../Helpers/Logger";
-
 import DefaultThemeConfig from "../Themes/DefaultTheme";
-
 const DefaultTheme = createMuiTheme(DefaultThemeConfig);
 
 // redux actions
@@ -18,7 +23,11 @@ import { userLogin } from "../Actions/user.js";
 import { closeModal } from "../Actions/modal.js";
 import { closeSnackbar, openSnackbar } from "../Actions/snackbar.js";
 import { openModal } from "../Actions/modal";
-import { usersUpdate } from "../Actions/users";
+import { usersClear, usersUpdate } from "../Actions/users";
+import { registrationSetApiKey } from "../Actions/registration";
+import { accountsClear } from "../Actions/accounts";
+import { paymentInfoClear } from "../Actions/payment_info";
+import { userClear } from "../Actions/user";
 
 class Main extends React.Component {
     constructor(props, context) {
@@ -27,56 +36,95 @@ class Main extends React.Component {
     }
 
     componentDidMount() {
-        this.props.BunqJSClient.run(this.props.apiKey).then(() => {
-            Logger.debug("Initial BunqJSClient setup finished");
+        if (this.props.apiKey !== false) {
+            this.props.BunqJSClient
+                .run(this.props.apiKey, [], this.props.environment)
+                .then(() => {
+                    Logger.debug("Initial BunqJSClient setup finished");
 
-            this.props.usersUpdate();
-            // if (this.props.user !== false) {
-            //     Logger.debug("Logging in selected user");
-            //     // refresh user to make sure it is still available
-            //     this.props.loginUser(this.props.user.type);
-            // }
-        });
+                    this.props.usersUpdate();
+                });
+        }
     }
 
     componentWillUpdate(nextProps, nextState) {
         if (
-            this.props.apiKey !== nextProps.apiKey &&
+            (this.props.apiKey !== nextProps.apiKey ||
+                this.props.environment !== nextProps.environment) &&
             nextProps.apiKey !== false
         ) {
+            // clear our old data associated with the previous session
+            this.props.clearAccounts();
+            this.props.clearPaymentInfo();
+            this.props.clearUsers();
+            this.props.clearUser();
+
             // api key was modified
             this.setupBunqClient(
                 nextProps.apiKey,
-                nextProps.deviceName
-            ).then(() => {
-                Logger.debug("Setup client for new api key");
-            });
+                nextProps.deviceName,
+                nextProps.environment
+            )
+                .then(() => {
+                    Logger.debug("Setup client for new api key");
+                })
+                .catch(setupError => {
+                    Logger.error(setupError);
+                });
         }
     }
 
-    setupBunqClient = async (apiKey, deviceName) => {
+    setupBunqClient = async (apiKey, deviceName, environment) => {
         try {
-            await this.props.BunqJSClient.run(apiKey);
+            await this.props.BunqJSClient.run(apiKey, [], environment);
         } catch (exception) {
-            Logger.log(exception);
+            Logger.error(exception);
+            this.props.openModal(
+                "We failed to setup BunqDesktop properly",
+                "Something went wrong"
+            );
             return false;
         }
+
         try {
             await this.props.BunqJSClient.install();
         } catch (exception) {
-            Logger.log(exception);
+            Logger.error(exception);
+            this.props.openModal(
+                "We failed to install a new application",
+                "Something went wrong"
+            );
+            // installation failed so we reset the api key
+            this.setApiKey(false);
+
             return false;
         }
+
         try {
             await this.props.BunqJSClient.registerDevice(deviceName);
         } catch (exception) {
-            Logger.log(exception);
+            Logger.error(exception);
+            this.props.openModal(
+                `We failed to register this device on the Bunq servers. Are you sure you entered a valid API key? And are you sure that this key is meant for the ${environment} Bunq environment?`,
+                "Something went wrong"
+            );
+            // installation failed so we reset the api key
+            this.setApiKey(false);
+
             return false;
         }
+
         try {
             await this.props.BunqJSClient.registerSession();
         } catch (exception) {
-            Logger.log(exception);
+            Logger.error(exception);
+            this.props.openModal(
+                "We failed to create a new session",
+                "Something went wrong"
+            );
+            // installation failed so we reset the api key
+            this.setApiKey(false);
+
             return false;
         }
 
@@ -102,21 +150,25 @@ class Main extends React.Component {
             <MuiThemeProvider theme={DefaultTheme}>
                 <Grid container spacing={16} justify={"center"}>
                     <Dialog
-                        title={this.props.modalTitle}
-                        actions={[
-                            <Button
-                                flat
-                                label="Ok"
-                                primary={true}
-                                keyboardFocused={true}
-                                onTouchTap={this.props.closeModal}
-                            />
-                        ]}
-                        modal={false}
                         open={this.props.modalOpen}
+                        transition={<Slide direction="up" />}
+                        keepMounted
                         onRequestClose={this.props.closeModal}
                     >
-                        {this.props.modalText}
+                        <DialogTitle>{this.props.modalTitle}</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>
+                                {this.props.modalText}
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button
+                                onClick={this.props.closeModal}
+                                color="primary"
+                            >
+                                Ok
+                            </Button>
+                        </DialogActions>
                     </Dialog>
 
                     <Snackbar
@@ -141,6 +193,7 @@ class Main extends React.Component {
 const mapStateToProps = store => {
     return {
         apiKey: store.registration.api_key,
+        environment: store.registration.environment,
         deviceName: store.registration.device_name,
 
         user: store.user.user,
@@ -170,9 +223,18 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // selects an account from the BunqJSClient user list based on type
         loginUser: type => dispatch(userLogin(BunqJSClient, type)),
 
+        // set the api key for this app
+        setApiKey: apiKey =>
+            dispatch(registrationSetApiKey(BunqJSClient, apiKey)),
+
         // get latest user list from BunqJSClient
         usersUpdate: (updated = false) =>
-            dispatch(usersUpdate(BunqJSClient, updated))
+            dispatch(usersUpdate(BunqJSClient, updated)),
+
+        clearAccounts: () => dispatch(accountsClear()),
+        clearPaymentInfo: () => dispatch(paymentInfoClear()),
+        clearUsers: () => dispatch(usersClear()),
+        clearUser: () => dispatch(userClear())
     };
 };
 

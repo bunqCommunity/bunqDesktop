@@ -2,9 +2,8 @@
     "description": "BunqDesktop application",
     "name": "bunq-desktop",
     "productName": "BunqDesktop",
-    "description": "BunqDesktop application",
-    "version": "0.1.0",
-    "author": "Gregory Goijaerts",
+    "version": "0.2.0",
+    "author": "Gregory Goijaerts (crecketgaming@gmail.com)",
     "license": "MIT",
     "main": "app/background.js",
     "build": {
@@ -14,6 +13,9 @@
             "node_modules/**/*",
             "package.json"
         ],
+        "linux": {
+            "category": "Office"
+        },
         "publish": null
     },
     "scripts": {
@@ -70,6 +72,7 @@
         "gulp-watch": "^4.3.11",
         "html-webpack-plugin": "^2.26.0",
         "istanbul": "^0.4.5",
+        "localforage": "^1.5.2",
         "loglevel": "^1.4.1",
         "material-ui": "1.0.0-beta.12",
         "material-ui-icons": "^1.0.0-beta.10",
