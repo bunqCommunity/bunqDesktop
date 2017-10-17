@@ -1,4 +1,5 @@
 export function openSnackbar(message, duration = 4000) {
+    console.log("open??");
     return {
         type: "SNACKBAR_OPEN",
         payload: {

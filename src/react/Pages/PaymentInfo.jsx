@@ -35,12 +35,25 @@ class PaymentInfo extends React.Component {
     }
 
     componentDidMount() {
-        const { paymentId } = this.props.match.params;
-        this.props.updatePayment(
-            this.props.user.id,
-            this.props.accountsSelectedAccount,
-            paymentId
-        );
+        if (this.props.initialBunqConnect) {
+            const { paymentId } = this.props.match.params;
+            this.props.updatePayment(
+                this.props.user.id,
+                this.props.accountsSelectedAccount,
+                paymentId
+            );
+        }
+    }
+
+    componentWillUpdate() {
+        if (this.props.initialBunqConnect) {
+            const { paymentId } = this.props.match.params;
+            this.props.updatePayment(
+                this.props.user.id,
+                this.props.accountsSelectedAccount,
+                paymentId
+            );
+        }
     }
 
     getBasicInfo(info) {

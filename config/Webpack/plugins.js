@@ -3,10 +3,13 @@ const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
-module.exports = ({BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT}) => {
+const packageInfo = require("../../package.json");
+
+module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
     const plugins = [
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.DefinePlugin({
+            CURRENT_VERSION: JSON.stringify(packageInfo.version),
             PRODUCTION_MODE: JSON.stringify(PRODUCTION),
             DEVELOPMENT_MODE: JSON.stringify(DEVELOPMENT),
             "process.env.DEBUG": JSON.stringify(DEVELOPMENT),
@@ -16,13 +19,13 @@ module.exports = ({BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT}) => {
             "process.env.WEBPACK_MODE": JSON.stringify(true)
         }),
         new webpack.ProvidePlugin({
-            Promise: 'es6-promise-promise'
+            Promise: "es6-promise-promise"
         }),
         new ExtractTextPlugin({
             filename: OUTPUT_DIR + "[name].css",
             disable: false,
             allChunks: true
-        }),
+        })
     ];
 
     if (PRODUCTION) {

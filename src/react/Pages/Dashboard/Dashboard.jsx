@@ -23,8 +23,16 @@ class Dashboard extends React.Component {
         this.state = {};
     }
 
-    componentDidMount() {
-        this.props.updateAccounts(this.props.user.id);
+    componentDidMount(){
+        if(this.props.initialBunqConnect){
+            this.props.updateAccounts(this.props.user.id);
+        }
+    }
+
+    componentWillUpdate(){
+        if(this.props.initialBunqConnect){
+            this.props.updateAccounts(this.props.user.id);
+        }
     }
 
     render() {

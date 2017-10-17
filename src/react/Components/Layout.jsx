@@ -1,22 +1,17 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import Snackbar from "material-ui/Snackbar";
 import Grid from "material-ui/Grid";
 import Button from "material-ui/Button";
 import SettingsIcon from "material-ui-icons/Settings";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import createMuiTheme from "material-ui/styles/createMuiTheme";
-import Dialog, {
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle
-} from "material-ui/Dialog";
-import Slide from "material-ui/transitions/Slide";
 
 // custom components
 import Logger from "../Helpers/Logger";
+import VersionChecker from "../Helpers/VersionChecker";
+import MainDialog from "./MainDialog";
+import MainSnackbar from "./MainSnackbar";
 import OptionsDrawer from "./OptionsDrawer";
 
 // themes
@@ -31,11 +26,9 @@ const ThemeList = {
 
 // redux actions
 import { userLogin } from "../Actions/user.js";
-import { closeModal } from "../Actions/modal.js";
-import { closeSnackbar, openSnackbar } from "../Actions/snackbar.js";
-import { openModal } from "../Actions/modal";
 import { usersClear, usersUpdate } from "../Actions/users";
 import { registrationSetApiKey } from "../Actions/registration";
+import { openSnackbar } from "../Actions/snackbar";
 import { accountsClear } from "../Actions/accounts";
 import { paymentInfoClear } from "../Actions/payment_info";
 import { userClear } from "../Actions/user";
@@ -49,10 +42,12 @@ const styles = {
     }
 };
 
-class Main extends React.Component {
+class Layout extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+        this.state = {
+            initialBunqConnect: false
+        };
     }
 
     componentDidMount() {
@@ -63,8 +58,18 @@ class Main extends React.Component {
                     Logger.debug("Initial BunqJSClient setup finished");
 
                     this.props.usersUpdate();
+                    this.setState({ initialBunqConnect: true });
                 });
         }
+
+        VersionChecker().then(versionInfo => {
+            if (versionInfo.newerLink !== false) {
+                this.props.openSnackbar(
+                    `A new version (v${versionInfo.latestVersion}) is available! You are currently using ${versionInfo.currentVersion}`,
+                    8000
+                );
+            }
+        });
     }
 
     componentWillUpdate(nextProps, nextState) {
@@ -159,10 +164,12 @@ class Main extends React.Component {
             // give all routes access to bunq-js-client
             BunqJSClient: this.props.BunqJSClient,
             setupBunqClient: this.setupBunqClient,
-
             // modal and snackbar helpers
             openModal: this.props.openModal,
-            openSnackbar: this.props.openSnackbar
+            openSnackbar: this.props.openSnackbar,
+
+            // helps all child components to prevent calls before the BunqJSClietn is finished setting up
+            initialBunqConnect: this.state.initialBunqConnect
         };
 
         const RouteComponent = this.props.routesComponent;
@@ -180,28 +187,8 @@ class Main extends React.Component {
                         margin: 0
                     }}
                 >
-                    <Dialog
-                        open={this.props.modalOpen}
-                        transition={<Slide direction="up" />}
-                        keepMounted
-                        onRequestClose={this.props.closeModal}
-                    >
-                        <DialogTitle>{this.props.modalTitle}</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText>
-                                {this.props.modalText}
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button
-                                onClick={this.props.closeModal}
-                                color="primary"
-                            >
-                                Ok
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
-
+                    <MainDialog />
+                    <MainSnackbar />
                     <OptionsDrawer themeList={ThemeList} />
 
                     <Button
@@ -213,13 +200,6 @@ class Main extends React.Component {
                     >
                         <SettingsIcon />
                     </Button>
-
-                    <Snackbar
-                        open={this.props.snackbarOpen}
-                        message={this.props.snackbarMessage}
-                        autoHideDuration={this.props.snackbarDuration}
-                        onRequestClose={this.props.closeSnackbar}
-                    />
 
                     <Grid item xs={12} md={10} lg={8}>
                         <RouteComponent
@@ -243,15 +223,7 @@ const mapStateToProps = store => {
 
         user: store.user.user,
         userInitialCheck: store.user.initialCheck,
-        userLoading: store.user.loading,
-
-        modalText: store.modal.message,
-        modalTitle: store.modal.title,
-        modalOpen: store.modal.modalOpen,
-
-        snackbarMessage: store.snackbar.message,
-        snackbarDuration: store.snackbar.duration,
-        snackbarOpen: store.snackbar.snackbarOpen
+        userLoading: store.user.loading
     };
 };
 
@@ -260,11 +232,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         setTheme: theme => dispatch(setTheme(theme)),
 
-        closeSnackbar: () => dispatch(closeSnackbar()),
         openSnackbar: (message, duration = 4000) =>
             dispatch(openSnackbar(message, duration)),
-
-        closeModal: () => dispatch(closeModal()),
         openModal: (message, title) => dispatch(openModal(message, title)),
 
         // selects an account from the BunqJSClient user list based on type
@@ -289,4 +258,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Layout));
