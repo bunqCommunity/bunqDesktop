@@ -4,6 +4,7 @@ import Helmet from "react-helmet";
 import Paper from "material-ui/Paper";
 import Button from "material-ui/Button";
 import Grid from "material-ui/Grid";
+import Typography from "material-ui/Typography";
 import PaymentList from "./PaymentList";
 import AccountList from "./AccountList";
 
@@ -25,7 +26,7 @@ class Dashboard extends React.Component {
     componentDidMount() {
         this.props.updateAccounts(this.props.user.id);
     }
-    
+
     render() {
         return (
             <Grid container spacing={16}>
@@ -34,7 +35,9 @@ class Dashboard extends React.Component {
                 </Helmet>
 
                 <Grid item xs={8} sm={10}>
-                    <h1>Welcome {this.props.user.displayName}</h1>
+                    <Typography type="title" gutterBottom>
+                        Welcome {this.props.user.display_name}
+                    </Typography>
                 </Grid>
 
                 <Grid item xs={4} sm={2}>

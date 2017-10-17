@@ -1,23 +1,26 @@
 import { combineReducers } from "redux";
 
-import registration from "./registration";
+import accounts from "./accounts";
 import modal from "./modal";
-import snackbar from "./snackbar";
 import user from "./user";
 import users from "./users";
+import registration from "./registration";
+import snackbar from "./snackbar";
+import theme from "./theme";
 import payments from "./payments";
 import payment_info from "./payment_info";
 import payment_filter from "./payment_filter";
-import accounts from "./accounts";
 
 export default combineReducers({
+    accounts,
     modal,
-    snackbar,
     user,
     users,
-    payments,
     registration,
+    snackbar,
+    theme,
     payment_info,
     payment_filter,
-    accounts
+    payment_filter,
+    payments
 });
