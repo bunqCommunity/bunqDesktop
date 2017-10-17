@@ -4,6 +4,7 @@ import { withRouter } from "react-router";
 import Snackbar from "material-ui/Snackbar";
 import Grid from "material-ui/Grid";
 import Button from "material-ui/Button";
+import SettingsIcon from "material-ui-icons/Settings";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import createMuiTheme from "material-ui/styles/createMuiTheme";
 import Dialog, {
@@ -14,7 +15,11 @@ import Dialog, {
 } from "material-ui/Dialog";
 import Slide from "material-ui/transitions/Slide";
 
+// custom components
 import Logger from "../Helpers/Logger";
+import OptionsDrawer from "./OptionsDrawer";
+
+// themes
 import DefaultThemeConfig from "../Themes/DefaultTheme";
 import DarkThemeConfig from "../Themes/DarkTheme";
 const DefaultTheme = createMuiTheme(DefaultThemeConfig);
@@ -34,6 +39,15 @@ import { registrationSetApiKey } from "../Actions/registration";
 import { accountsClear } from "../Actions/accounts";
 import { paymentInfoClear } from "../Actions/payment_info";
 import { userClear } from "../Actions/user";
+import { openDrawer } from "../Actions/options_drawer";
+
+const styles = {
+    settingsIcon: {
+        position: "fixed",
+        bottom: 20,
+        right: 20
+    }
+};
 
 class Main extends React.Component {
     constructor(props, context) {
@@ -42,9 +56,6 @@ class Main extends React.Component {
     }
 
     componentDidMount() {
-        // DEBUG function
-        window.setTheme = this.props.setTheme;
-
         if (this.props.apiKey !== false) {
             this.props.BunqJSClient
                 .run(this.props.apiKey, [], this.props.environment)
@@ -191,6 +202,18 @@ class Main extends React.Component {
                         </DialogActions>
                     </Dialog>
 
+                    <OptionsDrawer themeList={ThemeList} />
+
+                    <Button
+                        fab
+                        color="primary"
+                        aria-label="view options"
+                        onClick={this.props.openDrawer}
+                        style={styles.settingsIcon}
+                    >
+                        <SettingsIcon />
+                    </Button>
+
                     <Snackbar
                         open={this.props.snackbarOpen}
                         message={this.props.snackbarMessage}
@@ -255,6 +278,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         usersUpdate: (updated = false) =>
             dispatch(usersUpdate(BunqJSClient, updated)),
 
+        // opens the options drawer on the left
+        openDrawer: () => dispatch(openDrawer()),
+
+        // functions to clear user data
         clearAccounts: () => dispatch(accountsClear()),
         clearPaymentInfo: () => dispatch(paymentInfoClear()),
         clearUsers: () => dispatch(usersClear()),

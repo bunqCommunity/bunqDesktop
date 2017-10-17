@@ -10,6 +10,7 @@ export const defaultState = {
 export default function reducer(state = defaultState, action) {
     switch (action.type) {
         case "THEME_SET":
+            store.set("theme", action.payload.theme);
             return {
                 ...state,
                 theme: action.payload.theme

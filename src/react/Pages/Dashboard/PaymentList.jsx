@@ -1,12 +1,16 @@
 import React from "react";
 import { connect } from "react-redux";
-import List, { ListItem, ListItemSecondaryAction } from "material-ui/List";
+import List, {
+    ListItem,
+    ListItemSecondaryAction,
+    ListSubheader
+} from "material-ui/List";
 import Divider from "material-ui/Divider";
 import { LinearProgress } from "material-ui/Progress";
 
 import PaymentListItem from "./PaymentListItem";
 import ClearBtn from "../../Components/FilterComponents/ClearFilter";
-import DisplayDrawerBtn from "../../Components/FilterComponents/DisplayDrawer";
+import DisplayDrawerBtn from "../../Components/FilterComponents/FilterDrawer";
 
 class PaymentList extends React.Component {
     constructor(props, context) {
@@ -49,14 +53,13 @@ class PaymentList extends React.Component {
 
         return (
             <List>
-                <ListItem>
+                <ListSubheader>
                     Payments - {payments.length}
                     <ListItemSecondaryAction>
                         <ClearBtn />
                         <DisplayDrawerBtn />
                     </ListItemSecondaryAction>
-                </ListItem>
-
+                </ListSubheader>
                 {loadingContent}
                 <List>{payments}</List>
             </List>
