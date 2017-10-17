@@ -36,6 +36,7 @@
         "fs-jetpack": "^1.0.0"
     },
     "devDependencies": {
+        "@bunq-community/bunq-js-client": "^0.1.1",
         "@types/axios": "^0.14.0",
         "awaiting": "^2.0.1",
         "axios": "^0.16.2",
