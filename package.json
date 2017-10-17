@@ -2,7 +2,7 @@
     "description": "BunqDesktop application",
     "name": "bunq-desktop",
     "productName": "BunqDesktop",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "author": "Gregory Goijaerts (crecketgaming@gmail.com)",
     "license": "MIT",
     "main": "app/background.js",
