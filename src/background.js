@@ -10,8 +10,9 @@ import createWindow from "./helpers/window";
 import env from "./env";
 
 const setApplicationMenu = () => {
-    const menus = [editMenuTemplate];
-    if (env.name !== "production") {
+    const menus = [];
+    if (env.name === "development") {
+        menus.push(editMenuTemplate);
         menus.push(devMenuTemplate);
     }
     Menu.setApplicationMenu(Menu.buildFromTemplate(menus));
@@ -29,6 +30,7 @@ app.on("ready", () => {
     setApplicationMenu();
 
     const mainWindow = createWindow("main", {
+        frame: true,
         webPreferences: { webSecurity: false },
         width: 1000,
         height: 800
@@ -44,6 +46,9 @@ app.on("ready", () => {
 
     if (env.name === "development") {
         mainWindow.openDevTools();
+    } else {
+        // remove the menu in production
+        mainWindow.setMenu(null);
     }
 });
 
