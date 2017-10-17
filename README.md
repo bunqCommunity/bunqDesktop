@@ -19,6 +19,7 @@ Clone this project and install its dependencies
 ```bash
 git clone git@github.com:Crecket/BunqDesktop.git
 cd BunqDesktop
+npm install
 yarn 
 ```
 Run these commands in 2 seperate consoles. One compiles the react app and the second takes care of running a electron instance.
