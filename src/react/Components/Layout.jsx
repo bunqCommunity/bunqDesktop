@@ -29,7 +29,7 @@ import { userLogin } from "../Actions/user.js";
 import { usersClear, usersUpdate } from "../Actions/users";
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
-import { accountsClear } from "../Actions/accounts";
+import { accountsClear, accountsUpdate } from "../Actions/accounts";
 import { paymentInfoClear } from "../Actions/payment_info";
 import { userClear } from "../Actions/user";
 import { openDrawer } from "../Actions/options_drawer";
@@ -65,6 +65,9 @@ class Layout extends React.Component {
                     Logger.debug("Initial BunqJSClient setup finished");
 
                     this.props.usersUpdate();
+                    if (this.props.user && this.props.user.id) {
+                        this.props.updateAccounts(this.props.user.id);
+                    }
                     this.setState({ initialBunqConnect: true });
                 });
         }
@@ -245,6 +248,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
         // selects an account from the BunqJSClient user list based on type
         loginUser: type => dispatch(userLogin(BunqJSClient, type)),
+
+        // get monetary accounts for a user id
+        updateAccounts: userId =>
+            dispatch(accountsUpdate(BunqJSClient, userId)),
 
         // set the api key for this app
         setApiKey: apiKey => dispatch(registrationSetApiKey(apiKey)),
