@@ -27,6 +27,15 @@ export function registrationSetEnvironment(environment) {
     };
 }
 
+export function registrationSetStatus(status_message) {
+    return {
+        type: "REGISTRATION_SET_STATUS_MESSAGE",
+        payload: {
+            status_message: status_message
+        }
+    };
+}
+
 export function registrationClearApiKey(BunqJSClient) {
     return dispatch => {
         BunqJSClient.destroySession().then(_ => {
@@ -34,5 +43,17 @@ export function registrationClearApiKey(BunqJSClient) {
                 type: "REGISTRATION_CLEAR_API_KEY"
             });
         });
+    };
+}
+
+export function registrationLoading() {
+    return {
+        type: "REGISTRATION_LOADING"
+    };
+}
+
+export function registrationNotLoading() {
+    return {
+        type: "REGISTRATION_NOT_LOADING"
     };
 }
