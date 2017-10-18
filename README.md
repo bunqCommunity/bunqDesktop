@@ -1,10 +1,10 @@
 <p align="center">
- <img align="center" src="https://i.gyazo.com/033b97d6e76265a08c44455359bc8bdd.png" />
+ <img align="center" src="https://i.gyazo.com/8a514252c2b959d466c1f6cf4aecdd71.gif" />
 </p>
 <h1 align="center">Bunq Desktop</h1>
-<h3 align="center">
+<h4 align="center">
 A desktop implementation for Bunq's API. This app does everything within the application so you don't have to worry about 
-sharing your API key with anyone else!</h3>
+sharing your API key with anyone else!</h4>
 
 <hr/>   
 
