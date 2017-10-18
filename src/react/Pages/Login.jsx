@@ -201,7 +201,7 @@ class Login extends React.Component {
         return (
             <Grid container spacing={16} justify={"center"}>
                 <Helmet>
-                    <title>{`BunqWeb - Login`}</title>
+                    <title>{`BunqDesktop - Login`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={8} md={6}>

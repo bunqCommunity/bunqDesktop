@@ -204,7 +204,7 @@ class PaymentInfo extends React.Component {
         return (
             <Grid container spacing={24}>
                 <Helmet>
-                    <title>{`BunqWeb - Payment Info`}</title>
+                    <title>{`BunqDesktop - Payment Info`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={3}>

@@ -36,7 +36,7 @@ export default class Pay extends React.Component {
         return (
             <Grid container spacing={24}>
                 <Helmet>
-                    <title>{`BunqWeb - Pay`}</title>
+                    <title>{`BunqDesktop - Pay`}</title>
                 </Helmet>
 
                 <Grid item xs={12} md={4} />
