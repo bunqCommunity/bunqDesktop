@@ -1,3 +1,6 @@
+const Logger = require("../Helpers/Logger");
+import { openModal } from "./modal";
+
 export function userSetInfo(user) {
     return {
         type: "USER_SET_INFO",
@@ -10,13 +13,24 @@ export function userSetInfo(user) {
 export function userLogin(BunqJSClient, type, updated = false) {
     return dispatch => {
         dispatch(userLoading());
-        BunqJSClient.getUser(type, updated).then(user => {
-            dispatch(userNotLoading());
-            dispatch(userInitialCheck());
-            if (user !== undefined) {
-                dispatch(userSetInfo(user));
-            }
-        });
+        BunqJSClient.getUser(type, updated)
+            .then(user => {
+                if (user !== undefined) {
+                    dispatch(userSetInfo(user));
+                }
+                dispatch(userInitialCheck());
+                dispatch(userNotLoading());
+            })
+            .catch(error => {
+                Logger.error(error);
+                dispatch(
+                    openModal(
+                        "We failed to load the information for a user",
+                        "Something went wrong"
+                    )
+                );
+                dispatch(userNotLoading());
+            });
     };
 }
 

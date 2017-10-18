@@ -1,4 +1,5 @@
 const Logger = require("../Helpers/Logger");
+import { openModal } from "./modal";
 
 export function paymentsSetInfo(payments, account_id) {
     // return the action
@@ -22,6 +23,12 @@ export function paymentsUpdate(BunqJSClient, user_id, account_id) {
             })
             .catch(err => {
                 Logger.trace(err);
+                dispatch(
+                    openModal(
+                        "We failed to load the payments for this monetary account",
+                        "Something went wrong"
+                    )
+                );
                 dispatch(paymentsNotLoading());
             });
     };

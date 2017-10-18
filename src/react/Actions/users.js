@@ -1,3 +1,6 @@
+const Logger = require("../Helpers/Logger");
+import { openModal } from "./modal";
+
 export function usersSetInfo(users) {
     return {
         type: "USERS_SET_INFO",
@@ -10,11 +13,22 @@ export function usersSetInfo(users) {
 export function usersUpdate(BunqJSClient, updated = false) {
     return dispatch => {
         dispatch(usersLoading());
-        BunqJSClient.getUsers(updated).then(users => {
-            dispatch(usersNotLoading());
-            dispatch(usersInitialCheck());
-            dispatch(usersSetInfo(users));
-        });
+        BunqJSClient.getUsers(updated)
+            .then(users => {
+                dispatch(usersSetInfo(users));
+                dispatch(usersNotLoading());
+                dispatch(usersInitialCheck());
+            })
+            .catch(error => {
+                Logger.error(error);
+                dispatch(
+                    openModal(
+                        "We failed to load your users",
+                        "Something went wrong"
+                    )
+                );
+                dispatch(usersNotLoading());
+            });
     };
 }
 

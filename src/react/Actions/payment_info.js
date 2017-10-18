@@ -1,4 +1,5 @@
 const Logger = require("../Helpers/Logger");
+import { openModal } from "./modal";
 
 export function paymentInfoSetInfo(payment, account_id, payment_id) {
     // return the action
@@ -7,7 +8,7 @@ export function paymentInfoSetInfo(payment, account_id, payment_id) {
         payload: {
             payment: payment,
             account_id: account_id,
-            payment_id: payment_id,
+            payment_id: payment_id
         }
     };
 }
@@ -18,11 +19,19 @@ export function paymentsUpdate(BunqJSClient, user_id, account_id, payment_id) {
         BunqJSClient.api.payment
             .get(user_id, account_id, payment_id)
             .then(paymentInfo => {
-                dispatch(paymentInfoSetInfo(paymentInfo, account_id, payment_id));
+                dispatch(
+                    paymentInfoSetInfo(paymentInfo, account_id, payment_id)
+                );
                 dispatch(paymentInfoNotLoading());
             })
             .catch(err => {
                 Logger.trace(err);
+                dispatch(
+                    openModal(
+                        "We failed to load the payment information",
+                        "Something went wrong"
+                    )
+                );
                 dispatch(paymentInfoNotLoading());
             });
     };
