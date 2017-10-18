@@ -28,6 +28,7 @@ const ThemeList = {
 import { userLogin } from "../Actions/user.js";
 import { usersClear, usersUpdate } from "../Actions/users";
 import { registrationSetApiKey } from "../Actions/registration";
+import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
 import { accountsClear } from "../Actions/accounts";
 import { paymentInfoClear } from "../Actions/payment_info";
