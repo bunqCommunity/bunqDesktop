@@ -29,7 +29,6 @@ if (env.name !== "production") {
 
 app.on("ready", () => {
     setApplicationMenu();
-    registerShortcuts(app);
 
     const mainWindow = createWindow("main", {
         frame: true,
@@ -45,6 +44,8 @@ app.on("ready", () => {
             slashes: true
         })
     );
+
+    registerShortcuts(mainWindow, app);
 
     if (env.name === "development") {
         mainWindow.openDevTools();

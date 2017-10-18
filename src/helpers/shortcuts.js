@@ -1,8 +1,7 @@
-import { globalShortcut } from 'electron'
+import localShortcuts from 'electron-localshortcut'
 
-
-export default (app) => {
-    globalShortcut.register('Command+Q', () => {
+export default (window, app) => {
+    localShortcuts.register(window, 'Command+Q', () => {
         app.quit();
-    })
+    });
 }
