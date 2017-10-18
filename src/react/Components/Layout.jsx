@@ -27,13 +27,19 @@ const ThemeList = {
 // redux actions
 import { userLogin } from "../Actions/user.js";
 import { usersClear, usersUpdate } from "../Actions/users";
-import { registrationSetApiKey } from "../Actions/registration";
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
 import { accountsClear } from "../Actions/accounts";
 import { paymentInfoClear } from "../Actions/payment_info";
 import { userClear } from "../Actions/user";
 import { openDrawer } from "../Actions/options_drawer";
+import {
+    registrationSetApiKey,
+    registrationLoading,
+    registrationNotLoading,
+    registrationSetStatus,
+    registrationClearApiKey
+} from "../Actions/registration";
 
 const styles = {
     settingsIcon: {
@@ -85,6 +91,9 @@ class Layout extends React.Component {
             this.props.clearUsers();
             this.props.clearUser();
 
+            // registration is loading now
+            this.props.registrationLoading();
+
             // api key was modified
             this.setupBunqClient(
                 nextProps.apiKey,
@@ -93,68 +102,65 @@ class Layout extends React.Component {
             )
                 .then(() => {
                     Logger.debug("Setup client for new api key");
+                    this.props.registrationNotLoading();
                 })
                 .catch(setupError => {
                     Logger.error(setupError);
+
+                    // installation failed so we reset the api key
+                    this.props.registrationClearApiKey();
+                    this.props.registrationNotLoading();
                 });
         }
     }
 
     setupBunqClient = async (apiKey, deviceName, environment) => {
+        this.props.registrationSetStatus("Preparing our application...");
         try {
             await this.props.BunqJSClient.run(apiKey, [], environment);
         } catch (exception) {
-            Logger.error(exception);
             this.props.openModal(
                 "We failed to setup BunqDesktop properly",
                 "Something went wrong"
             );
-            return false;
+            throw exception;
         }
 
+        this.props.registrationSetStatus("Registering our encryption keys...");
         try {
             await this.props.BunqJSClient.install();
         } catch (exception) {
-            Logger.error(exception);
             this.props.openModal(
                 "We failed to install a new application",
                 "Something went wrong"
             );
-            // installation failed so we reset the api key
-            this.setApiKey(false);
-
-            return false;
+            throw exception;
         }
 
+        this.props.registrationSetStatus("Installing this device...");
         try {
             await this.props.BunqJSClient.registerDevice(deviceName);
         } catch (exception) {
-            Logger.error(exception);
             this.props.openModal(
                 `We failed to register this device on the Bunq servers. Are you sure you entered a valid API key? And are you sure that this key is meant for the ${environment} Bunq environment?`,
                 "Something went wrong"
             );
-            // installation failed so we reset the api key
-            this.setApiKey(false);
-
-            return false;
+            throw exception;
         }
 
+        this.props.registrationSetStatus("Creating a new session...");
         try {
             await this.props.BunqJSClient.registerSession();
         } catch (exception) {
-            Logger.error(exception);
             this.props.openModal(
                 "We failed to create a new session",
                 "Something went wrong"
             );
-            // installation failed so we reset the api key
-            this.setApiKey(false);
-
-            return false;
+            throw exception;
         }
 
         // setup finished with no errors
+        this.props.registrationSetStatus("");
         this.props.usersUpdate();
     };
 
@@ -241,8 +247,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         loginUser: type => dispatch(userLogin(BunqJSClient, type)),
 
         // set the api key for this app
-        setApiKey: apiKey =>
-            dispatch(registrationSetApiKey(BunqJSClient, apiKey)),
+        setApiKey: apiKey => dispatch(registrationSetApiKey(apiKey)),
+        registrationLoading: () => dispatch(registrationLoading()),
+        registrationNotLoading: () => dispatch(registrationNotLoading()),
+        registrationSetStatus: status_message =>
+            dispatch(registrationSetStatus(status_message)),
+        registrationClearApiKey: () =>
+            dispatch(registrationClearApiKey(BunqJSClient)),
 
         // get latest user list from BunqJSClient
         usersUpdate: (updated = false) =>

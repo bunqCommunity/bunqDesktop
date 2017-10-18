@@ -9,12 +9,14 @@ const device_nameDefault =
 const environmentDefault =
     store.get("environment") !== undefined
         ? store.get("environment")
-        : "SANDBOX";
+        : "PRODUCTION";
 
 export const defaultState = {
     api_key: api_keyDefault,
     device_name: device_nameDefault,
-    environment: environmentDefault
+    environment: environmentDefault,
+    loading: false,
+    status_message: ""
 };
 
 export default (state = defaultState, action) => {
@@ -37,12 +39,28 @@ export default (state = defaultState, action) => {
                 ...state,
                 environment: action.payload.environment
             };
+        case "REGISTRATION_SET_STATUS_MESSAGE":
+            return {
+                ...state,
+                status_message: action.payload.status_message
+            };
 
         case "REGISTRATION_CLEAR_API_KEY":
             store.remove("api_key");
             return {
                 ...state,
                 api_key: false
+            };
+
+        case "REGISTRATION_LOADING":
+            return {
+                ...state,
+                loading: true
+            };
+        case "REGISTRATION_NOT_LOADING":
+            return {
+                ...state,
+                loading: false
             };
     }
     return state;

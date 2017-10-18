@@ -1,0 +1,95 @@
+import React from "react";
+import { connect } from "react-redux";
+import Grid from "material-ui/Grid";
+import Button from "material-ui/Button";
+import Avatar from "material-ui/Avatar";
+import Card, { CardHeader, CardContent } from "material-ui/Card";
+import AttachmentImage from "../../Components/AttachmentImage";
+import { userLogin } from "../../Actions/user";
+
+const styles = {
+    loginButton: {
+        width: "100%",
+        marginTop: 20
+    },
+    clearButton: {
+        width: "100%",
+        marginTop: 20
+    },
+    apiInput: {
+        width: "100%",
+        marginTop: 20
+    },
+    environmentToggle: {
+        marginTop: 10
+    },
+    smallAvatar: {
+        width: 50,
+        height: 50
+    }
+};
+
+class UserItem extends React.Component {
+    constructor(props, context) {
+        super(props, context);
+        this.state = {
+        };
+    }
+
+    selectAccount = type => {
+        return () => {
+            this.props.loginUser(type, true);
+        };
+    };
+
+    render() {
+        const {user, userKey} = this.props;
+        const imageUUID = user.avatar.image[0].attachment_public_uuid;
+
+        return (
+            <Grid item xs={12} sm={6} md={4}>
+                <Card>
+                    <CardHeader
+                        avatar={
+                            <Avatar>
+                                <AttachmentImage
+                                    style={styles.smallAvatar}
+                                    BunqJSClient={this.props.BunqJSClient}
+                                    imageUUID={imageUUID}
+                                />
+                            </Avatar>
+                        }
+                        title={user.display_name}
+                    />
+                    <CardContent>
+                        <Button
+                            disabled={this.props.userLoading}
+                            onClick={this.selectAccount(userKey)}
+                            raised
+                            color={"primary"}
+                            style={styles.loginButton}
+                        >
+                            Login
+                        </Button>
+                    </CardContent>
+                </Card>
+            </Grid>
+        );
+    }
+}
+
+const mapStateToProps = state => {
+    return {
+        userLoading: state.user.loading
+    };
+};
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    const { BunqJSClient } = ownProps;
+    return {
+        loginUser: (type, updated = false) =>
+            dispatch(userLogin(BunqJSClient, type, updated))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserItem);

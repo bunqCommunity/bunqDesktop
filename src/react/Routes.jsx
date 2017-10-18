@@ -5,7 +5,7 @@ import PrivateRoute from "./Components/Routing/PrivateRoute";
 import PublicRoute from "./Components/Routing/PublicRoute";
 
 import Dashboard from "./Pages/Dashboard/Dashboard";
-import Login from "./Pages/Login";
+import Login from "./Pages/Login/Login.jsx";
 import Pay from "./Pages/Pay";
 import PaymentInfo from "./Pages/PaymentInfo";
 import NotFound from "./Pages/NotFound";
