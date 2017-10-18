@@ -13,6 +13,7 @@ import VersionChecker from "../Helpers/VersionChecker";
 import MainDialog from "./MainDialog";
 import MainSnackbar from "./MainSnackbar";
 import OptionsDrawer from "./OptionsDrawer";
+import Header from "./Header";
 
 // themes
 import DefaultThemeConfig from "../Themes/DefaultTheme";
@@ -175,39 +176,42 @@ class Layout extends React.Component {
         const RouteComponent = this.props.routesComponent;
         return (
             <MuiThemeProvider theme={ThemeList[this.props.theme]}>
-                <Grid
-                    container
-                    spacing={16}
-                    justify={"center"}
-                    style={{
-                        backgroundColor:
-                            ThemeList[this.props.theme].palette.background
-                                .default,
-                        padding: 16,
-                        margin: 0
-                    }}
-                >
-                    <MainDialog />
-                    <MainSnackbar />
-                    <OptionsDrawer themeList={ThemeList} />
-
-                    <Button
-                        fab
-                        color="primary"
-                        aria-label="view options"
-                        onClick={this.props.openDrawer}
-                        style={styles.settingsIcon}
+                <Header />
+                <main>
+                    <Grid
+                        container
+                        spacing={16}
+                        justify={"center"}
+                        style={{
+                            backgroundColor:
+                                ThemeList[this.props.theme].palette.background
+                                    .default,
+                            padding: 16,
+                            margin: 0
+                        }}
                     >
-                        <SettingsIcon />
-                    </Button>
+                        <MainDialog />
+                        <MainSnackbar />
+                        <OptionsDrawer themeList={ThemeList} />
 
-                    <Grid item xs={12} md={10} lg={8}>
-                        <RouteComponent
-                            user={this.props.user}
-                            childProps={childProps}
-                        />
+                        {/*<Button*/}
+                            {/*fab*/}
+                            {/*color="primary"*/}
+                            {/*aria-label="view options"*/}
+                            {/*onClick={this.props.openDrawer}*/}
+                            {/*style={styles.settingsIcon}*/}
+                        {/*>*/}
+                            {/*<SettingsIcon />*/}
+                        {/*</Button>*/}
+
+                        <Grid item xs={12} md={10} lg={8}>
+                            <RouteComponent
+                                user={this.props.user}
+                                childProps={childProps}
+                            />
+                        </Grid>
                     </Grid>
-                </Grid>
+                </main>
             </MuiThemeProvider>
         );
     }

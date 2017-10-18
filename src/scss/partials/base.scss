@@ -6,30 +6,30 @@ html {
     height: 100vh;
 }
 
-header {
-    padding-top: 50px;
-    -webkit-user-select: none;
-    -webkit-app-region: drag;
+body {
+    height: 100%;
+    width: 100%;
+    display: flex;
 }
 
-body {
-    background: url(https://static.useresponse.com/public/bunq/my-interface/bunq-colours-bar-2.png) repeat;
-    height: calc(100vh - 50px);
-    background-size: 100%;
+#app {
     width: 100%;
+    display: flex;
+    flex-flow: column;
+}
+
+header {
+    background: url(https://static.useresponse.com/public/bunq/my-interface/bunq-colours-bar-2.png);
+    background-size: cover; /* <------ */
+    background-repeat: no-repeat;
+    background-position: center center;
+
+    -webkit-user-select: none;
+    -webkit-app-region: drag;
+    height: 50px;
 }
 
 main {
     display: flex;
-    width: 100%;
-    height: 100%;
-}
-
-#app {
-    display: flex;
-    flex: 1;
-}
-#app > div{
-    padding: 20px;
-    flex: 1;
+    flex: 2;
 }
