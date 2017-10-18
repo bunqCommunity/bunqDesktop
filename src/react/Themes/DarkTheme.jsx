@@ -1,8 +1,8 @@
 export default {
     palette: {
         common: {
-            receivedPayment: "#008000",
-            sentPayment: "#ff0000",
+            receivedPayment: "#8DC55F",
+            sentPayment: "#FF3333",
         },
         type: "dark"
     }

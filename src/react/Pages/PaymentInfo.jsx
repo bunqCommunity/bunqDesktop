@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { withTheme } from "material-ui/styles";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
 import Grid from "material-ui/Grid";
@@ -76,7 +77,7 @@ class PaymentInfo extends React.Component {
     }
 
     render() {
-        const { accountsSelectedAccount, payment, paymentLoading } = this.props;
+        const { accountsSelectedAccount, payment, paymentLoading, theme } = this.props;
 
         // we require a selected account before we can display payment information
         if (accountsSelectedAccount === false) {
@@ -100,7 +101,10 @@ class PaymentInfo extends React.Component {
             const paymentDescription = payment.description;
             const paymentDate = new Date(payment.created).toLocaleString();
             const paymentAmount = payment.amount.value;
-            const paymentColor = paymentAmount < 0 ? "orange" : "green";
+            const paymentColor =
+                paymentAmount < 0
+                    ? theme.palette.common.sentPayment
+                    : theme.palette.common.receivedPayment;
 
             const personalInfo = this.getBasicInfo(payment.alias);
             const counterPartyInfo = this.getBasicInfo(
@@ -239,4 +243,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PaymentInfo);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    withTheme(PaymentInfo)
+);

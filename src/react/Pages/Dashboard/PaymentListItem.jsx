@@ -27,8 +27,6 @@ class PaymentListItem extends React.Component {
     render() {
         const { payment, theme } = this.props;
 
-        let icon_uri =
-            "https://static.useresponse.com/public/bunq/avatars/default-avatar.svg";
         let imageUUID = false;
         if (payment.counterparty_alias.avatar) {
             imageUUID =
