@@ -38,7 +38,7 @@
         "mousetrap": "^1.6.1"
     },
     "devDependencies": {
-        "@bunq-community/bunq-js-client": "^0.1.1",
+        "@bunq-community/bunq-js-client": "^0.2.0",
         "@types/axios": "^0.14.0",
         "awaiting": "^2.0.1",
         "axios": "^0.16.2",

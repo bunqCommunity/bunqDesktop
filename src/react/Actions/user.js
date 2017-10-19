@@ -1,5 +1,8 @@
 const Logger = require("../Helpers/Logger");
 import { openModal } from "./modal";
+import { accountsClear } from "./accounts";
+import { paymentInfoClear } from "./payment_info";
+import { paymentsClear } from "./payments";
 
 export function userSetInfo(user) {
     return {
@@ -40,6 +43,11 @@ export function userLogout() {
         dispatch({
             type: "USER_LOGOUT"
         });
+
+        // user was deselected so we clear the info for this user
+        dispatch(accountsClear());
+        dispatch(paymentInfoClear());
+        dispatch(paymentsClear());
     };
 }
 
