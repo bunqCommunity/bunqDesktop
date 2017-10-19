@@ -12,7 +12,11 @@ import { paymentsUpdate } from "../../Actions/payments";
 class AccountList extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+        this.state = {
+            // keeps track if we already automatically did a request
+            fetchedPayments: false,
+            fetchedAccounts: false
+        };
     }
 
     componentDidMount() {
@@ -38,9 +42,11 @@ class AccountList extends React.Component {
             if (
                 accountsAccountId !== false &&
                 accountsAccountId !== paymentsAccountId &&
-                paymentsLoading === false
+                paymentsLoading === false &&
+                this.state.fetchedPayments === false
             ) {
                 this.props.paymentsUpdate(user.id, accountsAccountId);
+                this.setState({ fetchedPayments: true });
             }
 
             // check if both account and payment have nothing selected
@@ -57,13 +63,15 @@ class AccountList extends React.Component {
                     this.props.selectAccount(accountId);
                     // fetch payments for the account
                     this.props.paymentsUpdate(user.id, accountId);
+                    this.setState({ fetchedPayments: true });
                 }
             }
         }
 
         // no accounts loaded
-        if (accounts.length === 0) {
-            props.accountsUpdate(user.id);
+        if (accounts.length === 0 && this.state.fetchedAccounts === false) {
+            this.props.accountsUpdate(user.id);
+            this.setState({ fetchedAccounts: true });
         }
     };
 
