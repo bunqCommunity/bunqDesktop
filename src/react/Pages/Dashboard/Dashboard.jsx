@@ -9,7 +9,6 @@ import PaymentList from "./PaymentList";
 import AccountList from "./AccountList";
 
 import { userLogout } from "../../Actions/user";
-import { accountsUpdate } from "../../Actions/accounts";
 
 const styles = {
     btn: {
@@ -21,18 +20,6 @@ class Dashboard extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {};
-    }
-
-    componentDidMount(){
-        if(this.props.initialBunqConnect){
-            this.props.updateAccounts(this.props.user.id);
-        }
-    }
-
-    componentWillUpdate(){
-        if(this.props.initialBunqConnect){
-            this.props.updateAccounts(this.props.user.id);
-        }
     }
 
     render() {
@@ -56,13 +43,19 @@ class Dashboard extends React.Component {
 
                 <Grid item xs={12} md={4}>
                     <Paper>
-                        <AccountList BunqJSClient={this.props.BunqJSClient} />
+                        <AccountList
+                            BunqJSClient={this.props.BunqJSClient}
+                            initialBunqConnect={this.props.initialBunqConnect}
+                        />
                     </Paper>
                 </Grid>
 
                 <Grid item xs={12} md={8}>
                     <Paper>
-                        <PaymentList BunqJSClient={this.props.BunqJSClient} />
+                        <PaymentList
+                            BunqJSClient={this.props.BunqJSClient}
+                            initialBunqConnect={this.props.initialBunqConnect}
+                        />
                     </Paper>
                 </Grid>
             </Grid>
@@ -79,8 +72,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        logoutUser: () => dispatch(userLogout()),
-        updateAccounts: userId => dispatch(accountsUpdate(BunqJSClient, userId))
+        logoutUser: () => dispatch(userLogout())
     };
 };
 
