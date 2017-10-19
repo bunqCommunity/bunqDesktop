@@ -1,0 +1,30 @@
+// these are added to package.json when we want to release for the microsoft store
+// add this to the build key in package.json to release for more platforms
+{
+    "win": {
+        "target": [
+            {
+                "target": "nsis",
+                "arch": [
+                    "x64",
+                    "ia32"
+                ]
+            },
+            {
+                "target": "appx",
+                "arch": [
+                    "x64",
+                    "ia32"
+                ]
+            }
+        ]
+    },
+    "appx": {
+        "applicationId": "com.bunq.desktop",
+        "displayName": "BunqDesktop",
+        "identityName": "BunqDesktop",
+        "publisherDisplayName": "BunqCommunity",
+        "backgroundColor": "#fafafa",
+        "languages": ["en-US"]
+    }
+}
