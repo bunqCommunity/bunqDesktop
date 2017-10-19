@@ -15,19 +15,20 @@ class AttachmentImage extends React.PureComponent {
 
     componentDidMount() {
         this._isMounted = true;
-        if (!this.props.imageUUID) {
+        this.checkImage();
+    }
+
+    componentDidUpdate() {
+        this.checkImage();
+    }
+
+    checkImage() {
+
+        if (this.props.imageUUID === false) {
             this.setState({ imageUrl: defaultImageUrl });
             return;
         }
 
-        this.checkImage();
-    }
-
-    componentDidUpdate(nextProps, nextState) {
-        this.checkImage();
-    }
-
-    checkImage = () => {
         // configure the localforage instance
         localforage.config({
             driver: localforage.INDEXEDDB, // Force WebSQL; same as using setDriver()
