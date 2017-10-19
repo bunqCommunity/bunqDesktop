@@ -22,7 +22,8 @@ const styles = {
     list: {
         width: 250,
         display: "flex",
-        flexDirection: "column"
+        flexDirection: "column",
+        WebkitAppRegion: "no-drag"
     },
     listItem: {
         paddingTop: 0,
@@ -81,15 +82,14 @@ class OptionsDrawer extends React.Component {
                     href="https://github.com/BunqCommunity/BunqDesktop"
                     target="_blank"
                 >
-                    <ListItem button onClick={this.openGithub}>
-                        <Avatar style={styles.avatar} onClick={this.openGithub}>
-                            <img
-                                src="./images/512x512.png"
+                    <ListItem button>
+                        <ListItemIcon>
+                            <Avatar
                                 style={styles.avatar}
+                                src="./images/512x512.png"
                             />
-                        </Avatar>
+                        </ListItemIcon>
                         <ListItemText
-                            onClick={this.openGithub}
                             primary="BunqDesktop"
                             secondary={`Version ${CURRENT_VERSION}`}
                         />
@@ -129,7 +129,7 @@ class OptionsDrawer extends React.Component {
 
         return [
             <Drawer
-                open={true}
+                open={open}
                 onRequestClose={this.props.closeDrawer}
                 anchor="left"
             >
