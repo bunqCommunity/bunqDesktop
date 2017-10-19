@@ -18,12 +18,13 @@ class AttachmentImage extends React.PureComponent {
         this.checkImage();
     }
 
-    componentDidUpdate() {
-        this.checkImage();
+    componentWillUpdate(nextProps) {
+        if (this.props.imageUUID !== nextProps.imageUUID) {
+            this.checkImage();
+        }
     }
 
     checkImage() {
-
         if (this.props.imageUUID === false) {
             this.setState({ imageUrl: defaultImageUrl });
             return;
@@ -52,7 +53,7 @@ class AttachmentImage extends React.PureComponent {
             // remove the fallback timeout
             clearTimeout(this.timeout);
         });
-    };
+    }
 
     componentWillUnmount() {
         // reset timeout before unmount
