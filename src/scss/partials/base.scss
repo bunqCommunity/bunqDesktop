@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     margin: 0;
 }
 
@@ -32,4 +33,8 @@ header {
 main {
     display: flex;
     flex: 2;
+}
+
+.options-drawer > div:first-child {
+    top: 50px;
 }

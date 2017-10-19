@@ -132,6 +132,10 @@ class OptionsDrawer extends React.Component {
                 open={open}
                 onRequestClose={this.props.closeDrawer}
                 anchor="left"
+                className="options-drawer"
+                SlideProps={{
+                    style: { top: 50, height: "calc(100vh - 50px)" }
+                }}
             >
                 {drawerList}
             </Drawer>
