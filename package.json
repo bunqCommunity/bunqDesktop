@@ -7,15 +7,12 @@
     "license": "MIT",
     "main": "app/background.js",
     "build": {
-        "appId": "com.example.bunq-desktop",
+        "appId": "com.bunq.desktop",
         "files": [
             "app/**/*",
             "node_modules/**/*",
             "package.json"
         ],
-        "linux": {
-            "category": "Office"
-        },
         "publish": null
     },
     "scripts": {
