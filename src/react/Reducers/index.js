@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
 
+import application from "./application";
 import accounts from "./accounts";
 import modal from "./modal";
 import user from "./user";
@@ -13,6 +14,7 @@ import payment_info from "./payment_info";
 import payment_filter from "./payment_filter";
 
 export default combineReducers({
+    application,
     accounts,
     modal,
     user,

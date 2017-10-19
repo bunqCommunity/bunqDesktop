@@ -26,6 +26,7 @@ const ThemeList = {
 };
 
 // redux actions
+import { applicationSetStatus } from "../Actions/application.js";
 import { userLogin } from "../Actions/user.js";
 import { usersClear, usersUpdate } from "../Actions/users";
 import { openModal } from "../Actions/modal";
@@ -38,7 +39,6 @@ import {
     registrationSetApiKey,
     registrationLoading,
     registrationNotLoading,
-    registrationSetStatus,
     registrationClearApiKey
 } from "../Actions/registration";
 
@@ -119,7 +119,7 @@ class Layout extends React.Component {
     }
 
     setupBunqClient = async (apiKey, deviceName, environment) => {
-        this.props.registrationSetStatus("Preparing our application...");
+        this.props.applicationSetStatus("Preparing our application...");
         try {
             await this.props.BunqJSClient.run(apiKey, [], environment);
         } catch (exception) {
@@ -130,7 +130,7 @@ class Layout extends React.Component {
             throw exception;
         }
 
-        this.props.registrationSetStatus("Registering our encryption keys...");
+        this.props.applicationSetStatus("Registering our encryption keys...");
         try {
             await this.props.BunqJSClient.install();
         } catch (exception) {
@@ -141,7 +141,7 @@ class Layout extends React.Component {
             throw exception;
         }
 
-        this.props.registrationSetStatus("Installing this device...");
+        this.props.applicationSetStatus("Installing this device...");
         try {
             await this.props.BunqJSClient.registerDevice(deviceName);
         } catch (exception) {
@@ -152,7 +152,7 @@ class Layout extends React.Component {
             throw exception;
         }
 
-        this.props.registrationSetStatus("Creating a new session...");
+        this.props.applicationSetStatus("Creating a new session...");
         try {
             await this.props.BunqJSClient.registerSession();
         } catch (exception) {
@@ -164,7 +164,7 @@ class Layout extends React.Component {
         }
 
         // setup finished with no errors
-        this.props.registrationSetStatus("");
+        this.props.applicationSetStatus("");
         this.props.usersUpdate();
     };
 
@@ -257,12 +257,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         updateAccounts: userId =>
             dispatch(accountsUpdate(BunqJSClient, userId)),
 
+        // set the current application status
+        applicationSetStatus: status_message =>
+            dispatch(applicationSetStatus(status_message)),
+
         // set the api key for this app
         setApiKey: apiKey => dispatch(registrationSetApiKey(apiKey)),
         registrationLoading: () => dispatch(registrationLoading()),
         registrationNotLoading: () => dispatch(registrationNotLoading()),
-        registrationSetStatus: status_message =>
-            dispatch(registrationSetStatus(status_message)),
         registrationClearApiKey: () =>
             dispatch(registrationClearApiKey(BunqJSClient)),
 

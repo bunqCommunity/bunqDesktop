@@ -27,15 +27,6 @@ export function registrationSetEnvironment(environment) {
     };
 }
 
-export function registrationSetStatus(status_message) {
-    return {
-        type: "REGISTRATION_SET_STATUS_MESSAGE",
-        payload: {
-            status_message: status_message
-        }
-    };
-}
-
 export function registrationClearApiKey(BunqJSClient) {
     return dispatch => {
         BunqJSClient.destroySession().then(_ => {
