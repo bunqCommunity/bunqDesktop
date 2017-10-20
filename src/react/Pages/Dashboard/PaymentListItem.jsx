@@ -8,6 +8,7 @@ import {
 import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
 
+import {humanReadableDate} from "../../Helpers/Utils";
 import NavLink from "../../Components/Routing/NavLink";
 import AttachmentImage from "../../Components/AttachmentImage";
 
@@ -50,7 +51,7 @@ class PaymentListItem extends React.Component {
                         imageUUID={imageUUID}
                     />
                 </Avatar>
-                <ListItemText primary={displayName} secondary={paymentDate} />
+                <ListItemText primary={displayName} secondary={humanReadableDate(paymentDate)} />
                 <ListItemSecondaryAction>
                     <p
                         style={{
