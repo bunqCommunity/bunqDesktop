@@ -15,6 +15,8 @@ import ArrowDownIcon from "material-ui-icons/ArrowDownward";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
+import Logger from "../Helpers/Logger";
+import {humanReadableDate} from "../Helpers/Utils";
 import NavLink from "../Components/Routing/NavLink";
 import AttachmentImage from "../Components/AttachmentImage";
 
@@ -110,6 +112,8 @@ class PaymentInfo extends React.Component {
             const counterPartyInfo = this.getBasicInfo(
                 payment.counterparty_alias
             );
+
+            Logger.debug(humanReadableDate(paymentDate));
 
             content = (
                 <Grid

@@ -44,11 +44,11 @@ export const humanReadableDate = (date, localization = "en-us") => {
     const month = date.toLocaleString(localization, { month: "long" });
 
     // default format
-    let result = `${date.getDay()} ${month}  ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    let result = `${date.getDay()} ${month} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 
     // different year, add it to the label
     if (currentDate.getFullYear() !== date.getFullYear()) {
-        result = `${date.getDay()} ${month}, ${date.getFullYear()}  ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+        result = `${date.getDay()} ${month}, ${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
     }
 
     return result;

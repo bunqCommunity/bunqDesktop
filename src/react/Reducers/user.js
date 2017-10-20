@@ -1,8 +1,9 @@
 const store = require("store");
 
-const userDefault = store.get("user") !== undefined ? store.get("user") : false;
+const userDefault = store.get("user_type") !== undefined ? store.get("user_type") : false;
 export const defaultState = {
-    user: userDefault,
+    user: false,
+    user_type: userDefault,
     loading: false,
     initialCheck: false
 };
@@ -10,18 +11,20 @@ export const defaultState = {
 export default (state = defaultState, action) => {
     switch (action.type) {
         case "USER_SET_INFO":
-            store.set("user", action.payload.user);
+            store.set("user_type", action.payload.user_type);
             return {
                 ...state,
                 user: action.payload.user,
+                user_type: action.payload.user_type,
                 initialCheck: true
             };
 
         case "USER_LOGOUT":
-            store.remove("user");
+            store.remove("user_type");
             return {
                 ...state,
-                user: false
+                user: false,
+                user_type: false,
             };
 
         case "USER_IS_LOADING":
@@ -44,9 +47,10 @@ export default (state = defaultState, action) => {
 
         case "USER_CLEAR":
         case "REGISTRATION_CLEAR_API_KEY":
-            store.remove("user");
+            store.remove("user_type");
             return {
                 user: false,
+                user_type: false,
                 loading: false,
                 initialCheck: false
             };

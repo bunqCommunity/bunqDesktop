@@ -29,6 +29,7 @@ export default class Routes extends React.Component {
                             exact
                             path="/"
                             user={this.props.user}
+                            userType={this.props.user_type}
                             render={props => (
                                 <Dashboard
                                     {...props}
@@ -40,6 +41,7 @@ export default class Routes extends React.Component {
                         <PrivateRoute
                             path="/pay"
                             user={this.props.user}
+                            userType={this.props.user_type}
                             render={props => (
                                 <Pay {...props} {...this.props.childProps} />
                             )}
@@ -48,6 +50,7 @@ export default class Routes extends React.Component {
                         <PrivateRoute
                             path="/payment/:paymentId"
                             user={this.props.user}
+                            userType={this.props.user_type}
                             render={props => (
                                 <PaymentInfo
                                     {...props}
@@ -59,6 +62,7 @@ export default class Routes extends React.Component {
                         <PublicRoute
                             path="/login"
                             user={this.props.user}
+                            userType={this.props.user_type}
                             render={props => (
                                 <Login {...props} {...this.props.childProps} />
                             )}

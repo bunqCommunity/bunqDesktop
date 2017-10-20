@@ -42,6 +42,7 @@ class AccountList extends React.Component {
         if (initialBunqConnect) {
             // check if the stored selected account isn't already loaded
             if (
+                user.id &&
                 accountsAccountId !== false &&
                 accountsAccountId !== paymentsAccountId &&
                 paymentsLoading === false &&
@@ -53,6 +54,7 @@ class AccountList extends React.Component {
 
             // check if both account and payment have nothing selected
             if (
+                user.id &&
                 accountsAccountId === false &&
                 paymentsAccountId === false &&
                 paymentsLoading === false
@@ -68,17 +70,19 @@ class AccountList extends React.Component {
                     this.setState({ fetchedPayments: true });
                 }
             }
-        }
 
-        // no accounts loaded
-        if (accounts.length === 0 && this.state.fetchedAccounts === false) {
-            this.updateAccounts();
-            this.setState({ fetchedAccounts: true });
+            // no accounts loaded
+            if (accounts.length === 0 && this.state.fetchedAccounts === false) {
+                this.updateAccounts();
+                this.setState({ fetchedAccounts: true });
+            }
         }
     };
 
     updateAccounts = () => {
-        this.props.accountsUpdate(this.props.user.id);
+        if(this.props.user.id){
+            this.props.accountsUpdate(this.props.user.id);
+        }
     };
 
     render() {

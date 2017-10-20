@@ -1,14 +1,12 @@
 const store = require("store");
 
-const accountsDefault =
-    store.get("accounts") !== undefined ? store.get("accounts") : [];
 const selectedAccountDefault =
     store.get("selected_account") !== undefined
         ? store.get("selected_account")
         : false;
 
 export const defaultState = {
-    accounts: accountsDefault,
+    accounts: [],
     selectedAccount: selectedAccountDefault,
     loading: false
 };
@@ -16,7 +14,6 @@ export const defaultState = {
 export default (state = defaultState, action) => {
     switch (action.type) {
         case "ACCOUNTS_SET_INFO":
-            store.set("accounts", action.payload.accounts);
             return {
                 ...state,
                 accounts: action.payload.accounts
@@ -43,7 +40,6 @@ export default (state = defaultState, action) => {
 
         case "ACCOUNTS_CLEAR":
         case "REGISTRATION_CLEAR_API_KEY":
-            store.remove("accounts");
             store.remove("selected_account");
             return {
                 accounts: [],

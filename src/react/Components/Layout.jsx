@@ -42,14 +42,6 @@ import {
     registrationClearApiKey
 } from "../Actions/registration";
 
-const styles = {
-    settingsIcon: {
-        position: "fixed",
-        bottom: 20,
-        right: 20
-    }
-};
-
 class Layout extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -59,19 +51,14 @@ class Layout extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.apiKey !== false) {
-            this.props.BunqJSClient
-                .run(this.props.apiKey, [], this.props.environment)
-                .then(() => {
-                    Logger.debug("Initial BunqJSClient setup finished");
-
-                    this.props.usersUpdate();
-                    if (this.props.user && this.props.user.id) {
-                        this.props.updateAccounts(this.props.user.id);
-                    }
-                    this.setState({ initialBunqConnect: true });
-                });
-        }
+        this.checkBunqSetup()
+            .then(_ => {
+                if (this.props.userType !== false) {
+                    // if a usertype is selected, we try to login the user
+                    this.props.userLogin(this.props.userType, false);
+                }
+            })
+            .catch(Logger.error);
 
         VersionChecker().then(versionInfo => {
             if (versionInfo.newerLink !== false) {
@@ -83,11 +70,10 @@ class Layout extends React.Component {
         });
     }
 
-    componentWillUpdate(nextProps, nextState) {
+    componentDidUpdate(nextProps, nextState) {
         if (
-            (this.props.apiKey !== nextProps.apiKey ||
-                this.props.environment !== nextProps.environment) &&
-            nextProps.apiKey !== false
+            this.props.apiKey !== nextProps.apiKey ||
+            this.props.environment !== nextProps.environment
         ) {
             // clear our old data associated with the previous session
             this.props.clearAccounts();
@@ -95,28 +81,45 @@ class Layout extends React.Component {
             this.props.clearUsers();
             this.props.clearUser();
 
+            this.checkBunqSetup(nextProps)
+                .then(_ => {})
+                .catch(Logger.error);
+        }
+    }
+
+    /**
+     * Checks if bunq setup should be started
+     */
+    checkBunqSetup = async (nextProps = this.props) => {
+        // run only if apikey is not false or first setup AND the registration isnt already loading
+        if (
+            (this.state.initialBunqConnect === false ||
+                nextProps.apiKey !== false) &&
+            this.props.registrationIsLoading === false
+        ) {
             // registration is loading now
             this.props.registrationLoading();
 
             // api key was modified
-            this.setupBunqClient(
+            return this.setupBunqClient(
                 nextProps.apiKey,
                 nextProps.deviceName,
                 nextProps.environment
             )
                 .then(() => {
-                    Logger.debug("Setup client for new api key");
                     this.props.registrationNotLoading();
+
+                    // initial bunq connect has been done
+                    this.setState({ initialBunqConnect: true });
                 })
                 .catch(setupError => {
                     Logger.error(setupError);
-
                     // installation failed so we reset the api key
                     this.props.registrationClearApiKey();
                     this.props.registrationNotLoading();
                 });
         }
-    }
+    };
 
     setupBunqClient = async (apiKey, deviceName, environment) => {
         this.props.applicationSetStatus("Preparing our application...");
@@ -128,6 +131,11 @@ class Layout extends React.Component {
                 "Something went wrong"
             );
             throw exception;
+        }
+
+        if (apiKey === false) {
+            // no api key yet so nothing else to do just yet
+            return;
         }
 
         this.props.applicationSetStatus("Registering our encryption keys...");
@@ -204,19 +212,10 @@ class Layout extends React.Component {
                         <MainSnackbar />
                         <OptionsDrawer themeList={ThemeList} />
 
-                        {/*<Button*/}
-                            {/*fab*/}
-                            {/*color="primary"*/}
-                            {/*aria-label="view options"*/}
-                            {/*onClick={this.props.openDrawer}*/}
-                            {/*style={styles.settingsIcon}*/}
-                        {/*>*/}
-                            {/*<SettingsIcon />*/}
-                        {/*</Button>*/}
-
                         <Grid item xs={12} md={10} lg={8}>
                             <RouteComponent
                                 user={this.props.user}
+                                userType={this.props.userType}
                                 childProps={childProps}
                             />
                         </Grid>
@@ -232,10 +231,12 @@ const mapStateToProps = store => {
         theme: store.theme.theme,
 
         apiKey: store.registration.api_key,
+        registrationIsLoading: store.registration.loading,
         environment: store.registration.environment,
         deviceName: store.registration.device_name,
 
         user: store.user.user,
+        userType: store.user.user_type,
         userInitialCheck: store.user.initialCheck,
         userLoading: store.user.loading
     };
@@ -244,8 +245,6 @@ const mapStateToProps = store => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        setTheme: theme => dispatch(setTheme(theme)),
-
         openSnackbar: (message, duration = 4000) =>
             dispatch(openSnackbar(message, duration)),
         openModal: (message, title) => dispatch(openModal(message, title)),
@@ -271,6 +270,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // get latest user list from BunqJSClient
         usersUpdate: (updated = false) =>
             dispatch(usersUpdate(BunqJSClient, updated)),
+        // login the user with a specific type from the list
+        userLogin: (userType, updated = false) =>
+            dispatch(userLogin(BunqJSClient, userType, updated)),
 
         // opens the options drawer on the left
         openDrawer: () => dispatch(openDrawer()),
