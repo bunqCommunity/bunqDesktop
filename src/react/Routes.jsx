@@ -6,6 +6,7 @@ import PublicRoute from "./Components/Routing/PublicRoute";
 
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import Login from "./Pages/Login/Login.jsx";
+import LoginPassword from "./Pages/LoginPassword";
 import Pay from "./Pages/Pay";
 import PaymentInfo from "./Pages/PaymentInfo";
 import NotFound from "./Pages/NotFound";
@@ -61,6 +62,14 @@ export default class Routes extends React.Component {
                             user={this.props.user}
                             render={props => (
                                 <Login {...props} {...this.props.childProps} />
+                            )}
+                        />
+
+                        <PublicRoute
+                            path="/password"
+                            user={this.props.user}
+                            render={props => (
+                                <LoginPassword {...props} {...this.props.childProps} />
                             )}
                         />
 

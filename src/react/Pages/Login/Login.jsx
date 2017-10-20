@@ -17,6 +17,7 @@ import {
     registrationSetEnvironment
 } from "../../Actions/registration";
 import UserItem from "./UserItem";
+import {Redirect} from "react-router-dom";
 
 const styles = {
     loginButton: {
@@ -133,6 +134,10 @@ class Login extends React.Component {
     };
 
     render() {
+        if(this.props.derivedPassword === false){
+            return <Redirect to="/password" />
+        }
+
         const { status_message, BunqJSClient, users } = this.props;
         const userItems = Object.keys(users).map(userKey => (
             <UserItem
@@ -270,6 +275,7 @@ class Login extends React.Component {
 const mapStateToProps = state => {
     return {
         status_message: state.application.status_message,
+        derivedPassword: state.application.derivedPassword,
 
         registrationLoading: state.registration.loading,
         environment: state.registration.environment,

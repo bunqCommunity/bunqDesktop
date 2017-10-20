@@ -1,9 +1,27 @@
+import { encryptString } from "../Helpers/Crypto";
+
 export function registrationSetApiKey(api_key) {
     return {
         type: "REGISTRATION_SET_API_KEY",
         payload: {
             api_key: api_key
         }
+    };
+}
+
+export function registrationLoadApiKey(api_key, encryptionKey) {
+    return dispatch => {
+
+        encryptString(api_key, encryptionKey)
+            .then(encrypedData => {
+                
+            })
+        dispatch({
+            type: "REGISTRATION_SET_API_KEY",
+            payload: {
+                api_key: api_key
+            }
+        });
     };
 }
 

@@ -1,5 +1,9 @@
+import store from "store";
 import { derivePasswordKey } from "../Helpers/Crypto";
 import Logger from "../Helpers/Logger";
+
+const saltStorageLocation = "application_salt";
+const apikeyStorageLocation = "application_apikey";
 
 export function applicationSetDerivedPassword(derivedPassword) {
     return {
@@ -22,6 +26,9 @@ export function applicationDerivePassword(password) {
         dispatch(
             applicationSetStatus("Creating a secure key from your password")
         );
+
+        if(store.get("application_salt"))
+
         derivePasswordKey(password, false, 15000)
             .then(derivedPassword => {
                 dispatch(applicationNotLoadingPassword());

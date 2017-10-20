@@ -1,5 +1,6 @@
 export const defaultState = {
     derivedPassword: false,
+    loading: false,
     status_message: ""
 };
 
