@@ -13,6 +13,9 @@
             "node_modules/**/*",
             "package.json"
         ],
+        "linux": {
+            "category": "Office"
+        },
         "publish": null
     },
     "scripts": {
