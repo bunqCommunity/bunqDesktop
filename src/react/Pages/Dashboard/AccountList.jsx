@@ -1,8 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
-import { LinearProgress } from "material-ui/Progress";
 import Divider from "material-ui/Divider";
-import List, { ListSubheader } from "material-ui/List";
+import IconButton from "material-ui/IconButton";
+import List, { ListSubheader, ListItemSecondaryAction } from "material-ui/List";
+import { CircularProgress, LinearProgress } from "material-ui/Progress";
+import RefreshIcon from "material-ui-icons/Refresh";
 
 import AccountListItem from "./AccountListItem";
 
@@ -70,19 +72,17 @@ class AccountList extends React.Component {
 
         // no accounts loaded
         if (accounts.length === 0 && this.state.fetchedAccounts === false) {
-            this.props.accountsUpdate(user.id);
+            this.updateAccounts();
             this.setState({ fetchedAccounts: true });
         }
     };
 
+    updateAccounts = () => {
+        this.props.accountsUpdate(this.props.user.id);
+    };
+
     render() {
         let accounts = [];
-        let loadingContent = this.props.accountsLoading ? (
-            <LinearProgress />
-        ) : (
-            <Divider />
-        );
-
         if (this.props.accounts !== false) {
             accounts = this.props.accounts.map(account => (
                 <AccountListItem
@@ -94,8 +94,24 @@ class AccountList extends React.Component {
 
         return (
             <List>
-                <ListSubheader>Accounts - {accounts.length}</ListSubheader>
-                {loadingContent}
+                <ListSubheader>
+                    Accounts - {accounts.length}
+                    <ListItemSecondaryAction>
+                        {this.props.accountsLoading ? (
+                            <CircularProgress />
+                        ) : (
+                            <IconButton onClick={this.updateAccounts}>
+                                <RefreshIcon />
+                            </IconButton>
+                        )}
+                    </ListItemSecondaryAction>
+                </ListSubheader>
+
+                {this.props.accountsLoading ? (
+                    <LinearProgress />
+                ) : (
+                    <Divider />
+                )}
                 <List>{accounts}</List>
             </List>
         );

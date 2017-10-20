@@ -1,7 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
-import { ListItem, ListItemText } from "material-ui/List";
+import {
+    ListItem,
+    ListItemText,
+    ListItemSecondaryAction
+} from "material-ui/List";
 import Avatar from "material-ui/Avatar";
+import IconButton from "material-ui/IconButton";
+import KeyboardArrowRightIcon from "material-ui-icons/KeyboardArrowRight";
 import AttachmentImage from "../../Components/AttachmentImage";
 
 import { paymentsUpdate } from "../../Actions/payments.js";
@@ -56,6 +62,15 @@ class AccountListItem extends React.Component {
                     primary={account.description}
                     secondary={`€ ${account.balance.value}`}
                 />
+                {this.props.accountsAccountId === account.id ? (
+                    <ListItemSecondaryAction>
+                        <IconButton
+                            onClick={this.fetchPaymentsHandler(account.id)}
+                        >
+                            <KeyboardArrowRightIcon />
+                        </IconButton>
+                    </ListItemSecondaryAction>
+                ) : null}
             </ListItem>
         );
     }
@@ -64,7 +79,8 @@ class AccountListItem extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-        paymentsLoading: state.payments.loading
+        paymentsLoading: state.payments.loading,
+        accountsAccountId: state.accounts.selectedAccount
     };
 };
 
