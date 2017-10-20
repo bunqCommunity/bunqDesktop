@@ -168,7 +168,7 @@ class Login extends React.Component {
                         hint="Your personal API key"
                         onChange={this.handleKeyChange}
                         value={this.state.apiKey}
-                        hidden={
+                        disabled={
                             // unchanged api key
                             this.state.apiKey === this.props.apiKey
                         }
