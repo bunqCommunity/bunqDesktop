@@ -9,6 +9,7 @@ import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
 
 import {humanReadableDate} from "../../Helpers/Utils";
+import Logger from "../../Helpers/Logger";
 import NavLink from "../../Components/Routing/NavLink";
 import AttachmentImage from "../../Components/AttachmentImage";
 
@@ -42,6 +43,8 @@ class PaymentListItem extends React.Component {
                 ? theme.palette.common.sentPayment
                 : theme.palette.common.receivedPayment;
 
+        Logger.debug(humanReadableDate(paymentDate));
+
         return [
             <ListItem button to={`/payment/${payment.id}`} component={NavLink}>
                 <Avatar style={styles.smallAvatar}>
@@ -51,7 +54,7 @@ class PaymentListItem extends React.Component {
                         imageUUID={imageUUID}
                     />
                 </Avatar>
-                <ListItemText primary={displayName} secondary={humanReadableDate(paymentDate)} />
+                <ListItemText primary={displayName} secondary={paymentDate} />
                 <ListItemSecondaryAction>
                     <p
                         style={{
