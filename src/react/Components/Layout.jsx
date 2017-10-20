@@ -70,10 +70,10 @@ class Layout extends React.Component {
         });
     }
 
-    componentDidUpdate(nextProps, nextState) {
+    componentWillUpdate(nextProps) {
         if (
-            this.props.apiKey !== nextProps.apiKey ||
-            this.props.environment !== nextProps.environment
+            nextProps.apiKey !== this.props.apiKey ||
+            nextProps.environment !== this.props.environment
         ) {
             // clear our old data associated with the previous session
             this.props.clearAccounts();
@@ -90,15 +90,18 @@ class Layout extends React.Component {
     /**
      * Checks if bunq setup should be started
      */
-    checkBunqSetup = async (nextProps = this.props) => {
+    checkBunqSetup = async (nextProps = false) => {
+        if (nextProps === false) {
+            nextProps = this.props;
+        }
         // run only if apikey is not false or first setup AND the registration isnt already loading
         if (
             (this.state.initialBunqConnect === false ||
                 nextProps.apiKey !== false) &&
-            this.props.registrationIsLoading === false
+            nextProps.registrationIsLoading === false
         ) {
             // registration is loading now
-            this.props.registrationLoading();
+            nextProps.registrationLoading();
 
             // api key was modified
             return this.setupBunqClient(
@@ -107,7 +110,7 @@ class Layout extends React.Component {
                 nextProps.environment
             )
                 .then(() => {
-                    this.props.registrationNotLoading();
+                    nextProps.registrationNotLoading();
 
                     // initial bunq connect has been done
                     this.setState({ initialBunqConnect: true });
@@ -115,8 +118,8 @@ class Layout extends React.Component {
                 .catch(setupError => {
                     Logger.error(setupError);
                     // installation failed so we reset the api key
-                    this.props.registrationClearApiKey();
-                    this.props.registrationNotLoading();
+                    nextProps.registrationClearApiKey();
+                    nextProps.registrationNotLoading();
                 });
         }
     };
