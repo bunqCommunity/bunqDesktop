@@ -46,6 +46,12 @@ export default (state = defaultState, action) => {
             };
 
         case "USER_CLEAR":
+            return {
+                user: false,
+                user_type: false,
+                loading: false,
+                initialCheck: false
+            };
         case "REGISTRATION_CLEAR_API_KEY":
             store.remove("user_type");
             return {

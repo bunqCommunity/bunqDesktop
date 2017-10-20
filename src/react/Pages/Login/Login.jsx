@@ -12,12 +12,13 @@ import { CircularProgress } from "material-ui/Progress";
 import { usersUpdate } from "../../Actions/users";
 import {
     registrationClearApiKey,
+    registrationLoadApiKey,
     registrationSetApiKey,
     registrationSetDeviceName,
     registrationSetEnvironment
 } from "../../Actions/registration";
 import UserItem from "./UserItem";
-import {Redirect} from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 const styles = {
     loginButton: {
@@ -53,6 +54,12 @@ class Login extends React.Component {
             deviceNameValid: true,
             attemptingLogin: false
         };
+    }
+
+    componentWillMount() {
+        if (this.props.derivedPassword !== false) {
+            this.props.loadApiKey(this.props.derivedPassword);
+        }
     }
 
     componentDidMount() {
@@ -94,7 +101,7 @@ class Login extends React.Component {
             this.props.setEnvironment(
                 this.state.sandboxMode ? "SANDBOX" : "PRODUCTION"
             );
-            this.props.setApiKey(this.state.apiKey);
+            this.props.setApiKey(this.state.apiKey, this.props.derivedPassword);
         }
     };
 
@@ -134,8 +141,19 @@ class Login extends React.Component {
     };
 
     render() {
-        if(this.props.derivedPassword === false){
-            return <Redirect to="/password" />
+        if (
+            this.props.derivedPassword === false &&
+            this.props.registrationLoading === false
+        ) {
+            return <Redirect to="/password" />;
+        } else if (
+            this.props.derivedPassword !== false &&
+            this.props.apiKey !== false &&
+            this.props.userType !== false &&
+            this.props.registrationLoading === false
+        ) {
+            // we have the required data and registration is no longer setting up
+            return <Redirect to="/" />;
         }
 
         const { status_message, BunqJSClient, users } = this.props;
@@ -275,8 +293,8 @@ class Login extends React.Component {
 const mapStateToProps = state => {
     return {
         status_message: state.application.status_message,
-        derivedPassword: state.application.derivedPassword,
 
+        derivedPassword: state.registration.derivedPassword,
         registrationLoading: state.registration.loading,
         environment: state.registration.environment,
         deviceName: state.registration.device_name,
@@ -284,6 +302,7 @@ const mapStateToProps = state => {
 
         users: state.users.users,
         user: state.user.user,
+        userType: state.user.user_type,
         userLoading: state.user.loading
     };
 };
@@ -291,8 +310,15 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
+        // clear api key from bunqjsclient and bunqdesktop
         clearApiKey: () => dispatch(registrationClearApiKey(BunqJSClient)),
-        setApiKey: api_key => dispatch(registrationSetApiKey(api_key)),
+        // set the api key and stores the encrypted version
+        setApiKey: (api_key, derivedPassword) =>
+            dispatch(registrationSetApiKey(api_key, derivedPassword)),
+        // attempt to load the api key with our password if one is stored
+        loadApiKey: derivedPassword =>
+            dispatch(registrationLoadApiKey(derivedPassword)),
+
         setEnvironment: environment =>
             dispatch(registrationSetEnvironment(environment)),
         setDeviceName: device_name =>

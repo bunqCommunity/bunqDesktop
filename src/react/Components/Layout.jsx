@@ -75,11 +75,13 @@ class Layout extends React.Component {
             nextProps.apiKey !== this.props.apiKey ||
             nextProps.environment !== this.props.environment
         ) {
-            // clear our old data associated with the previous session
-            this.props.clearAccounts();
-            this.props.clearPaymentInfo();
-            this.props.clearUsers();
-            this.props.clearUser();
+            if (this.props.apiKey !== false) {
+                // clear our old data associated with the previous session
+                this.props.clearAccounts();
+                this.props.clearPaymentInfo();
+                this.props.clearUsers();
+                this.props.clearUser();
+            }
 
             this.checkBunqSetup(nextProps)
                 .then(_ => {})
@@ -87,9 +89,6 @@ class Layout extends React.Component {
         }
     }
 
-    /**
-     * Checks if bunq setup should be started
-     */
     checkBunqSetup = async (nextProps = false) => {
         if (nextProps === false) {
             nextProps = this.props;
@@ -125,7 +124,6 @@ class Layout extends React.Component {
     };
 
     setupBunqClient = async (apiKey, deviceName, environment) => {
-        this.props.applicationSetStatus("Preparing our application...");
         try {
             await this.props.BunqJSClient.run(apiKey, [], environment);
         } catch (exception) {
@@ -217,8 +215,9 @@ class Layout extends React.Component {
 
                         <Grid item xs={12} md={10} lg={8}>
                             <RouteComponent
-                                user={this.props.user}
+                                apiKey={this.props.apiKey}
                                 userType={this.props.userType}
+                                derivedPassword={this.props.derivedPassword}
                                 childProps={childProps}
                             />
                         </Grid>
@@ -229,19 +228,20 @@ class Layout extends React.Component {
     }
 }
 
-const mapStateToProps = store => {
+const mapStateToProps = state => {
     return {
-        theme: store.theme.theme,
+        theme: state.theme.theme,
 
-        apiKey: store.registration.api_key,
-        registrationIsLoading: store.registration.loading,
-        environment: store.registration.environment,
-        deviceName: store.registration.device_name,
+        derivedPassword: state.registration.derivedPassword,
+        registrationIsLoading: state.registration.loading,
+        environment: state.registration.environment,
+        deviceName: state.registration.device_name,
+        apiKey: state.registration.api_key,
 
-        user: store.user.user,
-        userType: store.user.user_type,
-        userInitialCheck: store.user.initialCheck,
-        userLoading: store.user.loading
+        user: state.user.user,
+        userType: state.user.user_type,
+        userInitialCheck: state.user.initialCheck,
+        userLoading: state.user.loading
     };
 };
 

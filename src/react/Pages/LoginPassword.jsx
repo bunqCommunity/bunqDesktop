@@ -7,15 +7,14 @@ import Input from "material-ui/Input";
 import Button from "material-ui/Button";
 import Card, { CardContent } from "material-ui/Card";
 import { CircularProgress } from "material-ui/Progress";
-import { usersUpdate } from "../Actions/users";
 import {
     registrationClearApiKey,
+    registrationDerivePassword,
     registrationSetApiKey,
     registrationSetDeviceName,
     registrationSetEnvironment
 } from "../Actions/registration";
 import { Redirect } from "react-router-dom";
-import {applicationDerivePassword} from "../Actions/application";
 
 const styles = {
     loginButton: {
@@ -77,10 +76,15 @@ class LoginPassword extends React.Component {
         });
     };
 
+    clearApiKey = () => {
+        this.props.clearApiKey();
+    };
+
     render() {
         const {
             status_message,
-            applicationLoading,
+            registrationLoading,
+            hasStoredApiKey,
             derivedPassword
         } = this.props;
 
@@ -88,7 +92,7 @@ class LoginPassword extends React.Component {
             return <Redirect to="/login" />;
         }
 
-        const cardContent = applicationLoading ? (
+        const cardContent = registrationLoading ? (
             <CardContent style={{ textAlign: "center" }}>
                 <Typography type="headline" component="h2">
                     Loading
@@ -99,14 +103,27 @@ class LoginPassword extends React.Component {
         ) : (
             <CardContent>
                 <Typography type="headline" component="h2">
-                    Enter a password
+                    {hasStoredApiKey ? (
+                        "Enter your password"
+                    ) : (
+                        "Enter a password"
+                    )}
                 </Typography>
-                <Typography type="caption">
-                    We use this password to securely store your data. We'll only
-                    ask for it once when you start BunqDesktop. Losing it just
-                    means you'll have to enter a password and your API key again
-                    so we can log you back in.
-                </Typography>
+
+                {hasStoredApiKey ? (
+                    <Typography type="body2">
+                        Enter your password to load your stored API key and
+                        session. Click the reset button to enter a new API key.
+                    </Typography>
+                ) : (
+                    <Typography type="body2">
+                        We use this password to securely store your data. We'll
+                        only ask for it once when you start BunqDesktop. Losing
+                        it just means you'll have to enter a new password and
+                        enter your API key so we can log you back in.
+                    </Typography>
+                )}
+
                 <Input
                     style={styles.passwordInput}
                     error={!this.state.passwordValid}
@@ -121,14 +138,29 @@ class LoginPassword extends React.Component {
                     raised
                     disabled={
                         this.state.passwordValid === false ||
-                        this.props.applicationLoading === true
+                        registrationLoading === true
                     }
                     color={"primary"}
                     style={styles.loginButton}
                     onClick={this.setRegistration}
                 >
-                    Set password
+                    {hasStoredApiKey ? (
+                        "Load your API key"
+                    ) : (
+                        "Setup your new password"
+                    )}
                 </Button>
+
+                {hasStoredApiKey ? (
+                    <Button
+                        raised
+                        color={"accent"}
+                        style={styles.loginButton}
+                        onClick={this.clearApiKey}
+                    >
+                        Remove your stored API key
+                    </Button>
+                ) : null}
             </CardContent>
         );
 
@@ -149,8 +181,10 @@ class LoginPassword extends React.Component {
 const mapStateToProps = state => {
     return {
         status_message: state.application.status_message,
-        derivedPassword: state.application.derivedPassword,
-        applicationLoading: state.application.loading,
+
+        hasStoredApiKey: state.registration.has_stored_api_key,
+        derivedPassword: state.registration.derivedPassword,
+        registrationLoading: state.registration.loading,
 
         users: state.users.users,
         user: state.user.user,
@@ -162,19 +196,17 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         derivePassword: password =>
-            dispatch(applicationDerivePassword(password)),
+            dispatch(registrationDerivePassword(password)),
 
+        // clear api key from bunqjsclient and bunqdesktop
         clearApiKey: () => dispatch(registrationClearApiKey(BunqJSClient)),
-
+        // set the api key and stores the encrypted version
         setApiKey: api_key => dispatch(registrationSetApiKey(api_key)),
+
         setEnvironment: environment =>
             dispatch(registrationSetEnvironment(environment)),
         setDeviceName: device_name =>
-            dispatch(registrationSetDeviceName(device_name)),
-
-        // get latest user list from BunqJSClient
-        usersUpdate: (updated = false) =>
-            dispatch(usersUpdate(BunqJSClient, updated))
+            dispatch(registrationSetDeviceName(device_name))
     };
 };
 
