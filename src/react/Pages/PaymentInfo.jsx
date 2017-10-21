@@ -16,7 +16,7 @@ import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
 import Logger from "../Helpers/Logger";
-import {humanReadableDate} from "../Helpers/Utils";
+import { humanReadableDate } from "../Helpers/Utils";
 import NavLink from "../Components/Routing/NavLink";
 import AttachmentImage from "../Components/AttachmentImage";
 
@@ -113,8 +113,6 @@ class PaymentInfo extends React.Component {
                 payment.counterparty_alias
             );
 
-            Logger.debug(humanReadableDate(paymentDate));
-
             content = (
                 <Grid
                     container
@@ -192,7 +190,7 @@ class PaymentInfo extends React.Component {
                             <ListItem>
                                 <ListItemText
                                     primary={"Date"}
-                                    secondary={paymentDate}
+                                    secondary={humanReadableDate(paymentDate)}
                                 />
                             </ListItem>
                             <Divider />

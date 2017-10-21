@@ -43,8 +43,6 @@ class PaymentListItem extends React.Component {
                 ? theme.palette.common.sentPayment
                 : theme.palette.common.receivedPayment;
 
-        Logger.debug(humanReadableDate(paymentDate));
-
         return [
             <ListItem button to={`/payment/${payment.id}`} component={NavLink}>
                 <Avatar style={styles.smallAvatar}>
@@ -54,7 +52,7 @@ class PaymentListItem extends React.Component {
                         imageUUID={imageUUID}
                     />
                 </Avatar>
-                <ListItemText primary={displayName} secondary={paymentDate} />
+                <ListItemText primary={displayName} secondary={humanReadableDate(paymentDate)} />
                 <ListItemSecondaryAction>
                     <p
                         style={{
