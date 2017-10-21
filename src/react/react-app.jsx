@@ -4,16 +4,17 @@ import store from "store";
 import BunqJSClient from "@bunq-community/bunq-js-client";
 import App from "./App";
 
-import ReactGA from 'react-ga'
+import analytics from 'universal-analytics'
 
 require("../scss/main.scss");
 
 // create a new bunq js client and inject into the app
 const BunqJSClientInstance = new BunqJSClient(store);
 
-ReactGA.initialize('UA-87358128-5');
+const analyticsInstance = analytics('UA-87358128-5');
+analyticsInstance.pageview("/").send();
 
 ReactDOM.render(
-    <App ReactGA={ReactGA} BunqJSClient={BunqJSClientInstance} />,
+    <App analytics={analyticsInstance} BunqJSClient={BunqJSClientInstance} />,
     document.getElementById("app")
 );
