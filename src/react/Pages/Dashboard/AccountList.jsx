@@ -1,8 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
-import { LinearProgress } from "material-ui/Progress";
 import Divider from "material-ui/Divider";
-import List, { ListSubheader } from "material-ui/List";
+import IconButton from "material-ui/IconButton";
+import List, { ListSubheader, ListItemSecondaryAction } from "material-ui/List";
+import { CircularProgress, LinearProgress } from "material-ui/Progress";
+import RefreshIcon from "material-ui-icons/Refresh";
 
 import AccountListItem from "./AccountListItem";
 
@@ -40,6 +42,7 @@ class AccountList extends React.Component {
         if (initialBunqConnect) {
             // check if the stored selected account isn't already loaded
             if (
+                user.id &&
                 accountsAccountId !== false &&
                 accountsAccountId !== paymentsAccountId &&
                 paymentsLoading === false &&
@@ -51,6 +54,7 @@ class AccountList extends React.Component {
 
             // check if both account and payment have nothing selected
             if (
+                user.id &&
                 accountsAccountId === false &&
                 paymentsAccountId === false &&
                 paymentsLoading === false
@@ -66,23 +70,22 @@ class AccountList extends React.Component {
                     this.setState({ fetchedPayments: true });
                 }
             }
-        }
 
-        // no accounts loaded
-        if (accounts.length === 0 && this.state.fetchedAccounts === false) {
-            this.props.accountsUpdate(user.id);
-            this.setState({ fetchedAccounts: true });
+            // no accounts loaded
+            if (
+                accounts.length === 0 &&
+                this.state.fetchedAccounts === false &&
+                props.user.id &&
+                props.accountsLoading === false
+            ) {
+                this.props.accountsUpdate(props.user.id);
+                this.setState({ fetchedAccounts: true });
+            }
         }
     };
 
     render() {
         let accounts = [];
-        let loadingContent = this.props.accountsLoading ? (
-            <LinearProgress />
-        ) : (
-            <Divider />
-        );
-
         if (this.props.accounts !== false) {
             accounts = this.props.accounts.map(account => (
                 <AccountListItem
@@ -94,8 +97,20 @@ class AccountList extends React.Component {
 
         return (
             <List>
-                <ListSubheader>Accounts - {accounts.length}</ListSubheader>
-                {loadingContent}
+                <ListSubheader>
+                    Accounts - {accounts.length}
+                    <ListItemSecondaryAction>
+                        {this.props.accountsLoading ? (
+                            <CircularProgress />
+                        ) : (
+                            <IconButton onClick={this.updateAccounts}>
+                                <RefreshIcon />
+                            </IconButton>
+                        )}
+                    </ListItemSecondaryAction>
+                </ListSubheader>
+
+                {this.props.accountsLoading ? <LinearProgress /> : <Divider />}
                 <List>{accounts}</List>
             </List>
         );
@@ -107,10 +122,10 @@ const mapStateToProps = state => {
         user: state.user.user,
         accounts: state.accounts.accounts,
 
-        // selected accounts and loading state
-        paymentsLoading: state.payments.loading,
         paymentsAccountId: state.payments.account_id,
         accountsAccountId: state.accounts.selectedAccount,
+        // selected accounts and loading state
+        paymentsLoading: state.payments.loading,
         // accounts are loading
         accountsLoading: state.accounts.loading
     };

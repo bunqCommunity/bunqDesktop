@@ -1,7 +1,11 @@
 import store from "store";
 
+export const THEME_LOCATION = "BUNQDESKTOP_THEME";
+
 const themeDefault =
-    store.get("theme") !== undefined ? store.get("theme") : "DefaultTheme";
+    store.get(THEME_LOCATION) !== undefined
+        ? store.get(THEME_LOCATION)
+        : "DefaultTheme";
 
 export const defaultState = {
     theme: themeDefault
@@ -10,7 +14,7 @@ export const defaultState = {
 export default function reducer(state = defaultState, action) {
     switch (action.type) {
         case "THEME_SET":
-            store.set("theme", action.payload.theme);
+            store.set(THEME_LOCATION, action.payload.theme);
             return {
                 ...state,
                 theme: action.payload.theme

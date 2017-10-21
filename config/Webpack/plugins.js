@@ -48,6 +48,7 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
         // cleanup old build files from BUILD
         plugins.push(
             new CleanWebpackPlugin([`${BUILD_DIR}/${OUTPUT_DIR}/*.*`], {
+                root: `${__dirname}/../..`,
                 exclude: [],
                 verbose: false,
                 dry: false

@@ -4,11 +4,12 @@ import { accountsClear } from "./accounts";
 import { paymentInfoClear } from "./payment_info";
 import { paymentsClear } from "./payments";
 
-export function userSetInfo(user) {
+export function userSetInfo(user, type) {
     return {
         type: "USER_SET_INFO",
         payload: {
-            user: user
+            user: user,
+            user_type: type
         }
     };
 }
@@ -19,7 +20,7 @@ export function userLogin(BunqJSClient, type, updated = false) {
         BunqJSClient.getUser(type, updated)
             .then(user => {
                 if (user !== undefined) {
-                    dispatch(userSetInfo(user));
+                    dispatch(userSetInfo(user, type));
                 }
                 dispatch(userInitialCheck());
                 dispatch(userNotLoading());

@@ -8,7 +8,7 @@ import Typography from "material-ui/Typography";
 import PaymentList from "./PaymentList";
 import AccountList from "./AccountList";
 
-import { userLogout } from "../../Actions/user";
+import { userLogin, userLogout } from "../../Actions/user";
 
 const styles = {
     btn: {
@@ -20,6 +20,17 @@ class Dashboard extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {};
+    }
+
+    componentDidUpdate() {
+        if (
+            this.props.userType !== false &&
+            this.props.userLoading === false &&
+            this.props.usersLoading === false &&
+            this.props.user === false
+        ) {
+            this.props.userLogin(this.props.userType);
+        }
     }
 
     render() {
@@ -65,14 +76,19 @@ class Dashboard extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        user: state.user.user
+        user: state.user.user,
+        userType: state.user.user_type,
+        userLoading: state.user.loading,
+        usersLoading: state.users.loading
     };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        logoutUser: () => dispatch(userLogout())
+        logoutUser: () => dispatch(userLogout()),
+        userLogin: (type, updated = false) =>
+            dispatch(userLogin(BunqJSClient, type, updated))
     };
 };
 

@@ -12,11 +12,13 @@ import { CircularProgress } from "material-ui/Progress";
 import { usersUpdate } from "../../Actions/users";
 import {
     registrationClearApiKey,
+    registrationLoadApiKey,
     registrationSetApiKey,
     registrationSetDeviceName,
     registrationSetEnvironment
 } from "../../Actions/registration";
 import UserItem from "./UserItem";
+import { Redirect } from "react-router-dom";
 
 const styles = {
     loginButton: {
@@ -55,6 +57,9 @@ class Login extends React.Component {
     }
 
     componentDidMount() {
+        if (this.props.derivedPassword !== false) {
+            this.props.loadApiKey(this.props.derivedPassword);
+        }
         if (this.props.apiKey !== false) {
             this.setState({ apiKey: this.props.apiKey });
         }
@@ -93,7 +98,7 @@ class Login extends React.Component {
             this.props.setEnvironment(
                 this.state.sandboxMode ? "SANDBOX" : "PRODUCTION"
             );
-            this.props.setApiKey(this.state.apiKey);
+            this.props.setApiKey(this.state.apiKey, this.props.derivedPassword);
         }
     };
 
@@ -133,6 +138,21 @@ class Login extends React.Component {
     };
 
     render() {
+        if (
+            this.props.derivedPassword === false &&
+            this.props.registrationLoading === false
+        ) {
+            return <Redirect to="/password" />;
+        } else if (
+            this.props.derivedPassword !== false &&
+            this.props.apiKey !== false &&
+            this.props.userType !== false &&
+            this.props.registrationLoading === false
+        ) {
+            // we have the required data and registration is no longer setting up
+            return <Redirect to="/" />;
+        }
+
         const { status_message, BunqJSClient, users } = this.props;
         const userItems = Object.keys(users).map(userKey => (
             <UserItem
@@ -142,21 +162,6 @@ class Login extends React.Component {
             />
         ));
 
-        let clearBtn = null;
-        if (this.props.apiKey !== false) {
-            clearBtn = (
-                <Button
-                    raised
-                    color={"accent"}
-                    style={styles.clearButton}
-                    onClick={this.clearApiKey}
-                    disabled={this.props.userLoading}
-                >
-                    Clear API key
-                </Button>
-            );
-        }
-
         const currentSelectedEnvironmnent = this.state.sandboxMode
             ? "SANDBOX"
             : "PRODUCTION";
@@ -165,84 +170,104 @@ class Login extends React.Component {
             this.state.apiKey === this.props.apiKey &&
             currentSelectedEnvironmnent === this.props.environment;
 
+        const apiKeyContent =
+            this.props.apiKey === false ? (
+                <CardContent>
+                    <Typography type="headline" component="h2">
+                        Enter your API Key
+                    </Typography>
+                    <Typography type="caption">
+                        In the Bunq app go to your Profile > Security > API Keys
+                        and generate a new key
+                    </Typography>
+                    <Input
+                        style={styles.apiInput}
+                        error={!this.state.apiKeyValid}
+                        placeholder="API Key"
+                        label="API Key"
+                        hint="Your personal API key"
+                        onChange={this.handleKeyChange}
+                        value={this.state.apiKey}
+                        disabled={
+                            // unchanged api key
+                            this.state.apiKey === this.props.apiKey
+                        }
+                    />
+                    <Input
+                        style={styles.apiInput}
+                        error={!this.state.deviceNameValid}
+                        placeholder="Device Name"
+                        label="Device Name"
+                        hint="Device name so you can recognize it later"
+                        onChange={this.handleNameChange}
+                        value={this.state.deviceName}
+                        disabled={
+                            // unchanged api key
+                            this.state.apiKey === this.props.apiKey
+                        }
+                    />
+                    <FormControlLabel
+                        style={styles.environmentToggle}
+                        label="Enable sandbox mode?"
+                        control={
+                            <Switch
+                                checked={this.state.sandboxMode}
+                                onChange={this.handleCheckboxChange}
+                                aria-label="enable or disable sandbox mode"
+                            />
+                        }
+                    />
+
+                    <Button
+                        raised
+                        disabled={
+                            unchangedApiKeyEnvironment ||
+                            // invalid inputs
+                            this.state.apiKeyValid === false ||
+                            this.state.deviceNameValid === false ||
+                            // user info is already being loaded
+                            this.props.userLoading === true ||
+                            // registration is loading
+                            this.props.registrationLoading === true
+                        }
+                        color={"primary"}
+                        style={styles.loginButton}
+                        onClick={this.setRegistration}
+                    >
+                        Set API Key
+                    </Button>
+                </CardContent>
+            ) : (
+                <CardContent>
+                    <Typography type="headline" component="h2">
+                        You're logged in!
+                    </Typography>
+                    <Typography type="caption">
+                        Click one of the accounts in the list to get started or
+                        logout to change the key or environment.
+                    </Typography>
+                    <Button
+                        raised
+                        color={"accent"}
+                        style={styles.clearButton}
+                        onClick={this.clearApiKey}
+                        disabled={this.props.userLoading}
+                    >
+                        Logout
+                    </Button>
+                </CardContent>
+            );
+
         const cardContent = this.props.registrationLoading ? (
             <CardContent style={{ textAlign: "center" }}>
                 <Typography type="headline" component="h2">
                     Loading
                 </Typography>
                 <CircularProgress size={50} />
-                <Typography type="subheading">
-                    {status_message}
-                </Typography>
+                <Typography type="subheading">{status_message}</Typography>
             </CardContent>
         ) : (
-            <CardContent>
-                <Typography type="headline" component="h2">
-                    Enter your API Key
-                </Typography>
-                <Typography type="caption">
-                    In the Bunq app go to your Profile > Security > API Keys and
-                    generate a new key
-                </Typography>
-                <Input
-                    style={styles.apiInput}
-                    error={!this.state.apiKeyValid}
-                    placeholder="API Key"
-                    label="API Key"
-                    hint="Your personal API key"
-                    onChange={this.handleKeyChange}
-                    value={this.state.apiKey}
-                    disabled={
-                        // unchanged api key
-                        this.state.apiKey === this.props.apiKey
-                    }
-                />
-                <Input
-                    style={styles.apiInput}
-                    error={!this.state.deviceNameValid}
-                    placeholder="Device Name"
-                    label="Device Name"
-                    hint="Device name so you can recognize it later"
-                    onChange={this.handleNameChange}
-                    value={this.state.deviceName}
-                    disabled={
-                        // unchanged api key
-                        this.state.apiKey === this.props.apiKey
-                    }
-                />
-                <FormControlLabel
-                    style={styles.environmentToggle}
-                    label="Enable sandbox mode?"
-                    control={
-                        <Switch
-                            checked={this.state.sandboxMode}
-                            onChange={this.handleCheckboxChange}
-                            aria-label="enable or disable sandbox mode"
-                        />
-                    }
-                />
-
-                <Button
-                    raised
-                    disabled={
-                        unchangedApiKeyEnvironment ||
-                        // invalid inputs
-                        this.state.apiKeyValid === false ||
-                        this.state.deviceNameValid === false ||
-                        // user info is already being loaded
-                        this.props.userLoading === true ||
-                        // registration is loading
-                        this.props.registrationLoading === true
-                    }
-                    color={"primary"}
-                    style={styles.loginButton}
-                    onClick={this.setRegistration}
-                >
-                    Set API Key
-                </Button>
-
-                {clearBtn}
-            </CardContent>
+            apiKeyContent
         );
 
         return (
@@ -254,6 +279,7 @@ class Login extends React.Component {
                 <Grid item xs={12} sm={8} md={6}>
                     <Card>{cardContent}</Card>
                 </Grid>
+                <Grid item xs={12} />
 
                 {userItems}
             </Grid>
@@ -263,7 +289,9 @@ class Login extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        status_message: state.registration.status_message,
+        status_message: state.application.status_message,
+
+        derivedPassword: state.registration.derivedPassword,
         registrationLoading: state.registration.loading,
         environment: state.registration.environment,
         deviceName: state.registration.device_name,
@@ -271,6 +299,7 @@ const mapStateToProps = state => {
 
         users: state.users.users,
         user: state.user.user,
+        userType: state.user.user_type,
         userLoading: state.user.loading
     };
 };
@@ -278,8 +307,15 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
+        // clear api key from bunqjsclient and bunqdesktop
         clearApiKey: () => dispatch(registrationClearApiKey(BunqJSClient)),
-        setApiKey: api_key => dispatch(registrationSetApiKey(api_key)),
+        // set the api key and stores the encrypted version
+        setApiKey: (api_key, derivedPassword) =>
+            dispatch(registrationSetApiKey(api_key, derivedPassword)),
+        // attempt to load the api key with our password if one is stored
+        loadApiKey: derivedPassword =>
+            dispatch(registrationLoadApiKey(derivedPassword)),
+
         setEnvironment: environment =>
             dispatch(registrationSetEnvironment(environment)),
         setDeviceName: device_name =>

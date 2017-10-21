@@ -1,5 +1,41 @@
 import axios from "axios";
 
+/*!
+ * isSemVer - v0.1 - 9/05/2010
+ * http://benalman.com/
+ * http://semver.org/
+ *
+ * Copyright (c) 2010 "Cowboy" Ben Alman
+ * Dual licensed under the MIT and GPL licenses.
+ * http://benalman.com/about/license/
+ */
+const isSemVer = (function() {
+    var a = /^(<|>|[=!<>]=)?\s*(\d+(?:\.\d+){0,2})([a-z][a-z0-9\-]*)?$/i;
+    function b(e, c) {
+        var d = (e + "").match(a);
+        return d
+            ? (c ? d[1] || "==" : "") +
+              '"' +
+              (d[2] + ".0.0")
+                  .match(/\d+(?:\.\d+){0,2}/)[0]
+                  .replace(/(?:^|\.)(\d+)/g, function(g, f) {
+                      return Array(9 - f.length).join(0) + f;
+                  }) +
+              (d[3] || "~") +
+              '"'
+            : c ? "==0" : 1;
+    }
+    return function(e) {
+        e = b(e);
+        for (var c, d = 1; (c = arguments[d++]); ) {
+            if (!new Function("return " + e + b(c, 1))()) {
+                return false;
+            }
+        }
+        return true;
+    };
+})();
+
 export default async () => {
     const currentVersion = CURRENT_VERSION;
     try {
@@ -12,8 +48,9 @@ export default async () => {
         return {
             currentVersion: currentVersion,
             latestVersion: latestVersion,
-            newerLink:
-                currentVersion !== latestVersion ? response.html_url : false
+            newerLink: isSemVer(currentVersion, `<${latestVersion}`)
+                ? response.html_url
+                : false
         };
     } catch (ex) {
         // fallback to no-update

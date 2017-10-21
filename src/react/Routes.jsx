@@ -6,6 +6,7 @@ import PublicRoute from "./Components/Routing/PublicRoute";
 
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import Login from "./Pages/Login/Login.jsx";
+import LoginPassword from "./Pages/LoginPassword";
 import Pay from "./Pages/Pay";
 import PaymentInfo from "./Pages/PaymentInfo";
 import NotFound from "./Pages/NotFound";
@@ -28,7 +29,9 @@ export default class Routes extends React.Component {
                         <PrivateRoute
                             exact
                             path="/"
-                            user={this.props.user}
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
                             render={props => (
                                 <Dashboard
                                     {...props}
@@ -39,7 +42,9 @@ export default class Routes extends React.Component {
 
                         <PrivateRoute
                             path="/pay"
-                            user={this.props.user}
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
                             render={props => (
                                 <Pay {...props} {...this.props.childProps} />
                             )}
@@ -47,7 +52,9 @@ export default class Routes extends React.Component {
 
                         <PrivateRoute
                             path="/payment/:paymentId"
-                            user={this.props.user}
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
                             render={props => (
                                 <PaymentInfo
                                     {...props}
@@ -56,11 +63,18 @@ export default class Routes extends React.Component {
                             )}
                         />
 
-                        <PublicRoute
+                        <Route
                             path="/login"
-                            user={this.props.user}
                             render={props => (
                                 <Login {...props} {...this.props.childProps} />
+                            )}
+                        />
+
+                        <PublicRoute
+                            path="/password"
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <LoginPassword {...props} {...this.props.childProps} />
                             )}
                         />
 

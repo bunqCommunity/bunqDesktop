@@ -189,7 +189,7 @@ class PaymentInfo extends React.Component {
                             <ListItem>
                                 <ListItemText
                                     primary={"Date"}
-                                    secondary={paymentDate}
+                                    secondary={humanReadableDate(paymentDate)}
                                 />
                             </ListItem>
                             <Divider />
