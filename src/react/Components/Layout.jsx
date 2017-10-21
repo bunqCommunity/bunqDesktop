@@ -102,11 +102,18 @@ class Layout extends React.Component {
             // registration is loading now
             nextProps.registrationLoading();
 
+            // if we have a derivedPassword we use it to encrypt the bunqjsclient data
+            const encryptionKey =
+                nextProps.derivedPassword !== false
+                    ? nextProps.derivedPassword.key
+                    : false;
+
             // api key was modified
             return this.setupBunqClient(
                 nextProps.apiKey,
                 nextProps.deviceName,
-                nextProps.environment
+                nextProps.environment,
+                encryptionKey
             )
                 .then(() => {
                     nextProps.registrationNotLoading();
@@ -123,9 +130,19 @@ class Layout extends React.Component {
         }
     };
 
-    setupBunqClient = async (apiKey, deviceName, environment) => {
+    setupBunqClient = async (
+        apiKey,
+        deviceName,
+        environment = "SANDBOX",
+        encryptionKey = false
+    ) => {
         try {
-            await this.props.BunqJSClient.run(apiKey, [], environment);
+            await this.props.BunqJSClient.run(
+                apiKey,
+                [],
+                environment,
+                encryptionKey
+            );
         } catch (exception) {
             this.props.openModal(
                 "We failed to setup BunqDesktop properly",
@@ -183,11 +200,9 @@ class Layout extends React.Component {
             key: this.props.location.pathname,
             // give all routes access to bunq-js-client
             BunqJSClient: this.props.BunqJSClient,
-            setupBunqClient: this.setupBunqClient,
             // modal and snackbar helpers
             openModal: this.props.openModal,
             openSnackbar: this.props.openSnackbar,
-
             // helps all child components to prevent calls before the BunqJSClietn is finished setting up
             initialBunqConnect: this.state.initialBunqConnect
         };
