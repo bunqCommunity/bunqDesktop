@@ -2357,6 +2357,13 @@ electron-download@^4.1.0:
     semver "^5.3.0"
     sumchecker "^2.0.1"
 
+electron-google-analytics@^0.0.17:
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/electron-google-analytics/-/electron-google-analytics-0.0.17.tgz#c79e9821780c3b96d1c28aa926797894e42de63f"
+  dependencies:
+    request "^2.81.0"
+    uuid "^3.1.0"
+
 electron-is-accelerator@^0.1.0:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/electron-is-accelerator/-/electron-is-accelerator-0.1.2.tgz#509e510c26a56b55e17f863a4b04e111846ab27b"
@@ -5742,6 +5749,12 @@ react-event-listener@^0.5.0:
     fbjs "^0.8.16"
     prop-types "^15.6.0"
     warning "^3.0.0"
+
+react-ga@^2.3.5:
+  version "2.3.5"
+  resolved "https://registry.yarnpkg.com/react-ga/-/react-ga-2.3.5.tgz#7c3d0c530b2bbe64ceb1faa79be340685aa84a9a"
+  dependencies:
+    object-assign "^4.1.1"
 
 react-helmet@^5.0.2:
   version "5.2.0"
