@@ -1,6 +1,12 @@
 const store = require("store");
 
-const userDefault = store.get("user_type") !== undefined ? store.get("user_type") : false;
+export const USER_TYPE_LOCATION = "BUNQDESKTOP_USER_TYPE";
+
+const userDefault =
+    store.get(USER_TYPE_LOCATION) !== undefined
+        ? store.get(USER_TYPE_LOCATION)
+        : false;
+
 export const defaultState = {
     user: false,
     user_type: userDefault,
@@ -11,7 +17,7 @@ export const defaultState = {
 export default (state = defaultState, action) => {
     switch (action.type) {
         case "USER_SET_INFO":
-            store.set("user_type", action.payload.user_type);
+            store.set(USER_TYPE_LOCATION, action.payload.user_type);
             return {
                 ...state,
                 user: action.payload.user,
@@ -20,11 +26,11 @@ export default (state = defaultState, action) => {
             };
 
         case "USER_LOGOUT":
-            store.remove("user_type");
+            store.remove(USER_TYPE_LOCATION);
             return {
                 ...state,
                 user: false,
-                user_type: false,
+                user_type: false
             };
 
         case "USER_IS_LOADING":
@@ -53,7 +59,7 @@ export default (state = defaultState, action) => {
                 initialCheck: false
             };
         case "REGISTRATION_CLEAR_API_KEY":
-            store.remove("user_type");
+            store.remove(USER_TYPE_LOCATION);
             return {
                 user: false,
                 user_type: false,

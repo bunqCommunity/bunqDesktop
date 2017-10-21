@@ -8,9 +8,9 @@ import {
 import { applicationSetStatus } from "./application";
 import { openSnackbar } from "./snackbar";
 
-export const SALT_LOCATION = "password_salt";
-export const API_KEY_LOCATION = "api_key";
-export const API_KEY_IV_LOCATION = "api_key_iv";
+export const SALT_LOCATION = "BUNQDESKTOP_PASSWORD_SALT";
+export const API_KEY_LOCATION = "BUNQDESKTOP_API_KEY";
+export const API_KEY_IV_LOCATION = "BUNQDESKTOP_API_IV";
 
 /**
  * Stores the api key encrypted in storage

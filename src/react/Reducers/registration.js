@@ -5,8 +5,8 @@ import {
     API_KEY_LOCATION
 } from "../Actions/registration";
 
-export const DEVICE_NAME_LOCATION = "device_name";
-export const ENVIRONMENT_LOCATION = "environment";
+export const DEVICE_NAME_LOCATION = "BUNQDESKTOP_DEVICE_NAME";
+export const ENVIRONMENT_LOCATION = "BUNQDESKTOP_ENVIRONMENT";
 
 const device_nameDefault =
     store.get(DEVICE_NAME_LOCATION) !== undefined
