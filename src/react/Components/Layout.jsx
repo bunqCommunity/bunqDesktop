@@ -87,6 +87,14 @@ class Layout extends React.Component {
                 .then(_ => {})
                 .catch(Logger.error);
         }
+
+        // compare pathnames and trigger a
+        const nextUrl = nextProps.location.pathname;
+        const currentUrl = this.props.location.pathname;
+        if (nextUrl !== currentUrl) {
+            // trigger analytics page event
+            this.props.analytics.pageview(nextUrl).send();
+        }
     }
 
     checkBunqSetup = async (nextProps = false) => {

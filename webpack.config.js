@@ -28,6 +28,12 @@ let config = {
     plugins: plugins({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }),
     module: {
         rules: rules
+    },
+    node: {
+        console: false,
+        fs: 'empty',
+        net: 'empty',
+        tls: 'empty'
     }
 };
 
