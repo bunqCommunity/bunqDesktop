@@ -4,13 +4,13 @@ module.exports = [
     {
         test: /\.jsx?$/,
         exclude: /(node_modules)/,
-        include: /(src)/,
+        include: /(src)|(\.jsx?$)/,
         use: "babel-loader"
     },
     {
-        test: /\.tsx?$/,
+        test: /\.ts$/,
         exclude: /node_modules/,
-        include: /(src)/,
+        include: /(src)|(\.ts$)/,
         use: "ts-loader"
     },
     {
