@@ -47,8 +47,6 @@ class LoginPassword extends React.Component {
         };
     }
 
-    componentDidMount() {}
-
     setRegistration = () => {
         if (this.state.password.length < 7) {
             this.props.openSnackbar(
@@ -74,6 +72,16 @@ class LoginPassword extends React.Component {
         this.setState({
             passwordValid: password && password.length >= 7
         });
+    };
+
+    useNoPassword = () => {
+        this.setState(
+            {
+                password: "SOME_DEFAULT_PASSWORD",
+                passwordValid: true
+            },
+            this.setRegistration
+        );
     };
 
     clearApiKey = () => {
@@ -161,6 +169,26 @@ class LoginPassword extends React.Component {
                         Remove your stored API key
                     </Button>
                 ) : null}
+
+                <div style={{ marginTop: 20 }}>
+                    <Typography type="body2">
+                        Alternatively, you can choose to not encrypt your
+                        data.
+                    </Typography>
+                    <Typography type="body2">
+                        If anyone gets access to your computer and they know
+                        what they are doing they can get access to your API
+                        key!
+                    </Typography>
+                    <Button
+                        raised
+                        color={"accent"}
+                        style={styles.loginButton}
+                        onClick={this.useNoPassword}
+                    >
+                        Use no password
+                    </Button>
+                </div>
             </CardContent>
         );
 
