@@ -18,7 +18,7 @@ class AttachmentImage extends React.PureComponent {
         this.checkImage();
     }
 
-    componentWillUpdate(nextProps) {
+    componentDidUpdate(nextProps) {
         if (this.props.imageUUID !== nextProps.imageUUID) {
             this.checkImage();
         }

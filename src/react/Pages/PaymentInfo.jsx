@@ -15,6 +15,7 @@ import ArrowDownIcon from "material-ui-icons/ArrowDownward";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
+import { humanReadableDate } from "../Helpers/Utils";
 import NavLink from "../Components/Routing/NavLink";
 import AttachmentImage from "../Components/AttachmentImage";
 
