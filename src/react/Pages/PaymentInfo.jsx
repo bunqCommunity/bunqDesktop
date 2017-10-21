@@ -78,7 +78,12 @@ class PaymentInfo extends React.Component {
     }
 
     render() {
-        const { accountsSelectedAccount, payment, paymentLoading, theme } = this.props;
+        const {
+            accountsSelectedAccount,
+            payment,
+            paymentLoading,
+            theme
+        } = this.props;
 
         // we require a selected account before we can display payment information
         if (accountsSelectedAccount === false) {
@@ -190,6 +195,13 @@ class PaymentInfo extends React.Component {
                                 <ListItemText
                                     primary={"Date"}
                                     secondary={humanReadableDate(paymentDate)}
+                                />
+                            </ListItem>
+                            <Divider />
+                            <ListItem>
+                                <ListItemText
+                                    primary={"Payment Type"}
+                                    secondary={payment.type}
                                 />
                             </ListItem>
                             <Divider />
