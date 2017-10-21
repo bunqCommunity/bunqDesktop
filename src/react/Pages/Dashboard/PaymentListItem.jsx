@@ -58,7 +58,7 @@ class PaymentListItem extends React.Component {
                         imageUUID={imageUUID}
                     />
                 </Avatar>
-                <ListItemText primary={displayName} secondary={humanReadableDate(paymentDate)} />
+                <ListItemText primary={displayName} secondary={paymentDate} />
                 <ListItemSecondaryAction>
                     <p
                         style={{
