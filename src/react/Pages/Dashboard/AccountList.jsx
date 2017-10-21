@@ -72,16 +72,15 @@ class AccountList extends React.Component {
             }
 
             // no accounts loaded
-            if (accounts.length === 0 && this.state.fetchedAccounts === false) {
-                this.updateAccounts();
+            if (
+                accounts.length === 0 &&
+                this.state.fetchedAccounts === false &&
+                props.user.id &&
+                props.accountsLoading === false
+            ) {
+                this.props.accountsUpdate(props.user.id);
                 this.setState({ fetchedAccounts: true });
             }
-        }
-    };
-
-    updateAccounts = () => {
-        if(this.props.user.id){
-            this.props.accountsUpdate(this.props.user.id);
         }
     };
 
@@ -111,11 +110,7 @@ class AccountList extends React.Component {
                     </ListItemSecondaryAction>
                 </ListSubheader>
 
-                {this.props.accountsLoading ? (
-                    <LinearProgress />
-                ) : (
-                    <Divider />
-                )}
+                {this.props.accountsLoading ? <LinearProgress /> : <Divider />}
                 <List>{accounts}</List>
             </List>
         );
@@ -127,10 +122,10 @@ const mapStateToProps = state => {
         user: state.user.user,
         accounts: state.accounts.accounts,
 
-        // selected accounts and loading state
-        paymentsLoading: state.payments.loading,
         paymentsAccountId: state.payments.account_id,
         accountsAccountId: state.accounts.selectedAccount,
+        // selected accounts and loading state
+        paymentsLoading: state.payments.loading,
         // accounts are loading
         accountsLoading: state.accounts.loading
     };

@@ -1,8 +1,10 @@
 const store = require("store");
 
+export const SELECTED_ACCOUNT_LOCAION = "BUNQDESKTOP_SELECTED_ACCOUNT";
+
 const selectedAccountDefault =
-    store.get("selected_account") !== undefined
-        ? store.get("selected_account")
+    store.get(SELECTED_ACCOUNT_LOCAION) !== undefined
+        ? store.get(SELECTED_ACCOUNT_LOCAION)
         : false;
 
 export const defaultState = {
@@ -20,7 +22,7 @@ export default (state = defaultState, action) => {
             };
 
         case "ACCOUNTS_SELECT_ACCOUNT":
-            store.set("selected_account", action.payload.selectedAccount);
+            store.set(SELECTED_ACCOUNT_LOCAION, action.payload.selectedAccount);
             return {
                 ...state,
                 selectedAccount: action.payload.selectedAccount
@@ -40,7 +42,7 @@ export default (state = defaultState, action) => {
 
         case "ACCOUNTS_CLEAR":
         case "REGISTRATION_CLEAR_API_KEY":
-            store.remove("selected_account");
+            store.remove(SELECTED_ACCOUNT_LOCAION);
             return {
                 accounts: [],
                 selectedAccount: false,

@@ -1,21 +1,25 @@
 import React from "react";
 import { Redirect, Route } from "react-router-dom";
 
-export default ({ component: Component, user, ...rest }) => {
+export default ({ component: Component, derivedPassword, ...rest }) => {
     const componentHandler = rest.render ? rest.render : props => Component;
+
+    // no user selected
+    let redirectCondition = derivedPassword !== false;
+
     return (
         <Route
             {...rest}
             render={props =>
-                user === false ? (
-                    componentHandler(props)
-                ) : (
+                redirectCondition ? (
                     <Redirect
                         to={{
-                            pathname: "/",
+                            pathname: "/login",
                             state: { from: props.location }
                         }}
                     />
+                ) : (
+                    componentHandler(props)
                 )}
         />
     );
