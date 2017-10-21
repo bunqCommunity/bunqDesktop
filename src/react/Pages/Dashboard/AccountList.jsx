@@ -29,6 +29,10 @@ class AccountList extends React.Component {
         this.checkUpdateRequirement(nextprops);
     }
 
+    updateAccounts = () => {
+        this.props.accountsUpdate(this.props.user.id);
+    };
+
     checkUpdateRequirement = (props = this.props) => {
         const {
             accountsAccountId,
