@@ -9,7 +9,6 @@ module.exports = [
     },
     {
         test: /\.ts$/,
-        exclude: /node_modules/,
         include: /(src)|(\.ts$)/,
         use: "ts-loader"
     },
