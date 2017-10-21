@@ -170,10 +170,9 @@ export function registrationClearPassword() {
 /**
  * Store the derived password
  * @param derivedPassword
- * @param passwordSalt
  * @returns {{type: string, payload: {derivedPassword: *}}}
  */
-export function registrationSetDerivedPassword(derivedPassword, passwordSalt) {
+export function registrationSetDerivedPassword(derivedPassword) {
     return {
         type: "REGISTRATION_SET_PASSWORD",
         payload: {

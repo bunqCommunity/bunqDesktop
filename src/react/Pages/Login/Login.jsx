@@ -56,13 +56,10 @@ class Login extends React.Component {
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         if (this.props.derivedPassword !== false) {
             this.props.loadApiKey(this.props.derivedPassword);
         }
-    }
-
-    componentDidMount() {
         if (this.props.apiKey !== false) {
             this.setState({ apiKey: this.props.apiKey });
         }

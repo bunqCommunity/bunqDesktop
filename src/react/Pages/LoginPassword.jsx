@@ -57,6 +57,7 @@ class LoginPassword extends React.Component {
 
         if (this.state.passwordValid) {
             this.props.derivePassword(this.state.password);
+            this.setState({ password: "", passwordValid: false });
         }
     };
 
@@ -172,13 +173,11 @@ class LoginPassword extends React.Component {
 
                 <div style={{ marginTop: 20 }}>
                     <Typography type="body2">
-                        Alternatively, you can choose to not encrypt your
-                        data.
+                        Alternatively, you can choose to not encrypt your data.
                     </Typography>
                     <Typography type="body2">
                         If anyone gets access to your computer and they know
-                        what they are doing they can get access to your API
-                        key!
+                        what they are doing they can get access to your API key!
                     </Typography>
                     <Button
                         raised
