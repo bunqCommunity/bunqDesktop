@@ -21,37 +21,32 @@ export const validateJSON = input => {
 // transforms a date string into a date object in current timezone
 export const UTCDateToLocalDate = date => {
     if (typeof date === "string") {
-        date = new Date(date);
+		var utcDate = new Date(date);
     }
-    var newDate = new Date(
-        date.getTime() + date.getTimezoneOffset() * 60 * 1000
-    );
 
-    var offset = date.getTimezoneOffset() / 60;
-    var hours = date.getHours();
-
-    newDate.setHours(hours - offset);
-
-    return newDate;
+	var offset = utcDate.getTimezoneOffset();
+	var localDate = new Date(utcDate.setMinutes(utcDate.getMinutes() - offset));
+	
+	return localDate;
 };
 
 // human readable date from date string or object (nl for dutch)
 export const humanReadableDate = (date, localization = "en-us") => {
     const currentDate = new Date();
     if (typeof date === "string") {
-        date = UTCDateToLocalDate(date);
+        var createDate = UTCDateToLocalDate(date);
     }
-    const month = date.toLocaleString(localization, { month: "long" });
+    const month = createDate.toLocaleString(localization, { month: "long" });
 
     // default format
-    let result = `${date.getDay()} ${month} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    let formatResult = `${createDate.getDate()} ${month} ${createDate.toLocaleTimeString()}`;
 
     // different year, add it to the label
-    if (currentDate.getFullYear() !== date.getFullYear()) {
-        result = `${date.getDay()} ${month}, ${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    if (currentDate.getFullYear() !== createDate.getFullYear()) {
+        formatResult = `${createDate.getDate()} ${month}, ${createDate.getFullYear()} ${createDate.toLocaleTimeString()}`;
     }
 
-    return result;
+    return formatResult;
 };
 
 export default {
