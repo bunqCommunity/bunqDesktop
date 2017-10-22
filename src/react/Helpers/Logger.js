@@ -1,7 +1,5 @@
-const log = require("loglevel");
+// trigger a log event within the main electorn process
+const { remote } = window.require("electron");
+const log = remote.require("electron-log");
 
-// set logging level based on env
-log.setLevel(process.env.NODE_ENV === "development" ? "trace" : "warn");
-
-// export the logger
 module.exports = log;

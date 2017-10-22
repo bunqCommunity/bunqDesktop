@@ -2372,6 +2372,10 @@ electron-localshortcut@^2.0.2:
     debug "^2.6.8"
     electron-is-accelerator "^0.1.0"
 
+electron-log@^2.2.9:
+  version "2.2.9"
+  resolved "https://registry.yarnpkg.com/electron-log/-/electron-log-2.2.9.tgz#e0484cb1a8a84593095e3b69f47361ae15d73bdf"
+
 electron-mocha@^4.0.0:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/electron-mocha/-/electron-mocha-4.0.3.tgz#2cac4ff03d268e4ef6e4640bfbba283bbe2a1eef"
@@ -4429,10 +4433,6 @@ lodash@^4.0.0, lodash@^4.14.0, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.2.0, lo
 lodash@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-1.0.2.tgz#8f57560c83b59fc270bd3d561b690043430e2551"
-
-loglevel@^1.4.1:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.5.1.tgz#189078c94ab9053ee215a0acdbf24244ea0f6502"
 
 longest@^1.0.1:
   version "1.0.1"

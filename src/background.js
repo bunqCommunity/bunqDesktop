@@ -1,10 +1,11 @@
 import path from "path";
 import url from "url";
+import log from "electron-log";
 import { app, Menu } from "electron";
 import { devMenuTemplate } from "./menu/dev_menu_template";
 import { editMenuTemplate } from "./menu/edit_menu_template";
 import createWindow from "./helpers/window";
-import registerShortcuts from "./helpers/shortcuts"
+import registerShortcuts from "./helpers/shortcuts";
 
 // Special module holding environment variables which you declared
 // in config/env_xxx.json file.
@@ -26,6 +27,13 @@ if (env.name !== "production") {
     const userDataPath = app.getPath("userData");
     app.setPath("userData", `${userDataPath} (${env.name})`);
 }
+
+// setup the logger
+log.transports.file.appName = "BunqDesktop";
+log.transports.file.level = env.name === "development" ? "debug" : "warn";
+log.transports.file.format = "{h}:{i}:{s}:{ms} {text}";
+log.transports.file.file = `${__dirname}/${log.transports.file
+    .appName}.log.txt`;
 
 app.on("ready", () => {
     setApplicationMenu();
