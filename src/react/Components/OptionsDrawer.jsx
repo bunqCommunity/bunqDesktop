@@ -11,10 +11,13 @@ import List, {
 import Input, { InputLabel } from "material-ui/Input";
 import { MenuItem } from "material-ui/Menu";
 import { FormControl } from "material-ui/Form";
+import Typography from "material-ui/Typography";
 import Select from "material-ui/Select";
 import Avatar from "material-ui/Avatar";
 import PowerSettingsIcon from "material-ui-icons/PowerSettingsNew";
+import PaymentIcon from "material-ui-icons/Payment";
 
+import NavLink from "./Routing/NavLink";
 import { setTheme } from "../Actions/theme";
 import { closeDrawer } from "../Actions/options_drawer";
 
@@ -46,6 +49,7 @@ const styles = {
         height: 50
     },
     bunqLink: {
+        marginBottom: 20,
         color: "inherit",
         textDecoration: "none"
     }
@@ -96,6 +100,18 @@ class OptionsDrawer extends React.Component {
                     </ListItem>
                 </a>
 
+                <ListItem
+                    button
+                    style={styles.listBottomItem}
+                    component={NavLink}
+                    to="/pay"
+                >
+                    <ListItemIcon>
+                        <PaymentIcon />
+                    </ListItemIcon>
+                    <Typography type="subheading">Create payment</Typography>
+                </ListItem>
+
                 <ListSubheader>Options</ListSubheader>
                 <ListItem>
                     <FormControl style={styles.formControl}>
@@ -122,7 +138,7 @@ class OptionsDrawer extends React.Component {
                     <ListItemIcon>
                         <PowerSettingsIcon />
                     </ListItemIcon>
-                    Quit BunqDesktop
+                    <Typography type="subheading">Quit BunqDesktop</Typography>
                 </ListItem>
             </List>
         );
