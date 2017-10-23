@@ -1,4 +1,4 @@
-import forge from "node-forge";
+const forge = require("./CustomForge");
 
 /**
  * Hash an arbitrary string and return the hash and salt
