@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import IconButton from "material-ui/IconButton";
 import MenuIcon from "material-ui-icons/Menu";
+import Hidden from "material-ui/Hidden";
 
 import { openMainDrawer } from "../Actions/main_drawer";
 
@@ -24,13 +25,15 @@ class Header extends React.Component {
     render() {
         return (
             <header>
-                <IconButton
-                    aria-label="view main drawer"
-                    onClick={this.props.openDrawer}
-                    style={styles.headerBtn}
-                >
-                    <MenuIcon />
-                </IconButton>
+                <Hidden mdUp>
+                    <IconButton
+                        aria-label="view main drawer"
+                        onClick={this.props.openDrawer}
+                        style={styles.headerBtn}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                </Hidden>
             </header>
         );
     }

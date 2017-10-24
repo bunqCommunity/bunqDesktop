@@ -3,14 +3,17 @@ import { connect } from "react-redux";
 import { withStyles } from "material-ui/styles";
 import PropTypes from "prop-types";
 import Drawer from "material-ui/Drawer";
-import List, { ListItem, ListSubheader } from "material-ui/List";
+import List, { ListItem, ListSubheader, ListItemIcon } from "material-ui/List";
 import Input, { InputLabel } from "material-ui/Input";
 import { MenuItem } from "material-ui/Menu";
 import { FormControl } from "material-ui/Form";
 import Select from "material-ui/Select";
+import Typography from "material-ui/Typography";
+import ArrowBackIcon from "material-ui-icons/ArrowBack";
 
 import { setTheme } from "../Actions/theme";
 import { closeOptionsDrawer } from "../Actions/options_drawer";
+import { openMainDrawer } from "../Actions/main_drawer";
 
 const styles = {
     list: {
@@ -23,6 +26,12 @@ const styles = {
     listItem: {
         paddingTop: 0,
         paddingBottom: 0
+    },
+    listFiller: {
+        flex: "1 1 100%"
+    },
+    listBottomItem: {
+        flex: 0
     },
     formControl: {
         width: "100%"
@@ -46,6 +55,12 @@ class OptionsDrawer extends React.Component {
         super(props, context);
         this.state = {};
     }
+
+    backToMain = () => {
+        // open the options drawer and open the main drawer
+        this.props.openMainDrawer();
+        this.props.closeOptionsDrawer();
+    };
 
     handleThemeChange = event => {
         this.props.setTheme(event.target.value);
@@ -72,6 +87,19 @@ class OptionsDrawer extends React.Component {
                         </Select>
                     </FormControl>
                 </ListItem>
+
+                <ListItem style={styles.listFiller} />
+
+                <ListItem
+                    button
+                    style={styles.listBottomItem}
+                    onClick={this.backToMain}
+                >
+                    <ListItemIcon>
+                        <ArrowBackIcon />
+                    </ListItemIcon>
+                    <Typography type="subheading">Back</Typography>
+                </ListItem>
             </List>
         );
 
@@ -79,7 +107,7 @@ class OptionsDrawer extends React.Component {
             <Drawer
                 open={open}
                 className="options-drawer"
-                onRequestClose={this.props.closeDrawer}
+                onRequestClose={this.props.closeOptionsDrawer}
                 anchor={theme.direction === "rtl" ? "right" : "left"}
                 SlideProps={{
                     style: { top: 50 }
@@ -101,7 +129,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         setTheme: theme => dispatch(setTheme(theme)),
-        closeDrawer: () => dispatch(closeOptionsDrawer())
+        openMainDrawer: () => dispatch(openMainDrawer()),
+        closeOptionsDrawer: () => dispatch(closeOptionsDrawer())
     };
 };
 

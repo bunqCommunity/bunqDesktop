@@ -34,12 +34,6 @@ const styles = {
     listBottomItem: {
         flex: 0
     },
-    formControl: {
-        width: "100%"
-    },
-    selectField: {
-        width: "100%"
-    },
     avatar: {
         width: 50,
         height: 50
@@ -60,6 +54,12 @@ class MainDrawer extends React.Component {
     closeApp() {
         window.close();
     }
+
+    openOptions = () => {
+        // open the options drawer and open the main drawer
+        this.props.closeMainDrawer();
+        this.props.openOptionsDrawer();
+    };
 
     render() {
         const {
@@ -130,7 +130,7 @@ class MainDrawer extends React.Component {
                 <ListItem
                     button
                     style={styles.listBottomItem}
-                    onClick={this.props.openOptionsDrawer}
+                    onClick={this.openOptions}
                 >
                     <ListItemIcon>
                         <SettingsIcon />
@@ -201,7 +201,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         closeDrawer: () => dispatch(closeMainDrawer()),
-        openOptionsDrawer: () => dispatch(openOptionsDrawer())
+        openOptionsDrawer: () => dispatch(openOptionsDrawer()),
+        closeMainDrawer: () => dispatch(closeMainDrawer())
     };
 };
 
