@@ -2,8 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import Grid from "material-ui/Grid";
-import Button from "material-ui/Button";
-import SettingsIcon from "material-ui-icons/Settings";
+import { withStyles } from "material-ui/styles";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import createMuiTheme from "material-ui/styles/createMuiTheme";
 
@@ -12,7 +11,7 @@ import Logger from "../Helpers/Logger";
 import VersionChecker from "../Helpers/VersionChecker";
 import MainDialog from "./MainDialog";
 import MainSnackbar from "./MainSnackbar";
-import OptionsDrawer from "./OptionsDrawer";
+import MainDrawer from "./MainDrawer";
 import Header from "./Header";
 
 // themes
@@ -34,13 +33,27 @@ import { openSnackbar } from "../Actions/snackbar";
 import { accountsClear, accountsUpdate } from "../Actions/accounts";
 import { paymentInfoClear } from "../Actions/payment_info";
 import { userClear } from "../Actions/user";
-import { openDrawer } from "../Actions/options_drawer";
+import { openMainDrawer } from "../Actions/main_drawer";
 import {
     registrationSetApiKey,
     registrationLoading,
     registrationNotLoading,
     registrationClearApiKey
 } from "../Actions/registration";
+import OptionsDrawer from "./OptionsDrawer";
+
+const styles = theme => ({
+    contentContainer: {
+        margin: 0,
+        marginLeft: 0,
+        width: "100%",
+        [theme.breakpoints.up("md")]: {
+            margin: 0,
+            marginLeft: 250,
+            width: "calc(100% - 250px)"
+        }
+    }
+});
 
 class Layout extends React.Component {
     constructor(props, context) {
@@ -203,6 +216,7 @@ class Layout extends React.Component {
     };
 
     render() {
+        const { classes } = this.props;
         const childProps = {
             // uniqueness to help with triggering route change animations
             key: this.props.location.pathname,
@@ -220,23 +234,24 @@ class Layout extends React.Component {
             <MuiThemeProvider theme={ThemeList[this.props.theme]}>
                 <Header />
                 <main>
+                    <MainDrawer />
+                    <OptionsDrawer themeList={ThemeList} />
                     <Grid
                         container
                         spacing={16}
                         justify={"center"}
+                        className={classes.contentContainer}
                         style={{
                             backgroundColor:
                                 ThemeList[this.props.theme].palette.background
                                     .default,
-                            padding: 16,
-                            margin: 0
+                            padding: 16
                         }}
                     >
                         <MainDialog />
                         <MainSnackbar />
-                        <OptionsDrawer themeList={ThemeList} />
 
-                        <Grid item xs={12} md={10} lg={8}>
+                        <Grid item xs={12}>
                             <RouteComponent
                                 apiKey={this.props.apiKey}
                                 userType={this.props.userType}
@@ -301,7 +316,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(userLogin(BunqJSClient, userType, updated)),
 
         // opens the options drawer on the left
-        openDrawer: () => dispatch(openDrawer()),
+        openDrawer: () => dispatch(openMainDrawer()),
 
         // functions to clear user data
         clearAccounts: () => dispatch(accountsClear()),
@@ -311,4 +326,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Layout));
+export default withStyles(styles, { withTheme: true })(
+    withRouter(connect(mapStateToProps, mapDispatchToProps)(Layout))
+);

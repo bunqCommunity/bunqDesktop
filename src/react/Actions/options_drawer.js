@@ -1,11 +1,11 @@
-export function openDrawer() {
+export function openOptionsDrawer() {
     return {
-        type: "DRAWER_OPEN"
+        type: "OPTIONS_DRAWER_OPEN"
     };
 }
 
-export function closeDrawer() {
+export function closeOptionsDrawer() {
     return {
-        type: "DRAWER_CLOSE"
+        type: "OPTIONS_DRAWER_CLOSE"
     };
 }

@@ -42,13 +42,12 @@ class Pay extends React.Component {
 
     render() {
         return (
-            <Grid container spacing={24}>
+            <Grid container spacing={24} align={"center"} justify={"center"}>
                 <Helmet>
                     <title>{`BunqDesktop - Pay`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={3} md={4} />
-                <Grid item xs={12} sm={6} md={4}>
+                <Grid item xs={12} sm={10} md={8} lg={6}>
                     <Paper style={styles.paper}>
                         <Typography type="headline">New Payment</Typography>
 

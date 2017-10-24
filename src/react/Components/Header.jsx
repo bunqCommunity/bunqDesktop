@@ -3,14 +3,14 @@ import { connect } from "react-redux";
 import IconButton from "material-ui/IconButton";
 import MenuIcon from "material-ui-icons/Menu";
 
-import { openDrawer } from "../Actions/options_drawer";
+import { openMainDrawer } from "../Actions/main_drawer";
 
 const styles = {
     headerBtn: {
         WebkitAppRegion: "no-drag",
         position: "fixed",
         top: 1,
-        right: 5,
+        left: 5,
         zIndex: 1000
     }
 };
@@ -43,7 +43,7 @@ const mapStateToProps = store => {
 const mapDispatchToProps = dispatch => {
     return {
         // opens the options drawer on the left
-        openDrawer: () => dispatch(openDrawer())
+        openDrawer: () => dispatch(openMainDrawer())
     };
 };
 

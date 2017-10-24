@@ -124,7 +124,14 @@ class PaymentInfo extends React.Component {
                     align={"center"}
                     justify={"center"}
                 >
-                    <Grid item xs={12} sm={5} style={styles.textCenter}>
+                    <Grid
+                        item
+                        xs={12}
+                        sm={10}
+                        md={8}
+                        lg={6}
+                        style={styles.textCenter}
+                    >
                         <AttachmentImage
                             width={90}
                             BunqJSClient={this.props.BunqJSClient}

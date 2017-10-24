@@ -276,7 +276,7 @@ class Login extends React.Component {
                     <title>{`BunqDesktop - Login`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={8} md={6}>
+                <Grid item xs={12} sm={10} md={8} lg={6}>
                     <Card>{cardContent}</Card>
                 </Grid>
                 <Grid item xs={12} />
