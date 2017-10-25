@@ -1,5 +1,2 @@
-// trigger a log event within the main electorn process
-const { remote } = window.require("electron");
-const log = remote.require("electron-log");
-
-module.exports = log;
+// load the electron-log instance so we can write to the filesystem
+module.exports = require("electron").remote.require("electron-log");
