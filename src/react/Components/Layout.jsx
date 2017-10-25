@@ -13,6 +13,7 @@ import MainDialog from "./MainDialog";
 import MainSnackbar from "./MainSnackbar";
 import MainDrawer from "./MainDrawer";
 import Header from "./Header";
+import ErrorBoundary from "./ErrorBoundary";
 
 // themes
 import DefaultThemeConfig from "../Themes/DefaultTheme";
@@ -233,7 +234,7 @@ class Layout extends React.Component {
         return (
             <MuiThemeProvider theme={ThemeList[this.props.theme]}>
                 <Header />
-                <main>
+                <main style={{ marginTop: 50 }}>
                     <MainDrawer />
                     <OptionsDrawer themeList={ThemeList} />
                     <Grid
@@ -252,12 +253,14 @@ class Layout extends React.Component {
                         <MainSnackbar />
 
                         <Grid item xs={12}>
-                            <RouteComponent
-                                apiKey={this.props.apiKey}
-                                userType={this.props.userType}
-                                derivedPassword={this.props.derivedPassword}
-                                childProps={childProps}
-                            />
+                            <ErrorBoundary recoverableError={true} history={this.props.history}>
+                                <RouteComponent
+                                    apiKey={this.props.apiKey}
+                                    userType={this.props.userType}
+                                    derivedPassword={this.props.derivedPassword}
+                                    childProps={childProps}
+                                />
+                            </ErrorBoundary>
                         </Grid>
                     </Grid>
                 </main>

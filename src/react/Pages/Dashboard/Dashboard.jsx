@@ -37,7 +37,7 @@ class Dashboard extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqWeb - Dashboard`}</title>
+                    <title>{`BunqDesktop - Dashboard`}</title>
                 </Helmet>
 
                 <Grid item xs={8} sm={10}>

@@ -13,6 +13,11 @@ const styles = {
         top: 1,
         left: 5,
         zIndex: 1000
+    },
+    header: {
+        position: "fixed",
+        width: "100%",
+        height: 50
     }
 };
 
@@ -24,7 +29,7 @@ class Header extends React.Component {
 
     render() {
         return (
-            <header>
+            <header style={styles.header}>
                 <Hidden mdUp>
                     <IconButton
                         aria-label="view main drawer"

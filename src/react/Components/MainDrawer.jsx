@@ -159,9 +159,6 @@ class MainDrawer extends React.Component {
                     onRequestClose={this.props.closeDrawer}
                     className="options-drawer"
                     anchor={theme.direction === "rtl" ? "right" : "left"}
-                    classes={{
-                        paper: classes.drawerPaper
-                    }}
                     SlideProps={{
                         style: { top: 50 }
                     }}
