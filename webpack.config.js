@@ -14,6 +14,7 @@ let config = {
     entry: {
         BunqDesktop: `${SRC_DIR}/react-app.jsx`
     },
+    target: "electron-renderer",
     output: {
         path: BUILD_DIR,
         filename: OUTPUT_DIR + "[name].js",
@@ -31,9 +32,9 @@ let config = {
     },
     node: {
         console: false,
-        fs: 'empty',
-        net: 'empty',
-        tls: 'empty'
+        fs: "empty",
+        net: "empty",
+        tls: "empty"
     }
 };
 
