@@ -20,7 +20,7 @@ export function accountsUpdate(BunqJSClient, userId) {
                 dispatch(accountsNotLoading());
             })
             .catch(err => {
-                Logger.trace(err);
+                Logger.error(err);
                 dispatch(
                     openModal(
                         "We failed to load your monetary accounts",
