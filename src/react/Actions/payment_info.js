@@ -25,7 +25,7 @@ export function paymentsUpdate(BunqJSClient, user_id, account_id, payment_id) {
                 dispatch(paymentInfoNotLoading());
             })
             .catch(err => {
-                Logger.trace(err);
+                Logger.error(err);
                 dispatch(
                     openModal(
                         "We failed to load the payment information",
