@@ -8,7 +8,8 @@ import Paper from "material-ui/Paper";
 import NumberFormat from "react-number-format";
 import { Typography } from "material-ui";
 import { FormControl } from "material-ui/Form";
-import AccountSelector from "../Components/AccountSelector";
+// import AccountSelector from "../Components/AccountSelector";
+import AccountSelectorDialog from "../Components/AccountSelectorDialog";
 
 const styles = {
     payButton: {
@@ -20,8 +21,12 @@ const styles = {
     paper: {
         padding: 24
     },
-    inputs: {}
+    formattedInput: {
+        fontSize: 30
+    }
 };
+
+const preferedSeparator = (() => (1.1).toLocaleString().substring(1, 2))();
 
 class Pay extends React.Component {
     constructor(props, context) {
@@ -39,6 +44,11 @@ class Pay extends React.Component {
             [name]: event.target.value
         });
     };
+    handleChangeDirect = name => value => {
+        this.setState({
+            [name]: value
+        });
+    };
 
     render() {
         return (
@@ -51,9 +61,11 @@ class Pay extends React.Component {
                     <Paper style={styles.paper}>
                         <Typography type="headline">New Payment</Typography>
 
-                        <AccountSelector
+                        <AccountSelectorDialog
                             value={this.state.selectedAccount}
-                            onChange={this.handleChange("selectedAccount")}
+                            onChange={this.handleChangeDirect(
+                                "selectedAccount"
+                            )}
                             accounts={this.props.accounts}
                             BunqJSClient={this.props.BunqJSClient}
                         />
@@ -65,7 +77,6 @@ class Pay extends React.Component {
                                 id="target"
                                 label="IBAN, email, or phone"
                                 value={this.state.target}
-                                style={styles.inputs}
                                 onChange={this.handleChange("target")}
                                 margin="normal"
                             />
@@ -77,7 +88,6 @@ class Pay extends React.Component {
                                 id="description"
                                 label="Description"
                                 value={this.state.description}
-                                style={styles.inputs}
                                 onChange={this.handleChange("description")}
                                 margin="normal"
                             />
@@ -85,15 +95,13 @@ class Pay extends React.Component {
 
                         <FormControl style={styles.formControl}>
                             <NumberFormat
-                                fullWidth
                                 required
                                 id="amount"
-                                label="Amount"
                                 value={this.state.amount}
-                                style={styles.inputs}
+                                style={styles.formattedInput}
                                 onChange={this.handleChange("amount")}
                                 margin="normal"
-                                decimalSeparator={"."}
+                                decimalSeparator={preferedSeparator}
                                 decimalPrecision={2}
                                 thousandSeparator={true}
                                 prefix={"€"}
