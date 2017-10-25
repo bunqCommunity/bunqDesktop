@@ -2,6 +2,8 @@ const webpack = require("webpack");
 const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+    .BundleAnalyzerPlugin;
 
 const packageInfo = require("../../package.json");
 
@@ -25,7 +27,25 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
             filename: OUTPUT_DIR + "[name].css",
             disable: false,
             allChunks: true
-        })
+        }),
+        // webpack analyzer
+        new BundleAnalyzerPlugin({
+            // don't open the file automatically
+            openAnalyzer: false,
+            // default type to open (`stat`, `parsed` or `gzip`)
+            defaultSizes: "parse",
+            // create a server for the watcher or a static file for production enviroments
+            analyzerMode: "static",
+            // output outside of the public folder
+            reportFilename: "../../webpack.report.html",
+            /**
+             * stats file for analyzer - use with:
+             * @see https://alexkuz.github.io/stellar-webpack/
+             * @see https://alexkuz.github.io/webpack-chart/
+             */
+            generateStatsFile: true,
+            statsFilename: "../../webpack.stats.json"
+        }),
     ];
 
     if (PRODUCTION) {

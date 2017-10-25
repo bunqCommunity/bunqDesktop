@@ -13,5 +13,7 @@ Thumbs.db
 /app/react/
 
 /dist
+/webpack.report.html
+/webpack.stats.json
 
 /coverage

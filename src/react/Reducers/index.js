@@ -8,6 +8,7 @@ import users from "./users";
 import registration from "./registration";
 import snackbar from "./snackbar";
 import theme from "./theme";
+import main_drawer from "./main_drawer";
 import options_drawer from "./options_drawer";
 import payments from "./payments";
 import payment_info from "./payment_info";
@@ -22,6 +23,7 @@ export default combineReducers({
     registration,
     snackbar,
     theme,
+    main_drawer,
     options_drawer,
     payment_info,
     payment_filter,
