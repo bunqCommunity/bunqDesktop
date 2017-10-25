@@ -1,5 +1,6 @@
 import React from "react";
 import Helmet from "react-helmet";
+import Typography from "material-ui/Typography";
 
 class NotFound extends React.Component {
     constructor(props, context) {
@@ -13,7 +14,7 @@ class NotFound extends React.Component {
                 <Helmet>
                     <title>{`BunqDesktop - 404 Not Found`}</title>
                 </Helmet>
-                <h1>Page Not Found</h1>
+                <Typography type="title">Page Not Found</Typography>
             </div>
         );
     }
