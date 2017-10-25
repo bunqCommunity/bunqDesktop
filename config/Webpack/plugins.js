@@ -11,17 +11,10 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
     const plugins = [
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.DefinePlugin({
-            CURRENT_VERSION: JSON.stringify(packageInfo.version),
-            PRODUCTION_MODE: JSON.stringify(PRODUCTION),
-            DEVELOPMENT_MODE: JSON.stringify(DEVELOPMENT),
-            "process.env.DEBUG": JSON.stringify(DEVELOPMENT),
-            "process.env.NODE_ENV": JSON.stringify(
-                process.env.NODE_ENV || "development"
-            ),
+            "process.env.CURRENT_VERSION": JSON.stringify(packageInfo.version),
+            "process.env.DEVELOPMENT": JSON.stringify(DEVELOPMENT),
+            "process.env.PRODUCTION": JSON.stringify(PRODUCTION),
             "process.env.WEBPACK_MODE": JSON.stringify(true)
-        }),
-        new webpack.ProvidePlugin({
-            Promise: "es6-promise-promise"
         }),
         new ExtractTextPlugin({
             filename: OUTPUT_DIR + "[name].css",
@@ -45,7 +38,7 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
              */
             generateStatsFile: true,
             statsFilename: "../../webpack.stats.json"
-        }),
+        })
     ];
 
     if (PRODUCTION) {

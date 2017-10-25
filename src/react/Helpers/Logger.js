@@ -1,7 +1,2 @@
-const log = require("loglevel");
-
-// set logging level based on env
-log.setLevel(process.env.NODE_ENV === "development" ? "trace" : "warn");
-
-// export the logger
-module.exports = log;
+// load the electron-log instance so we can write to the filesystem
+module.exports = require("electron").remote.require("electron-log");

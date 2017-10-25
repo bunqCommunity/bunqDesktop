@@ -37,7 +37,7 @@ const isSemVer = (function() {
 })();
 
 export default async () => {
-    const currentVersion = CURRENT_VERSION;
+    const currentVersion = process.env.CURRENT_VERSION;
     try {
         const response = await axios
             .get(
@@ -56,7 +56,7 @@ export default async () => {
         // fallback to no-update
         return {
             currentVersion,
-            latestVersion: CURRENT_VERSION,
+            latestVersion: process.env.CURRENT_VERSION,
             newerLink: false
         };
     }
