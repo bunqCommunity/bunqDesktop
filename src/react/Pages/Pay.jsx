@@ -72,7 +72,7 @@ class Pay extends React.Component {
     handleChangeFormatted = valueObject => {
         this.setState(
             {
-                amount: valueObject.value
+                amount: valueObject.floatValue
             },
             this.validateForm
         );
@@ -225,7 +225,9 @@ class Pay extends React.Component {
                 <Grid item xs={12} sm={10} md={8} lg={6}>
                     <Paper style={styles.paper}>
                         <Typography type="headline">New Payment</Typography>
-                        <Typography type="body1">This page is still experimental!</Typography>
+                        <Typography type="body1">
+                            This page is still experimental!
+                        </Typography>
 
                         <AccountSelectorDialog
                             value={this.state.selectedAccount}

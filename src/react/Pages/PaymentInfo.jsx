@@ -15,7 +15,7 @@ import ArrowDownIcon from "material-ui-icons/ArrowDownward";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
-import { humanReadableDate,formatMoney } from "../Helpers/Utils";
+import { humanReadableDate, formatMoney } from "../Helpers/Utils";
 import NavLink from "../Components/Routing/NavLink";
 import AttachmentImage from "../Components/AttachmentImage";
 
@@ -25,6 +25,9 @@ const styles = {
     btn: {},
     paper: {
         padding: 24
+    },
+    list: {
+        textAlign: "left"
     },
     textCenter: {
         textAlign: "center"
@@ -182,7 +185,7 @@ class PaymentInfo extends React.Component {
                         >
                             {formatMoney(paymentAmount)}
                         </h1>
-                        <List>
+                        <List style={styles.list}>
                             <Divider />
                             <ListItem>
                                 <ListItemText
