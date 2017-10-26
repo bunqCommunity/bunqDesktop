@@ -17,6 +17,7 @@ const styles = {
     header: {
         position: "fixed",
         width: "100%",
+        top: 0,
         zIndex: 10000, // ugh
         height: 50
     }

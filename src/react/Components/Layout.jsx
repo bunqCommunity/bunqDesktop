@@ -233,8 +233,8 @@ class Layout extends React.Component {
         const RouteComponent = this.props.routesComponent;
         return (
             <MuiThemeProvider theme={ThemeList[this.props.theme]}>
-                <Header />
                 <main style={{ marginTop: 50 }}>
+                    <Header />
                     <MainDrawer />
                     <OptionsDrawer themeList={ThemeList} />
                     <Grid
@@ -253,7 +253,10 @@ class Layout extends React.Component {
                         <MainSnackbar />
 
                         <Grid item xs={12}>
-                            <ErrorBoundary recoverableError={true} history={this.props.history}>
+                            <ErrorBoundary
+                                recoverableError={true}
+                                history={this.props.history}
+                            >
                                 <RouteComponent
                                     apiKey={this.props.apiKey}
                                     userType={this.props.userType}

@@ -76,4 +76,4 @@ class PaymentListItem extends React.Component {
     }
 }
 
-export default withTheme(PaymentListItem);
+export default withTheme()(PaymentListItem);

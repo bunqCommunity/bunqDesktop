@@ -77,7 +77,7 @@
     "html-webpack-plugin": "^2.26.0",
     "istanbul": "^0.4.5",
     "localforage": "^1.5.2",
-    "material-ui": "1.0.0-beta.12",
+    "material-ui": "1.0.0-beta.18",
     "material-ui-icons": "^1.0.0-beta.10",
     "minimist": "^1.2.0",
     "mocha": "^3.4.2",
