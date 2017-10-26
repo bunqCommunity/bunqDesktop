@@ -61,7 +61,6 @@ app.on("ready", () => {
         })
     );
 
-    mainWindow.setMenu(null);
     registerShortcuts(mainWindow, app);
 
     if (env.name === "development") {
