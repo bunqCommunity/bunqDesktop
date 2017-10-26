@@ -5,6 +5,20 @@ export const ucfirst = str => {
     return f + str.substr(1);
 };
 
+// returns a , or . depending on localized result
+export const preferedSeparator = (() =>
+    (1.1).toLocaleString().substring(1, 2))();
+
+// parses strings as float and returns a correct localized format
+export const formatMoney = value =>
+    parseFloat(value).toLocaleString(undefined, {
+        currency: "EUR",
+        style: "currency",
+        currencyDisplay: "symbol",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+
 // validates json input
 export const validateJSON = input => {
     if (typeof input === "object") {
@@ -21,13 +35,13 @@ export const validateJSON = input => {
 // transforms a date string into a date object in current timezone
 export const UTCDateToLocalDate = date => {
     if (typeof date === "string") {
-		var utcDate = new Date(date);
+        var utcDate = new Date(date);
     }
 
-	var offset = utcDate.getTimezoneOffset();
-	var localDate = new Date(utcDate.setMinutes(utcDate.getMinutes() - offset));
-	
-	return localDate;
+    var offset = utcDate.getTimezoneOffset();
+    var localDate = new Date(utcDate.setMinutes(utcDate.getMinutes() - offset));
+
+    return localDate;
 };
 
 // human readable date from date string or object (nl for dutch)
@@ -55,13 +69,18 @@ export const generateGUID = () => {
             .toString(16)
             .substring(1);
     }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
-};
-
-export default {
-    ucfirst: ucfirst,
-    validateJSON: validateJSON,
-    UTCDateToLocalDate: UTCDateToLocalDate,
-    humanReadableDate: humanReadableDate
+    return (
+        s4() +
+        s4() +
+        "-" +
+        s4() +
+        "-" +
+        s4() +
+        "-" +
+        s4() +
+        "-" +
+        s4() +
+        s4() +
+        s4()
+    );
 };

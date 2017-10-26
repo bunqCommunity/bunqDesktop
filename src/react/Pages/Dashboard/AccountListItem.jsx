@@ -9,6 +9,7 @@ import Avatar from "material-ui/Avatar";
 import IconButton from "material-ui/IconButton";
 import KeyboardArrowRightIcon from "material-ui-icons/KeyboardArrowRight";
 import AttachmentImage from "../../Components/AttachmentImage";
+import { formatMoney } from "../../Helpers/Utils";
 
 import { paymentsUpdate } from "../../Actions/payments.js";
 import { accountsSelectAccount } from "../../Actions/accounts.js";
@@ -43,6 +44,8 @@ class AccountListItem extends React.Component {
         if (account.status === "CANCELLED") {
             return null;
         }
+        const formattedBalance = formatMoney(account.balance.value);
+
         return (
             <ListItem
                 button
@@ -60,7 +63,7 @@ class AccountListItem extends React.Component {
                 </Avatar>
                 <ListItemText
                     primary={account.description}
-                    secondary={`€ ${account.balance.value}`}
+                    secondary={formattedBalance}
                 />
                 {this.props.accountsAccountId === account.id ? (
                     <ListItemSecondaryAction>

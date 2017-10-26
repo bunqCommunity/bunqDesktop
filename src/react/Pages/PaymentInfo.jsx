@@ -15,7 +15,7 @@ import ArrowDownIcon from "material-ui-icons/ArrowDownward";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
-import { humanReadableDate } from "../Helpers/Utils";
+import { humanReadableDate,formatMoney } from "../Helpers/Utils";
 import NavLink from "../Components/Routing/NavLink";
 import AttachmentImage from "../Components/AttachmentImage";
 
@@ -124,14 +124,7 @@ class PaymentInfo extends React.Component {
                     align={"center"}
                     justify={"center"}
                 >
-                    <Grid
-                        item
-                        xs={12}
-                        sm={10}
-                        md={8}
-                        lg={6}
-                        style={styles.textCenter}
-                    >
+                    <Grid item xs={12} md={5} style={styles.textCenter}>
                         <AttachmentImage
                             width={90}
                             BunqJSClient={this.props.BunqJSClient}
@@ -144,8 +137,8 @@ class PaymentInfo extends React.Component {
 
                     <Grid
                         item
-                        sm={2}
-                        hidden={{ xsDown: true }}
+                        md={2}
+                        hidden={{ smDown: true }}
                         style={styles.textCenter}
                     >
                         {paymentAmount < 0 ? (
@@ -158,7 +151,7 @@ class PaymentInfo extends React.Component {
                     <Grid
                         item
                         xs={12}
-                        hidden={{ smUp: true }}
+                        hidden={{ mdUp: true }}
                         style={styles.textCenter}
                     >
                         {paymentAmount < 0 ? (
@@ -168,7 +161,7 @@ class PaymentInfo extends React.Component {
                         )}
                     </Grid>
 
-                    <Grid item xs={12} sm={5} style={styles.textCenter}>
+                    <Grid item xs={12} md={5} style={styles.textCenter}>
                         <AttachmentImage
                             width={90}
                             BunqJSClient={this.props.BunqJSClient}
@@ -187,7 +180,7 @@ class PaymentInfo extends React.Component {
                                 color: paymentColor
                             }}
                         >
-                            € {paymentAmount}
+                            {formatMoney(paymentAmount)}
                         </h1>
                         <List>
                             <Divider />
@@ -231,12 +224,12 @@ class PaymentInfo extends React.Component {
                     <title>{`BunqDesktop - Payment Info`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={3}>
+                <Grid item xs={12} sm={2}>
                     <Button to={"/"} component={NavLink} style={styles.btn}>
                         <ArrowBackIcon />
                     </Button>
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={8}>
                     <Paper style={styles.paper}>{content}</Paper>
                 </Grid>
             </Grid>

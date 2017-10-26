@@ -8,7 +8,7 @@ import {
 import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
 
-import {humanReadableDate} from "../../Helpers/Utils";
+import { formatMoney, humanReadableDate } from "../../Helpers/Utils";
 import Logger from "../../Helpers/Logger";
 import NavLink from "../../Components/Routing/NavLink";
 import AttachmentImage from "../../Components/AttachmentImage";
@@ -44,6 +44,7 @@ class PaymentListItem extends React.Component {
         const displayName = payment.counterparty_alias.display_name;
         const paymentDate = new Date(payment.created).toLocaleString();
         const paymentAmount = payment.amount.value;
+        const formattedPaymentAmount = formatMoney(payment.amount.value);
         const paymentColor =
             paymentAmount < 0
                 ? theme.palette.common.sentPayment
@@ -66,7 +67,7 @@ class PaymentListItem extends React.Component {
                             color: paymentColor
                         }}
                     >
-                        € {paymentAmount}
+                        {formattedPaymentAmount}
                     </p>
                 </ListItemSecondaryAction>
             </ListItem>,

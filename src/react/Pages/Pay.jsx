@@ -8,7 +8,7 @@ import Paper from "material-ui/Paper";
 import NumberFormat from "react-number-format";
 import { Typography } from "material-ui";
 import { FormControl } from "material-ui/Form";
-// import AccountSelector from "../Components/AccountSelector";
+import { preferedSeparator } from "../Helpers/Utils";
 import AccountSelectorDialog from "../Components/AccountSelectorDialog";
 
 const styles = {
@@ -25,8 +25,6 @@ const styles = {
         fontSize: 30
     }
 };
-
-const preferedSeparator = (() => (1.1).toLocaleString().substring(1, 2))();
 
 class Pay extends React.Component {
     constructor(props, context) {
