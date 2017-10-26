@@ -11,6 +11,7 @@ import theme from "./options";
 import main_drawer from "./main_drawer";
 import options from "./options";
 import options_drawer from "./options_drawer";
+import pay from "./pay";
 import payments from "./payments";
 import payment_info from "./payment_info";
 import payment_filter from "./payment_filter";
@@ -27,6 +28,7 @@ export default combineReducers({
     main_drawer,
     options,
     options_drawer,
+    pay,
     payment_info,
     payment_filter,
     payment_filter,

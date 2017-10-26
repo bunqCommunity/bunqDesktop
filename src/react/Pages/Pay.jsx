@@ -1,17 +1,22 @@
 import React from "react";
+import iban from "iban";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import NumberFormat from "react-number-format";
+import EmailValidator from "email-validator";
+
 import Grid from "material-ui/Grid";
 import TextField from "material-ui/TextField";
-import Input, { InputLabel, InputAdornment } from "material-ui/Input";
+import Input, { InputLabel } from "material-ui/Input";
 import Button from "material-ui/Button";
 import Paper from "material-ui/Paper";
-import IconButton from "material-ui/IconButton";
 import Typography from "material-ui/Typography";
-import { FormControl } from "material-ui/Form";
+import { FormControl, FormControlLabel } from "material-ui/Form";
+import Radio from "material-ui/Radio";
 import AccountBalanceIcon from "material-ui-icons/AccountBalance";
-import PersonIcon from "material-ui-icons/Person";
+import EmailIcon from "material-ui-icons/Email";
+import PhoneIcon from "material-ui-icons/Phone";
+import CompareArrowsIcon from "material-ui-icons/CompareArrows";
 
 import {
     preferedThousandSeparator,
@@ -19,8 +24,8 @@ import {
 } from "../Helpers/Utils";
 import AccountSelectorDialog from "../Components/AccountSelectorDialog";
 import { openModal } from "../Actions/modal";
-import Logger from "../Helpers/Logger";
 import { openSnackbar } from "../Actions/snackbar";
+import { paySend } from "../Actions/pay";
 
 const styles = {
     payButton: {
@@ -47,20 +52,38 @@ class Pay extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
+            // when false, don't allow payment request
             validForm: false,
+            // top account selection picker
             selectedAccount: 0,
+            // amount input field
             amountError: false,
             amount: "",
+            // description input field
             descriptionError: false,
             description: "",
+            // default target field
             targetError: false,
-            target: "NL54BUNQ9900057325",
+            target: "",
+            // name field for IBAN targets
             ibanNameError: false,
-            ibanName: "Finnegan Eenmanszaak",
-            targetTypeIban: true
+            ibanName: "",
+
+            // targeted account for transfers
+            selectedTargetAccount: 1,
+            selectedTargetAccountError: false,
+
+            // defines which type is used
+            targetType: "IBAN"
         };
     }
 
+    setTargetType = type => event => {
+        this.setState({
+            targetType: type,
+            target: ""
+        });
+    };
     handleChange = name => event => {
         this.setState(
             {
@@ -72,7 +95,10 @@ class Pay extends React.Component {
     handleChangeFormatted = valueObject => {
         this.setState(
             {
-                amount: valueObject.floatValue
+                amount:
+                    valueObject.formattedValue.length > 0
+                        ? valueObject.floatValue
+                        : ""
             },
             this.validateForm
         );
@@ -85,17 +111,6 @@ class Pay extends React.Component {
             this.validateForm
         );
     };
-    toggleTargetType = () => {
-        this.setState(
-            {
-                targetTypeIban: !this.state.targetTypeIban
-            },
-            this.validateForm
-        );
-    };
-    handleMouseDown = event => {
-        event.preventDefault();
-    };
 
     validateForm = () => {
         const {
@@ -103,32 +118,61 @@ class Pay extends React.Component {
             amount,
             target,
             ibanName,
-            targetTypeIban
+            selectedAccount,
+            selectedTargetAccount,
+            targetType
         } = this.state;
+
+        const amountErrorCondition = amount < 0.01 || amount > 10000;
+        const descriptionErrorCondition = description.length > 140;
+        const ibanNameErrorCondition =
+            ibanName.length < 1 || ibanName.length > 64;
+
+        // check if the target is valid based onthe targetType
+        let targetErrorCondition = false;
+        switch (targetType) {
+            case "EMAIL":
+                targetErrorCondition = !EmailValidator.validate(target);
+                break;
+            case "PHONE":
+                targetErrorCondition = target.length < 5 || target.length > 64;
+                break;
+            case "TRANSFER":
+                targetErrorCondition =
+                    selectedAccount === selectedTargetAccount;
+                break;
+            default:
+            case "IBAN":
+                targetErrorCondition = !iban.isValid(target);
+                break;
+        }
 
         this.setState(
             {
                 // check for errors
-                amountError: amount < 0.01 || amount > 10000,
-                descriptionError: description.length > 140,
-                ibanNameError: ibanName.length < 1 || ibanName.length > 64,
-                targetError: target.length < 5 || target.length > 64
+                amountError: amountErrorCondition,
+                descriptionError: descriptionErrorCondition,
+                ibanNameError: ibanNameErrorCondition,
+                targetError: targetErrorCondition
             },
             () => {
                 // now set the form valid state based on if we have errors
-                const {
-                    amountError,
-                    descriptionError,
-                    ibanNameError,
-                    targetError
-                } = this.state;
-                this.setState({
-                    validForm:
-                        !amountError &&
-                        !descriptionError &&
-                        (targetTypeIban && !ibanNameError) &&
-                        !targetError
-                });
+                if (targetType === "IBAN") {
+                    this.setState({
+                        validForm:
+                            !this.state.amountError &&
+                            !this.state.descriptionError &&
+                            !this.state.ibanNameError &&
+                            !this.state.targetError
+                    });
+                } else {
+                    this.setState({
+                        validForm:
+                            !this.state.amountError &&
+                            !this.state.descriptionError &&
+                            !this.state.targetError
+                    });
+                }
             }
         );
     };
@@ -144,78 +188,222 @@ class Pay extends React.Component {
     };
 
     sendPayment = () => {
-        if (!this.state.validForm) {
+        if (!this.state.validForm || this.props.payLoading) {
             return false;
         }
 
-        const { BunqJSClient, accounts, user } = this.props;
+        const { accounts, user } = this.props;
         const {
             selectedAccount,
+            selectedTargetAccount,
             description,
             amount,
             target,
             ibanName,
-            targetTypeIban
+            targetType
         } = this.state;
         const account = accounts[selectedAccount].MonetaryAccountBank;
         const userId = user.id;
 
-        const targetInfo = targetTypeIban
-            ? {
-                  type: "IBAN",
-                  value: target,
-                  name: ibanName
-              }
-            : {
-                  type: "EMAIL",
-                  value: "finnegan-eenmanszaak@bunq.eu"
-              };
+        // check if the target is valid based onthe targetType
+        let targetInfo = false;
+        switch (targetType) {
+            case "EMAIL":
+                targetInfo = {
+                    type: "EMAIL",
+                    value: target
+                };
+                break;
+            case "PHONE":
+                targetInfo = {
+                    type: "PHONE_NUMBER",
+                    value: target
+                };
+                break;
+            case "TRANSFER":
+                const otherAccount =
+                    accounts[selectedTargetAccount].MonetaryAccountBank;
 
-        BunqJSClient.api.payment
-            .post(
-                userId,
-                account.id,
-                description,
-                {
-                    value: amount + "", // sigh
-                    currency: "EUR"
-                },
-                targetInfo
-            )
-            .then(result => {
-                this.clearForm();
+                otherAccount.alias.map(alias => {
+                    if (alias.type === "IBAN") {
+                        targetInfo = {
+                            type: "IBAN",
+                            value: alias.value,
+                            name: alias.name
+                        };
+                    }
+                });
+                break;
+            default:
+            case "IBAN":
+                targetInfo = {
+                    type: "IBAN",
+                    value: target,
+                    name: ibanName
+                };
+                break;
+        }
 
-                this.props.openSnackbar("Payment sent successfully!");
-            })
-            .catch(error => {
-                Logger.error(error.toString());
-                Logger.error(error.response.data);
-                const response = error.response;
+        const amountInfo = {
+            value: amount + "", // sigh
+            currency: "EUR"
+        };
 
-                if (
-                    response.headers["content-type"] &&
-                    response.headers["content-type"].includes(
-                        "application/json"
-                    ) &&
-                    response.data.Error[0] &&
-                    response.data.Error[0].error_description
-                ) {
-                    // content type is jso
-                    this.props.openModal(
-                        `We received the following error while sending your payment: <br/>
-                        ${response.data.Error[0].error_description}`,
-                        "Something went wrong"
-                    );
-                } else {
-                    this.props.openModal(
-                        "Something went wrong while trying to send your payment request",
-                        "Something went wrong"
-                    );
-                }
-            });
+        this.props.paySend(
+            userId,
+            account.id,
+            description,
+            amountInfo,
+            targetInfo
+        );
+        this.clearForm();
     };
 
     render() {
+        const targetTypeSelection = (
+            <Grid container spacing={24}>
+                <Grid item xs={6} sm={3}>
+                    <FormControlLabel
+                        control={
+                            <Radio
+                                icon={<AccountBalanceIcon />}
+                                checkedIcon={<AccountBalanceIcon />}
+                                checked={this.state.targetType === "IBAN"}
+                                onChange={this.setTargetType("IBAN")}
+                                value="IBAN"
+                                name="target-type-iban"
+                            />
+                        }
+                        label="IBAN"
+                    />
+                </Grid>
+                <Grid item xs={6} sm={3}>
+                    <FormControlLabel
+                        control={
+                            <Radio
+                                icon={<EmailIcon />}
+                                checkedIcon={<EmailIcon />}
+                                color={"accent"}
+                                checked={this.state.targetType === "EMAIL"}
+                                onChange={this.setTargetType("EMAIL")}
+                                value="EMAIL"
+                                name="target-type-email"
+                            />
+                        }
+                        label="EMAIL"
+                    />
+                </Grid>
+                <Grid item xs={6} sm={3}>
+                    <FormControlLabel
+                        control={
+                            <Radio
+                                icon={<PhoneIcon />}
+                                checkedIcon={<PhoneIcon />}
+                                color={"accent"}
+                                checked={this.state.targetType === "PHONE"}
+                                onChange={this.setTargetType("PHONE")}
+                                value="PHONE"
+                                name="target-type-phone"
+                            />
+                        }
+                        label="PHONE"
+                    />
+                </Grid>
+                <Grid item xs={6} sm={3}>
+                    <FormControlLabel
+                        control={
+                            <Radio
+                                icon={<CompareArrowsIcon />}
+                                checkedIcon={<CompareArrowsIcon />}
+                                color={"accent"}
+                                checked={this.state.targetType === "TRANSFER"}
+                                onChange={this.setTargetType("TRANSFER")}
+                                value="TRANSFER"
+                                name="target-type-transfer"
+                            />
+                        }
+                        label="Transfer"
+                    />
+                </Grid>
+            </Grid>
+        );
+
+        let targetContent = null;
+        switch (this.state.targetType) {
+            case "TRANSFER":
+                targetContent = (
+                    <AccountSelectorDialog
+                        value={this.state.selectedTargetAccount}
+                        onChange={this.handleChangeDirect(
+                            "selectedTargetAccount"
+                        )}
+                        accounts={this.props.accounts}
+                        BunqJSClient={this.props.BunqJSClient}
+                    />
+                );
+                break;
+            case "PHONE":
+                targetContent = (
+                    <FormControl fullWidth error={this.state.targetError}>
+                        <TextField
+                            fullWidth
+                            required
+                            id="target"
+                            label="Phone number"
+                            value={this.state.target}
+                            onChange={this.handleChange("target")}
+                        />
+                    </FormControl>
+                );
+                break;
+            case "EMAIL":
+                targetContent = (
+                    <FormControl fullWidth error={this.state.targetError}>
+                        <TextField
+                            error={this.state.targetError}
+                            fullWidth
+                            required
+                            id="target"
+                            type="email"
+                            label="Email"
+                            value={this.state.target}
+                            onChange={this.handleChange("target")}
+                        />
+                    </FormControl>
+                );
+                break;
+            default:
+            case "IBAN":
+                targetContent = (
+                    <div>
+                        <FormControl fullWidth error={this.state.targetError}>
+                            <TextField
+                                error={this.state.targetError}
+                                fullWidth
+                                required
+                                id="target"
+                                label="IBAN number"
+                                value={this.state.target}
+                                onChange={this.handleChange("target")}
+                            />
+                        </FormControl>
+                        <FormControl fullWidth error={this.state.ibanNameError}>
+                            <TextField
+                                fullWidth
+                                required
+                                error={this.state.ibanNameError}
+                                id="ibanName"
+                                label="IBAN name"
+                                value={this.state.ibanName}
+                                onChange={this.handleChange("ibanName")}
+                                margin="normal"
+                            />
+                        </FormControl>
+                    </div>
+                );
+                break;
+        }
+
         return (
             <Grid container spacing={24} align={"center"} justify={"center"}>
                 <Helmet>
@@ -238,60 +426,17 @@ class Pay extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                         />
 
-                        <FormControl fullWidth>
-                            <InputLabel htmlFor="target">
-                                {this.state.targetTypeIban ? (
-                                    "IBAN"
-                                ) : (
-                                    "Email or phone"
-                                )}
-                            </InputLabel>
-                            <Input
-                                fullWidth
-                                required
-                                error={this.state.targetError}
-                                id="target"
-                                type={
-                                    this.state.targetTypeIban ? "text" : "email"
-                                }
-                                value={this.state.target}
-                                onChange={this.handleChange("target")}
-                                inputProps={{ style: styles.inputWithIcon }}
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            onClick={this.toggleTargetType}
-                                            onMouseDown={this.handleMouseDown}
-                                        >
-                                            {this.state.targetTypeIban ? (
-                                                <AccountBalanceIcon />
-                                            ) : (
-                                                <PersonIcon />
-                                            )}
-                                        </IconButton>
-                                    </InputAdornment>
-                                }
-                            />
-                        </FormControl>
+                        {targetTypeSelection}
 
-                        {this.state.targetTypeIban ? (
-                            <FormControl fullWidth>
-                                <TextField
-                                    fullWidth
-                                    error={this.state.ibanNameError}
-                                    id="ibanName"
-                                    label="IBAN name"
-                                    value={this.state.ibanName}
-                                    onChange={this.handleChange("ibanName")}
-                                    margin="normal"
-                                />
-                            </FormControl>
-                        ) : null}
+                        {targetContent}
 
-                        <FormControl fullWidth>
+                        <FormControl
+                            fullWidth
+                            error={this.state.descriptionError}
+                        >
                             <TextField
                                 fullWidth
-                                error={this.state.descriptionError}
+                                // error={this.state.descriptionError}
                                 id="description"
                                 label="Description"
                                 value={this.state.description}
@@ -300,11 +445,14 @@ class Pay extends React.Component {
                             />
                         </FormControl>
 
-                        <FormControl style={styles.formControlAlt}>
+                        <FormControl
+                            style={styles.formControlAlt}
+                            error={this.state.amountError}
+                        >
                             <InputLabel htmlFor="amount">Amount</InputLabel>
                             <NumberFormat
                                 required
-                                error={this.state.amountError}
+                                // error={this.state.amountError}
                                 id="amount"
                                 value={this.state.amount}
                                 style={styles.formattedInput}
@@ -337,14 +485,27 @@ class Pay extends React.Component {
 
 const mapStateToProps = state => {
     return {
+        payLoading: state.pay.loading,
         accounts: state.accounts.accounts,
         user: state.user.user
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, props) => {
+    const { BunqJSClient } = props;
     return {
         openModal: (message, title) => dispatch(openModal(message, title)),
+        paySend: (userId, accountId, description, amount, target) =>
+            dispatch(
+                paySend(
+                    BunqJSClient,
+                    userId,
+                    accountId,
+                    description,
+                    amount,
+                    target
+                )
+            ),
         openSnackbar: message => dispatch(openSnackbar(message))
     };
 };
