@@ -79,10 +79,13 @@ class Pay extends React.Component {
     }
 
     setTargetType = type => event => {
-        this.setState({
-            targetType: type,
-            target: ""
-        });
+        this.setState(
+            {
+                targetType: type,
+                target: ""
+            },
+            this.validateForm
+        );
     };
     handleChange = name => event => {
         this.setState(
@@ -346,6 +349,7 @@ class Pay extends React.Component {
                 targetContent = (
                     <FormControl fullWidth error={this.state.targetError}>
                         <TextField
+                            error={this.state.targetError}
                             fullWidth
                             required
                             id="target"
