@@ -6018,9 +6018,9 @@ react-loadable@^3.2.2:
   dependencies:
     babel-plugin-syntax-dynamic-import "^6.18.0"
 
-react-number-format@^3.0.0-alpha2:
-  version "3.0.0-alpha2"
-  resolved "https://registry.yarnpkg.com/react-number-format/-/react-number-format-3.0.0-alpha2.tgz#95c1dba935153f8b0716d0a350617336709958c6"
+react-number-format@^v3.0.0-beta3:
+  version "3.0.0-beta3"
+  resolved "https://registry.yarnpkg.com/react-number-format/-/react-number-format-3.0.0-beta3.tgz#924f70cd9bd58aa2ad5b4c90a6e7a7b96849de03"
   dependencies:
     prop-types "^15.6.0"
 

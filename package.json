@@ -88,7 +88,7 @@
     "react-dom": "16.0.0",
     "react-helmet": "^5.0.2",
     "react-loadable": "^3.2.2",
-    "react-number-format": "^3.0.0-alpha2",
+    "react-number-format": "^v3.0.0-beta3",
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.0",

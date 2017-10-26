@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Avatar from "material-ui/Avatar";
-import { InputLabel } from "material-ui/Input";
 import { FormControl } from "material-ui/Form";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Dialog, { DialogContent, DialogTitle } from "material-ui/Dialog";
 
+import {formatMoney} from "../Helpers/Utils";
 import AttachmentImage from "./AttachmentImage";
 
 const styles = {
@@ -35,7 +35,7 @@ const AccountItem = ({ account, onClick, BunqJSClient }) => {
             </Avatar>
             <ListItemText
                 primary={account.description}
-                secondary={`€ ${account.balance.value}`}
+                secondary={formatMoney(account.balance.value)}
             />
         </ListItem>
     );
