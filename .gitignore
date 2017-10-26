@@ -17,4 +17,7 @@ Thumbs.db
 /webpack.stats.json
 
 /coverage
+
+# runtime files
 /app/BunqDesktop.log.txt
+/app/settings.json

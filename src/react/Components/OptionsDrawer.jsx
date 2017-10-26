@@ -6,14 +6,16 @@ import Drawer from "material-ui/Drawer";
 import List, { ListItem, ListSubheader, ListItemIcon } from "material-ui/List";
 import Input, { InputLabel } from "material-ui/Input";
 import { MenuItem } from "material-ui/Menu";
-import { FormControl } from "material-ui/Form";
+import { FormControl, FormControlLabel } from "material-ui/Form";
 import Select from "material-ui/Select";
+import Switch from "material-ui/Switch";
 import Typography from "material-ui/Typography";
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
 
-import { setTheme } from "../Actions/theme";
+import { setTheme, setNativeFrame } from "../Actions/options";
 import { closeOptionsDrawer } from "../Actions/options_drawer";
 import { openMainDrawer } from "../Actions/main_drawer";
+import { openSnackbar } from "../Actions/snackbar";
 
 const styles = {
     list: {
@@ -66,6 +68,13 @@ class OptionsDrawer extends React.Component {
         this.props.setTheme(event.target.value);
     };
 
+    handleCheckChange = event => {
+        this.props.openSnackbar(
+            "Restart the application to view these changes!"
+        );
+        this.props.setNativeFrame(!this.props.nativeFrame);
+    };
+
     render() {
         const { theme, open } = this.props;
 
@@ -86,6 +95,19 @@ class OptionsDrawer extends React.Component {
                             ))}
                         </Select>
                     </FormControl>
+                </ListItem>
+
+                <ListItem>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                id="nativeframe-selection"
+                                checked={this.props.nativeFrame}
+                                onChange={this.handleCheckChange}
+                            />
+                        }
+                        label="Use the native frame"
+                    />
                 </ListItem>
 
                 <ListItem style={styles.listFiller} />
@@ -122,13 +144,16 @@ class OptionsDrawer extends React.Component {
 const mapStateToProps = state => {
     return {
         open: state.options_drawer.open,
-        theme: state.theme.theme
+        theme: state.options.theme,
+        nativeFrame: state.options.native_frame
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
+        openSnackbar: message => dispatch(openSnackbar(message)),
         setTheme: theme => dispatch(setTheme(theme)),
+        setNativeFrame: useFrame => dispatch(setNativeFrame(useFrame)),
         openMainDrawer: () => dispatch(openMainDrawer()),
         closeOptionsDrawer: () => dispatch(closeOptionsDrawer())
     };

@@ -7,6 +7,12 @@ import Slide from "material-ui/transitions/Slide";
 // redux actions
 import { closeSnackbar } from "../Actions/snackbar.js";
 
+const styles = {
+    snackbar: {
+        marginTop: 50
+    }
+};
+
 class MainSnackbar extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -16,6 +22,7 @@ class MainSnackbar extends React.Component {
     render() {
         return (
             <Snackbar
+                style={styles.snackbar}
                 open={this.props.snackbarOpen}
                 message={this.props.snackbarMessage}
                 autoHideDuration={this.props.snackbarDuration}

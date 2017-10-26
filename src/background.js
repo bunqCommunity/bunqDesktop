@@ -1,6 +1,7 @@
 import path from "path";
 import url from "url";
 import log from "electron-log";
+import settings from "electron-settings";
 import { app, Menu } from "electron";
 import { devMenuTemplate } from "./menu/dev_menu_template";
 import { editMenuTemplate } from "./menu/edit_menu_template";
@@ -38,8 +39,15 @@ log.transports.file.file = `${__dirname}/${log.transports.file
 app.on("ready", () => {
     setApplicationMenu();
 
+    settings.setPath(`${__dirname}/settings.json`);
+
+    const USE_NATIVE_FRAME_STORED = settings.get("USE_NATIVE_FRAME");
+    const USE_NATIVE_FRAME =
+        USE_NATIVE_FRAME_STORED !== undefined &&
+        USE_NATIVE_FRAME_STORED === true;
+
     const mainWindow = createWindow("main", {
-        frame: false,
+        frame: USE_NATIVE_FRAME,
         webPreferences: { webSecurity: false },
         width: 1000,
         height: 800
@@ -53,6 +61,7 @@ app.on("ready", () => {
         })
     );
 
+    mainWindow.setMenu(null);
     registerShortcuts(mainWindow, app);
 
     if (env.name === "development") {
