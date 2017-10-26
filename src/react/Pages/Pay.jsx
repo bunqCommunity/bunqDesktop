@@ -177,7 +177,7 @@ class Pay extends React.Component {
                 account.id,
                 description,
                 {
-                    value: amount,
+                    value: amount + "", // sigh
                     currency: "EUR"
                 },
                 targetInfo
@@ -202,7 +202,7 @@ class Pay extends React.Component {
                 ) {
                     // content type is jso
                     this.props.openModal(
-                        `We received the following error while sending your payment: 
+                        `We received the following error while sending your payment: <br/>
                         ${response.data.Error[0].error_description}`,
                         "Something went wrong"
                     );
