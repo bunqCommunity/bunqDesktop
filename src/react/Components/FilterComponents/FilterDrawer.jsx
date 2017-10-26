@@ -114,8 +114,12 @@ class DisplayDrawer extends React.Component {
             </IconButton>,
             <Drawer
                 open={this.state.open}
+                className="options-drawer"
                 onRequestClose={this.closeDrawer}
                 anchor="right"
+                SlideProps={{
+                    style: { top: 50 }
+                }}
             >
                 {drawerList}
             </Drawer>

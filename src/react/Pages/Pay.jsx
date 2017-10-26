@@ -348,6 +348,10 @@ class Pay extends React.Component {
             case "PHONE":
                 targetContent = (
                     <FormControl fullWidth error={this.state.targetError}>
+                        <Typography type="body1">
+                            Phone numbers should contain no spaces and include
+                            the land code. For example: +31612345678
+                        </Typography>
                         <TextField
                             error={this.state.targetError}
                             fullWidth
