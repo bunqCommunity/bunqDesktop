@@ -26,13 +26,18 @@ const styles = {
     formControl: {
         width: "100%"
     },
+    formControlAlt: {
+        width: "100%",
+        marginBottom: 10
+    },
     paper: {
         padding: 24,
         textAlign: "left"
     },
     formattedInput: {
         fontSize: 30
-    }
+    },
+    inputWithIcon: { width: "calc(100% - 62px)" }
 };
 
 class Pay extends React.Component {
@@ -109,6 +114,7 @@ class Pay extends React.Component {
                                 id="target"
                                 value={this.state.target}
                                 onChange={this.handleChange("target")}
+                                inputProps={{ style: styles.inputWithIcon }}
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <IconButton
@@ -137,7 +143,8 @@ class Pay extends React.Component {
                             />
                         </FormControl>
 
-                        <FormControl style={styles.formControl}>
+                        <FormControl style={styles.formControlAlt}>
+                            <InputLabel htmlFor="amount">Amount</InputLabel>
                             <NumberFormat
                                 required
                                 id="amount"
