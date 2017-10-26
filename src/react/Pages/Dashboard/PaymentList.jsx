@@ -11,6 +11,12 @@ import PaymentListItem from "./PaymentListItem";
 import ClearBtn from "../../Components/FilterComponents/ClearFilter";
 import DisplayDrawerBtn from "../../Components/FilterComponents/FilterDrawer";
 
+const styles = {
+    list: {
+        textAlign: "left"
+    }
+};
+
 class PaymentList extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -51,7 +57,7 @@ class PaymentList extends React.Component {
         }
 
         return (
-            <List>
+            <List style={styles.left}>
                 <ListSubheader>
                     Payments - {payments.length}
                     <ListItemSecondaryAction>

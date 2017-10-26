@@ -11,6 +11,12 @@ import AccountListItem from "./AccountListItem";
 import { accountsSelectAccount, accountsUpdate } from "../../Actions/accounts";
 import { paymentsUpdate } from "../../Actions/payments";
 
+const styles = {
+    list: {
+        textAlign: "left"
+    }
+};
+
 class AccountList extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -100,7 +106,7 @@ class AccountList extends React.Component {
         }
 
         return (
-            <List>
+            <List style={styles.list}>
                 <ListSubheader>
                     Accounts - {accounts.length}
                     <ListItemSecondaryAction>

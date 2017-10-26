@@ -6,8 +6,12 @@ export const ucfirst = str => {
 };
 
 // returns a , or . depending on localized result
-export const preferedSeparator = (() =>
-    (1.1).toLocaleString().substring(1, 2))();
+export const { preferedThousandSeparator, preferedDecimalSeparator } = (() => {
+    return {
+        preferedThousandSeparator: (10000).toLocaleString().substring(2, 3),
+        preferedDecimalSeparator: (1.1).toLocaleString().substring(1, 2)
+    };
+})();
 
 // parses strings as float and returns a correct localized format
 export const formatMoney = value =>

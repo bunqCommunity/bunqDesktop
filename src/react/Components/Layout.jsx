@@ -53,7 +53,8 @@ const styles = theme => ({
             marginLeft: 250,
             width: "calc(100% - 250px)"
         }
-    }
+    },
+    main: { marginTop: 50, textAlign: "left" }
 });
 
 class Layout extends React.Component {
@@ -233,7 +234,7 @@ class Layout extends React.Component {
         const RouteComponent = this.props.routesComponent;
         return (
             <MuiThemeProvider theme={ThemeList[this.props.theme]}>
-                <main style={{ marginTop: 50 }}>
+                <main className={classes.main}>
                     <Header />
                     <MainDrawer />
                     <OptionsDrawer themeList={ThemeList} />

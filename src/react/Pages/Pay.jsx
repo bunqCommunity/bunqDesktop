@@ -1,14 +1,22 @@
 import React from "react";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
+import NumberFormat from "react-number-format";
 import Grid from "material-ui/Grid";
 import TextField from "material-ui/TextField";
+import Input, { InputLabel, InputAdornment } from "material-ui/Input";
 import Button from "material-ui/Button";
 import Paper from "material-ui/Paper";
-import NumberFormat from "react-number-format";
-import { Typography } from "material-ui";
+import IconButton from "material-ui/IconButton";
+import Typography from "material-ui/Typography";
 import { FormControl } from "material-ui/Form";
-import { preferedSeparator } from "../Helpers/Utils";
+import AccountBalanceIcon from "material-ui-icons/AccountBalance";
+import EmailIcon from "material-ui-icons/Email";
+
+import {
+    preferedThousandSeparator,
+    preferedDecimalSeparator
+} from "../Helpers/Utils";
 import AccountSelectorDialog from "../Components/AccountSelectorDialog";
 
 const styles = {
@@ -19,7 +27,8 @@ const styles = {
         width: "100%"
     },
     paper: {
-        padding: 24
+        padding: 24,
+        textAlign: "left"
     },
     formattedInput: {
         fontSize: 30
@@ -31,9 +40,10 @@ class Pay extends React.Component {
         super(props, context);
         this.state = {
             selectedAccount: 0,
-            amount: 0,
+            amount: "",
             description: "",
-            target: ""
+            target: "",
+            targetTypeIban: true
         };
     }
 
@@ -48,6 +58,28 @@ class Pay extends React.Component {
         });
     };
 
+    toggleTargetType = event => {
+        this.setState({
+            targetTypeIban: !this.state.targetTypeIban
+        });
+    };
+
+    handleMouseDown = event => {
+        event.preventDefault();
+    };
+
+    paymentTest = async () => {
+        const { BunqJSClient, accounts } = this.props;
+        const {
+            selectedAccount,
+            description,
+            target,
+            targetTypeIban
+        } = this.state;
+        const account = accounts[selectedAccount];
+
+        this.props.BunqJSClient.api.payment.post();
+    };
     render() {
         return (
             <Grid container spacing={24} align={"center"} justify={"center"}>
@@ -68,15 +100,29 @@ class Pay extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                         />
 
-                        <FormControl style={styles.formControl}>
-                            <TextField
+                        <FormControl fullWidth>
+                            <InputLabel htmlFor="target">
+                                {this.state.targetTypeIban ? "IBAN" : "Email"}
+                            </InputLabel>
+                            <Input
                                 fullWidth
-                                required
                                 id="target"
-                                label="IBAN, email, or phone"
                                 value={this.state.target}
                                 onChange={this.handleChange("target")}
-                                margin="normal"
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            onClick={this.toggleTargetType}
+                                            onMouseDown={this.handleMouseDown}
+                                        >
+                                            {this.state.targetTypeIban ? (
+                                                <AccountBalanceIcon />
+                                            ) : (
+                                                <EmailIcon />
+                                            )}
+                                        </IconButton>
+                                    </InputAdornment>
+                                }
                             />
                         </FormControl>
 
@@ -99,11 +145,11 @@ class Pay extends React.Component {
                                 style={styles.formattedInput}
                                 onChange={this.handleChange("amount")}
                                 margin="normal"
-                                decimalSeparator={preferedSeparator}
                                 decimalPrecision={2}
-                                thousandSeparator={true}
+                                decimalSeparator={preferedDecimalSeparator}
+                                thousandSeparator={preferedThousandSeparator}
                                 prefix={"€"}
-                                customInput={TextField}
+                                customInput={Input}
                             />
                         </FormControl>
 
