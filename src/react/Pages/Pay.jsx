@@ -11,7 +11,7 @@ import IconButton from "material-ui/IconButton";
 import Typography from "material-ui/Typography";
 import { FormControl } from "material-ui/Form";
 import AccountBalanceIcon from "material-ui-icons/AccountBalance";
-import EmailIcon from "material-ui-icons/Email";
+import PersonIcon from "material-ui-icons/Person";
 
 import {
     preferedThousandSeparator,
@@ -264,7 +264,7 @@ class Pay extends React.Component {
                                             {this.state.targetTypeIban ? (
                                                 <AccountBalanceIcon />
                                             ) : (
-                                                <EmailIcon />
+                                                <PersonIcon />
                                             )}
                                         </IconButton>
                                     </InputAdornment>
