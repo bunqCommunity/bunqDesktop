@@ -2,6 +2,8 @@ import { openSnackbar } from "./snackbar";
 
 const Logger = require("../Helpers/Logger");
 import { openModal } from "./modal";
+import { paymentsUpdate } from "./payments";
+import {accountsUpdate} from "./accounts";
 
 export function paySend(
     BunqJSClient,
@@ -17,6 +19,8 @@ export function paySend(
             .post(userId, accountId, description, amount, target)
             .then(result => {
                 dispatch(openSnackbar("Payment sent successfully!"));
+                dispatch(paymentsUpdate(BunqJSClient, userId, accountId));
+                dispatch(accountsUpdate(BunqJSClient, userId));
                 dispatch(payNotLoading());
             })
             .catch(error => {
