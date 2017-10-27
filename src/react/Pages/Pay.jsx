@@ -19,6 +19,7 @@ import CompareArrowsIcon from "material-ui-icons/CompareArrows";
 
 import AccountSelectorDialog from "../Components/FormFields/AccountSelectorDialog";
 import MoneyFormatInput from "../Components/FormFields/MoneyFormatInput";
+import PhoneFormatInput from "../Components/FormFields/PhoneFormatInput";
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
 import { paySend } from "../Actions/pay";
@@ -343,6 +344,7 @@ class Pay extends React.Component {
             case "TRANSFER":
                 targetContent = (
                     <AccountSelectorDialog
+                        id="target"
                         value={this.state.selectedTargetAccount}
                         onChange={this.handleChangeDirect(
                             "selectedTargetAccount"
@@ -359,12 +361,9 @@ class Pay extends React.Component {
                             Phone numbers should contain no spaces and include
                             the land code. For example: +31612345678
                         </Typography>
-                        <TextField
-                            error={this.state.targetError}
-                            fullWidth
-                            required
+                        <PhoneFormatInput
                             id="target"
-                            label="Phone number"
+                            error={this.state.targetError}
                             value={this.state.target}
                             onChange={this.handleChange("target")}
                         />
@@ -470,6 +469,7 @@ class Pay extends React.Component {
                         >
                             <InputLabel htmlFor="amount">Amount</InputLabel>
                             <MoneyFormatInput
+                                id="amount"
                                 value={this.state.amount}
                                 style={styles.formattedInput}
                                 onValueChange={this.handleChangeFormatted}

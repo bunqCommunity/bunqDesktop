@@ -11,7 +11,6 @@ const MoneyFormatInput = (props) => {
         <NumberFormat
             required
             fullWidth
-            id="amount"
             margin="normal"
             decimalScale={2}
             fixedDecimalScale={true}
