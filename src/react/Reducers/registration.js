@@ -59,6 +59,7 @@ export default (state = defaultState, action) => {
                 ...state,
                 api_key: false,
                 has_stored_api_key: false,
+                derivedPassword: false
             };
 
         case "REGISTRATION_SET_PASSWORD":
