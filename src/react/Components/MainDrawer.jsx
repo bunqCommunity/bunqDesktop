@@ -20,6 +20,7 @@ const styles = {
     list: {
         width: 250,
         paddingBottom: 50,
+        textAlign: "left",
         display: "flex",
         flexDirection: "column",
         WebkitAppRegion: "no-drag"
@@ -103,12 +104,7 @@ class MainDrawer extends React.Component {
 
         const drawerList = (
             <List style={styles.list}>
-                <a
-                    className="js-external-link"
-                    style={styles.bunqLink}
-                    href="https://github.com/BunqCommunity/BunqDesktop"
-                    target="_blank"
-                >
+                <NavLink to="/application-info" style={styles.bunqLink}>
                     <ListItem button>
                         <ListItemIcon>
                             <Avatar
@@ -121,7 +117,7 @@ class MainDrawer extends React.Component {
                             secondary={`Version ${process.env.CURRENT_VERSION}`}
                         />
                     </ListItem>
-                </a>
+                </NavLink>
 
                 {navigationItems}
 

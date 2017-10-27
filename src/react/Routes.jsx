@@ -10,6 +10,7 @@ import LoginPassword from "./Pages/LoginPassword";
 import Pay from "./Pages/Pay";
 import PaymentInfo from "./Pages/PaymentInfo";
 import NotFound from "./Pages/NotFound";
+import ApplicationInfo from "./Pages/ApplicationInfo";
 
 // router react component
 export default class Routes extends React.Component {
@@ -67,6 +68,13 @@ export default class Routes extends React.Component {
                             path="/login"
                             render={props => (
                                 <Login {...props} {...this.props.childProps} />
+                            )}
+                        />
+
+                        <Route
+                            path="/application-info"
+                            render={props => (
+                                <ApplicationInfo {...props} {...this.props.childProps} />
                             )}
                         />
 

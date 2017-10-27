@@ -61,3 +61,8 @@ export default async () => {
         };
     }
 };
+
+export const allReleases = () =>
+    axios
+        .get("https://api.github.com/repos/BunqCommunity/BunqDesktop/releases")
+        .then(response => response.data);
