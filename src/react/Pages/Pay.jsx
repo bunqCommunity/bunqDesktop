@@ -7,11 +7,18 @@ import EmailValidator from "email-validator";
 import Grid from "material-ui/Grid";
 import TextField from "material-ui/TextField";
 import { InputLabel } from "material-ui/Input";
+import List, { ListItem, ListItemText } from "material-ui/List";
 import Button from "material-ui/Button";
 import Paper from "material-ui/Paper";
 import Typography from "material-ui/Typography";
 import { FormControl, FormControlLabel } from "material-ui/Form";
 import Radio from "material-ui/Radio";
+import Dialog, {
+    DialogActions,
+    DialogContent,
+    DialogTitle
+} from "material-ui/Dialog";
+
 import AccountBalanceIcon from "material-ui-icons/AccountBalance";
 import EmailIcon from "material-ui-icons/Email";
 import PhoneIcon from "material-ui-icons/Phone";
@@ -20,7 +27,6 @@ import CompareArrowsIcon from "material-ui-icons/CompareArrows";
 import AccountSelectorDialog from "../Components/FormFields/AccountSelectorDialog";
 import MoneyFormatInput from "../Components/FormFields/MoneyFormatInput";
 import PhoneFormatInput from "../Components/FormFields/PhoneFormatInput";
-import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
 import { paySend } from "../Actions/pay";
 
@@ -44,21 +50,29 @@ class Pay extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
+            confirmModalOpen: false,
+
             // when false, don't allow payment request
             validForm: false,
+
             // source wallet has insuffient funds
             insufficientFundsCondition: false,
+
             // top account selection picker
             selectedAccount: 0,
+
             // amount input field
             amountError: false,
             amount: "",
+
             // description input field
             descriptionError: false,
             description: "",
+
             // default target field
             targetError: false,
             target: "",
+
             // name field for IBAN targets
             ibanNameError: false,
             ibanName: "",
@@ -81,6 +95,14 @@ class Pay extends React.Component {
         });
     }
 
+    closeModal = () => {
+        this.setState({ confirmModalOpen: false });
+    };
+    openModal = () => {
+        this.setState({ confirmModalOpen: true });
+    };
+
+    // callbacks for input fields and selectors
     setTargetType = type => event => {
         this.setState(
             {
@@ -118,6 +140,7 @@ class Pay extends React.Component {
         );
     };
 
+    // validates all the possible input combinations
     validateForm = () => {
         const {
             description,
@@ -188,6 +211,7 @@ class Pay extends React.Component {
         );
     };
 
+    // clears the input fields to default
     clearForm = () => {
         this.setState(
             {
@@ -198,10 +222,12 @@ class Pay extends React.Component {
         );
     };
 
+    // send the actual payment
     sendPayment = () => {
         if (!this.state.validForm || this.props.payLoading) {
             return false;
         }
+        this.closeModal();
 
         const { accounts, user } = this.props;
         const {
@@ -271,6 +297,90 @@ class Pay extends React.Component {
     };
 
     render() {
+        const {
+            selectedTargetAccount,
+            selectedAccount,
+            description,
+            targetType,
+            ibanName,
+            amount,
+            target
+        } = this.state;
+
+        let confirmationModal = null;
+        if (this.state.confirmModalOpen) {
+            const account = this.props.accounts[selectedAccount]
+                .MonetaryAccountBank;
+
+            confirmationModal = (
+                <Dialog
+                    open={this.state.confirmModalOpen}
+                    keepMounted
+                    onRequestClose={this.closeModal}
+                >
+                    <DialogTitle>Confirm the payment</DialogTitle>
+                    <DialogContent>
+                        <List>
+                            <ListItem>
+                                <ListItemText
+                                    primary="From"
+                                    secondary={`${account.description} ${account
+                                        .balance.value} ${account.balance
+                                        .currency}`}
+                                />
+                            </ListItem>
+                            <ListItem>
+                                <ListItemText
+                                    primary="Description"
+                                    secondary={description}
+                                />
+                            </ListItem>
+                            <ListItem>
+                                <ListItemText
+                                    primary="Amount"
+                                    secondary={`${amount.toFixed(2)} ${account.balance
+                                        .currency}`}
+                                />
+                            </ListItem>
+                            <ListItem>
+                                <ListItemText
+                                    primary="To"
+                                    secondary={(() => {
+                                        switch (targetType) {
+                                            case "PHONE":
+                                                return `Phone: ${target}`;
+                                            case "EMAIL":
+                                                return `Email: ${target}`;
+                                            case "IBAN":
+                                                return `IBAN: ${target} - Name: ${ibanName}`;
+                                            case "TRANSFER":
+                                                const account = this.props
+                                                    .accounts[
+                                                    selectedTargetAccount
+                                                ].MonetaryAccountBank;
+                                                return `Transfer ${account.description}`;
+                                        }
+                                    })()}
+                                />
+                            </ListItem>
+                        </List>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button raised onClick={this.closeModal} color="accent">
+                            Cancel
+                        </Button>
+                        <Button
+                            raised
+                            onClick={this.sendPayment}
+                            color="primary"
+                        >
+                            Confirm
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            );
+        }
+
         const targetTypeSelection = (
             <Grid container spacing={24}>
                 <Grid item xs={6} sm={3}>
@@ -482,11 +592,13 @@ class Pay extends React.Component {
                             color="primary"
                             disabled={!this.state.validForm}
                             style={styles.payButton}
-                            onClick={this.sendPayment}
+                            onClick={this.openModal}
                         >
                             Pay
                         </Button>
                     </Paper>
+
+                    {confirmationModal}
                 </Grid>
             </Grid>
         );
@@ -505,7 +617,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, props) => {
     const { BunqJSClient } = props;
     return {
-        openModal: (message, title) => dispatch(openModal(message, title)),
         paySend: (userId, accountId, description, amount, target) =>
             dispatch(
                 paySend(
