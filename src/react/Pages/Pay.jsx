@@ -31,11 +31,7 @@ const styles = {
     payButton: {
         width: "100%"
     },
-    formControl: {
-        width: "100%"
-    },
     formControlAlt: {
-        width: "100%",
         marginBottom: 10
     },
     paper: {
@@ -44,8 +40,7 @@ const styles = {
     },
     formattedInput: {
         fontSize: 30
-    },
-    inputWithIcon: { width: "calc(100% - 62px)" }
+    }
 };
 
 class Pay extends React.Component {
@@ -76,6 +71,15 @@ class Pay extends React.Component {
             // defines which type is used
             targetType: "IBAN"
         };
+    }
+
+    componentDidMount() {
+        // set the current account selected on the dashboard as the active one
+        this.props.accounts.map((account, accountKey) => {
+            if (this.props.selectedAccount === account.MonetaryAccountBank.id) {
+                this.setState({ selectedAccount: accountKey });
+            }
+        });
     }
 
     setTargetType = type => event => {
@@ -421,9 +425,6 @@ class Pay extends React.Component {
                 <Grid item xs={12} sm={10} md={8} lg={6}>
                     <Paper style={styles.paper}>
                         <Typography type="headline">New Payment</Typography>
-                        <Typography type="body1">
-                            This page is still experimental!
-                        </Typography>
 
                         <AccountSelectorDialog
                             value={this.state.selectedAccount}
@@ -495,6 +496,7 @@ const mapStateToProps = state => {
     return {
         payLoading: state.pay.loading,
         accounts: state.accounts.accounts,
+        selectedAccount: state.accounts.selectedAccount,
         user: state.user.user
     };
 };

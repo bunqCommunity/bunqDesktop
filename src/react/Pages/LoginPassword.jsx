@@ -1,12 +1,15 @@
 import React from "react";
 import { Typography } from "material-ui";
 import { connect } from "react-redux";
+import Redirect from "react-router-dom/Redirect";
 import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
 import Input from "material-ui/Input";
 import Button from "material-ui/Button";
 import Card, { CardContent } from "material-ui/Card";
 import { CircularProgress } from "material-ui/Progress";
+import WarningIcon from "material-ui-icons/Warning";
+
 import {
     registrationClearApiKey,
     registrationDerivePassword,
@@ -14,7 +17,6 @@ import {
     registrationSetDeviceName,
     registrationSetEnvironment
 } from "../Actions/registration";
-import { Redirect } from "react-router-dom";
 
 const styles = {
     loginButton: {
@@ -199,6 +201,24 @@ class LoginPassword extends React.Component {
 
                 <Grid item xs={12} sm={10} md={8} lg={6}>
                     <Card>{cardContent}</Card>
+                </Grid>
+                <Grid item xs={12} />
+                <Grid item xs={12} sm={10} md={8} lg={6}>
+                    <Card>
+                        <CardContent>
+                            <Typography type="headline">
+                                <WarningIcon /> Caution!
+                            </Typography>
+                            <Typography type="body2">
+                                This project is still in active development!
+                            </Typography>
+                            <Typography type="body2">
+                                We test everything before releasing updates but
+                                until we release version 1.0.0 we advice against
+                                using BunqDesktop to make big payments.
+                            </Typography>
+                        </CardContent>
+                    </Card>
                 </Grid>
             </Grid>
         );
