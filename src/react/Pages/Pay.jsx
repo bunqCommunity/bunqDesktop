@@ -2,12 +2,11 @@ import React from "react";
 import iban from "iban";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
-import NumberFormat from "react-number-format";
 import EmailValidator from "email-validator";
 
 import Grid from "material-ui/Grid";
 import TextField from "material-ui/TextField";
-import Input, { InputLabel } from "material-ui/Input";
+import { InputLabel } from "material-ui/Input";
 import Button from "material-ui/Button";
 import Paper from "material-ui/Paper";
 import Typography from "material-ui/Typography";
@@ -18,11 +17,8 @@ import EmailIcon from "material-ui-icons/Email";
 import PhoneIcon from "material-ui-icons/Phone";
 import CompareArrowsIcon from "material-ui-icons/CompareArrows";
 
-import {
-    preferedThousandSeparator,
-    preferedDecimalSeparator
-} from "../Helpers/Utils";
-import AccountSelectorDialog from "../Components/AccountSelectorDialog";
+import AccountSelectorDialog from "../Components/FormFields/AccountSelectorDialog";
+import MoneyFormatInput from "../Components/FormFields/MoneyFormatInput";
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
 import { paySend } from "../Actions/pay";
@@ -473,21 +469,10 @@ class Pay extends React.Component {
                             fullWidth
                         >
                             <InputLabel htmlFor="amount">Amount</InputLabel>
-                            <NumberFormat
-                                required
-                                fullWidth
-                                // error={this.state.amountError}
-                                id="amount"
+                            <MoneyFormatInput
                                 value={this.state.amount}
                                 style={styles.formattedInput}
                                 onValueChange={this.handleChangeFormatted}
-                                margin="normal"
-                                decimalScale={2}
-                                fixedDecimalScale={true}
-                                decimalSeparator={preferedDecimalSeparator}
-                                thousandSeparator={preferedThousandSeparator}
-                                prefix={"€"}
-                                customInput={Input}
                             />
                         </FormControl>
 

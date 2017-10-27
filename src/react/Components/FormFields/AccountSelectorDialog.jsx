@@ -5,8 +5,8 @@ import { FormControl } from "material-ui/Form";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Dialog, { DialogContent, DialogTitle } from "material-ui/Dialog";
 
-import {formatMoney} from "../Helpers/Utils";
-import AttachmentImage from "./AttachmentImage";
+import {formatMoney} from "../../Helpers/Utils";
+import AttachmentImage from "../AttachmentImage";
 
 const styles = {
     formControl: {

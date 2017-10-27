@@ -7,7 +7,7 @@ import Select from "material-ui/Select";
 import { ListItem, ListItemText } from "material-ui/List";
 import Avatar from "material-ui/Avatar";
 
-import AttachmentImage from "./AttachmentImage";
+import AttachmentImage from "../AttachmentImage";
 
 const styles = {
     formControl: {

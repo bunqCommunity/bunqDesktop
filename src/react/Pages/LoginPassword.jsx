@@ -136,6 +136,7 @@ class LoginPassword extends React.Component {
                 )}
 
                 <Input
+                    autoFocus
                     style={styles.passwordInput}
                     error={!this.state.passwordValid}
                     type="password"
