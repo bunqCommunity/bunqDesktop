@@ -49,6 +49,8 @@ class Pay extends React.Component {
         this.state = {
             // when false, don't allow payment request
             validForm: false,
+            // source wallet has insuffient funds
+            insufficientFundsCondition: false,
             // top account selection picker
             selectedAccount: 0,
             // amount input field
@@ -130,6 +132,11 @@ class Pay extends React.Component {
             targetType
         } = this.state;
 
+        const account = this.props.accounts[selectedAccount]
+            .MonetaryAccountBank;
+
+        const insufficientFundsCondition =
+            amount !== "" && amount > account.balance.value;
         const amountErrorCondition = amount < 0.01 || amount > 10000;
         const descriptionErrorCondition = description.length > 140;
         const ibanNameErrorCondition =
@@ -158,26 +165,26 @@ class Pay extends React.Component {
             {
                 // check for errors
                 amountError: amountErrorCondition,
+                insufficientFundsCondition: insufficientFundsCondition,
                 descriptionError: descriptionErrorCondition,
                 ibanNameError: ibanNameErrorCondition,
                 targetError: targetErrorCondition
             },
             () => {
+                const defaultErrors =
+                    !this.state.insufficientFundsCondition &&
+                    !this.state.amountError &&
+                    !this.state.descriptionError &&
+                    !this.state.targetError;
+
                 // now set the form valid state based on if we have errors
                 if (targetType === "IBAN") {
                     this.setState({
-                        validForm:
-                            !this.state.amountError &&
-                            !this.state.descriptionError &&
-                            !this.state.ibanNameError &&
-                            !this.state.targetError
+                        validForm: defaultErrors && !this.state.ibanNameError
                     });
                 } else {
                     this.setState({
-                        validForm:
-                            !this.state.amountError &&
-                            !this.state.descriptionError &&
-                            !this.state.targetError
+                        validForm: defaultErrors
                     });
                 }
             }
@@ -434,6 +441,12 @@ class Pay extends React.Component {
                             accounts={this.props.accounts}
                             BunqJSClient={this.props.BunqJSClient}
                         />
+                        {this.state.insufficientFundsCondition !== false ? (
+                            <InputLabel error={true}>
+                                Your source account does not have sufficient
+                                funds!
+                            </InputLabel>
+                        ) : null}
 
                         {targetTypeSelection}
 
@@ -457,10 +470,12 @@ class Pay extends React.Component {
                         <FormControl
                             style={styles.formControlAlt}
                             error={this.state.amountError}
+                            fullWidth
                         >
                             <InputLabel htmlFor="amount">Amount</InputLabel>
                             <NumberFormat
                                 required
+                                fullWidth
                                 // error={this.state.amountError}
                                 id="amount"
                                 value={this.state.amount}
