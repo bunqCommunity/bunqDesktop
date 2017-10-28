@@ -14,7 +14,25 @@
       "package.json"
     ],
     "linux": {
-      "category": "Office"
+      "category": "Office",
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
+    },
+    "mac": {
+      "category": "public.app-category.finance"
     },
     "publish": null
   },
