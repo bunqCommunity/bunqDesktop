@@ -3,8 +3,7 @@
   "name": "bunq-desktop",
   "productName": "BunqDesktop",
   "version": "0.6.0",
-  "author": "Gregory Goijaerts (crecketgaming@gmail.com)",
-  "email":"bunqcommunity@gmail.com",
+  "author": "BunqCommunity <bunqcommunity@gmail.com)",
   "license": "MIT",
   "main": "app/background.js",
   "build": {
