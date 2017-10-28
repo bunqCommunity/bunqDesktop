@@ -3,7 +3,10 @@
   "name": "bunq-desktop",
   "productName": "BunqDesktop",
   "version": "0.6.0",
-  "author": "BunqCommunity <bunqcommunity@gmail.com)",
+  "author": {
+    "name": "BunqCommunity",
+    "email": "bunqcommunity@gmail.com"
+  },
   "license": "MIT",
   "main": "app/background.js",
   "build": {
