@@ -21,3 +21,4 @@ Thumbs.db
 # runtime files
 /app/BunqDesktop.log.txt
 /app/settings.json
+/settings.json
