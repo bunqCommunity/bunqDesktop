@@ -39,8 +39,6 @@ log.transports.file.file = `${__dirname}/${log.transports.file
 app.on("ready", () => {
     setApplicationMenu();
 
-    settings.setPath(`./settings.json`);
-
     const USE_NATIVE_FRAME_STORED = settings.get("USE_NATIVE_FRAME");
     const USE_NATIVE_FRAME =
         USE_NATIVE_FRAME_STORED !== undefined &&

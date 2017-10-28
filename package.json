@@ -1,6 +1,6 @@
 {
   "description": "BunqDesktop application",
-  "name": "bunq-desktop",
+  "name": "bunqdesktop",
   "productName": "BunqDesktop",
   "version": "0.6.0",
   "author": {
@@ -31,8 +31,23 @@
             "x64",
             "ia32"
           ]
+        },
+        {
+          "target": "appx",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
         }
       ]
+    },
+    "appx": {
+      "applicationId": "com.bunq.desktop",
+      "displayName": "BunqDesktop",
+      "identityName": "BunqDesktop",
+      "publisherDisplayName": "BunqCommunity",
+      "backgroundColor": "#fafafa",
+      "languages": ["en-US"]
     },
     "mac": {
       "category": "public.app-category.finance"
