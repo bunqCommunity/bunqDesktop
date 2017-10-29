@@ -5907,9 +5907,9 @@ q@^1.1.2, q@~1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/q/-/q-1.5.0.tgz#dd01bac9d06d30e6f219aecb8253ee9ebdc308f1"
 
-qartjs@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/qartjs/-/qartjs-1.1.2.tgz#51653a5a3010889ebd3662fd927c27a6cea7b604"
+qartjs@Crecket/qart.js:
+  version "1.1.1"
+  resolved "https://codeload.github.com/Crecket/qart.js/tar.gz/542ca4e0859ac2f15e2f7250e95ab020055e61ee"
 
 qs@6.5.1, qs@~6.5.1:
   version "6.5.1"

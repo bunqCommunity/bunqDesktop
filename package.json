@@ -124,7 +124,7 @@
     "node-forge": "^0.7.1",
     "node-sass": "^4.5.3",
     "prop-types": "^15.5.8",
-    "qartjs": "^1.1.2",
+    "qartjs": "Crecket/qart.js",
     "react": "^16.0.0",
     "react-dom": "16.0.0",
     "react-helmet": "^5.0.2",

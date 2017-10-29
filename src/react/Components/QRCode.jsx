@@ -34,7 +34,7 @@ class QRCode extends React.PureComponent {
 }
 
 QRCode.defaultProps = {
-    filter: "threshold",
+    filter: "color",
     size: 192,
     style: {}
 };
