@@ -3,13 +3,10 @@ import { connect } from "react-redux";
 import QRCode from "./QRCode";
 
 const styles = {
-    container: {
-        width: 192,
-        height: 192,
-        backgroundColor: "white",
-        padding: 5
-    },
     qrcode: {
+        backgroundColor: "white",
+        width: 195,
+        height: 195
     }
 };
 
@@ -20,7 +17,7 @@ class AccountQRCode extends React.Component {
     }
 
     render() {
-        const { style = {}, qrStyle = {}, ...props } = this.props;
+        const { style = {}, ...props } = this.props;
 
         let currentAccount = false;
         props.accounts.map(account => {
@@ -35,13 +32,11 @@ class AccountQRCode extends React.Component {
             .anchor_uuid}`;
 
         return (
-            <div style={{ ...styles.container, ...style }}>
-                <QRCode
-                    imagePath="./images/qrlogo-empty.png"
-                    style={{ ...styles.qrcode, ...qrStyle }}
-                    value={value}
-                />
-            </div>
+            <QRCode
+                imagePath="./images/qrlogo-empty.png"
+                style={{ ...styles.qrcode, ...style }}
+                value={value}
+            />
         );
     }
 }

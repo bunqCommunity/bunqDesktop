@@ -24,7 +24,7 @@ class QRCode extends React.PureComponent {
     render() {
         return (
             <div
-                style={{ ...this.props.style, backgroundColor: "white" }}
+                style={{ ...this.props.style }}
                 ref={input => {
                     this.element = input;
                 }}
@@ -35,7 +35,7 @@ class QRCode extends React.PureComponent {
 
 QRCode.defaultProps = {
     filter: "color",
-    size: 192,
+    size: 195,
     style: {}
 };
 
