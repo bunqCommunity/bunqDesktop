@@ -7,7 +7,7 @@ import Grid from "material-ui/Grid";
 import Typography from "material-ui/Typography";
 import PaymentList from "./PaymentList";
 import AccountList from "./AccountList";
-import AccountQRCode from "../../Components/AccountQRCode";
+import AccountQRCode from "../../Components/QR/AccountQRCode";
 
 import { userLogin, userLogout } from "../../Actions/user";
 
@@ -64,7 +64,6 @@ class Dashboard extends React.Component {
 
                 <Grid item xs={12} md={8}>
                     <Paper>
-                        <AccountQRCode />
                         <PaymentList
                             BunqJSClient={this.props.BunqJSClient}
                             initialBunqConnect={this.props.initialBunqConnect}

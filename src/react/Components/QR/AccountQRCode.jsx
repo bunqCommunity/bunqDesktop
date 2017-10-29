@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import QRCode from "./QRCode";
 
@@ -19,9 +20,14 @@ class AccountQRCode extends React.Component {
     render() {
         const { style = {}, ...props } = this.props;
 
+        let selectedAccount = props.selectedAccount;
+        if (props.accountId !== false) {
+            selectedAccount = props.accountId;
+        }
+
         let currentAccount = false;
         props.accounts.map(account => {
-            if (account.MonetaryAccountBank.id === props.selectedAccount) {
+            if (account.MonetaryAccountBank.id === selectedAccount) {
                 currentAccount = account.MonetaryAccountBank;
             }
         });
@@ -33,6 +39,7 @@ class AccountQRCode extends React.Component {
 
         return (
             <QRCode
+                size={props.size}
                 imagePath="./images/qrlogo-empty.png"
                 style={{ ...styles.qrcode, ...style }}
                 value={value}
@@ -40,6 +47,11 @@ class AccountQRCode extends React.Component {
         );
     }
 }
+
+AccountQRCode.defaultProps = {
+    accountId: false,
+    size: 195
+};
 
 const mapStateToProps = state => {
     return {

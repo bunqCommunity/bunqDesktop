@@ -228,7 +228,7 @@ class PaymentInfo extends React.Component {
                 </Helmet>
 
                 <Grid item xs={12} sm={2}>
-                    <Button to={"/"} component={NavLink} style={styles.btn}>
+                    <Button onClick={this.props.history.goBack} style={styles.btn}>
                         <ArrowBackIcon />
                     </Button>
                 </Grid>

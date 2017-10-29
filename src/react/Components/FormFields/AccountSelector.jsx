@@ -49,6 +49,9 @@ class AccountSelector extends React.Component {
         let selectedAccountItem = null;
         if (value !== "" && accounts[value]) {
             const account = accounts[value].MonetaryAccountBank;
+            if (account.status === "CANCELLED") {
+                return null;
+            }
             selectedAccountItem = (
                 <ListItem button>
                     <Avatar style={styles.bigAvatar}>

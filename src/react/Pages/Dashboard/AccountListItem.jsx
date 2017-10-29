@@ -8,7 +8,10 @@ import {
 import Avatar from "material-ui/Avatar";
 import IconButton from "material-ui/IconButton";
 import KeyboardArrowRightIcon from "material-ui-icons/KeyboardArrowRight";
+import InfoIcon from "material-ui-icons/InfoOutline";
+
 import AttachmentImage from "../../Components/AttachmentImage";
+import NavLink from "../../Components/Routing/NavLink";
 import { formatMoney } from "../../Helpers/Utils";
 
 import { paymentsUpdate } from "../../Actions/payments.js";
@@ -65,15 +68,18 @@ class AccountListItem extends React.Component {
                     primary={account.description}
                     secondary={formattedBalance}
                 />
-                {this.props.accountsAccountId === account.id ? (
-                    <ListItemSecondaryAction>
-                        <IconButton
-                            onClick={this.fetchPaymentsHandler(account.id)}
-                        >
+                <ListItemSecondaryAction>
+                    <IconButton
+                        to={`/account-info/${account.id}`}
+                        component={NavLink}
+                    >
+                        {this.props.accountsAccountId === account.id ? (
                             <KeyboardArrowRightIcon />
-                        </IconButton>
-                    </ListItemSecondaryAction>
-                ) : null}
+                        ) : (
+                            <InfoIcon />
+                        )}
+                    </IconButton>
+                </ListItemSecondaryAction>
             </ListItem>
         );
     }

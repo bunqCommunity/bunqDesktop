@@ -5,7 +5,7 @@ import { FormControl } from "material-ui/Form";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Dialog, { DialogContent, DialogTitle } from "material-ui/Dialog";
 
-import {formatMoney} from "../../Helpers/Utils";
+import { formatMoney } from "../../Helpers/Utils";
 import AttachmentImage from "../AttachmentImage";
 
 const styles = {
@@ -28,9 +28,7 @@ const AccountItem = ({ account, onClick, BunqJSClient }) => {
                 <AttachmentImage
                     width={50}
                     BunqJSClient={BunqJSClient}
-                    imageUUID={
-                        account.avatar.image[0].attachment_public_uuid
-                    }
+                    imageUUID={account.avatar.image[0].attachment_public_uuid}
                 />
             </Avatar>
             <ListItemText
@@ -69,13 +67,18 @@ class AccountSelectorDialog extends React.Component {
         const { BunqJSClient, accounts, value, ...otherProps } = this.props;
         const style = otherProps.style ? otherProps.style : {};
 
-        const accountItems = accounts.map((account, accountKey) => (
-            <AccountItem
-                account={account.MonetaryAccountBank}
-                onClick={this.onClickHandler(accountKey)}
-                BunqJSClient={BunqJSClient}
-            />
-        ));
+        const accountItems = accounts.map((account, accountKey) => {
+            if (account.MonetaryAccountBank.status === "CANCELLED") {
+                return null;
+            }
+            return (
+                <AccountItem
+                    account={account.MonetaryAccountBank}
+                    onClick={this.onClickHandler(accountKey)}
+                    BunqJSClient={BunqJSClient}
+                />
+            );
+        });
 
         let selectedAccountItem = null;
         if (value !== "" && accounts[value]) {
