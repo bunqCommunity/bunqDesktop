@@ -9,8 +9,8 @@ import Typography from "material-ui/Typography";
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
 
 import PaymentList from "./Dashboard/PaymentList";
-import AccountQRCode from "../Components/QR/AccountQRCode";
 import AttachmentImage from "../Components/AttachmentImage";
+import AccountQRFullscreen from "../Components/QR/AccountQRFullscreen";
 
 import { accountsUpdate } from "../Actions/accounts";
 import { paymentsUpdate } from "../Actions/payments";
@@ -91,7 +91,7 @@ class AccountInfo extends React.Component {
                             </Typography>
                         </Grid>
                         <Grid item xs={12} sm={4} style={styles.textCenter}>
-                            <AccountQRCode accountId={accountInfo.id} />
+                            <AccountQRFullscreen accountId={accountInfo.id} />
                         </Grid>
                     </Grid>
                 </Paper>,
