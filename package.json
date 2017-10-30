@@ -126,6 +126,7 @@
     "prop-types": "^15.5.8",
     "qartjs": "Crecket/qart.js",
     "react": "^16.0.0",
+    "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "16.0.0",
     "react-helmet": "^5.0.2",
     "react-loadable": "^3.2.2",

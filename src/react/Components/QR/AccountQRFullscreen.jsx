@@ -69,7 +69,7 @@ class AccountQRFullscreen extends React.PureComponent {
 
         return [
             <IconButton onClick={this.handleClickOpen}>
-                <img style={styles.btnIcon} src="./images/qrcode-icon.png" />
+                <img style={styles.btnIcon} src="./images/qr.svg" />
             </IconButton>,
             <Dialog
                 fullScreen
