@@ -18,6 +18,12 @@ class AttachmentImage extends React.PureComponent {
         this.checkImage();
     }
 
+    componentWillUnmount() {
+        // reset timeout before unmount
+        clearTimeout(this.timeout);
+        this._isMounted = false;
+    }
+
     componentDidUpdate(nextProps) {
         if (this.props.imageUUID !== nextProps.imageUUID) {
             this.checkImage();
@@ -32,7 +38,7 @@ class AttachmentImage extends React.PureComponent {
 
         // configure the localforage instance
         localforage.config({
-            driver: localforage.INDEXEDDB, // Force WebSQL; same as using setDriver()
+            driver: localforage.INDEXEDDB, 
             name: "BunqDesktop",
             version: 1.0,
             storeName: "bunq_desktop_images",
@@ -55,20 +61,16 @@ class AttachmentImage extends React.PureComponent {
         });
     }
 
-    componentWillUnmount() {
-        // reset timeout before unmount
-        clearTimeout(this.timeout);
-        this._isMounted = false;
-    }
-
     loadImage = async () => {
         const storageKey = `image_${this.props.imageUUID}`;
         const base64UrlStored = await localforage.getItem(storageKey);
         if (base64UrlStored === null) {
             // no image, fallback to default while we load the image remotely
-            this.setState({
-                imageUrl: defaultImageUrl
-            });
+            if (this._isMounted) {
+                this.setState({
+                    imageUrl: defaultImageUrl
+                });
+            }
             // remove the fallback timeout
             clearTimeout(this.timeout);
 

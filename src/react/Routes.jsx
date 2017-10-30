@@ -11,6 +11,7 @@ import Pay from "./Pages/Pay";
 import PaymentInfo from "./Pages/PaymentInfo";
 import NotFound from "./Pages/NotFound";
 import ApplicationInfo from "./Pages/ApplicationInfo";
+import AccountInfo from "./Pages/AccountInfo";
 
 // router react component
 export default class Routes extends React.Component {
@@ -61,6 +62,16 @@ export default class Routes extends React.Component {
                                     {...props}
                                     {...this.props.childProps}
                                 />
+                            )}
+                        />
+
+                        <PrivateRoute
+                            path="/account-info/:accountId"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <AccountInfo {...props} {...this.props.childProps} />
                             )}
                         />
 

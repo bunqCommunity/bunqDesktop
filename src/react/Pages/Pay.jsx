@@ -248,13 +248,13 @@ class Pay extends React.Component {
             case "EMAIL":
                 targetInfo = {
                     type: "EMAIL",
-                    value: target
+                    value: target.trim()
                 };
                 break;
             case "PHONE":
                 targetInfo = {
                     type: "PHONE_NUMBER",
-                    value: target
+                    value: target.trim()
                 };
                 break;
             case "TRANSFER":
@@ -265,7 +265,7 @@ class Pay extends React.Component {
                     if (alias.type === "IBAN") {
                         targetInfo = {
                             type: "IBAN",
-                            value: alias.value,
+                            value: alias.value.trim(),
                             name: alias.name
                         };
                     }
@@ -275,7 +275,7 @@ class Pay extends React.Component {
             case "IBAN":
                 targetInfo = {
                     type: "IBAN",
-                    value: target,
+                    value: target.trim(),
                     name: ibanName
                 };
                 break;
@@ -338,8 +338,8 @@ class Pay extends React.Component {
                             <ListItem>
                                 <ListItemText
                                     primary="Amount"
-                                    secondary={`${amount.toFixed(2)} ${account.balance
-                                        .currency}`}
+                                    secondary={`${amount.toFixed(2)} ${account
+                                        .balance.currency}`}
                                 />
                             </ListItem>
                             <ListItem>
@@ -584,6 +584,15 @@ class Pay extends React.Component {
                                 value={this.state.amount}
                                 style={styles.formattedInput}
                                 onValueChange={this.handleChangeFormatted}
+                                onKeyPress={ev => {
+                                    if (
+                                        ev.key === "Enter" &&
+                                        this.state.validForm
+                                    ) {
+                                        this.openModal();
+                                        ev.preventDefault();
+                                    }
+                                }}
                             />
                         </FormControl>
 

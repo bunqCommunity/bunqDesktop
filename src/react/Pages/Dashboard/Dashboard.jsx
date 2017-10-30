@@ -7,6 +7,7 @@ import Grid from "material-ui/Grid";
 import Typography from "material-ui/Typography";
 import PaymentList from "./PaymentList";
 import AccountList from "./AccountList";
+import AccountQRCode from "../../Components/QR/AccountQRCode";
 
 import { userLogin, userLogout } from "../../Actions/user";
 
