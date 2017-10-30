@@ -33,8 +33,6 @@ if (env.name !== "production") {
 log.transports.file.appName = "BunqDesktop";
 log.transports.file.level = env.name === "development" ? "debug" : "warn";
 log.transports.file.format = "{h}:{i}:{s}:{ms} {text}";
-log.transports.file.file = `${__dirname}/${log.transports.file
-    .appName}.log.txt`;
 
 app.on("ready", () => {
     setApplicationMenu();

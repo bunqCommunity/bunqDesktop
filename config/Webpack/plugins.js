@@ -11,6 +11,7 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
     const plugins = [
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.DefinePlugin({
+            "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
             "process.env.CURRENT_VERSION": JSON.stringify(packageInfo.version),
             "process.env.DEVELOPMENT": JSON.stringify(DEVELOPMENT),
             "process.env.PRODUCTION": JSON.stringify(PRODUCTION),
