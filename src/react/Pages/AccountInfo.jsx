@@ -58,32 +58,6 @@ class AccountInfo extends React.Component {
         }
     }
 
-    // <Paper style={styles.paper}>
-    // <Grid
-    // container
-    // spacing={24}
-    // align={"center"}
-    // justify={"center"}
-    // >
-    // <Grid item xs={12} sm={8}>
-    // <AttachmentImage
-    // width={160}
-    // BunqJSClient={this.props.BunqJSClient}
-    // imageUUID={
-    //     accountInfo.avatar.image[0]
-    //         .attachment_public_uuid
-    // }
-    // />
-    // <Typography type="subheading">
-    // {accountInfo.description}
-    // </Typography>
-    // </Grid>
-    // <Grid item xs={12} sm={4} style={styles.textCenter}>
-    // <AccountQRFullscreen accountId={accountInfo.id} />
-    // </Grid>
-    // </Grid>
-    // </Paper>,
-
     render() {
         const { accounts } = this.props;
         const accountId = parseFloat(this.props.match.params.accountId);

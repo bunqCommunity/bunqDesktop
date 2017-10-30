@@ -2,13 +2,17 @@ import React from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import List, {
     ListItem,
+    ListSubheader,
     ListItemText,
-    ListItemAvatar,
+    ListItemIcon,
     ListItemSecondaryAction
 } from "material-ui/List";
 import Paper from "material-ui/Paper";
 import Avatar from "material-ui/Avatar";
 import AccountBalanceIcon from "material-ui-icons/AccountBalance";
+import PhoneIcon from "material-ui-icons/Phone";
+import EmailIcon from "material-ui-icons/Email";
+import PersonIcon from "material-ui-icons/Person";
 
 import AttachmentImage from "../../Components/AttachmentImage";
 import AccountQRFullscreen from "../../Components/QR/AccountQRFullscreen";
@@ -35,12 +39,7 @@ class AccountCard extends React.Component {
         const { account } = this.props;
 
         const formattedBalance = formatMoney(account.balance.value);
-        let IBAN = "";
-        account.alias.map(alias => {
-            if (alias.type === "IBAN") {
-                IBAN = alias.value;
-            }
-        });
+
         return (
             <Paper>
                 <List>
@@ -63,19 +62,32 @@ class AccountCard extends React.Component {
                             <AccountQRFullscreen accountId={account.id} />
                         </ListItemSecondaryAction>
                     </ListItem>
-                </List>
-                <List dense={true}>
-                    <ListItem button>
-                        <ListItemAvatar>
-                            <AccountBalanceIcon />
-                        </ListItemAvatar>
-                        <CopyToClipboard
-                            text={IBAN}
-                            onCopy={this.copiedValue("IBAN")}
-                        >
-                            <ListItemText primary={IBAN} />
-                        </CopyToClipboard>
-                    </ListItem>
+                    {account.alias.map(alias => {
+                        let icon = <PersonIcon />;
+                        switch (alias.type) {
+                            case "EMAIL":
+                                icon = <EmailIcon />;
+                                break;
+                            case "PHONE_NUMBER":
+                                icon = <PhoneIcon />;
+                                break;
+                            case "IBAN":
+                                icon = <AccountBalanceIcon />;
+                                break;
+                        }
+
+                        return (
+                            <ListItem button dense={true}>
+                                <ListItemIcon>{icon}</ListItemIcon>
+                                <CopyToClipboard
+                                    text={alias.value}
+                                    onCopy={this.copiedValue(alias.type)}
+                                >
+                                    <ListItemText primary={alias.value} />
+                                </CopyToClipboard>
+                            </ListItem>
+                        );
+                    })}
                 </List>
             </Paper>
         );
