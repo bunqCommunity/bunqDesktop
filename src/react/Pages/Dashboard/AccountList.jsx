@@ -13,7 +13,10 @@ import { paymentsUpdate } from "../../Actions/payments";
 
 const styles = {
     list: {
-        textAlign: "left"
+        textAlign: "left",
+        overflowY: "auto",
+        overflowX: "hidden",
+        maxHeight: 600
     }
 };
 

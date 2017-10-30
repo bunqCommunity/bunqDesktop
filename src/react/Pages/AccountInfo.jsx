@@ -77,7 +77,7 @@ class AccountInfo extends React.Component {
                     openSnackbar={this.props.openSnackbar}
                     account={accountInfo}
                 />,
-                <Paper style={styles.paper}>
+                <Paper>
                     <PaymentList
                         BunqJSClient={this.props.BunqJSClient}
                         initialBunqConnect={this.props.initialBunqConnect}

@@ -170,6 +170,16 @@ class Login extends React.Component {
             this.state.apiKey === this.props.apiKey &&
             currentSelectedEnvironmnent === this.props.environment;
 
+        const buttonDisabled =
+            unchangedApiKeyEnvironment ||
+            // invalid inputs
+            this.state.apiKeyValid === false ||
+            this.state.deviceNameValid === false ||
+            // user info is already being loaded
+            this.props.userLoading === true ||
+            // registration is loading
+            this.props.registrationLoading === true;
+
         const apiKeyContent =
             this.props.apiKey === false ? (
                 <CardContent>
@@ -192,6 +202,15 @@ class Login extends React.Component {
                             // unchanged api key
                             this.state.apiKey === this.props.apiKey
                         }
+                        onKeyPress={ev => {
+                            if (
+                                ev.key === "Enter" &&
+                                buttonDisabled === false
+                            ) {
+                                this.setRegistration();
+                                ev.preventDefault();
+                            }
+                        }}
                     />
                     <Input
                         style={styles.apiInput}
@@ -205,6 +224,15 @@ class Login extends React.Component {
                             // unchanged api key
                             this.state.apiKey === this.props.apiKey
                         }
+                        onKeyPress={ev => {
+                            if (
+                                ev.key === "Enter" &&
+                                buttonDisabled === false
+                            ) {
+                                this.setRegistration();
+                                ev.preventDefault();
+                            }
+                        }}
                     />
                     <FormControlLabel
                         style={styles.environmentToggle}
@@ -220,16 +248,7 @@ class Login extends React.Component {
 
                     <Button
                         raised
-                        disabled={
-                            unchangedApiKeyEnvironment ||
-                            // invalid inputs
-                            this.state.apiKeyValid === false ||
-                            this.state.deviceNameValid === false ||
-                            // user info is already being loaded
-                            this.props.userLoading === true ||
-                            // registration is loading
-                            this.props.registrationLoading === true
-                        }
+                        disabled={buttonDisabled}
                         color={"primary"}
                         style={styles.loginButton}
                         onClick={this.setRegistration}

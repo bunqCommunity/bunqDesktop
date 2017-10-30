@@ -103,6 +103,9 @@ class LoginPassword extends React.Component {
             return <Redirect to="/login" />;
         }
 
+        const buttonDisabled =
+            this.state.passwordValid === false || registrationLoading === true;
+
         const cardContent = registrationLoading ? (
             <CardContent style={{ textAlign: "center" }}>
                 <Typography type="headline" component="h2">
@@ -143,15 +146,18 @@ class LoginPassword extends React.Component {
                     label="Password"
                     hint="A secure 7+ character password"
                     onChange={this.handlePasswordChange}
+                    onKeyPress={ev => {
+                        if (ev.key === "Enter" && buttonDisabled === false) {
+                            this.setRegistration();
+                            ev.preventDefault();
+                        }
+                    }}
                     value={this.state.password}
                 />
 
                 <Button
                     raised
-                    disabled={
-                        this.state.passwordValid === false ||
-                        registrationLoading === true
-                    }
+                    disabled={buttonDisabled}
                     color={"primary"}
                     style={styles.loginButton}
                     onClick={this.setRegistration}

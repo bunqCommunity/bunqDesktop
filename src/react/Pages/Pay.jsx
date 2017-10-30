@@ -248,13 +248,13 @@ class Pay extends React.Component {
             case "EMAIL":
                 targetInfo = {
                     type: "EMAIL",
-                    value: target
+                    value: target.trim()
                 };
                 break;
             case "PHONE":
                 targetInfo = {
                     type: "PHONE_NUMBER",
-                    value: target
+                    value: target.trim()
                 };
                 break;
             case "TRANSFER":
@@ -265,7 +265,7 @@ class Pay extends React.Component {
                     if (alias.type === "IBAN") {
                         targetInfo = {
                             type: "IBAN",
-                            value: alias.value,
+                            value: alias.value.trim(),
                             name: alias.name
                         };
                     }
@@ -275,7 +275,7 @@ class Pay extends React.Component {
             case "IBAN":
                 targetInfo = {
                     type: "IBAN",
-                    value: target,
+                    value: target.trim(),
                     name: ibanName
                 };
                 break;
