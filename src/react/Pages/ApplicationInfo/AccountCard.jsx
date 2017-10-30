@@ -30,7 +30,7 @@ class AccountCard extends React.Component {
         super(props, context);
         this.state = {};
     }
-    
+
     copiedValue = type => callback => {
         this.props.openSnackbar(`Copied ${type} to your clipboard`);
     };

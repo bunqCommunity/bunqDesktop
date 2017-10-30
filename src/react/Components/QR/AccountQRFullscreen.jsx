@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { withStyles } from "material-ui/styles";
 import Dialog from "material-ui/Dialog";
 import IconButton from "material-ui/IconButton";
 import Slide from "material-ui/transitions/Slide";
@@ -8,9 +9,11 @@ import Avatar from "material-ui/Avatar";
 
 import AccountQRCode from "./AccountQRCode";
 import AttachmentImage from "../AttachmentImage";
+import QRSvg from "./QRSvg";
 
-const styles = {
+const styles = theme => ({
     btnIcon: {
+        color: theme.palette.text.secondary,
         width: 32,
         height: 32
     },
@@ -31,7 +34,7 @@ const styles = {
         alignItems: "center",
         justifyContent: "center"
     }
-};
+});
 
 class AccountQRFullscreen extends React.PureComponent {
     state = {
@@ -47,7 +50,7 @@ class AccountQRFullscreen extends React.PureComponent {
     };
 
     render() {
-        const { accounts } = this.props;
+        const { accounts, theme, classes } = this.props;
 
         const accountId =
             this.props.accountId !== false
@@ -69,11 +72,11 @@ class AccountQRFullscreen extends React.PureComponent {
 
         return [
             <IconButton onClick={this.handleClickOpen}>
-                <img style={styles.btnIcon} src="./images/qr.svg" />
+                <QRSvg />
             </IconButton>,
             <Dialog
                 fullScreen
-                style={styles.dialog}
+                className={classes.dialog}
                 open={this.state.open}
                 onRequestClose={this.handleRequestClose}
                 onClick={this.handleRequestClose}
@@ -81,11 +84,11 @@ class AccountQRFullscreen extends React.PureComponent {
                 onBackdropClick={this.handleRequestClose}
                 transition={<Slide direction="up" />}
             >
-                <div style={styles.content}>
+                <div className={classes.content}>
                     <div style={{ width: 195 }}>
                         <AccountQRCode accountId={this.props.accountId} />
-                        <ListItem style={styles.listItem}>
-                            <Avatar style={styles.bigAvatar}>
+                        <ListItem className={classes.listItem}>
+                            <Avatar className={classes.bigAvatar}>
                                 <AttachmentImage
                                     width={45}
                                     BunqJSClient={this.props.BunqJSClient}
@@ -118,4 +121,6 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(AccountQRFullscreen);
+export default withStyles(styles)(
+    connect(mapStateToProps)(AccountQRFullscreen)
+);
