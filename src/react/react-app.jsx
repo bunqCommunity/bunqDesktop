@@ -18,7 +18,10 @@ if (!userGUID) {
 
 // create a new bunq js client and inject into the app
 const BunqJSClientInstance = new BunqJSClient(store);
-const analyticsInstance = analytics('UA-87358128-5',  userGUID);
+const analyticsInstance = analytics("UA-87358128-5", userGUID, {
+    strictCidFormat: false
+});
+
 
 ReactDOM.render(
     <App analytics={analyticsInstance} BunqJSClient={BunqJSClientInstance} />,
