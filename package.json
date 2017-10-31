@@ -2,7 +2,7 @@
   "description": "BunqDesktop application",
   "name": "bunqdesktop",
   "productName": "BunqDesktop",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "author": {
     "name": "BunqCommunity",
     "email": "bunqcommunity@gmail.com"
@@ -31,24 +31,7 @@
             "x64",
             "ia32"
           ]
-        },
-        {
-          "target": "appx",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
         }
-      ]
-    },
-    "appx": {
-      "applicationId": "com.bunq.desktop",
-      "displayName": "BunqDesktop",
-      "identityName": "BunqDesktop",
-      "publisherDisplayName": "BunqCommunity",
-      "backgroundColor": "#fafafa",
-      "languages": [
-        "en-US"
       ]
     },
     "mac": {
@@ -102,8 +85,8 @@
     "clean-webpack-plugin": "^0.1.17",
     "cross-env": "^4.0.0",
     "css-loader": "^0.28.7",
-    "electron": "^1.6.11",
-    "electron-builder": "^19.41.0",
+    "electron": "^1.7.9",
+    "electron-builder": "^19.43.0",
     "electron-mocha": "^4.0.0",
     "email-validator": "^1.1.1",
     "extract-text-webpack-plugin": "^3.0.0",
