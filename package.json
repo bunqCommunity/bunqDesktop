@@ -61,7 +61,7 @@
     "universal-analytics": "^0.4.15"
   },
   "devDependencies": {
-    "@bunq-community/bunq-js-client": "^0.4.0",
+    "@bunq-community/bunq-js-client": "^0.5.2",
     "@types/axios": "^0.14.0",
     "awaiting": "^2.0.1",
     "axios": "^0.16.2",
@@ -81,7 +81,6 @@
     "babel-preset-es2017": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
-    "chai": "^4.1.0",
     "clean-webpack-plugin": "^0.1.17",
     "cross-env": "^4.0.0",
     "css-loader": "^0.28.7",
@@ -98,8 +97,8 @@
     "gulp-watch": "^4.3.11",
     "html-webpack-plugin": "^2.26.0",
     "iban": "^0.0.8",
-    "istanbul": "^0.4.5",
     "localforage": "^1.5.2",
+    "loglevel": "^1.5.1",
     "material-ui": "1.0.0-beta.18",
     "material-ui-icons": "^1.0.0-beta.10",
     "minimist": "^1.2.0",
