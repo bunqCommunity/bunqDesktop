@@ -1,9 +1,10 @@
-import { openSnackbar } from "./snackbar";
+import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
 const Logger = require("../Helpers/Logger");
+import { openSnackbar } from "./snackbar";
 import { openModal } from "./modal";
 import { paymentsUpdate } from "./payments";
-import {accountsUpdate} from "./accounts";
+import { accountsUpdate } from "./accounts";
 
 export function paySend(
     BunqJSClient,
@@ -16,7 +17,7 @@ export function paySend(
     return dispatch => {
         dispatch(payLoading());
         BunqJSClient.api.payment
-            .post(userId, accountId, description, amount, target)
+            .post(userId, accountId, description, amount , target)
             .then(result => {
                 dispatch(openSnackbar("Payment sent successfully!"));
                 dispatch(paymentsUpdate(BunqJSClient, userId, accountId));
@@ -24,32 +25,13 @@ export function paySend(
                 dispatch(payNotLoading());
             })
             .catch(error => {
-                Logger.error(error.toString());
-                Logger.error(error.response.data);
                 dispatch(payNotLoading());
 
-                const response = error.response;
-
-                // check if we can display a bunq error
-                const contentType = response.headers["content-type"];
-                if (contentType && contentType.includes("application/json")) {
-                    const errorObject = response.data.Error[0];
-                    if (errorObject && errorObject.error_description) {
-                        return dispatch(
-                            openModal(
-                                `We received the following error while sending your payment: <br/>
-                                ${errorObject.error_description}`,
-                                "Something went wrong"
-                            )
-                        );
-                    }
-                }
-                dispatch(
-                    openModal(
-                        "Something went wrong while trying to send your payment request",
-                        "Something went wrong"
-                    )
-                );
+                BunqErrorHandler(
+                    dispatch,
+                    error,
+                    "We received the following error while sending your payment"
+                );;
             });
     };
 }
