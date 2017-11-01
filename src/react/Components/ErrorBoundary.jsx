@@ -10,8 +10,7 @@ export default class ErrorBoundary extends React.Component {
     }
 
     componentDidCatch(error, errorInfo) {
-        Logger.error(error.toString());
-        Logger.error(errorInfo.componentStack);
+        Logger.error(error.stack);
 
         // Display fallback UI
         this.setState({ hasError: true, error, errorInfo });

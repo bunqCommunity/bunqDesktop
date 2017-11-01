@@ -51,16 +51,17 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
         // optimize js output using uglifyjs
         plugins.push(
             new UglifyJSPlugin({
+                sourceMap: true,
                 uglifyOptions: {
-                    beautify: false,
-                    sourceMap: true,
+                    compress: { warnings: false },
+                    ecma: 8,
+                    ie8: false,
                     minimize: true,
-                    ecma: 6,
-                    compress: {
-                        warnings: false,
-                        drop_console: true
+                    output: {
+                        comments: false,
+                        beautify: false
                     },
-                    comments: false
+                    warnings: false
                 }
             })
         );
