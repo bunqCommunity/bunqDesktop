@@ -34,12 +34,9 @@ export default class ErrorBoundary extends React.Component {
                         component="summary"
                         style={{ whiteSpace: "pre-wrap" }}
                     >
-                        <Typography type="subheading" component="summary">
-                            {this.state.error.toString()}
-                        </Typography>
-                        {this.state.errorInfo.componentStack}
+                        {this.state.error.stack}
                     </Typography>
-
+                    <br />
                     {this.props.recoverableError === true ? (
                         <Button
                             raised
