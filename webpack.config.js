@@ -25,7 +25,7 @@ let config = {
         extensions: [".tsx", ".ts", ".js", ".jsx", ".json"],
         modules: ["node_modules", path.resolve(__dirname, "./src")]
     },
-    devtool: DEVELOPMENT ? "source-map" : false,
+    devtool: DEVELOPMENT ? "source-map" : "source-map",
     plugins: plugins({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }),
     module: {
         rules: rules
