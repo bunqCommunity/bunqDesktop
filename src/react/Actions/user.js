@@ -1,4 +1,4 @@
-const Logger = require("../Helpers/Logger");
+import Logger from "../Helpers/Logger";
 import { openModal } from "./modal";
 import { accountsClear } from "./accounts";
 import { paymentInfoClear } from "./payment_info";

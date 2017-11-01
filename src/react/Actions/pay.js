@@ -1,9 +1,8 @@
+import Logger from "../Helpers/Logger";
 import { openSnackbar } from "./snackbar";
-
-const Logger = require("../Helpers/Logger");
 import { openModal } from "./modal";
 import { paymentsUpdate } from "./payments";
-import {accountsUpdate} from "./accounts";
+import { accountsUpdate } from "./accounts";
 
 export function paySend(
     BunqJSClient,

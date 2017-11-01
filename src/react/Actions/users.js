@@ -1,4 +1,4 @@
-const Logger = require("../Helpers/Logger");
+import Logger from "../Helpers/Logger";
 import { openModal } from "./modal";
 
 export function usersSetInfo(users) {

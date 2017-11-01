@@ -194,6 +194,19 @@ class Layout extends React.Component {
         try {
             await this.props.BunqJSClient.registerDevice(deviceName);
         } catch (exception) {
+            if (exception.response && exception.response.data.Error[0]) {
+                const responseError = exception.response.data.Error[0];
+                if (
+                    responseError.error_description ===
+                    "User credentials are incorrect. Incorrect API key or IP address."
+                ) {
+                    this.props.openModal(
+                        `The API key or IP you are currently on is not valid for the ${environment} Bunq environment.`,
+                        "Something went wrong"
+                    );
+                    throw exception;
+                }
+            }
             this.props.openModal(
                 `We failed to register this device on the Bunq servers. Are you sure you entered a valid API key? And are you sure that this key is meant for the ${environment} Bunq environment?`,
                 "Something went wrong"
