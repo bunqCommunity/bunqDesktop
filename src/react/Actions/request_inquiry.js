@@ -1,29 +1,6 @@
-const Logger = require("../Helpers/Logger");
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { openSnackbar } from "./snackbar";
-import { openModal } from "./modal";
 
-export function requestInquirySetInfo(requestInquiry, account_id) {
-    // return the action
-    return {
-        type: "REQUEST_INQUIRY_SET_INFO",
-        payload: {
-            requestInquiry: requestInquiry,
-            account_id: account_id
-        }
-    };
-}
-
-/**
- * @param BunqJSClient
- * @param userId
- * @param accountId
- * @param description
- * @param amount
- * @param target
- * @param options
- * @returns {function(*=)}
- */
 export function requestInquirySend(
     BunqJSClient,
     userId,
@@ -31,7 +8,12 @@ export function requestInquirySend(
     description,
     amount,
     target,
-    options = {}
+    options = {
+        status: false,
+        minimum_age: false,
+        allow_bunqme: false,
+        redirect_url: false
+    }
 ) {
     return dispatch => {
         dispatch(requestInquiryLoading());
@@ -59,8 +41,4 @@ export function requestInquiryLoading() {
 
 export function requestInquiryNotLoading() {
     return { type: "REQUEST_INQUIRY_IS_NOT_LOADING" };
-}
-
-export function requestInquiryClear() {
-    return { type: "REQUEST_INQUIRY_CLEAR" };
 }

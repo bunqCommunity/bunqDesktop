@@ -1,8 +1,5 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-
-const Logger = require("../Helpers/Logger");
 import { openSnackbar } from "./snackbar";
-import { openModal } from "./modal";
 import { paymentsUpdate } from "./payments";
 import { accountsUpdate } from "./accounts";
 

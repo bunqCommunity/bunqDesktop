@@ -1,8 +1,6 @@
-const Logger = require("../Helpers/Logger");
-import { openModal } from "./modal";
+import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
 export function requestInquiriesSetInfo(requestInquiries, account_id) {
-    // return the action
     return {
         type: "REQUEST_INQUIRIES_SET_INFO",
         payload: {
@@ -12,24 +10,23 @@ export function requestInquiriesSetInfo(requestInquiries, account_id) {
     };
 }
 
-export function requestInquiriesUpdate(BunqJSClient, user_id, account_id) {
+export function requestInquiriesUpdate(BunqJSClient, userId, accountId) {
     return dispatch => {
         dispatch(requestInquiriesLoading());
-        BunqJSClient.api.payment
-            .list(user_id, account_id)
+        BunqJSClient.api.requestInquiry
+            .list(userId, accountId)
             .then(requestInquiries => {
-                dispatch(requestInquiriesSetInfo(requestInquiries, account_id));
+                dispatch(requestInquiriesSetInfo(requestInquiries, accountId));
                 dispatch(requestInquiriesNotLoading());
             })
-            .catch(err => {
-                Logger.error(err);
-                dispatch(
-                    openModal(
-                        "We failed to load the requestInquiries for this monetary account",
-                        "Something went wrong"
-                    )
-                );
+            .catch(error => {
                 dispatch(requestInquiriesNotLoading());
+
+                BunqErrorHandler(
+                    dispatch,
+                    error,
+                    "We received the following error while sending your request inquiry"
+                );
             });
     };
 }
