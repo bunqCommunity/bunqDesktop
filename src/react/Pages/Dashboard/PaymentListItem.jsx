@@ -51,7 +51,11 @@ class PaymentListItem extends React.Component {
                 : theme.palette.common.receivedPayment;
 
         return [
-            <ListItem button to={`/payment/${payment.id}`} component={NavLink}>
+            <ListItem
+                button
+                to={`/payment/${payment.id}/${payment.monetary_account_id}`}
+                component={NavLink}
+            >
                 <Avatar style={styles.smallAvatar}>
                     <AttachmentImage
                         width={50}

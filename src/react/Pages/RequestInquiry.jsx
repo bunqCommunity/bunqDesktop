@@ -22,13 +22,12 @@ import Dialog, {
 import AccountBalanceIcon from "material-ui-icons/AccountBalance";
 import EmailIcon from "material-ui-icons/Email";
 import PhoneIcon from "material-ui-icons/Phone";
-import CompareArrowsIcon from "material-ui-icons/CompareArrows";
 
 import AccountSelectorDialog from "../Components/FormFields/AccountSelectorDialog";
 import MoneyFormatInput from "../Components/FormFields/MoneyFormatInput";
 import PhoneFormatInput from "../Components/FormFields/PhoneFormatInput";
 import { openSnackbar } from "../Actions/snackbar";
-import { paySend } from "../Actions/pay";
+import { requestInquirySend } from "../Actions/request_inquiry";
 
 const styles = {
     payButton: {
@@ -55,9 +54,6 @@ class Pay extends React.Component {
             // when false, don't allow payment request
             validForm: false,
 
-            // source wallet has insuffient funds
-            insufficientFundsCondition: false,
-
             // top account selection picker
             selectedAccount: 0,
 
@@ -76,10 +72,6 @@ class Pay extends React.Component {
             // name field for IBAN targets
             ibanNameError: false,
             ibanName: "",
-
-            // targeted account for transfers
-            selectedTargetAccount: 1,
-            selectedTargetAccountError: false,
 
             // defines which type is used
             targetType: "IBAN"
@@ -148,15 +140,12 @@ class Pay extends React.Component {
             target,
             ibanName,
             selectedAccount,
-            selectedTargetAccount,
             targetType
         } = this.state;
 
         const account = this.props.accounts[selectedAccount]
             .MonetaryAccountBank;
 
-        const insufficientFundsCondition =
-            amount !== "" && amount > account.balance.value;
         const amountErrorCondition = amount < 0.01 || amount > 10000;
         const descriptionErrorCondition = description.length > 140;
         const ibanNameErrorCondition =
@@ -171,10 +160,6 @@ class Pay extends React.Component {
             case "PHONE":
                 targetErrorCondition = target.length < 5 || target.length > 64;
                 break;
-            case "TRANSFER":
-                targetErrorCondition =
-                    selectedAccount === selectedTargetAccount;
-                break;
             default:
             case "IBAN":
                 targetErrorCondition = !iban.isValid(target);
@@ -185,14 +170,12 @@ class Pay extends React.Component {
             {
                 // check for errors
                 amountError: amountErrorCondition,
-                insufficientFundsCondition: insufficientFundsCondition,
                 descriptionError: descriptionErrorCondition,
                 ibanNameError: ibanNameErrorCondition,
                 targetError: targetErrorCondition
             },
             () => {
                 const defaultErrors =
-                    !this.state.insufficientFundsCondition &&
                     !this.state.amountError &&
                     !this.state.descriptionError &&
                     !this.state.targetError;
@@ -232,7 +215,6 @@ class Pay extends React.Component {
         const { accounts, user } = this.props;
         const {
             selectedAccount,
-            selectedTargetAccount,
             description,
             amount,
             target,
@@ -257,20 +239,6 @@ class Pay extends React.Component {
                     value: target.trim()
                 };
                 break;
-            case "TRANSFER":
-                const otherAccount =
-                    accounts[selectedTargetAccount].MonetaryAccountBank;
-
-                otherAccount.alias.map(alias => {
-                    if (alias.type === "IBAN") {
-                        targetInfo = {
-                            type: "IBAN",
-                            value: alias.value.trim(),
-                            name: alias.name
-                        };
-                    }
-                });
-                break;
             default:
             case "IBAN":
                 targetInfo = {
@@ -286,7 +254,7 @@ class Pay extends React.Component {
             currency: "EUR"
         };
 
-        this.props.paySend(
+        this.props.requestInquirySend(
             userId,
             account.id,
             description,
@@ -298,7 +266,6 @@ class Pay extends React.Component {
 
     render() {
         const {
-            selectedTargetAccount,
             selectedAccount,
             description,
             targetType,
@@ -353,12 +320,6 @@ class Pay extends React.Component {
                                                 return `Email: ${target}`;
                                             case "IBAN":
                                                 return `IBAN: ${target} - Name: ${ibanName}`;
-                                            case "TRANSFER":
-                                                const account = this.props
-                                                    .accounts[
-                                                    selectedTargetAccount
-                                                ].MonetaryAccountBank;
-                                                return `Transfer ${account.description}`;
                                         }
                                     })()}
                                 />
@@ -383,7 +344,7 @@ class Pay extends React.Component {
 
         const targetTypeSelection = (
             <Grid container spacing={24}>
-                <Grid item xs={6} sm={3}>
+                <Grid item xs={6} sm={4}>
                     <FormControlLabel
                         control={
                             <Radio
@@ -398,7 +359,7 @@ class Pay extends React.Component {
                         label="IBAN"
                     />
                 </Grid>
-                <Grid item xs={6} sm={3}>
+                <Grid item xs={6} sm={4}>
                     <FormControlLabel
                         control={
                             <Radio
@@ -414,7 +375,7 @@ class Pay extends React.Component {
                         label="EMAIL"
                     />
                 </Grid>
-                <Grid item xs={6} sm={3}>
+                <Grid item xs={6} sm={4}>
                     <FormControlLabel
                         control={
                             <Radio
@@ -430,40 +391,11 @@ class Pay extends React.Component {
                         label="PHONE"
                     />
                 </Grid>
-                <Grid item xs={6} sm={3}>
-                    <FormControlLabel
-                        control={
-                            <Radio
-                                icon={<CompareArrowsIcon />}
-                                checkedIcon={<CompareArrowsIcon />}
-                                color={"accent"}
-                                checked={this.state.targetType === "TRANSFER"}
-                                onChange={this.setTargetType("TRANSFER")}
-                                value="TRANSFER"
-                                name="target-type-transfer"
-                            />
-                        }
-                        label="Transfer"
-                    />
-                </Grid>
             </Grid>
         );
 
         let targetContent = null;
         switch (this.state.targetType) {
-            case "TRANSFER":
-                targetContent = (
-                    <AccountSelectorDialog
-                        id="target"
-                        value={this.state.selectedTargetAccount}
-                        onChange={this.handleChangeDirect(
-                            "selectedTargetAccount"
-                        )}
-                        accounts={this.props.accounts}
-                        BunqJSClient={this.props.BunqJSClient}
-                    />
-                );
-                break;
             case "PHONE":
                 targetContent = (
                     <FormControl fullWidth error={this.state.targetError}>
@@ -537,7 +469,7 @@ class Pay extends React.Component {
 
                 <Grid item xs={12} sm={10} md={8} lg={6}>
                     <Paper style={styles.paper}>
-                        <Typography type="headline">New Payment</Typography>
+                        <Typography type="headline">Request Payment</Typography>
 
                         <AccountSelectorDialog
                             value={this.state.selectedAccount}
@@ -547,12 +479,6 @@ class Pay extends React.Component {
                             accounts={this.props.accounts}
                             BunqJSClient={this.props.BunqJSClient}
                         />
-                        {this.state.insufficientFundsCondition !== false ? (
-                            <InputLabel error={true}>
-                                Your source account does not have sufficient
-                                funds!
-                            </InputLabel>
-                        ) : null}
 
                         {targetTypeSelection}
 
@@ -603,7 +529,7 @@ class Pay extends React.Component {
                             style={styles.payButton}
                             onClick={this.openModal}
                         >
-                            Pay
+                            Send request
                         </Button>
                     </Paper>
 
@@ -626,15 +552,23 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, props) => {
     const { BunqJSClient } = props;
     return {
-        paySend: (userId, accountId, description, amount, target) =>
+        requestInquirySend: (
+            userId,
+            accountId,
+            description,
+            amount,
+            target,
+            options
+        ) =>
             dispatch(
-                paySend(
+                requestInquirySend(
                     BunqJSClient,
                     userId,
                     accountId,
                     description,
                     amount,
-                    target
+                    target,
+                    options
                 )
             ),
         openSnackbar: message => dispatch(openSnackbar(message))
