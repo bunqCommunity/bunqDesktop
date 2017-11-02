@@ -1,4 +1,5 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import Logger from "../Helpers/Logger";
 import { openSnackbar } from "./snackbar";
 import { paymentsUpdate } from "./payments";
 import { accountsUpdate } from "./accounts";
