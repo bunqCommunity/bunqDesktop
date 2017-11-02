@@ -45,7 +45,7 @@ class AccountListItem extends React.Component {
     render() {
         const account = this.props.account;
 
-        if (account.status === "CANCELLED") {
+        if (account.status !== "ACTIVE") {
             return null;
         }
         const formattedBalance = formatMoney(

@@ -71,7 +71,7 @@ class AccountSelectorDialog extends React.Component {
         const style = otherProps.style ? otherProps.style : {};
 
         const accountItems = accounts.map((account, accountKey) => {
-            if (account.MonetaryAccountBank.status === "CANCELLED") {
+            if (account.MonetaryAccountBank.status !== "ACTIVE") {
                 return null;
             }
             return (

@@ -50,7 +50,7 @@ class AccountSelector extends React.Component {
         let selectedAccountItem = null;
         if (value !== "" && accounts[value]) {
             const account = accounts[value].MonetaryAccountBank;
-            if (account.status === "CANCELLED") {
+            if (account.status !== "ACTIVE") {
                 return null;
             }
             const formattedBalance = formatMoney(
