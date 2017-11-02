@@ -10,7 +10,7 @@ import IconButton from "material-ui/IconButton";
 import KeyboardArrowRightIcon from "material-ui-icons/KeyboardArrowRight";
 import InfoIcon from "material-ui-icons/InfoOutline";
 
-import AttachmentImage from "../../Components/AttachmentImage";
+import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 import NavLink from "../../Components/Routing/NavLink";
 import { formatMoney } from "../../Helpers/Utils";
 
@@ -56,7 +56,7 @@ class AccountListItem extends React.Component {
                 onClick={this.fetchPaymentsHandler(account.id)}
             >
                 <Avatar style={styles.bigAvatar}>
-                    <AttachmentImage
+                    <LazyAttachmentImage
                         width={60}
                         BunqJSClient={this.props.BunqJSClient}
                         imageUUID={

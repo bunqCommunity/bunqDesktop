@@ -6,7 +6,7 @@ import List, { ListItem, ListItemText } from "material-ui/List";
 import Dialog, { DialogContent, DialogTitle } from "material-ui/Dialog";
 
 import { formatMoney } from "../../Helpers/Utils";
-import AttachmentImage from "../AttachmentImage";
+import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 
 const styles = {
     formControl: {
@@ -25,7 +25,7 @@ const AccountItem = ({ account, onClick, BunqJSClient }) => {
     return (
         <ListItem button onClick={onClick}>
             <Avatar style={styles.bigAvatar}>
-                <AttachmentImage
+                <LazyAttachmentImage
                     width={50}
                     BunqJSClient={BunqJSClient}
                     imageUUID={account.avatar.image[0].attachment_public_uuid}
