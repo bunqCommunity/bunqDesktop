@@ -22,6 +22,9 @@ const styles = {
 };
 
 const AccountItem = ({ account, onClick, BunqJSClient }) => {
+    const formattedBalance = formatMoney(
+        account.balance ? account.balance.value : 0
+    );
     return (
         <ListItem button onClick={onClick}>
             <Avatar style={styles.bigAvatar}>
@@ -33,7 +36,7 @@ const AccountItem = ({ account, onClick, BunqJSClient }) => {
             </Avatar>
             <ListItemText
                 primary={account.description}
-                secondary={formatMoney(account.balance.value)}
+                secondary={formattedBalance}
             />
         </ListItem>
     );

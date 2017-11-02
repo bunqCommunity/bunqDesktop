@@ -8,6 +8,7 @@ import { ListItem, ListItemText } from "material-ui/List";
 import Avatar from "material-ui/Avatar";
 
 import AttachmentImage from "../AttachmentImage";
+import {formatMoney} from "../../Helpers/Utils";
 
 const styles = {
     formControl: {
@@ -52,6 +53,9 @@ class AccountSelector extends React.Component {
             if (account.status === "CANCELLED") {
                 return null;
             }
+            const formattedBalance = formatMoney(
+                account.balance ? account.balance.value : 0
+            );
             selectedAccountItem = (
                 <ListItem button>
                     <Avatar style={styles.bigAvatar}>
@@ -65,7 +69,7 @@ class AccountSelector extends React.Component {
                     </Avatar>
                     <ListItemText
                         primary={account.description}
-                        secondary={`€ ${account.balance.value}`}
+                        secondary={formattedBalance}
                     />
                 </ListItem>
             );

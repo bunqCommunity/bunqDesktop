@@ -13,6 +13,7 @@ import InfoIcon from "material-ui-icons/InfoOutline";
 import AttachmentImage from "../../Components/AttachmentImage";
 import NavLink from "../../Components/Routing/NavLink";
 import { formatMoney } from "../../Helpers/Utils";
+import Logger from "../../Helpers/Logger";
 
 import { paymentsUpdate } from "../../Actions/payments.js";
 import { accountsSelectAccount } from "../../Actions/accounts.js";
@@ -47,7 +48,14 @@ class AccountListItem extends React.Component {
         if (account.status === "CANCELLED") {
             return null;
         }
-        const formattedBalance = formatMoney(account.balance.value);
+        const formattedBalance = formatMoney(
+            account.balance ? account.balance.value : 0
+        );
+
+        if(!account.balance){
+            Logger.error("Account balance is missing");
+            Logger.error(JSON.stringify(account));
+        }
 
         return (
             <ListItem

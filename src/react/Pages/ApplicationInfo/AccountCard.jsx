@@ -37,8 +37,9 @@ class AccountCard extends React.Component {
 
     render() {
         const { account } = this.props;
-
-        const formattedBalance = formatMoney(account.balance.value);
+        const formattedBalance = formatMoney(
+            account.balance ? account.balance.value : 0
+        );
 
         return (
             <Paper>
