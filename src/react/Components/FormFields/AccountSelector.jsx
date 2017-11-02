@@ -7,7 +7,7 @@ import Select from "material-ui/Select";
 import { ListItem, ListItemText } from "material-ui/List";
 import Avatar from "material-ui/Avatar";
 
-import AttachmentImage from "../AttachmentImage";
+import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 
 const styles = {
     formControl: {
@@ -55,7 +55,7 @@ class AccountSelector extends React.Component {
             selectedAccountItem = (
                 <ListItem button>
                     <Avatar style={styles.bigAvatar}>
-                        <AttachmentImage
+                        <LazyAttachmentImage
                             width={50}
                             BunqJSClient={this.props.BunqJSClient}
                             imageUUID={

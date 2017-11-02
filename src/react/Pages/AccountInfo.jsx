@@ -5,16 +5,13 @@ import Grid from "material-ui/Grid";
 import Paper from "material-ui/Paper";
 import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
-import Typography from "material-ui/Typography";
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
 
 import PaymentList from "./Dashboard/PaymentList";
-import AttachmentImage from "../Components/AttachmentImage";
-import AccountQRFullscreen from "../Components/QR/AccountQRFullscreen";
+import AccountCard from "./ApplicationInfo/AccountCard";
 
 import { accountsUpdate } from "../Actions/accounts";
 import { paymentsUpdate } from "../Actions/payments";
-import AccountCard from "./ApplicationInfo/AccountCard";
 import { openSnackbar } from "../Actions/snackbar";
 
 const styles = {

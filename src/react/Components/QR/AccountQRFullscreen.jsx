@@ -8,7 +8,7 @@ import { ListItem, ListItemText } from "material-ui/List";
 import Avatar from "material-ui/Avatar";
 
 import AccountQRCode from "./AccountQRCode";
-import AttachmentImage from "../AttachmentImage";
+import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 import QRSvg from "./QRSvg";
 
 const styles = theme => ({
@@ -89,7 +89,7 @@ class AccountQRFullscreen extends React.PureComponent {
                         <AccountQRCode accountId={this.props.accountId} />
                         <ListItem className={classes.listItem}>
                             <Avatar className={classes.bigAvatar}>
-                                <AttachmentImage
+                                <LazyAttachmentImage
                                     width={45}
                                     BunqJSClient={this.props.BunqJSClient}
                                     imageUUID={

@@ -4,7 +4,9 @@ import Grid from "material-ui/Grid";
 import Button from "material-ui/Button";
 import Avatar from "material-ui/Avatar";
 import Card, { CardHeader, CardContent } from "material-ui/Card";
-import AttachmentImage from "../../Components/AttachmentImage";
+
+import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
+
 import { userLogin } from "../../Actions/user";
 
 const styles = {
@@ -32,8 +34,7 @@ const styles = {
 class UserItem extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {
-        };
+        this.state = {};
     }
 
     selectAccount = type => {
@@ -43,7 +44,7 @@ class UserItem extends React.Component {
     };
 
     render() {
-        const {user, userKey} = this.props;
+        const { user, userKey } = this.props;
         const imageUUID = user.avatar.image[0].attachment_public_uuid;
 
         return (
@@ -52,7 +53,7 @@ class UserItem extends React.Component {
                     <CardHeader
                         avatar={
                             <Avatar>
-                                <AttachmentImage
+                                <LazyAttachmentImage
                                     style={styles.smallAvatar}
                                     BunqJSClient={this.props.BunqJSClient}
                                     imageUUID={imageUUID}

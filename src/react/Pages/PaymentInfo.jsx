@@ -15,9 +15,8 @@ import ArrowDownIcon from "material-ui-icons/ArrowDownward";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
-import { humanReadableDate, formatMoney } from "../Helpers/Utils";
-import NavLink from "../Components/Routing/NavLink";
-import AttachmentImage from "../Components/AttachmentImage";
+import { formatMoney } from "../Helpers/Utils";
+import LazyAttachmentImage from "../Components/AttachmentImage/LazyAttachmentImage";
 
 import { paymentsUpdate } from "../Actions/payment_info";
 
@@ -133,7 +132,7 @@ class PaymentInfo extends React.Component {
                     justify={"center"}
                 >
                     <Grid item xs={12} md={5} style={styles.textCenter}>
-                        <AttachmentImage
+                        <LazyAttachmentImage
                             width={90}
                             BunqJSClient={this.props.BunqJSClient}
                             imageUUID={personalInfo.imageUUID}
@@ -170,7 +169,7 @@ class PaymentInfo extends React.Component {
                     </Grid>
 
                     <Grid item xs={12} md={5} style={styles.textCenter}>
-                        <AttachmentImage
+                        <LazyAttachmentImage
                             width={90}
                             BunqJSClient={this.props.BunqJSClient}
                             imageUUID={counterPartyInfo.imageUUID}
