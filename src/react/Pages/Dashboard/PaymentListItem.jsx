@@ -11,7 +11,7 @@ import Divider from "material-ui/Divider";
 import { formatMoney, humanReadableDate } from "../../Helpers/Utils";
 import Logger from "../../Helpers/Logger";
 import NavLink from "../../Components/Routing/NavLink";
-import AttachmentImage from "../../Components/AttachmentImage";
+import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 
 const styles = {
     smallAvatar: {
@@ -53,7 +53,7 @@ class PaymentListItem extends React.Component {
         return [
             <ListItem button to={`/payment/${payment.id}`} component={NavLink}>
                 <Avatar style={styles.smallAvatar}>
-                    <AttachmentImage
+                    <LazyAttachmentImage
                         width={50}
                         BunqJSClient={this.props.BunqJSClient}
                         imageUUID={imageUUID}

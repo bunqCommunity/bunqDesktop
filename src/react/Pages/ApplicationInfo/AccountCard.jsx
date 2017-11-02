@@ -14,7 +14,7 @@ import PhoneIcon from "material-ui-icons/Phone";
 import EmailIcon from "material-ui-icons/Email";
 import PersonIcon from "material-ui-icons/Person";
 
-import AttachmentImage from "../../Components/AttachmentImage";
+import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 import AccountQRFullscreen from "../../Components/QR/AccountQRFullscreen";
 import { formatMoney } from "../../Helpers/Utils";
 
@@ -46,7 +46,7 @@ class AccountCard extends React.Component {
                 <List>
                     <ListItem>
                         <Avatar style={styles.avatar}>
-                            <AttachmentImage
+                            <LazyAttachmentImage
                                 width={60}
                                 BunqJSClient={this.props.BunqJSClient}
                                 imageUUID={

@@ -1,6 +1,6 @@
 import React from "react";
 import localforage from "localforage";
-import Logger from "../Helpers/Logger";
+import Logger from "../../Helpers/Logger";
 
 const defaultImageUrl =
     "https://static.useresponse.com/public/bunq/avatars/default-avatar.svg";
@@ -9,7 +9,7 @@ class AttachmentImage extends React.PureComponent {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            imageUrl: ""
+            visible: false
         };
     }
 
@@ -38,7 +38,7 @@ class AttachmentImage extends React.PureComponent {
 
         // configure the localforage instance
         localforage.config({
-            driver: localforage.INDEXEDDB, 
+            driver: localforage.INDEXEDDB,
             name: "BunqDesktop",
             version: 1.0,
             storeName: "bunq_desktop_images",
@@ -110,13 +110,11 @@ class AttachmentImage extends React.PureComponent {
         // exclude custom props
         const { BunqJSClient, imageUUID, ...props } = this.props;
 
-        if (this.imageUrl === false) {
-            // temporary div with our image properties as placeholder
-            return <div {...props} />;
-        }
-
-        // and add the rest to the image with our temporary imageUrl
-        return <img src={this.state.imageUrl} {...props} />;
+        return this.imageUrl === false ? (
+            <div {...props} />
+        ) : (
+            <img src={this.state.imageUrl} {...props} />
+        );
     }
 }
 
