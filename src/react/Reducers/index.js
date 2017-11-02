@@ -15,6 +15,8 @@ import pay from "./pay";
 import payments from "./payments";
 import payment_info from "./payment_info";
 import payment_filter from "./payment_filter";
+import request_inquiries from "./request_inquiries";
+import request_inquiry from "./request_inquiry";
 
 export default combineReducers({
     application,
@@ -32,5 +34,7 @@ export default combineReducers({
     payment_info,
     payment_filter,
     payment_filter,
-    payments
+    payments,
+    request_inquiries,
+    request_inquiry
 });

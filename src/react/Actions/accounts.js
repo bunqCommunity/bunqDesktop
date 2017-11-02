@@ -1,3 +1,4 @@
+import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import Logger from "../Helpers/Logger";
 import { openModal } from "./modal";
 
@@ -19,7 +20,13 @@ export function accountsUpdate(BunqJSClient, userId) {
                 dispatch(accountsSetInfo(accounts));
                 dispatch(accountsNotLoading());
             })
-            .catch(err => {
+            .catch(error => {
+                BunqErrorHandler(
+                    dispatch,
+                    error,
+                    "We received the following error while sending your request inquiry"
+                );
+
                 Logger.error(err);
                 dispatch(
                     openModal(
