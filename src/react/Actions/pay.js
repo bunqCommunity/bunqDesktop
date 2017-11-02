@@ -1,5 +1,4 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import Logger from "../Helpers/Logger";
 import { openSnackbar } from "./snackbar";
 import { paymentsUpdate } from "./payments";
 import { accountsUpdate } from "./accounts";
@@ -15,7 +14,7 @@ export function paySend(
     return dispatch => {
         dispatch(payLoading());
         BunqJSClient.api.payment
-            .post(userId, accountId, description, amount , target)
+            .post(userId, accountId, description, amount, target)
             .then(result => {
                 dispatch(openSnackbar("Payment sent successfully!"));
                 dispatch(paymentsUpdate(BunqJSClient, userId, accountId));
@@ -24,12 +23,11 @@ export function paySend(
             })
             .catch(error => {
                 dispatch(payNotLoading());
-
                 BunqErrorHandler(
                     dispatch,
                     error,
                     "We received the following error while sending your payment"
-                );;
+                );
             });
     };
 }

@@ -21,7 +21,6 @@ export function requestInquiriesUpdate(BunqJSClient, userId, accountId) {
             })
             .catch(error => {
                 dispatch(requestInquiriesNotLoading());
-
                 BunqErrorHandler(
                     dispatch,
                     error,

@@ -25,7 +25,6 @@ export function requestInquirySend(
             })
             .catch(error => {
                 dispatch(requestInquiryNotLoading());
-
                 BunqErrorHandler(
                     dispatch,
                     error,
