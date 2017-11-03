@@ -52,11 +52,6 @@ class AccountListItem extends React.Component {
             account.balance ? account.balance.value : 0
         );
 
-        if(!account.balance){
-            Logger.error("Account balance is missing");
-            Logger.error(JSON.stringify(account));
-        }
-
         return (
             <ListItem
                 button
