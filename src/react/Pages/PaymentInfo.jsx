@@ -44,7 +44,7 @@ class PaymentInfo extends React.Component {
             const { paymentId, accountId } = this.props.match.params;
             this.props.updatePayment(
                 this.props.user.id,
-                accountId !== undefined
+                accountId === undefined
                     ? this.props.accountsSelectedAccount
                     : accountId,
                 paymentId
@@ -58,11 +58,11 @@ class PaymentInfo extends React.Component {
             this.props.match.params.paymentId !==
                 nextProps.match.params.paymentId
         ) {
-            const { paymentId, accountId } = this.props.match.params;
+            const { paymentId, accountId } = nextProps.match.params;
             this.props.updatePayment(
-                this.props.user.id,
-                accountId !== undefined
-                    ? this.props.accountsSelectedAccount
+                nextProps.user.id,
+                accountId === undefined
+                    ? nextProps.accountsSelectedAccount
                     : accountId,
                 paymentId
             );
