@@ -8,6 +8,7 @@ import { ListItem, ListItemText } from "material-ui/List";
 import Avatar from "material-ui/Avatar";
 
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
+import {formatMoney} from "../../Helpers/Utils";
 
 const styles = {
     formControl: {
@@ -49,9 +50,12 @@ class AccountSelector extends React.Component {
         let selectedAccountItem = null;
         if (value !== "" && accounts[value]) {
             const account = accounts[value].MonetaryAccountBank;
-            if (account.status === "CANCELLED") {
+            if (account.status !== "ACTIVE") {
                 return null;
             }
+            const formattedBalance = formatMoney(
+                account.balance ? account.balance.value : 0
+            );
             selectedAccountItem = (
                 <ListItem button>
                     <Avatar style={styles.bigAvatar}>
@@ -65,7 +69,7 @@ class AccountSelector extends React.Component {
                     </Avatar>
                     <ListItemText
                         primary={account.description}
-                        secondary={`€ ${account.balance.value}`}
+                        secondary={formattedBalance}
                     />
                 </ListItem>
             );
