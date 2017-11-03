@@ -11,7 +11,6 @@ class LazyAttachmentImage extends React.PureComponent {
     }
 
     onVisibilityChange = visible => {
-        console.log(visible);
         this.setState({ visible: visible });
     };
 
@@ -19,7 +18,6 @@ class LazyAttachmentImage extends React.PureComponent {
         return (
             <VisibilitySensor onChange={this.onVisibilityChange}>
                 {state => {
-                    console.log(state.isVisible);
                     // if currently visible or previously visible render the image
                     return state.isVisible || this.state.visible ? (
                         <AttachmentImage {...this.props} />
