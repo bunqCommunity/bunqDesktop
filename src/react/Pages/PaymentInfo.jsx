@@ -41,10 +41,12 @@ class PaymentInfo extends React.Component {
 
     componentDidMount() {
         if (this.props.initialBunqConnect) {
-            const { paymentId } = this.props.match.params;
+            const { paymentId, accountId } = this.props.match.params;
             this.props.updatePayment(
                 this.props.user.id,
-                this.props.accountsSelectedAccount,
+                accountId === undefined
+                    ? this.props.accountsSelectedAccount
+                    : accountId,
                 paymentId
             );
         }
@@ -56,10 +58,12 @@ class PaymentInfo extends React.Component {
             this.props.match.params.paymentId !==
                 nextProps.match.params.paymentId
         ) {
-            const { paymentId } = this.props.match.params;
+            const { paymentId, accountId } = nextProps.match.params;
             this.props.updatePayment(
-                this.props.user.id,
-                this.props.accountsSelectedAccount,
+                nextProps.user.id,
+                accountId === undefined
+                    ? nextProps.accountsSelectedAccount
+                    : accountId,
                 paymentId
             );
         }
@@ -86,9 +90,10 @@ class PaymentInfo extends React.Component {
             paymentLoading,
             theme
         } = this.props;
+        const paramAccountId = this.props.match.params.accountId;
 
         // we require a selected account before we can display payment information
-        if (accountsSelectedAccount === false) {
+        if (accountsSelectedAccount === false && paramAccountId !== undefined) {
             // no account_id set
             return <Redirect to={"/"} />;
         }
@@ -227,7 +232,10 @@ class PaymentInfo extends React.Component {
                 </Helmet>
 
                 <Grid item xs={12} sm={2}>
-                    <Button onClick={this.props.history.goBack} style={styles.btn}>
+                    <Button
+                        onClick={this.props.history.goBack}
+                        style={styles.btn}
+                    >
                         <ArrowBackIcon />
                     </Button>
                 </Grid>
