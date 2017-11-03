@@ -156,7 +156,8 @@ class Pay extends React.Component {
             .MonetaryAccountBank;
 
         const insufficientFundsCondition =
-            amount !== "" && amount > account.balance.value;
+            amount !== "" &&
+            amount > (account.balance ? account.balance.value : 0);
         const amountErrorCondition = amount < 0.01 || amount > 10000;
         const descriptionErrorCondition = description.length > 140;
         const ibanNameErrorCondition =

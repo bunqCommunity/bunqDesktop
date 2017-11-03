@@ -13,6 +13,7 @@ import InfoIcon from "material-ui-icons/InfoOutline";
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 import NavLink from "../../Components/Routing/NavLink";
 import { formatMoney } from "../../Helpers/Utils";
+import Logger from "../../Helpers/Logger";
 
 import { paymentsUpdate } from "../../Actions/payments.js";
 import { accountsSelectAccount } from "../../Actions/accounts.js";
@@ -44,10 +45,12 @@ class AccountListItem extends React.Component {
     render() {
         const account = this.props.account;
 
-        if (account.status === "CANCELLED") {
+        if (account.status !== "ACTIVE") {
             return null;
         }
-        const formattedBalance = formatMoney(account.balance.value);
+        const formattedBalance = formatMoney(
+            account.balance ? account.balance.value : 0
+        );
 
         return (
             <ListItem
