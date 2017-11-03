@@ -483,49 +483,41 @@ class Pay extends React.Component {
                 break;
             case "EMAIL":
                 targetContent = (
-                    <FormControl fullWidth error={this.state.targetError}>
-                        <TextField
-                            error={this.state.targetError}
-                            fullWidth
-                            required
-                            id="target"
-                            type="email"
-                            label="Email"
-                            value={this.state.target}
-                            onChange={this.handleChange("target")}
-                        />
-                    </FormControl>
+                    <TextField
+                        error={this.state.targetError}
+                        fullWidth
+                        required
+                        id="target"
+                        type="email"
+                        label="Email"
+                        value={this.state.target}
+                        onChange={this.handleChange("target")}
+                    />
                 );
                 break;
             default:
             case "IBAN":
-                targetContent = (
-                    <div>
-                        <FormControl fullWidth error={this.state.targetError}>
-                            <TextField
-                                error={this.state.targetError}
-                                fullWidth
-                                required
-                                id="target"
-                                label="IBAN number"
-                                value={this.state.target}
-                                onChange={this.handleChange("target")}
-                            />
-                        </FormControl>
-                        <FormControl fullWidth error={this.state.ibanNameError}>
-                            <TextField
-                                fullWidth
-                                required
-                                error={this.state.ibanNameError}
-                                id="ibanName"
-                                label="IBAN name"
-                                value={this.state.ibanName}
-                                onChange={this.handleChange("ibanName")}
-                                margin="normal"
-                            />
-                        </FormControl>
-                    </div>
-                );
+                targetContent = [
+                    <TextField
+                        error={this.state.targetError}
+                        fullWidth
+                        required
+                        id="target"
+                        label="IBAN number"
+                        value={this.state.target}
+                        onChange={this.handleChange("target")}
+                    />,
+                    <TextField
+                        fullWidth
+                        required
+                        error={this.state.ibanNameError}
+                        id="ibanName"
+                        label="IBAN name"
+                        value={this.state.ibanName}
+                        onChange={this.handleChange("ibanName")}
+                        margin="normal"
+                    />
+                ];
                 break;
         }
 
@@ -558,20 +550,15 @@ class Pay extends React.Component {
 
                         {targetContent}
 
-                        <FormControl
+                        <TextField
                             fullWidth
-                            error={this.state.descriptionError}
-                        >
-                            <TextField
-                                fullWidth
-                                // error={this.state.descriptionError}
-                                id="description"
-                                label="Description"
-                                value={this.state.description}
-                                onChange={this.handleChange("description")}
-                                margin="normal"
-                            />
-                        </FormControl>
+                            // error={this.state.descriptionError}
+                            id="description"
+                            label="Description"
+                            value={this.state.description}
+                            onChange={this.handleChange("description")}
+                            margin="normal"
+                        />
 
                         <FormControl
                             style={styles.formControlAlt}
