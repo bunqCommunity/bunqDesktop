@@ -33,9 +33,13 @@ if (env.name !== "production") {
 log.transports.file.appName = "BunqDesktop";
 log.transports.file.level = env.name === "development" ? "debug" : "warn";
 log.transports.file.format = "{h}:{i}:{s}:{ms} {text}";
+log.transports.file.file = `${app.getPath("userData")}/BunqDesktop.log.txt`;
 
 app.on("ready", () => {
     setApplicationMenu();
+
+    // set the correct path
+    settings.setPath(`${app.getPath("userData")}/settings.json`);
 
     const USE_NATIVE_FRAME_STORED = settings.get("USE_NATIVE_FRAME");
     const USE_NATIVE_FRAME =

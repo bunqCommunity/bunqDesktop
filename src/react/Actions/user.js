@@ -1,5 +1,4 @@
-import Logger from "../Helpers/Logger";
-import { openModal } from "./modal";
+import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { accountsClear } from "./accounts";
 import { paymentInfoClear } from "./payment_info";
 import { paymentsClear } from "./payments";
@@ -26,14 +25,12 @@ export function userLogin(BunqJSClient, type, updated = false) {
                 dispatch(userNotLoading());
             })
             .catch(error => {
-                Logger.error(error);
-                dispatch(
-                    openModal(
-                        "We failed to load the information for a user",
-                        "Something went wrong"
-                    )
-                );
                 dispatch(userNotLoading());
+                BunqErrorHandler(
+                    dispatch,
+                    error,
+                    "We failed to load the information for a user"
+                );
             });
     };
 }

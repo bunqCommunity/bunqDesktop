@@ -8,6 +8,7 @@ import Dashboard from "./Pages/Dashboard/Dashboard";
 import Login from "./Pages/Login/Login.jsx";
 import LoginPassword from "./Pages/LoginPassword";
 import Pay from "./Pages/Pay";
+import RequestInquiry from "./Pages/RequestInquiry/RequestInquiry";
 import PaymentInfo from "./Pages/PaymentInfo";
 import NotFound from "./Pages/NotFound";
 import ApplicationInfo from "./Pages/ApplicationInfo";
@@ -49,6 +50,16 @@ export default class Routes extends React.Component {
                             derivedPassword={this.props.derivedPassword}
                             render={props => (
                                 <Pay {...props} {...this.props.childProps} />
+                            )}
+                        />
+
+                        <PrivateRoute
+                            path="/request"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <RequestInquiry {...props} {...this.props.childProps} />
                             )}
                         />
 

@@ -6,12 +6,16 @@ import Paper from "material-ui/Paper";
 import Typography from "material-ui/Typography";
 import Avatar from "material-ui/Avatar";
 import Button from "material-ui/Button";
+import CopyToClipboard from "react-copy-to-clipboard";
 import List, { ListItem, ListItemText } from "material-ui/List";
+
+const { app } = require("electron").remote;
 
 import NavLink from "../Components/Routing/NavLink";
 import { allReleases } from "../Helpers/VersionChecker";
 import { humanReadableDate } from "../Helpers/Utils";
 import Logger from "../Helpers/Logger";
+import { openSnackbar } from "../Actions/snackbar";
 
 const styles = {
     avatar: {
@@ -49,6 +53,10 @@ class ApplicationInfo extends React.Component {
                 this.setState({ loading: false });
                 Logger.error(error);
             });
+    };
+
+    copiedValue = type => callback => {
+        this.props.openSnackbar(`Copied ${type} to your clipboard`);
     };
 
     render() {
@@ -98,10 +106,35 @@ class ApplicationInfo extends React.Component {
                                 <Typography type={"headline"}>
                                     BunqDesktop
                                 </Typography>
-
                                 <Typography type={"body2"}>
                                     Version: {process.env.CURRENT_VERSION}
                                 </Typography>
+                            </Grid>
+
+                            <Grid item sm={12}>
+                                <CopyToClipboard
+                                    text={`${app.getPath(
+                                        "userData"
+                                    )}/BunqDesktop.log.txt`}
+                                    onCopy={this.copiedValue(
+                                        "settings location"
+                                    )}
+                                >
+                                    <Typography type={"body2"}>
+                                        Settings: {app.getPath("userData")}/settings.json
+                                    </Typography>
+                                </CopyToClipboard>
+
+                                <CopyToClipboard
+                                    text={`${app.getPath(
+                                        "userData"
+                                    )}/BunqDesktop.log.txt`}
+                                    onCopy={this.copiedValue("log location")}
+                                >
+                                    <Typography type={"body2"}>
+                                        Log file: {app.getPath("userData")}/BunqDesktop.log.txt
+                                    </Typography>
+                                </CopyToClipboard>
                             </Grid>
 
                             <Grid item xs={12}>
@@ -127,7 +160,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
-    return {};
+    return {
+        openSnackbar: message => dispatch(openSnackbar(message))
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ApplicationInfo);

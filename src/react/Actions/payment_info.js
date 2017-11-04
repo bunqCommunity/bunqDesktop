@@ -1,8 +1,6 @@
-import Logger from "../Helpers/Logger";
-import { openModal } from "./modal";
+import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
 export function paymentInfoSetInfo(payment, account_id, payment_id) {
-    // return the action
     return {
         type: "PAYMENT_INFO_SET_INFO",
         payload: {
@@ -24,15 +22,13 @@ export function paymentsUpdate(BunqJSClient, user_id, account_id, payment_id) {
                 );
                 dispatch(paymentInfoNotLoading());
             })
-            .catch(err => {
-                Logger.error(err);
-                dispatch(
-                    openModal(
-                        "We failed to load the payment information",
-                        "Something went wrong"
-                    )
-                );
+            .catch(error => {
                 dispatch(paymentInfoNotLoading());
+                BunqErrorHandler(
+                    dispatch,
+                    error,
+                    "We failed to load the payment info"
+                );
             });
     };
 }

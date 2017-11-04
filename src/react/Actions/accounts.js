@@ -1,5 +1,4 @@
-import Logger from "../Helpers/Logger";
-import { openModal } from "./modal";
+import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
 export function accountsSetInfo(accounts) {
     return {
@@ -19,15 +18,13 @@ export function accountsUpdate(BunqJSClient, userId) {
                 dispatch(accountsSetInfo(accounts));
                 dispatch(accountsNotLoading());
             })
-            .catch(err => {
-                Logger.error(err);
-                dispatch(
-                    openModal(
-                        "We failed to load your monetary accounts",
-                        "Something went wrong"
-                    )
-                );
+            .catch(error => {
                 dispatch(accountsNotLoading());
+                BunqErrorHandler(
+                    dispatch,
+                    error,
+                    "We failed to load your monetary accounts"
+                );
             });
     };
 }

@@ -98,7 +98,18 @@ class MainDrawer extends React.Component {
                       <ListItemIcon>
                           <PaymentIcon />
                       </ListItemIcon>
-                      <Typography type="subheading">Create payment</Typography>
+                      <Typography type="subheading">Pay</Typography>
+                  </ListItem>,
+                  <ListItem
+                      button
+                      style={styles.listBottomItem}
+                      component={NavLink}
+                      to="/request"
+                  >
+                      <ListItemIcon>
+                          <PaymentIcon />
+                      </ListItemIcon>
+                      <Typography type="subheading">Request</Typography>
                   </ListItem>
               ];
 

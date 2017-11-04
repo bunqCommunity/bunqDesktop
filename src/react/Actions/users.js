@@ -1,5 +1,4 @@
-import Logger from "../Helpers/Logger";
-import { openModal } from "./modal";
+import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
 export function usersSetInfo(users) {
     return {
@@ -20,14 +19,12 @@ export function usersUpdate(BunqJSClient, updated = false) {
                 dispatch(usersInitialCheck());
             })
             .catch(error => {
-                Logger.error(error);
-                dispatch(
-                    openModal(
-                        "We failed to load your users",
-                        "Something went wrong"
-                    )
-                );
                 dispatch(usersNotLoading());
+                BunqErrorHandler(
+                    dispatch,
+                    error,
+                    "We failed to load your users"
+                );
             });
     };
 }
