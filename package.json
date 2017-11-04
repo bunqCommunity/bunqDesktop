@@ -99,7 +99,7 @@
     "iban": "^0.0.8",
     "localforage": "^1.5.2",
     "loglevel": "^1.5.1",
-    "material-ui": "1.0.0-beta.18",
+    "material-ui": "^1.0.0-beta.19",
     "material-ui-icons": "^1.0.0-beta.10",
     "minimist": "^1.2.0",
     "mocha": "^3.4.2",

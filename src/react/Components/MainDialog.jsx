@@ -1,6 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
 import Button from "material-ui/Button";
 import Dialog, {
     DialogActions,
@@ -9,6 +8,8 @@ import Dialog, {
     DialogTitle
 } from "material-ui/Dialog";
 import Slide from "material-ui/transitions/Slide";
+
+const Transition = props => <Slide direction="left" {...props} />
 
 // redux actions
 import { closeModal } from "../Actions/modal.js";
@@ -23,7 +24,7 @@ class Main extends React.Component {
         return (
             <Dialog
                 open={this.props.modalOpen}
-                transition={<Slide direction="up" />}
+                transition={Transition}
                 keepMounted
                 onRequestClose={this.props.closeModal}
             >
@@ -61,4 +62,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main));
+export default connect(mapStateToProps, mapDispatchToProps)(Main);

@@ -7,6 +7,8 @@ import Slide from "material-ui/transitions/Slide";
 import { ListItem, ListItemText } from "material-ui/List";
 import Avatar from "material-ui/Avatar";
 
+const Transition = props => <Slide direction={"up"} {...props} />;
+
 import AccountQRCode from "./AccountQRCode";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 import QRSvg from "./QRSvg";
@@ -82,7 +84,7 @@ class AccountQRFullscreen extends React.PureComponent {
                 onClick={this.handleRequestClose}
                 onEscapeKeyUp={this.handleRequestClose}
                 onBackdropClick={this.handleRequestClose}
-                transition={<Slide direction="up" />}
+                transition={Transition}
             >
                 <div className={classes.content}>
                     <div style={{ width: 195 }}>

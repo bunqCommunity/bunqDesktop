@@ -66,6 +66,7 @@ class Layout extends React.Component {
     }
 
     componentDidMount() {
+        // this.props.openSnackbar("test");
         this.checkBunqSetup()
             .then(_ => {
                 if (this.props.userType !== false) {
@@ -228,20 +229,6 @@ class Layout extends React.Component {
         // setup finished with no errors
         this.props.applicationSetStatus("");
         this.props.usersUpdate();
-
-        // this.props.BunqJSClient.api.requestInquiry.post(
-        //     3436,
-        //     3580,
-        //     "Test request inquiry",
-        //     {
-        //         value: "1.00",
-        //         currency: "EUR"
-        //     },
-        //     {
-        //         type: "EMAIL",
-        //         value: "jenna.bean@bunq.eu"
-        //     }
-        // ).then(console.log).catch(console.error);
     };
 
     render() {

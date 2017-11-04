@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
 import Snackbar from "material-ui/Snackbar";
 import Slide from "material-ui/transitions/Slide";
+const Transition = props => <Slide direction={"down"} {...props} />;
 
 // redux actions
 import { closeSnackbar } from "../Actions/snackbar.js";
@@ -13,7 +13,7 @@ const styles = {
     }
 };
 
-class MainSnackbar extends React.Component {
+class MainSnackbar extends React.PureComponent {
     constructor(props, context) {
         super(props, context);
         this.state = {};
@@ -26,7 +26,7 @@ class MainSnackbar extends React.Component {
                 open={this.props.snackbarOpen}
                 message={this.props.snackbarMessage}
                 autoHideDuration={this.props.snackbarDuration}
-                transition={<Slide direction={"down"} />}
+                transition={Transition}
                 anchorOrigin={{ vertical: "top", horizontal: "right" }}
                 onRequestClose={this.props.closeSnackbar}
             />
@@ -48,6 +48,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(MainSnackbar)
-);
+export default connect(mapStateToProps, mapDispatchToProps)(MainSnackbar);

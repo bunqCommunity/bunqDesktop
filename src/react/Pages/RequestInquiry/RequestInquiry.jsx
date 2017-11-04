@@ -1,5 +1,4 @@
 import React from "react";
-import iban from "iban";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import EmailValidator from "email-validator";
@@ -7,17 +6,12 @@ import EmailValidator from "email-validator";
 import Grid from "material-ui/Grid";
 import TextField from "material-ui/TextField";
 import { InputLabel } from "material-ui/Input";
-import List, { ListItem, ListItemText } from "material-ui/List";
 import Button from "material-ui/Button";
 import Paper from "material-ui/Paper";
 import Typography from "material-ui/Typography";
-import { FormControl, FormControlLabel } from "material-ui/Form";
-import Dialog, {
-    DialogActions,
-    DialogContent,
-    DialogTitle
-} from "material-ui/Dialog";
+import Collapse from "material-ui/transitions/Collapse";
 import Switch from "material-ui/Switch";
+import { FormControl, FormControlLabel } from "material-ui/Form";
 
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
@@ -25,8 +19,10 @@ import PhoneFormatInput from "../../Components/FormFields/PhoneFormatInput";
 import { openSnackbar } from "../../Actions/snackbar";
 import { requestInquirySend } from "../../Actions/request_inquiry";
 import TargetSelection from "./TargetSelection";
-import MinimumAge from "./MinimumAge";
-import RedirectUrl from "./RedirectUrl";
+import MinimumAge from "./Options/MinimumAge";
+import RedirectUrl from "../../Components/FormFields/RedirectUrl";
+import ConfirmationDialog from "./ConfirmationDialog";
+import AllowBunqMe from "./Options/AllowBunqMe";
 
 const styles = {
     payButton: {
@@ -48,6 +44,7 @@ class Pay extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
+            expandedCollapse: false,
             confirmModalOpen: false,
 
             // when false, don't allow payment request
@@ -65,7 +62,7 @@ class Pay extends React.Component {
             description: "",
 
             // allow bunq.me requests for this inquiry
-            allowBunqMe: false,
+            allowBunqMe: true,
 
             // minimum age input field - false or integer between 12 and 100
             setMinimumAge: false,
@@ -81,12 +78,8 @@ class Pay extends React.Component {
             targetError: false,
             target: "",
 
-            // name field for IBAN targets
-            ibanNameError: false,
-            ibanName: "",
-
             // defines which type is used
-            targetType: "IBAN"
+            targetType: "EMAIL"
         };
     }
 
@@ -104,6 +97,11 @@ class Pay extends React.Component {
     };
     openModal = () => {
         this.setState({ confirmModalOpen: true });
+    };
+    toggleExpanded = () => {
+        this.setState({
+            expandedCollapse: !this.state.expandedCollapse
+        });
     };
 
     // callbacks for input fields and selectors
@@ -150,7 +148,6 @@ class Pay extends React.Component {
             description,
             amount,
             target,
-            ibanName,
             setMinimumAge,
             minimumAge,
             setRedirectUrl,
@@ -161,8 +158,6 @@ class Pay extends React.Component {
 
         const amountErrorCondition = amount < 0.01 || amount > 10000;
         const descriptionErrorCondition = description.length > 140;
-        const ibanNameErrorCondition =
-            ibanName.length < 1 || ibanName.length > 64;
         const minimumAgeErrorCondition =
             setMinimumAge === true &&
             (minimumAgeInt < 12 || minimumAgeInt > 100);
@@ -179,10 +174,6 @@ class Pay extends React.Component {
                 targetErrorCondition = target.length < 5 || target.length > 64;
                 break;
             default:
-            case "IBAN":
-                targetErrorCondition =
-                    !iban.isValid(target) || !ibanNameErrorCondition;
-                break;
         }
 
         this.setState({
@@ -190,7 +181,6 @@ class Pay extends React.Component {
             minimumAgeError: minimumAgeErrorCondition,
             redurectUrlError: redurectUrlErrorCondition,
             descriptionError: descriptionErrorCondition,
-            ibanNameError: ibanNameErrorCondition,
             targetError: targetErrorCondition,
             validForm:
                 !amountErrorCondition &&
@@ -225,7 +215,6 @@ class Pay extends React.Component {
             description,
             amount,
             target,
-            ibanName,
             setMinimumAge,
             minimumAge,
             setRedirectUrl,
@@ -253,13 +242,8 @@ class Pay extends React.Component {
                 };
                 break;
             default:
-            case "IBAN":
-                targetInfo = {
-                    type: "IBAN",
-                    value: target.trim(),
-                    name: ibanName
-                };
-                break;
+                this.props.openSnackbar("We failed to send this payment");
+                return;
         }
 
         const amountInfo = {
@@ -268,7 +252,7 @@ class Pay extends React.Component {
         };
 
         let options = {
-            allow_bunqMe: allowBunqMe,
+            allow_bunqme: allowBunqMe,
             minimum_age: setMinimumAge ? minimumAgeInt : false,
             redirect_url: setRedirectUrl ? redirectUrl : false
         };
@@ -289,78 +273,12 @@ class Pay extends React.Component {
             selectedAccount,
             description,
             targetType,
-            ibanName,
+            allowBunqMe,
             amount,
             target
         } = this.state;
-
-        let confirmationModal = null;
-        if (this.state.confirmModalOpen) {
-            const account = this.props.accounts[selectedAccount]
-                .MonetaryAccountBank;
-
-            confirmationModal = (
-                <Dialog
-                    open={this.state.confirmModalOpen}
-                    keepMounted
-                    onRequestClose={this.closeModal}
-                >
-                    <DialogTitle>Confirm the payment</DialogTitle>
-                    <DialogContent>
-                        <List>
-                            <ListItem>
-                                <ListItemText
-                                    primary="From"
-                                    secondary={`${account.description} ${account
-                                        .balance.value} ${account.balance
-                                        .currency}`}
-                                />
-                            </ListItem>
-                            <ListItem>
-                                <ListItemText
-                                    primary="Description"
-                                    secondary={description}
-                                />
-                            </ListItem>
-                            <ListItem>
-                                <ListItemText
-                                    primary="Amount"
-                                    secondary={`${amount.toFixed(2)} ${account
-                                        .balance.currency}`}
-                                />
-                            </ListItem>
-                            <ListItem>
-                                <ListItemText
-                                    primary="To"
-                                    secondary={(() => {
-                                        switch (targetType) {
-                                            case "PHONE":
-                                                return `Phone: ${target}`;
-                                            case "EMAIL":
-                                                return `Email: ${target}`;
-                                            case "IBAN":
-                                                return `IBAN: ${target} - Name: ${ibanName}`;
-                                        }
-                                    })()}
-                                />
-                            </ListItem>
-                        </List>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button raised onClick={this.closeModal} color="accent">
-                            Cancel
-                        </Button>
-                        <Button
-                            raised
-                            onClick={this.sendInquiry}
-                            color="primary"
-                        >
-                            Confirm
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-            );
-        }
+        const account = this.props.accounts[selectedAccount]
+            .MonetaryAccountBank;
 
         let targetContent = null;
         switch (this.state.targetType) {
@@ -394,32 +312,6 @@ class Pay extends React.Component {
                         onChange={this.handleChange("target")}
                     />
                 );
-                break;
-            default:
-            case "IBAN":
-                targetContent = [
-                    <FormControl fullWidth error={this.state.targetError}>
-                        <TextField
-                            error={this.state.targetError}
-                            fullWidth
-                            required
-                            id="target"
-                            label="IBAN number"
-                            value={this.state.target}
-                            onChange={this.handleChange("target")}
-                        />
-                    </FormControl>,
-                    <TextField
-                        fullWidth
-                        required
-                        error={this.state.ibanNameError}
-                        id="ibanName"
-                        label="IBAN name"
-                        value={this.state.ibanName}
-                        onChange={this.handleChange("ibanName")}
-                        margin="normal"
-                    />
-                ];
                 break;
         }
 
@@ -457,33 +349,6 @@ class Pay extends React.Component {
                             margin="normal"
                         />
 
-                        <MinimumAge
-                            minimumAge={this.state.minimumAge}
-                            setMinimumAge={this.state.setMinimumAge}
-                            minimumAgeError={this.state.minimumAgeError}
-                            handleToggle={this.handleToggle}
-                            handleChange={this.handleChange}
-                        />
-
-                        <RedirectUrl
-                            redirectUrl={this.state.redirectUrl}
-                            setRedirectUrl={this.state.setRedirectUrl}
-                            redirectUrlError={this.state.redirectUrlError}
-                            handleToggle={this.handleToggle}
-                            handleChange={this.handleChange}
-                        />
-
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    color="primary"
-                                    checked={this.state.allowBunqMe}
-                                    onChange={this.handleToggle("allowBunqMe")}
-                                />
-                            }
-                            label="Allow bunq.me requests"
-                        />
-
                         <FormControl
                             style={styles.formControlAlt}
                             error={this.state.amountError}
@@ -507,6 +372,47 @@ class Pay extends React.Component {
                             />
                         </FormControl>
 
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    color="primary"
+                                    checked={this.state.expandedCollapse}
+                                    onClick={this.toggleExpanded}
+                                />
+                            }
+                            label="Advanced options"
+                        />
+
+                        <Collapse
+                            in={this.state.expandedCollapse}
+                            transitionDuration="auto"
+                            unmountOnExit
+                        >
+                            <MinimumAge
+                                targetType={this.state.targetType}
+                                minimumAge={this.state.minimumAge}
+                                setMinimumAge={this.state.setMinimumAge}
+                                minimumAgeError={this.state.minimumAgeError}
+                                handleToggle={this.handleToggle}
+                                handleChange={this.handleChange}
+                            />
+
+                            <RedirectUrl
+                                targetType={this.state.targetType}
+                                redirectUrl={this.state.redirectUrl}
+                                setRedirectUrl={this.state.setRedirectUrl}
+                                redirectUrlError={this.state.redirectUrlError}
+                                handleToggle={this.handleToggle("setMinimumAge")}
+                                handleChange={this.handleChange("redirectUrl")}
+                            />
+
+                            <AllowBunqMe
+                                targetType={this.state.targetType}
+                                allowBunqMe={this.state.allowBunqMe}
+                                handleToggle={this.handleToggle}
+                            />
+                        </Collapse>
+
                         <Button
                             raised
                             color="primary"
@@ -521,7 +427,17 @@ class Pay extends React.Component {
                         </Button>
                     </Paper>
 
-                    {confirmationModal}
+                    <ConfirmationDialog
+                        closeModal={this.closeModal}
+                        sendInquiry={this.sendInquiry}
+                        confirmModalOpen={this.state.confirmModalOpen}
+                        description={description}
+                        targetType={targetType}
+                        allowBunqMe={allowBunqMe}
+                        account={account}
+                        amount={amount}
+                        target={target}
+                    />
                 </Grid>
             </Grid>
         );

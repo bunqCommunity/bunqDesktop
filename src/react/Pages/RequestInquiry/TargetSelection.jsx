@@ -1,9 +1,8 @@
 import React from "react";
 
 import Grid from "material-ui/Grid";
-import {  FormControlLabel } from "material-ui/Form";
+import { FormControlLabel } from "material-ui/Form";
 import Radio from "material-ui/Radio";
-import AccountBalanceIcon from "material-ui-icons/AccountBalance";
 import EmailIcon from "material-ui-icons/Email";
 import PhoneIcon from "material-ui-icons/Phone";
 
@@ -13,22 +12,7 @@ class TargetSelection extends React.Component {
 
         return (
             <Grid container spacing={24}>
-                <Grid item xs={6} sm={4}>
-                    <FormControlLabel
-                        control={
-                            <Radio
-                                icon={<AccountBalanceIcon />}
-                                checkedIcon={<AccountBalanceIcon />}
-                                checked={targetType === "IBAN"}
-                                onChange={this.props.setTargetType("IBAN")}
-                                value="IBAN"
-                                name="target-type-iban"
-                            />
-                        }
-                        label="IBAN"
-                    />
-                </Grid>
-                <Grid item xs={6} sm={4}>
+                <Grid item xs={5} sm={3}>
                     <FormControlLabel
                         control={
                             <Radio
@@ -44,7 +28,7 @@ class TargetSelection extends React.Component {
                         label="EMAIL"
                     />
                 </Grid>
-                <Grid item xs={6} sm={4}>
+                <Grid item xs={5} sm={3}>
                     <FormControlLabel
                         control={
                             <Radio
