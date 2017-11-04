@@ -15,11 +15,19 @@ const styles = {
         zIndex: 1000
     },
     header: {
+        WebkitAppRegion: "drag",
+        WebkitUserSelect: "none",
         position: "fixed",
         width: "100%",
         top: 0,
-        zIndex: 10000, // ugh
-        height: 50
+        zIndex: 10000,
+        height: 50,
+        zIndex: 1000,
+        background:
+            "url(https://static.useresponse.com/public/bunq/my-interface/bunq-colours-bar-2.png)",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center center"
     }
 };
 

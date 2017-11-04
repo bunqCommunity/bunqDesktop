@@ -19,17 +19,6 @@ body {
     flex-flow: column;
 }
 
-header {
-    background: url(https://static.useresponse.com/public/bunq/my-interface/bunq-colours-bar-2.png);
-    background-size: cover; /* <------ */
-    background-repeat: no-repeat;
-    background-position: center center;
-
-    -webkit-user-select: none;
-    -webkit-app-region: drag;
-    height: 50px;
-}
-
 main {
     display: flex;
     flex: 2;

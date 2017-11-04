@@ -178,38 +178,23 @@ class Pay extends React.Component {
                 break;
             default:
             case "IBAN":
-                targetErrorCondition = !iban.isValid(target);
+                targetErrorCondition =
+                    !iban.isValid(target) || !this.state.ibanNameError;
                 break;
         }
 
-        this.setState(
-            {
-                // check for errors
-                amountError: amountErrorCondition,
-                insufficientFundsCondition: insufficientFundsCondition,
-                descriptionError: descriptionErrorCondition,
-                ibanNameError: ibanNameErrorCondition,
-                targetError: targetErrorCondition
-            },
-            () => {
-                const defaultErrors =
-                    !this.state.insufficientFundsCondition &&
-                    !this.state.amountError &&
-                    !this.state.descriptionError &&
-                    !this.state.targetError;
-
-                // now set the form valid state based on if we have errors
-                if (targetType === "IBAN") {
-                    this.setState({
-                        validForm: defaultErrors && !this.state.ibanNameError
-                    });
-                } else {
-                    this.setState({
-                        validForm: defaultErrors
-                    });
-                }
-            }
-        );
+        this.setState({
+            amountError: amountErrorCondition,
+            insufficientFundsCondition: insufficientFundsCondition,
+            descriptionError: descriptionErrorCondition,
+            ibanNameError: ibanNameErrorCondition,
+            targetError: targetErrorCondition,
+            validForm:
+                !insufficientFundsCondition &&
+                !amountErrorCondition &&
+                !descriptionErrorCondition &&
+                !targetErrorCondition
+        });
     };
 
     // clears the input fields to default

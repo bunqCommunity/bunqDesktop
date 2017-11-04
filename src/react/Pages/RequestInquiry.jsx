@@ -18,6 +18,7 @@ import Dialog, {
     DialogContent,
     DialogTitle
 } from "material-ui/Dialog";
+import Switch from "material-ui/Switch";
 
 import AccountBalanceIcon from "material-ui-icons/AccountBalance";
 import EmailIcon from "material-ui-icons/Email";
@@ -65,6 +66,19 @@ class Pay extends React.Component {
             descriptionError: false,
             description: "",
 
+            // allow bunq.me requests for this inquiry
+            allowBunqMe: false,
+
+            // minimum age input field - false or integer between 12 and 100
+            setMinimumAge: false,
+            minimumAgeError: false,
+            minimumAge: 18,
+
+            // redirect url after payment is completed
+            setRedirectUrl: false,
+            redirectUrlError: false,
+            redirectUrl: "",
+
             // default target field
             targetError: false,
             target: "",
@@ -107,7 +121,15 @@ class Pay extends React.Component {
     handleChange = name => event => {
         this.setState(
             {
-                [name]: event.target.value
+                [name]: event.target ? event.target.value : event
+            },
+            this.validateForm
+        );
+    };
+    handleToggle = name => event => {
+        this.setState(
+            {
+                [name]: !this.state[name]
             },
             this.validateForm
         );
@@ -123,14 +145,6 @@ class Pay extends React.Component {
             this.validateForm
         );
     };
-    handleChangeDirect = name => value => {
-        this.setState(
-            {
-                [name]: value
-            },
-            this.validateForm
-        );
-    };
 
     // validates all the possible input combinations
     validateForm = () => {
@@ -139,17 +153,21 @@ class Pay extends React.Component {
             amount,
             target,
             ibanName,
-            selectedAccount,
+            setMinimumAge,
+            minimumAge,
+            setRedirectUrl,
+            redirectUrl,
             targetType
         } = this.state;
-
-        const account = this.props.accounts[selectedAccount]
-            .MonetaryAccountBank;
 
         const amountErrorCondition = amount < 0.01 || amount > 10000;
         const descriptionErrorCondition = description.length > 140;
         const ibanNameErrorCondition =
             ibanName.length < 1 || ibanName.length > 64;
+        const minimumAgeErrorCondition =
+            setMinimumAge === true && (minimumAge < 12 || minimumAge > 100);
+        const redurectUrlErrorCondition =
+            setRedirectUrl === true && redirectUrl.length < 5;
 
         // check if the target is valid based onthe targetType
         let targetErrorCondition = false;
@@ -162,36 +180,25 @@ class Pay extends React.Component {
                 break;
             default:
             case "IBAN":
-                targetErrorCondition = !iban.isValid(target);
+                targetErrorCondition =
+                    !iban.isValid(target) || !ibanNameErrorCondition;
                 break;
         }
 
-        this.setState(
-            {
-                // check for errors
-                amountError: amountErrorCondition,
-                descriptionError: descriptionErrorCondition,
-                ibanNameError: ibanNameErrorCondition,
-                targetError: targetErrorCondition
-            },
-            () => {
-                const defaultErrors =
-                    !this.state.amountError &&
-                    !this.state.descriptionError &&
-                    !this.state.targetError;
-
-                // now set the form valid state based on if we have errors
-                if (targetType === "IBAN") {
-                    this.setState({
-                        validForm: defaultErrors && !this.state.ibanNameError
-                    });
-                } else {
-                    this.setState({
-                        validForm: defaultErrors
-                    });
-                }
-            }
-        );
+        this.setState({
+            amountError: amountErrorCondition,
+            minimumAgeError: minimumAgeErrorCondition,
+            redurectUrlError: redurectUrlErrorCondition,
+            descriptionError: descriptionErrorCondition,
+            ibanNameError: ibanNameErrorCondition,
+            targetError: targetErrorCondition,
+            validForm:
+                !amountErrorCondition &&
+                !minimumAgeErrorCondition &&
+                !redurectUrlErrorCondition &&
+                !descriptionErrorCondition &&
+                !targetErrorCondition
+        });
     };
 
     // clears the input fields to default
@@ -205,8 +212,8 @@ class Pay extends React.Component {
         );
     };
 
-    // send the actual payment
-    sendPayment = () => {
+    // send the actual requiry
+    sendInquiry = () => {
         if (!this.state.validForm || this.props.payLoading) {
             return false;
         }
@@ -219,6 +226,10 @@ class Pay extends React.Component {
             amount,
             target,
             ibanName,
+            setMinimumAge,
+            minimumAge,
+            setRedirectUrl,
+            redirectUrl,
             targetType
         } = this.state;
         const account = accounts[selectedAccount].MonetaryAccountBank;
@@ -332,7 +343,7 @@ class Pay extends React.Component {
                         </Button>
                         <Button
                             raised
-                            onClick={this.sendPayment}
+                            onClick={this.sendInquiry}
                             color="primary"
                         >
                             Confirm
@@ -467,9 +478,7 @@ class Pay extends React.Component {
 
                         <AccountSelectorDialog
                             value={this.state.selectedAccount}
-                            onChange={this.handleChangeDirect(
-                                "selectedAccount"
-                            )}
+                            onChange={this.handleChange("selectedAccount")}
                             accounts={this.props.accounts}
                             BunqJSClient={this.props.BunqJSClient}
                         />
@@ -488,14 +497,71 @@ class Pay extends React.Component {
                             margin="normal"
                         />
 
-                        <TextField
-                            fullWidth
-                            error={this.state.descriptionError}
-                            id="description"
-                            label="Description"
-                            value={this.state.description}
-                            onChange={this.handleChange("description")}
-                            margin="normal"
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    color="primary"
+                                    checked={this.state.setMinimumAge}
+                                    onChange={this.handleToggle(
+                                        "setMinimumAge"
+                                    )}
+                                />
+                            }
+                            label="Set a minimum age"
+                        />
+
+                        {this.state.setMinimumAge ? (
+                            <TextField
+                                fullWidth
+                                error={this.state.minimumAgeError}
+                                id="minimumAge"
+                                label="Minimum Age"
+                                type="number"
+                                inputProps={{
+                                    min: 12,
+                                    max: 100,
+                                    step: 1
+                                }}
+                                value={this.state.minimumAge}
+                                onChange={this.handleChange("minimumAge")}
+                                margin="normal"
+                            />
+                        ) : null}
+
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    color="primary"
+                                    checked={this.state.setRedirectUrl}
+                                    onChange={this.handleToggle(
+                                        "setRedirectUrl"
+                                    )}
+                                />
+                            }
+                            label="Set a redirect url"
+                        />
+
+                        {this.state.setRedirectUrl ? (
+                            <TextField
+                                fullWidth
+                                error={this.state.redirectUrlError}
+                                id="redirectUrl"
+                                label="Redirect Url"
+                                value={this.state.redirectUrl}
+                                onChange={this.handleChange("redirectUrl")}
+                                margin="normal"
+                            />
+                        ) : null}
+
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    color="primary"
+                                    checked={this.state.allowBunqMe}
+                                    onChange={this.handleToggle("allowBunqMe")}
+                                />
+                            }
+                            label="Allow bunq.me requests"
                         />
 
                         <FormControl
