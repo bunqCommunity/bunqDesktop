@@ -572,7 +572,9 @@ class Pay extends React.Component {
                         <Button
                             raised
                             color="primary"
-                            disabled={!this.state.validForm}
+                            disabled={
+                                !this.state.validForm || this.props.payLoading
+                            }
                             style={styles.payButton}
                             onClick={this.openModal}
                         >

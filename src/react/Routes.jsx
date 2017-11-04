@@ -8,7 +8,7 @@ import Dashboard from "./Pages/Dashboard/Dashboard";
 import Login from "./Pages/Login/Login.jsx";
 import LoginPassword from "./Pages/LoginPassword";
 import Pay from "./Pages/Pay";
-import RequestInquiry from "./Pages/RequestInquiry";
+import RequestInquiry from "./Pages/RequestInquiry/RequestInquiry";
 import PaymentInfo from "./Pages/PaymentInfo";
 import NotFound from "./Pages/NotFound";
 import ApplicationInfo from "./Pages/ApplicationInfo";

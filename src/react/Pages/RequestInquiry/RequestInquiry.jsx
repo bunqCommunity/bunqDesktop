@@ -12,7 +12,6 @@ import Button from "material-ui/Button";
 import Paper from "material-ui/Paper";
 import Typography from "material-ui/Typography";
 import { FormControl, FormControlLabel } from "material-ui/Form";
-import Radio from "material-ui/Radio";
 import Dialog, {
     DialogActions,
     DialogContent,
@@ -20,15 +19,14 @@ import Dialog, {
 } from "material-ui/Dialog";
 import Switch from "material-ui/Switch";
 
-import AccountBalanceIcon from "material-ui-icons/AccountBalance";
-import EmailIcon from "material-ui-icons/Email";
-import PhoneIcon from "material-ui-icons/Phone";
-
-import AccountSelectorDialog from "../Components/FormFields/AccountSelectorDialog";
-import MoneyFormatInput from "../Components/FormFields/MoneyFormatInput";
-import PhoneFormatInput from "../Components/FormFields/PhoneFormatInput";
-import { openSnackbar } from "../Actions/snackbar";
-import { requestInquirySend } from "../Actions/request_inquiry";
+import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
+import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
+import PhoneFormatInput from "../../Components/FormFields/PhoneFormatInput";
+import { openSnackbar } from "../../Actions/snackbar";
+import { requestInquirySend } from "../../Actions/request_inquiry";
+import TargetSelection from "./TargetSelection";
+import MinimumAge from "./MinimumAge";
+import RedirectUrl from "./RedirectUrl";
 
 const styles = {
     payButton: {
@@ -159,13 +157,15 @@ class Pay extends React.Component {
             redirectUrl,
             targetType
         } = this.state;
+        const minimumAgeInt = parseInt(minimumAge);
 
         const amountErrorCondition = amount < 0.01 || amount > 10000;
         const descriptionErrorCondition = description.length > 140;
         const ibanNameErrorCondition =
             ibanName.length < 1 || ibanName.length > 64;
         const minimumAgeErrorCondition =
-            setMinimumAge === true && (minimumAge < 12 || minimumAge > 100);
+            setMinimumAge === true &&
+            (minimumAgeInt < 12 || minimumAgeInt > 100);
         const redurectUrlErrorCondition =
             setRedirectUrl === true && redirectUrl.length < 5;
 
@@ -230,8 +230,10 @@ class Pay extends React.Component {
             minimumAge,
             setRedirectUrl,
             redirectUrl,
+            allowBunqMe,
             targetType
         } = this.state;
+        const minimumAgeInt = parseInt(minimumAge);
         const account = accounts[selectedAccount].MonetaryAccountBank;
         const userId = user.id;
 
@@ -265,12 +267,19 @@ class Pay extends React.Component {
             currency: "EUR"
         };
 
+        let options = {
+            allow_bunqMe: allowBunqMe,
+            minimum_age: setMinimumAge ? minimumAgeInt : false,
+            redirect_url: setRedirectUrl ? redirectUrl : false
+        };
+
         this.props.requestInquirySend(
             userId,
             account.id,
             description,
             amountInfo,
-            targetInfo
+            targetInfo,
+            options
         );
         this.clearForm();
     };
@@ -353,58 +362,6 @@ class Pay extends React.Component {
             );
         }
 
-        const targetTypeSelection = (
-            <Grid container spacing={24}>
-                <Grid item xs={6} sm={4}>
-                    <FormControlLabel
-                        control={
-                            <Radio
-                                icon={<AccountBalanceIcon />}
-                                checkedIcon={<AccountBalanceIcon />}
-                                checked={this.state.targetType === "IBAN"}
-                                onChange={this.setTargetType("IBAN")}
-                                value="IBAN"
-                                name="target-type-iban"
-                            />
-                        }
-                        label="IBAN"
-                    />
-                </Grid>
-                <Grid item xs={6} sm={4}>
-                    <FormControlLabel
-                        control={
-                            <Radio
-                                icon={<EmailIcon />}
-                                checkedIcon={<EmailIcon />}
-                                color={"accent"}
-                                checked={this.state.targetType === "EMAIL"}
-                                onChange={this.setTargetType("EMAIL")}
-                                value="EMAIL"
-                                name="target-type-email"
-                            />
-                        }
-                        label="EMAIL"
-                    />
-                </Grid>
-                <Grid item xs={6} sm={4}>
-                    <FormControlLabel
-                        control={
-                            <Radio
-                                icon={<PhoneIcon />}
-                                checkedIcon={<PhoneIcon />}
-                                color={"accent"}
-                                checked={this.state.targetType === "PHONE"}
-                                onChange={this.setTargetType("PHONE")}
-                                value="PHONE"
-                                name="target-type-phone"
-                            />
-                        }
-                        label="PHONE"
-                    />
-                </Grid>
-            </Grid>
-        );
-
         let targetContent = null;
         switch (this.state.targetType) {
             case "PHONE":
@@ -483,7 +440,10 @@ class Pay extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                         />
 
-                        {targetTypeSelection}
+                        <TargetSelection
+                            targetType={this.state.targetType}
+                            setTargetType={this.setTargetType}
+                        />
 
                         {targetContent}
 
@@ -497,61 +457,21 @@ class Pay extends React.Component {
                             margin="normal"
                         />
 
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    color="primary"
-                                    checked={this.state.setMinimumAge}
-                                    onChange={this.handleToggle(
-                                        "setMinimumAge"
-                                    )}
-                                />
-                            }
-                            label="Set a minimum age"
+                        <MinimumAge
+                            minimumAge={this.state.minimumAge}
+                            setMinimumAge={this.state.setMinimumAge}
+                            minimumAgeError={this.state.minimumAgeError}
+                            handleToggle={this.handleToggle}
+                            handleChange={this.handleChange}
                         />
 
-                        {this.state.setMinimumAge ? (
-                            <TextField
-                                fullWidth
-                                error={this.state.minimumAgeError}
-                                id="minimumAge"
-                                label="Minimum Age"
-                                type="number"
-                                inputProps={{
-                                    min: 12,
-                                    max: 100,
-                                    step: 1
-                                }}
-                                value={this.state.minimumAge}
-                                onChange={this.handleChange("minimumAge")}
-                                margin="normal"
-                            />
-                        ) : null}
-
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    color="primary"
-                                    checked={this.state.setRedirectUrl}
-                                    onChange={this.handleToggle(
-                                        "setRedirectUrl"
-                                    )}
-                                />
-                            }
-                            label="Set a redirect url"
+                        <RedirectUrl
+                            redirectUrl={this.state.redirectUrl}
+                            setRedirectUrl={this.state.setRedirectUrl}
+                            redirectUrlError={this.state.redirectUrlError}
+                            handleToggle={this.handleToggle}
+                            handleChange={this.handleChange}
                         />
-
-                        {this.state.setRedirectUrl ? (
-                            <TextField
-                                fullWidth
-                                error={this.state.redirectUrlError}
-                                id="redirectUrl"
-                                label="Redirect Url"
-                                value={this.state.redirectUrl}
-                                onChange={this.handleChange("redirectUrl")}
-                                margin="normal"
-                            />
-                        ) : null}
 
                         <FormControlLabel
                             control={
@@ -590,7 +510,10 @@ class Pay extends React.Component {
                         <Button
                             raised
                             color="primary"
-                            disabled={!this.state.validForm}
+                            disabled={
+                                !this.state.validForm ||
+                                this.props.requestInquiryLoading
+                            }
                             style={styles.payButton}
                             onClick={this.openModal}
                         >
@@ -607,9 +530,9 @@ class Pay extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        payLoading: state.pay.loading,
-        accounts: state.accounts.accounts,
+        requestInquiryLoading: state.request_inquiry.loading,
         selectedAccount: state.accounts.selectedAccount,
+        accounts: state.accounts.accounts,
         user: state.user.user
     };
 };
