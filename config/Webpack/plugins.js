@@ -24,8 +24,8 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
         }),
         // split common files
         new webpack.optimize.CommonsChunkPlugin({
-            name: "common",
-            minChunks: ({ resource }) => /node_modules/.test(resource)
+            children: true,
+            minChunks: 2
         }),
         // webpack analyzer
         new BundleAnalyzerPlugin({
