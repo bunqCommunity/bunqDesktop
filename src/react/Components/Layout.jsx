@@ -66,7 +66,6 @@ class Layout extends React.Component {
     }
 
     componentDidMount() {
-        // this.props.openSnackbar("test");
         this.checkBunqSetup()
             .then(_ => {
                 if (this.props.userType !== false) {
@@ -109,7 +108,8 @@ class Layout extends React.Component {
         const currentUrl = this.props.location.pathname;
         if (nextUrl !== currentUrl) {
             // trigger analytics page event
-            this.props.analytics.pageview(nextUrl).send();
+            // this.props.analytics.pageview(nextUrl).send();
+            console.log(`Page event: ${nextUrl}`);
         }
     }
 
