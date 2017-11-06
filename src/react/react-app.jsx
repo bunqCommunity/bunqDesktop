@@ -13,8 +13,12 @@ if (!userGUID) {
     store.set("user-guid", userGUID);
 }
 
-// initiate the gtag instance with our custom userGUID
-gtag("config", "UA-87358128-5", { send_page_view: false, user_id: userGUID });
+window.ga("create", "UA-87358128-5", {
+    clientId: userGUID
+});
+window.ga("set", "checkProtocolTask", null);
+window.ga("set", "checkStorageTask", null);
+window.ga("set", "historyImportTask", null);
 
 // create a new bunq js client and inject into the app
 const BunqJSClientInstance = new BunqJSClient(store);

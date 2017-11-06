@@ -108,8 +108,8 @@ class Layout extends React.Component {
         const currentUrl = this.props.location.pathname;
         if (nextUrl !== currentUrl) {
             // trigger analytics page event
-            // this.props.analytics.pageview(nextUrl).send();
-            console.log(`Page event: ${nextUrl}`);
+            window.ga("set", "page", nextUrl);
+            window.ga("send", "pageview");
         }
     }
 
