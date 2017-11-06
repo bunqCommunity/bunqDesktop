@@ -11,6 +11,7 @@ import PowerSettingsIcon from "material-ui-icons/PowerSettingsNew";
 import PaymentIcon from "material-ui-icons/Payment";
 import HomeIcon from "material-ui-icons/Home";
 import SettingsIcon from "material-ui-icons/Settings";
+import ShareIcon from "material-ui-icons/Share";
 
 import NavLink from "./Routing/NavLink";
 import { closeMainDrawer } from "../Actions/main_drawer";
@@ -110,6 +111,17 @@ class MainDrawer extends React.Component {
                           <PaymentIcon />
                       </ListItemIcon>
                       <Typography type="subheading">Request</Typography>
+                  </ListItem>,
+                  <ListItem
+                      button
+                      style={styles.listBottomItem}
+                      component={NavLink}
+                      to="/bunqme-tab"
+                  >
+                      <ListItemIcon>
+                          <ShareIcon />
+                      </ListItemIcon>
+                      <Typography type="subheading">Bunq.me Tabs</Typography>
                   </ListItem>
               ];
 

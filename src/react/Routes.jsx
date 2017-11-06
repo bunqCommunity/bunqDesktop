@@ -7,13 +7,28 @@ import CL from "./Components/CodeSplitting/ComponentLoader";
 
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import LoginPassword from "./Pages/LoginPassword";
-const Login = CL(() => import(/* webpackChunkName: "login" */"./Pages/Login/Login"));
-const NotFound = CL(() => import(/* webpackChunkName: "notfound" */"./Pages/NotFound"));
-const Pay = CL(() => import(/* webpackChunkName: "pay" */"./Pages/Pay"));
-const RequestInquiry = CL(() => import(/* webpackChunkName: "requestinquiry" */"./Pages/RequestInquiry/RequestInquiry"));
-const PaymentInfo = CL(() => import(/* webpackChunkName: "paymentinfo" */"./Pages/PaymentInfo"));
-const ApplicationInfo = CL(() => import(/* webpackChunkName: "applicationinfo" */"./Pages/ApplicationInfo"));
-const AccountInfo = CL(() => import(/* webpackChunkName: "accountinfo" */"./Pages/AccountInfo"));
+const Login = CL(() =>
+    import(/* webpackChunkName: "login" */ "./Pages/Login/Login")
+);
+const NotFound = CL(() =>
+    import(/* webpackChunkName: "notfound" */ "./Pages/NotFound")
+);
+const Pay = CL(() => import(/* webpackChunkName: "pay" */ "./Pages/Pay"));
+const BunqMeTab = CL(() =>
+    import(/* webpackChunkName: "bunqmetab" */ "./Pages/BunqMeTab/BunqMeTab")
+);
+const RequestInquiry = CL(() =>
+    import(/* webpackChunkName: "requestinquiry" */ "./Pages/RequestInquiry/RequestInquiry")
+);
+const PaymentInfo = CL(() =>
+    import(/* webpackChunkName: "paymentinfo" */ "./Pages/PaymentInfo")
+);
+const ApplicationInfo = CL(() =>
+    import(/* webpackChunkName: "applicationinfo" */ "./Pages/ApplicationInfo")
+);
+const AccountInfo = CL(() =>
+    import(/* webpackChunkName: "accountinfo" */ "./Pages/AccountInfo")
+);
 
 // router react component
 export default class Routes extends React.Component {
@@ -67,15 +82,18 @@ export default class Routes extends React.Component {
                             )}
                         />
 
-                        {/*<PrivateRoute*/}
-                        {/*path="/bunqme-tab"*/}
-                        {/*apiKey={this.props.apiKey}*/}
-                        {/*userType={this.props.userType}*/}
-                        {/*derivedPassword={this.props.derivedPassword}*/}
-                        {/*render={props => (*/}
-                        {/*<RequestInquiry {...props} {...this.props.childProps} />*/}
-                        {/*)}*/}
-                        {/*/>*/}
+                        <PrivateRoute
+                            path="/bunqme-tab"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <BunqMeTab
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
+                            )}
+                        />
 
                         <PrivateRoute
                             path="/payment/:paymentId/:accountId?"

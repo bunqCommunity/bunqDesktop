@@ -37,7 +37,7 @@ class AccountListItem extends React.Component {
                 // select this account
                 this.props.selectAccount(accountId);
                 // fetch all payments for the account
-                this.props.updatePayments(this.props.user.id, accountId);
+                this.props.updateExternal(this.props.user.id, accountId);
             }
         };
     };

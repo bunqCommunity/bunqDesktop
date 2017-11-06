@@ -1,9 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import List, {
-    ListItemSecondaryAction,
-    ListSubheader
-} from "material-ui/List";
+import List, { ListItemSecondaryAction, ListSubheader } from "material-ui/List";
 import Divider from "material-ui/Divider";
 import { LinearProgress } from "material-ui/Progress";
 
@@ -38,23 +35,20 @@ class PaymentList extends React.Component {
     };
 
     render() {
-        let payments = [];
         let loadingContent = this.props.paymentsLoading ? (
             <LinearProgress />
         ) : (
             <Divider />
         );
 
-        if (this.props.payments !== false) {
-            payments = this.props.payments
-                .filter(this.paymentFilter)
-                .map(payment => (
-                    <PaymentListItem
-                        payment={payment.Payment}
-                        BunqJSClient={this.props.BunqJSClient}
-                    />
-                ));
-        }
+        const payments = this.props.payments
+            .filter(this.paymentFilter)
+            .map(payment => (
+                <PaymentListItem
+                    payment={payment.Payment}
+                    BunqJSClient={this.props.BunqJSClient}
+                />
+            ));
 
         return (
             <List style={styles.left}>

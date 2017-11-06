@@ -2,6 +2,7 @@ import { combineReducers } from "redux";
 
 import application from "./application";
 import accounts from "./accounts";
+import bunq_me_tabs from "./bunq_me_tabs";
 import modal from "./modal";
 import user from "./user";
 import users from "./users";
@@ -21,6 +22,7 @@ import request_inquiry from "./request_inquiry";
 export default combineReducers({
     application,
     accounts,
+    bunq_me_tabs,
     modal,
     user,
     users,

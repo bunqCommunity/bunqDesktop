@@ -40,7 +40,7 @@ const styles = {
     }
 };
 
-class Pay extends React.Component {
+class RequestInquiry extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -479,4 +479,4 @@ const mapDispatchToProps = (dispatch, props) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Pay);
+export default connect(mapStateToProps, mapDispatchToProps)(RequestInquiry);

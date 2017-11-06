@@ -25,7 +25,7 @@ class AccountList extends React.Component {
         super(props, context);
         this.state = {
             // keeps track if we already automatically did a request
-            fetchedPayments: false,
+            fetchedExternal: false,
             fetchedAccounts: false
         };
     }
@@ -40,6 +40,17 @@ class AccountList extends React.Component {
 
     updateAccounts = () => {
         this.props.accountsUpdate(this.props.user.id);
+    };
+
+    /**
+     * By default this updates the payments list
+     */
+    updateExternal = (userId, accountId) => {
+        if (this.props.updateExternal) {
+            this.props.updateExternal(userId, accountId);
+        } else {
+            this.props.paymentsUpdate(userId, accountId);
+        }
     };
 
     checkUpdateRequirement = (props = this.props) => {
@@ -59,10 +70,10 @@ class AccountList extends React.Component {
                 accountsAccountId !== false &&
                 accountsAccountId !== paymentsAccountId &&
                 paymentsLoading === false &&
-                this.state.fetchedPayments === false
+                this.state.fetchedExternal === false
             ) {
-                this.props.paymentsUpdate(user.id, accountsAccountId);
-                this.setState({ fetchedPayments: true });
+                this.setState({ fetchedExternal: true });
+                this.updateExternal(user.id, accountsAccountId);
             }
 
             // check if both account and payment have nothing selected
@@ -79,8 +90,8 @@ class AccountList extends React.Component {
                     // select this account for next time
                     this.props.selectAccount(accountId);
                     // fetch payments for the account
-                    this.props.paymentsUpdate(user.id, accountId);
-                    this.setState({ fetchedPayments: true });
+                    this.updateExternal(user.id, accountId);
+                    this.setState({ fetchedExternal: true });
                 }
             }
 
@@ -103,6 +114,7 @@ class AccountList extends React.Component {
             accounts = this.props.accounts.map(account => (
                 <AccountListItem
                     BunqJSClient={this.props.BunqJSClient}
+                    updateExternal={this.updateExternal}
                     account={account.MonetaryAccountBank}
                 />
             ));
