@@ -31,12 +31,12 @@ import { userLogin } from "../Actions/user.js";
 import { usersClear, usersUpdate } from "../Actions/users";
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
-import { accountsClear, accountsUpdate } from "../Actions/accounts";
+import { accountsClear } from "../Actions/accounts";
 import { paymentInfoClear } from "../Actions/payment_info";
 import { userClear } from "../Actions/user";
-import { openMainDrawer } from "../Actions/main_drawer";
+import { requestResponsesUpdate } from "../Actions/request_responses";
+import { masterCardActionsUpdate } from "../Actions/master_card_actions";
 import {
-    registrationSetApiKey,
     registrationLoading,
     registrationNotLoading,
     registrationClearApiKey
@@ -311,19 +311,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(openSnackbar(message, duration)),
         openModal: (message, title) => dispatch(openModal(message, title)),
 
-        // selects an account from the BunqJSClient user list based on type
-        loginUser: type => dispatch(userLogin(BunqJSClient, type)),
-
-        // get monetary accounts for a user id
-        updateAccounts: userId =>
-            dispatch(accountsUpdate(BunqJSClient, userId)),
-
         // set the current application status
         applicationSetStatus: status_message =>
             dispatch(applicationSetStatus(status_message)),
 
-        // set the api key for this app
-        setApiKey: apiKey => dispatch(registrationSetApiKey(apiKey)),
         registrationLoading: () => dispatch(registrationLoading()),
         registrationNotLoading: () => dispatch(registrationNotLoading()),
         registrationClearApiKey: () =>
@@ -335,9 +326,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // login the user with a specific type from the list
         userLogin: (userType, updated = false) =>
             dispatch(userLogin(BunqJSClient, userType, updated)),
-
-        // opens the options drawer on the left
-        openDrawer: () => dispatch(openMainDrawer()),
 
         // functions to clear user data
         clearAccounts: () => dispatch(accountsClear()),
