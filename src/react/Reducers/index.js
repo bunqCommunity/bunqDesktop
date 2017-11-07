@@ -9,6 +9,7 @@ import registration from "./registration";
 import snackbar from "./snackbar";
 import theme from "./options";
 import main_drawer from "./main_drawer";
+import master_card_actions from "./master_card_actions";
 import options from "./options";
 import options_drawer from "./options_drawer";
 import pay from "./pay";
@@ -17,6 +18,7 @@ import payment_info from "./payment_info";
 import payment_filter from "./payment_filter";
 import request_inquiries from "./request_inquiries";
 import request_inquiry from "./request_inquiry";
+import request_responses from "./request_responses";
 
 export default combineReducers({
     application,
@@ -28,6 +30,7 @@ export default combineReducers({
     snackbar,
     theme,
     main_drawer,
+    master_card_actions,
     options,
     options_drawer,
     pay,
@@ -36,5 +39,6 @@ export default combineReducers({
     payment_filter,
     payments,
     request_inquiries,
-    request_inquiry
+    request_inquiry,
+    request_responses
 });
