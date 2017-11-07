@@ -3,17 +3,32 @@ import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
 import Paper from "material-ui/Paper";
+import Collapse from "material-ui/transitions/Collapse";
+import IconButton from "material-ui/IconButton";
+import CloseIcon from "material-ui-icons/Close";
+import AddIcon from "material-ui-icons/Add";
 
-import AccountList from "../Dashboard/AccountList";
-import BunqMeTabList from "./BunqMeTabList";
+import AccountList from "../../Components/AccountList/AccountList";
+import BunqMeTabList from "../../Components/BunqMeTabList/BunqMeTabList";
 import BunqMeTabForm from "./BunqMeTabForm";
 
 import { bunqMeTabsUpdate } from "../../Actions/bunq_me_tabs";
 
+const styles = {
+    paper: {
+        marginBottom: 20
+    },
+    paper: {
+        marginBottom: 20
+    }
+};
+
 class BunqMeTab extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+        this.state = {
+            showForm: false
+        };
     }
 
     componentDidMount() {
@@ -28,6 +43,8 @@ class BunqMeTab extends React.Component {
     updateTabs = (userId, accountId) =>
         this.props.bunqMeTabsUpdate(userId, accountId);
 
+    toggleForm = () => this.setState({ showForm: !this.state.showForm });
+
     render() {
         return (
             <Grid container spacing={16}>
@@ -36,7 +53,7 @@ class BunqMeTab extends React.Component {
                 </Helmet>
 
                 <Grid item xs={12} md={4}>
-                    <Paper>
+                    <Paper style={styles.paper}>
                         <AccountList
                             BunqJSClient={this.props.BunqJSClient}
                             updateExternal={this.updateTabs}
@@ -46,12 +63,33 @@ class BunqMeTab extends React.Component {
                 </Grid>
 
                 <Grid item xs={12} md={8}>
-                    {/* TODO wrap form in collapse wrapper */}
-                    <BunqMeTabForm />
-                    <Paper>
+                    <Collapse
+                        in={this.state.showForm}
+                        transitionDuration="auto"
+                        unmountOnExit
+                    >
+                        <Paper style={styles.paper}>
+                            <BunqMeTabForm
+                                BunqJSClient={this.props.BunqJSClient}
+                            />
+                        </Paper>
+                    </Collapse>
+                    <Paper style={styles.paper}>
                         <BunqMeTabList
                             BunqJSClient={this.props.BunqJSClient}
                             initialBunqConnect={this.props.initialBunqConnect}
+                            secondaryActions={
+                                <IconButton
+                                    aria-label="Toggle the form"
+                                    onClick={this.toggleForm}
+                                >
+                                    {this.state.showForm ? (
+                                        <CloseIcon />
+                                    ) : (
+                                        <AddIcon />
+                                    )}
+                                </IconButton>
+                            }
                         />
                     </Paper>
                 </Grid>

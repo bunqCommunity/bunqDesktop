@@ -1,12 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
-import Helmet from "react-helmet";
 
-import Grid from "material-ui/Grid";
 import TextField from "material-ui/TextField";
 import { InputLabel } from "material-ui/Input";
 import Button from "material-ui/Button";
-import Paper from "material-ui/Paper";
 import Typography from "material-ui/Typography";
 import { FormControl } from "material-ui/Form";
 
@@ -181,8 +178,8 @@ class BunqMeTab extends React.Component {
         const account = this.props.accounts[selectedAccount];
 
         return [
-            <Paper style={styles.paper}>
-                <Typography type="headline">Request Payment</Typography>
+            <div style={styles.paper}>
+                <Typography type="headline">Create new tab</Typography>
 
                 <AccountSelectorDialog
                     value={this.state.selectedAccount}
@@ -231,9 +228,9 @@ class BunqMeTab extends React.Component {
                     style={styles.payButton}
                     onClick={this.openModal}
                 >
-                    Send request
+                    Create new tab
                 </Button>
-            </Paper>,
+            </div>,
             <ConfirmationDialog
                 closeModal={this.closeModal}
                 sendInquiry={this.sendInquiry}

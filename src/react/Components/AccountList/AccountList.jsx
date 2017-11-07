@@ -123,7 +123,7 @@ class AccountList extends React.Component {
         return (
             <List style={styles.list}>
                 <ListSubheader>
-                    Accounts - {accounts.length}
+                    Accounts
                     <ListItemSecondaryAction>
                         {this.props.accountsLoading ? (
                             <CircularProgress />

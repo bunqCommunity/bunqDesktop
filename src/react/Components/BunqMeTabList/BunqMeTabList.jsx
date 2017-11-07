@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
-import List, { ListSubheader } from "material-ui/List";
-import Divider from "material-ui/Divider";
+import List, { ListSubheader, ListItemSecondaryAction } from "material-ui/List";
 import { LinearProgress } from "material-ui/Progress";
+import Divider from "material-ui/Divider";
 
 import BunqMeTabListItem from "./BunqMeTabListItem";
 
@@ -27,7 +27,7 @@ class BunqMeTabList extends React.Component {
 
         const bunqMeTabs = this.props.bunqMeTabs.map(bunqMeTab => (
             <BunqMeTabListItem
-                bunqMeTab={bunqMeTab}
+                bunqMeTab={bunqMeTab.BunqMeTab}
                 BunqJSClient={this.props.BunqJSClient}
             />
         ));
@@ -36,6 +36,9 @@ class BunqMeTabList extends React.Component {
             <List style={styles.left}>
                 <ListSubheader>
                     Bunq.me Tabs - {bunqMeTabs.length}
+                    <ListItemSecondaryAction>
+                        {this.props.secondaryActions}
+                    </ListItemSecondaryAction>
                 </ListSubheader>
                 {loadingContent}
                 <List>{bunqMeTabs}</List>
@@ -54,5 +57,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {};
 };
+
+BunqMeTabList.defaultProps = {
+    secondaryActions: null
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(BunqMeTabList);

@@ -5,8 +5,8 @@ import Paper from "material-ui/Paper";
 import Button from "material-ui/Button";
 import Grid from "material-ui/Grid";
 import Typography from "material-ui/Typography";
-import PaymentList from "./PaymentList";
-import AccountList from "./AccountList";
+import PaymentList from "../../Components/PaymentList/PaymentList";
+import AccountList from "../../Components/AccountList/AccountList";
 
 import { userLogin, userLogout } from "../../Actions/user";
 

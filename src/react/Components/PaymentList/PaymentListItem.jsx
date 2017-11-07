@@ -9,7 +9,6 @@ import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
 
 import { formatMoney, humanReadableDate } from "../../Helpers/Utils";
-import Logger from "../../Helpers/Logger";
 import NavLink from "../../Components/Routing/NavLink";
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 
@@ -42,7 +41,7 @@ class PaymentListItem extends React.Component {
                     .attachment_public_uuid;
         }
         const displayName = payment.counterparty_alias.display_name;
-        const paymentDate = new Date(payment.created).toLocaleString();
+        const paymentDate = humanReadableDate(payment.created);
         const paymentAmount = payment.amount.value;
         const formattedPaymentAmount = formatMoney(payment.amount.value);
         const paymentColor =
