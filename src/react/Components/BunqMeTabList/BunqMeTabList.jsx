@@ -5,6 +5,7 @@ import { LinearProgress } from "material-ui/Progress";
 import Divider from "material-ui/Divider";
 
 import BunqMeTabListItem from "./BunqMeTabListItem";
+import { openSnackbar } from "../../Actions/snackbar";
 
 const styles = {
     list: {
@@ -18,6 +19,10 @@ class BunqMeTabList extends React.Component {
         this.state = {};
     }
 
+    copiedValue = type => callback => {
+        this.props.openSnackbar(`Copied ${type} to your clipboard`);
+    };
+
     render() {
         let loadingContent = this.props.bunqMeTabsLoading ? (
             <LinearProgress />
@@ -28,6 +33,7 @@ class BunqMeTabList extends React.Component {
         const bunqMeTabs = this.props.bunqMeTabs.map(bunqMeTab => (
             <BunqMeTabListItem
                 bunqMeTab={bunqMeTab.BunqMeTab}
+                copiedValue={this.copiedValue}
                 BunqJSClient={this.props.BunqJSClient}
             />
         ));
@@ -55,11 +61,13 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-    return {};
+    return {
+        openSnackbar: message => dispatch(openSnackbar(message))
+    };
 };
 
 BunqMeTabList.defaultProps = {
     secondaryActions: null
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(BunqMeTabList);

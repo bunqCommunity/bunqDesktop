@@ -15,7 +15,7 @@ import ArrowDownIcon from "material-ui-icons/ArrowDownward";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
-import { formatMoney } from "../Helpers/Utils";
+import {formatMoney, humanReadableDate} from "../Helpers/Utils";
 import LazyAttachmentImage from "../Components/AttachmentImage/LazyAttachmentImage";
 
 import { paymentsUpdate } from "../Actions/payment_info";
@@ -112,7 +112,7 @@ class PaymentInfo extends React.Component {
         } else {
             // const paymentType = payment.type;
             const paymentDescription = payment.description;
-            const paymentDate = new Date(payment.created).toLocaleString();
+            const paymentDate = humanReadableDate(payment.created);
             const paymentAmount = payment.amount.value;
             const paymentColor =
                 paymentAmount < 0

@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 import CopyToClipboard from "react-copy-to-clipboard";
 import {
     ListItem,
@@ -15,8 +14,7 @@ import CheckCircle from "material-ui-icons/CheckCircle";
 import TimerOff from "material-ui-icons/TimerOff";
 import Cancel from "material-ui-icons/Cancel";
 
-import { humanReadableDate } from "../../Helpers/Utils";
-import { openSnackbar } from "../../Actions/snackbar";
+import { humanReadableDate, formatMoney } from "../../Helpers/Utils";
 
 const styles = {
     actionListItem: {
@@ -31,10 +29,6 @@ class BunqMeTabListItem extends React.Component {
             extraInfoOpen: false
         };
     }
-
-    copiedValue = type => callback => {
-        this.props.openSnackbar(`Copied ${type} to your clipboard`);
-    };
 
     toggleExtraInfo = () => {
         this.setState({ extraInfoOpen: !this.state.extraInfoOpen });
@@ -60,18 +54,26 @@ class BunqMeTabListItem extends React.Component {
         const updatedDate = humanReadableDate(bunqMeTab.updated);
         const expiryDate = humanReadableDate(bunqMeTab.time_expiry);
 
+        const primaryText = `${formatMoney(
+            bunqMeTab.bunqme_tab_entry.amount_inquired.value
+        )} ${bunqMeTab.bunqme_tab_entry.amount_inquired.currency}`;
+
+        const merchantList = bunqMeTab.bunqme_tab_entry.merchant_available
+            .filter(merchant => merchant.available)
+            .map(merchant => merchant.merchant_type)
+            .join(", ");
+
         return [
             <ListItem button onClick={this.toggleExtraInfo}>
                 {mainIcon}
                 <ListItemText
-                    primary={`${bunqMeTab.result_inquiries
-                        .length} payments made`}
-                    secondary={`Created: ${createdDate}`}
+                    primary={primaryText}
+                    secondary={bunqMeTab.bunqme_tab_entry.description}
                 />
                 <ListItemSecondaryAction>
                     <CopyToClipboard
                         text={shareUrl}
-                        onCopy={this.copiedValue("the bunq.me tab url")}
+                        onCopy={this.props.copiedValue("the bunq.me tab url")}
                     >
                         <IconButton aria-label="Copy the share url">
                             <CopyIcon />
@@ -84,17 +86,35 @@ class BunqMeTabListItem extends React.Component {
                 transitionDuration="auto"
                 unmountOnExit
             >
+                <ListItem dense>
+                    <ListItemText primary={`Created`} secondary={createdDate} />
+                </ListItem>
+
                 {updatedDate !== createdDate ? (
                     <ListItem dense>
-                        <ListItemText primary={`Updated: ${expiryDate}`} />
+                        <ListItemText
+                            primary={`Updated`}
+                            secondary={updatedDate}
+                        />
                     </ListItem>
                 ) : null}
+
                 <ListItem dense>
-                    <ListItemText primary={`Expires: ${expiryDate}`} />
+                    <ListItemText primary={`Expires`} secondary={expiryDate} />
                 </ListItem>
+
+                <ListItem dense>
+                    <ListItemText
+                        primary="Available merchants"
+                        secondary={merchantList}
+                    />
+                </ListItem>
+
                 <ListItem style={styles.actionListItem}>
                     <ListItemSecondaryAction>
-                        <Button raised color="accent">Cancel tab</Button>
+                        <Button raised color="accent">
+                            Cancel tab
+                        </Button>
                     </ListItemSecondaryAction>
                 </ListItem>
             </Collapse>,
@@ -103,14 +123,4 @@ class BunqMeTabListItem extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {};
-};
-
-const mapDispatchToProps = dispatch => {
-    return {
-        openSnackbar: message => dispatch(openSnackbar(message))
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(BunqMeTabListItem);
+export default BunqMeTabListItem;
