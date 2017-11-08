@@ -103,13 +103,16 @@ class Layout extends React.Component {
                 .catch(Logger.error);
         }
 
-        // compare pathnames and trigger a
-        const nextUrl = nextProps.location.pathname;
-        const currentUrl = this.props.location.pathname;
-        if (nextUrl !== currentUrl) {
-            // trigger analytics page event
-            window.ga("set", "page", nextUrl);
-            window.ga("send", "pageview");
+        if (process.env.NODE_ENV !== "development") {
+            // compare pathnames and trigger a
+            const nextUrl = nextProps.location.pathname;
+            const currentUrl = this.props.location.pathname;
+            if (nextUrl !== currentUrl) {
+                console.log(process.env.NODE_ENV);
+                // trigger analytics page event
+                window.ga("set", "page", nextUrl);
+                window.ga("send", "pageview");
+            }
         }
     }
 
