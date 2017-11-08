@@ -13,13 +13,16 @@ if (!userGUID) {
     store.set("user-guid", userGUID);
 }
 
-window.ga("create", "UA-87358128-5", {
-    clientId: userGUID
-});
-window.ga("set", "checkProtocolTask", null);
-window.ga("set", "checkStorageTask", null);
-window.ga("set", "historyImportTask", null);
-window.ga('set', 'anonymizeIp', true);
+if (process.env.NODE_ENV !== "development") {
+    window.ga("create", "UA-87358128-5", {
+        clientId: userGUID
+    });
+    window.ga("set", "checkProtocolTask", null);
+    window.ga("set", "checkStorageTask", null);
+    window.ga("set", "historyImportTask", null);
+    window.ga('set', 'anonymizeIp', true);
+    window.ga("send", "event", "Version", process.env.CURRENT_VERSION);
+}
 
 // create a new bunq js client and inject into the app
 const BunqJSClientInstance = new BunqJSClient(store);
