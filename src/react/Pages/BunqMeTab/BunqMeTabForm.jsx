@@ -179,7 +179,7 @@ class BunqMeTab extends React.Component {
 
         return [
             <div style={styles.paper}>
-                <Typography type="headline">Create new tab</Typography>
+                <Typography type="headline">Create new Bunq.me request</Typography>
 
                 <AccountSelectorDialog
                     value={this.state.selectedAccount}

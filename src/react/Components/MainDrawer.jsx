@@ -121,7 +121,7 @@ class MainDrawer extends React.Component {
                       <ListItemIcon>
                           <ShareIcon />
                       </ListItemIcon>
-                      <Typography type="subheading">Bunq.me Tabs</Typography>
+                      <Typography type="subheading">Bunq.me Requests</Typography>
                   </ListItem>
               ];
 

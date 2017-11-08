@@ -41,7 +41,7 @@ class BunqMeTabList extends React.Component {
         return (
             <List style={styles.left}>
                 <ListSubheader>
-                    Bunq.me Tabs - {bunqMeTabs.length}
+                    Bunq.me requests - {bunqMeTabs.length}
                     <ListItemSecondaryAction>
                         {this.props.secondaryActions}
                     </ListItemSecondaryAction>

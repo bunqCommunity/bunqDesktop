@@ -113,7 +113,7 @@ class BunqMeTabListItem extends React.Component {
                 <ListItem style={styles.actionListItem}>
                     <ListItemSecondaryAction>
                         <Button raised color="accent">
-                            Cancel tab
+                            Cancel request
                         </Button>
                     </ListItemSecondaryAction>
                 </ListItem>
