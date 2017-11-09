@@ -104,7 +104,7 @@
     "minimist": "^1.2.0",
     "mocha": "^3.4.2",
     "node-forge": "^0.7.1",
-    "node-sass": "^4.5.3",
+    "node-sass": "^4.6.0",
     "prop-types": "^15.5.8",
     "qartjs": "Crecket/qart.js",
     "react": "^16.0.0",
