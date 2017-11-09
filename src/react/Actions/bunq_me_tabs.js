@@ -19,12 +19,12 @@ export function bunqMeTabsUpdate(BunqJSClient, user_id, account_id) {
                 dispatch(bunqMeTabsSetInfo(bunqMeTabs, account_id));
                 dispatch(bunqMeTabsNotLoading());
             })
-            .catch(err => {
+            .catch(error => {
                 dispatch(bunqMeTabsNotLoading());
                 BunqErrorHandler(
                     dispatch,
                     error,
-                    "We failed to load the payments for this monetary account"
+                    "We failed to load the bunq.me requests for this monetary account"
                 );
             });
     };

@@ -19,7 +19,7 @@ export function paymentsUpdate(BunqJSClient, user_id, account_id) {
                 dispatch(paymentsSetInfo(payments, account_id));
                 dispatch(paymentsNotLoading());
             })
-            .catch(err => {
+            .catch(error => {
                 dispatch(paymentsNotLoading());
                 BunqErrorHandler(
                     dispatch,
