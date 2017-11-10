@@ -4,7 +4,7 @@ export function requestResponsesSetInfo(requestResponses, account_id) {
     return {
         type: "REQUEST_RESPONSES_SET_INFO",
         payload: {
-            requestResponses: requestResponses,
+            request_responses: requestResponses,
             account_id: account_id
         }
     };

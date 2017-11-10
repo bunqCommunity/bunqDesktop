@@ -1,3 +1,6 @@
+export { default as CombinedList } from "./CombinedList/CombinedList";
+export * from "./CombinedList/CombinedList";
+
 export { default as ErrorBoundary } from "./ErrorBoundary";
 export * from "./ErrorBoundary";
 

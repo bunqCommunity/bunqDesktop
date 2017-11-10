@@ -8,7 +8,8 @@ import Hidden from "material-ui/Hidden";
 import Typography from "material-ui/Typography";
 import Avatar from "material-ui/Avatar";
 import PowerSettingsIcon from "material-ui-icons/PowerSettingsNew";
-import PaymentIcon from "material-ui-icons/Payment";
+import ArrowUpwardIcon from "material-ui-icons/ArrowUpward";
+import ArrowDownwardIcon from "material-ui-icons/ArrowDownward";
 import HomeIcon from "material-ui-icons/Home";
 import SettingsIcon from "material-ui-icons/Settings";
 import ShareIcon from "material-ui-icons/Share";
@@ -97,7 +98,7 @@ class MainDrawer extends React.Component {
                       to="/pay"
                   >
                       <ListItemIcon>
-                          <PaymentIcon />
+                          <ArrowUpwardIcon />
                       </ListItemIcon>
                       <Typography type="subheading">Pay</Typography>
                   </ListItem>,
@@ -108,7 +109,7 @@ class MainDrawer extends React.Component {
                       to="/request"
                   >
                       <ListItemIcon>
-                          <PaymentIcon />
+                          <ArrowDownwardIcon />
                       </ListItemIcon>
                       <Typography type="subheading">Request</Typography>
                   </ListItem>,

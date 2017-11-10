@@ -10,6 +10,8 @@ import AccountListItem from "./AccountListItem";
 
 import { accountsSelectAccount, accountsUpdate } from "../../Actions/accounts";
 import { paymentsUpdate } from "../../Actions/payments";
+import { requestResponsesUpdate } from "../../Actions/request_responses";
+import { masterCardActionsUpdate } from "../../Actions/master_card_actions";
 
 const styles = {
     list: {
@@ -50,6 +52,8 @@ class AccountList extends React.Component {
             this.props.updateExternal(userId, accountId);
         } else {
             this.props.paymentsUpdate(userId, accountId);
+            this.props.requestResponsesUpdate(userId, accountId);
+            this.props.masterCardActionsUpdate(userId, accountId);
         }
     };
 
@@ -63,48 +67,50 @@ class AccountList extends React.Component {
             user
         } = props;
 
-        if (initialBunqConnect) {
-            // check if the stored selected account isn't already loaded
-            if (
-                user.id &&
-                accountsAccountId !== false &&
-                accountsAccountId !== paymentsAccountId &&
-                paymentsLoading === false &&
-                this.state.fetchedExternal === false
-            ) {
+        if (!initialBunqConnect) {
+            return;
+        }
+
+        // check if the stored selected account isn't already loaded
+        if (
+            user.id &&
+            accountsAccountId !== false &&
+            accountsAccountId !== paymentsAccountId &&
+            paymentsLoading === false &&
+            this.state.fetchedExternal === false
+        ) {
+            this.setState({ fetchedExternal: true });
+            this.updateExternal(user.id, accountsAccountId);
+        }
+
+        // check if both account and payment have nothing selected
+        if (
+            user.id &&
+            accountsAccountId === false &&
+            paymentsAccountId === false &&
+            paymentsLoading === false
+        ) {
+            // both are false, just load the first item from the accounts
+            if (accounts.length > 0) {
+                const accountId = accounts[0].MonetaryAccountBank.id;
+
+                // select this account for next time
+                this.props.selectAccount(accountId);
+                // fetch payments for the account
+                this.updateExternal(user.id, accountId);
                 this.setState({ fetchedExternal: true });
-                this.updateExternal(user.id, accountsAccountId);
             }
+        }
 
-            // check if both account and payment have nothing selected
-            if (
-                user.id &&
-                accountsAccountId === false &&
-                paymentsAccountId === false &&
-                paymentsLoading === false
-            ) {
-                // both are false, just load the first item from the accounts
-                if (accounts.length > 0) {
-                    const accountId = accounts[0].MonetaryAccountBank.id;
-
-                    // select this account for next time
-                    this.props.selectAccount(accountId);
-                    // fetch payments for the account
-                    this.updateExternal(user.id, accountId);
-                    this.setState({ fetchedExternal: true });
-                }
-            }
-
-            // no accounts loaded
-            if (
-                accounts.length === 0 &&
-                this.state.fetchedAccounts === false &&
-                props.user.id &&
-                props.accountsLoading === false
-            ) {
-                this.props.accountsUpdate(props.user.id);
-                this.setState({ fetchedAccounts: true });
-            }
+        // no accounts loaded
+        if (
+            accounts.length === 0 &&
+            this.state.fetchedAccounts === false &&
+            props.user.id &&
+            props.accountsLoading === false
+        ) {
+            this.props.accountsUpdate(props.user.id);
+            this.setState({ fetchedAccounts: true });
         }
     };
 
@@ -145,14 +151,24 @@ class AccountList extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+
+        paymentType: state.payment_filter.type,
+
         accounts: state.accounts.accounts,
+        accountsAccountId: state.accounts.selectedAccount,
+        accountsLoading: state.accounts.loading,
+
+        requestResponsesAccountId: state.request_responses.account_id,
+        requestResponses: state.request_responses.request_responses,
+        requestResponsesLoading: state.request_responses.loading,
+
+        masterCardAccountId: state.master_card_actions.account_id,
+        masterCardActions: state.master_card_actions.master_card_actions,
+        masterCardActionsLoading: state.master_card_actions.loading,
 
         paymentsAccountId: state.payments.account_id,
-        accountsAccountId: state.accounts.selectedAccount,
-        // selected accounts and loading state
-        paymentsLoading: state.payments.loading,
-        // accounts are loading
-        accountsLoading: state.accounts.loading
+        payments: state.payments.payments,
+        paymentsLoading: state.payments.loading
     };
 };
 
@@ -161,6 +177,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         paymentsUpdate: (userId, accountId) =>
             dispatch(paymentsUpdate(BunqJSClient, userId, accountId)),
+        requestResponsesUpdate: (userId, accountId) =>
+            dispatch(requestResponsesUpdate(BunqJSClient, userId, accountId)),
+        masterCardActionsUpdate: (userId, accountId) =>
+            dispatch(masterCardActionsUpdate(BunqJSClient, userId, accountId)),
         accountsUpdate: userId =>
             dispatch(accountsUpdate(BunqJSClient, userId)),
         selectAccount: acountId => dispatch(accountsSelectAccount(acountId))

@@ -7,7 +7,7 @@ import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
 
-import PaymentList from "../Components/PaymentList/PaymentList";
+import CombinedList from "../Components/CombinedList/CombinedList";
 import AccountCard from "./ApplicationInfo/AccountCard";
 
 import { accountsUpdate } from "../Actions/accounts";
@@ -75,7 +75,7 @@ class AccountInfo extends React.Component {
                     account={accountInfo}
                 />,
                 <Paper>
-                    <PaymentList
+                    <CombinedList
                         BunqJSClient={this.props.BunqJSClient}
                         initialBunqConnect={this.props.initialBunqConnect}
                     />
