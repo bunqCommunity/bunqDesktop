@@ -277,6 +277,9 @@ class RequestInquiry extends React.Component {
             amount,
             target
         } = this.state;
+        if (!this.props.accounts[selectedAccount]) {
+            return null;
+        }
         const account = this.props.accounts[selectedAccount]
             .MonetaryAccountBank;
 
@@ -393,8 +396,10 @@ class RequestInquiry extends React.Component {
                                 minimumAge={this.state.minimumAge}
                                 setMinimumAge={this.state.setMinimumAge}
                                 minimumAgeError={this.state.minimumAgeError}
-                                handleToggle={this.handleToggle}
-                                handleChange={this.handleChange}
+                                handleToggle={this.handleToggle(
+                                    "setMinimumAge"
+                                )}
+                                handleChange={this.handleChange("minimumAge")}
                             />
 
                             <RedirectUrl
@@ -402,14 +407,16 @@ class RequestInquiry extends React.Component {
                                 redirectUrl={this.state.redirectUrl}
                                 setRedirectUrl={this.state.setRedirectUrl}
                                 redirectUrlError={this.state.redirectUrlError}
-                                handleToggle={this.handleToggle("setMinimumAge")}
+                                handleToggle={this.handleToggle(
+                                    "setRedirectUrl"
+                                )}
                                 handleChange={this.handleChange("redirectUrl")}
                             />
 
                             <AllowBunqMe
                                 targetType={this.state.targetType}
                                 allowBunqMe={this.state.allowBunqMe}
-                                handleToggle={this.handleToggle}
+                                handleToggle={this.handleToggle("allowBunqMe")}
                             />
                         </Collapse>
 

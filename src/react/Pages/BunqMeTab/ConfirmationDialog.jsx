@@ -6,15 +6,14 @@ import Dialog, {
     DialogContent,
     DialogTitle
 } from "material-ui/Dialog";
+import { formatMoney } from "../../Helpers/Utils";
 
 export default class ConfirmationDialog extends React.Component {
     render() {
         const {
             confirmModalOpen,
             account,
-            targetType,
             description,
-            ibanName,
             amount,
             target
         } = this.props;
@@ -49,21 +48,7 @@ export default class ConfirmationDialog extends React.Component {
                         <ListItem>
                             <ListItemText
                                 primary="Amount"
-                                secondary={`${amount.toFixed(2)} ${account
-                                    .balance.currency}`}
-                            />
-                        </ListItem>
-                        <ListItem>
-                            <ListItemText
-                                primary="To"
-                                secondary={(() => {
-                                    switch (targetType) {
-                                        case "PHONE":
-                                            return `Phone: ${target}`;
-                                        case "EMAIL":
-                                            return `Email: ${target}`;
-                                    }
-                                })()}
+                                secondary={formatMoney(amount)}
                             />
                         </ListItem>
                     </List>
