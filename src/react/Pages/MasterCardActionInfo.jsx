@@ -15,10 +15,10 @@ import ArrowDownIcon from "material-ui-icons/ArrowDownward";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
-import {formatMoney, humanReadableDate} from "../Helpers/Utils";
+import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import LazyAttachmentImage from "../Components/AttachmentImage/LazyAttachmentImage";
 
-import { paymentsUpdate } from "../Actions/payment_info";
+import { requestResponseUpdate } from "../Actions/request_response_info";
 
 const styles = {
     btn: {},
@@ -41,13 +41,13 @@ class MasterCardActionInfo extends React.Component {
 
     componentDidMount() {
         if (this.props.initialBunqConnect) {
-            const { paymentId, accountId } = this.props.match.params;
-            this.props.updatePayment(
+            const { requestResponseId, accountId } = this.props.match.params;
+            this.props.requestResponseUpdate(
                 this.props.user.id,
                 accountId === undefined
                     ? this.props.accountsSelectedAccount
                     : accountId,
-                paymentId
+                requestResponseId
             );
         }
     }
@@ -55,39 +55,25 @@ class MasterCardActionInfo extends React.Component {
     componentWillUpdate(nextProps, nextState) {
         if (
             this.props.initialBunqConnect &&
-            this.props.match.params.paymentId !==
-                nextProps.match.params.paymentId
+            this.props.match.params.requestResponseId !==
+            nextProps.match.params.requestResponseId
         ) {
-            const { paymentId, accountId } = nextProps.match.params;
-            this.props.updatePayment(
+            const { requestResponseId, accountId } = nextProps.match.params;
+            this.props.requestResponseUpdate(
                 nextProps.user.id,
                 accountId === undefined
                     ? nextProps.accountsSelectedAccount
                     : accountId,
-                paymentId
+                requestResponseId
             );
         }
-    }
-
-    getBasicInfo(info) {
-        let result = {};
-
-        result.avatar = info.avatar;
-        result.imageUUID = false;
-        if (result.avatar) {
-            result.imageUUID = result.avatar.image[0].attachment_public_uuid;
-        }
-        result.displayName = info.display_name;
-        result.iban = info.iban;
-
-        return result;
     }
 
     render() {
         const {
             accountsSelectedAccount,
-            payment,
-            paymentLoading,
+            requestResponseInfo,
+            requestResponseLoading,
             theme
         } = this.props;
         const paramAccountId = this.props.match.params.accountId;
@@ -99,7 +85,7 @@ class MasterCardActionInfo extends React.Component {
         }
 
         let content;
-        if (payment === false || paymentLoading === true) {
+        if (requestResponseInfo === false || requestResponseLoading === true) {
             content = (
                 <Grid container spacing={24} justify={"center"}>
                     <Grid item xs={12}>
@@ -110,19 +96,17 @@ class MasterCardActionInfo extends React.Component {
                 </Grid>
             );
         } else {
+            console.log(this.props);
+            console.log(requestResponseInfo);
+
+            const requestResponse = requestResponseInfo.RequestResponse;
             // const paymentType = payment.type;
-            const paymentDescription = payment.description;
-            const paymentDate = humanReadableDate(payment.created);
-            const paymentAmount = payment.amount.value;
+            const paymentDate = humanReadableDate(requestResponse.created);
+            const paymentAmount = requestResponse.amount_inquired.value;
             const paymentColor =
                 paymentAmount < 0
                     ? theme.palette.common.sentPayment
                     : theme.palette.common.receivedPayment;
-
-            const personalInfo = this.getBasicInfo(payment.alias);
-            const counterPartyInfo = this.getBasicInfo(
-                payment.counterparty_alias
-            );
 
             content = (
                 <Grid
@@ -135,10 +119,13 @@ class MasterCardActionInfo extends React.Component {
                         <LazyAttachmentImage
                             width={90}
                             BunqJSClient={this.props.BunqJSClient}
-                            imageUUID={personalInfo.imageUUID}
+                            imageUUID={
+                                requestResponse.alias.avatar.image[0]
+                                    .attachment_public_uuid
+                            }
                         />
                         <Typography type="subheading">
-                            {personalInfo.displayName}
+                            {requestResponse.alias.display_name}
                         </Typography>
                     </Grid>
 
@@ -172,11 +159,14 @@ class MasterCardActionInfo extends React.Component {
                         <LazyAttachmentImage
                             width={90}
                             BunqJSClient={this.props.BunqJSClient}
-                            imageUUID={counterPartyInfo.imageUUID}
+                            imageUUID={
+                                requestResponse.counterparty_alias.avatar
+                                    .image[0].attachment_public_uuid
+                            }
                         />
 
                         <Typography type="subheading">
-                            {counterPartyInfo.displayName}
+                            {requestResponse.counterparty_alias.display_name}
                         </Typography>
                     </Grid>
 
@@ -194,7 +184,7 @@ class MasterCardActionInfo extends React.Component {
                             <ListItem>
                                 <ListItemText
                                     primary={"Description"}
-                                    secondary={paymentDescription}
+                                    secondary={requestResponse.description}
                                 />
                             </ListItem>
                             <Divider />
@@ -204,18 +194,20 @@ class MasterCardActionInfo extends React.Component {
                                     secondary={paymentDate}
                                 />
                             </ListItem>
-                            <Divider />
-                            <ListItem>
-                                <ListItemText
-                                    primary={"Payment Type"}
-                                    secondary={payment.type}
-                                />
-                            </ListItem>
+                            {/*<Divider />*/}
+                            {/*<ListItem>*/}
+                            {/*<ListItemText*/}
+                            {/*primary={"Payment Type"}*/}
+                            {/*secondary={payment.type}*/}
+                            {/*/>*/}
+                            {/*</ListItem>*/}
                             <Divider />
                             <ListItem>
                                 <ListItemText
                                     primary={"IBAN"}
-                                    secondary={counterPartyInfo.iban}
+                                    secondary={
+                                        requestResponse.counterparty_alias.iban
+                                    }
                                 />
                             </ListItem>
                             <Divider />
@@ -250,8 +242,8 @@ class MasterCardActionInfo extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-        payment: state.payment_info.payment,
-        paymentLoading: state.payment_info.loading,
+        requestResponseInfo: state.request_response_info.request_response_info,
+        requestResponseLoading: state.request_response_info.loading,
         accountsSelectedAccount: state.accounts.selectedAccount
     };
 };
@@ -259,9 +251,14 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        updatePayment: (user_id, account_id, payment_id) =>
+        requestResponseUpdate: (user_id, account_id, request_response_id) =>
             dispatch(
-                paymentsUpdate(BunqJSClient, user_id, account_id, payment_id)
+                requestResponseUpdate(
+                    BunqJSClient,
+                    user_id,
+                    account_id,
+                    request_response_id
+                )
             )
     };
 };

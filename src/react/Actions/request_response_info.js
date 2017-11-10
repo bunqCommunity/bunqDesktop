@@ -28,7 +28,7 @@ export function requestResponseUpdate(
             .then(requestResponseInfo => {
                 dispatch(
                     requestResponseSetInfo(
-                        requestResponseInfo,
+                        requestResponseInfo[0],
                         account_id,
                         request_response_id
                     )

@@ -34,8 +34,6 @@ class RequestResponseListItem extends React.Component {
     render() {
         const { requestResponse, theme } = this.props;
 
-        console.log(requestResponse);
-
         let imageUUID = false;
         if (requestResponse.counterparty_alias.avatar) {
             imageUUID =
