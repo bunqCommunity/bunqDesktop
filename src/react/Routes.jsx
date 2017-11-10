@@ -7,9 +7,7 @@ import CL from "./Components/CodeSplitting/ComponentLoader";
 
 import Dashboard from "./Pages/Dashboard";
 import LoginPassword from "./Pages/LoginPassword";
-const Login = CL(() =>
-    import(/* webpackChunkName: "login" */ "./Pages/Login/Login")
-);
+import Login from "./Pages/Login/Login";
 const NotFound = CL(() =>
     import(/* webpackChunkName: "notfound" */ "./Pages/NotFound")
 );

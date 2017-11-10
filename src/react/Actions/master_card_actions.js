@@ -51,69 +51,18 @@ export function masterCardActionsUpdate(BunqJSClient, userId, accountId) {
                                   authorisation_type: "",
                                   pan_entry_mode_user: "",
                                   city: "",
-                                  alias: {
-                                      iban: "NL12BUNQ0300065264",
-                                      display_name: "Mary",
-                                      avatar: {
-                                          uuid:
-                                              "5a442bed-3d43-4a85-b532-dbb251052f4a",
-                                          anchor_uuid:
-                                              "f0de919f-8c36-46ee-acb7-ea9c35c1b231",
-                                          image: [
-                                              {
-                                                  attachment_public_uuid:
-                                                      "d93e07e3-d420-45e5-8684-fc0c09a63686",
-                                                  content_type: "image/jpeg",
-                                                  height: 380,
-                                                  width: 520
-                                              }
-                                          ]
-                                      },
-                                      label_user: {
-                                          uuid:
-                                              "252e-fb1e-04b74214-b9e9467c3-c6d2fbf",
-                                          avatar: {
-                                              uuid:
-                                                  "5a442bed-3d43-4a85-b532-dbb251052f4a",
-                                              anchor_uuid:
-                                                  "f0de919f-8c36-46ee-acb7-ea9c35c1b231",
-                                              image: [
-                                                  {
-                                                      attachment_public_uuid:
-                                                          "d93e07e3-d420-45e5-8684-fc0c09a63686",
-                                                      content_type:
-                                                          "image/jpeg",
-                                                      height: 380,
-                                                      width: 520
-                                                  }
-                                              ]
-                                          },
-                                          public_nick_name: "Mary",
-                                          display_name: "Mary",
-                                          country: "NL"
-                                      },
-                                      country: "NL",
-                                      bunq_me: {
-                                          type: "EMAIL",
-                                          value: "bravo@bunq.com",
-                                          name: ""
-                                      },
-                                      is_light: false,
-                                      swift_bic: "BUNQNL2A",
-                                      swift_account_number: "123456789"
-                                  },
                                   counterparty_alias: {
                                       iban: "NL12BUNQ0300065264",
                                       display_name: "Mary",
                                       avatar: {
                                           uuid:
-                                              "5a442bed-3d43-4a85-b532-dbb251052f4a",
+                                              "61c3be0b-4953-4762-8118-b42b0ee994bb",
                                           anchor_uuid:
                                               "f0de919f-8c36-46ee-acb7-ea9c35c1b231",
                                           image: [
                                               {
                                                   attachment_public_uuid:
-                                                      "d93e07e3-d420-45e5-8684-fc0c09a63686",
+                                                      "61c3be0b-4953-4762-8118-b42b0ee994bb",
                                                   content_type: "image/jpeg",
                                                   height: 380,
                                                   width: 520
@@ -125,13 +74,13 @@ export function masterCardActionsUpdate(BunqJSClient, userId, accountId) {
                                               "252e-fb1e-04b74214-b9e9467c3-c6d2fbf",
                                           avatar: {
                                               uuid:
-                                                  "5a442bed-3d43-4a85-b532-dbb251052f4a",
+                                                  "61c3be0b-4953-4762-8118-b42b0ee994bb",
                                               anchor_uuid:
                                                   "f0de919f-8c36-46ee-acb7-ea9c35c1b231",
                                               image: [
                                                   {
                                                       attachment_public_uuid:
-                                                          "d93e07e3-d420-45e5-8684-fc0c09a63686",
+                                                          "61c3be0b-4953-4762-8118-b42b0ee994bb",
                                                       content_type:
                                                           "image/jpeg",
                                                       height: 380,
@@ -171,7 +120,7 @@ export function masterCardActionsUpdate(BunqJSClient, userId, accountId) {
                                               image: [
                                                   {
                                                       attachment_public_uuid:
-                                                          "d93e07e3-d420-45e5-8684-fc0c09a63686",
+                                                          "61c3be0b-4953-4762-8118-b42b0ee994bb",
                                                       content_type:
                                                           "image/jpeg",
                                                       height: 380,

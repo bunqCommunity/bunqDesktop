@@ -76,10 +76,9 @@ class AttachmentImage extends React.PureComponent {
 
             try {
                 // get raw image contents
-                const imageBase64 = await this.props.BunqJSClient.api.attachmentContent.get(
+                const base64Url = await this.props.BunqJSClient.api.attachmentContent.get(
                     this.props.imageUUID
                 );
-                const base64Url = `data:image/png;base64,${imageBase64}`;
 
                 // set the url first
                 if (this._isMounted) {
