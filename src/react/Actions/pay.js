@@ -1,6 +1,6 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { openSnackbar } from "./snackbar";
-import { paymentsUpdate } from "./payments";
+import { paymentInfoUpdate } from "./payments";
 import { accountsUpdate } from "./accounts";
 
 export function paySend(
@@ -17,7 +17,7 @@ export function paySend(
             .post(userId, accountId, description, amount, target)
             .then(result => {
                 dispatch(openSnackbar("Payment sent successfully!"));
-                dispatch(paymentsUpdate(BunqJSClient, userId, accountId));
+                dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId));
                 dispatch(accountsUpdate(BunqJSClient, userId));
                 dispatch(payNotLoading());
             })

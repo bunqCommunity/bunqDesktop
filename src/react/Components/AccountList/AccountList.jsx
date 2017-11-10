@@ -9,7 +9,7 @@ import RefreshIcon from "material-ui-icons/Refresh";
 import AccountListItem from "./AccountListItem";
 
 import { accountsSelectAccount, accountsUpdate } from "../../Actions/accounts";
-import { paymentsUpdate } from "../../Actions/payments";
+import { paymentInfoUpdate } from "../../Actions/payments";
 import { requestResponsesUpdate } from "../../Actions/request_responses";
 import { masterCardActionsUpdate } from "../../Actions/master_card_actions";
 
@@ -176,7 +176,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         paymentsUpdate: (userId, accountId) =>
-            dispatch(paymentsUpdate(BunqJSClient, userId, accountId)),
+            dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId)),
         requestResponsesUpdate: (userId, accountId) =>
             dispatch(requestResponsesUpdate(BunqJSClient, userId, accountId)),
         masterCardActionsUpdate: (userId, accountId) =>

@@ -8,7 +8,7 @@ import {
 import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
 
-import { formatMoney, humanReadableDate } from "../../Helpers/Utils";
+import { formatMoney } from "../../Helpers/Utils";
 import NavLink from "../../Components/Routing/NavLink";
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 
@@ -43,7 +43,6 @@ class RequestResponseListItem extends React.Component {
                     .attachment_public_uuid;
         }
         const displayName = requestResponse.counterparty_alias.display_name;
-        const paymentDate = humanReadableDate(requestResponse.created);
         const paymentAmount = requestResponse.amount_inquired.value;
         const formattedPaymentAmount = formatMoney(paymentAmount);
         const paymentColor =
@@ -52,7 +51,11 @@ class RequestResponseListItem extends React.Component {
                 : theme.palette.common.receivedPayment;
 
         return [
-            <ListItem button>
+            <ListItem
+                button
+                component={NavLink}
+                to={`/request-response-info/${requestResponse.id}/${requestResponse.monetary_account_id}`}
+            >
                 <Avatar style={styles.smallAvatar}>
                     <LazyAttachmentImage
                         width={50}
@@ -60,7 +63,10 @@ class RequestResponseListItem extends React.Component {
                         imageUUID={imageUUID}
                     />
                 </Avatar>
-                <ListItemText primary={displayName} secondary={"Request received"} />
+                <ListItemText
+                    primary={displayName}
+                    secondary={"Request received"}
+                />
                 <ListItemSecondaryAction>
                     <p
                         style={{

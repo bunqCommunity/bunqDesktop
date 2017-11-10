@@ -27,6 +27,7 @@ export default (state = defaultState, action) => {
 
         case "BUNQ_ME_TABS_CLEAR":
         case "REGISTRATION_CLEAR_API_KEY":
+        case "REGISTRATION_CLEAR_USER_INFO":
             return {
                 bunq_me_tabs: [],
                 account_id: false,

@@ -15,7 +15,6 @@ import NavLink from "../../Components/Routing/NavLink";
 import { formatMoney } from "../../Helpers/Utils";
 import Logger from "../../Helpers/Logger";
 
-import { paymentsUpdate } from "../../Actions/payments.js";
 import { accountsSelectAccount } from "../../Actions/accounts.js";
 
 const styles = {
@@ -99,8 +98,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        updatePayments: (userId, accountId) =>
-            dispatch(paymentsUpdate(BunqJSClient, userId, accountId)),
         selectAccount: acountId => dispatch(accountsSelectAccount(acountId))
     };
 };

@@ -1,29 +1,13 @@
-import store from "store";
-
-export const SELECTED_PAYMENT_ACCOUNT_LOCATION = "BUNQDESKTOP_SELECTED_PAYMENT_ACCOUNT";
-export const SELECTED_PAYMENT_ID_LOCATION = "BUNQDESKTOP_SELECTED_PAYMENT_ID";
-
-const selectedAccountDefault =
-    store.get(SELECTED_PAYMENT_ACCOUNT_LOCATION) !== undefined
-        ? store.get(SELECTED_PAYMENT_ACCOUNT_LOCATION)
-        : false;
-const selectedPaymentIdDefault =
-    store.get(SELECTED_PAYMENT_ID_LOCATION) !== undefined
-        ? store.get(SELECTED_PAYMENT_ID_LOCATION)
-        : false;
-
 export const defaultState = {
     payment: false,
-    account_id: selectedAccountDefault,
-    payment_id: selectedPaymentIdDefault,
+    account_id: false,
+    payment_id: false,
     loading: false
 };
 
 export default (state = defaultState, action) => {
     switch (action.type) {
         case "PAYMENT_INFO_SET_INFO":
-            store.set(SELECTED_PAYMENT_ID_LOCATION, action.payload.payment_id);
-            store.set(SELECTED_PAYMENT_ACCOUNT_LOCATION, action.payload.account_id);
             return {
                 ...state,
                 payment: action.payload.payment,
@@ -45,8 +29,7 @@ export default (state = defaultState, action) => {
 
         case "PAYMENT_INFO_CLEAR":
         case "REGISTRATION_CLEAR_API_KEY":
-            store.remove(SELECTED_PAYMENT_ID_LOCATION);
-            store.remove(SELECTED_PAYMENT_ACCOUNT_LOCATION);
+        case "REGISTRATION_CLEAR_USER_INFO":
             return {
                 payment: false,
                 account_id: 0,

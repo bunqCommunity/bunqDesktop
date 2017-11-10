@@ -65,11 +65,14 @@ class CombinedList extends React.Component {
     };
 
     render() {
-        let loadingContent = this.props.paymentsLoading ? (
-            <LinearProgress />
-        ) : (
-            <Divider />
-        );
+        let loadingContent =
+            this.props.paymentsLoading ||
+            this.props.requestResponsesLoading ||
+            this.props.masterCardActionsLoading ? (
+                <LinearProgress />
+            ) : (
+                <Divider />
+            );
 
         const payments = this.props.payments
             .filter(this.paymentFilter)

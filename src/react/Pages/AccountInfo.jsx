@@ -11,7 +11,7 @@ import CombinedList from "../Components/CombinedList/CombinedList";
 import AccountCard from "./ApplicationInfo/AccountCard";
 
 import { accountsUpdate } from "../Actions/accounts";
-import { paymentsUpdate } from "../Actions/payments";
+import { paymentInfoUpdate } from "../Actions/payments";
 import { openSnackbar } from "../Actions/snackbar";
 
 const styles = {
@@ -130,7 +130,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
         paymentsUpdate: (userId, accountId) =>
-            dispatch(paymentsUpdate(BunqJSClient, userId, accountId)),
+            dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId)),
         accountsUpdate: userId => dispatch(accountsUpdate(BunqJSClient, userId))
     };
 };

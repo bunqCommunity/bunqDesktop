@@ -10,7 +10,7 @@ export function paymentsSetInfo(payments, account_id) {
     };
 }
 
-export function paymentsUpdate(BunqJSClient, user_id, account_id) {
+export function paymentInfoUpdate(BunqJSClient, user_id, account_id) {
     return dispatch => {
         dispatch(paymentsLoading());
         BunqJSClient.api.payment

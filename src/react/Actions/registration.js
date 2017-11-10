@@ -168,6 +168,16 @@ export function registrationClearPassword() {
 }
 
 /**
+ * Clear all user info currently in the application
+ * @returns {{type: string}}
+ */
+export function registrationClearUserInfo() {
+    return {
+        type: "REGISTRATION_CLEAR_USER_INFO"
+    };
+}
+
+/**
  * Store the derived password
  * @param derivedPassword
  * @returns {{type: string, payload: {derivedPassword: *}}}

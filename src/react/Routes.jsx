@@ -18,6 +18,12 @@ const BunqMeTab = CL(() =>
 const RequestInquiry = CL(() =>
     import(/* webpackChunkName: "requestinquiry" */ "./Pages/RequestInquiry/RequestInquiry")
 );
+const RequestResponseInfo = CL(() =>
+    import(/* webpackChunkName: "requestresponseinfo" */ "./Pages/RequestResponseInfo")
+);
+const MasterCardActionInfo = CL(() =>
+    import(/* webpackChunkName: "mastercardactioninfo" */ "./Pages/MasterCardActionInfo")
+);
 const PaymentInfo = CL(() =>
     import(/* webpackChunkName: "paymentinfo" */ "./Pages/PaymentInfo")
 );
@@ -100,6 +106,34 @@ export default class Routes extends React.Component {
                             derivedPassword={this.props.derivedPassword}
                             render={props => (
                                 <PaymentInfo
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
+                            )}
+                        />
+
+
+                        <PrivateRoute
+                            path="/request-response-info/:requestResponseId/:accountId?"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <RequestResponseInfo
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
+                            )}
+                        />
+
+
+                        <PrivateRoute
+                            path="/mastercard-action-info/:mastercardActionId/:accountId?"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <MasterCardActionInfo
                                     {...props}
                                     {...this.props.childProps}
                                 />

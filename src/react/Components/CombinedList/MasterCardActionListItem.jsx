@@ -7,9 +7,8 @@ import {
 } from "material-ui/List";
 import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
-import PaymentIcon from "material-ui-icons/Payment";
 
-import { formatMoney, humanReadableDate } from "../../Helpers/Utils";
+import { formatMoney } from "../../Helpers/Utils";
 import NavLink from "../../Components/Routing/NavLink";
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 
@@ -46,7 +45,11 @@ class MasterCardActionListItem extends React.Component {
         const formattedPaymentAmount = formatMoney(paymentAmount);
 
         return [
-            <ListItem button>
+            <ListItem
+                button
+                component={NavLink}
+                to={`/mastercard-action-info/${masterCardAction.id}/${masterCardAction.monetary_account_id}`}
+            >
                 <Avatar style={styles.smallAvatar}>
                     <LazyAttachmentImage
                         width={50}
@@ -54,7 +57,10 @@ class MasterCardActionListItem extends React.Component {
                         imageUUID={imageUUID}
                     />
                 </Avatar>
-                <ListItemText primary={displayName} secondary={"Mastercard payment"} />
+                <ListItemText
+                    primary={displayName}
+                    secondary={"Mastercard payment"}
+                />
                 <ListItemSecondaryAction>
                     <p
                         style={{

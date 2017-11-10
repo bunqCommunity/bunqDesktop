@@ -63,7 +63,10 @@ class PaymentListItem extends React.Component {
                         imageUUID={imageUUID}
                     />
                 </Avatar>
-                <ListItemText primary={displayName} secondary={payment.type} />
+                <ListItemText
+                    primary={displayName}
+                    secondary={`Received payment with ${payment.type}`}
+                />
                 <ListItemSecondaryAction>
                     <p
                         style={{
