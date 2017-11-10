@@ -96,9 +96,6 @@ class MasterCardActionInfo extends React.Component {
                 </Grid>
             );
         } else {
-            console.log(this.props);
-            console.log(requestResponseInfo);
-
             const requestResponse = requestResponseInfo.RequestResponse;
             // const paymentType = payment.type;
             const paymentDate = humanReadableDate(requestResponse.created);
@@ -194,13 +191,6 @@ class MasterCardActionInfo extends React.Component {
                                     secondary={paymentDate}
                                 />
                             </ListItem>
-                            {/*<Divider />*/}
-                            {/*<ListItem>*/}
-                            {/*<ListItemText*/}
-                            {/*primary={"Payment Type"}*/}
-                            {/*secondary={payment.type}*/}
-                            {/*/>*/}
-                            {/*</ListItem>*/}
                             <Divider />
                             <ListItem>
                                 <ListItemText
@@ -220,7 +210,7 @@ class MasterCardActionInfo extends React.Component {
         return (
             <Grid container spacing={24}>
                 <Helmet>
-                    <title>{`BunqDesktop - Payment Info`}</title>
+                    <title>{`BunqDesktop - Mastercard Info`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={2}>
