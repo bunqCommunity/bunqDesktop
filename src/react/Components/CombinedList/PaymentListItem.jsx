@@ -49,6 +49,8 @@ class PaymentListItem extends React.Component {
             paymentAmount < 0
                 ? theme.palette.common.sentPayment
                 : theme.palette.common.receivedPayment;
+        const paymentTypeLabel =
+            paymentAmount < 0 ? "Sent payment with " : "Received payment with ";
 
         return [
             <ListItem
@@ -65,7 +67,7 @@ class PaymentListItem extends React.Component {
                 </Avatar>
                 <ListItemText
                     primary={displayName}
-                    secondary={`Received payment with ${payment.type}`}
+                    secondary={`${paymentTypeLabel}${payment.type}`}
                 />
                 <ListItemSecondaryAction>
                     <p

@@ -18,7 +18,7 @@ import Typography from "material-ui/Typography";
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import LazyAttachmentImage from "../Components/AttachmentImage/LazyAttachmentImage";
 
-import { requestResponseUpdate } from "../Actions/request_response_info";
+import { masterCardActionInfoUpdate } from "../Actions/master_card_action_info";
 
 const styles = {
     btn: {},
@@ -56,7 +56,7 @@ class MasterCardActionInfo extends React.Component {
         if (
             this.props.initialBunqConnect &&
             this.props.match.params.requestResponseId !==
-            nextProps.match.params.requestResponseId
+                nextProps.match.params.requestResponseId
         ) {
             const { requestResponseId, accountId } = nextProps.match.params;
             this.props.requestResponseUpdate(
@@ -241,9 +241,13 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        requestResponseUpdate: (user_id, account_id, request_response_id) =>
+        masterCardActionInfoUpdate: (
+            user_id,
+            account_id,
+            request_response_id
+        ) =>
             dispatch(
-                requestResponseUpdate(
+                masterCardActionInfoUpdate(
                     BunqJSClient,
                     user_id,
                     account_id,
