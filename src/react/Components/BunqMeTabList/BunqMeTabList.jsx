@@ -51,6 +51,8 @@ class BunqMeTabList extends React.Component {
                 <BunqMeTabListItem
                     bunqMeTab={bunqMeTab.BunqMeTab}
                     copiedValue={this.copiedValue}
+                    bunqMeTabLoading={this.props.bunqMeTabLoading}
+                    bunqMeTabsLoading={this.props.bunqMeTabsLoading}
                     bunqMeTabPut={this.props.bunqMeTabPut}
                     BunqJSClient={this.props.BunqJSClient}
                     user={this.props.user}
@@ -87,7 +89,8 @@ const mapStateToProps = state => {
     return {
         user: state.user.user,
         bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
-        bunqMeTabsLoading: state.bunq_me_tabs.loading
+        bunqMeTabLoading: state.bunq_me_tab.loading,
+        bunqMeTabsLoading: state.bunq_me_tabs.loading,
     };
 };
 

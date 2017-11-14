@@ -126,6 +126,10 @@ class BunqMeTabListItem extends React.Component {
                         {canBeCanceled ? (
                             <Button
                                 raised
+                                disabled={
+                                    this.props.bunqMeTabLoading ||
+                                    this.props.bunqMeTabsLoading
+                                }
                                 color="accent"
                                 onClick={this.cancelTab}
                             >
