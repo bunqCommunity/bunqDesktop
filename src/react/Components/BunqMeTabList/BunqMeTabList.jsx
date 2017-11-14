@@ -3,6 +3,9 @@ import { connect } from "react-redux";
 import List, { ListSubheader, ListItemSecondaryAction } from "material-ui/List";
 import { LinearProgress } from "material-ui/Progress";
 import Divider from "material-ui/Divider";
+import IconButton from "material-ui/IconButton";
+import Visible from "material-ui-icons/Visibility";
+import VisibleOff from "material-ui-icons/VisibilityOff";
 
 import BunqMeTabListItem from "./BunqMeTabListItem";
 import { openSnackbar } from "../../Actions/snackbar";
@@ -18,12 +21,16 @@ class BunqMeTabList extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            activeTabVisible: true
+            showInactiveTabs: false
         };
     }
 
     copiedValue = type => callback => {
         this.props.openSnackbar(`Copied ${type} to your clipboard`);
+    };
+
+    toggleTabVisibility = () => {
+        this.setState({ showInactiveTabs: !this.state.showInactiveTabs });
     };
 
     render() {
@@ -35,7 +42,7 @@ class BunqMeTabList extends React.Component {
 
         const bunqMeTabs = this.props.bunqMeTabs.map(bunqMeTab => {
             if (
-                this.state.activeTabVisible &&
+                this.state.showInactiveTabs === false &&
                 bunqMeTab.BunqMeTab.status !== "WAITING_FOR_PAYMENT"
             ) {
                 return null;
@@ -56,6 +63,16 @@ class BunqMeTabList extends React.Component {
                 <ListSubheader>
                     Bunq.me requests - {bunqMeTabs.length}
                     <ListItemSecondaryAction>
+                        <IconButton
+                            aria-label="Display or hide expired and cancelled bunq.me requests"
+                            onClick={this.toggleTabVisibility}
+                        >
+                            {this.state.showInactiveTabs ? (
+                                <Visible />
+                            ) : (
+                                <VisibleOff />
+                            )}
+                        </IconButton>
                         {this.props.secondaryActions}
                     </ListItemSecondaryAction>
                 </ListSubheader>
