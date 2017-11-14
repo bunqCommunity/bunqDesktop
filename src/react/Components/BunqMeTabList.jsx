@@ -25,6 +25,10 @@ class BunqMeTabList extends React.Component {
         };
     }
 
+    copiedValue = type => callback => {
+        this.props.openSnackbar(`Copied ${type} to your clipboard`);
+    };
+
     toggleTabVisibility = () => {
         this.setState({ showInactiveTabs: !this.state.showInactiveTabs });
     };

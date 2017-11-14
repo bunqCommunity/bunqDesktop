@@ -1,5 +1,6 @@
 export const defaultState = {
-    type: "default"
+    type: "default",
+    visible: true
 };
 
 export default function reducer(state = defaultState, action) {
@@ -9,6 +10,12 @@ export default function reducer(state = defaultState, action) {
             return {
                 ...state,
                 type: action.payload.type
+            };
+
+        case "PAYMENT_FILTER_TOGGLE_VISIBILITY":
+            return {
+                ...state,
+                visible: !state.visible
             };
 
         case "PAYMENT_FILTER_CLEAR":

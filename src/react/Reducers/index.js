@@ -10,6 +10,7 @@ import modal from "./modal";
 import user from "./user";
 import users from "./users";
 import registration from "./registration";
+import request_filter from "./request_filter";
 import snackbar from "./snackbar";
 import theme from "./options";
 import main_drawer from "./main_drawer";
@@ -37,6 +38,7 @@ export default combineReducers({
     user,
     users,
     registration,
+    request_filter,
     snackbar,
     theme,
     main_drawer,

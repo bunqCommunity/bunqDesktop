@@ -7,6 +7,12 @@ export function setPaymentFilterType(type = false) {
     };
 }
 
+export function togglePaymentFilterVisibility() {
+    return {
+        type: "PAYMENT_FILTER_TOGGLE_VISIBILITY"
+    };
+}
+
 export function clearPaymentFilterType() {
     return {
         type: "PAYMENT_FILTER_CLEAR"
