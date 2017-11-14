@@ -13,7 +13,7 @@ import { paymentInfoUpdate } from "../../Actions/payments";
 import { requestResponsesUpdate } from "../../Actions/request_responses";
 import { masterCardActionsUpdate } from "../../Actions/master_card_actions";
 import { bunqMeTabsUpdate } from "../../Actions/bunq_me_tabs";
-import {requestInquiriesUpdate} from "../../Actions/request_inquiries";
+import { requestInquiriesUpdate } from "../../Actions/request_inquiries";
 
 const styles = {
     list: {
@@ -121,19 +121,29 @@ class AccountList extends React.Component {
     render() {
         let accounts = [];
         if (this.props.accounts !== false) {
-            accounts = this.props.accounts.map(account => (
-                <AccountListItem
-                    BunqJSClient={this.props.BunqJSClient}
-                    updateExternal={this.updateExternal}
-                    account={account.MonetaryAccountBank}
-                />
-            ));
+            accounts = this.props.accounts
+                .filter(account => {
+                    if (
+                        account.MonetaryAccountBank &&
+                        account.MonetaryAccountBank.status !== "ACTIVE"
+                    ) {
+                        return false;
+                    }
+                    return true;
+                })
+                .map(account => (
+                    <AccountListItem
+                        BunqJSClient={this.props.BunqJSClient}
+                        updateExternal={this.updateExternal}
+                        account={account.MonetaryAccountBank}
+                    />
+                ));
         }
 
         return (
             <List style={styles.list}>
                 <ListSubheader>
-                    Accounts
+                    Accounts - {accounts.length}
                     <ListItemSecondaryAction>
                         {this.props.accountsLoading ? (
                             <CircularProgress />

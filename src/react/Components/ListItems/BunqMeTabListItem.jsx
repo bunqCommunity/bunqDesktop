@@ -5,6 +5,7 @@ import {
     ListItemText,
     ListItemSecondaryAction
 } from "material-ui/List";
+import withTheme from "material-ui/styles/withTheme";
 import Collapse from "material-ui/transitions/Collapse";
 import IconButton from "material-ui/IconButton";
 import Button from "material-ui/Button";
@@ -48,21 +49,21 @@ class BunqMeTabListItem extends React.Component {
     };
 
     render() {
-        const { bunqMeTab } = this.props;
+        const { bunqMeTab, theme } = this.props;
 
         let iconColor = null;
         let canBeCanceled = false;
         switch (bunqMeTab.status) {
             case "CANCELLED":
-                iconColor = "#3f56d6";
+                iconColor = theme.palette.bunqMeTabs.cancelled;
                 break;
             case "EXPIRED":
-                iconColor = "#f50057";
+                iconColor = theme.palette.bunqMeTabs.expired;
                 break;
             case "WAITING_FOR_PAYMENT":
             default:
                 canBeCanceled = true;
-                iconColor = "#8dc55f";
+                iconColor = theme.palette.bunqMeTabs.awaiting_payment;
                 break;
         }
         const shareUrl = bunqMeTab.bunqme_tab_share_url;
@@ -151,4 +152,4 @@ class BunqMeTabListItem extends React.Component {
     }
 }
 
-export default BunqMeTabListItem;
+export default withTheme()(BunqMeTabListItem);

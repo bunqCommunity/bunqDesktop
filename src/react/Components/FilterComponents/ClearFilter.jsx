@@ -3,21 +3,13 @@ import { connect } from "react-redux";
 import IconButton from "material-ui/IconButton";
 import ClearIcon from "material-ui-icons/Clear";
 
-import { clearPaymentFilterType } from "../../Actions/payment_filter";
-import { clearRequestFilterType } from "../../Actions/request_filter";
-import { clearBunqMeTabFilterType } from "../../Actions/bunq_me_tab_filter";
+import { resetFilters } from "../../Actions/general_filter";
 
 class ClearFilter extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {};
     }
-
-    clearAll = () => {
-        this.props.clearPaymentFilterType();
-        this.props.clearBunqMeTabFilterType();
-        this.props.clearRequestFilterType();
-    };
 
     render() {
         if (
@@ -31,7 +23,7 @@ class ClearFilter extends React.Component {
             return null;
         }
         return (
-            <IconButton onClick={this.clearAll}>
+            <IconButton onClick={this.props.resetFilters}>
                 <ClearIcon />
             </IconButton>
         );
@@ -53,9 +45,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        clearRequestFilterType: () => dispatch(clearRequestFilterType()),
-        clearBunqMeTabFilterType: () => dispatch(clearBunqMeTabFilterType()),
-        clearPaymentFilterType: () => dispatch(clearPaymentFilterType())
+        resetFilters: () => dispatch(resetFilters())
     };
 };
 

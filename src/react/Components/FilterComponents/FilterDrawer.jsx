@@ -17,6 +17,10 @@ import ArrowDownward from "material-ui-icons/ArrowDownward";
 import Visible from "material-ui-icons/Visibility";
 import VisibleOff from "material-ui-icons/VisibilityOff";
 import ClearIcon from "material-ui-icons/Clear";
+import CheckCircle from "material-ui-icons/CheckCircle";
+import TimerOff from "material-ui-icons/TimerOff";
+import Cancel from "material-ui-icons/Cancel";
+
 import { Divider } from "material-ui";
 import { connect } from "react-redux";
 import {
@@ -226,17 +230,36 @@ class DisplayDrawer extends React.Component {
                         />
                         <Radio
                             style={styles.radioBtn}
-                            icon={<ArrowDownward />}
+                            icon={<CheckCircle />}
                             checkedIcon={
-                                <ArrowDownward color={receivedPayment} />
+                                <CheckCircle
+                                    color={
+                                        theme.palette.bunqMeTabs
+                                            .awaiting_payment
+                                    }
+                                />
                             }
-                            value={"received"}
+                            value={"active"}
                         />
                         <Radio
                             style={styles.radioBtn}
-                            icon={<ArrowUpward />}
-                            checkedIcon={<ArrowUpward color={sentPayment} />}
-                            value={"sent"}
+                            icon={<Cancel />}
+                            checkedIcon={
+                                <Cancel
+                                    color={theme.palette.bunqMeTabs.cancelled}
+                                />
+                            }
+                            value={"cancelled"}
+                        />
+                        <Radio
+                            style={styles.radioBtn}
+                            icon={<TimerOff />}
+                            checkedIcon={
+                                <TimerOff
+                                    color={theme.palette.bunqMeTabs.expired}
+                                />
+                            }
+                            value={"expired"}
                         />
                     </RadioGroup>
                 </ListItem>

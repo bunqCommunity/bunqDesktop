@@ -15,6 +15,11 @@ export default {
             receivedPayment: "#008000",
             sentPayment: "#ff0000",
         },
+        bunqMeTabs:{
+            awaiting_payment: "#62ca04",
+            cancelled: "#3f56d6",
+            expired: "#f50057",
+        },
         type: "light",
         primary: {
             "50": "#e3f2fd",
