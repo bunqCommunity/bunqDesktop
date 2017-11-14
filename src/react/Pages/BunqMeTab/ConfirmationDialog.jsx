@@ -31,14 +31,14 @@ export default class ConfirmationDialog extends React.Component {
                 <DialogTitle>Confirm the request</DialogTitle>
                 <DialogContent>
                     <List>
-                        <ListItem>
-                            <ListItemText
-                                primary="To"
-                                secondary={`${account.description} ${account
-                                    .balance.value} ${account.balance
-                                    .currency}`}
-                            />
-                        </ListItem>
+                        {/*<ListItem>*/}
+                            {/*<ListItemText*/}
+                                {/*primary="To"*/}
+                                {/*secondary={`${account.description} ${account*/}
+                                    {/*.balance.value} ${account.balance*/}
+                                    {/*.currency}`}*/}
+                            {/*/>*/}
+                        {/*</ListItem>*/}
                         <ListItem>
                             <ListItemText
                                 primary="Description"

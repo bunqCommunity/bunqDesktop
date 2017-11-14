@@ -100,7 +100,6 @@ class BunqMeTab extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        requestInquiryLoading: state.request_inquiry.loading,
         selectedAccount: state.accounts.selectedAccount,
         accounts: state.accounts.accounts,
         user: state.user.user

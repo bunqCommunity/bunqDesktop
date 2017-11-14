@@ -10,7 +10,7 @@ import { FormControl } from "material-ui/Form";
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
 import { openSnackbar } from "../../Actions/snackbar";
-import { requestInquirySend } from "../../Actions/request_inquiry";
+import { bunqMeTabSend } from "../../Actions/bunq_me_tab";
 import ConfirmationDialog from "./ConfirmationDialog";
 
 const styles = {
@@ -163,7 +163,7 @@ class BunqMeTab extends React.Component {
             redirect_url: setRedirectUrl ? redirectUrl : false
         };
 
-        this.props.requestInquirySend(
+        this.props.bunqMeTabSend(
             userId,
             account.id,
             description,
@@ -223,12 +223,12 @@ class BunqMeTab extends React.Component {
                     color="primary"
                     disabled={
                         !this.state.validForm ||
-                        this.props.requestInquiryLoading
+                        this.props.bunqMeTabLoading
                     }
                     style={styles.payButton}
                     onClick={this.openModal}
                 >
-                    Create new tab
+                    Create request
                 </Button>
             </div>,
             <ConfirmationDialog
@@ -236,7 +236,7 @@ class BunqMeTab extends React.Component {
                 sendInquiry={this.sendInquiry}
                 confirmModalOpen={this.state.confirmModalOpen}
                 description={description}
-                account={account}
+                account={<account className="MonetaryAccountBank">  </account>}
                 amount={amount}
             />
         ];
@@ -245,7 +245,7 @@ class BunqMeTab extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        requestInquiryLoading: state.request_inquiry.loading,
+        bunqMeTabLoading: state.bunq_me_tab.loading,
         selectedAccount: state.accounts.selectedAccount,
         accounts: state.accounts.accounts,
         user: state.user.user
@@ -255,9 +255,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, props) => {
     const { BunqJSClient } = props;
     return {
-        requestInquirySend: (userId, accountId, description, amount, options) =>
+        bunqMeTabSend: (userId, accountId, description, amount, options) =>
             dispatch(
-                requestInquirySend(
+                bunqMeTabSend(
                     BunqJSClient,
                     userId,
                     accountId,

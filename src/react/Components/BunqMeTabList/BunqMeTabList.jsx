@@ -6,6 +6,7 @@ import Divider from "material-ui/Divider";
 
 import BunqMeTabListItem from "./BunqMeTabListItem";
 import { openSnackbar } from "../../Actions/snackbar";
+import { bunqMeTabPut } from "../../Actions/bunq_me_tab";
 
 const styles = {
     list: {
@@ -16,7 +17,9 @@ const styles = {
 class BunqMeTabList extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+        this.state = {
+            activeTabVisible: true
+        };
     }
 
     copiedValue = type => callback => {
@@ -24,19 +27,29 @@ class BunqMeTabList extends React.Component {
     };
 
     render() {
-        let loadingContent = this.props.bunqMeTabsLoading ? (
+        const loadingContent = this.props.bunqMeTabsLoading ? (
             <LinearProgress />
         ) : (
             <Divider />
         );
 
-        const bunqMeTabs = this.props.bunqMeTabs.map(bunqMeTab => (
-            <BunqMeTabListItem
-                bunqMeTab={bunqMeTab.BunqMeTab}
-                copiedValue={this.copiedValue}
-                BunqJSClient={this.props.BunqJSClient}
-            />
-        ));
+        const bunqMeTabs = this.props.bunqMeTabs.map(bunqMeTab => {
+            if (
+                this.state.activeTabVisible &&
+                bunqMeTab.BunqMeTab.status !== "WAITING_FOR_PAYMENT"
+            ) {
+                return null;
+            }
+            return (
+                <BunqMeTabListItem
+                    bunqMeTab={bunqMeTab.BunqMeTab}
+                    copiedValue={this.copiedValue}
+                    bunqMeTabPut={this.props.bunqMeTabPut}
+                    BunqJSClient={this.props.BunqJSClient}
+                    user={this.props.user}
+                />
+            );
+        });
 
         return (
             <List style={styles.left}>
@@ -55,14 +68,20 @@ class BunqMeTabList extends React.Component {
 
 const mapStateToProps = state => {
     return {
+        user: state.user.user,
         bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
         bunqMeTabsLoading: state.bunq_me_tabs.loading
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, props) => {
+    const { BunqJSClient } = props;
     return {
-        openSnackbar: message => dispatch(openSnackbar(message))
+        openSnackbar: message => dispatch(openSnackbar(message)),
+        bunqMeTabPut: (userId, accountId, tabId, status) =>
+            dispatch(
+                bunqMeTabPut(BunqJSClient, userId, accountId, tabId, status)
+            )
     };
 };
 

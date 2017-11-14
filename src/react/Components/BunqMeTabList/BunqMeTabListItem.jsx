@@ -34,15 +34,26 @@ class BunqMeTabListItem extends React.Component {
         this.setState({ extraInfoOpen: !this.state.extraInfoOpen });
     };
 
+    cancelTab = () => {
+        const { bunqMeTab, user } = this.props;
+        this.props.bunqMeTabPut(
+            user.id,
+            bunqMeTab.monetary_account_id,
+            bunqMeTab.id
+        );
+    };
+
     render() {
         const { bunqMeTab } = this.props;
 
         let mainIcon = null;
+        let canBeActivated = false;
         switch (bunqMeTab.status) {
             case "WAITING_FOR_PAYMENT":
                 mainIcon = <CheckCircle color={"#8dc55f"} />;
                 break;
             case "CANCELLED":
+                canBeActivated = true;
                 mainIcon = <Cancel color={"#3f56d6"} />;
                 break;
             case "EXPIRED":
@@ -112,9 +123,19 @@ class BunqMeTabListItem extends React.Component {
 
                 <ListItem style={styles.actionListItem}>
                     <ListItemSecondaryAction>
-                        <Button raised color="accent">
-                            Cancel request
-                        </Button>
+                        {canBeActivated ? (
+                            <Button raised color="primary">
+                                Activate request
+                            </Button>
+                        ) : (
+                            <Button
+                                raised
+                                color="accent"
+                                onClick={this.cancelTab}
+                            >
+                                Cancel request
+                            </Button>
+                        )}
                     </ListItemSecondaryAction>
                 </ListItem>
             </Collapse>,
