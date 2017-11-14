@@ -2,6 +2,7 @@ import React from "react";
 import { withTheme } from "material-ui/styles";
 import IconButton from "material-ui/IconButton";
 import Drawer from "material-ui/Drawer";
+import TextField from "material-ui/TextField";
 import Radio, { RadioGroup } from "material-ui/Radio";
 import List, {
     ListItem,
@@ -262,6 +263,22 @@ class DisplayDrawer extends React.Component {
                             value={"expired"}
                         />
                     </RadioGroup>
+                </ListItem>
+
+                <ListSubheader>Generic</ListSubheader>
+                <ListItem style={styles.listItem}>
+                    <TextField
+                        id="from-datetime"
+                        label="From"
+                        type="datetime-local"
+                    />
+                </ListItem>
+                <ListItem style={styles.listItem}>
+                    <TextField
+                        id="to-datetime"
+                        label="To"
+                        type="datetime-local"
+                    />
                 </ListItem>
 
                 <Divider />
