@@ -115,7 +115,7 @@ class DisplayDrawer extends React.Component {
 
         const drawerList = (
             <List style={styles.list}>
-                {/* does filters for both normal payments and master card actions */}
+                {/* filters for both normal payments and master card actions */}
                 <ListSubheader>
                     Payments
                     <ListItemSecondaryAction>
@@ -157,7 +157,7 @@ class DisplayDrawer extends React.Component {
                     </RadioGroup>
                 </ListItem>
 
-                {/* does filters for both request-responses and request-requests*/}
+                {/* filters for both request-responses and request-requests*/}
                 <ListSubheader>
                     Requests
                     <ListItemSecondaryAction>
@@ -199,7 +199,7 @@ class DisplayDrawer extends React.Component {
                     </RadioGroup>
                 </ListItem>
 
-                {/* does filters bunq.me tabs */}
+                {/* filters bunq.me tabs */}
                 <ListSubheader>
                     Bunq.me requests
                     <ListItemSecondaryAction>
