@@ -7,9 +7,9 @@ import IconButton from "material-ui/IconButton";
 import Visible from "material-ui-icons/Visibility";
 import VisibleOff from "material-ui-icons/VisibilityOff";
 
-import BunqMeTabListItem from "./BunqMeTabListItem";
-import { openSnackbar } from "../../Actions/snackbar";
-import { bunqMeTabPut } from "../../Actions/bunq_me_tab";
+import BunqMeTabListItem from "./ListItems/BunqMeTabListItem";
+import { openSnackbar } from "../Actions/snackbar";
+import { bunqMeTabPut } from "../Actions/bunq_me_tab";
 
 const styles = {
     list: {
@@ -24,10 +24,6 @@ class BunqMeTabList extends React.Component {
             showInactiveTabs: false
         };
     }
-
-    copiedValue = type => callback => {
-        this.props.openSnackbar(`Copied ${type} to your clipboard`);
-    };
 
     toggleTabVisibility = () => {
         this.setState({ showInactiveTabs: !this.state.showInactiveTabs });

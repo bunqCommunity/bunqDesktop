@@ -9,7 +9,7 @@ import CloseIcon from "material-ui-icons/Close";
 import AddIcon from "material-ui-icons/Add";
 
 import AccountList from "../../Components/AccountList/AccountList";
-import BunqMeTabList from "../../Components/BunqMeTabList/BunqMeTabList";
+import BunqMeTabList from "../../Components/BunqMeTabList";
 import BunqMeTabForm from "./BunqMeTabForm";
 
 import { bunqMeTabsUpdate } from "../../Actions/bunq_me_tabs";

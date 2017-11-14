@@ -39,37 +39,38 @@ class MasterCardActionInfo extends React.Component {
         this.state = {};
     }
 
-    componentDidMount() {
-        if (this.props.initialBunqConnect) {
-            const { requestResponseId, accountId } = this.props.match.params;
-            this.props.requestResponseUpdate(
-                this.props.user.id,
-                accountId === undefined
-                    ? this.props.accountsSelectedAccount
-                    : accountId,
-                requestResponseId
-            );
-        }
-    }
+    // componentDidMount() {
+    //     if (this.props.initialBunqConnect) {
+    //         const { requestResponseId, accountId } = this.props.match.params;
+    //         this.props.requestResponseUpdate(
+    //             this.props.user.id,
+    //             accountId === undefined
+    //                 ? this.props.accountsSelectedAccount
+    //                 : accountId,
+    //             requestResponseId
+    //         );
+    //     }
+    // }
 
-    componentWillUpdate(nextProps, nextState) {
-        if (
-            this.props.initialBunqConnect &&
-            this.props.match.params.requestResponseId !==
-                nextProps.match.params.requestResponseId
-        ) {
-            const { requestResponseId, accountId } = nextProps.match.params;
-            this.props.requestResponseUpdate(
-                nextProps.user.id,
-                accountId === undefined
-                    ? nextProps.accountsSelectedAccount
-                    : accountId,
-                requestResponseId
-            );
-        }
-    }
+    // componentWillUpdate(nextProps, nextState) {
+    //     if (
+    //         this.props.initialBunqConnect &&
+    //         this.props.match.params.requestResponseId !==
+    //             nextProps.match.params.requestResponseId
+    //     ) {
+    //         const { requestResponseId, accountId } = nextProps.match.params;
+    //         this.props.requestResponseUpdate(
+    //             nextProps.user.id,
+    //             accountId === undefined
+    //                 ? nextProps.accountsSelectedAccount
+    //                 : accountId,
+    //             requestResponseId
+    //         );
+    //     }
+    // }
 
     render() {
+        return "Not implemented";
         const {
             accountsSelectedAccount,
             requestResponseInfo,

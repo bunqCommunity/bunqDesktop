@@ -7,16 +7,16 @@ import List, { ListItem, ListSubheader, ListItemIcon } from "material-ui/List";
 
 import FilterListIcon from "material-ui-icons/FilterList";
 import CompareArrowsIcon from "material-ui-icons/CompareArrows";
-import ArrowForwardIcon from "material-ui-icons/ArrowForward";
-import ArrowBackIcon from "material-ui-icons/ArrowBack";
+import ArrowUpward from "material-ui-icons/ArrowUpward";
+import ArrowDownward from "material-ui-icons/ArrowDownward";
 import ClearIcon from "material-ui-icons/Clear";
 import { Divider } from "material-ui";
 import { connect } from "react-redux";
 import {
     clearPaymentFilterType,
-    rotatePaymentFilterType,
     setPaymentFilterType
 } from "../../Actions/payment_filter";
+import {clearBunqMeTabFilterType, setBunqMeTabFilterType} from "../../Actions/bunq_me_tab_filter";
 
 const styles = {
     list: {
@@ -57,7 +57,15 @@ class DisplayDrawer extends React.Component {
         this.setState({ open: false });
     };
 
-    handleTypeChange = event => {
+    clearAll = () => {
+        this.props.clearPaymentFilterType();
+    }
+
+    handlePaymentTypeChange = event => {
+        this.props.setPaymentFilterType(event.target.value);
+    };
+
+    handleRequestTypeChange = event => {
         this.props.setPaymentFilterType(event.target.value);
     };
 
@@ -67,13 +75,13 @@ class DisplayDrawer extends React.Component {
 
         const drawerList = (
             <List style={styles.list}>
-                <ListSubheader>Payment Type</ListSubheader>
+                <ListSubheader>Payments</ListSubheader>
                 <ListItem style={styles.listItem}>
                     <RadioGroup
                         name="payment-type"
                         style={styles.radioGroup}
                         value={paymentType}
-                        onChange={this.handleTypeChange}
+                        onChange={this.handlePaymentTypeChange}
                     >
                         <Radio
                             style={styles.radioBtn}
@@ -83,16 +91,47 @@ class DisplayDrawer extends React.Component {
                         />
                         <Radio
                             style={styles.radioBtn}
-                            icon={<ArrowBackIcon />}
+                            icon={<ArrowDownward />}
                             checkedIcon={
-                                <ArrowBackIcon color={receivedPayment} />
+                                <ArrowDownward color={receivedPayment} />
                             }
                             value={"received"}
                         />
                         <Radio
                             style={styles.radioBtn}
-                            icon={<ArrowForwardIcon />}
-                            checkedIcon={<ArrowForwardIcon color={sentPayment} />}
+                            icon={<ArrowUpward />}
+                            checkedIcon={<ArrowUpward color={sentPayment} />}
+                            value={"sent"}
+                        />
+                    </RadioGroup>
+                </ListItem>
+
+                <ListSubheader>Requests</ListSubheader>
+                <ListItem style={styles.listItem}>
+                    <RadioGroup
+                        name="request-type"
+                        style={styles.radioGroup}
+                        value={paymentType}
+                        onChange={this.handleRequestTypeChange}
+                    >
+                        <Radio
+                            style={styles.radioBtn}
+                            icon={<CompareArrowsIcon />}
+                            checkedIcon={<CompareArrowsIcon />}
+                            value={"default"}
+                        />
+                        <Radio
+                            style={styles.radioBtn}
+                            icon={<ArrowDownward />}
+                            checkedIcon={
+                                <ArrowDownward color={receivedPayment} />
+                            }
+                            value={"received"}
+                        />
+                        <Radio
+                            style={styles.radioBtn}
+                            icon={<ArrowUpward />}
+                            checkedIcon={<ArrowUpward color={sentPayment} />}
                             value={"sent"}
                         />
                     </RadioGroup>
@@ -136,8 +175,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         clearPaymentFilterType: () => dispatch(clearPaymentFilterType()),
-        rotatePaymentFilterType: () => dispatch(rotatePaymentFilterType()),
-        setPaymentFilterType: type => dispatch(setPaymentFilterType(type))
+        setPaymentFilterType: type => dispatch(setPaymentFilterType(type)),
+        clearBunqMeTabFilterType: () => dispatch(clearBunqMeTabFilterType()),
+        setBunqMeTabFilterType: type => dispatch(setBunqMeTabFilterType(type))
     };
 };
 

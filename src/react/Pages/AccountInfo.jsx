@@ -7,7 +7,7 @@ import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
 
-import CombinedList from "../Components/CombinedList/CombinedList";
+import CombinedList from "../Components/CombinedList";
 import AccountCard from "./ApplicationInfo/AccountCard";
 
 import { accountsUpdate } from "../Actions/accounts";

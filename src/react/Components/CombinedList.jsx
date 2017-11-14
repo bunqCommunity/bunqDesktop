@@ -4,11 +4,14 @@ import Divider from "material-ui/Divider";
 import { LinearProgress } from "material-ui/Progress";
 import List, { ListItemSecondaryAction, ListSubheader } from "material-ui/List";
 
-import PaymentListItem from "./PaymentListItem";
-import MasterCardActionListItem from "./MasterCardActionListItem";
-import RequestResponseListItem from "./RequestResponseListItem";
-import ClearBtn from "../../Components/FilterComponents/ClearFilter";
-import DisplayDrawerBtn from "../../Components/FilterComponents/FilterDrawer";
+import BunqMeTabListItem from "./ListItems/BunqMeTabListItem";
+import PaymentListItem from "./ListItems/PaymentListItem";
+import MasterCardActionListItem from "./ListItems/MasterCardActionListItem";
+import RequestResponseListItem from "./ListItems/RequestResponseListItem";
+import ClearBtn from "../Components/FilterComponents/ClearFilter";
+import DisplayDrawerBtn from "../Components/FilterComponents/FilterDrawer";
+import { openSnackbar } from "../Actions/snackbar";
+import { bunqMeTabPut } from "../Actions/bunq_me_tab";
 
 const styles = {
     list: {
@@ -21,6 +24,14 @@ class CombinedList extends React.Component {
         super(props, context);
         this.state = {};
     }
+
+    copiedValue = type => callback => {
+        this.props.openSnackbar(`Copied ${type} to your clipboard`);
+    };
+
+    bunqMeTabsFilter = bunqMeTab => {
+        return true;
+    };
 
     paymentFilter = payment => {
         const paymentInfo = payment.Payment;
@@ -37,35 +48,16 @@ class CombinedList extends React.Component {
     };
 
     masterCardActionFilter = masterCardAction => {
-        // const paymentInfo = payment.Payment;
-        // if (this.props.paymentType === "received") {
-        //     if (paymentInfo.amount.value <= 0) {
-        //         return false;
-        //     }
-        // } else if (this.props.paymentType === "sent") {
-        //     if (paymentInfo.amount.value >= 0) {
-        //         return false;
-        //     }
-        // }
         return true;
     };
 
     requestResponseFilter = requestResponse => {
-        // const paymentInfo = payment.Payment;
-        // if (this.props.paymentType === "received") {
-        //     if (paymentInfo.amount.value <= 0) {
-        //         return false;
-        //     }
-        // } else if (this.props.paymentType === "sent") {
-        //     if (paymentInfo.amount.value >= 0) {
-        //         return false;
-        //     }
-        // }
         return true;
     };
 
     render() {
         let loadingContent =
+            this.props.bunqMeTabsLoading ||
             this.props.paymentsLoading ||
             this.props.requestResponsesLoading ||
             this.props.masterCardActionsLoading ? (
@@ -73,6 +65,26 @@ class CombinedList extends React.Component {
             ) : (
                 <Divider />
             );
+
+        const bunqMeTabs = this.props.bunqMeTabs
+            .filter(this.bunqMeTabsFilter)
+            .map(bunqMeTab => {
+                return {
+                    component: (
+                        <BunqMeTabListItem
+                            bunqMeTab={bunqMeTab.BunqMeTab}
+                            BunqJSClient={this.props.BunqJSClient}
+                            copiedValue={this.copiedValue}
+                            bunqMeTabLoading={this.props.bunqMeTabLoading}
+                            bunqMeTabsLoading={this.props.bunqMeTabsLoading}
+                            bunqMeTabPut={this.props.bunqMeTabPut}
+                            user={this.props.user}
+                        />
+                    ),
+                    filterDate: bunqMeTab.BunqMeTab.updated,
+                    info: bunqMeTab.BunqMeTab
+                };
+            });
 
         const payments = this.props.payments
             .filter(this.paymentFilter)
@@ -121,6 +133,7 @@ class CombinedList extends React.Component {
 
         // combine the list and order by the prefered date for this item
         const combinedFilteredList = [
+            ...bunqMeTabs,
             ...requestResponses,
             ...payments,
             ...masterCardActions
@@ -136,7 +149,7 @@ class CombinedList extends React.Component {
         return (
             <List style={styles.left}>
                 <ListSubheader>
-                    Payments
+                    Payments and requests
                     <ListItemSecondaryAction>
                         <ClearBtn />
                         <DisplayDrawerBtn />
@@ -156,6 +169,10 @@ const mapStateToProps = state => {
 
         paymentType: state.payment_filter.type,
 
+        bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
+        bunqMeTabsLoading: state.bunq_me_tabs.loading,
+        bunqMeTabLoading: state.bunq_me_tab.loading,
+
         requestResponses: state.request_responses.request_responses,
         requestResponsesLoading: state.request_responses.loading,
 
@@ -167,4 +184,15 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(CombinedList);
+const mapDispatchToProps = (dispatch, ownProps) => {
+    const { BunqJSClient } = ownProps;
+    return {
+        openSnackbar: message => dispatch(openSnackbar(message)),
+        bunqMeTabPut: (userId, accountId, tabId, status) =>
+            dispatch(
+                bunqMeTabPut(BunqJSClient, userId, accountId, tabId, status)
+            )
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CombinedList);

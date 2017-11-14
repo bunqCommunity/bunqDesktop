@@ -5,7 +5,7 @@ import Paper from "material-ui/Paper";
 import Button from "material-ui/Button";
 import Grid from "material-ui/Grid";
 import Typography from "material-ui/Typography";
-import CombinedList from "../Components/CombinedList/CombinedList";
+import CombinedList from "../Components/CombinedList";
 import AccountList from "../Components/AccountList/AccountList";
 
 import { userLogin, userLogout } from "../Actions/user";

@@ -1,5 +1,5 @@
-export { default as CombinedList } from "./CombinedList";
-export * from "./CombinedList";
+export { default as BunqMeTabListItem } from "./BunqMeTabListItem";
+export * from "./BunqMeTabListItem";
 
 export { default as MasterCardActionListItem } from "./MasterCardActionListItem";
 export * from "./MasterCardActionListItem";
