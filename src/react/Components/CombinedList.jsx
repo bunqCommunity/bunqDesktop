@@ -8,6 +8,8 @@ import BunqMeTabListItem from "./ListItems/BunqMeTabListItem";
 import PaymentListItem from "./ListItems/PaymentListItem";
 import MasterCardActionListItem from "./ListItems/MasterCardActionListItem";
 import RequestResponseListItem from "./ListItems/RequestResponseListItem";
+import RequestInquiryListItem from "./ListItems/RequestInquiryListItem";
+
 import ClearBtn from "../Components/FilterComponents/ClearFilter";
 import DisplayDrawerBtn from "../Components/FilterComponents/FilterDrawer";
 import { openSnackbar } from "../Actions/snackbar";
@@ -29,10 +31,6 @@ class CombinedList extends React.Component {
         this.props.openSnackbar(`Copied ${type} to your clipboard`);
     };
 
-    bunqMeTabsFilter = bunqMeTab => {
-        return true;
-    };
-
     paymentFilter = payment => {
         const paymentInfo = payment.Payment;
         if (this.props.paymentType === "received") {
@@ -47,6 +45,10 @@ class CombinedList extends React.Component {
         return true;
     };
 
+    bunqMeTabsFilter = bunqMeTab => {
+        return true;
+    };
+
     masterCardActionFilter = masterCardAction => {
         return true;
     };
@@ -55,11 +57,16 @@ class CombinedList extends React.Component {
         return true;
     };
 
+    requestInquiryFilter = requestInquiry => {
+        return true;
+    };
+
     render() {
         let loadingContent =
             this.props.bunqMeTabsLoading ||
             this.props.paymentsLoading ||
             this.props.requestResponsesLoading ||
+            this.props.requestInquiriesLoading ||
             this.props.masterCardActionsLoading ? (
                 <LinearProgress />
             ) : (
@@ -131,10 +138,27 @@ class CombinedList extends React.Component {
                 };
             });
 
+        const requestInquiries = this.props.requestInquiries
+            .filter(this.requestInquiryFilter)
+            .map(requestInquiry => {
+                return {
+                    component2: (
+                        <RequestInquiryListItem
+                            requestInquiry={requestInquiry.RequestInquiry}
+                            BunqJSClient={this.props.BunqJSClient}
+                        />
+                    ),
+                    component: null,
+                    filterDate: requestInquiry.RequestInquiry.updated,
+                    info: requestInquiry.RequestInquiry
+                };
+            });
+
         // combine the list and order by the prefered date for this item
         const combinedFilteredList = [
             ...bunqMeTabs,
             ...requestResponses,
+            ...requestInquiries,
             ...payments,
             ...masterCardActions
         ].sort(function(a, b) {
@@ -172,6 +196,9 @@ const mapStateToProps = state => {
         bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
         bunqMeTabsLoading: state.bunq_me_tabs.loading,
         bunqMeTabLoading: state.bunq_me_tab.loading,
+
+        requestInquiries: state.request_inquiries.request_inquiries,
+        requestInquiriesLoading: state.request_inquiries.loading,
 
         requestResponses: state.request_responses.request_responses,
         requestResponsesLoading: state.request_responses.loading,

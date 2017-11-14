@@ -9,16 +9,20 @@ import Collapse from "material-ui/transitions/Collapse";
 import IconButton from "material-ui/IconButton";
 import Button from "material-ui/Button";
 import Divider from "material-ui/Divider";
+import Avatar from "material-ui/Avatar";
+
 import CopyIcon from "material-ui-icons/ContentCopy";
-import CheckCircle from "material-ui-icons/CheckCircle";
-import TimerOff from "material-ui-icons/TimerOff";
-import Cancel from "material-ui-icons/Cancel";
+import Share from "material-ui-icons/Share";
 
 import { humanReadableDate, formatMoney } from "../../Helpers/Utils";
 
 const styles = {
     actionListItem: {
         padding: 16
+    },
+    smallAvatar: {
+        width: 50,
+        height: 50
     }
 };
 
@@ -46,18 +50,19 @@ class BunqMeTabListItem extends React.Component {
     render() {
         const { bunqMeTab } = this.props;
 
-        let mainIcon = null;
+        let iconColor = null;
         let canBeCanceled = false;
         switch (bunqMeTab.status) {
-            case "WAITING_FOR_PAYMENT":
-                canBeCanceled = true;
-                mainIcon = <CheckCircle color={"#8dc55f"} />;
-                break;
             case "CANCELLED":
-                mainIcon = <Cancel color={"#3f56d6"} />;
+                iconColor = "#3f56d6";
                 break;
             case "EXPIRED":
-                mainIcon = <TimerOff color={"#f50057"} />;
+                iconColor = "#f50057";
+                break;
+            case "WAITING_FOR_PAYMENT":
+            default:
+                canBeCanceled = true;
+                iconColor = "#8dc55f";
                 break;
         }
         const shareUrl = bunqMeTab.bunqme_tab_share_url;
@@ -76,7 +81,9 @@ class BunqMeTabListItem extends React.Component {
 
         return [
             <ListItem button onClick={this.toggleExtraInfo}>
-                {mainIcon}
+                <Avatar style={styles.smallAvatar}>
+                    <Share color={iconColor} />
+                </Avatar>
                 <ListItemText
                     primary={primaryText}
                     secondary={bunqMeTab.bunqme_tab_entry.description}
