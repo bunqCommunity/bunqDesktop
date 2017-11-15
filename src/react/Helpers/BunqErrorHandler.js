@@ -4,7 +4,7 @@ import Logger  from "./Logger";
 const defaultErrorMessage = dispatch => {
     dispatch(
         openModal(
-            "Something went wrong while trying to send your request inquiry",
+            "Something went wrong while trying to send a request to Bunq",
             "Something went wrong"
         )
     );
