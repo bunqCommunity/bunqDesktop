@@ -187,7 +187,7 @@ class Login extends React.Component {
                         Enter your API Key
                     </Typography>
                     <Typography type="caption">
-                        In the Bunq app go to your Profile > Security > API Keys
+                        In the bunq app go to your Profile > Security > API Keys
                         and generate a new key
                     </Typography>
                     <Input

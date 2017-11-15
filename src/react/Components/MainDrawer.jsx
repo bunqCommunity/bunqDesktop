@@ -122,7 +122,7 @@ class MainDrawer extends React.Component {
                       <ListItemIcon>
                           <ShareIcon />
                       </ListItemIcon>
-                      <Typography type="subheading">Bunq.me Requests</Typography>
+                      <Typography type="subheading">bunq.me Requests</Typography>
                   </ListItem>
               ];
 
@@ -133,7 +133,7 @@ class MainDrawer extends React.Component {
                         <ListItemIcon>
                             <Avatar
                                 style={styles.avatar}
-                                src="./images/512x512.png"
+                                src="./images/bunq-logo-textless-2.png"
                             />
                         </ListItemIcon>
                         <ListItemText

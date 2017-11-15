@@ -206,10 +206,10 @@ class DisplayDrawer extends React.Component {
 
                 {/* filters bunq.me tabs */}
                 <ListSubheader>
-                    Bunq.me requests
+                    bunq.me requests
                     <ListItemSecondaryAction>
                         <IconButton
-                            aria-label="Display or hide all Bunq.me requests"
+                            aria-label="Display or hide all bunq.me requests"
                             onClick={this.toggleBunqMeTabVisibilityChange}
                         >
                             {bunqMeTabVisibility ? <Visible /> : <VisibleOff />}
