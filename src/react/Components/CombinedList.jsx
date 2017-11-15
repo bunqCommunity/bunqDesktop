@@ -192,6 +192,11 @@ const mapStateToProps = state => {
         accountsAccountId: state.accounts.selectedAccount,
 
         paymentType: state.payment_filter.type,
+        paymentVisibility: state.payment_filter.visible,
+        bunqMeTabType: state.bunq_me_tab_filter.type,
+        bunqMeTabVisibility: state.bunq_me_tab_filter.visible,
+        requestType: state.request_filter.type,
+        requestVisibility: state.request_filter.visible,
 
         bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
         bunqMeTabsLoading: state.bunq_me_tabs.loading,
