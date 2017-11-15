@@ -178,8 +178,9 @@ class Pay extends React.Component {
                 break;
             default:
             case "IBAN":
+                const filteredTarget = target.replace(/ /g, "");
                 targetErrorCondition =
-                    !iban.isValid(target) || !this.state.ibanNameError;
+                    !iban.isValid(filteredTarget) || !this.state.ibanNameError;
                 break;
         }
 
@@ -259,9 +260,10 @@ class Pay extends React.Component {
                 break;
             default:
             case "IBAN":
+                const filteredTarget = target.replace(/ /g, "");
                 targetInfo = {
                     type: "IBAN",
-                    value: target.trim(),
+                    value: filteredTarget,
                     name: ibanName
                 };
                 break;
@@ -297,6 +299,7 @@ class Pay extends React.Component {
         if (this.state.confirmModalOpen) {
             const account = this.props.accounts[selectedAccount]
                 .MonetaryAccountBank;
+            const filteredTarget = target.replace(/ /g, "");
 
             confirmationModal = (
                 <Dialog
@@ -338,7 +341,7 @@ class Pay extends React.Component {
                                             case "EMAIL":
                                                 return `Email: ${target}`;
                                             case "IBAN":
-                                                return `IBAN: ${target} - Name: ${ibanName}`;
+                                                return `IBAN: ${filteredTarget} - Name: ${ibanName}`;
                                             case "TRANSFER":
                                                 const account = this.props
                                                     .accounts[
