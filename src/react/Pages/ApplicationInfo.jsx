@@ -97,7 +97,7 @@ class ApplicationInfo extends React.Component {
                                 >
                                     <Avatar
                                         style={styles.avatar}
-                                        src="./images/512x512.png"
+                                        src="./images/bunq-logo-textless-2.png"
                                     />
                                 </a>
                             </Grid>
