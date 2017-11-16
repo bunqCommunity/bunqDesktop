@@ -15,3 +15,12 @@ export function setNativeFrame(useFrame) {
         }
     };
 }
+
+export function setHideBalance(hideBalance) {
+    return {
+        type: "OPTIONS_SET_HIDE_BALANCE",
+        payload: {
+            hide_balance: hideBalance
+        }
+    };
+}
