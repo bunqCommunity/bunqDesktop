@@ -43,10 +43,33 @@ class RequestResponseListItem extends React.Component {
         const displayName = requestResponse.counterparty_alias.display_name;
         const paymentAmount = requestResponse.amount_inquired.value;
         const formattedPaymentAmount = formatMoney(paymentAmount);
-        const paymentColor =
-            paymentAmount < 0
-                ? theme.palette.common.sentPayment
-                : theme.palette.common.receivedPayment;
+
+        let paymentLabel;
+        const requestResponseMoneyStyle = {
+            marginRight: 20
+        };
+        switch (requestResponse.status) {
+            case "ACCEPTED":
+                paymentLabel = "Request paid";
+                requestResponseMoneyStyle.color =
+                    theme.palette.requestResponse.accepted;
+                break;
+            case "PENDING":
+                paymentLabel = "Request received";
+                requestResponseMoneyStyle.color =
+                    theme.palette.requestResponse.pending;
+                requestResponseMoneyStyle.opacity = 0.7;
+                break;
+            case "REJECTED":
+                paymentLabel = "Request denied";
+                requestResponseMoneyStyle.textDecoration = "line-through";
+                break;
+            case "REVOKED":
+                paymentLabel = "Request cancelled";
+                requestResponseMoneyStyle.color =
+                    theme.palette.requestResponse.revoked;
+                break;
+        }
 
         return [
             <ListItem
@@ -61,17 +84,9 @@ class RequestResponseListItem extends React.Component {
                         imageUUID={imageUUID}
                     />
                 </Avatar>
-                <ListItemText
-                    primary={displayName}
-                    secondary={"Request received"}
-                />
+                <ListItemText primary={displayName} secondary={paymentLabel} />
                 <ListItemSecondaryAction>
-                    <p
-                        style={{
-                            marginRight: 20,
-                            color: paymentColor
-                        }}
-                    >
+                    <p style={requestResponseMoneyStyle}>
                         {formattedPaymentAmount}
                     </p>
                 </ListItemSecondaryAction>

@@ -15,6 +15,17 @@ export default {
             receivedPayment: "#008000",
             sentPayment: "#ff0000",
         },
+        requestResponse:{
+            pending: "#ff7d12",
+            accepted: "#ff0000",
+            rejected: "#ff0000",
+            revoked: "#ff0000",
+        },
+        requestInquiry:{
+            pending: "#2196f3",
+            accepted: "#008000",
+            rejected: "#ff0000"
+        },
         bunqMeTabs:{
             awaiting_payment: "#62ca04",
             cancelled: "#3f56d6",

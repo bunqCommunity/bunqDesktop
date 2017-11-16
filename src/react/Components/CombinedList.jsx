@@ -45,7 +45,6 @@ class CombinedList extends React.Component {
             };
         });
     };
-
     paymentFilter = payment => {
         if (this.props.paymentVisibility === false) {
             return false;
@@ -79,7 +78,6 @@ class CombinedList extends React.Component {
                 };
             });
     };
-
     masterCardActionFilter = masterCardAction => {
         if (this.props.paymentVisibility === false) {
             return false;
@@ -118,9 +116,9 @@ class CombinedList extends React.Component {
         switch (this.props.bunqMeTabType) {
             case "active":
                 if (bunqMeTab.BunqMeTab.status !== "WAITING_FOR_PAYMENT") {
-                    console.log(bunqMeTab.BunqMeTab.status);
                     return false;
                 }
+                return true;
             case "cancelled":
                 if (bunqMeTab.BunqMeTab.status !== "CANCELLED") {
                     return false;
@@ -131,10 +129,8 @@ class CombinedList extends React.Component {
                 }
             case "default":
             default:
-                console.log(bunqMeTab.BunqMeTab.status);
                 return true;
         }
-        console.log(bunqMeTab.BunqMeTab.status);
         return true;
     };
 
@@ -154,13 +150,12 @@ class CombinedList extends React.Component {
                 };
             });
     };
-
     requestResponseFilter = requestResponse => {
         if (this.props.requestVisibility === false) {
             return false;
         }
         if (
-            this.props.requestType !== "received" &&
+            this.props.requestType !== "sent" &&
             this.props.requestType !== "default"
         ) {
             return false;
@@ -168,30 +163,28 @@ class CombinedList extends React.Component {
         return true;
     };
 
-    requestInquiryFilter = () => {
+    requestInquiryMapper = () => {
         return this.props.requestInquiries
             .filter(this.requestInquiryFilter)
             .map(requestInquiry => {
                 return {
-                    component2: (
+                    component: (
                         <RequestInquiryListItem
                             requestInquiry={requestInquiry.RequestInquiry}
                             BunqJSClient={this.props.BunqJSClient}
                         />
                     ),
-                    component: null,
                     filterDate: requestInquiry.RequestInquiry.updated,
                     info: requestInquiry.RequestInquiry
                 };
             });
     };
-
-    requestInquiryMapper = requestInquiry => {
+    requestInquiryFilter = requestInquiry => {
         if (this.props.requestVisibility === false) {
             return false;
         }
         if (
-            this.props.requestType !== "sent" &&
+            this.props.requestType !== "received" &&
             this.props.requestType !== "default"
         ) {
             return false;

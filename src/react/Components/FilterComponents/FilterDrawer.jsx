@@ -190,15 +190,15 @@ class DisplayDrawer extends React.Component {
                         <Radio
                             style={styles.radioBtn}
                             icon={<ArrowDownward />}
-                            checkedIcon={
-                                <ArrowDownward color={receivedPayment} />
-                            }
+                            checkedIcon={<ArrowDownward color={sentPayment} />}
                             value={"received"}
                         />
                         <Radio
                             style={styles.radioBtn}
                             icon={<ArrowUpward />}
-                            checkedIcon={<ArrowUpward color={sentPayment} />}
+                            checkedIcon={
+                                <ArrowUpward color={receivedPayment} />
+                            }
                             value={"sent"}
                         />
                     </RadioGroup>
@@ -265,20 +265,20 @@ class DisplayDrawer extends React.Component {
                     </RadioGroup>
                 </ListItem>
 
-                <ListItem style={styles.listItem}>
-                    <TextField
-                        id="from-datetime"
-                        label="From"
-                        type="datetime-local"
-                    />
-                </ListItem>
-                <ListItem style={styles.listItem}>
-                    <TextField
-                        id="to-datetime"
-                        label="To"
-                        type="datetime-local"
-                    />
-                </ListItem>
+                {/*<ListItem style={styles.listItem}>*/}
+                    {/*<TextField*/}
+                        {/*id="from-datetime"*/}
+                        {/*label="From"*/}
+                        {/*type="datetime-local"*/}
+                    {/*/>*/}
+                {/*</ListItem>*/}
+                {/*<ListItem style={styles.listItem}>*/}
+                    {/*<TextField*/}
+                        {/*id="to-datetime"*/}
+                        {/*label="To"*/}
+                        {/*type="datetime-local"*/}
+                    {/*/>*/}
+                {/*</ListItem>*/}
 
                 <Divider />
                 <ListItem button onClick={this.clearAll}>

@@ -43,10 +43,30 @@ class RequestInquiryListItem extends React.Component {
         const displayName = requestInquiry.counterparty_alias.display_name;
         const paymentAmount = requestInquiry.amount_inquired.value;
         const formattedPaymentAmount = formatMoney(paymentAmount);
-        const paymentColor =
-            paymentAmount < 0
-                ? theme.palette.common.sentPayment
-                : theme.palette.common.receivedPayment;
+
+        let paymentLabel;
+        const requestInquiryMoneyStyle = {
+            marginRight: 20
+        };
+        switch (requestInquiry.status) {
+            case "ACCEPTED":
+                paymentLabel = "Your request was accepted";
+                requestInquiryMoneyStyle.color = theme.palette.requestInquiry.accepted;
+                break;
+            case "PENDING":
+                paymentLabel = "Request sent and pending";
+                requestInquiryMoneyStyle.color = theme.palette.requestInquiry.pending;
+                break;
+            case "REJECTED":
+                paymentLabel = "Request denied";
+                requestInquiryMoneyStyle.color = theme.palette.requestInquiry.rejected;
+                requestInquiryMoneyStyle.textDecoration = "line-through"
+                break;
+            case "REVOKED":
+                paymentLabel = "Request cancelled";
+                requestInquiryMoneyStyle.textDecoration = "line-through"
+                break;
+        }
 
         return [
             <ListItem
@@ -61,17 +81,9 @@ class RequestInquiryListItem extends React.Component {
                         imageUUID={imageUUID}
                     />
                 </Avatar>
-                <ListItemText
-                    primary={displayName}
-                    secondary={"Request pending"}
-                />
+                <ListItemText primary={displayName} secondary={paymentLabel} />
                 <ListItemSecondaryAction>
-                    <p
-                        style={{
-                            marginRight: 20,
-                            color: paymentColor
-                        }}
-                    >
+                    <p style={requestInquiryMoneyStyle}>
                         {formattedPaymentAmount}
                     </p>
                 </ListItemSecondaryAction>
