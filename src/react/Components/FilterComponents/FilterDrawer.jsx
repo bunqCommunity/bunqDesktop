@@ -265,7 +265,6 @@ class DisplayDrawer extends React.Component {
                     </RadioGroup>
                 </ListItem>
 
-                <ListSubheader>Generic</ListSubheader>
                 <ListItem style={styles.listItem}>
                     <TextField
                         id="from-datetime"

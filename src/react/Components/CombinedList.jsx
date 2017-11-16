@@ -31,7 +31,25 @@ class CombinedList extends React.Component {
         this.props.openSnackbar(`Copied ${type} to your clipboard`);
     };
 
+    paymentMapper = () => {
+        return this.props.payments.filter(this.paymentFilter).map(payment => {
+            return {
+                component: (
+                    <PaymentListItem
+                        payment={payment.Payment}
+                        BunqJSClient={this.props.BunqJSClient}
+                    />
+                ),
+                filterDate: payment.Payment.updated,
+                info: payment.Payment
+            };
+        });
+    };
+
     paymentFilter = payment => {
+        if (this.props.paymentVisibility === false) {
+            return false;
+        }
         const paymentInfo = payment.Payment;
         if (this.props.paymentType === "received") {
             if (paymentInfo.amount.value <= 0) {
@@ -45,35 +63,35 @@ class CombinedList extends React.Component {
         return true;
     };
 
-    bunqMeTabsFilter = bunqMeTab => {
-        return true;
+    masterCardActionMapper = () => {
+        return this.props.masterCardActions
+            .filter(this.masterCardActionFilter)
+            .map(masterCardAction => {
+                return {
+                    component: (
+                        <MasterCardActionListItem
+                            masterCardAction={masterCardAction}
+                            BunqJSClient={this.props.BunqJSClient}
+                        />
+                    ),
+                    filterDate: masterCardAction.updated,
+                    info: masterCardAction
+                };
+            });
     };
 
     masterCardActionFilter = masterCardAction => {
+        if (this.props.paymentVisibility === false) {
+            return false;
+        }
+        if (this.props.paymentType === "received") {
+            return false;
+        }
         return true;
     };
 
-    requestResponseFilter = requestResponse => {
-        return true;
-    };
-
-    requestInquiryFilter = requestInquiry => {
-        return true;
-    };
-
-    render() {
-        let loadingContent =
-            this.props.bunqMeTabsLoading ||
-            this.props.paymentsLoading ||
-            this.props.requestResponsesLoading ||
-            this.props.requestInquiriesLoading ||
-            this.props.masterCardActionsLoading ? (
-                <LinearProgress />
-            ) : (
-                <Divider />
-            );
-
-        const bunqMeTabs = this.props.bunqMeTabs
+    bunqMeTabsMapper = () => {
+        return this.props.bunqMeTabs
             .filter(this.bunqMeTabsFilter)
             .map(bunqMeTab => {
                 return {
@@ -92,38 +110,36 @@ class CombinedList extends React.Component {
                     info: bunqMeTab.BunqMeTab
                 };
             });
+    };
+    bunqMeTabsFilter = bunqMeTab => {
+        if (this.props.bunqMeTabVisibility === false) {
+            return false;
+        }
+        switch (this.props.bunqMeTabType) {
+            case "active":
+                if (bunqMeTab.BunqMeTab.status !== "WAITING_FOR_PAYMENT") {
+                    console.log(bunqMeTab.BunqMeTab.status);
+                    return false;
+                }
+            case "cancelled":
+                if (bunqMeTab.BunqMeTab.status !== "CANCELLED") {
+                    return false;
+                }
+            case "expired":
+                if (bunqMeTab.BunqMeTab.status !== "EXPIRED") {
+                    return false;
+                }
+            case "default":
+            default:
+                console.log(bunqMeTab.BunqMeTab.status);
+                return true;
+        }
+        console.log(bunqMeTab.BunqMeTab.status);
+        return true;
+    };
 
-        const payments = this.props.payments
-            .filter(this.paymentFilter)
-            .map(payment => {
-                return {
-                    component: (
-                        <PaymentListItem
-                            payment={payment.Payment}
-                            BunqJSClient={this.props.BunqJSClient}
-                        />
-                    ),
-                    filterDate: payment.Payment.updated,
-                    info: payment.Payment
-                };
-            });
-
-        const masterCardActions = this.props.masterCardActions
-            .filter(this.requestResponseFilter)
-            .map(masterCardAction => {
-                return {
-                    component: (
-                        <MasterCardActionListItem
-                            masterCardAction={masterCardAction}
-                            BunqJSClient={this.props.BunqJSClient}
-                        />
-                    ),
-                    filterDate: masterCardAction.updated,
-                    info: masterCardAction
-                };
-            });
-
-        const requestResponses = this.props.requestResponses
+    requestResponseMapper = () => {
+        return this.props.requestResponses
             .filter(this.requestResponseFilter)
             .map(requestResponse => {
                 return {
@@ -137,8 +153,23 @@ class CombinedList extends React.Component {
                     info: requestResponse.RequestResponse
                 };
             });
+    };
 
-        const requestInquiries = this.props.requestInquiries
+    requestResponseFilter = requestResponse => {
+        if (this.props.requestVisibility === false) {
+            return false;
+        }
+        if (
+            this.props.requestType !== "received" &&
+            this.props.requestType !== "default"
+        ) {
+            return false;
+        }
+        return true;
+    };
+
+    requestInquiryFilter = () => {
+        return this.props.requestInquiries
             .filter(this.requestInquiryFilter)
             .map(requestInquiry => {
                 return {
@@ -153,6 +184,39 @@ class CombinedList extends React.Component {
                     info: requestInquiry.RequestInquiry
                 };
             });
+    };
+
+    requestInquiryMapper = requestInquiry => {
+        if (this.props.requestVisibility === false) {
+            return false;
+        }
+        if (
+            this.props.requestType !== "sent" &&
+            this.props.requestType !== "default"
+        ) {
+            return false;
+        }
+        return true;
+    };
+
+    render() {
+        let loadingContent =
+            this.props.bunqMeTabsLoading ||
+            this.props.paymentsLoading ||
+            this.props.requestResponsesLoading ||
+            this.props.requestInquiriesLoading ||
+            this.props.masterCardActionsLoading ? (
+                <LinearProgress />
+            ) : (
+                <Divider />
+            );
+
+        // create arrays of the different endpoint types
+        const bunqMeTabs = this.bunqMeTabsMapper();
+        const payments = this.paymentMapper();
+        const masterCardActions = this.masterCardActionMapper();
+        const requestResponses = this.requestResponseMapper();
+        const requestInquiries = this.requestInquiryMapper();
 
         // combine the list and order by the prefered date for this item
         const combinedFilteredList = [

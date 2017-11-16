@@ -162,6 +162,10 @@ class AccountList extends React.Component {
     }
 }
 
+AccountList.defaultProps = {
+    updateExternal: false
+}
+
 const mapStateToProps = state => {
     return {
         user: state.user.user,
