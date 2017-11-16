@@ -13,7 +13,8 @@ import InfoIcon from "material-ui-icons/InfoOutline";
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 import NavLink from "../../Components/Routing/NavLink";
 import { formatMoney } from "../../Helpers/Utils";
-import Logger from "../../Helpers/Logger";
+
+import store from "store";
 
 import { paymentsUpdate } from "../../Actions/payments.js";
 import { accountsSelectAccount } from "../../Actions/accounts.js";
@@ -48,9 +49,14 @@ class AccountListItem extends React.Component {
         if (account.status !== "ACTIVE") {
             return null;
         }
-        const formattedBalance = formatMoney(
+
+        let formattedBalance = formatMoney(
             account.balance ? account.balance.value : 0
         );
+
+        if (this.props.hideBalance) {
+            formattedBalance = "HIDDEN";
+        }
 
         return (
             <ListItem
@@ -92,7 +98,8 @@ const mapStateToProps = state => {
     return {
         user: state.user.user,
         paymentsLoading: state.payments.loading,
-        accountsAccountId: state.accounts.selectedAccount
+        accountsAccountId: state.accounts.selectedAccount,
+        hideBalance: state.options.hide_balance
     };
 };
 

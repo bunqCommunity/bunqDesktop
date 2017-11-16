@@ -12,7 +12,7 @@ import Switch from "material-ui/Switch";
 import Typography from "material-ui/Typography";
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
 
-import { setTheme, setNativeFrame } from "../Actions/options";
+import { setTheme, setNativeFrame, setHideBalance } from "../Actions/options";
 import { closeOptionsDrawer } from "../Actions/options_drawer";
 import { openMainDrawer } from "../Actions/main_drawer";
 import { openSnackbar } from "../Actions/snackbar";
@@ -68,11 +68,15 @@ class OptionsDrawer extends React.Component {
         this.props.setTheme(event.target.value);
     };
 
-    handleCheckChange = event => {
+    handleNativeFrameCheckChange = event => {
         this.props.openSnackbar(
             "Restart the application to view these changes!"
         );
         this.props.setNativeFrame(!this.props.nativeFrame);
+    };
+
+    handleHideBalanceCheckChange = event => {
+        this.props.setHideBalance(!this.props.hideBalance);
     };
 
     render() {
@@ -103,10 +107,23 @@ class OptionsDrawer extends React.Component {
                             <Switch
                                 id="nativeframe-selection"
                                 checked={this.props.nativeFrame}
-                                onChange={this.handleCheckChange}
+                                onChange={this.handleNativeFrameCheckChange}
                             />
                         }
                         label="Use the native frame"
+                    />
+                </ListItem>
+
+                <ListItem>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                id="hide-balance-selection"
+                                checked={this.props.hideBalance}
+                                onChange={this.handleHideBalanceCheckChange}
+                            />
+                        }
+                        label="Hide monetary account balances"
                     />
                 </ListItem>
 
@@ -145,7 +162,8 @@ const mapStateToProps = state => {
     return {
         open: state.options_drawer.open,
         theme: state.options.theme,
-        nativeFrame: state.options.native_frame
+        nativeFrame: state.options.native_frame,
+        hideBalance: state.options.hide_balance
     };
 };
 
@@ -154,6 +172,7 @@ const mapDispatchToProps = dispatch => {
         openSnackbar: message => dispatch(openSnackbar(message)),
         setTheme: theme => dispatch(setTheme(theme)),
         setNativeFrame: useFrame => dispatch(setNativeFrame(useFrame)),
+        setHideBalance: hideBalance => dispatch(setHideBalance(hideBalance)),
         openMainDrawer: () => dispatch(openMainDrawer()),
         closeOptionsDrawer: () => dispatch(closeOptionsDrawer())
     };
