@@ -70,12 +70,12 @@ class CombinedList extends React.Component {
                 return {
                     component: (
                         <MasterCardActionListItem
-                            masterCardAction={masterCardAction}
+                            masterCardAction={masterCardAction.MasterCardAction}
                             BunqJSClient={this.props.BunqJSClient}
                         />
                     ),
-                    filterDate: masterCardAction.updated,
-                    info: masterCardAction
+                    filterDate: masterCardAction.MasterCardAction.updated,
+                    info: masterCardAction.MasterCardAction
                 };
             });
     };
