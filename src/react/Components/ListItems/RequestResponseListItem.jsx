@@ -62,6 +62,8 @@ class RequestResponseListItem extends React.Component {
                 break;
             case "REJECTED":
                 paymentLabel = "Request denied";
+                requestResponseMoneyStyle.color =
+                    theme.palette.requestResponse.rejected;
                 requestResponseMoneyStyle.textDecoration = "line-through";
                 break;
             case "REVOKED":

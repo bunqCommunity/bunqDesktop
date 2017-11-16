@@ -7,7 +7,7 @@ export default {
         requestResponse:{
             pending: "#dc975e",
             accepted: "#FF3333",
-            rejected: "#FF3333",
+            rejected: "#a4a6a4",
             revoked: "#FF3333",
         },
         requestInquiry:{
