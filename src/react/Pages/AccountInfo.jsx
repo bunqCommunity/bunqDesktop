@@ -72,6 +72,7 @@ class AccountInfo extends React.Component {
                 <AccountCard
                     BunqJSClient={this.props.BunqJSClient}
                     openSnackbar={this.props.openSnackbar}
+                    hideBalance={this.props.hideBalance}
                     account={accountInfo}
                 />,
                 <Paper>
@@ -120,6 +121,8 @@ class AccountInfo extends React.Component {
 
 const mapStateToProps = state => {
     return {
+        hideBalance: state.options.hide_balance,
+
         user: state.user.user,
         accounts: state.accounts.accounts
     };
