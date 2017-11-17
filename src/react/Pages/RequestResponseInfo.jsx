@@ -8,18 +8,15 @@ import Button from "material-ui/Button";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Divider from "material-ui/Divider";
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
-import ArrowForwardIcon from "material-ui-icons/ArrowForward";
-import ArrowUpIcon from "material-ui-icons/ArrowUpward";
-import ArrowDownIcon from "material-ui-icons/ArrowDownward";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import { requestResponseText } from "../Helpers/StatusTexts";
-import LazyAttachmentImage from "../Components/AttachmentImage/LazyAttachmentImage";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 
 import { requestResponseUpdate } from "../Actions/request_response_info";
+import TransactionHeader from "../Components/TransactionHeader";
 
 const styles = {
     btn: {},
@@ -109,60 +106,11 @@ class RequestResponseInfo extends React.Component {
                     align={"center"}
                     justify={"center"}
                 >
-                    <Grid item xs={12} md={5} style={styles.textCenter}>
-                        <LazyAttachmentImage
-                            width={90}
-                            BunqJSClient={this.props.BunqJSClient}
-                            imageUUID={
-                                requestResponse.alias.avatar.image[0]
-                                    .attachment_public_uuid
-                            }
-                        />
-                        <Typography type="subheading">
-                            {requestResponse.alias.display_name}
-                        </Typography>
-                    </Grid>
-
-                    <Grid
-                        item
-                        md={2}
-                        hidden={{ smDown: true }}
-                        style={styles.textCenter}
-                    >
-                        {paymentAmount < 0 ? (
-                            <ArrowForwardIcon />
-                        ) : (
-                            <ArrowBackIcon />
-                        )}
-                    </Grid>
-
-                    <Grid
-                        item
-                        xs={12}
-                        hidden={{ mdUp: true }}
-                        style={styles.textCenter}
-                    >
-                        {paymentAmount < 0 ? (
-                            <ArrowDownIcon />
-                        ) : (
-                            <ArrowUpIcon />
-                        )}
-                    </Grid>
-
-                    <Grid item xs={12} md={5} style={styles.textCenter}>
-                        <LazyAttachmentImage
-                            width={90}
-                            BunqJSClient={this.props.BunqJSClient}
-                            imageUUID={
-                                requestResponse.counterparty_alias.avatar
-                                    .image[0].attachment_public_uuid
-                            }
-                        />
-
-                        <Typography type="subheading">
-                            {requestResponse.counterparty_alias.display_name}
-                        </Typography>
-                    </Grid>
+                    <TransactionHeader
+                        BunqJSClient={this.props.BunqJSClient}
+                        to={requestResponse.alias}
+                        from={requestResponse.counterparty_alias}
+                    />
 
                     <Grid item xs={12}>
                         <MoneyAmountLabel

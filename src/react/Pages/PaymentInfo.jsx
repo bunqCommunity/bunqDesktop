@@ -8,16 +8,13 @@ import Button from "material-ui/Button";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Divider from "material-ui/Divider";
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
-import ArrowForwardIcon from "material-ui-icons/ArrowForward";
-import ArrowUpIcon from "material-ui-icons/ArrowUpward";
-import ArrowDownIcon from "material-ui-icons/ArrowDownward";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import { paymentText } from "../Helpers/StatusTexts";
-import LazyAttachmentImage from "../Components/AttachmentImage/LazyAttachmentImage";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
+import TransactionHeader from "../Components/TransactionHeader";
 
 import { paymentsUpdate } from "../Actions/payment_info";
 
@@ -112,7 +109,6 @@ class PaymentInfo extends React.Component {
             const formattedPaymentAmount = formatMoney(paymentAmount);
             const paymentLabel = paymentText(payment);
 
-            const personalInfo = this.getBasicInfo(payment.alias);
             const counterPartyInfo = this.getBasicInfo(
                 payment.counterparty_alias
             );
@@ -124,54 +120,12 @@ class PaymentInfo extends React.Component {
                     align={"center"}
                     justify={"center"}
                 >
-                    <Grid item xs={12} md={5} style={styles.textCenter}>
-                        <LazyAttachmentImage
-                            width={90}
-                            BunqJSClient={this.props.BunqJSClient}
-                            imageUUID={personalInfo.imageUUID}
-                        />
-                        <Typography type="subheading">
-                            {personalInfo.displayName}
-                        </Typography>
-                    </Grid>
-
-                    <Grid
-                        item
-                        md={2}
-                        hidden={{ smDown: true }}
-                        style={styles.textCenter}
-                    >
-                        {paymentAmount < 0 ? (
-                            <ArrowForwardIcon />
-                        ) : (
-                            <ArrowBackIcon />
-                        )}
-                    </Grid>
-
-                    <Grid
-                        item
-                        xs={12}
-                        hidden={{ mdUp: true }}
-                        style={styles.textCenter}
-                    >
-                        {paymentAmount < 0 ? (
-                            <ArrowDownIcon />
-                        ) : (
-                            <ArrowUpIcon />
-                        )}
-                    </Grid>
-
-                    <Grid item xs={12} md={5} style={styles.textCenter}>
-                        <LazyAttachmentImage
-                            width={90}
-                            BunqJSClient={this.props.BunqJSClient}
-                            imageUUID={counterPartyInfo.imageUUID}
-                        />
-
-                        <Typography type="subheading">
-                            {counterPartyInfo.displayName}
-                        </Typography>
-                    </Grid>
+                    <TransactionHeader
+                        BunqJSClient={this.props.BunqJSClient}
+                        to={payment.counterparty_alias}
+                        from={payment.alias}
+                        swap={paymentAmount > 0}
+                    />
 
                     <Grid item xs={12}>
                         <MoneyAmountLabel
@@ -182,6 +136,7 @@ class PaymentInfo extends React.Component {
                         >
                             {formattedPaymentAmount}
                         </MoneyAmountLabel>
+
                         <Typography
                             style={{ textAlign: "center" }}
                             type={"body1"}

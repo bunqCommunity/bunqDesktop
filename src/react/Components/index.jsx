@@ -22,5 +22,8 @@ export * from "./MainDrawer";
 export { default as MainSnackbar } from "./MainSnackbar";
 export * from "./MainSnackbar";
 
+export { default as MoneyAmountLabel } from "./MoneyAmountLabel";
+export * from "./MoneyAmountLabel";
+
 export { default as OptionsDrawer } from "./OptionsDrawer";
 export * from "./OptionsDrawer";
