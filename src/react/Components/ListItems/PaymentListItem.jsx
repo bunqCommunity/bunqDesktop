@@ -7,9 +7,8 @@ import {
 } from "material-ui/List";
 import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
-import ArrowUpwardIcon from "material-ui-icons/ArrowUpward";
 
-import { formatMoney, humanReadableDate } from "../../Helpers/Utils";
+import { formatMoney } from "../../Helpers/Utils";
 import NavLink from "../Routing/NavLink";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 
@@ -42,7 +41,6 @@ class PaymentListItem extends React.Component {
                     .attachment_public_uuid;
         }
         const displayName = payment.counterparty_alias.display_name;
-        // const paymentDate = humanReadableDate(payment.created);
         const paymentAmount = payment.amount.value;
         const formattedPaymentAmount = formatMoney(paymentAmount);
         const paymentColor =

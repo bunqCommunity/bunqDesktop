@@ -11,11 +11,15 @@ import Divider from "material-ui/Divider";
 import { formatMoney } from "../../Helpers/Utils";
 import NavLink from "../../Components/Routing/NavLink";
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
+import MoneyAmountLabel from "../MoneyAmountLabel";
 
 const styles = {
     smallAvatar: {
         width: 50,
         height: 50
+    },
+    moneyAmountLabel: {
+        marginRight: 20
     }
 };
 
@@ -45,26 +49,18 @@ class RequestInquiryListItem extends React.Component {
         const formattedPaymentAmount = formatMoney(paymentAmount);
 
         let paymentLabel;
-        const requestInquiryMoneyStyle = {
-            marginRight: 20
-        };
         switch (requestInquiry.status) {
             case "ACCEPTED":
                 paymentLabel = "Your request was accepted";
-                requestInquiryMoneyStyle.color = theme.palette.requestInquiry.accepted;
                 break;
             case "PENDING":
                 paymentLabel = "Request sent and pending";
-                requestInquiryMoneyStyle.color = theme.palette.requestInquiry.pending;
                 break;
             case "REJECTED":
-                paymentLabel = "Request denied";
-                requestInquiryMoneyStyle.color = theme.palette.requestInquiry.rejected;
-                requestInquiryMoneyStyle.textDecoration = "line-through"
+                paymentLabel = "Your request was denied";
                 break;
             case "REVOKED":
-                paymentLabel = "Request cancelled";
-                requestInquiryMoneyStyle.textDecoration = "line-through"
+                paymentLabel = "You cancelled the request";
                 break;
         }
 
@@ -83,9 +79,13 @@ class RequestInquiryListItem extends React.Component {
                 </Avatar>
                 <ListItemText primary={displayName} secondary={paymentLabel} />
                 <ListItemSecondaryAction>
-                    <p style={requestInquiryMoneyStyle}>
+                    <MoneyAmountLabel
+                        style={styles.moneyAmountLabel}
+                        info={requestInquiry}
+                        type="requestInquiry"
+                    >
                         {formattedPaymentAmount}
-                    </p>
+                    </MoneyAmountLabel>
                 </ListItemSecondaryAction>
             </ListItem>,
             <Divider />

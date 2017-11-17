@@ -11,11 +11,15 @@ import Divider from "material-ui/Divider";
 import { formatMoney } from "../../Helpers/Utils";
 import NavLink from "../../Components/Routing/NavLink";
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
+import MoneyAmountLabel from "../MoneyAmountLabel";
 
 const styles = {
     smallAvatar: {
         width: 50,
         height: 50
+    },
+    moneyAmountLabel: {
+        marginRight: 20
     }
 };
 
@@ -45,31 +49,18 @@ class RequestResponseListItem extends React.Component {
         const formattedPaymentAmount = formatMoney(paymentAmount);
 
         let paymentLabel;
-        const requestResponseMoneyStyle = {
-            marginRight: 20
-        };
         switch (requestResponse.status) {
             case "ACCEPTED":
-                paymentLabel = "Request paid";
-                requestResponseMoneyStyle.color =
-                    theme.palette.requestResponse.accepted;
+                paymentLabel = "You paid the request";
                 break;
             case "PENDING":
-                paymentLabel = "Request received";
-                requestResponseMoneyStyle.color =
-                    theme.palette.requestResponse.pending;
-                requestResponseMoneyStyle.opacity = 0.7;
+                paymentLabel = "Received a request";
                 break;
             case "REJECTED":
-                paymentLabel = "Request denied";
-                requestResponseMoneyStyle.color =
-                    theme.palette.requestResponse.rejected;
-                requestResponseMoneyStyle.textDecoration = "line-through";
+                paymentLabel = "You denied the request";
                 break;
             case "REVOKED":
-                paymentLabel = "Request cancelled";
-                requestResponseMoneyStyle.color =
-                    theme.palette.requestResponse.revoked;
+                paymentLabel = "Request was cancelled";
                 break;
         }
 
@@ -88,9 +79,16 @@ class RequestResponseListItem extends React.Component {
                 </Avatar>
                 <ListItemText primary={displayName} secondary={paymentLabel} />
                 <ListItemSecondaryAction>
-                    <p style={requestResponseMoneyStyle}>
+                    <MoneyAmountLabel
+                        style={styles.moneyAmountLabel}
+                        info={requestResponse}
+                        type="requestResponse"
+                    >
                         {formattedPaymentAmount}
-                    </p>
+                    </MoneyAmountLabel>
+                    {/*<p style={requestResponseMoneyStyle}>*/}
+                    {/*{formattedPaymentAmount}*/}
+                    {/*</p>*/}
                 </ListItemSecondaryAction>
             </ListItem>,
             <Divider />

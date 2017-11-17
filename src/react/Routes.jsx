@@ -21,6 +21,9 @@ const RequestInquiry = CL(() =>
 const RequestResponseInfo = CL(() =>
     import(/* webpackChunkName: "requestresponseinfo" */ "./Pages/RequestResponseInfo")
 );
+const RequestInquiryInfo = CL(() =>
+    import(/* webpackChunkName: "requestinquiryinfo" */ "./Pages/RequestInquiryInfo")
+);
 const MasterCardActionInfo = CL(() =>
     import(/* webpackChunkName: "mastercardactioninfo" */ "./Pages/MasterCardActionInfo")
 );
@@ -112,7 +115,6 @@ export default class Routes extends React.Component {
                             )}
                         />
 
-
                         <PrivateRoute
                             path="/request-response-info/:requestResponseId/:accountId?"
                             apiKey={this.props.apiKey}
@@ -126,6 +128,18 @@ export default class Routes extends React.Component {
                             )}
                         />
 
+                        <PrivateRoute
+                            path="/request-inquiry-info/:requestInquiryId/:accountId?"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <RequestInquiryInfo
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
+                            )}
+                        />
 
                         <PrivateRoute
                             path="/mastercard-action-info/:mastercardActionId/:accountId?"

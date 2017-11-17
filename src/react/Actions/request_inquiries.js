@@ -14,7 +14,7 @@ export function requestInquiriesUpdate(BunqJSClient, userId, accountId) {
     return dispatch => {
         dispatch(requestInquiriesLoading());
         BunqJSClient.api.requestInquiry
-            .list(userId, accountId, {})
+            .list(userId, accountId)
             .then(requestInquiries => {
                 dispatch(requestInquiriesSetInfo(requestInquiries, accountId));
                 dispatch(requestInquiriesNotLoading());

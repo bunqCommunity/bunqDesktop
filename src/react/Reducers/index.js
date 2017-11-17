@@ -24,7 +24,9 @@ import payment_info from "./payment_info";
 import payment_filter from "./payment_filter";
 import request_inquiries from "./request_inquiries";
 import request_inquiry from "./request_inquiry";
+import request_inquiry_info from "./request_inquiry_info";
 import request_responses from "./request_responses";
+import request_response from "./request_response";
 import request_response_info from "./request_response_info";
 
 export default combineReducers({
@@ -53,6 +55,8 @@ export default combineReducers({
     payments,
     request_inquiries,
     request_inquiry,
+    request_inquiry_info,
     request_responses,
+    request_response,
     request_response_info
 });
