@@ -10,16 +10,21 @@ import Divider from "material-ui/Divider";
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
+import Tooltip from "material-ui/Tooltip";
 
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import { requestResponseText } from "../Helpers/StatusTexts";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 
 import { requestResponseUpdate } from "../Actions/request_response_info";
+import { requestResponseReject } from "../Actions/request_response";
 import TransactionHeader from "../Components/TransactionHeader";
 
 const styles = {
     btn: {},
+    button: {
+        width: "100%"
+    },
     paper: {
         padding: 24
     },
@@ -67,10 +72,22 @@ class RequestResponseInfo extends React.Component {
         }
     }
 
+    rejectRequest = () => {
+        const { requestResponseId, accountId } = this.props.match.params;
+        this.props.requestResponseReject(
+            this.props.user.id,
+            accountId === undefined
+                ? this.props.accountsSelectedAccount
+                : accountId,
+            requestResponseId
+        );
+    };
+
     render() {
         const {
             accountsSelectedAccount,
             requestResponseInfo,
+            requestResponseInfoLoading,
             requestResponseLoading
         } = this.props;
         const paramAccountId = this.props.match.params.accountId;
@@ -82,7 +99,10 @@ class RequestResponseInfo extends React.Component {
         }
 
         let content;
-        if (requestResponseInfo === false || requestResponseLoading === true) {
+        if (
+            requestResponseInfo === false ||
+            requestResponseInfoLoading === true
+        ) {
             content = (
                 <Grid container spacing={24} justify={"center"}>
                     <Grid item xs={12}>
@@ -162,6 +182,36 @@ class RequestResponseInfo extends React.Component {
                             </ListItem>
                             <Divider />
                         </List>
+
+                        {requestResponse.status === "PENDING" ? (
+                            <Grid container spacing={16}>
+                                <Grid item xs={12} sm={6}>
+                                    <Tooltip title="Not currently implemented yet!">
+                                        <Button
+                                            raised
+                                            color="primary"
+                                            style={styles.button}
+                                        >
+                                            Accept
+                                        </Button>
+                                    </Tooltip>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Button
+                                        raised
+                                        color="accent"
+                                        disabled={
+                                            requestResponseInfoLoading ||
+                                            requestResponseLoading
+                                        }
+                                        onClick={this.rejectRequest}
+                                        style={styles.button}
+                                    >
+                                        Decline
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        ) : null}
                     </Grid>
                 </Grid>
             );
@@ -193,7 +243,8 @@ const mapStateToProps = state => {
     return {
         user: state.user.user,
         requestResponseInfo: state.request_response_info.request_response_info,
-        requestResponseLoading: state.request_response_info.loading,
+        requestResponseInfoLoading: state.request_response_info.loading,
+        requestResponseLoading: state.request_response.loading,
         accountsSelectedAccount: state.accounts.selectedAccount
     };
 };
@@ -204,6 +255,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         requestResponseUpdate: (user_id, account_id, request_response_id) =>
             dispatch(
                 requestResponseUpdate(
+                    BunqJSClient,
+                    user_id,
+                    account_id,
+                    request_response_id
+                )
+            ),
+        requestResponseReject: (user_id, account_id, request_response_id) =>
+            dispatch(
+                requestResponseReject(
                     BunqJSClient,
                     user_id,
                     account_id,

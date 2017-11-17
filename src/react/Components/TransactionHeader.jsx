@@ -23,8 +23,19 @@ const TransactionHeader = props => {
     const fromAlias = props.from;
     const toAlias = props.to;
 
+    const fromAvatar =
+        fromAlias.avatar !== null
+            ? fromAlias.avatar.image[0].attachment_public_uuid
+            : false;
+    const toAvatar =
+        toAlias.avatar !== null
+            ? toAlias.avatar.image[0].attachment_public_uuid
+            : false;
+
+    // swap the orientation based on prop
     const swap = props.swap !== undefined && props.swap !== false;
 
+    // color the arrows
     const arrowColor = props.theme.palette.text.primary;
 
     const components = [
@@ -32,7 +43,7 @@ const TransactionHeader = props => {
             <LazyAttachmentImage
                 width={90}
                 BunqJSClient={props.BunqJSClient}
-                imageUUID={fromAlias.avatar.image[0].attachment_public_uuid}
+                imageUUID={fromAvatar}
             />
             <Typography type="subheading">{fromAlias.display_name}</Typography>
         </Grid>,
@@ -49,7 +60,7 @@ const TransactionHeader = props => {
             <LazyAttachmentImage
                 width={90}
                 BunqJSClient={props.BunqJSClient}
-                imageUUID={toAlias.avatar.image[0].attachment_public_uuid}
+                imageUUID={toAvatar}
             />
 
             <Typography type="subheading">{toAlias.display_name}</Typography>

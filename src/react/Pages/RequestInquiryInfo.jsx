@@ -16,10 +16,14 @@ import { requestInquiryText } from "../Helpers/StatusTexts";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import TransactionHeader from "../Components/TransactionHeader";
 
+import { requestInquiryCancel } from "../Actions/request_inquiry";
 import { requestInquiryUpdate } from "../Actions/request_inquiry_info";
 
 const styles = {
     btn: {},
+    button: {
+        width: "100%"
+    },
     paper: {
         padding: 24
     },
@@ -67,11 +71,23 @@ class RequestInquiryInfo extends React.Component {
         }
     }
 
+    cancelInquiry = () => {
+        const { requestInquiryId, accountId } = this.props.match.params;
+        this.props.requestInquiryCancel(
+            this.props.user.id,
+            accountId === undefined
+                ? this.props.accountsSelectedAccount
+                : accountId,
+            requestInquiryId
+        );
+    };
+
     render() {
         const {
             accountsSelectedAccount,
             requestInquiryInfo,
-            requestInquiryLoading
+            requestInquiryLoading,
+            requestInquiryInfoLoading
         } = this.props;
         const paramAccountId = this.props.match.params.accountId;
 
@@ -82,7 +98,10 @@ class RequestInquiryInfo extends React.Component {
         }
 
         let content;
-        if (requestInquiryInfo === false || requestInquiryLoading === true) {
+        if (
+            requestInquiryInfo === false ||
+            requestInquiryInfoLoading === true
+        ) {
             content = (
                 <Grid container spacing={24} justify={"center"}>
                     <Grid item xs={12}>
@@ -162,6 +181,25 @@ class RequestInquiryInfo extends React.Component {
                             </ListItem>
                             <Divider />
                         </List>
+
+                        {requestInquiry.status === "PENDING" ? (
+                            <Grid container spacing={16} justify="center">
+                                <Grid item xs={12} sm={6}>
+                                    <Button
+                                        raised
+                                        disabled={
+                                            requestInquiryLoading ||
+                                            requestInquiryInfoLoading
+                                        }
+                                        onClick={this.cancelInquiry}
+                                        color="accent"
+                                        style={styles.button}
+                                    >
+                                        Cancel
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        ) : null}
                     </Grid>
                 </Grid>
             );
@@ -193,7 +231,8 @@ const mapStateToProps = state => {
     return {
         user: state.user.user,
         requestInquiryInfo: state.request_inquiry_info.request_inquiry_info,
-        requestInquiryLoading: state.request_inquiry_info.loading,
+        requestInquiryInfoLoading: state.request_inquiry_info.loading,
+        requestInquiryLoading: state.request_inquiry.loading,
         accountsSelectedAccount: state.accounts.selectedAccount
     };
 };
@@ -204,6 +243,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         requestInquiryUpdate: (user_id, account_id, request_inquiry_id) =>
             dispatch(
                 requestInquiryUpdate(
+                    BunqJSClient,
+                    user_id,
+                    account_id,
+                    request_inquiry_id
+                )
+            ),
+        requestInquiryCancel: (user_id, account_id, request_inquiry_id) =>
+            dispatch(
+                requestInquiryCancel(
                     BunqJSClient,
                     user_id,
                     account_id,

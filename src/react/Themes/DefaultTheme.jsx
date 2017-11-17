@@ -131,9 +131,7 @@ export default {
     },
     styles: {
         requestResponse: {
-            pending: {
-                opacity: 0.7
-            },
+            pending: {},
             rejected: {
                 textDecoration: "line-through"
             }
