@@ -1,6 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import { withTheme } from "material-ui/styles";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
 import Grid from "material-ui/Grid";
@@ -9,14 +8,13 @@ import Button from "material-ui/Button";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Divider from "material-ui/Divider";
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
-import ArrowForwardIcon from "material-ui-icons/ArrowForward";
-import ArrowUpIcon from "material-ui-icons/ArrowUpward";
-import ArrowDownIcon from "material-ui-icons/ArrowDownward";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
-import { formatMoney } from "../Helpers/Utils";
-import LazyAttachmentImage from "../Components/AttachmentImage/LazyAttachmentImage";
+import { formatMoney, humanReadableDate } from "../Helpers/Utils";
+import { paymentText } from "../Helpers/StatusTexts";
+import MoneyAmountLabel from "../Components/MoneyAmountLabel";
+import TransactionHeader from "../Components/TransactionHeader";
 
 import { paymentsUpdate } from "../Actions/payment_info";
 
@@ -84,12 +82,7 @@ class PaymentInfo extends React.Component {
     }
 
     render() {
-        const {
-            accountsSelectedAccount,
-            payment,
-            paymentLoading,
-            theme
-        } = this.props;
+        const { accountsSelectedAccount, payment, paymentLoading } = this.props;
         const paramAccountId = this.props.match.params.accountId;
 
         // we require a selected account before we can display payment information
@@ -110,16 +103,12 @@ class PaymentInfo extends React.Component {
                 </Grid>
             );
         } else {
-            // const paymentType = payment.type;
             const paymentDescription = payment.description;
-            const paymentDate = new Date(payment.created).toLocaleString();
+            const paymentDate = humanReadableDate(payment.created);
             const paymentAmount = payment.amount.value;
-            const paymentColor =
-                paymentAmount < 0
-                    ? theme.palette.common.sentPayment
-                    : theme.palette.common.receivedPayment;
+            const formattedPaymentAmount = formatMoney(paymentAmount);
+            const paymentLabel = paymentText(payment);
 
-            const personalInfo = this.getBasicInfo(payment.alias);
             const counterPartyInfo = this.getBasicInfo(
                 payment.counterparty_alias
             );
@@ -131,72 +120,43 @@ class PaymentInfo extends React.Component {
                     align={"center"}
                     justify={"center"}
                 >
-                    <Grid item xs={12} md={5} style={styles.textCenter}>
-                        <LazyAttachmentImage
-                            width={90}
-                            BunqJSClient={this.props.BunqJSClient}
-                            imageUUID={personalInfo.imageUUID}
-                        />
-                        <Typography type="subheading">
-                            {personalInfo.displayName}
-                        </Typography>
-                    </Grid>
-
-                    <Grid
-                        item
-                        md={2}
-                        hidden={{ smDown: true }}
-                        style={styles.textCenter}
-                    >
-                        {paymentAmount < 0 ? (
-                            <ArrowForwardIcon />
-                        ) : (
-                            <ArrowBackIcon />
-                        )}
-                    </Grid>
-
-                    <Grid
-                        item
-                        xs={12}
-                        hidden={{ mdUp: true }}
-                        style={styles.textCenter}
-                    >
-                        {paymentAmount < 0 ? (
-                            <ArrowDownIcon />
-                        ) : (
-                            <ArrowUpIcon />
-                        )}
-                    </Grid>
-
-                    <Grid item xs={12} md={5} style={styles.textCenter}>
-                        <LazyAttachmentImage
-                            width={90}
-                            BunqJSClient={this.props.BunqJSClient}
-                            imageUUID={counterPartyInfo.imageUUID}
-                        />
-
-                        <Typography type="subheading">
-                            {counterPartyInfo.displayName}
-                        </Typography>
-                    </Grid>
+                    <TransactionHeader
+                        BunqJSClient={this.props.BunqJSClient}
+                        to={payment.counterparty_alias}
+                        from={payment.alias}
+                        swap={paymentAmount > 0}
+                    />
 
                     <Grid item xs={12}>
-                        <h1
-                            style={{
-                                textAlign: "center",
-                                color: paymentColor
-                            }}
+                        <MoneyAmountLabel
+                            component={"h1"}
+                            style={{ textAlign: "center" }}
+                            info={payment}
+                            type="payment"
                         >
-                            {formatMoney(paymentAmount)}
-                        </h1>
+                            {formattedPaymentAmount}
+                        </MoneyAmountLabel>
+
+                        <Typography
+                            style={{ textAlign: "center" }}
+                            type={"body1"}
+                        >
+                            {paymentLabel}
+                        </Typography>
+
                         <List style={styles.list}>
-                            <Divider />
-                            <ListItem>
-                                <ListItemText
-                                    primary={"Description"}
-                                    secondary={paymentDescription}
-                                />
-                            </ListItem>
+                            {paymentDescription.length > 0 ? (
+                                [
+                                    <Divider />,
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={"Description"}
+                                            secondary={paymentDescription}
+                                        />
+                                    </ListItem>
+                                ]
+                            ) : null}
+
                             <Divider />
                             <ListItem>
                                 <ListItemText
@@ -266,6 +226,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    withTheme()(PaymentInfo)
-);
+export default connect(mapStateToProps, mapDispatchToProps)(PaymentInfo);

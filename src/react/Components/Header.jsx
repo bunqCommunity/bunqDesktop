@@ -24,7 +24,7 @@ const styles = {
         height: 50,
         zIndex: 1000,
         background:
-            "url(https://static.useresponse.com/public/bunq/my-interface/bunq-colours-bar-2.png)",
+            "url(images/bunq-colours-bar-2.png)",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center center"

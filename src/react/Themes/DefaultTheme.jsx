@@ -1,4 +1,5 @@
 export default {
+    themeName: "DefaultTheme",
     palette: {
         common: {
             black: "#000",
@@ -13,7 +14,24 @@ export default {
             darkWhite: "rgba(255, 255, 255, 0.87)",
             lightWhite: "rgba(255, 255, 255, 0.54)",
             receivedPayment: "#008000",
-            sentPayment: "#ff0000",
+            sentPayment: "#ff0000"
+        },
+        requestResponse: {
+            pending: "#ff7d12",
+            accepted: "#ff0000",
+            rejected: "#3d3f3d",
+            revoked: "#3d3f3d"
+        },
+        requestInquiry: {
+            pending: "#2196f3",
+            accepted: "#008000",
+            rejected: "#ff0000",
+            revoked: "#3d3f3d"
+        },
+        bunqMeTabs: {
+            awaiting_payment: "#62ca04",
+            cancelled: "#3f56d6",
+            expired: "#f50057"
         },
         type: "light",
         primary: {
@@ -109,6 +127,22 @@ export default {
             paper: "#fff",
             appBar: "#f5f5f5",
             contentFrame: "#eeeeee"
+        }
+    },
+    styles: {
+        requestResponse: {
+            pending: {},
+            rejected: {
+                textDecoration: "line-through"
+            }
+        },
+        requestInquiry: {
+            rejected: {
+                textDecoration: "line-through"
+            },
+            revoked: {
+                textDecoration: "line-through"
+            }
         }
     }
 };

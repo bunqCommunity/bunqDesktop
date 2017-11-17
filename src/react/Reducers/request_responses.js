@@ -27,6 +27,7 @@ export default (state = defaultState, action) => {
 
         case "REQUEST_RESPONSES_CLEAR":
         case "REGISTRATION_CLEAR_API_KEY":
+        case "REGISTRATION_CLEAR_USER_INFO":
             return {
                 request_responses: [],
                 account_id: false,

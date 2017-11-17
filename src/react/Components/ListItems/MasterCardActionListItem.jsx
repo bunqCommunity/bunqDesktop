@@ -8,8 +8,7 @@ import {
 import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
 
-import { formatMoney, humanReadableDate } from "../../Helpers/Utils";
-import Logger from "../../Helpers/Logger";
+import { formatMoney } from "../../Helpers/Utils";
 import NavLink from "../../Components/Routing/NavLink";
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 
@@ -20,7 +19,7 @@ const styles = {
     }
 };
 
-class PaymentListItem extends React.Component {
+class MasterCardActionListItem extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -29,32 +28,27 @@ class PaymentListItem extends React.Component {
     }
 
     shouldComponentUpdate(nextProps) {
-        return nextProps.payment.id !== this.props.payment.id;
+        return nextProps.masterCardAction.id !== this.props.masterCardAction.id;
     }
 
     render() {
-        const { payment, theme } = this.props;
+        const { masterCardAction, theme } = this.props;
 
         let imageUUID = false;
-        if (payment.counterparty_alias.avatar) {
+        if (masterCardAction.counterparty_alias.avatar) {
             imageUUID =
-                payment.counterparty_alias.avatar.image[0]
+                masterCardAction.counterparty_alias.avatar.image[0]
                     .attachment_public_uuid;
         }
-        const displayName = payment.counterparty_alias.display_name;
-        const paymentDate = new Date(payment.created).toLocaleString();
-        const paymentAmount = payment.amount.value;
-        const formattedPaymentAmount = formatMoney(payment.amount.value);
-        const paymentColor =
-            paymentAmount < 0
-                ? theme.palette.common.sentPayment
-                : theme.palette.common.receivedPayment;
+        const displayName = masterCardAction.counterparty_alias.display_name;
+        const paymentAmount = masterCardAction.amount_billing.value;
+        const formattedPaymentAmount = formatMoney(paymentAmount);
 
         return [
             <ListItem
                 button
-                to={`/payment/${payment.id}/${payment.monetary_account_id}`}
                 component={NavLink}
+                to={`/mastercard-action-info/${masterCardAction.id}/${masterCardAction.monetary_account_id}`}
             >
                 <Avatar style={styles.smallAvatar}>
                     <LazyAttachmentImage
@@ -63,12 +57,15 @@ class PaymentListItem extends React.Component {
                         imageUUID={imageUUID}
                     />
                 </Avatar>
-                <ListItemText primary={displayName} secondary={paymentDate} />
+                <ListItemText
+                    primary={displayName}
+                    secondary={"Mastercard payment"}
+                />
                 <ListItemSecondaryAction>
                     <p
                         style={{
                             marginRight: 20,
-                            color: paymentColor
+                            color: theme.palette.common.sentPayment
                         }}
                     >
                         {formattedPaymentAmount}
@@ -80,4 +77,4 @@ class PaymentListItem extends React.Component {
     }
 }
 
-export default withTheme()(PaymentListItem);
+export default withTheme()(MasterCardActionListItem);

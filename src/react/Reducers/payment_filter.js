@@ -1,5 +1,6 @@
 export const defaultState = {
     type: "default",
+    visible: true
 };
 
 export default function reducer(state = defaultState, action) {
@@ -11,23 +12,14 @@ export default function reducer(state = defaultState, action) {
                 type: action.payload.type
             };
 
-        // follow the default rotation through the 3 types
-        case "PAYMENT_FILTER_ROTATE_TYPE":
-            let nextType = "received";
-            switch (state.type) {
-                case "received":
-                    nextType = "sent";
-                    break;
-                case "sent":
-                    nextType = "default";
-                    break;
-            }
+        case "PAYMENT_FILTER_TOGGLE_VISIBILITY":
             return {
                 ...state,
-                type: nextType
+                visible: !state.visible
             };
 
         case "PAYMENT_FILTER_CLEAR":
+        case "GENERAL_FILTER_RESET":
             return {
                 ...defaultState
             };

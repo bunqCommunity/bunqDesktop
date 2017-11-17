@@ -20,6 +20,7 @@ if (process.env.NODE_ENV !== "development") {
     window.ga("set", "checkProtocolTask", null);
     window.ga("set", "checkStorageTask", null);
     window.ga("set", "historyImportTask", null);
+    window.ga('set', 'anonymizeIp', true);
     window.ga("send", "event", "Version", process.env.CURRENT_VERSION);
 }
 

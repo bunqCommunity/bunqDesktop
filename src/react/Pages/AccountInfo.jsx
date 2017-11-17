@@ -7,11 +7,11 @@ import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
 
-import PaymentList from "./Dashboard/PaymentList";
+import CombinedList from "../Components/CombinedList";
 import AccountCard from "./ApplicationInfo/AccountCard";
 
 import { accountsUpdate } from "../Actions/accounts";
-import { paymentsUpdate } from "../Actions/payments";
+import { paymentInfoUpdate } from "../Actions/payments";
 import { openSnackbar } from "../Actions/snackbar";
 
 const styles = {
@@ -72,10 +72,11 @@ class AccountInfo extends React.Component {
                 <AccountCard
                     BunqJSClient={this.props.BunqJSClient}
                     openSnackbar={this.props.openSnackbar}
+                    hideBalance={this.props.hideBalance}
                     account={accountInfo}
                 />,
                 <Paper>
-                    <PaymentList
+                    <CombinedList
                         BunqJSClient={this.props.BunqJSClient}
                         initialBunqConnect={this.props.initialBunqConnect}
                     />
@@ -120,6 +121,8 @@ class AccountInfo extends React.Component {
 
 const mapStateToProps = state => {
     return {
+        hideBalance: state.options.hide_balance,
+
         user: state.user.user,
         accounts: state.accounts.accounts
     };
@@ -130,7 +133,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
         paymentsUpdate: (userId, accountId) =>
-            dispatch(paymentsUpdate(BunqJSClient, userId, accountId)),
+            dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId)),
         accountsUpdate: userId => dispatch(accountsUpdate(BunqJSClient, userId))
     };
 };

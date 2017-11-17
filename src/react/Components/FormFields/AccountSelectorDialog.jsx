@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import Avatar from "material-ui/Avatar";
 import { FormControl } from "material-ui/Form";
@@ -21,7 +22,7 @@ const styles = {
     }
 };
 
-const AccountItem = ({ account, onClick, BunqJSClient }) => {
+const AccountItem = ({ account, onClick, BunqJSClient, hideBalance }) => {
     const formattedBalance = formatMoney(
         account.balance ? account.balance.value : 0
     );
@@ -36,7 +37,7 @@ const AccountItem = ({ account, onClick, BunqJSClient }) => {
             </Avatar>
             <ListItemText
                 primary={account.description}
-                secondary={formattedBalance}
+                secondary={hideBalance ? "HIDDEN" : formattedBalance}
             />
         </ListItem>
     );
@@ -78,6 +79,7 @@ class AccountSelectorDialog extends React.Component {
                 <AccountItem
                     account={account.MonetaryAccountBank}
                     onClick={this.onClickHandler(accountKey)}
+                    hideBalance={this.props.hideBalance}
                     BunqJSClient={BunqJSClient}
                 />
             );
@@ -127,4 +129,10 @@ AccountSelectorDialog.defaultProps = {
     selectStyle: styles.selectField
 };
 
-export default AccountSelectorDialog;
+const mapStateToProps = store => {
+    return {
+        hideBalance: store.options.hide_balance
+    };
+};
+
+export default connect(mapStateToProps)(AccountSelectorDialog);

@@ -27,6 +27,7 @@ export default (state = defaultState, action) => {
 
         case "MASTER_CARD_ACTIONS_CLEAR":
         case "REGISTRATION_CLEAR_API_KEY":
+        case "REGISTRATION_CLEAR_USER_INFO":
             return {
                 master_card_actions: [],
                 account_id: false,

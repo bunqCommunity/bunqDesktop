@@ -10,7 +10,7 @@ export function paymentsSetInfo(payments, account_id) {
     };
 }
 
-export function paymentsUpdate(BunqJSClient, user_id, account_id) {
+export function paymentInfoUpdate(BunqJSClient, user_id, account_id) {
     return dispatch => {
         dispatch(paymentsLoading());
         BunqJSClient.api.payment
@@ -19,7 +19,7 @@ export function paymentsUpdate(BunqJSClient, user_id, account_id) {
                 dispatch(paymentsSetInfo(payments, account_id));
                 dispatch(paymentsNotLoading());
             })
-            .catch(err => {
+            .catch(error => {
                 dispatch(paymentsNotLoading());
                 BunqErrorHandler(
                     dispatch,

@@ -1,10 +1,10 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
-export function requestInquiriesSetInfo(requestInquiries, account_id) {
+export function requestInquiriesSetInfo(request_inquiries, account_id) {
     return {
         type: "REQUEST_INQUIRIES_SET_INFO",
         payload: {
-            requestInquiries: requestInquiries,
+            request_inquiries: request_inquiries,
             account_id: account_id
         }
     };

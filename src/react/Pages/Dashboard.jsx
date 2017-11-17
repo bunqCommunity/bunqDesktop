@@ -5,11 +5,10 @@ import Paper from "material-ui/Paper";
 import Button from "material-ui/Button";
 import Grid from "material-ui/Grid";
 import Typography from "material-ui/Typography";
-import PaymentList from "./PaymentList";
-import AccountList from "./AccountList";
-import AccountQRCode from "../../Components/QR/AccountQRCode";
+import CombinedList from "../Components/CombinedList";
+import AccountList from "../Components/AccountList/AccountList";
 
-import { userLogin, userLogout } from "../../Actions/user";
+import { userLogin, userLogout } from "../Actions/user";
 
 const styles = {
     btn: {
@@ -64,7 +63,7 @@ class Dashboard extends React.Component {
 
                 <Grid item xs={12} md={8}>
                     <Paper>
-                        <PaymentList
+                        <CombinedList
                             BunqJSClient={this.props.BunqJSClient}
                             initialBunqConnect={this.props.initialBunqConnect}
                         />

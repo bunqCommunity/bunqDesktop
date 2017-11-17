@@ -16,7 +16,9 @@ export function masterCardActionsUpdate(BunqJSClient, userId, accountId) {
         BunqJSClient.api.masterCardAction
             .list(userId, accountId)
             .then(masterCardActions => {
-                dispatch(masterCardActionsSetInfo(masterCardActions, accountId));
+                dispatch(
+                    masterCardActionsSetInfo(masterCardActions, accountId)
+                );
                 dispatch(masterCardActionsNotLoading());
             })
             .catch(error => {
@@ -31,13 +33,13 @@ export function masterCardActionsUpdate(BunqJSClient, userId, accountId) {
 }
 
 export function masterCardActionsLoading() {
-    return { type: "MASTER_CARD_ACTIONS_IS_LOADING" };
+    return {type: "MASTER_CARD_ACTIONS_IS_LOADING"};
 }
 
 export function masterCardActionsNotLoading() {
-    return { type: "MASTER_CARD_ACTIONS_IS_NOT_LOADING" };
+    return {type: "MASTER_CARD_ACTIONS_IS_NOT_LOADING"};
 }
 
 export function masterCardActionsClear() {
-    return { type: "MASTER_CARD_ACTIONS_CLEAR" };
+    return {type: "MASTER_CARD_ACTIONS_CLEAR"};
 }

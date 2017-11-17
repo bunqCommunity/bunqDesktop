@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import Input, { InputLabel } from "material-ui/Input";
 import { MenuItem } from "material-ui/Menu";
@@ -8,7 +9,7 @@ import { ListItem, ListItemText } from "material-ui/List";
 import Avatar from "material-ui/Avatar";
 
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
-import {formatMoney} from "../../Helpers/Utils";
+import { formatMoney } from "../../Helpers/Utils";
 
 const styles = {
     formControl: {
@@ -53,9 +54,9 @@ class AccountSelector extends React.Component {
             if (account.status !== "ACTIVE") {
                 return null;
             }
-            const formattedBalance = formatMoney(
-                account.balance ? account.balance.value : 0
-            );
+            const formattedBalance = this.props.hideBalance
+                ? "HIDDEN"
+                : formatMoney(account.balance ? account.balance.value : 0);
             selectedAccountItem = (
                 <ListItem button>
                     <Avatar style={styles.bigAvatar}>
@@ -102,4 +103,10 @@ AccountSelector.defaultProps = {
     selectStyle: styles.selectField
 };
 
-export default AccountSelector;
+const mapStateToProps = store => {
+    return {
+        hideBalance: store.options.hide_balance
+    };
+};
+
+export default connect(mapStateToProps)(AccountSelector);

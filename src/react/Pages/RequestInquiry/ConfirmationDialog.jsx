@@ -6,6 +6,7 @@ import Dialog, {
     DialogContent,
     DialogTitle
 } from "material-ui/Dialog";
+import { formatMoney } from "../../Helpers/Utils";
 
 export default class ConfirmationDialog extends React.Component {
     render() {
@@ -35,9 +36,9 @@ export default class ConfirmationDialog extends React.Component {
                         <ListItem>
                             <ListItemText
                                 primary="To"
-                                secondary={`${account.description} ${account
-                                    .balance.value} ${account.balance
-                                    .currency}`}
+                                secondary={`${account.description}  ${formatMoney(
+                                    account.balance.value
+                                )}`}
                             />
                         </ListItem>
                         <ListItem>
@@ -49,8 +50,7 @@ export default class ConfirmationDialog extends React.Component {
                         <ListItem>
                             <ListItemText
                                 primary="Amount"
-                                secondary={`${amount.toFixed(2)} ${account
-                                    .balance.currency}`}
+                                secondary={formatMoney(amount)}
                             />
                         </ListItem>
                         <ListItem>

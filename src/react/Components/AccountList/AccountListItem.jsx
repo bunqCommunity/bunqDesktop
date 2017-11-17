@@ -16,7 +16,6 @@ import { formatMoney } from "../../Helpers/Utils";
 
 import store from "store";
 
-import { paymentsUpdate } from "../../Actions/payments.js";
 import { accountsSelectAccount } from "../../Actions/accounts.js";
 
 const styles = {
@@ -38,7 +37,7 @@ class AccountListItem extends React.Component {
                 // select this account
                 this.props.selectAccount(accountId);
                 // fetch all payments for the account
-                this.props.updatePayments(this.props.user.id, accountId);
+                this.props.updateExternal(this.props.user.id, accountId);
             }
         };
     };
@@ -106,8 +105,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        updatePayments: (userId, accountId) =>
-            dispatch(paymentsUpdate(BunqJSClient, userId, accountId)),
         selectAccount: acountId => dispatch(accountsSelectAccount(acountId))
     };
 };

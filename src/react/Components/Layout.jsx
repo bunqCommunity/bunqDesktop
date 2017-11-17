@@ -31,17 +31,14 @@ import { userLogin } from "../Actions/user.js";
 import { usersClear, usersUpdate } from "../Actions/users";
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
-import { accountsClear } from "../Actions/accounts";
-import { paymentInfoClear } from "../Actions/payment_info";
-import { userClear } from "../Actions/user";
-import { requestResponsesUpdate } from "../Actions/request_responses";
-import { masterCardActionsUpdate } from "../Actions/master_card_actions";
 import {
     registrationLoading,
     registrationNotLoading,
     registrationClearApiKey
 } from "../Actions/registration";
 import OptionsDrawer from "./OptionsDrawer";
+
+import { registrationClearUserInfo } from "../Actions/registration";
 
 const styles = theme => ({
     contentContainer: {
@@ -92,10 +89,7 @@ class Layout extends React.Component {
         ) {
             if (this.props.apiKey !== false) {
                 // clear our old data associated with the previous session
-                this.props.clearAccounts();
-                this.props.clearPaymentInfo();
-                this.props.clearUsers();
-                this.props.clearUser();
+                this.props.registrationClearUserInfo();
             }
 
             this.checkBunqSetup(nextProps)
@@ -108,7 +102,6 @@ class Layout extends React.Component {
             const nextUrl = nextProps.location.pathname;
             const currentUrl = this.props.location.pathname;
             if (nextUrl !== currentUrl) {
-                console.log(process.env.NODE_ENV);
                 // trigger analytics page event
                 window.ga("set", "page", nextUrl);
                 window.ga("send", "pageview");
@@ -205,14 +198,14 @@ class Layout extends React.Component {
                     "User credentials are incorrect. Incorrect API key or IP address."
                 ) {
                     this.props.openModal(
-                        `The API key or IP you are currently on is not valid for the ${environment} Bunq environment.`,
+                        `The API key or IP you are currently on is not valid for the ${environment} bunq environment.`,
                         "Something went wrong"
                     );
                     throw exception;
                 }
             }
             this.props.openModal(
-                `We failed to register this device on the Bunq servers. Are you sure you entered a valid API key? And are you sure that this key is meant for the ${environment} Bunq environment?`,
+                `We failed to register this device on the bunq servers. Are you sure you entered a valid API key? And are you sure that this key is meant for the ${environment} bunq environment?`,
                 "Something went wrong"
             );
             throw exception;
@@ -331,10 +324,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(userLogin(BunqJSClient, userType, updated)),
 
         // functions to clear user data
-        clearAccounts: () => dispatch(accountsClear()),
-        clearPaymentInfo: () => dispatch(paymentInfoClear()),
-        clearUsers: () => dispatch(usersClear()),
-        clearUser: () => dispatch(userClear())
+        registrationClearUserInfo: () => dispatch(registrationClearUserInfo()),
     };
 };
 

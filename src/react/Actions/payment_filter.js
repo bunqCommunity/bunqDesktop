@@ -2,13 +2,14 @@ export function setPaymentFilterType(type = false) {
     return {
         type: "PAYMENT_FILTER_SET_TYPE",
         payload: {
-            type: type,
+            type: type
         }
     };
 }
-export function rotatePaymentFilterType() {
+
+export function togglePaymentFilterVisibility() {
     return {
-        type: "PAYMENT_FILTER_ROTATE_TYPE"
+        type: "PAYMENT_FILTER_TOGGLE_VISIBILITY"
     };
 }
 

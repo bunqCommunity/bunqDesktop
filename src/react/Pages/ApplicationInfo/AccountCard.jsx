@@ -41,6 +41,10 @@ class AccountCard extends React.Component {
             account.balance ? account.balance.value : 0
         );
 
+        const accountBalanceText = this.props.hideBalance
+            ? "HIDDEN"
+            : formattedBalance;
+
         return (
             <Paper>
                 <List>
@@ -57,7 +61,7 @@ class AccountCard extends React.Component {
                         </Avatar>
                         <ListItemText
                             primary={account.description}
-                            secondary={formattedBalance}
+                            secondary={accountBalanceText}
                         />
                         <ListItemSecondaryAction>
                             <AccountQRFullscreen accountId={account.id} />

@@ -8,9 +8,11 @@ import Hidden from "material-ui/Hidden";
 import Typography from "material-ui/Typography";
 import Avatar from "material-ui/Avatar";
 import PowerSettingsIcon from "material-ui-icons/PowerSettingsNew";
-import PaymentIcon from "material-ui-icons/Payment";
+import ArrowUpwardIcon from "material-ui-icons/ArrowUpward";
+import ArrowDownwardIcon from "material-ui-icons/ArrowDownward";
 import HomeIcon from "material-ui-icons/Home";
 import SettingsIcon from "material-ui-icons/Settings";
+import ShareIcon from "material-ui-icons/Share";
 
 import NavLink from "./Routing/NavLink";
 import { closeMainDrawer } from "../Actions/main_drawer";
@@ -96,7 +98,7 @@ class MainDrawer extends React.Component {
                       to="/pay"
                   >
                       <ListItemIcon>
-                          <PaymentIcon />
+                          <ArrowUpwardIcon />
                       </ListItemIcon>
                       <Typography type="subheading">Pay</Typography>
                   </ListItem>,
@@ -107,9 +109,20 @@ class MainDrawer extends React.Component {
                       to="/request"
                   >
                       <ListItemIcon>
-                          <PaymentIcon />
+                          <ArrowDownwardIcon />
                       </ListItemIcon>
                       <Typography type="subheading">Request</Typography>
+                  </ListItem>,
+                  <ListItem
+                      button
+                      style={styles.listBottomItem}
+                      component={NavLink}
+                      to="/bunqme-tab"
+                  >
+                      <ListItemIcon>
+                          <ShareIcon />
+                      </ListItemIcon>
+                      <Typography type="subheading">bunq.me Requests</Typography>
                   </ListItem>
               ];
 
@@ -120,7 +133,7 @@ class MainDrawer extends React.Component {
                         <ListItemIcon>
                             <Avatar
                                 style={styles.avatar}
-                                src="./images/512x512.png"
+                                src="./images/bunq-logo-textless-2.png"
                             />
                         </ListItemIcon>
                         <ListItemText
