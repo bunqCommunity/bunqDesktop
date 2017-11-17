@@ -8,6 +8,7 @@ import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
 
 import { formatMoney } from "../../Helpers/Utils";
+import { paymentText } from "../../Helpers/StatusTexts";
 import NavLink from "../Routing/NavLink";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 import MoneyAmountLabel from "../MoneyAmountLabel";
@@ -46,8 +47,7 @@ class PaymentListItem extends React.Component {
         const displayName = payment.counterparty_alias.display_name;
         const paymentAmount = payment.amount.value;
         const formattedPaymentAmount = formatMoney(paymentAmount);
-        const paymentTypeLabel =
-            paymentAmount < 0 ? "Sent payment with " : "Received payment with ";
+        const paymentTypeLabel = paymentText(payment);
 
         return [
             <ListItem
@@ -64,7 +64,7 @@ class PaymentListItem extends React.Component {
                 </Avatar>
                 <ListItemText
                     primary={displayName}
-                    secondary={`${paymentTypeLabel}${payment.type}`}
+                    secondary={paymentTypeLabel}
                 />
                 <ListItemSecondaryAction>
                     <MoneyAmountLabel

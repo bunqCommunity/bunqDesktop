@@ -8,6 +8,7 @@ import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
 
 import { formatMoney } from "../../Helpers/Utils";
+import { requestResponseText } from "../../Helpers/StatusTexts";
 import NavLink from "../../Components/Routing/NavLink";
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 import MoneyAmountLabel from "../MoneyAmountLabel";
@@ -46,22 +47,7 @@ class RequestResponseListItem extends React.Component {
         const displayName = requestResponse.counterparty_alias.display_name;
         const paymentAmount = requestResponse.amount_inquired.value;
         const formattedPaymentAmount = formatMoney(paymentAmount);
-
-        let paymentLabel;
-        switch (requestResponse.status) {
-            case "ACCEPTED":
-                paymentLabel = "You paid the request";
-                break;
-            case "PENDING":
-                paymentLabel = "Received a request";
-                break;
-            case "REJECTED":
-                paymentLabel = "You denied the request";
-                break;
-            case "REVOKED":
-                paymentLabel = "Request was cancelled";
-                break;
-        }
+        let paymentLabel = requestResponseText(requestResponse);
 
         return [
             <ListItem

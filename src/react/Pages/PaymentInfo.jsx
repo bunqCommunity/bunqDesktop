@@ -1,6 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import { withTheme } from "material-ui/styles";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
 import Grid from "material-ui/Grid";
@@ -15,7 +14,8 @@ import ArrowDownIcon from "material-ui-icons/ArrowDownward";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
-import {formatMoney, humanReadableDate} from "../Helpers/Utils";
+import { formatMoney, humanReadableDate } from "../Helpers/Utils";
+import { paymentText } from "../Helpers/StatusTexts";
 import LazyAttachmentImage from "../Components/AttachmentImage/LazyAttachmentImage";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 
@@ -85,12 +85,7 @@ class PaymentInfo extends React.Component {
     }
 
     render() {
-        const {
-            accountsSelectedAccount,
-            payment,
-            paymentLoading,
-            theme
-        } = this.props;
+        const { accountsSelectedAccount, payment, paymentLoading } = this.props;
         const paramAccountId = this.props.match.params.accountId;
 
         // we require a selected account before we can display payment information
@@ -111,11 +106,11 @@ class PaymentInfo extends React.Component {
                 </Grid>
             );
         } else {
-            // const paymentType = payment.type;
             const paymentDescription = payment.description;
             const paymentDate = humanReadableDate(payment.created);
             const paymentAmount = payment.amount.value;
             const formattedPaymentAmount = formatMoney(paymentAmount);
+            const paymentLabel = paymentText(payment);
 
             const personalInfo = this.getBasicInfo(payment.alias);
             const counterPartyInfo = this.getBasicInfo(
@@ -181,20 +176,32 @@ class PaymentInfo extends React.Component {
                     <Grid item xs={12}>
                         <MoneyAmountLabel
                             component={"h1"}
-                            style={{textAlign: "center"}}
+                            style={{ textAlign: "center" }}
                             info={payment}
                             type="payment"
                         >
                             {formattedPaymentAmount}
                         </MoneyAmountLabel>
+                        <Typography
+                            style={{ textAlign: "center" }}
+                            type={"body1"}
+                        >
+                            {paymentLabel}
+                        </Typography>
+
                         <List style={styles.list}>
-                            <Divider />
-                            <ListItem>
-                                <ListItemText
-                                    primary={"Description"}
-                                    secondary={paymentDescription}
-                                />
-                            </ListItem>
+                            {paymentDescription.length > 0 ? (
+                                [
+                                    <Divider />,
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={"Description"}
+                                            secondary={paymentDescription}
+                                        />
+                                    </ListItem>
+                                ]
+                            ) : null}
+
                             <Divider />
                             <ListItem>
                                 <ListItemText
@@ -264,6 +271,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    withTheme()(PaymentInfo)
-);
+export default connect(mapStateToProps, mapDispatchToProps)(PaymentInfo);

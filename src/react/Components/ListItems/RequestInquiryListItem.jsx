@@ -8,6 +8,7 @@ import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
 
 import { formatMoney } from "../../Helpers/Utils";
+import { requestInquiryText } from "../../Helpers/StatusTexts";
 import NavLink from "../../Components/Routing/NavLink";
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 import MoneyAmountLabel from "../MoneyAmountLabel";
@@ -46,22 +47,7 @@ class RequestInquiryListItem extends React.Component {
         const displayName = requestInquiry.counterparty_alias.display_name;
         const paymentAmount = requestInquiry.amount_inquired.value;
         const formattedPaymentAmount = formatMoney(paymentAmount);
-
-        let paymentLabel;
-        switch (requestInquiry.status) {
-            case "ACCEPTED":
-                paymentLabel = "Your request was accepted";
-                break;
-            case "PENDING":
-                paymentLabel = "Request sent and pending";
-                break;
-            case "REJECTED":
-                paymentLabel = "Your request was denied";
-                break;
-            case "REVOKED":
-                paymentLabel = "You cancelled the request";
-                break;
-        }
+        let paymentLabel = requestInquiryText(requestInquiry);
 
         return [
             <ListItem

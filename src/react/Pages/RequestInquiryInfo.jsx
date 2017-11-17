@@ -1,6 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import { withTheme } from "material-ui/styles";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
 import Grid from "material-ui/Grid";
@@ -16,7 +15,9 @@ import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
+import { requestInquiryText } from "../Helpers/StatusTexts";
 import LazyAttachmentImage from "../Components/AttachmentImage/LazyAttachmentImage";
+import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 
 import { requestInquiryUpdate } from "../Actions/request_inquiry_info";
 
@@ -73,8 +74,7 @@ class RequestInquiryInfo extends React.Component {
         const {
             accountsSelectedAccount,
             requestInquiryInfo,
-            requestInquiryLoading,
-            theme
+            requestInquiryLoading
         } = this.props;
         const paramAccountId = this.props.match.params.accountId;
 
@@ -97,13 +97,10 @@ class RequestInquiryInfo extends React.Component {
             );
         } else {
             const requestInquiry = requestInquiryInfo.RequestInquiry;
-            // const paymentType = payment.type;
             const paymentDate = humanReadableDate(requestInquiry.created);
             const paymentAmount = requestInquiry.amount_inquired.value;
-            const paymentColor =
-                paymentAmount < 0
-                    ? theme.palette.common.sentPayment
-                    : theme.palette.common.receivedPayment;
+            const formattedPaymentAmount = formatMoney(paymentAmount);
+            const requestInquiryLabel = requestInquiryText(requestInquiry);
 
             content = (
                 <Grid
@@ -117,12 +114,12 @@ class RequestInquiryInfo extends React.Component {
                             width={90}
                             BunqJSClient={this.props.BunqJSClient}
                             imageUUID={
-                                requestInquiry.alias.avatar.image[0]
+                                requestInquiry.user_alias_created.avatar.image[0]
                                     .attachment_public_uuid
                             }
                         />
                         <Typography type="subheading">
-                            {requestInquiry.alias.display_name}
+                            {requestInquiry.user_alias_created.display_name}
                         </Typography>
                     </Grid>
 
@@ -168,22 +165,37 @@ class RequestInquiryInfo extends React.Component {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <h1
-                            style={{
-                                textAlign: "center",
-                                color: paymentColor
-                            }}
+                        <MoneyAmountLabel
+                            component={"h1"}
+                            style={{ textAlign: "center" }}
+                            info={requestInquiry}
+                            type="requestInquiry"
                         >
-                            {formatMoney(paymentAmount)}
-                        </h1>
+                            {formattedPaymentAmount}
+                        </MoneyAmountLabel>
+
+                        <Typography
+                            style={{ textAlign: "center" }}
+                            type={"body1"}
+                        >
+                            {requestInquiryLabel}
+                        </Typography>
+
                         <List style={styles.list}>
-                            <Divider />
-                            <ListItem>
-                                <ListItemText
-                                    primary={"Description"}
-                                    secondary={requestInquiry.description}
-                                />
-                            </ListItem>
+                            {requestInquiry.description.length > 0 ? (
+                                [
+                                    <Divider />,
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={"Description"}
+                                            secondary={
+                                                requestInquiry.description
+                                            }
+                                        />
+                                    </ListItem>
+                                ]
+                            ) : null}
+
                             <Divider />
                             <ListItem>
                                 <ListItemText
@@ -253,6 +265,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    withTheme()(RequestInquiryInfo)
-);
+export default connect(mapStateToProps, mapDispatchToProps)(RequestInquiryInfo);

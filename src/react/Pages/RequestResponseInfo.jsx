@@ -1,6 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import { withTheme } from "material-ui/styles";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
 import Grid from "material-ui/Grid";
@@ -16,7 +15,9 @@ import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
+import { requestResponseText } from "../Helpers/StatusTexts";
 import LazyAttachmentImage from "../Components/AttachmentImage/LazyAttachmentImage";
+import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 
 import { requestResponseUpdate } from "../Actions/request_response_info";
 
@@ -73,8 +74,7 @@ class RequestResponseInfo extends React.Component {
         const {
             accountsSelectedAccount,
             requestResponseInfo,
-            requestResponseLoading,
-            theme
+            requestResponseLoading
         } = this.props;
         const paramAccountId = this.props.match.params.accountId;
 
@@ -97,13 +97,10 @@ class RequestResponseInfo extends React.Component {
             );
         } else {
             const requestResponse = requestResponseInfo.RequestResponse;
-            // const paymentType = payment.type;
             const paymentDate = humanReadableDate(requestResponse.created);
             const paymentAmount = requestResponse.amount_inquired.value;
-            const paymentColor =
-                paymentAmount < 0
-                    ? theme.palette.common.sentPayment
-                    : theme.palette.common.receivedPayment;
+            const formattedPaymentAmount = formatMoney(paymentAmount);
+            const requestResponseLabel = requestResponseText(requestResponse);
 
             content = (
                 <Grid
@@ -168,22 +165,37 @@ class RequestResponseInfo extends React.Component {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <h1
-                            style={{
-                                textAlign: "center",
-                                color: paymentColor
-                            }}
+                        <MoneyAmountLabel
+                            component={"h1"}
+                            style={{ textAlign: "center" }}
+                            info={requestResponse}
+                            type="requestResponse"
                         >
-                            {formatMoney(paymentAmount)}
-                        </h1>
+                            {formattedPaymentAmount}
+                        </MoneyAmountLabel>
+
+                        <Typography
+                            style={{ textAlign: "center" }}
+                            type={"body1"}
+                        >
+                            {requestResponseLabel}
+                        </Typography>
+
                         <List style={styles.list}>
-                            <Divider />
-                            <ListItem>
-                                <ListItemText
-                                    primary={"Description"}
-                                    secondary={requestResponse.description}
-                                />
-                            </ListItem>
+                            {requestResponse.description.length > 0 ? (
+                                [
+                                    <Divider />,
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={"Description"}
+                                            secondary={
+                                                requestResponse.description
+                                            }
+                                        />
+                                    </ListItem>
+                                ]
+                            ) : null}
+
                             <Divider />
                             <ListItem>
                                 <ListItemText
@@ -254,5 +266,5 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-    withTheme()(RequestResponseInfo)
+    RequestResponseInfo
 );
