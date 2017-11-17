@@ -1,5 +1,4 @@
 import React from "react";
-import { withTheme } from "material-ui/styles";
 import {
     ListItem,
     ListItemText,
@@ -36,7 +35,7 @@ class RequestInquiryListItem extends React.Component {
     }
 
     render() {
-        const { requestInquiry, theme } = this.props;
+        const { requestInquiry } = this.props;
 
         let imageUUID = false;
         if (requestInquiry.counterparty_alias.avatar) {
@@ -93,4 +92,4 @@ class RequestInquiryListItem extends React.Component {
     }
 }
 
-export default withTheme()(RequestInquiryListItem);
+export default RequestInquiryListItem;

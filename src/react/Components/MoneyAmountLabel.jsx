@@ -8,6 +8,8 @@ class MoneyAmountLabel extends React.Component {
             return true;
         if (nextProps.children !== this.props.children) return true;
         if (nextProps.type !== this.props.type) return true;
+        if (nextProps.status !== this.props.status) return true;
+        if (nextProps.amount !== this.props.amount) return true;
 
         return false;
     }
@@ -48,10 +50,6 @@ class MoneyAmountLabel extends React.Component {
         };
     };
 
-    checkPayment = () => {
-        return {};
-    };
-
     checkRequestInquiry = () => {
         const { theme, style, info } = this.props;
         const outputStyle = {};
@@ -88,11 +86,18 @@ class MoneyAmountLabel extends React.Component {
         };
     };
 
-    render() {
-        const { type, info, component: Component } = this.props;
+    checkPayment = () => {
+        const { theme, style, info } = this.props;
+        const paymentColor =
+            info.amount.value < 0
+                ? theme.palette.common.sentPayment
+                : theme.palette.common.receivedPayment;
+        return { color: paymentColor, ...style };
+    };
 
+    render() {
         let finalStyle = {};
-        switch (type) {
+        switch (this.props.type) {
             case "requestResponse":
                 finalStyle = this.checkRequestResponse();
                 break;
@@ -104,18 +109,22 @@ class MoneyAmountLabel extends React.Component {
                 break;
         }
 
-        return <p style={finalStyle}>{this.props.children}</p>;
+        const Component = this.props.component;
+
+        return <Component style={finalStyle}>{this.props.children}</Component>;
     }
 }
 
 MoneyAmountLabel.defaultProps = {
-    style: {}
+    style: {},
+    component: "p"
 };
 
 MoneyAmountLabel.propTypes = {
     children: PropTypes.any.isRequired,
     info: PropTypes.object.isRequired, // information about this payment/request
     type: PropTypes.string.isRequired, // requestResponse, requestInquiry etz
+    component: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
     style: PropTypes.object
 };
 

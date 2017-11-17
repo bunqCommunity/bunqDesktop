@@ -1,5 +1,4 @@
 import React from "react";
-import { withTheme } from "material-ui/styles";
 import {
     ListItem,
     ListItemText,
@@ -11,11 +10,15 @@ import Divider from "material-ui/Divider";
 import { formatMoney } from "../../Helpers/Utils";
 import NavLink from "../Routing/NavLink";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
+import MoneyAmountLabel from "../MoneyAmountLabel";
 
 const styles = {
     smallAvatar: {
         width: 50,
         height: 50
+    },
+    moneyAmountLabel: {
+        marginRight: 20
     }
 };
 
@@ -32,7 +35,7 @@ class PaymentListItem extends React.Component {
     }
 
     render() {
-        const { payment, theme } = this.props;
+        const { payment } = this.props;
 
         let imageUUID = false;
         if (payment.counterparty_alias.avatar) {
@@ -43,10 +46,6 @@ class PaymentListItem extends React.Component {
         const displayName = payment.counterparty_alias.display_name;
         const paymentAmount = payment.amount.value;
         const formattedPaymentAmount = formatMoney(paymentAmount);
-        const paymentColor =
-            paymentAmount < 0
-                ? theme.palette.common.sentPayment
-                : theme.palette.common.receivedPayment;
         const paymentTypeLabel =
             paymentAmount < 0 ? "Sent payment with " : "Received payment with ";
 
@@ -68,14 +67,13 @@ class PaymentListItem extends React.Component {
                     secondary={`${paymentTypeLabel}${payment.type}`}
                 />
                 <ListItemSecondaryAction>
-                    <p
-                        style={{
-                            marginRight: 20,
-                            color: paymentColor
-                        }}
+                    <MoneyAmountLabel
+                        style={styles.moneyAmountLabel}
+                        info={payment}
+                        type="payment"
                     >
                         {formattedPaymentAmount}
-                    </p>
+                    </MoneyAmountLabel>
                 </ListItemSecondaryAction>
             </ListItem>,
             <Divider />
@@ -83,4 +81,4 @@ class PaymentListItem extends React.Component {
     }
 }
 
-export default withTheme()(PaymentListItem);
+export default PaymentListItem;

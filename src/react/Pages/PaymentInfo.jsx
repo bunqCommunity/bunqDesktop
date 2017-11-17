@@ -17,6 +17,7 @@ import Typography from "material-ui/Typography";
 
 import {formatMoney, humanReadableDate} from "../Helpers/Utils";
 import LazyAttachmentImage from "../Components/AttachmentImage/LazyAttachmentImage";
+import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 
 import { paymentsUpdate } from "../Actions/payment_info";
 
@@ -114,10 +115,7 @@ class PaymentInfo extends React.Component {
             const paymentDescription = payment.description;
             const paymentDate = humanReadableDate(payment.created);
             const paymentAmount = payment.amount.value;
-            const paymentColor =
-                paymentAmount < 0
-                    ? theme.palette.common.sentPayment
-                    : theme.palette.common.receivedPayment;
+            const formattedPaymentAmount = formatMoney(paymentAmount);
 
             const personalInfo = this.getBasicInfo(payment.alias);
             const counterPartyInfo = this.getBasicInfo(
@@ -181,14 +179,14 @@ class PaymentInfo extends React.Component {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <h1
-                            style={{
-                                textAlign: "center",
-                                color: paymentColor
-                            }}
+                        <MoneyAmountLabel
+                            component={"h1"}
+                            style={{textAlign: "center"}}
+                            info={payment}
+                            type="payment"
                         >
-                            {formatMoney(paymentAmount)}
-                        </h1>
+                            {formattedPaymentAmount}
+                        </MoneyAmountLabel>
                         <List style={styles.list}>
                             <Divider />
                             <ListItem>

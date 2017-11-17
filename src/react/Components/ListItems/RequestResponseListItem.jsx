@@ -1,5 +1,4 @@
 import React from "react";
-import { withTheme } from "material-ui/styles";
 import {
     ListItem,
     ListItemText,
@@ -36,7 +35,7 @@ class RequestResponseListItem extends React.Component {
     }
 
     render() {
-        const { requestResponse, theme } = this.props;
+        const { requestResponse } = this.props;
 
         let imageUUID = false;
         if (requestResponse.counterparty_alias.avatar) {
@@ -86,9 +85,6 @@ class RequestResponseListItem extends React.Component {
                     >
                         {formattedPaymentAmount}
                     </MoneyAmountLabel>
-                    {/*<p style={requestResponseMoneyStyle}>*/}
-                    {/*{formattedPaymentAmount}*/}
-                    {/*</p>*/}
                 </ListItemSecondaryAction>
             </ListItem>,
             <Divider />
@@ -96,4 +92,4 @@ class RequestResponseListItem extends React.Component {
     }
 }
 
-export default withTheme()(RequestResponseListItem);
+export default RequestResponseListItem;
