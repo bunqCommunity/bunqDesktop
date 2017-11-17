@@ -9,14 +9,9 @@ import Button from "material-ui/Button";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Divider from "material-ui/Divider";
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
-import ArrowForwardIcon from "material-ui-icons/ArrowForward";
-import ArrowUpIcon from "material-ui-icons/ArrowUpward";
-import ArrowDownIcon from "material-ui-icons/ArrowDownward";
 import CircularProgress from "material-ui/Progress/CircularProgress";
-import Typography from "material-ui/Typography";
 
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
-import LazyAttachmentImage from "../Components/AttachmentImage/LazyAttachmentImage";
 import TransactionHeader from "../Components/TransactionHeader";
 
 import { masterCardActionInfoUpdate } from "../Actions/master_card_action_info";
@@ -99,7 +94,6 @@ class MasterCardActionInfo extends React.Component {
             );
         } else {
             const requestResponse = requestResponseInfo.RequestResponse;
-            // const paymentType = payment.type;
             const paymentDate = humanReadableDate(requestResponse.created);
             const paymentAmount = requestResponse.amount_inquired.value;
             const paymentColor =
