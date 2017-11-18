@@ -133,7 +133,7 @@ class MainDrawer extends React.Component {
                         <ListItemIcon>
                             <Avatar
                                 style={styles.avatar}
-                                src="./images/bunq-logo-textless-2.png"
+                                src="./images/512x512.png"
                             />
                         </ListItemIcon>
                         <ListItemText
