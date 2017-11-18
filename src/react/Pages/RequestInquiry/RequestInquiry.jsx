@@ -111,7 +111,16 @@ class RequestInquiry extends React.Component {
                 targetType: type,
                 target: ""
             },
-            this.validateForm
+            () => {
+                this.setState({
+                    amountError: false,
+                    minimumAgeError: false,
+                    redurectUrlError: false,
+                    descriptionError: false,
+                    targetError: false,
+                    validForm: false
+                });
+            }
         );
     };
     handleChange = name => event => {

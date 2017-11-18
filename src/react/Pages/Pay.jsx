@@ -109,7 +109,16 @@ class Pay extends React.Component {
                 targetType: type,
                 target: ""
             },
-            this.validateForm
+            () => {
+                this.setState({
+                    amountError: false,
+                    insufficientFundsCondition: false,
+                    descriptionError: false,
+                    ibanNameError: false,
+                    targetError: false,
+                    validForm: false
+                });
+            }
         );
     };
     handleChange = name => event => {
