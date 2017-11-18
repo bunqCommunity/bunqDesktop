@@ -32,8 +32,8 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_CLEAR_USER_INFO":
             return {
                 master_card_action_info: false,
-                master_card_action_id: 0,
-                account_id: 0,
+                master_card_action_id: false,
+                account_id: false,
                 loading: false
             };
     }

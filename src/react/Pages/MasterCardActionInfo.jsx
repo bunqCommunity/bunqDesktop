@@ -10,9 +10,15 @@ import List, { ListItem, ListItemText } from "material-ui/List";
 import Divider from "material-ui/Divider";
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
 import CircularProgress from "material-ui/Progress/CircularProgress";
+import Typography from "material-ui/Typography";
 
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
+import {
+    masterCardActionText,
+    masterCardActionParser
+} from "../Helpers/StatusTexts";
 import TransactionHeader from "../Components/TransactionHeader";
+import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 
 import { masterCardActionInfoUpdate } from "../Actions/master_card_action_info";
 
@@ -35,42 +41,41 @@ class MasterCardActionInfo extends React.Component {
         this.state = {};
     }
 
-    // componentDidMount() {
-    //     if (this.props.initialBunqConnect) {
-    //         const { requestResponseId, accountId } = this.props.match.params;
-    //         this.props.requestResponseUpdate(
-    //             this.props.user.id,
-    //             accountId === undefined
-    //                 ? this.props.accountsSelectedAccount
-    //                 : accountId,
-    //             requestResponseId
-    //         );
-    //     }
-    // }
+    componentDidMount() {
+        if (this.props.initialBunqConnect) {
+            const { masterCardActionId, accountId } = this.props.match.params;
+            this.props.masterCardActionInfoUpdate(
+                this.props.user.id,
+                accountId === undefined
+                    ? this.props.accountsSelectedAccount
+                    : accountId,
+                masterCardActionId
+            );
+        }
+    }
 
-    // componentWillUpdate(nextProps, nextState) {
-    //     if (
-    //         this.props.initialBunqConnect &&
-    //         this.props.match.params.requestResponseId !==
-    //             nextProps.match.params.requestResponseId
-    //     ) {
-    //         const { requestResponseId, accountId } = nextProps.match.params;
-    //         this.props.requestResponseUpdate(
-    //             nextProps.user.id,
-    //             accountId === undefined
-    //                 ? nextProps.accountsSelectedAccount
-    //                 : accountId,
-    //             requestResponseId
-    //         );
-    //     }
-    // }
+    componentWillUpdate(nextProps, nextState) {
+        if (
+            this.props.initialBunqConnect &&
+            this.props.match.params.masterCardActionId !==
+                nextProps.match.params.masterCardActionId
+        ) {
+            const { masterCardActionId, accountId } = nextProps.match.params;
+            this.props.masterCardActionInfoUpdate(
+                nextProps.user.id,
+                accountId === undefined
+                    ? nextProps.accountsSelectedAccount
+                    : accountId,
+                masterCardActionId
+            );
+        }
+    }
 
     render() {
-        return "Not implemented";
         const {
             accountsSelectedAccount,
-            requestResponseInfo,
-            requestResponseLoading,
+            masterCardActionInfo,
+            masterCardActionLoading,
             theme
         } = this.props;
         const paramAccountId = this.props.match.params.accountId;
@@ -82,7 +87,10 @@ class MasterCardActionInfo extends React.Component {
         }
 
         let content;
-        if (requestResponseInfo === false || requestResponseLoading === true) {
+        if (
+            masterCardActionInfo === false ||
+            masterCardActionLoading === true
+        ) {
             content = (
                 <Grid container spacing={24} justify={"center"}>
                     <Grid item xs={12}>
@@ -93,9 +101,12 @@ class MasterCardActionInfo extends React.Component {
                 </Grid>
             );
         } else {
-            const requestResponse = requestResponseInfo.RequestResponse;
-            const paymentDate = humanReadableDate(requestResponse.created);
-            const paymentAmount = requestResponse.amount_inquired.value;
+            const masterCardAction = masterCardActionInfo.MasterCardAction;
+            const paymentAmount = masterCardAction.amount_local.value;
+            const paymentDate = humanReadableDate(masterCardAction.created);
+            const formattedPaymentAmount = formatMoney(paymentAmount);
+            const paymentLabel = masterCardActionText(masterCardAction);
+            const counterPartyIban = masterCardAction.counterparty_alias.iban;
             const paymentColor =
                 paymentAmount < 0
                     ? theme.palette.common.sentPayment
@@ -110,28 +121,43 @@ class MasterCardActionInfo extends React.Component {
                 >
                     <TransactionHeader
                         BunqJSClient={this.props.BunqJSClient}
-                        to={requestResponse.counterparty_alias}
-                        from={requestResponse.alias}
+                        to={masterCardAction.counterparty_alias}
+                        from={masterCardAction.alias}
                         swap={paymentAmount > 0}
                     />
 
                     <Grid item xs={12}>
-                        <h1
-                            style={{
-                                textAlign: "center",
-                                color: paymentColor
-                            }}
+                        <MoneyAmountLabel
+                            component={"h1"}
+                            style={{ textAlign: "center" }}
+                            info={masterCardAction}
+                            type="masterCardAction"
                         >
-                            {formatMoney(paymentAmount)}
-                        </h1>
+                            {formattedPaymentAmount}
+                        </MoneyAmountLabel>
+
+                        <Typography
+                            style={{ textAlign: "center" }}
+                            type={"body1"}
+                        >
+                            {paymentLabel}
+                        </Typography>
+
                         <List style={styles.list}>
-                            <Divider />
-                            <ListItem>
-                                <ListItemText
-                                    primary={"Description"}
-                                    secondary={requestResponse.description}
-                                />
-                            </ListItem>
+                            {masterCardAction.description.length > 0 ? (
+                                [
+                                    <Divider />,
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={"Description"}
+                                            secondary={
+                                                masterCardAction.description
+                                            }
+                                        />
+                                    </ListItem>
+                                ]
+                            ) : null}
+
                             <Divider />
                             <ListItem>
                                 <ListItemText
@@ -142,10 +168,17 @@ class MasterCardActionInfo extends React.Component {
                             <Divider />
                             <ListItem>
                                 <ListItemText
+                                    primary={"Payment Type"}
+                                    secondary={masterCardActionParser(
+                                        masterCardAction.pan_entry_mode_user
+                                    )}
+                                />
+                            </ListItem>
+                            <Divider />
+                            <ListItem>
+                                <ListItemText
                                     primary={"IBAN"}
-                                    secondary={
-                                        requestResponse.counterparty_alias.iban
-                                    }
+                                    secondary={counterPartyIban}
                                 />
                             </ListItem>
                             <Divider />
@@ -180,8 +213,9 @@ class MasterCardActionInfo extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-        requestResponseInfo: state.request_response_info.request_response_info,
-        requestResponseLoading: state.request_response_info.loading,
+        masterCardActionInfo:
+            state.master_card_action_info.master_card_action_info,
+        masterCardActionLoading: state.master_card_action_info.loading,
         accountsSelectedAccount: state.accounts.selectedAccount
     };
 };
@@ -192,14 +226,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         masterCardActionInfoUpdate: (
             user_id,
             account_id,
-            request_response_id
+            master_card_action_id
         ) =>
             dispatch(
                 masterCardActionInfoUpdate(
                     BunqJSClient,
                     user_id,
                     account_id,
-                    request_response_id
+                    master_card_action_id
                 )
             )
     };

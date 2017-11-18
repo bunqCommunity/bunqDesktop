@@ -39,6 +39,33 @@ export const paymentTypeParser = paymentType => {
             return "bunq";
         case "IDEAL":
             return "iDEAL";
+        case "EBA_SCT":
+            return "SEPA credit transfer";
+        case "EBA_SDD":
+            return "SEPA direct debit";
     }
     return paymentType;
+};
+
+export const masterCardActionText = masterCardAction => {
+    const label =
+        masterCardAction.amount_local.value < 0
+            ? "Sent payment with "
+            : "Received payment with ";
+
+    return `${label}${masterCardActionParser(masterCardAction.pan_entry_mode_user )}`;
+};
+
+export const masterCardActionParser = masterCardActionType => {
+    switch (masterCardActionType) {
+        case "ATM":
+            return "ATM";
+        case "ICC":
+            return "ICC";
+        case "MAGNETIC_STRIPE":
+            return "MAGNETIC_STRIPE";
+        case "E_COMMERCE":
+            return "E_COMMERCE";
+    }
+    return masterCardActionType;
 };

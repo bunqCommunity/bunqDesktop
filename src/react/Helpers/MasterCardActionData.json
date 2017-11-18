@@ -1,0 +1,120 @@
+{
+    "MasterCardAction": {
+        "id": 12312,
+        "monetary_account_id": 3580,
+        "card_id": 1,
+        "amount_local": {
+            "value": "-12.50",
+            "currency": "EUR"
+        },
+        "amount_billing": {
+            "value": "-12.50",
+            "currency": "EUR"
+        },
+        "amount_original_local": {
+            "value": "-12.50",
+            "currency": "EUR"
+        },
+        "amount_original_billing": {
+            "value": "-12.50",
+            "currency": "EUR"
+        },
+        "amount_fee": {
+            "value": "0.50",
+            "currency": "EUR"
+        },
+        "created": "2017-11-17 21:59:53.279077",
+        "updated": "2017-11-17 21:59:53.279077",
+        "decision": "decision",
+        "decision_description": "decision_description",
+        "decision_description_translated": "decision_description_translated",
+        "description": "description",
+        "authorisation_status": "authorisation_status",
+        "authorisation_type": "authorisation_type",
+        "pan_entry_mode_user": "ATM",
+        "city": "Amersfoort",
+        "alias": {
+            "iban": "NL12BUNQ0300065264",
+            "display_name": "Finnegan Eenmanszaak",
+            "avatar": {
+                "uuid": "203143d3-7916-4fd1-a5ba-fe885369b1ec",
+                "anchor_uuid": null,
+                "image": [
+                    {
+                        "attachment_public_uuid":
+                        "118895d5-48c6-42c4-8aa9-ac8d5c2a0621",
+                        "content_type": "image/jpeg",
+                        "height": 380,
+                        "width": 520
+                    }
+                ]
+            },
+            "country": "NL",
+            "bunq_me": {
+                "type": "EMAIL",
+                "value": "bravo@bunq.com",
+                "name": "Bravo Bunq"
+            },
+            "is_light": false,
+            "swift_bic": "BUNQNL2A",
+            "swift_account_number": "123456789"
+        },
+        "counterparty_alias": {
+            "iban": "NL12BUNQ0300065264",
+            "display_name": "Mary",
+            "avatar": {
+                "uuid": "7f362041-a4aa-4809-b186-6e503c402549",
+                "anchor_uuid": "f0de919f-8c36-46ee-acb7-ea9c35c1b231",
+                "image": [
+                    {
+                        "attachment_public_uuid":
+                            "7f362041-a4aa-4809-b186-6e503c402549",
+                        "content_type": "image/jpeg",
+                        "height": 380,
+                        "width": 520
+                    }
+                ]
+            },
+            "country": "NL",
+            "bunq_me": {
+                "type": "EMAIL",
+                "value": "bravo@bunq.com",
+                "name": ""
+            },
+            "is_light": false,
+            "swift_bic": "BUNQNL2A",
+            "swift_account_number": "123456789"
+        },
+        "label_card": {
+            "uuid": "252e-fb1e-04b74214-b9e9467c3-c6d2fbf",
+            "type": "MAESTRO",
+            "second_line": "Groceries card",
+            "expiry_date": "2017-06-13",
+            "status": "ACTIVE",
+            "label_user": {
+                "uuid": "252e-fb1e-04b74214-b9e9467c3-c6d2fbf",
+                "avatar": {
+                    "uuid": "7f362041-a4aa-4809-b186-6e503c402549",
+                    "anchor_uuid": "f0de919f-8c36-46ee-acb7-ea9c35c1b231",
+                    "image": [
+                        {
+                            "attachment_public_uuid":
+                                "7f362041-a4aa-4809-b186-6e503c402549",
+                            "content_type": "image/jpeg",
+                            "height": 380,
+                            "width": 520
+                        }
+                    ]
+                },
+                "public_nick_name": "Mary",
+                "display_name": "Mary",
+                "country": "NL"
+            }
+        },
+        "token_status": "",
+        "reservation_expiry_time": "",
+        "applied_limit": "",
+        "allow_chat": false,
+        "eligible_whitelist_id": 1
+    }
+}

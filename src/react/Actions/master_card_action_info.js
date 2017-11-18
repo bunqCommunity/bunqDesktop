@@ -1,4 +1,5 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+// const testInfo = require("../Helpers/MasterCardActionData.json");
 
 export function masterCardActionSetInfo(
     master_card_action_info,
@@ -22,6 +23,17 @@ export function masterCardActionInfoUpdate(
     master_card_action_id
 ) {
     return dispatch => {
+        // setTimeout(() => {
+        //     dispatch(
+        //         masterCardActionSetInfo(
+        //             testInfo,
+        //             account_id,
+        //             master_card_action_id
+        //         )
+        //     );
+        //     dispatch(masterCardActionInfoNotLoading());
+        // }, 500);
+
         dispatch(masterCardActionInfoLoading());
         BunqJSClient.api.masterCardAction
             .get(user_id, account_id, master_card_action_id)

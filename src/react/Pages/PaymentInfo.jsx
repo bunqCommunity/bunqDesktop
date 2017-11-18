@@ -12,7 +12,7 @@ import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
-import { paymentText } from "../Helpers/StatusTexts";
+import { paymentText, paymentTypeParser } from "../Helpers/StatusTexts";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import TransactionHeader from "../Components/TransactionHeader";
 
@@ -67,20 +67,6 @@ class PaymentInfo extends React.Component {
         }
     }
 
-    getBasicInfo(info) {
-        let result = {};
-
-        result.avatar = info.avatar;
-        result.imageUUID = false;
-        if (result.avatar) {
-            result.imageUUID = result.avatar.image[0].attachment_public_uuid;
-        }
-        result.displayName = info.display_name;
-        result.iban = info.iban;
-
-        return result;
-    }
-
     render() {
         const { accountsSelectedAccount, payment, paymentLoading } = this.props;
         const paramAccountId = this.props.match.params.accountId;
@@ -108,10 +94,7 @@ class PaymentInfo extends React.Component {
             const paymentAmount = payment.amount.value;
             const formattedPaymentAmount = formatMoney(paymentAmount);
             const paymentLabel = paymentText(payment);
-
-            const counterPartyInfo = this.getBasicInfo(
-                payment.counterparty_alias
-            );
+            const counterPartyIban = payment.counterparty_alias.iban;
 
             content = (
                 <Grid
@@ -168,14 +151,14 @@ class PaymentInfo extends React.Component {
                             <ListItem>
                                 <ListItemText
                                     primary={"Payment Type"}
-                                    secondary={payment.type}
+                                    secondary={paymentTypeParser(payment.type)}
                                 />
                             </ListItem>
                             <Divider />
                             <ListItem>
                                 <ListItemText
                                     primary={"IBAN"}
-                                    secondary={counterPartyInfo.iban}
+                                    secondary={counterPartyIban}
                                 />
                             </ListItem>
                             <Divider />
