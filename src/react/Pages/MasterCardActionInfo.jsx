@@ -101,16 +101,12 @@ class MasterCardActionInfo extends React.Component {
                 </Grid>
             );
         } else {
-            const masterCardAction = masterCardActionInfo.MasterCardAction;
+            const masterCardAction = masterCardActionInfo[0].MasterCardAction;
             const paymentAmount = masterCardAction.amount_local.value;
             const paymentDate = humanReadableDate(masterCardAction.created);
             const formattedPaymentAmount = formatMoney(paymentAmount);
             const paymentLabel = masterCardActionText(masterCardAction);
             const counterPartyIban = masterCardAction.counterparty_alias.iban;
-            const paymentColor =
-                paymentAmount < 0
-                    ? theme.palette.common.sentPayment
-                    : theme.palette.common.receivedPayment;
 
             content = (
                 <Grid

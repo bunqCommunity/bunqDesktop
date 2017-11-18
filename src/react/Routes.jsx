@@ -142,7 +142,7 @@ export default class Routes extends React.Component {
                         />
 
                         <PrivateRoute
-                            path="/mastercard-action-info/:mastercardActionId/:accountId?"
+                            path="/mastercard-action-info/:masterCardActionId/:accountId?"
                             apiKey={this.props.apiKey}
                             userType={this.props.userType}
                             derivedPassword={this.props.derivedPassword}
