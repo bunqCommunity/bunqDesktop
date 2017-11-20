@@ -3,7 +3,6 @@ import { withTheme } from "material-ui/styles";
 import IconButton from "material-ui/IconButton";
 import Drawer from "material-ui/Drawer";
 import Typography from "material-ui/Typography"
-import TextField from "material-ui/TextField";
 import Radio, { RadioGroup } from "material-ui/Radio";
 import List, {
     ListItem,
