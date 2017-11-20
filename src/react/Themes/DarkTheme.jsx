@@ -15,7 +15,8 @@ export default {
             pending: "#2196f3",
             accepted: "#8DC55F",
             rejected: "#FF3333",
-            revoked: "#a4a6a4"
+            revoked: "#a4a6a4",
+            expired: '#a4a6a4'
         },
         bunqMeTabs: {
             awaiting_payment: "#62ca04",
@@ -36,6 +37,9 @@ export default {
                 textDecoration: "line-through"
             },
             revoked: {
+                textDecoration: "line-through"
+            },
+            expired: {
                 textDecoration: "line-through"
             }
         }

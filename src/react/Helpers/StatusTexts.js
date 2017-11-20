@@ -21,6 +21,8 @@ export const requestInquiryText = requestInquiry => {
             return "Your request was denied";
         case "REVOKED":
             return "You cancelled the request";
+        case "EXPIRED":
+            return "Request is expired"
     }
 };
 

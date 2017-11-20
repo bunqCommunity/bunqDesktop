@@ -77,6 +77,13 @@ class MoneyAmountLabel extends React.Component {
                     ...theme.styles.requestInquiry.revoked,
                     ...style
                 };
+
+            case "EXPIRED":
+                return {
+                    color: theme.palette.requestInquiry.expired,
+                    ...theme.styles.requestInquiry.expired,
+                    ...style
+                };
         }
 
         // return default style
