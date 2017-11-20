@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import Divider from "material-ui/Divider";
 import { LinearProgress } from "material-ui/Progress";
 import List, {
-    ListItem,
     ListItemSecondaryAction,
     ListSubheader
 } from "material-ui/List";
