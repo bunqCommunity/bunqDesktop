@@ -49,13 +49,9 @@ class AccountListItem extends React.Component {
             return null;
         }
 
-        let formattedBalance = formatMoney(
-            account.balance ? account.balance.value : 0
-        );
-
-        if (this.props.hideBalance) {
-            formattedBalance = "HIDDEN";
-        }
+        const formattedBalance = this.props.hideBalance
+            ? ""
+            : formatMoney(account.balance ? account.balance.value : 0);
 
         return (
             <ListItem

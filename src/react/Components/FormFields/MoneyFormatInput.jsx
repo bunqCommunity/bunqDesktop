@@ -9,7 +9,6 @@ const MoneyFormatInput = (props) => {
     return (
         <NumberFormat
             required
-            fullWidth
             margin="normal"
             placeholder="€ 0.00"
             className="money-input"
@@ -18,7 +17,6 @@ const MoneyFormatInput = (props) => {
             decimalSeparator={preferedDecimalSeparator}
             thousandSeparator={preferedThousandSeparator}
             prefix={"€ "}
-           // customInput={Input}
             {...props}
         />
     );

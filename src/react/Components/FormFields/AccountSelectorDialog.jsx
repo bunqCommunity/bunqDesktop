@@ -37,7 +37,7 @@ const AccountItem = ({ account, onClick, BunqJSClient, hideBalance }) => {
             </Avatar>
             <ListItemText
                 primary={account.description}
-                secondary={hideBalance ? "HIDDEN" : formattedBalance}
+                secondary={hideBalance ? "" : formattedBalance}
             />
         </ListItem>
     );
@@ -92,6 +92,7 @@ class AccountSelectorDialog extends React.Component {
                     account={accounts[value].MonetaryAccountBank}
                     onClick={this.openDialog}
                     BunqJSClient={BunqJSClient}
+                    hideBalance={this.props.hideBalance}
                 />
             );
         } else {
