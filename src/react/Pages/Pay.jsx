@@ -322,9 +322,8 @@ class Pay extends React.Component {
                             <ListItem>
                                 <ListItemText
                                     primary="From"
-                                    secondary={`${account.description} ${account
-                                        .balance.value} ${account.balance
-                                        .currency}`}
+                                    secondary={`${account.description} ${account.balance.value}
+                                    ${account.balance.currency}`}
                                 />
                             </ListItem>
                             <ListItem>
@@ -563,11 +562,11 @@ class Pay extends React.Component {
                             error={this.state.amountError}
                             fullWidth
                         >
-                            <InputLabel htmlFor="amount">Amount</InputLabel>
                             <MoneyFormatInput
                                 id="amount"
                                 value={this.state.amount}
                                 style={styles.formattedInput}
+
                                 onValueChange={this.handleChangeFormatted}
                                 onKeyPress={ev => {
                                     if (

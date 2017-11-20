@@ -366,7 +366,6 @@ class RequestInquiry extends React.Component {
                             error={this.state.amountError}
                             fullWidth
                         >
-                            <InputLabel htmlFor="amount">Amount</InputLabel>
                             <MoneyFormatInput
                                 id="amount"
                                 value={this.state.amount}

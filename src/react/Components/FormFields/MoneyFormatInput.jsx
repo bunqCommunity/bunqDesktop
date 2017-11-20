@@ -1,6 +1,5 @@
 import React from "react";
 import NumberFormat from "react-number-format";
-import Input from "material-ui/Input";
 import {
     preferedThousandSeparator,
     preferedDecimalSeparator
@@ -12,12 +11,14 @@ const MoneyFormatInput = (props) => {
             required
             fullWidth
             margin="normal"
+            placeholder="€ 0.00"
+            className="money-input"
             decimalScale={2}
             fixedDecimalScale={true}
             decimalSeparator={preferedDecimalSeparator}
             thousandSeparator={preferedThousandSeparator}
-            prefix={"€"}
-            customInput={Input}
+            prefix={"€ "}
+           // customInput={Input}
             {...props}
         />
     );
