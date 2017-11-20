@@ -5,6 +5,7 @@ import Grid from "material-ui/Grid";
 import { withStyles } from "material-ui/styles";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import createMuiTheme from "material-ui/styles/createMuiTheme";
+import { ipcRenderer } from 'electron'
 
 // custom components
 import Logger from "../Helpers/Logger";
@@ -60,6 +61,15 @@ class Layout extends React.Component {
         this.state = {
             initialBunqConnect: false
         };
+
+
+        ipcRenderer.on('change-path', (event, path) => {
+            const currentPath = this.props.history.location.pathname;
+
+            if (currentPath !== path) {
+                this.props.history.push(path);
+            }
+        });
     }
 
     componentDidMount() {
