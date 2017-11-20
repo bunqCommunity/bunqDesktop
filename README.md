@@ -1,5 +1,5 @@
 <p align="center">
- <img align="center" src="https://i.gyazo.com/3b90924a79563ff23f00d081cc3b5530.gif" />
+ <img align="center" src="https://i.gyazo.com/aacd73b20ef1a2b0ea4e94c8569a6ffd.gif" />
 </p>
 <h1 align="center">BunqDesktop</h1>
 <h4 align="center">
