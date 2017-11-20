@@ -2,11 +2,15 @@ import React from "react";
 import { connect } from "react-redux";
 import Divider from "material-ui/Divider";
 import { LinearProgress } from "material-ui/Progress";
-import List, { ListItemSecondaryAction, ListSubheader } from "material-ui/List";
+import List, {
+    ListItem,
+    ListItemSecondaryAction,
+    ListSubheader
+} from "material-ui/List";
 
 import BunqMeTabListItem from "./ListItems/BunqMeTabListItem";
 import PaymentListItem from "./ListItems/PaymentListItem";
-import MasterCardActionListItem from "./ListItems/MasterCardActionListItem";
+// import MasterCardActionListItem from "./ListItems/MasterCardActionListItem";
 import RequestResponseListItem from "./ListItems/RequestResponseListItem";
 import RequestInquiryListItem from "./ListItems/RequestInquiryListItem";
 
@@ -14,6 +18,7 @@ import ClearBtn from "../Components/FilterComponents/ClearFilter";
 import DisplayDrawerBtn from "../Components/FilterComponents/FilterDrawer";
 import { openSnackbar } from "../Actions/snackbar";
 import { bunqMeTabPut } from "../Actions/bunq_me_tab";
+import { humanReadableDate } from "../Helpers/Utils";
 
 const styles = {
     list: {
@@ -173,20 +178,47 @@ class CombinedList extends React.Component {
         const requestResponses = this.requestResponseMapper();
         const requestInquiries = this.requestInquiryMapper();
 
-        // combine the list and order by the prefered date for this item
-        const combinedFilteredList = [
-            ...bunqMeTabs,
-            ...requestResponses,
-            ...requestInquiries,
-            ...payments
-        ].sort(function(a, b) {
-            return new Date(b.filterDate) - new Date(a.filterDate);
-        });
+        let groupedItems = {};
 
-        // get only the component from the item
-        const combinedComponentList = combinedFilteredList.map(
-            item => item.component
-        );
+        // combine the list, order by date and group by day
+        [...bunqMeTabs, ...requestResponses, ...requestInquiries, ...payments]
+            .sort(function(a, b) {
+                return new Date(b.filterDate) - new Date(a.filterDate);
+            })
+            .map(item => {
+                const dateFull = new Date(item.filterDate);
+                const date = new Date(
+                    dateFull.getFullYear(),
+                    dateFull.getMonth(),
+                    dateFull.getDate(),
+                    0,
+                    0,
+                    0
+                );
+                if (!groupedItems[date]) {
+                    groupedItems[date] = { date: dateFull, components: [] };
+                }
+
+                // add item to this date group
+                groupedItems[date].components.push(item.component);
+            });
+
+        const combinedComponentList = [];
+        Object.keys(groupedItems).map(dateLabel => {
+            const groupedItem = groupedItems[dateLabel];
+            const groupTitleText = humanReadableDate(groupedItem.date, false);
+
+            // add a header component for this date
+            combinedComponentList.push([
+                <ListSubheader>{groupTitleText}</ListSubheader>,
+                <Divider />
+            ]);
+
+            // add the components to the list
+            return groupedItems[dateLabel].components.map(component =>
+                combinedComponentList.push(component)
+            );
+        });
 
         return (
             <List style={styles.left}>

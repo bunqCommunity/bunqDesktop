@@ -49,22 +49,30 @@ export const UTCDateToLocalDate = date => {
 };
 
 // human readable date from date string or object (nl for dutch)
-export const humanReadableDate = (date, localization = "en-us") => {
-    const currentDate = new Date();
+export const humanReadableDate = (
+    date,
+    displayHoursMins = true,
+    localization = "en-us"
+) => {
+    let currentDate = new Date();
+    let createDate = date;
     if (typeof date === "string") {
-        var createDate = UTCDateToLocalDate(date);
+        createDate = UTCDateToLocalDate(date);
     }
+
     const month = createDate.toLocaleString(localization, { month: "long" });
 
-    // default format
-    let formatResult = `${createDate.getDate()} ${month} ${createDate.toLocaleTimeString()}`;
+    // hide hours:minutes:seconds if disabled
+    const hoursMinutes = displayHoursMins
+        ? createDate.toLocaleTimeString()
+        : "";
 
     // different year, add it to the label
     if (currentDate.getFullYear() !== createDate.getFullYear()) {
-        formatResult = `${createDate.getDate()} ${month}, ${createDate.getFullYear()} ${createDate.toLocaleTimeString()}`;
+        return `${createDate.getDate()} ${month}, ${createDate.getFullYear()} ${hoursMinutes}`;
     }
-
-    return formatResult;
+    // only date/month and time
+    return `${createDate.getDate()} ${month} ${hoursMinutes}`;
 };
 
 export const generateGUID = () => {
