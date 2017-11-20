@@ -24,6 +24,7 @@ class MoneyFormatInput extends React.Component {
                 decimalSeparator={preferedDecimalSeparator}
                 thousandSeparator={preferedThousandSeparator}
                 prefix={"€ "}
+                {...this.props}
             />
         );
     }
