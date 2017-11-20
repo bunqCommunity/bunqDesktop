@@ -7,6 +7,7 @@ import { devMenuTemplate } from "./menu/dev_menu_template";
 import { editMenuTemplate } from "./menu/edit_menu_template";
 import createWindow from "./helpers/window";
 import registerShortcuts from "./helpers/shortcuts";
+import registerTouchBar from './helpers/touchbar';
 
 // Special module holding environment variables which you declared
 // in config/env_xxx.json file.
@@ -62,6 +63,8 @@ app.on("ready", () => {
     );
 
     registerShortcuts(mainWindow, app);
+    registerTouchBar(mainWindow);
+
 
     if (env.name === "development") {
         mainWindow.openDevTools();
