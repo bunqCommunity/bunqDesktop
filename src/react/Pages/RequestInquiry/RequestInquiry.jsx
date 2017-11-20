@@ -34,9 +34,6 @@ const styles = {
     paper: {
         padding: 24,
         textAlign: "left"
-    },
-    formattedInput: {
-        fontSize: 30
     }
 };
 
@@ -369,7 +366,6 @@ class RequestInquiry extends React.Component {
                             <MoneyFormatInput
                                 id="amount"
                                 value={this.state.amount}
-                                style={styles.formattedInput}
                                 onValueChange={this.handleChangeFormatted}
                                 onKeyPress={ev => {
                                     if (

@@ -5,21 +5,28 @@ import {
     preferedDecimalSeparator
 } from "../../Helpers/Utils";
 
-const MoneyFormatInput = (props) => {
-    return (
-        <NumberFormat
-            required
-            margin="normal"
-            placeholder="€ 0.00"
-            className="money-input"
-            decimalScale={2}
-            fixedDecimalScale={true}
-            decimalSeparator={preferedDecimalSeparator}
-            thousandSeparator={preferedThousandSeparator}
-            prefix={"€ "}
-            {...props}
-        />
-    );
-};
+import { withTheme } from "material-ui/styles";
 
-export default MoneyFormatInput;
+class MoneyFormatInput extends React.Component {
+    render() {
+        return (
+            <NumberFormat
+                required
+                margin="normal"
+                placeholder="€ 0.00"
+                style={{
+                    fontSize: 30,
+                    ...this.props.theme.styles.moneyInput,
+                }}
+                className="money-input"
+                decimalScale={2}
+                fixedDecimalScale={true}
+                decimalSeparator={preferedDecimalSeparator}
+                thousandSeparator={preferedThousandSeparator}
+                prefix={"€ "}
+            />
+        );
+    }
+}
+
+export default withTheme()(MoneyFormatInput);

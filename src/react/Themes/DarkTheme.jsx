@@ -26,6 +26,9 @@ export default {
         type: "dark"
     },
     styles: {
+        moneyInput: {
+            color: '#fff'
+        },
         requestResponse: {
             pending: {},
             rejected: {

@@ -130,6 +130,9 @@ export default {
         }
     },
     styles: {
+        moneyInput: {
+            color: '#000'
+        },
         requestResponse: {
             pending: {},
             rejected: {
