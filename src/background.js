@@ -65,7 +65,6 @@ app.on("ready", () => {
     registerShortcuts(mainWindow, app);
     registerTouchBar(mainWindow);
 
-
     if (env.name === "development") {
         mainWindow.openDevTools();
     } else {

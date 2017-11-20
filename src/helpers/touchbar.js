@@ -5,19 +5,31 @@ const { TouchBarButton } = TouchBar;
 export default (window) => {
 
     const dashboardButton = new TouchBarButton({
-        label: '🏠 Dashboard'
+        label: '🏠 Dashboard',
+        click: () => {
+            window.webContents.send('change-path', '/')
+        }
     });
 
     const payButton = new TouchBarButton({
-        label: '👆 Pay'
+        label: '👆 Pay',
+        click: () => {
+            window.webContents.send('change-path', '/pay')
+        }
     });
 
     const requestButton = new TouchBarButton({
-        label: '👇 Request'
+        label: '👇 Request',
+        click: () => {
+            window.webContents.send('change-path', '/request')
+        }
     });
 
     const bunqMeButton = new TouchBarButton({
-        label: '💰 bunq.me requests'
+        label: '💰 bunq.me requests',
+        click: () => {
+            window.webContents.send('change-path', '/bunqme-tab')
+        }
     });
 
     const bar = new TouchBar([
@@ -27,5 +39,5 @@ export default (window) => {
         bunqMeButton
     ]);
 
-    window.setTouchBar(bar)
+    window.setTouchBar(bar);
 }
