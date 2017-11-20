@@ -1,8 +1,8 @@
 import React from "react";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import Divider from "material-ui/Divider";
-import {LinearProgress} from "material-ui/Progress";
-import List, {ListItemSecondaryAction, ListSubheader} from "material-ui/List";
+import { LinearProgress } from "material-ui/Progress";
+import List, { ListItemSecondaryAction, ListSubheader } from "material-ui/List";
 
 import BunqMeTabListItem from "./ListItems/BunqMeTabListItem";
 import PaymentListItem from "./ListItems/PaymentListItem";
@@ -12,8 +12,8 @@ import RequestInquiryListItem from "./ListItems/RequestInquiryListItem";
 
 import ClearBtn from "../Components/FilterComponents/ClearFilter";
 import DisplayDrawerBtn from "../Components/FilterComponents/FilterDrawer";
-import {openSnackbar} from "../Actions/snackbar";
-import {bunqMeTabPut} from "../Actions/bunq_me_tab";
+import { openSnackbar } from "../Actions/snackbar";
+import { bunqMeTabPut } from "../Actions/bunq_me_tab";
 
 const styles = {
     list: {
@@ -45,6 +45,7 @@ class CombinedList extends React.Component {
             };
         });
     };
+
     paymentFilter = payment => {
         if (this.props.paymentVisibility === false) {
             return false;
@@ -60,31 +61,6 @@ class CombinedList extends React.Component {
             }
         }
         return true;
-    };
-
-    masterCardActionMapper = () => {
-        return this.props.masterCardActions
-            .filter(this.masterCardActionFilter)
-            .map(masterCardAction => {
-                return {
-                    component: (
-                        <MasterCardActionListItem
-                            masterCardAction={masterCardAction.MasterCardAction}
-                            BunqJSClient={this.props.BunqJSClient}
-                        />
-                    ),
-                    filterDate: masterCardAction.MasterCardAction.updated,
-                    info: masterCardAction.MasterCardAction
-                };
-            });
-    };
-
-    masterCardActionFilter = masterCardAction => {
-        if (this.props.paymentVisibility === false) {
-            return false;
-        }
-
-        return this.props.paymentType !== "received";
     };
 
     bunqMeTabsMapper = () => {
@@ -115,21 +91,11 @@ class CombinedList extends React.Component {
         }
         switch (this.props.bunqMeTabType) {
             case "active":
-                if (bunqMeTab.BunqMeTab.status !== "WAITING_FOR_PAYMENT") {
-                    return false;
-                }
-                return true;
+                return bunqMeTab.BunqMeTab.status === "WAITING_FOR_PAYMENT";
             case "cancelled":
-                if (bunqMeTab.BunqMeTab.status !== "CANCELLED") {
-                    return false;
-                }
+                return bunqMeTab.BunqMeTab.status === "CANCELLED";
             case "expired":
-                if (bunqMeTab.BunqMeTab.status !== "EXPIRED") {
-                    return false;
-                }
-            case "default":
-            default:
-                return true;
+                return bunqMeTab.BunqMeTab.status === "EXPIRED";
         }
         return true;
     };
@@ -156,8 +122,10 @@ class CombinedList extends React.Component {
             return false;
         }
 
-        return !(this.props.requestType !== "sent" &&
-            this.props.requestType !== "default");
+        return !(
+            this.props.requestType !== "sent" &&
+            this.props.requestType !== "default"
+        );
     };
 
     requestInquiryMapper = () => {
@@ -182,8 +150,10 @@ class CombinedList extends React.Component {
             return false;
         }
 
-        return !(this.props.requestType !== "received" &&
-            this.props.requestType !== "default");
+        return !(
+            this.props.requestType !== "received" &&
+            this.props.requestType !== "default"
+        );
     };
 
     render() {
@@ -191,17 +161,15 @@ class CombinedList extends React.Component {
             this.props.bunqMeTabsLoading ||
             this.props.paymentsLoading ||
             this.props.requestResponsesLoading ||
-            this.props.requestInquiriesLoading ||
-            this.props.masterCardActionsLoading ? (
-                <LinearProgress/>
+            this.props.requestInquiriesLoading ? (
+                <LinearProgress />
             ) : (
-                <Divider/>
+                <Divider />
             );
 
         // create arrays of the different endpoint types
         const bunqMeTabs = this.bunqMeTabsMapper();
         const payments = this.paymentMapper();
-        const masterCardActions = this.masterCardActionMapper();
         const requestResponses = this.requestResponseMapper();
         const requestInquiries = this.requestInquiryMapper();
 
@@ -210,9 +178,8 @@ class CombinedList extends React.Component {
             ...bunqMeTabs,
             ...requestResponses,
             ...requestInquiries,
-            ...payments,
-          //  ...masterCardActions
-        ].sort(function (a, b) {
+            ...payments
+        ].sort(function(a, b) {
             return new Date(b.filterDate) - new Date(a.filterDate);
         });
 
@@ -226,8 +193,8 @@ class CombinedList extends React.Component {
                 <ListSubheader>
                     Payments and requests
                     <ListItemSecondaryAction>
-                        <ClearBtn/>
-                        <DisplayDrawerBtn/>
+                        <ClearBtn />
+                        <DisplayDrawerBtn />
                     </ListItemSecondaryAction>
                 </ListSubheader>
                 {loadingContent}
@@ -259,16 +226,13 @@ const mapStateToProps = state => {
         requestResponses: state.request_responses.request_responses,
         requestResponsesLoading: state.request_responses.loading,
 
-        masterCardActions: state.master_card_actions.master_card_actions,
-        masterCardActionsLoading: state.master_card_actions.loading,
-
         payments: state.payments.payments,
         paymentsLoading: state.payments.loading
     };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-    const {BunqJSClient} = ownProps;
+    const { BunqJSClient } = ownProps;
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
         bunqMeTabPut: (userId, accountId, tabId, status) =>

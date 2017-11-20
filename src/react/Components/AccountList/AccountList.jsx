@@ -11,7 +11,6 @@ import AccountListItem from "./AccountListItem";
 import { accountsSelectAccount, accountsUpdate } from "../../Actions/accounts";
 import { paymentInfoUpdate } from "../../Actions/payments";
 import { requestResponsesUpdate } from "../../Actions/request_responses";
-import { masterCardActionsUpdate } from "../../Actions/master_card_actions";
 import { bunqMeTabsUpdate } from "../../Actions/bunq_me_tabs";
 import { requestInquiriesUpdate } from "../../Actions/request_inquiries";
 
@@ -57,7 +56,6 @@ class AccountList extends React.Component {
             this.props.bunqMeTabsUpdate(userId, accountId);
             this.props.requestResponsesUpdate(userId, accountId);
             this.props.requestInquiriesUpdate(userId, accountId);
-            this.props.masterCardActionsUpdate(userId, accountId);
         }
     };
 
@@ -176,16 +174,6 @@ const mapStateToProps = state => {
         accountsAccountId: state.accounts.selectedAccount,
         accountsLoading: state.accounts.loading,
 
-        requestResponsesAccountId: state.request_responses.account_id,
-        requestResponses: state.request_responses.request_responses,
-        requestResponsesLoading: state.request_responses.loading,
-
-        masterCardAccountId: state.master_card_actions.account_id,
-        masterCardActions: state.master_card_actions.master_card_actions,
-        masterCardActionsLoading: state.master_card_actions.loading,
-
-        paymentsAccountId: state.payments.account_id,
-        payments: state.payments.payments,
         paymentsLoading: state.payments.loading
     };
 };
@@ -199,8 +187,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(requestInquiriesUpdate(BunqJSClient, userId, accountId)),
         requestResponsesUpdate: (userId, accountId) =>
             dispatch(requestResponsesUpdate(BunqJSClient, userId, accountId)),
-        masterCardActionsUpdate: (userId, accountId) =>
-            dispatch(masterCardActionsUpdate(BunqJSClient, userId, accountId)),
         bunqMeTabsUpdate: (userId, accountId) =>
             dispatch(bunqMeTabsUpdate(BunqJSClient, userId, accountId)),
         accountsUpdate: userId =>
