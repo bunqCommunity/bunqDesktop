@@ -1,8 +1,8 @@
 import React from "react";
-import { connect } from "react-redux";
+import {connect} from "react-redux";
 import Divider from "material-ui/Divider";
-import { LinearProgress } from "material-ui/Progress";
-import List, { ListItemSecondaryAction, ListSubheader } from "material-ui/List";
+import {LinearProgress} from "material-ui/Progress";
+import List, {ListItemSecondaryAction, ListSubheader} from "material-ui/List";
 
 import BunqMeTabListItem from "./ListItems/BunqMeTabListItem";
 import PaymentListItem from "./ListItems/PaymentListItem";
@@ -12,8 +12,8 @@ import RequestInquiryListItem from "./ListItems/RequestInquiryListItem";
 
 import ClearBtn from "../Components/FilterComponents/ClearFilter";
 import DisplayDrawerBtn from "../Components/FilterComponents/FilterDrawer";
-import { openSnackbar } from "../Actions/snackbar";
-import { bunqMeTabPut } from "../Actions/bunq_me_tab";
+import {openSnackbar} from "../Actions/snackbar";
+import {bunqMeTabPut} from "../Actions/bunq_me_tab";
 
 const styles = {
     list: {
@@ -78,14 +78,13 @@ class CombinedList extends React.Component {
                 };
             });
     };
+
     masterCardActionFilter = masterCardAction => {
         if (this.props.paymentVisibility === false) {
             return false;
         }
-        if (this.props.paymentType === "received") {
-            return false;
-        }
-        return true;
+
+        return this.props.paymentType !== "received";
     };
 
     bunqMeTabsMapper = () => {
@@ -109,6 +108,7 @@ class CombinedList extends React.Component {
                 };
             });
     };
+
     bunqMeTabsFilter = bunqMeTab => {
         if (this.props.bunqMeTabVisibility === false) {
             return false;
@@ -150,17 +150,14 @@ class CombinedList extends React.Component {
                 };
             });
     };
+
     requestResponseFilter = requestResponse => {
         if (this.props.requestVisibility === false) {
             return false;
         }
-        if (
-            this.props.requestType !== "sent" &&
-            this.props.requestType !== "default"
-        ) {
-            return false;
-        }
-        return true;
+
+        return !(this.props.requestType !== "sent" &&
+            this.props.requestType !== "default");
     };
 
     requestInquiryMapper = () => {
@@ -179,17 +176,14 @@ class CombinedList extends React.Component {
                 };
             });
     };
+
     requestInquiryFilter = requestInquiry => {
         if (this.props.requestVisibility === false) {
             return false;
         }
-        if (
-            this.props.requestType !== "received" &&
-            this.props.requestType !== "default"
-        ) {
-            return false;
-        }
-        return true;
+
+        return !(this.props.requestType !== "received" &&
+            this.props.requestType !== "default");
     };
 
     render() {
@@ -199,9 +193,9 @@ class CombinedList extends React.Component {
             this.props.requestResponsesLoading ||
             this.props.requestInquiriesLoading ||
             this.props.masterCardActionsLoading ? (
-                <LinearProgress />
+                <LinearProgress/>
             ) : (
-                <Divider />
+                <Divider/>
             );
 
         // create arrays of the different endpoint types
@@ -217,8 +211,8 @@ class CombinedList extends React.Component {
             ...requestResponses,
             ...requestInquiries,
             ...payments,
-            ...masterCardActions
-        ].sort(function(a, b) {
+          //  ...masterCardActions
+        ].sort(function (a, b) {
             return new Date(b.filterDate) - new Date(a.filterDate);
         });
 
@@ -232,8 +226,8 @@ class CombinedList extends React.Component {
                 <ListSubheader>
                     Payments and requests
                     <ListItemSecondaryAction>
-                        <ClearBtn />
-                        <DisplayDrawerBtn />
+                        <ClearBtn/>
+                        <DisplayDrawerBtn/>
                     </ListItemSecondaryAction>
                 </ListSubheader>
                 {loadingContent}
@@ -274,7 +268,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+    const {BunqJSClient} = ownProps;
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
         bunqMeTabPut: (userId, accountId, tabId, status) =>
