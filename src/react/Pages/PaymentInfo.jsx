@@ -90,7 +90,7 @@ class PaymentInfo extends React.Component {
             );
         } else {
             const paymentDescription = payment.description;
-            const paymentDate = humanReadableDate(payment.created);
+            const paymentDate = humanReadableDate(payment.updated);
             const paymentAmount = payment.amount.value;
             const formattedPaymentAmount = formatMoney(paymentAmount);
             const paymentLabel = paymentText(payment);
