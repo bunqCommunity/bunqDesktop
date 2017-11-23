@@ -87,6 +87,7 @@ export default (state = defaultState, action) => {
                 use_no_password: true
             };
 
+        case "REGISTRATION_CLEAR_PASSWORD":
         case "REGISTRATION_USE_PASSWORD":
             store.set(USE_NO_PASSWORD_LOCATION, false);
             return {
