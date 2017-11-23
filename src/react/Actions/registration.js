@@ -61,12 +61,24 @@ export function registrationLoadApiKey(derivedPassword) {
         decryptString(encryptedApiKey, derivedPassword.key, encryptedApiKeyIV)
             .then(decryptedString => {
                 dispatch(registrationNotLoading());
-                dispatch({
-                    type: "REGISTRATION_SET_API_KEY",
-                    payload: {
-                        api_key: decryptedString
-                    }
-                });
+
+                // validate decrypted result
+                if (decryptedString.length !== 64) {
+                    // clear the password so the user can try again
+                    dispatch(registrationClearPassword());
+                    dispatch(
+                        openSnackbar(
+                            "We failed to load the stored API key. Try again or re-enter the key."
+                        )
+                    );
+                } else {
+                    dispatch({
+                        type: "REGISTRATION_SET_API_KEY",
+                        payload: {
+                            api_key: decryptedString
+                        }
+                    });
+                }
             })
             .catch(_ => {
                 dispatch(registrationNotLoading());

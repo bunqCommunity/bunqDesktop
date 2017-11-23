@@ -53,7 +53,7 @@ class LoginPassword extends React.Component {
     componentDidMount() {
         if (this.props.hasStoredApiKey) {
             // we have a stored api key
-            if(this.props.useNoPassword){
+            if (this.props.useNoPassword) {
                 // login with default password
                 this.props.useNoPasswordLogin();
             }
@@ -97,6 +97,7 @@ class LoginPassword extends React.Component {
             status_message,
             registrationLoading,
             hasStoredApiKey,
+            useNoPassword,
             derivedPassword
         } = this.props;
 
@@ -181,23 +182,28 @@ class LoginPassword extends React.Component {
                     </Button>
                 ) : null}
 
-                <div style={{ marginTop: 20 }}>
-                    <Typography type="body2">
-                        Alternatively, you can choose to not encrypt your data.
-                    </Typography>
-                    <Typography type="body2">
-                        If anyone gets access to your computer and they know
-                        what they are doing they can get access to your API key!
-                    </Typography>
-                    <Button
-                        raised
-                        color={"accent"}
-                        style={styles.loginButton}
-                        onClick={this.props.useNoPasswordLogin}
-                    >
-                        Use no password
-                    </Button>
-                </div>
+                {(hasStoredApiKey === true && useNoPassword === true) ||
+                hasStoredApiKey === false ? (
+                    <div style={{ marginTop: 20 }}>
+                        <Typography type="body2">
+                            Alternatively, you can choose to not encrypt your
+                            data.
+                        </Typography>
+                        <Typography type="body2">
+                            If anyone gets access to your computer and they know
+                            what they are doing they can get access to your API
+                            key!
+                        </Typography>
+                        <Button
+                            raised
+                            color={"accent"}
+                            style={styles.loginButton}
+                            onClick={this.props.useNoPasswordLogin}
+                        >
+                            Use no password
+                        </Button>
+                    </div>
+                ) : null}
             </CardContent>
         );
 
@@ -253,8 +259,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         // use no password
         useNoPasswordLogin: password => dispatch(registrationUseNoPassword()),
-        // use no password
-        usePasswordLogin: password => dispatch(registrationUsePassword()),
+        // use password
+        usePasswordLogin: password => dispatch(registrationUsePassword(password)),
 
         // clear api key from bunqjsclient and bunqdesktop
         clearApiKey: () => dispatch(registrationClearApiKey(BunqJSClient)),
