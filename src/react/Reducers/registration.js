@@ -61,9 +61,12 @@ export default (state = defaultState, action) => {
             };
 
         case "REGISTRATION_CLEAR_API_KEY":
+            // remove the stored key data
             store.remove(SALT_LOCATION);
             store.remove(API_KEY_LOCATION);
             store.remove(API_KEY_IV_LOCATION);
+            // reset use-no-password setting back to default
+            store.set(USE_NO_PASSWORD_LOCATION, false);
             return {
                 ...state,
                 api_key: false,
