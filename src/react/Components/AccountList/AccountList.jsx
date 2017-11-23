@@ -85,25 +85,6 @@ class AccountList extends React.Component {
             this.updateExternal(user.id, accountsAccountId);
         }
 
-        // check if both account and payment have nothing selected
-        if (
-            user.id &&
-            accountsAccountId === false &&
-            paymentsAccountId === false &&
-            paymentsLoading === false
-        ) {
-            // both are false, just load the first item from the accounts
-            if (accounts.length > 0) {
-                const accountId = accounts[0].MonetaryAccountBank.id;
-
-                // select this account for next time
-                this.props.selectAccount(accountId);
-                // fetch payments for the account
-                this.updateExternal(user.id, accountId);
-                this.setState({ fetchedExternal: true });
-            }
-        }
-
         // no accounts loaded
         if (
             accounts.length === 0 &&

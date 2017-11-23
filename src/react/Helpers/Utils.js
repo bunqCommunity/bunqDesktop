@@ -38,14 +38,16 @@ export const validateJSON = input => {
 
 // transforms a date string into a date object in current timezone
 export const UTCDateToLocalDate = date => {
-    if (typeof date === "string") {
-        var utcDate = new Date(date);
+    let utcDate = date;
+    if (typeof date !== "object") {
+        utcDate = new Date(date);
     }
 
-    var offset = utcDate.getTimezoneOffset();
-    var localDate = new Date(utcDate.setMinutes(utcDate.getMinutes() - offset));
+    // get the timezoneOffset
+    const timezoneOffset = utcDate.getTimezoneOffset();
 
-    return localDate;
+    // return a new date with the correct timezone offset
+    return new Date(utcDate.setMinutes(utcDate.getMinutes() - timezoneOffset));
 };
 
 // human readable date from date string or object (nl for dutch)
@@ -56,7 +58,7 @@ export const humanReadableDate = (
 ) => {
     let currentDate = new Date();
     let createDate = date;
-    if (typeof date === "string") {
+    if (typeof date !== "object") {
         createDate = UTCDateToLocalDate(date);
     }
 
