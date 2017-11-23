@@ -61,12 +61,24 @@ export function registrationLoadApiKey(derivedPassword) {
         decryptString(encryptedApiKey, derivedPassword.key, encryptedApiKeyIV)
             .then(decryptedString => {
                 dispatch(registrationNotLoading());
-                dispatch({
-                    type: "REGISTRATION_SET_API_KEY",
-                    payload: {
-                        api_key: decryptedString
-                    }
-                });
+
+                // validate decrypted result
+                if (decryptedString.length !== 64) {
+                    // clear the password so the user can try again
+                    dispatch(registrationClearPassword());
+                    dispatch(
+                        openSnackbar(
+                            "We failed to load the stored API key. Try again or re-enter the key."
+                        )
+                    );
+                } else {
+                    dispatch({
+                        type: "REGISTRATION_SET_API_KEY",
+                        payload: {
+                            api_key: decryptedString
+                        }
+                    });
+                }
             })
             .catch(_ => {
                 dispatch(registrationNotLoading());
@@ -188,6 +200,31 @@ export function registrationSetDerivedPassword(derivedPassword) {
         payload: {
             derivedPassword: derivedPassword
         }
+    };
+}
+
+/**
+ * @returns {function(*)}
+ */
+export function registrationUseNoPassword() {
+    return dispatch => {
+        dispatch({
+            type: "REGISTRATION_USE_NO_PASSWORD"
+        });
+        dispatch(registrationDerivePassword("SOME_DEFAULT_PASSWORD"));
+    };
+}
+
+/**
+ * @param password
+ * @returns {function(*)}
+ */
+export function registrationUsePassword(password) {
+    return dispatch => {
+        dispatch({
+            type: "REGISTRATION_USE_PASSWORD"
+        });
+        dispatch(registrationDerivePassword(password));
     };
 }
 
