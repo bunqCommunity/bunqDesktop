@@ -5,13 +5,18 @@ import {
     API_KEY_LOCATION
 } from "../Actions/registration";
 
+export const USE_NO_PASSWORD_LOCATION = "USE_NO_PASSWORD_LOCATION";
 export const DEVICE_NAME_LOCATION = "BUNQDESKTOP_DEVICE_NAME";
 export const ENVIRONMENT_LOCATION = "BUNQDESKTOP_ENVIRONMENT";
 
-const device_nameDefault =
+const deviceNameDefault =
     store.get(DEVICE_NAME_LOCATION) !== undefined
         ? store.get(DEVICE_NAME_LOCATION)
         : "My Device";
+const useNoPasswordDefault =
+    store.get(USE_NO_PASSWORD_LOCATION) !== undefined
+        ? store.get(USE_NO_PASSWORD_LOCATION)
+        : false;
 const environmentDefault =
     store.get(ENVIRONMENT_LOCATION) !== undefined
         ? store.get(ENVIRONMENT_LOCATION)
@@ -20,9 +25,13 @@ const environmentDefault =
 export const defaultState = {
     // unencrypted api key, this should NEVER be stored elsewhere
     api_key: false,
+
     // if true there is a stored api key
     has_stored_api_key: store.get(API_KEY_LOCATION) !== undefined,
-    device_name: device_nameDefault,
+
+    // if true, the application will try to load the encryption keys using a default password
+    use_no_password: useNoPasswordDefault,
+    device_name: deviceNameDefault,
     environment: environmentDefault,
     derivedPassword: false,
     loading: false,
@@ -66,6 +75,20 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 derivedPassword: action.payload.derivedPassword
+            };
+
+        case "REGISTRATION_USE_NO_PASSWORD":
+            store.set(USE_NO_PASSWORD_LOCATION, true);
+            return {
+                ...state,
+                use_no_password: true
+            };
+
+        case "REGISTRATION_USE_PASSWORD":
+            store.set(USE_NO_PASSWORD_LOCATION, false);
+            return {
+                ...state,
+                use_no_password: false
             };
 
         case "REGISTRATION_CLEAR_PASSWORD":

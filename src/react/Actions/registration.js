@@ -192,6 +192,31 @@ export function registrationSetDerivedPassword(derivedPassword) {
 }
 
 /**
+ * @returns {function(*)}
+ */
+export function registrationUseNoPassword() {
+    return dispatch => {
+        dispatch({
+            type: "REGISTRATION_USE_NO_PASSWORD"
+        });
+        dispatch(registrationDerivePassword("SOME_DEFAULT_PASSWORD"));
+    };
+}
+
+/**
+ * @param password
+ * @returns {function(*)}
+ */
+export function registrationUsePassword(password) {
+    return dispatch => {
+        dispatch({
+            type: "REGISTRATION_USE_PASSWORD"
+        });
+        dispatch(registrationDerivePassword(password));
+    };
+}
+
+/**
  * Generic registraition loading state
  * @returns {{type: string}}
  */

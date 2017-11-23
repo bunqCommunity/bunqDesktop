@@ -12,10 +12,11 @@ import WarningIcon from "material-ui-icons/Warning";
 
 import {
     registrationClearApiKey,
-    registrationDerivePassword,
     registrationSetApiKey,
     registrationSetDeviceName,
-    registrationSetEnvironment
+    registrationSetEnvironment,
+    registrationUseNoPassword,
+    registrationUsePassword
 } from "../Actions/registration";
 
 const styles = {
@@ -49,6 +50,16 @@ class LoginPassword extends React.Component {
         };
     }
 
+    componentDidMount() {
+        if (this.props.hasStoredApiKey) {
+            // we have a stored api key
+            if(this.props.useNoPassword){
+                // login with default password
+                this.props.useNoPasswordLogin();
+            }
+        }
+    }
+
     setRegistration = () => {
         if (this.state.password.length < 7) {
             this.props.openSnackbar(
@@ -58,7 +69,7 @@ class LoginPassword extends React.Component {
         }
 
         if (this.state.passwordValid) {
-            this.props.derivePassword(this.state.password);
+            this.props.usePasswordLogin(this.state.password);
             this.setState({ password: "", passwordValid: false });
         }
     };
@@ -75,16 +86,6 @@ class LoginPassword extends React.Component {
         this.setState({
             passwordValid: password && password.length >= 7
         });
-    };
-
-    useNoPassword = () => {
-        this.setState(
-            {
-                password: "SOME_DEFAULT_PASSWORD",
-                passwordValid: true
-            },
-            this.setRegistration
-        );
     };
 
     clearApiKey = () => {
@@ -192,7 +193,7 @@ class LoginPassword extends React.Component {
                         raised
                         color={"accent"}
                         style={styles.loginButton}
-                        onClick={this.useNoPassword}
+                        onClick={this.props.useNoPasswordLogin}
                     >
                         Use no password
                     </Button>
@@ -237,6 +238,7 @@ const mapStateToProps = state => {
         status_message: state.application.status_message,
 
         hasStoredApiKey: state.registration.has_stored_api_key,
+        useNoPassword: state.registration.use_no_password,
         derivedPassword: state.registration.derivedPassword,
         registrationLoading: state.registration.loading,
 
@@ -249,8 +251,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        derivePassword: password =>
-            dispatch(registrationDerivePassword(password)),
+        // use no password
+        useNoPasswordLogin: password => dispatch(registrationUseNoPassword()),
+        // use no password
+        usePasswordLogin: password => dispatch(registrationUsePassword()),
 
         // clear api key from bunqjsclient and bunqdesktop
         clearApiKey: () => dispatch(registrationClearApiKey(BunqJSClient)),
