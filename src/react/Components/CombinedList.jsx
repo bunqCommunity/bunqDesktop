@@ -2,10 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import Divider from "material-ui/Divider";
 import { LinearProgress } from "material-ui/Progress";
-import List, {
-    ListItemSecondaryAction,
-    ListSubheader
-} from "material-ui/List";
+import List, { ListItemSecondaryAction, ListSubheader } from "material-ui/List";
 
 import BunqMeTabListItem from "./ListItems/BunqMeTabListItem";
 import PaymentListItem from "./ListItems/PaymentListItem";
@@ -194,18 +191,26 @@ class CombinedList extends React.Component {
                     0,
                     0
                 );
-                if (!groupedItems[date]) {
-                    groupedItems[date] = { date: dateFull, components: [] };
+                if (!groupedItems[date.getTime()]) {
+                    groupedItems[date.getTime()] = {
+                        date: dateFull,
+                        components: []
+                    };
                 }
 
                 // add item to this date group
-                groupedItems[date].components.push(item.component);
+                groupedItems[date.getTime()].components.push(item.component);
             });
 
         const combinedComponentList = [];
         Object.keys(groupedItems).map(dateLabel => {
             const groupedItem = groupedItems[dateLabel];
-            const groupTitleText = humanReadableDate(groupedItem.date, false);
+
+            // get the human readable text for this date group
+            const groupTitleText = humanReadableDate(
+                parseFloat(dateLabel),
+                false
+            );
 
             // add a header component for this date
             combinedComponentList.push([
@@ -214,7 +219,7 @@ class CombinedList extends React.Component {
             ]);
 
             // add the components to the list
-            return groupedItems[dateLabel].components.map(component =>
+            return groupedItem.components.map(component =>
                 combinedComponentList.push(component)
             );
         });

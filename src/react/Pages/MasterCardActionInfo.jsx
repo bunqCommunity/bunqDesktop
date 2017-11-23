@@ -103,7 +103,7 @@ class MasterCardActionInfo extends React.Component {
         } else {
             const masterCardAction = masterCardActionInfo[0].MasterCardAction;
             const paymentAmount = masterCardAction.amount_local.value;
-            const paymentDate = humanReadableDate(masterCardAction.created);
+            const paymentDate = humanReadableDate(masterCardAction.updated);
             const formattedPaymentAmount = formatMoney(paymentAmount);
             const paymentLabel = masterCardActionText(masterCardAction);
             const counterPartyIban = masterCardAction.counterparty_alias.iban;

@@ -113,7 +113,7 @@ class RequestInquiryInfo extends React.Component {
             );
         } else {
             const requestInquiry = requestInquiryInfo.RequestInquiry;
-            const paymentDate = humanReadableDate(requestInquiry.created);
+            const paymentDate = humanReadableDate(requestInquiry.updated);
             const paymentAmount = requestInquiry.amount_inquired.value;
             const formattedPaymentAmount = formatMoney(paymentAmount);
             const requestInquiryLabel = requestInquiryText(requestInquiry);
