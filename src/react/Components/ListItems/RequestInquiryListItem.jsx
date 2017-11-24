@@ -85,7 +85,7 @@ class RequestInquiryListItem extends React.Component {
 }
 
 RequestInquiryListItem.defaultProps = {
-    displayAcceptedRequests: false
+    displayAcceptedRequests: true
 };
 
 export default RequestInquiryListItem;

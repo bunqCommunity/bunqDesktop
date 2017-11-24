@@ -85,7 +85,7 @@ class RequestResponseListItem extends React.Component {
 }
 
 RequestResponseListItem.defaultProps = {
-    displayAcceptedRequests: false
+    displayAcceptedRequests: true
 };
 
 export default RequestResponseListItem;

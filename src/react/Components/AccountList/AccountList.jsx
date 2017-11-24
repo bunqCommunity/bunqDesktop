@@ -12,6 +12,7 @@ import { accountsSelectAccount, accountsUpdate } from "../../Actions/accounts";
 import { paymentInfoUpdate } from "../../Actions/payments";
 import { requestResponsesUpdate } from "../../Actions/request_responses";
 import { bunqMeTabsUpdate } from "../../Actions/bunq_me_tabs";
+import { masterCardActionsUpdate } from "../../Actions/master_card_actions";
 import { requestInquiriesUpdate } from "../../Actions/request_inquiries";
 
 const styles = {
@@ -56,6 +57,7 @@ class AccountList extends React.Component {
             this.props.bunqMeTabsUpdate(userId, accountId);
             this.props.requestResponsesUpdate(userId, accountId);
             this.props.requestInquiriesUpdate(userId, accountId);
+            this.props.masterCardActionsUpdate(userId, accountId);
         }
     };
 
@@ -143,7 +145,7 @@ class AccountList extends React.Component {
 
 AccountList.defaultProps = {
     updateExternal: false
-}
+};
 
 const mapStateToProps = state => {
     return {
@@ -168,6 +170,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(requestInquiriesUpdate(BunqJSClient, userId, accountId)),
         requestResponsesUpdate: (userId, accountId) =>
             dispatch(requestResponsesUpdate(BunqJSClient, userId, accountId)),
+        masterCardActionsUpdate: (userId, accountId) =>
+            dispatch(masterCardActionsUpdate(BunqJSClient, userId, accountId)),
         bunqMeTabsUpdate: (userId, accountId) =>
             dispatch(bunqMeTabsUpdate(BunqJSClient, userId, accountId)),
         accountsUpdate: userId =>
