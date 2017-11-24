@@ -2,6 +2,9 @@ import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { accountsClear } from "./accounts";
 import { paymentInfoClear } from "./payment_info";
 import { paymentsClear } from "./payments";
+import { requestResponseClear } from "./request_response_info";
+import { requestInquiryClear } from "./request_inquiry_info";
+import { bunqMeTabsClear } from "./bunq_me_tabs";
 
 export function userSetInfo(user, type) {
     return {
@@ -46,6 +49,9 @@ export function userLogout() {
         dispatch(accountsClear());
         dispatch(paymentInfoClear());
         dispatch(paymentsClear());
+        dispatch(bunqMeTabsClear());
+        dispatch(requestResponseClear());
+        dispatch(requestInquiryClear());
     };
 }
 

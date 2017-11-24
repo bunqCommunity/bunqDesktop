@@ -12,10 +12,11 @@ import WarningIcon from "material-ui-icons/Warning";
 
 import {
     registrationClearApiKey,
-    registrationDerivePassword,
     registrationSetApiKey,
     registrationSetDeviceName,
-    registrationSetEnvironment
+    registrationSetEnvironment,
+    registrationUseNoPassword,
+    registrationUsePassword
 } from "../Actions/registration";
 
 const styles = {
@@ -49,6 +50,16 @@ class LoginPassword extends React.Component {
         };
     }
 
+    componentDidMount() {
+        if (this.props.hasStoredApiKey) {
+            // we have a stored api key
+            if (this.props.useNoPassword) {
+                // login with default password
+                this.props.useNoPasswordLogin();
+            }
+        }
+    }
+
     setRegistration = () => {
         if (this.state.password.length < 7) {
             this.props.openSnackbar(
@@ -58,7 +69,7 @@ class LoginPassword extends React.Component {
         }
 
         if (this.state.passwordValid) {
-            this.props.derivePassword(this.state.password);
+            this.props.usePasswordLogin(this.state.password);
             this.setState({ password: "", passwordValid: false });
         }
     };
@@ -77,16 +88,6 @@ class LoginPassword extends React.Component {
         });
     };
 
-    useNoPassword = () => {
-        this.setState(
-            {
-                password: "SOME_DEFAULT_PASSWORD",
-                passwordValid: true
-            },
-            this.setRegistration
-        );
-    };
-
     clearApiKey = () => {
         this.props.clearApiKey();
     };
@@ -96,6 +97,7 @@ class LoginPassword extends React.Component {
             status_message,
             registrationLoading,
             hasStoredApiKey,
+            useNoPassword,
             derivedPassword
         } = this.props;
 
@@ -180,23 +182,28 @@ class LoginPassword extends React.Component {
                     </Button>
                 ) : null}
 
-                <div style={{ marginTop: 20 }}>
-                    <Typography type="body2">
-                        Alternatively, you can choose to not encrypt your data.
-                    </Typography>
-                    <Typography type="body2">
-                        If anyone gets access to your computer and they know
-                        what they are doing they can get access to your API key!
-                    </Typography>
-                    <Button
-                        raised
-                        color={"accent"}
-                        style={styles.loginButton}
-                        onClick={this.useNoPassword}
-                    >
-                        Use no password
-                    </Button>
-                </div>
+                {(hasStoredApiKey === true && useNoPassword === true) ||
+                hasStoredApiKey === false ? (
+                    <div style={{ marginTop: 20 }}>
+                        <Typography type="body2">
+                            Alternatively, you can choose to not encrypt your
+                            data.
+                        </Typography>
+                        <Typography type="body2">
+                            If anyone gets access to your computer and they know
+                            what they are doing they can get access to your API
+                            key!
+                        </Typography>
+                        <Button
+                            raised
+                            color={"accent"}
+                            style={styles.loginButton}
+                            onClick={this.props.useNoPasswordLogin}
+                        >
+                            Use no password
+                        </Button>
+                    </div>
+                ) : null}
             </CardContent>
         );
 
@@ -237,6 +244,7 @@ const mapStateToProps = state => {
         status_message: state.application.status_message,
 
         hasStoredApiKey: state.registration.has_stored_api_key,
+        useNoPassword: state.registration.use_no_password,
         derivedPassword: state.registration.derivedPassword,
         registrationLoading: state.registration.loading,
 
@@ -249,8 +257,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        derivePassword: password =>
-            dispatch(registrationDerivePassword(password)),
+        // use no password
+        useNoPasswordLogin: password => dispatch(registrationUseNoPassword()),
+        // use password
+        usePasswordLogin: password => dispatch(registrationUsePassword(password)),
 
         // clear api key from bunqjsclient and bunqdesktop
         clearApiKey: () => dispatch(registrationClearApiKey(BunqJSClient)),

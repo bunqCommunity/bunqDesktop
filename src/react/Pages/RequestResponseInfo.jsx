@@ -114,7 +114,7 @@ class RequestResponseInfo extends React.Component {
             );
         } else {
             const requestResponse = requestResponseInfo.RequestResponse;
-            const paymentDate = humanReadableDate(requestResponse.created);
+            const paymentDate = humanReadableDate(requestResponse.updated);
             const paymentAmount = requestResponse.amount_inquired.value;
             const formattedPaymentAmount = formatMoney(paymentAmount);
             const requestResponseLabel = requestResponseText(requestResponse);
