@@ -70,7 +70,8 @@ class BunqMeTabListItem extends React.Component {
         const createdDate = humanReadableDate(bunqMeTab.created);
         const updatedDate = humanReadableDate(bunqMeTab.updated);
         const expiryDate = humanReadableDate(bunqMeTab.time_expiry);
-
+		const numberOfPayments = bunqMeTab.result_inquiries.length;
+		
         const primaryText = `${formatMoney(
             bunqMeTab.bunqme_tab_entry.amount_inquired.value
         )} ${bunqMeTab.bunqme_tab_entry.amount_inquired.currency}`;
@@ -126,6 +127,13 @@ class BunqMeTabListItem extends React.Component {
                     <ListItemText
                         primary="Available merchants"
                         secondary={merchantList}
+                    />
+                </ListItem>
+				
+                <ListItem dense>
+                    <ListItemText
+                        primary="Number of payments"
+                        secondary={numberOfPayments}
                     />
                 </ListItem>
 
