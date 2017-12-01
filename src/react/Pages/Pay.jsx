@@ -13,6 +13,7 @@ import Paper from "material-ui/Paper";
 import Typography from "material-ui/Typography";
 import { FormControl, FormControlLabel } from "material-ui/Form";
 import Radio from "material-ui/Radio";
+import Switch from "material-ui/Switch";
 import Dialog, {
     DialogActions,
     DialogContent,
@@ -48,6 +49,9 @@ class Pay extends React.Component {
         super(props, context);
         this.state = {
             confirmModalOpen: false,
+
+            // if true, a draft-payment will be sent instead of a default payment
+            sendDraftPayment: false,
 
             // when false, don't allow payment request
             validForm: false,
@@ -224,6 +228,7 @@ class Pay extends React.Component {
 
         const { accounts, user } = this.props;
         const {
+            sendDraftPayment,
             selectedAccount,
             selectedTargetAccount,
             description,
@@ -285,7 +290,8 @@ class Pay extends React.Component {
             account.id,
             description,
             amountInfo,
-            targetInfo
+            targetInfo,
+            sendDraftPayment
         );
         this.clearForm();
     };
@@ -319,7 +325,8 @@ class Pay extends React.Component {
                             <ListItem>
                                 <ListItemText
                                     primary="From"
-                                    secondary={`${account.description} ${account.balance.value}
+                                    secondary={`${account.description} ${account
+                                        .balance.value}
                                     ${account.balance.currency}`}
                                 />
                             </ListItem>
@@ -546,12 +553,27 @@ class Pay extends React.Component {
 
                         <TextField
                             fullWidth
-                            // error={this.state.descriptionError}
+                            error={this.state.descriptionError}
                             id="description"
                             label="Description"
                             value={this.state.description}
                             onChange={this.handleChange("description")}
                             margin="normal"
+                        />
+
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    color="primary"
+                                    checked={this.state.sendDraftPayment}
+                                    onChange={() =>
+                                        this.setState({
+                                            sendDraftPayment: !this.state
+                                                .sendDraftPayment
+                                        })}
+                                />
+                            }
+                            label="Draft a new payment instead of directly sending it?"
                         />
 
                         <FormControl
@@ -607,7 +629,14 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, props) => {
     const { BunqJSClient } = props;
     return {
-        paySend: (userId, accountId, description, amount, target) =>
+        paySend: (
+            userId,
+            accountId,
+            description,
+            amount,
+            target,
+            draft = false
+        ) =>
             dispatch(
                 paySend(
                     BunqJSClient,
@@ -615,7 +644,8 @@ const mapDispatchToProps = (dispatch, props) => {
                     accountId,
                     description,
                     amount,
-                    target
+                    target,
+                    draft
                 )
             ),
         openSnackbar: message => dispatch(openSnackbar(message))
