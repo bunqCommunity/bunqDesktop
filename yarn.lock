@@ -22,9 +22,9 @@
     "7zip-bin-mac" "^1.0.1"
     "7zip-bin-win" "^2.1.1"
 
-"@bunq-community/bunq-js-client@^0.8.2":
-  version "0.8.2"
-  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.8.2.tgz#ddba0d451e492e153f2ac2b8615a39d57e2456a0"
+"@bunq-community/bunq-js-client@^0.9.1":
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.9.1.tgz#ec3bb388122ab96043df410498f8b16ca8d962a0"
 
 "@types/axios@^0.14.0":
   version "0.14.0"
@@ -5872,9 +5872,16 @@ q@^1.1.2, q@~1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/q/-/q-1.5.0.tgz#dd01bac9d06d30e6f219aecb8253ee9ebdc308f1"
 
-qartjs@Crecket/qart.js:
-  version "1.1.1"
-  resolved "https://codeload.github.com/Crecket/qart.js/tar.gz/542ca4e0859ac2f15e2f7250e95ab020055e61ee"
+qr.js@0.0.0:
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/qr.js/-/qr.js-0.0.0.tgz#cace86386f59a0db8050fa90d9b6b0e88a1e364f"
+
+qrcode.react@^0.7.2:
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/qrcode.react/-/qrcode.react-0.7.2.tgz#72a5718fd56baafe15c2c153fe436628d83aa286"
+  dependencies:
+    prop-types "^15.5.8"
+    qr.js "0.0.0"
 
 qs@6.5.1, qs@~6.5.1:
   version "6.5.1"

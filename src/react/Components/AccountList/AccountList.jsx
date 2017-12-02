@@ -2,11 +2,16 @@ import React from "react";
 import { connect } from "react-redux";
 import Divider from "material-ui/Divider";
 import IconButton from "material-ui/IconButton";
-import List, { ListSubheader, ListItemSecondaryAction } from "material-ui/List";
+import List, {
+    ListItemText,
+    ListItem,
+    ListItemSecondaryAction
+} from "material-ui/List";
 import { CircularProgress, LinearProgress } from "material-ui/Progress";
 import RefreshIcon from "material-ui-icons/Refresh";
 
 import AccountListItem from "./AccountListItem";
+import { formatMoney } from "../../Helpers/Utils";
 
 import { accountsSelectAccount, accountsUpdate } from "../../Actions/accounts";
 import { paymentInfoUpdate } from "../../Actions/payments";
@@ -119,10 +124,26 @@ class AccountList extends React.Component {
                 ));
         }
 
+        const totalBalance = this.props.accounts.reduce(
+            (total, account) =>
+                total + parseFloat(account.MonetaryAccountBank.balance.value),
+            0
+        );
+        const formattedTotalBalance = formatMoney(totalBalance);
+
         return (
             <List style={styles.list}>
-                <ListSubheader>
-                    Accounts - {accounts.length}
+                <ListItem dense>
+                    <ListItemText
+                        primary={`Accounts: ${accounts.length}`}
+                        secondary={
+                            this.props.hideBalance ? (
+                                ""
+                            ) : (
+                                `Balance: ${formattedTotalBalance}`
+                            )
+                        }
+                    />
                     <ListItemSecondaryAction>
                         {this.props.accountsLoading ? (
                             <CircularProgress />
@@ -132,8 +153,7 @@ class AccountList extends React.Component {
                             </IconButton>
                         )}
                     </ListItemSecondaryAction>
-                </ListSubheader>
-
+                </ListItem>
                 {this.props.accountsLoading ? <LinearProgress /> : <Divider />}
                 <List>{accounts}</List>
             </List>
@@ -143,11 +163,13 @@ class AccountList extends React.Component {
 
 AccountList.defaultProps = {
     updateExternal: false
-}
+};
 
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+
+        hideBalance: state.options.hide_balance,
 
         paymentType: state.payment_filter.type,
 

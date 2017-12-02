@@ -39,7 +39,6 @@ class AccountQRCode extends React.Component {
         return (
             <QRCode
                 size={props.size}
-                imagePath="./images/qrlogo-empty.png"
                 style={{ ...styles.qrcode, ...style }}
                 value={value}
             />
