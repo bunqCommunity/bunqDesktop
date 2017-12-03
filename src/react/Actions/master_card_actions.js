@@ -1,5 +1,4 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-// const testInfo = require("../Helpers/MasterCardActionData.json");
 
 export function masterCardActionsSetInfo(masterCardActions, account_id) {
     return {
@@ -13,11 +12,6 @@ export function masterCardActionsSetInfo(masterCardActions, account_id) {
 
 export function masterCardActionsUpdate(BunqJSClient, userId, accountId) {
     return dispatch => {
-        // setTimeout(() => {
-        //     dispatch(masterCardActionsSetInfo([testInfo], accountId));
-        //     dispatch(masterCardActionsNotLoading());
-        // }, 500);
-
         dispatch(masterCardActionsLoading());
         BunqJSClient.api.masterCardAction
             .list(userId, accountId)
