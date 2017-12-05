@@ -53,8 +53,9 @@ class CombinedList extends React.Component {
         }
         const paymentInfo = payment.Payment;
 
+        // hide mastercard payments
         if (paymentInfo.type === "MASTERCARD") {
-            console.log("Hiding", paymentInfo);
+            return false;
         }
 
         if (this.props.paymentType === "received") {
@@ -153,6 +154,7 @@ class CombinedList extends React.Component {
             return false;
         }
 
+        // hide accepted payments
         if (requestResponse.RequestResponse.status === "ACCEPTED") return false;
 
         return !(

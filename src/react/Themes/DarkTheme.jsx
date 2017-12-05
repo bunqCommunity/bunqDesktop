@@ -16,7 +16,12 @@ export default {
             accepted: "#8DC55F",
             rejected: "#FF3333",
             revoked: "#a4a6a4",
-            expired: '#a4a6a4'
+            expired: "#a4a6a4"
+        },
+        masterCardAction: {
+            authorized: "#FF3333",
+            blocked: "#a4a6a4",
+            pending: "#2196f3"
         },
         bunqMeTabs: {
             awaiting_payment: "#62ca04",
@@ -27,7 +32,7 @@ export default {
     },
     styles: {
         moneyInput: {
-            color: '#fff'
+            color: "#fff"
         },
         requestResponse: {
             pending: {},
@@ -43,6 +48,11 @@ export default {
                 textDecoration: "line-through"
             },
             expired: {
+                textDecoration: "line-through"
+            }
+        },
+        masterCardAction: {
+            blocked: {
                 textDecoration: "line-through"
             }
         }

@@ -11,11 +11,15 @@ import Divider from "material-ui/Divider";
 import { formatMoney } from "../../Helpers/Utils";
 import NavLink from "../../Components/Routing/NavLink";
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
+import MoneyAmountLabel from "../MoneyAmountLabel";
 
 const styles = {
     smallAvatar: {
         width: 50,
         height: 50
+    },
+    moneyAmountLabel: {
+        marginRight: 20
     }
 };
 
@@ -59,17 +63,22 @@ class MasterCardActionListItem extends React.Component {
                 </Avatar>
                 <ListItemText
                     primary={displayName}
-                    secondary={"Mastercard payment"}
+                    secondary={
+                        masterCardAction.pan_entry_mode_user === "ICC" ? (
+                            `${masterCardAction.label_card.second_line} payment`
+                        ) : (
+                            "Mastercard payment"
+                        )
+                    }
                 />
                 <ListItemSecondaryAction>
-                    <p
-                        style={{
-                            marginRight: 20,
-                            color: theme.palette.common.sentPayment
-                        }}
+                    <MoneyAmountLabel
+                        style={styles.moneyAmountLabel}
+                        info={masterCardAction}
+                        type="masterCardAction"
                     >
                         {formattedPaymentAmount}
-                    </p>
+                    </MoneyAmountLabel>
                 </ListItemSecondaryAction>
             </ListItem>,
             <Divider />
