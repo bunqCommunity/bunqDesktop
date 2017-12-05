@@ -217,23 +217,27 @@ class LoginPassword extends React.Component {
                     <Card>{cardContent}</Card>
                 </Grid>
                 <Grid item xs={12} />
-                <Grid item xs={12} sm={10} md={8} lg={6}>
-                    <Card>
-                        <CardContent>
-                            <Typography type="headline">
-                                <WarningIcon /> Caution!
-                            </Typography>
-                            <Typography type="body2">
-                                This project is still in active development!
-                            </Typography>
-                            <Typography type="body2">
-                                We test everything before releasing updates but
-                                until we release version 1.0.0 we advice against
-                                using BunqDesktop to make big payments.
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
+                {/* Hide the warning if registration is loading 0*/}
+                {this.props.registrationLoading ? null : (
+                    <Grid item xs={12} sm={10} md={8} lg={6}>
+                        <Card>
+                            <CardContent>
+                                <Typography type="headline">
+                                    <WarningIcon /> Caution!
+                                </Typography>
+                                <Typography type="body2">
+                                    This project is still in active development!
+                                </Typography>
+                                <Typography type="body2">
+                                    We test everything before releasing updates
+                                    but until we release version 1.0.0 we advice
+                                    against using BunqDesktop to make big
+                                    payments.
+                                </Typography>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                )}
             </Grid>
         );
     }
@@ -260,7 +264,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // use no password
         useNoPasswordLogin: password => dispatch(registrationUseNoPassword()),
         // use password
-        usePasswordLogin: password => dispatch(registrationUsePassword(password)),
+        usePasswordLogin: password =>
+            dispatch(registrationUsePassword(password)),
 
         // clear api key from bunqjsclient and bunqdesktop
         clearApiKey: () => dispatch(registrationClearApiKey(BunqJSClient)),

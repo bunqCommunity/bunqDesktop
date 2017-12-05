@@ -9,14 +9,22 @@ export function paySend(
     accountId,
     description,
     amount,
-    target
+    target,
+    draft = false
 ) {
     return dispatch => {
         dispatch(payLoading());
-        BunqJSClient.api.payment
+        const paymentHandler = draft
+            ? BunqJSClient.api.draftPayment
+            : BunqJSClient.api.payment;
+
+        paymentHandler
             .post(userId, accountId, description, amount, target)
             .then(result => {
-                dispatch(openSnackbar("Payment sent successfully!"));
+                const notification = draft
+                    ? "Draft payment successfully created!"
+                    : "Payment sent successfully!";
+                dispatch(openSnackbar(notification));
                 dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId));
                 dispatch(accountsUpdate(BunqJSClient, userId));
                 dispatch(payNotLoading());
