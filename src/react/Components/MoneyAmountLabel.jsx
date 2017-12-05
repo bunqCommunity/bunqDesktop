@@ -105,7 +105,6 @@ class MoneyAmountLabel extends React.Component {
     checkMasterCardAction = () => {
         const { theme, style, info } = this.props;
 
-        console.log(info.authorisation_status);
         switch (info.authorisation_status) {
             case "AUTHORISED":
                 return {

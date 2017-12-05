@@ -63,13 +63,7 @@ class MasterCardActionListItem extends React.Component {
                 </Avatar>
                 <ListItemText
                     primary={displayName}
-                    secondary={
-                        masterCardAction.pan_entry_mode_user === "ICC" ? (
-                            `${masterCardAction.label_card.second_line} payment`
-                        ) : (
-                            "Mastercard payment"
-                        )
-                    }
+                    secondary={"Card payment"}
                 />
                 <ListItemSecondaryAction>
                     <MoneyAmountLabel

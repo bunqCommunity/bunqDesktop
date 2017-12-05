@@ -41,7 +41,7 @@ class CombinedList extends React.Component {
                         BunqJSClient={this.props.BunqJSClient}
                     />
                 ),
-                filterDate: payment.Payment.updated,
+                filterDate: payment.Payment.created,
                 info: payment.Payment
             };
         });
@@ -118,7 +118,7 @@ class CombinedList extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                         />
                     ),
-                    filterDate: masterCardAction.MasterCardAction.updated,
+                    filterDate: masterCardAction.MasterCardAction.created,
                     info: masterCardAction.MasterCardAction
                 };
             });
@@ -143,7 +143,7 @@ class CombinedList extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                         />
                     ),
-                    filterDate: requestResponse.RequestResponse.updated,
+                    filterDate: requestResponse.RequestResponse.created,
                     info: requestResponse.RequestResponse
                 };
             });
@@ -174,7 +174,7 @@ class CombinedList extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                         />
                     ),
-                    filterDate: requestInquiry.RequestInquiry.updated,
+                    filterDate: requestInquiry.RequestInquiry.created,
                     info: requestInquiry.RequestInquiry
                 };
             });
