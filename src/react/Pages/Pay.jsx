@@ -190,7 +190,8 @@ class Pay extends React.Component {
             case "IBAN":
                 const filteredTarget = target.replace(/ /g, "");
                 targetErrorCondition =
-                    !iban.isValid(filteredTarget) || !this.state.ibanNameError;
+                    iban.isValid(filteredTarget) === false ||
+                    ibanNameErrorCondition === true;
                 break;
         }
 
