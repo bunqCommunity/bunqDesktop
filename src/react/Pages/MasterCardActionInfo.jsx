@@ -103,10 +103,9 @@ class MasterCardActionInfo extends React.Component {
         } else {
             const masterCardAction = masterCardActionInfo[0].MasterCardAction;
             const paymentAmount = masterCardAction.amount_local.value;
-            const paymentDate = humanReadableDate(masterCardAction.updated);
+            const paymentDate = humanReadableDate(masterCardAction.created);
             const formattedPaymentAmount = formatMoney(paymentAmount);
             const paymentLabel = masterCardActionText(masterCardAction);
-            const counterPartyIban = masterCardAction.counterparty_alias.iban;
 
             content = (
                 <Grid
@@ -173,8 +172,28 @@ class MasterCardActionInfo extends React.Component {
                             <Divider />
                             <ListItem>
                                 <ListItemText
-                                    primary={"IBAN"}
-                                    secondary={counterPartyIban}
+                                    primary={"Card"}
+                                    secondary={
+                                        masterCardAction.label_card.second_line
+                                    }
+                                />
+                            </ListItem>
+                            <Divider />
+                            <ListItem>
+                                <ListItemText
+                                    primary={"Authorisation Type"}
+                                    secondary={
+                                        masterCardAction.authorisation_type
+                                    }
+                                />
+                            </ListItem>
+                            <Divider />
+                            <ListItem>
+                                <ListItemText
+                                    primary={"Authorisation Status"}
+                                    secondary={
+                                        masterCardAction.authorisation_status
+                                    }
                                 />
                             </ListItem>
                             <Divider />

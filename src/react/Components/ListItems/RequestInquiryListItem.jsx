@@ -37,6 +37,12 @@ class RequestInquiryListItem extends React.Component {
 
     render() {
         const { requestInquiry } = this.props;
+        if (requestInquiry.status === "ACCEPTED") {
+            if (this.props.displayAcceptedRequests === false) {
+                // hide the request-response becuase a payment item exists
+                return null;
+            }
+        }
 
         let imageUUID = false;
         if (requestInquiry.counterparty_alias.avatar) {
@@ -77,5 +83,9 @@ class RequestInquiryListItem extends React.Component {
         ];
     }
 }
+
+RequestInquiryListItem.defaultProps = {
+    displayAcceptedRequests: true
+};
 
 export default RequestInquiryListItem;

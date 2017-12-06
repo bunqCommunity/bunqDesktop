@@ -37,6 +37,12 @@ class RequestResponseListItem extends React.Component {
 
     render() {
         const { requestResponse } = this.props;
+        if (requestResponse.status === "ACCEPTED") {
+            if (this.props.displayAcceptedRequests === false) {
+                // hide the request-response becuase a payment item exists
+                return null;
+            }
+        }
 
         let imageUUID = false;
         if (requestResponse.counterparty_alias.avatar) {
@@ -77,5 +83,9 @@ class RequestResponseListItem extends React.Component {
         ];
     }
 }
+
+RequestResponseListItem.defaultProps = {
+    displayAcceptedRequests: true
+};
 
 export default RequestResponseListItem;

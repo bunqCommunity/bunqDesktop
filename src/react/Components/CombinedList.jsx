@@ -6,7 +6,7 @@ import List, { ListItemSecondaryAction, ListSubheader } from "material-ui/List";
 
 import BunqMeTabListItem from "./ListItems/BunqMeTabListItem";
 import PaymentListItem from "./ListItems/PaymentListItem";
-// import MasterCardActionListItem from "./ListItems/MasterCardActionListItem";
+import MasterCardActionListItem from "./ListItems/MasterCardActionListItem";
 import RequestResponseListItem from "./ListItems/RequestResponseListItem";
 import RequestInquiryListItem from "./ListItems/RequestInquiryListItem";
 
@@ -41,7 +41,7 @@ class CombinedList extends React.Component {
                         BunqJSClient={this.props.BunqJSClient}
                     />
                 ),
-                filterDate: payment.Payment.updated,
+                filterDate: payment.Payment.created,
                 info: payment.Payment
             };
         });
@@ -52,6 +52,12 @@ class CombinedList extends React.Component {
             return false;
         }
         const paymentInfo = payment.Payment;
+
+        // hide mastercard payments
+        if (paymentInfo.type === "MASTERCARD") {
+            return false;
+        }
+
         if (this.props.paymentType === "received") {
             if (paymentInfo.amount.value <= 0) {
                 return false;
@@ -101,6 +107,31 @@ class CombinedList extends React.Component {
         return true;
     };
 
+    masterCardActionMapper = () => {
+        return this.props.masterCardActions
+            .filter(this.masterCardActionFilter)
+            .map(masterCardAction => {
+                return {
+                    component: (
+                        <MasterCardActionListItem
+                            masterCardAction={masterCardAction.MasterCardAction}
+                            BunqJSClient={this.props.BunqJSClient}
+                        />
+                    ),
+                    filterDate: masterCardAction.MasterCardAction.created,
+                    info: masterCardAction.MasterCardAction
+                };
+            });
+    };
+
+    masterCardActionFilter = masterCardAction => {
+        if (this.props.paymentVisibility === false) {
+            return false;
+        }
+
+        return this.props.paymentType !== "received";
+    };
+
     requestResponseMapper = () => {
         return this.props.requestResponses
             .filter(this.requestResponseFilter)
@@ -112,7 +143,7 @@ class CombinedList extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                         />
                     ),
-                    filterDate: requestResponse.RequestResponse.updated,
+                    filterDate: requestResponse.RequestResponse.created,
                     info: requestResponse.RequestResponse
                 };
             });
@@ -122,6 +153,9 @@ class CombinedList extends React.Component {
         if (this.props.requestVisibility === false) {
             return false;
         }
+
+        // hide accepted payments
+        if (requestResponse.RequestResponse.status === "ACCEPTED") return false;
 
         return !(
             this.props.requestType !== "sent" &&
@@ -140,7 +174,7 @@ class CombinedList extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                         />
                     ),
-                    filterDate: requestInquiry.RequestInquiry.updated,
+                    filterDate: requestInquiry.RequestInquiry.created,
                     info: requestInquiry.RequestInquiry
                 };
             });
@@ -150,6 +184,8 @@ class CombinedList extends React.Component {
         if (this.props.requestVisibility === false) {
             return false;
         }
+
+        if (requestInquiry.RequestInquiry.status === "ACCEPTED") return false;
 
         return !(
             this.props.requestType !== "received" &&
@@ -162,7 +198,8 @@ class CombinedList extends React.Component {
             this.props.bunqMeTabsLoading ||
             this.props.paymentsLoading ||
             this.props.requestResponsesLoading ||
-            this.props.requestInquiriesLoading ? (
+            this.props.requestInquiriesLoading ||
+            this.props.masterCardActionsLoading ? (
                 <LinearProgress />
             ) : (
                 <Divider />
@@ -171,13 +208,20 @@ class CombinedList extends React.Component {
         // create arrays of the different endpoint types
         const bunqMeTabs = this.bunqMeTabsMapper();
         const payments = this.paymentMapper();
+        const masterCardActions = this.masterCardActionMapper();
         const requestResponses = this.requestResponseMapper();
         const requestInquiries = this.requestInquiryMapper();
 
         let groupedItems = {};
 
         // combine the list, order by date and group by day
-        [...bunqMeTabs, ...requestResponses, ...requestInquiries, ...payments]
+        [
+            ...bunqMeTabs,
+            ...requestResponses,
+            ...masterCardActions,
+            ...requestInquiries,
+            ...payments
+        ]
             .sort(function(a, b) {
                 return new Date(b.filterDate) - new Date(a.filterDate);
             })
@@ -255,6 +299,9 @@ const mapStateToProps = state => {
         bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
         bunqMeTabsLoading: state.bunq_me_tabs.loading,
         bunqMeTabLoading: state.bunq_me_tab.loading,
+
+        masterCardActions: state.master_card_actions.master_card_actions,
+        masterCardActionsLoading: state.master_card_actions.loading,
 
         requestInquiries: state.request_inquiries.request_inquiries,
         requestInquiriesLoading: state.request_inquiries.loading,

@@ -103,7 +103,28 @@ class MoneyAmountLabel extends React.Component {
     };
 
     checkMasterCardAction = () => {
-        const { theme, style } = this.props;
+        const { theme, style, info } = this.props;
+
+        switch (info.authorisation_status) {
+            case "AUTHORISED":
+                return {
+                    color: theme.palette.masterCardAction.authorized,
+                    ...style
+                };
+            case "BLOCKED":
+                return {
+                    color: theme.palette.masterCardAction.blocked,
+                    ...theme.styles.masterCardAction.blocked,
+                    ...style
+                };
+            default:
+            case "PENDING":
+                return {
+                    color: theme.palette.masterCardAction.pending,
+                    ...style
+                };
+        }
+
         const paymentColor = theme.palette.common.sentPayment;
         return { color: paymentColor, ...style };
     };

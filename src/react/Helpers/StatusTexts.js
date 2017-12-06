@@ -22,7 +22,7 @@ export const requestInquiryText = requestInquiry => {
         case "REVOKED":
             return "You cancelled the request";
         case "EXPIRED":
-            return "Request is expired"
+            return "Request is expired";
     }
 };
 
@@ -50,12 +50,16 @@ export const paymentTypeParser = paymentType => {
 };
 
 export const masterCardActionText = masterCardAction => {
-    const label =
-        masterCardAction.amount_local.value < 0
-            ? "Sent payment with "
-            : "Received payment with ";
-
-    return `${label}${masterCardActionParser(masterCardAction.pan_entry_mode_user )}`;
+    switch (masterCardAction.authorisation_status) {
+        case "AUTHORISED":
+            return `Sent payment with ${masterCardActionParser(
+                masterCardAction.pan_entry_mode_user
+            )}`;
+        case "BLOCKED":
+            return `The payment was blocked due to: ${masterCardAction.decision_description}`;
+        default:
+            return `The payment (${masterCardAction.authorisation_type}) currently has the status: ${masterCardAction.authorisation_status}`;
+    }
 };
 
 export const masterCardActionParser = masterCardActionType => {
@@ -63,7 +67,7 @@ export const masterCardActionParser = masterCardActionType => {
         case "ATM":
             return "ATM";
         case "ICC":
-            return "ICC";
+            return "Tap & Pay";
         case "MAGNETIC_STRIPE":
             return "MAGNETIC_STRIPE";
         case "E_COMMERCE":
