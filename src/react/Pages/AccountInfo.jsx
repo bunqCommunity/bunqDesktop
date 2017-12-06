@@ -10,9 +10,13 @@ import ArrowBackIcon from "material-ui-icons/ArrowBack";
 import CombinedList from "../Components/CombinedList";
 import AccountCard from "./ApplicationInfo/AccountCard";
 
+import { openSnackbar } from "../Actions/snackbar";
 import { accountsUpdate } from "../Actions/accounts";
 import { paymentInfoUpdate } from "../Actions/payments";
-import { openSnackbar } from "../Actions/snackbar";
+import { requestResponsesUpdate } from "../Actions/request_responses";
+import { bunqMeTabsUpdate } from "../Actions/bunq_me_tabs";
+import { masterCardActionsUpdate } from "../Actions/master_card_actions";
+import { requestInquiriesUpdate } from "../Actions/request_inquiries";
 
 const styles = {
     btn: {},
@@ -37,10 +41,15 @@ class AccountInfo extends React.Component {
     componentDidMount() {
         if (this.props.initialBunqConnect) {
             this.props.accountsUpdate(this.props.user.id);
-            this.props.paymentsUpdate(
-                this.props.user.id,
-                parseFloat(this.props.match.params.accountId)
-            );
+
+            const userId = this.props.user.id;
+            const accountId = parseFloat(this.props.match.params.accountId);
+            
+            this.props.paymentsUpdate(userId, accountId);
+            this.props.bunqMeTabsUpdate(userId, accountId);
+            this.props.requestResponsesUpdate(userId, accountId);
+            this.props.requestInquiriesUpdate(userId, accountId);
+            this.props.masterCardActionsUpdate(userId, accountId);
         }
     }
 
@@ -51,7 +60,12 @@ class AccountInfo extends React.Component {
 
         if (initialBunqConnect && nextAccountId !== accountId) {
             this.props.accountsUpdate(user.id);
+
             this.props.paymentsUpdate(user.id, nextAccountId);
+            this.props.bunqMeTabsUpdate(user.id, nextAccountId);
+            this.props.requestResponsesUpdate(user.id, nextAccountId);
+            this.props.requestInquiriesUpdate(user.id, nextAccountId);
+            this.props.masterCardActionsUpdate(user.id, nextAccountId);
         }
     }
 
@@ -134,6 +148,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         openSnackbar: message => dispatch(openSnackbar(message)),
         paymentsUpdate: (userId, accountId) =>
             dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId)),
+        requestInquiriesUpdate: (userId, accountId) =>
+            dispatch(requestInquiriesUpdate(BunqJSClient, userId, accountId)),
+        requestResponsesUpdate: (userId, accountId) =>
+            dispatch(requestResponsesUpdate(BunqJSClient, userId, accountId)),
+        masterCardActionsUpdate: (userId, accountId) =>
+            dispatch(masterCardActionsUpdate(BunqJSClient, userId, accountId)),
+        bunqMeTabsUpdate: (userId, accountId) =>
+            dispatch(bunqMeTabsUpdate(BunqJSClient, userId, accountId)),
         accountsUpdate: userId => dispatch(accountsUpdate(BunqJSClient, userId))
     };
 };
