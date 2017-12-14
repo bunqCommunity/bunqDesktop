@@ -14,7 +14,7 @@ class ClearFilter extends React.Component {
     render() {
         if (
             this.props.paymentType === "default" &&
-            this.props.bunqMeTabType === "default" &&
+            this.props.bunqMeTabType === "active" &&
             this.props.requestType === "default" &&
             this.props.paymentVisibility === true &&
             this.props.bunqMeTabVisibility === true &&
