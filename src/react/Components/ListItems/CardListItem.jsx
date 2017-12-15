@@ -11,8 +11,12 @@ import { formatMoney, humanReadableDate } from "../../Helpers/Utils";
 import store from "store";
 
 const styles = {
+	cardWrapper: {
+        marginBottom: 20
+	},
 	card: {
-		display: 'flex'
+		display: 'flex',
+		marginBottom: '10'
 	},
 	details: {
 		flex: '2 0 0',
@@ -28,7 +32,8 @@ const styles = {
 	},
 	cardImage: {
 		height: 68,
-		float: 'right'
+		float: 'right',
+        margin: 10
 	}
 };
 
@@ -71,7 +76,7 @@ class CardListItem extends React.Component {
         }
 
         return [
-			<div>
+			<div style={styles.cardWrapper}>
 				<Card style={styles.card}>
 					<div style={styles.details}>
 						<CardContent style={styles.content}>

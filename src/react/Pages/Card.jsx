@@ -16,15 +16,6 @@ import List, {
 import { cardUpdate } from "../Actions/card";
 import CardListItem from "../Components/ListItems/CardListItem";
 
-const styles = {
-    paper: {
-        marginBottom: 20
-    },
-    paper: {
-        marginBottom: 20
-    }
-};
-
 class Card extends React.Component {
     constructor(props, context) {
         super(props, context);

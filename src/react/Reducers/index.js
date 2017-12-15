@@ -53,7 +53,6 @@ export default combineReducers({
     pay,
     payment_info,
     payment_filter,
-    payment_filter,
     payments,
     request_inquiries,
     request_inquiry,

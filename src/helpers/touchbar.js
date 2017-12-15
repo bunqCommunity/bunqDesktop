@@ -26,17 +26,26 @@ export default (window) => {
     });
 
     const bunqMeButton = new TouchBarButton({
-        label: '💰 bunq.me requests',
+        label: '💰 bunq.me',
         click: () => {
             window.webContents.send('change-path', '/bunqme-tab')
         }
     });
 
+    const cardsButton = new TouchBarButton({
+        label: '💳 Cards',
+        click: () => {
+            window.webContents.send('change-path', '/card')
+        }
+    });
+
+
     const bar = new TouchBar([
         dashboardButton,
         payButton,
         requestButton,
-        bunqMeButton
+        bunqMeButton,
+        cardsButton
     ]);
 
     window.setTouchBar(bar);
