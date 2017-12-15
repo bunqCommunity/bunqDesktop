@@ -5,6 +5,7 @@ import accounts from "./accounts";
 import bunq_me_tabs from "./bunq_me_tabs";
 import bunq_me_tab_filter from "./bunq_me_tab_filter";
 import bunq_me_tab from "./bunq_me_tab";
+import cards from "./cards";
 import general_filter from "./general_filter";
 import modal from "./modal";
 import user from "./user";
@@ -35,6 +36,7 @@ export default combineReducers({
     bunq_me_tab,
     bunq_me_tab_filter,
     bunq_me_tabs,
+	cards,
     general_filter,
     modal,
     user,
