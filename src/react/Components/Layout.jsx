@@ -229,6 +229,7 @@ class Layout extends React.Component {
                 "We failed to create a new session",
                 "Something went wrong"
             );
+            Logger.error(exception);
             throw exception;
         }
 
