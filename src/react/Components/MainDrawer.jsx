@@ -13,6 +13,7 @@ import ArrowDownwardIcon from "material-ui-icons/ArrowDownward";
 import HomeIcon from "material-ui-icons/Home";
 import SettingsIcon from "material-ui-icons/Settings";
 import ShareIcon from "material-ui-icons/Share";
+import CardIcon from "material-ui-icons/CreditCard";
 
 import NavLink from "./Routing/NavLink";
 import { closeMainDrawer } from "../Actions/main_drawer";
@@ -123,6 +124,17 @@ class MainDrawer extends React.Component {
                           <ShareIcon />
                       </ListItemIcon>
                       <Typography type="subheading">bunq.me Requests</Typography>
+                  </ListItem>,
+				  <ListItem
+                      button
+                      style={styles.listBottomItem}
+                      component={NavLink}
+                      to="/card"
+                  >
+                      <ListItemIcon>
+                          <CardIcon />
+                      </ListItemIcon>
+                      <Typography type="subheading">Cards</Typography>
                   </ListItem>
               ];
 
