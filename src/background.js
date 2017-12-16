@@ -14,11 +14,13 @@ import registerTouchBar from './helpers/touchbar';
 import env from "./env";
 
 const setApplicationMenu = () => {
-    const menus = [];
+    const menus = [
+        editMenuTemplate
+    ];
     if (env.name === "development") {
-        menus.push(editMenuTemplate);
         menus.push(devMenuTemplate);
     }
+
     Menu.setApplicationMenu(Menu.buildFromTemplate(menus));
 };
 
@@ -71,6 +73,8 @@ app.on("ready", () => {
         // remove the menu in production
         mainWindow.setMenu(null);
     }
+
+
 });
 
 app.on("window-all-closed", () => {

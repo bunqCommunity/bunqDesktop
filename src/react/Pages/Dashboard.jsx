@@ -10,6 +10,7 @@ import AccountList from "../Components/AccountList/AccountList";
 import StickyBox from "react-sticky-box";
 
 import { userLogin, userLogout } from "../Actions/user";
+import Logger from "../Helpers/Logger";
 
 const styles = {
     btn: {
@@ -30,7 +31,7 @@ class Dashboard extends React.Component {
             this.props.usersLoading === false &&
             this.props.user === false
         ) {
-            this.props.userLogin(this.props.userType);
+            this.props.userLogin(this.props.userType, false);
         }
     }
 
