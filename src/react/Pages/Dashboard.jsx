@@ -31,7 +31,6 @@ class Dashboard extends React.Component {
             this.props.usersLoading === false &&
             this.props.user === false
         ) {
-            Logger.error("dashboard component did update");
             this.props.userLogin(this.props.userType, false);
         }
     }

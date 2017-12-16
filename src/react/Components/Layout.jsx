@@ -150,9 +150,6 @@ class Layout extends React.Component {
 
                     // initial bunq connect has been done
                     this.setState({ initialBunqConnect: true });
-
-                    // if a usertype is selected, we try to login the user
-                    this.props.userLogin(this.props.userType, true);
                 })
                 .catch(setupError => {
                     Logger.error(setupError);
