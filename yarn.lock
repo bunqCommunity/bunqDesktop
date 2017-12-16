@@ -22,9 +22,9 @@
     "7zip-bin-mac" "^1.0.1"
     "7zip-bin-win" "^2.1.1"
 
-"@bunq-community/bunq-js-client@^0.9.1":
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.9.1.tgz#ec3bb388122ab96043df410498f8b16ca8d962a0"
+"@bunq-community/bunq-js-client@^0.10.3":
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.10.3.tgz#c30abb955d3700bf87e52f6acbe68fb1fa14feb5"
 
 "@types/axios@^0.14.0":
   version "0.14.0"
