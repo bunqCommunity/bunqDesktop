@@ -1,0 +1,27 @@
+.carousel {
+  overflow: hidden;
+
+  -webkit-transition:all .5s ease-in-out;
+  -moz-transition:all .5s ease-in-out;
+  -o-transition:all .5s ease-in-out;
+  transition:all .5s ease-in-out;
+
+  .single-card {
+    text-align: center;
+    list-style-type: none;
+    height: 60vh;
+  }
+
+  img {
+    width: 60%
+  }
+}
+
+.card-details {
+  padding: 10px;
+  height: 90vh;
+}
+
+.card-details-card {
+  z-index: 9001;
+}

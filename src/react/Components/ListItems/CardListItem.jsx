@@ -12,28 +12,16 @@ import store from "store";
 
 const styles = {
 	cardWrapper: {
-        marginBottom: 20
 	},
 	card: {
-		display: 'flex',
-		marginBottom: '10'
 	},
 	details: {
-		flex: '2 0 0',
-		flexDirection: 'column'
 	},
 	content: {
-		flex: '1 0 auto'
 	},
 	cover: {
-		flex: '1 0 0',
-		width: 70,
-		height: 70
 	},
 	cardImage: {
-		height: 68,
-		float: 'right',
-        margin: 10
 	}
 };
 
@@ -76,38 +64,13 @@ class CardListItem extends React.Component {
         }
 
         return [
-			<div style={styles.cardWrapper}>
-				<Card style={styles.card}>
-					<div style={styles.details}>
-						<CardContent style={styles.content}>
-							<Typography type="headline" component="h2">
-								{cardType}
-							</Typography>
-							<Typography component="p">
-								{card.second_line}
-							</Typography>
-
-							{cardType == "MasterCard" ? (
-							<Typography component="p">
-								Cardnumber: ******{card.primary_account_number_four_digit}
-								<br/> (available in bunq app or on card)
-							</Typography>
-							) : null}
-
-							<br/>
-							<Typography component="p">
-								Expiry date: {humanReadableDate(card.expiry_date,false)}
-							</Typography>
-							<Typography component="p">
-								Connected account: {connectedAccountName} ({card.label_monetary_account_current.iban})
-							</Typography>
-						</CardContent>
-					</div>
-					<div style={styles.cover}>
-						<img src={cardImage} style={styles.cardImage}/>
-					</div>
-				</Card>
-			</div>
+			<div
+                className="single-card"
+                style={styles.cardWrapper}
+                onClick={this.props.onClick}
+            >
+                <img src='images/bunq-mastercard.png' />
+            </div>
         ];
     }
 }

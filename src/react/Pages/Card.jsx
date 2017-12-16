@@ -1,74 +1,93 @@
 import React from "react";
-import { connect } from "react-redux";
-import Helmet from "react-helmet";
-import Grid from "material-ui/Grid";
-import Paper from "material-ui/Paper";
-import Collapse from "material-ui/transitions/Collapse";
-import IconButton from "material-ui/IconButton";
-import CloseIcon from "material-ui-icons/Close";
-import AddIcon from "material-ui-icons/Add";
-import List, {
-    ListItemText,
-    ListItem,
-    ListItemSecondaryAction
-} from "material-ui/List";
+import {connect} from "react-redux";
 
-import { cardUpdate } from "../Actions/card";
+import {cardUpdate} from "../Actions/card";
 import CardListItem from "../Components/ListItems/CardListItem";
+
+import {Grid, Card as MaterialCard} from 'material-ui'
 
 class Card extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            showForm: false
+            showForm: false,
+            carouselStyle: {
+                transform: 'translateY(10vh)',
+            }
         };
     }
 
-	checkUpdateRequirement = (props = this.props) => {
+    checkUpdateRequirement = (props = this.props) => {
         const {
             user,
-			cards
+            cards
         } = props;
-		
+
         this.props.cardUpdate(this.props.user.id);
-		this.setState({ fetchedCards: true });
+        this.setState({fetchedCards: true});
     }
-	
-	componentDidMount() {
+
+    componentDidMount() {
         this.checkUpdateRequirement();
     }
 
-	
+
     updateCards = () => {
         this.props.cardUpdate(this.props.user.id);
     };
 
-    toggleForm = () => this.setState({ showForm: !this.state.showForm });
+
+    handleCardClick = (index) => {
+        console.log(index);
+
+        let offset = index * 40;
+        let property = 'translateY(-' + offset + '%)';
+
+        if (index === 0) {
+            property = 'translateY(5%)';
+        }
+
+        this.setState({carouselStyle: {transform: property}})
+    };
+
+    toggleForm = () => this.setState({showForm: !this.state.showForm});
 
     render() {
-		let cards = [];
+        let cards = [];
         if (this.props.cards !== false) {
             cards = this.props.cards
                 .filter(card => {
-                    if (
-                        card.CardDebit &&
-                        card.CardDebit.status !== "ACTIVE"
-                    ) {
-                        return false;
-                    }
-                    return true;
+                    return !(card.CardDebit &&
+                        card.CardDebit.status !== "ACTIVE");
                 })
-                .map(card => (
+                .map((card, index) => (
                     <CardListItem
                         BunqJSClient={this.props.BunqJSClient}
                         updateExternal={this.updateExternal}
                         card={card.CardDebit}
+                        index={index}
+                        onClick={this.handleCardClick.bind(this, index)}
                     />
                 ));
         }
 
         return (
-                <List elevation={3}>{cards}</List>
+            <Grid container spacing={24}>
+                <Grid xs={6}>
+                    <ul
+                        className="carousel"
+                        style={this.state.carouselStyle}
+                    >
+                        {cards}
+                    </ul>
+                </Grid>
+
+                <Grid xs={6} className={'card-details-card'}>
+                    <MaterialCard className={'card-details'}>
+                        Card info here!
+                    </MaterialCard>
+                </Grid>
+            </Grid>
         );
     }
 }
@@ -76,17 +95,16 @@ class Card extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-		cards: state.cards.cards,
+        cards: state.cards.cards,
         cardsCardId: state.cards.selectedAccount,
         cardsLoading: state.cards.loading
     };
 };
 
 const mapDispatchToProps = (dispatch, props) => {
-    const { BunqJSClient } = props;
+    const {BunqJSClient} = props;
     return {
-        cardUpdate: (userId) =>
-            dispatch(cardUpdate(BunqJSClient, userId))
+        cardUpdate: (userId) => dispatch(cardUpdate(BunqJSClient, userId))
     };
 };
 
