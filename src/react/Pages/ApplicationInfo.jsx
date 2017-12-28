@@ -120,31 +120,42 @@ class ApplicationInfo extends React.Component {
                                         "settings location"
                                     )}
                                 >
-                                    <Typography type={"body2"}>
-                                        Settings: {app.getPath("userData")}/settings.json
-                                    </Typography>
+                                    <div>
+                                        <Typography type={"body2"}>
+                                            Settings:
+                                        </Typography>
+                                        <Typography type={"body2"}>
+                                            {app.getPath("userData")}/settings.json
+                                        </Typography>
+                                    </div>
                                 </CopyToClipboard>
-
+                                <br />
                                 <CopyToClipboard
                                     text={`${app.getPath(
                                         "userData"
                                     )}/BunqDesktop.log.txt`}
                                     onCopy={this.copiedValue("log location")}
                                 >
-                                    <Typography type={"body2"}>
-                                        Log file: {app.getPath("userData")}/BunqDesktop.log.txt
-                                    </Typography>
+                                    <div>
+                                        <Typography type={"body2"}>
+                                            Log file:
+                                        </Typography>
+                                        <Typography type={"body2"}>
+                                            {app.getPath("userData")}/BunqDesktop.log.txt
+                                        </Typography>
+                                    </div>
                                 </CopyToClipboard>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <Button raised component={NavLink} to={"/"}>
+                                    Back
+                                </Button>
                             </Grid>
 
                             <Grid item xs={12}>
                                 <Typography type={"title"}>Releases</Typography>
                                 <List>{releaseItems}</List>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Button raised component={NavLink} to={"/"}>
-                                    Back
-                                </Button>
                             </Grid>
                         </Grid>
                     </Paper>
