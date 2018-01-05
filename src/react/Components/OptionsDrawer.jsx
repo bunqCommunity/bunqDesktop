@@ -118,6 +118,19 @@ class OptionsDrawer extends React.Component {
                     <FormControlLabel
                         control={
                             <Switch
+                                id="nativeframe-selection"
+                                checked={this.props.nativeFrame}
+                                onChange={this.handleNativeFrameCheckChange}
+                            />
+                        }
+                        label="Logout after"
+                    />
+                </ListItem>
+
+                <ListItem>
+                    <FormControlLabel
+                        control={
+                            <Switch
                                 id="hide-balance-selection"
                                 checked={this.props.hideBalance}
                                 onChange={this.handleHideBalanceCheckChange}

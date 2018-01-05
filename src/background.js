@@ -75,12 +75,7 @@ app.on("ready", () => {
 
     // reload the window if the system goes into sleep mode
     electron.powerMonitor.on("resume", () => {
-        console.log("resume");
         mainWindow.reload();
-    });
-    // reload the window if the system goes into sleep mode
-    electron.powerMonitor.on("suspend", () => {
-        console.log("suspend");
     });
 });
 
