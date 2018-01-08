@@ -24,3 +24,21 @@ export function setHideBalance(hideBalance) {
         }
     };
 }
+
+export function toggleInactivityCheck(checkInactivity) {
+    return {
+        type: "OPTIONS_SET_CHECK_INACTIVITY",
+        payload: {
+            check_inactivity: checkInactivity
+        }
+    };
+}
+
+export function setInactivityCheckDuration(inactivityCheckDuration) {
+    return {
+        type: "OPTIONS_SET_SET_INACTIVITY_DURATION",
+        payload: {
+            inactivity_check_duration: parseInt(inactivityCheckDuration)
+        }
+    };
+}
