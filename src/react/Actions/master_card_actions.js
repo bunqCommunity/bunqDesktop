@@ -10,11 +10,20 @@ export function masterCardActionsSetInfo(masterCardActions, account_id) {
     };
 }
 
-export function masterCardActionsUpdate(BunqJSClient, userId, accountId) {
+export function masterCardActionsUpdate(
+    BunqJSClient,
+    userId,
+    accountId,
+    options = {
+        count: 50,
+        newer_id: false,
+        older_id: false
+    }
+) {
     return dispatch => {
         dispatch(masterCardActionsLoading());
         BunqJSClient.api.masterCardAction
-            .list(userId, accountId)
+            .list(userId, accountId, options)
             .then(masterCardActions => {
                 dispatch(
                     masterCardActionsSetInfo(masterCardActions, accountId)

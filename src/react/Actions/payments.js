@@ -1,20 +1,34 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
 export function paymentsSetInfo(payments, account_id) {
+    // get the newer and older id from the list
+    const { 0: newer_payment, [payments.length - 1]: older_payment } = payments;
+
     return {
         type: "PAYMENTS_SET_INFO",
         payload: {
-            payments: payments,
-            account_id: account_id
+            payments,
+            account_id,
+            newer_id: newer_payment.Payment.id,
+            older_id: older_payment.Payment.id
         }
     };
 }
 
-export function paymentInfoUpdate(BunqJSClient, user_id, account_id) {
+export function paymentInfoUpdate(
+    BunqJSClient,
+    user_id,
+    account_id,
+    options = {
+        count: 50,
+        newer_id: false,
+        older_id: false
+    }
+) {
     return dispatch => {
         dispatch(paymentsLoading());
         BunqJSClient.api.payment
-            .list(user_id, account_id)
+            .list(user_id, account_id, options)
             .then(payments => {
                 dispatch(paymentsSetInfo(payments, account_id));
                 dispatch(paymentsNotLoading());

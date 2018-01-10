@@ -10,11 +10,20 @@ export function bunqMeTabsSetInfo(bunq_me_tabs, account_id) {
     };
 }
 
-export function bunqMeTabsUpdate(BunqJSClient, user_id, account_id) {
+export function bunqMeTabsUpdate(
+    BunqJSClient,
+    user_id,
+    account_id,
+    options = {
+        count: 50,
+        newer_id: false,
+        older_id: false
+    }
+) {
     return dispatch => {
         dispatch(bunqMeTabsLoading());
         BunqJSClient.api.bunqMeTabs
-            .list(user_id, account_id)
+            .list(user_id, account_id, options)
             .then(bunqMeTabs => {
                 dispatch(bunqMeTabsSetInfo(bunqMeTabs, account_id));
                 dispatch(bunqMeTabsNotLoading());

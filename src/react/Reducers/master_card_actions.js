@@ -1,7 +1,9 @@
 export const defaultState = {
     master_card_actions: [],
     account_id: false,
-    loading: false
+    loading: false,
+    newer_id: false,
+    older_id: false
 };
 
 export default (state = defaultState, action) => {

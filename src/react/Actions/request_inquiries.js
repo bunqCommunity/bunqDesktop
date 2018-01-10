@@ -10,11 +10,20 @@ export function requestInquiriesSetInfo(request_inquiries, account_id) {
     };
 }
 
-export function requestInquiriesUpdate(BunqJSClient, userId, accountId) {
+export function requestInquiriesUpdate(
+    BunqJSClient,
+    userId,
+    accountId,
+    options = {
+        count: 50,
+        newer_id: false,
+        older_id: false
+    }
+) {
     return dispatch => {
         dispatch(requestInquiriesLoading());
         BunqJSClient.api.requestInquiry
-            .list(userId, accountId)
+            .list(userId, accountId, options)
             .then(requestInquiries => {
                 dispatch(requestInquiriesSetInfo(requestInquiries, accountId));
                 dispatch(requestInquiriesNotLoading());

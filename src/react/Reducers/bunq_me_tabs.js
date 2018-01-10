@@ -1,7 +1,9 @@
 export const defaultState = {
     bunq_me_tabs: [],
     account_id: false,
-    loading: false
+    loading: false,
+    newer_id: false,
+    older_id: false
 };
 
 export default (state = defaultState, action) => {

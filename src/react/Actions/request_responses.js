@@ -10,11 +10,20 @@ export function requestResponsesSetInfo(requestResponses, account_id) {
     };
 }
 
-export function requestResponsesUpdate(BunqJSClient, userId, accountId) {
+export function requestResponsesUpdate(
+    BunqJSClient,
+    userId,
+    accountId,
+    options = {
+        count: 50,
+        newer_id: false,
+        older_id: false
+    }
+) {
     return dispatch => {
         dispatch(requestResponsesLoading());
         BunqJSClient.api.requestResponse
-            .list(userId, accountId)
+            .list(userId, accountId, options)
             .then(requestResponses => {
                 dispatch(requestResponsesSetInfo(requestResponses, accountId));
                 dispatch(requestResponsesNotLoading());

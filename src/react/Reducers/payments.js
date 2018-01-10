@@ -1,7 +1,9 @@
 export const defaultState = {
     payments: [],
     account_id: false,
-    loading: false
+    loading: false,
+    newer_id: false,
+    older_id: false
 };
 
 export default (state = defaultState, action) => {
@@ -11,6 +13,8 @@ export default (state = defaultState, action) => {
                 ...state,
                 payments: action.payload.payments,
                 account_id: action.payload.account_id,
+                newer_id: action.payload.newer_id,
+                older_id: action.payload.older_id,
             };
 
         case "PAYMENTS_IS_LOADING":
