@@ -1,11 +1,23 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
-export function paymentsSetInfo(payments, account_id) {
+export function paymentsSetInfo(
+    payments,
+    account_id,
+    newer = false,
+    older = false
+) {
     // get the newer and older id from the list
     const { 0: newer_payment, [payments.length - 1]: older_payment } = payments;
 
+    let type = "PAYMENTS_SET_INFO";
+    if (newer) {
+        type = "PAYMENTS_ADD_NEWER_INFO";
+    } else if (older) {
+        type = "PAYMENTS_ADD_OLDER_INFO";
+    }
+
     return {
-        type: "PAYMENTS_SET_INFO",
+        type: type,
         payload: {
             payments,
             account_id,
@@ -30,7 +42,19 @@ export function paymentInfoUpdate(
         BunqJSClient.api.payment
             .list(user_id, account_id, options)
             .then(payments => {
-                dispatch(paymentsSetInfo(payments, account_id));
+                // if we have a newer/older id we need to trigger a different event
+                if (options.newer_id && options.newer_id !== false) {
+                    dispatch(
+                        paymentsSetInfo(payments, account_id, true, false)
+                    );
+                } else if (options.older_id && options.older_id !== false) {
+                    dispatch(
+                        paymentsSetInfo(payments, account_id, false, true)
+                    );
+                } else {
+                    dispatch(paymentsSetInfo(payments, account_id));
+                }
+
                 dispatch(paymentsNotLoading());
             })
             .catch(error => {

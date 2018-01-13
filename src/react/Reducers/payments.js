@@ -7,14 +7,42 @@ export const defaultState = {
 };
 
 export default (state = defaultState, action) => {
+    let payments = [...state.payments];
+
+    // check in what order payments are prepended/appended/overwritten
     switch (action.type) {
+        case "PAYMENTS_SET_INFO":
+            // overwrite current
+            payments = [...action.payload.payments];
+            break;
+        case "PAYMENTS_ADD_NEWER_INFO":
+            // add newer info to the beginning of the payments list
+            payments = [...action.payload.payments, ...state.payments];
+            break;
+        case "PAYMENTS_ADD_OLDER_INFO":
+            // add older info to the end of the payments list
+            payments = [...state.payments, ...action.payload.payments];
+            break;
+    }
+
+    switch (action.type) {
+        case "PAYMENTS_ADD_NEWER_INFO":
+        case "PAYMENTS_ADD_OLDER_INFO":
         case "PAYMENTS_SET_INFO":
             return {
                 ...state,
-                payments: action.payload.payments,
+                payments: payments,
                 account_id: action.payload.account_id,
-                newer_id: action.payload.newer_id,
-                older_id: action.payload.older_id,
+                newer_id:
+                    state.newer_id === false ||
+                    state.newer_id < action.payload.newer_id
+                        ? action.payload.newer_id
+                        : state.newer_id,
+                older_id:
+                    state.older_id === false ||
+                    state.older_id > action.payload.older_id
+                        ? action.payload.older_id
+                        : state.older_id
             };
 
         case "PAYMENTS_IS_LOADING":
