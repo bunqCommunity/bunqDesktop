@@ -7,12 +7,12 @@ export function paymentsSetInfo(
     older = false
 ) {
     // get the newer and older id from the list
-    const { 0: newer_payment, [payments.length - 1]: older_payment } = payments;
+    const { 0: newerItem, [payments.length - 1]: olderItem } = payments;
 
     let type = "PAYMENTS_SET_INFO";
-    if (newer) {
+    if (newer !== false) {
         type = "PAYMENTS_ADD_NEWER_INFO";
-    } else if (older) {
+    } else if (older !== false) {
         type = "PAYMENTS_ADD_OLDER_INFO";
     }
 
@@ -21,8 +21,8 @@ export function paymentsSetInfo(
         payload: {
             payments,
             account_id,
-            newer_id: newer_payment.Payment.id,
-            older_id: older_payment.Payment.id
+            newer_id: newerItem ? newerItem.Payment.id : newer,
+            older_id: olderItem ? olderItem.Payment.id : older
         }
     };
 }
@@ -45,11 +45,11 @@ export function paymentInfoUpdate(
                 // if we have a newer/older id we need to trigger a different event
                 if (options.newer_id && options.newer_id !== false) {
                     dispatch(
-                        paymentsSetInfo(payments, account_id, true, false)
+                        paymentsSetInfo(payments, account_id, options.newer_id, false)
                     );
                 } else if (options.older_id && options.older_id !== false) {
                     dispatch(
-                        paymentsSetInfo(payments, account_id, false, true)
+                        paymentsSetInfo(payments, account_id, false, options.older_id)
                     );
                 } else {
                     dispatch(paymentsSetInfo(payments, account_id));

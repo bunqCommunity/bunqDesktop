@@ -7,12 +7,48 @@ export const defaultState = {
 };
 
 export default (state = defaultState, action) => {
+    let master_card_actions = [...state.master_card_actions];
+
+    // check in what order master_card_actions are prepended/appended/overwritten
     switch (action.type) {
+        case "MASTER_CARD_ACTIONS_SET_INFO":
+            // overwrite current
+            master_card_actions = [...action.payload.master_card_actions];
+            break;
+        case "MASTER_CARD_ACTIONS_ADD_NEWER_INFO":
+            // add newer info to the beginning of the master_card_actions list
+            master_card_actions = [
+                ...action.payload.master_card_actions,
+                ...state.master_card_actions
+            ];
+            break;
+        case "MASTER_CARD_ACTIONS_ADD_OLDER_INFO":
+            // add older info to the end of the master_card_actions list
+            master_card_actions = [
+                ...state.master_card_actions,
+                ...action.payload.master_card_actions
+            ];
+            break;
+    }
+
+    switch (action.type) {
+        case "MASTER_CARD_ACTIONS_ADD_NEWER_INFO":
+        case "MASTER_CARD_ACTIONS_ADD_OLDER_INFO":
         case "MASTER_CARD_ACTIONS_SET_INFO":
             return {
                 ...state,
-                master_card_actions: action.payload.master_card_actions,
+                master_card_actions: master_card_actions,
                 account_id: action.payload.account_id,
+                newer_id:
+                    state.newer_id === false ||
+                    state.newer_id < action.payload.newer_id
+                        ? action.payload.newer_id
+                        : state.newer_id,
+                older_id:
+                    state.older_id === false ||
+                    state.older_id > action.payload.older_id
+                        ? action.payload.older_id
+                        : state.older_id
             };
 
         case "MASTER_CARD_ACTIONS_IS_LOADING":

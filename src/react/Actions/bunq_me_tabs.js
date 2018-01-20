@@ -1,11 +1,28 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
-export function bunqMeTabsSetInfo(bunq_me_tabs, account_id) {
+export function bunqMeTabsSetInfo(
+    bunq_me_tabs,
+    account_id,
+    newer = false,
+    older = false
+) {
+    // get the newer and older id from the list
+    const { 0: newerItem, [bunq_me_tabs.length - 1]: olderItem } = bunq_me_tabs;
+
+    let type = "BUNQ_ME_TABS_SET_INFO";
+    if (newer !== false) {
+        type = "BUNQ_ME_TABS_ADD_NEWER_INFO";
+    } else if (older !== false) {
+        type = "BUNQ_ME_TABS_ADD_OLDER_INFO";
+    }
+
     return {
-        type: "BUNQ_ME_TABS_SET_INFO",
+        type: type,
         payload: {
-            bunq_me_tabs: bunq_me_tabs,
-            account_id: account_id
+            bunq_me_tabs,
+            account_id,
+            newer_id: newerItem ? newerItem.BunqMeTab.id : newer,
+            older_id: olderItem ? olderItem.BunqMeTab.id : older
         }
     };
 }
@@ -13,7 +30,7 @@ export function bunqMeTabsSetInfo(bunq_me_tabs, account_id) {
 export function bunqMeTabsUpdate(
     BunqJSClient,
     user_id,
-    account_id,
+    accountId,
     options = {
         count: 50,
         newer_id: false,
@@ -23,9 +40,21 @@ export function bunqMeTabsUpdate(
     return dispatch => {
         dispatch(bunqMeTabsLoading());
         BunqJSClient.api.bunqMeTabs
-            .list(user_id, account_id, options)
+            .list(user_id, accountId, options)
             .then(bunqMeTabs => {
-                dispatch(bunqMeTabsSetInfo(bunqMeTabs, account_id));
+                // if we have a newer/older id we need to trigger a different event
+                if (options.newer_id && options.newer_id !== false) {
+                    dispatch(
+                        bunqMeTabsSetInfo(bunqMeTabs, accountId, options.newer_id, false)
+                    );
+                } else if (options.older_id && options.older_id !== false) {
+                    dispatch(
+                        bunqMeTabsSetInfo(bunqMeTabs, accountId, false, options.older_id)
+                    );
+                } else {
+                    dispatch(bunqMeTabsSetInfo(bunqMeTabs, accountId));
+                }
+
                 dispatch(bunqMeTabsNotLoading());
             })
             .catch(error => {

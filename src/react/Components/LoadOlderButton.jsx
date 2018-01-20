@@ -1,13 +1,13 @@
 import React from "react";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import Button from "material-ui/Button";
 import RefreshIcon from "material-ui-icons/Refresh";
 
-import {paymentInfoUpdate} from "../Actions/payments";
-import {requestResponsesUpdate} from "../Actions/request_responses";
-import {bunqMeTabsUpdate} from "../Actions/bunq_me_tabs";
-import {masterCardActionsUpdate} from "../Actions/master_card_actions";
-import {requestInquiriesUpdate} from "../Actions/request_inquiries";
+import { paymentInfoUpdate } from "../Actions/payments";
+import { requestResponsesUpdate } from "../Actions/request_responses";
+import { bunqMeTabsUpdate } from "../Actions/bunq_me_tabs";
+import { masterCardActionsUpdate } from "../Actions/master_card_actions";
+import { requestInquiriesUpdate } from "../Actions/request_inquiries";
 
 class LoadOlderButton extends React.Component {
     constructor(props, context) {
@@ -21,6 +21,10 @@ class LoadOlderButton extends React.Component {
             paymentsAccountId,
             paymentsLoading,
             paymentsOlderId,
+            bunqMeTabsOlderId,
+            requestResponsesOlderId,
+            requestInquiriesOlderId,
+            masterCardActionsOlderId,
             initialBunqConnect,
             user
         } = this.props;
@@ -40,10 +44,26 @@ class LoadOlderButton extends React.Component {
                 accountsAccountId,
                 paymentsOlderId
             );
-            this.props.bunqMeTabsUpdate(user.id, accountsAccountId);
-            this.props.requestResponsesUpdate(user.id, accountsAccountId);
-            this.props.requestInquiriesUpdate(user.id, accountsAccountId);
-            this.props.masterCardActionsUpdate(user.id, accountsAccountId);
+            this.props.bunqMeTabsUpdate(
+                user.id,
+                accountsAccountId,
+                bunqMeTabsOlderId
+            );
+            this.props.requestResponsesUpdate(
+                user.id,
+                accountsAccountId,
+                requestResponsesOlderId
+            );
+            this.props.requestInquiriesUpdate(
+                user.id,
+                accountsAccountId,
+                requestInquiriesOlderId
+            );
+            this.props.masterCardActionsUpdate(
+                user.id,
+                accountsAccountId,
+                masterCardActionsOlderId
+            );
         }
     };
 
@@ -61,8 +81,15 @@ class LoadOlderButton extends React.Component {
                     color="primary"
                     aria-label="add"
                     onClick={this.update}
+                    disabled={
+                        this.props.paymentsLoading ||
+                        this.props.bunqMeTabsLoading ||
+                        this.props.requestResponsesLoading ||
+                        this.props.requestInquiriesLoading ||
+                        this.props.masterCardActionsLoading
+                    }
                 >
-                    <RefreshIcon/>
+                    <RefreshIcon />
                 </Button>
             </div>
         );
@@ -80,12 +107,24 @@ const mapStateToProps = state => {
         accountsAccountId: state.accounts.selectedAccount,
 
         paymentsLoading: state.payments.loading,
-        paymentsOlderId: state.payments.older_id
+        paymentsOlderId: state.payments.older_id,
+
+        bunqMeTabsLoading: state.bunq_me_tabs.loading,
+        bunqMeTabsOlderId: state.bunq_me_tabs.older_id,
+
+        requestResponsesLoading: state.request_responses.loading,
+        requestResponsesOlderId: state.request_responses.older_id,
+
+        requestInquiriesLoading: state.request_inquiries.loading,
+        requestInquiriesOlderId: state.request_inquiries.older_id,
+
+        masterCardActionsLoading: state.master_card_actions.loading,
+        masterCardActionsOlderId: state.master_card_actions.older_id
     };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-    const {BunqJSClient} = ownProps;
+    const { BunqJSClient } = ownProps;
     return {
         paymentsUpdate: (userId, accountId, older_id) =>
             dispatch(
@@ -93,14 +132,30 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                     older_id: older_id
                 })
             ),
-        requestInquiriesUpdate: (userId, accountId) =>
-            dispatch(requestInquiriesUpdate(BunqJSClient, userId, accountId)),
-        requestResponsesUpdate: (userId, accountId) =>
-            dispatch(requestResponsesUpdate(BunqJSClient, userId, accountId)),
-        masterCardActionsUpdate: (userId, accountId) =>
-            dispatch(masterCardActionsUpdate(BunqJSClient, userId, accountId)),
-        bunqMeTabsUpdate: (userId, accountId) =>
-            dispatch(bunqMeTabsUpdate(BunqJSClient, userId, accountId))
+        requestInquiriesUpdate: (userId, accountId, older_id) =>
+            dispatch(
+                requestInquiriesUpdate(BunqJSClient, userId, accountId, {
+                    older_id: older_id
+                })
+            ),
+        requestResponsesUpdate: (userId, accountId, older_id) =>
+            dispatch(
+                requestResponsesUpdate(BunqJSClient, userId, accountId, {
+                    older_id: older_id
+                })
+            ),
+        masterCardActionsUpdate: (userId, accountId, older_id) =>
+            dispatch(
+                masterCardActionsUpdate(BunqJSClient, userId, accountId, {
+                    older_id: older_id
+                })
+            ),
+        bunqMeTabsUpdate: (userId, accountId, older_id) =>
+            dispatch(
+                bunqMeTabsUpdate(BunqJSClient, userId, accountId, {
+                    older_id: older_id
+                })
+            )
     };
 };
 
