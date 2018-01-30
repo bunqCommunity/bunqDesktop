@@ -70,12 +70,15 @@ class LoadOlderButton extends React.Component {
 
     render() {
         const loadingState =
-            this.props.payments.length <= 0 ||
             this.props.paymentsLoading ||
             this.props.bunqMeTabsLoading ||
             this.props.requestResponsesLoading ||
             this.props.requestInquiriesLoading ||
             this.props.masterCardActionsLoading;
+
+        if (this.props.payments.length <= 0) {
+            return null;
+        }
 
         return (
             <div
