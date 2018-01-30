@@ -2,7 +2,7 @@ import React from "react";
 import { withTheme } from "material-ui/styles";
 import IconButton from "material-ui/IconButton";
 import Drawer from "material-ui/Drawer";
-import Typography from "material-ui/Typography"
+import Typography from "material-ui/Typography";
 import Radio, { RadioGroup } from "material-ui/Radio";
 import List, {
     ListItem,
@@ -149,14 +149,22 @@ class DisplayDrawer extends React.Component {
                             style={styles.radioBtn}
                             icon={<ArrowDownward />}
                             checkedIcon={
-                                <ArrowDownward color={receivedPayment} />
+                                <ArrowDownward
+                                    style={{ color: receivedPayment }}
+                                    color={"inherit"}
+                                />
                             }
                             value={"received"}
                         />
                         <Radio
                             style={styles.radioBtn}
                             icon={<ArrowUpward />}
-                            checkedIcon={<ArrowUpward color={sentPayment} />}
+                            checkedIcon={
+                                <ArrowUpward
+                                    style={{ color: sentPayment }}
+                                    color={"inherit"}
+                                />
+                            }
                             value={"sent"}
                         />
                     </RadioGroup>
@@ -190,14 +198,22 @@ class DisplayDrawer extends React.Component {
                         <Radio
                             style={styles.radioBtn}
                             icon={<ArrowDownward />}
-                            checkedIcon={<ArrowDownward color={sentPayment} />}
+                            checkedIcon={
+                                <ArrowDownward
+                                    style={{ color: sentPayment }}
+                                    color={"inherit"}
+                                />
+                            }
                             value={"received"}
                         />
                         <Radio
                             style={styles.radioBtn}
                             icon={<ArrowUpward />}
                             checkedIcon={
-                                <ArrowUpward color={receivedPayment} />
+                                <ArrowUpward
+                                    style={{ color: receivedPayment }}
+                                    color={"inherit"}
+                                />
                             }
                             value={"sent"}
                         />
@@ -234,10 +250,12 @@ class DisplayDrawer extends React.Component {
                             icon={<CheckCircle />}
                             checkedIcon={
                                 <CheckCircle
-                                    color={
-                                        theme.palette.bunqMeTabs
-                                            .awaiting_payment
-                                    }
+                                    style={{
+                                        color:
+                                            theme.palette.bunqMeTabs
+                                                .awaiting_payment
+                                    }}
+                                    color={"inherit"}
                                 />
                             }
                             value={"active"}
@@ -247,7 +265,11 @@ class DisplayDrawer extends React.Component {
                             icon={<Cancel />}
                             checkedIcon={
                                 <Cancel
-                                    color={theme.palette.bunqMeTabs.cancelled}
+                                    style={{
+                                        color:
+                                            theme.palette.bunqMeTabs.cancelled
+                                    }}
+                                    color={"inherit"}
                                 />
                             }
                             value={"cancelled"}
@@ -257,7 +279,10 @@ class DisplayDrawer extends React.Component {
                             icon={<TimerOff />}
                             checkedIcon={
                                 <TimerOff
-                                    color={theme.palette.bunqMeTabs.expired}
+                                    style={{
+                                        color: theme.palette.bunqMeTabs.expired
+                                    }}
+                                    color={"inherit"}
                                 />
                             }
                             value={"expired"}
@@ -266,18 +291,18 @@ class DisplayDrawer extends React.Component {
                 </ListItem>
 
                 {/*<ListItem style={styles.listItem}>*/}
-                    {/*<TextField*/}
-                        {/*id="from-datetime"*/}
-                        {/*label="From"*/}
-                        {/*type="datetime-local"*/}
-                    {/*/>*/}
+                {/*<TextField*/}
+                {/*id="from-datetime"*/}
+                {/*label="From"*/}
+                {/*type="datetime-local"*/}
+                {/*/>*/}
                 {/*</ListItem>*/}
                 {/*<ListItem style={styles.listItem}>*/}
-                    {/*<TextField*/}
-                        {/*id="to-datetime"*/}
-                        {/*label="To"*/}
-                        {/*type="datetime-local"*/}
-                    {/*/>*/}
+                {/*<TextField*/}
+                {/*id="to-datetime"*/}
+                {/*label="To"*/}
+                {/*type="datetime-local"*/}
+                {/*/>*/}
                 {/*</ListItem>*/}
 
                 <Divider />
@@ -285,9 +310,7 @@ class DisplayDrawer extends React.Component {
                     <ListItemIcon>
                         <ClearIcon />
                     </ListItemIcon>
-                    <Typography type="subheading">
-                        Clear filters
-                    </Typography>
+                    <Typography type="subheading">Clear filters</Typography>
                 </ListItem>
             </List>
         );
