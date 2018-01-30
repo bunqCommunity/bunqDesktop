@@ -190,7 +190,7 @@ class OptionsDrawer extends React.Component {
             <Drawer
                 open={open}
                 className="options-drawer"
-                onRequestClose={this.props.closeOptionsDrawer}
+                onClose={this.props.closeOptionsDrawer}
                 anchor={theme.direction === "rtl" ? "right" : "left"}
                 SlideProps={{
                     style: { top: 50 }

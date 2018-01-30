@@ -192,7 +192,7 @@ class RequestInquiryInfo extends React.Component {
                                             requestInquiryInfoLoading
                                         }
                                         onClick={this.cancelInquiry}
-                                        color="accent"
+                                        color="secondary"
                                         style={styles.button}
                                     >
                                         Cancel

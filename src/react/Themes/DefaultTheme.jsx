@@ -4,13 +4,10 @@ export default {
         common: {
             black: "#000",
             white: "#fff111",
-            transparent: "rgba(0, 0, 0, 0)",
-            fullBlack: "rgba(0, 0, 0, 1)",
             darkBlack: "rgba(0, 0, 0, 0.87)",
             lightBlack: "rgba(0, 0, 0, 0.54)",
             minBlack: "rgba(0, 0, 0, 0.26)",
             faintBlack: "rgba(0, 0, 0, 0.12)",
-            fullWhite: "rgba(255, 255, 255, 1)",
             darkWhite: "rgba(255, 255, 255, 0.87)",
             lightWhite: "rgba(255, 255, 255, 0.54)",
             receivedPayment: "#008000",
@@ -126,12 +123,6 @@ export default {
         action: {
             active: "rgba(0, 0, 0, 0.54)",
             disabled: "rgba(0, 0, 0, 0.26)"
-        },
-        background: {
-            default: "#fafafa",
-            paper: "#fff",
-            appBar: "#f5f5f5",
-            contentFrame: "#eeeeee"
         }
     },
     styles: {

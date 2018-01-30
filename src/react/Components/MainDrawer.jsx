@@ -172,11 +172,11 @@ class MainDrawer extends React.Component {
         );
 
         return [
-            <Hidden mdUp>
+            <Hidden smUp>
                 <Drawer
                     type="temporary"
                     open={open}
-                    onRequestClose={this.props.closeDrawer}
+                    onClose={this.props.closeDrawer}
                     className="options-drawer"
                     anchor={theme.direction === "rtl" ? "right" : "left"}
                     SlideProps={{
@@ -186,11 +186,11 @@ class MainDrawer extends React.Component {
                     {drawerList}
                 </Drawer>
             </Hidden>,
-            <Hidden mdDown implementation="css">
+            <Hidden smDown implementation="css">
                 <Drawer
                     type="permanent"
                     open={open}
-                    onRequestClose={this.props.closeDrawer}
+                    onClose={this.props.closeDrawer}
                     anchor="left"
                     className="options-drawer"
                     classes={{
