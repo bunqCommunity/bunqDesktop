@@ -26,7 +26,7 @@ export default class ConfirmationDialog extends React.Component {
             <Dialog
                 open={confirmModalOpen}
                 keepMounted
-                onRequestClose={this.props.closeModal}
+                onClose={this.props.closeModal}
             >
                 <DialogTitle>Confirm the request</DialogTitle>
                 <DialogContent>
@@ -57,7 +57,7 @@ export default class ConfirmationDialog extends React.Component {
                     <Button
                         raised
                         onClick={this.props.closeModal}
-                        color="accent"
+                        color="secondary"
                     >
                         Cancel
                     </Button>

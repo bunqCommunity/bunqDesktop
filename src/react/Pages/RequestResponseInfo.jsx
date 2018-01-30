@@ -199,7 +199,7 @@ class RequestResponseInfo extends React.Component {
                                 <Grid item xs={12} sm={6}>
                                     <Button
                                         raised
-                                        color="accent"
+                                        color="secondary"
                                         disabled={
                                             requestResponseInfoLoading ||
                                             requestResponseLoading
