@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import Button from "material-ui/Button";
 import RefreshIcon from "material-ui-icons/Refresh";
+import { CircularProgress } from "material-ui/Progress";
 
 import { paymentInfoUpdate } from "../Actions/payments";
 import { requestResponsesUpdate } from "../Actions/request_responses";
@@ -68,6 +69,14 @@ class LoadOlderButton extends React.Component {
     };
 
     render() {
+        const loadingState =
+            this.props.payments.length <= 0 ||
+            this.props.paymentsLoading ||
+            this.props.bunqMeTabsLoading ||
+            this.props.requestResponsesLoading ||
+            this.props.requestInquiriesLoading ||
+            this.props.masterCardActionsLoading;
+
         return (
             <div
                 style={{
@@ -76,21 +85,19 @@ class LoadOlderButton extends React.Component {
                     margin: 10
                 }}
             >
-                <Button
-                    fab
-                    color="primary"
-                    aria-label="add"
-                    onClick={this.update}
-                    disabled={
-                        this.props.paymentsLoading ||
-                        this.props.bunqMeTabsLoading ||
-                        this.props.requestResponsesLoading ||
-                        this.props.requestInquiriesLoading ||
-                        this.props.masterCardActionsLoading
-                    }
-                >
-                    <RefreshIcon />
-                </Button>
+                {loadingState ? (
+                    <CircularProgress />
+                ) : (
+                    <Button
+                        fab
+                        color="primary"
+                        aria-label="add"
+                        onClick={this.update}
+                        disabled={loadingState}
+                    >
+                        <RefreshIcon />
+                    </Button>
+                )}
             </div>
         );
     }
@@ -106,6 +113,7 @@ const mapStateToProps = state => {
 
         accountsAccountId: state.accounts.selectedAccount,
 
+        payments: state.payments.payments,
         paymentsLoading: state.payments.loading,
         paymentsOlderId: state.payments.older_id,
 
