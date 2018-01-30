@@ -49,11 +49,11 @@ const TransactionHeader = props => {
         </Grid>,
 
         <Grid item md={2} hidden={{ smDown: true }} style={styles.arrow}>
-            <ArrowForwardIcon color={arrowColor} />
+            <ArrowForwardIcon style={{ color: arrowColor }} color={"inherit"} />
         </Grid>,
 
         <Grid item xs={12} hidden={{ mdUp: true }} style={styles.arrow}>
-            <ArrowDownIcon color={arrowColor} />
+            <ArrowDownIcon style={{ color: arrowColor }} color={"inherit"} />
         </Grid>,
 
         <Grid item xs={12} md={5} style={styles.textCenter}>

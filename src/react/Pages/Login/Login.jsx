@@ -267,7 +267,7 @@ class Login extends React.Component {
                     </Typography>
                     <Button
                         raised
-                        color={"accent"}
+                        color={"secondary"}
                         style={styles.clearButton}
                         onClick={this.clearApiKey}
                         disabled={this.props.userLoading}

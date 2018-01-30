@@ -174,7 +174,7 @@ class LoginPassword extends React.Component {
                 {hasStoredApiKey ? (
                     <Button
                         raised
-                        color={"accent"}
+                        color={"secondary"}
                         style={styles.loginButton}
                         onClick={this.clearApiKey}
                     >
@@ -196,7 +196,7 @@ class LoginPassword extends React.Component {
                         </Typography>
                         <Button
                             raised
-                            color={"accent"}
+                            color={"secondary"}
                             style={styles.loginButton}
                             onClick={this.props.useNoPasswordLogin}
                         >
