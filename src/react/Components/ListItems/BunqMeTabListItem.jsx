@@ -71,7 +71,7 @@ class BunqMeTabListItem extends React.Component {
         const updatedDate = humanReadableDate(bunqMeTab.updated);
         const expiryDate = humanReadableDate(bunqMeTab.time_expiry);
 		const numberOfPayments = bunqMeTab.result_inquiries.length;
-		
+
         const primaryText = `${formatMoney(
             bunqMeTab.bunqme_tab_entry.amount_inquired.value
         )} ${bunqMeTab.bunqme_tab_entry.amount_inquired.currency}`;
@@ -84,7 +84,7 @@ class BunqMeTabListItem extends React.Component {
         return [
             <ListItem button onClick={this.toggleExtraInfo}>
                 <Avatar style={styles.smallAvatar}>
-                    <Share color={iconColor} />
+                    <Share color={"inherit"} style={{color: iconColor}} />
                 </Avatar>
                 <ListItemText
                     primary={primaryText}
@@ -103,7 +103,6 @@ class BunqMeTabListItem extends React.Component {
             </ListItem>,
             <Collapse
                 in={this.state.extraInfoOpen}
-                transitionDuration="auto"
                 unmountOnExit
             >
                 <ListItem dense>
@@ -129,7 +128,7 @@ class BunqMeTabListItem extends React.Component {
                         secondary={merchantList}
                     />
                 </ListItem>
-				
+
                 <ListItem dense>
                     <ListItemText
                         primary="Number of payments"
@@ -146,7 +145,7 @@ class BunqMeTabListItem extends React.Component {
                                     this.props.bunqMeTabLoading ||
                                     this.props.bunqMeTabsLoading
                                 }
-                                color="accent"
+                                color="secondary"
                                 onClick={this.cancelTab}
                             >
                                 Cancel request

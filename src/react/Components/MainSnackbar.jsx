@@ -28,7 +28,7 @@ class MainSnackbar extends React.PureComponent {
                 autoHideDuration={this.props.snackbarDuration}
                 transition={Transition}
                 anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                onRequestClose={this.props.closeSnackbar}
+                onClose={this.props.closeSnackbar}
             />
         );
     }

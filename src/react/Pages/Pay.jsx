@@ -318,7 +318,7 @@ class Pay extends React.Component {
                 <Dialog
                     open={this.state.confirmModalOpen}
                     keepMounted
-                    onRequestClose={this.closeModal}
+                    onClose={this.closeModal}
                 >
                     <DialogTitle>Confirm the payment</DialogTitle>
                     <DialogContent>
@@ -368,7 +368,7 @@ class Pay extends React.Component {
                         </List>
                     </DialogContent>
                     <DialogActions>
-                        <Button raised onClick={this.closeModal} color="accent">
+                        <Button raised onClick={this.closeModal} color="secondary">
                             Cancel
                         </Button>
                         <Button
@@ -406,7 +406,7 @@ class Pay extends React.Component {
                             <Radio
                                 icon={<EmailIcon />}
                                 checkedIcon={<EmailIcon />}
-                                color={"accent"}
+                                color={"secondary"}
                                 checked={this.state.targetType === "EMAIL"}
                                 onChange={this.setTargetType("EMAIL")}
                                 value="EMAIL"
@@ -422,7 +422,7 @@ class Pay extends React.Component {
                             <Radio
                                 icon={<PhoneIcon />}
                                 checkedIcon={<PhoneIcon />}
-                                color={"accent"}
+                                color={"secondary"}
                                 checked={this.state.targetType === "PHONE"}
                                 onChange={this.setTargetType("PHONE")}
                                 value="PHONE"
@@ -438,7 +438,7 @@ class Pay extends React.Component {
                             <Radio
                                 icon={<CompareArrowsIcon />}
                                 checkedIcon={<CompareArrowsIcon />}
-                                color={"accent"}
+                                color={"secondary"}
                                 checked={this.state.targetType === "TRANSFER"}
                                 onChange={this.setTargetType("TRANSFER")}
                                 value="TRANSFER"

@@ -18,7 +18,7 @@ class TargetSelection extends React.Component {
                             <Radio
                                 icon={<EmailIcon />}
                                 checkedIcon={<EmailIcon />}
-                                color={"accent"}
+                                color={"secondary"}
                                 checked={targetType === "EMAIL"}
                                 onChange={this.props.setTargetType("EMAIL")}
                                 value="EMAIL"
@@ -34,7 +34,7 @@ class TargetSelection extends React.Component {
                             <Radio
                                 icon={<PhoneIcon />}
                                 checkedIcon={<PhoneIcon />}
-                                color={"accent"}
+                                color={"secondary"}
                                 checked={targetType === "PHONE"}
                                 onChange={this.props.setTargetType("PHONE")}
                                 value="PHONE"
