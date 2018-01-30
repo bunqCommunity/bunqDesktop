@@ -37,6 +37,7 @@ class MoneyAmountLabel extends React.Component {
                     ...style
                 };
             case "REVOKED":
+            case "EXPIRED":
                 return {
                     color: theme.palette.requestResponse.revoked,
                     ...style
@@ -72,6 +73,7 @@ class MoneyAmountLabel extends React.Component {
                     ...style
                 };
             case "REVOKED":
+            case "EXPIRED":
                 return {
                     color: theme.palette.requestInquiry.revoked,
                     ...theme.styles.requestInquiry.revoked,

@@ -392,7 +392,6 @@ class RequestInquiry extends React.Component {
 
                         <Collapse
                             in={this.state.expandedCollapse}
-                            transitionDuration="auto"
                             unmountOnExit
                         >
                             <MinimumAge

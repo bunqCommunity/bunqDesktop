@@ -65,7 +65,6 @@ class BunqMeTab extends React.Component {
                 <Grid item xs={12} md={8}>
                     <Collapse
                         in={this.state.showForm}
-                        transitionDuration="auto"
                         unmountOnExit
                     >
                         <Paper style={styles.paper}>
