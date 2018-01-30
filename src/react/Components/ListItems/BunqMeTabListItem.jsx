@@ -70,7 +70,7 @@ class BunqMeTabListItem extends React.Component {
         const createdDate = humanReadableDate(bunqMeTab.created);
         const updatedDate = humanReadableDate(bunqMeTab.updated);
         const expiryDate = humanReadableDate(bunqMeTab.time_expiry);
-		const numberOfPayments = bunqMeTab.result_inquiries.length;
+        const numberOfPayments = bunqMeTab.result_inquiries.length;
 
         const primaryText = `${formatMoney(
             bunqMeTab.bunqme_tab_entry.amount_inquired.value
@@ -84,7 +84,7 @@ class BunqMeTabListItem extends React.Component {
         return [
             <ListItem button onClick={this.toggleExtraInfo}>
                 <Avatar style={styles.smallAvatar}>
-                    <Share color={"inherit"} style={{color: iconColor}} />
+                    <Share color={"inherit"} style={{ color: iconColor }} />
                 </Avatar>
                 <ListItemText
                     primary={primaryText}
@@ -101,10 +101,7 @@ class BunqMeTabListItem extends React.Component {
                     </CopyToClipboard>
                 </ListItemSecondaryAction>
             </ListItem>,
-            <Collapse
-                in={this.state.extraInfoOpen}
-                unmountOnExit
-            >
+            <Collapse in={this.state.extraInfoOpen} unmountOnExit>
                 <ListItem dense>
                     <ListItemText primary={`Created`} secondary={createdDate} />
                 </ListItem>
@@ -132,7 +129,7 @@ class BunqMeTabListItem extends React.Component {
                 <ListItem dense>
                     <ListItemText
                         primary="Number of payments"
-                        secondary={numberOfPayments}
+                        secondary={"" + numberOfPayments}
                     />
                 </ListItem>
 
