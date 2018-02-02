@@ -47,10 +47,10 @@ script:
 before_cache:
 - rm -rf $HOME/.cache/electron-builder/wine
 
-branches:
-  only:
-  - release
-  - bug/api-key-loading
+#branches:
+#  only:
+#  - release
+#  - bug/api-key-loading
 
 deploy:
   provider: releases
