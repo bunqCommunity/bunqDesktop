@@ -26,7 +26,7 @@ class Main extends React.Component {
                 open={this.props.modalOpen}
                 transition={Transition}
                 keepMounted
-                onRequestClose={this.props.closeModal}
+                onClose={this.props.closeModal}
             >
                 <DialogTitle>{this.props.modalTitle}</DialogTitle>
                 <DialogContent>

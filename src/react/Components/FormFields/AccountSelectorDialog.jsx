@@ -107,7 +107,7 @@ class AccountSelectorDialog extends React.Component {
             <FormControl style={{ ...styles.formControl, ...style }}>
                 <Dialog
                     open={this.state.open}
-                    onRequestClose={this.handleRequestClose}
+                    onClose={this.handleRequestClose}
                 >
                     <DialogTitle>Select an account</DialogTitle>
                     <DialogContent>
