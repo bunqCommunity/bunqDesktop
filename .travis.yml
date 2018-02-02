@@ -26,6 +26,10 @@ before_install:
 before_script:
 - git lfs pull
 
+after_script:
+- ls dist
+- ls dist/mac
+
 script:
 - |
   if [ "$TRAVIS_OS_NAME" == "linux" ]; then
@@ -52,6 +56,6 @@ deploy:
   provider: releases
   api_key:
     secure: fuXvloxR1qV4Xj8PecoF8gmQHCPukRF3nR7+szuHsoumUusyko0N5QbItdIfYTwpV9pIGwujV5mB0Ya/CKQzILkdlXo+cJzpCvFGJ1Q9wKk9hwLnouOiyF3wsagia8dpX4iLzVEATu4+LM3jol+KlXLGl8OxkGIy5Vifbd5GTbEiSrTxT9cF48/0ubgf/9rjjJyo5exuE30pRLs+m9cqnCSwgwcH6368OfYOlbRSgtGtzR9eEoGlqiNk2UHGmZUwy8dqOhid+meM7IGXwPjua8hrp1/nc/k8+UcwQxxly8xjp8bib6ier+2GbfbwxHiPWUtKFHoNzJlGWfj6xahz6fPL412HGeWVCrbVJcI3bTb/Ed1EjsjQyr4rUwvFnGitzRQAYqg/s2tpl4mVFPYyLgVMnlqiGNMkAaGfqYgErwdCkaYTtWGmLdIUkDsPMCSc4hOlajWNlb2n/ArYHOCmD+KC1KJ8hsJTxXQWD9Tfv5JBKd8g+63YIS+YEifUsxa9W4UhtODsPwBBcot/m4EH1FJS7wsticqB7rbkVq2iiMLWWMOImX47FSBqFG/0ioeWFayLIuDz+Ulvska/Nz4+R0tCQc4t1l1FDT56WI54H4KE2oYIQ8Y3U304mS6URhVRN+561HwzxVJA4halN30H4aOQjhjm5LW1e4PcSRiRalo=
-  file: dist/BunqDesktop-0.7.4.dmg
+  file: dist/mac/BunqDesktop-0.7.4.dmg
   on:
     repo: BunqCommunity/BunqDesktop
