@@ -55,4 +55,3 @@ deploy:
   file: dist/BunqDesktop-0.7.4.dmg
   on:
     repo: BunqCommunity/BunqDesktop
-    branch: bug/api-key-loading
