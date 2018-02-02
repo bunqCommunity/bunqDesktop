@@ -22,9 +22,9 @@
     "7zip-bin-mac" "^1.0.1"
     "7zip-bin-win" "^2.1.1"
 
-"@bunq-community/bunq-js-client@^0.10.3":
-  version "0.10.3"
-  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.10.3.tgz#c30abb955d3700bf87e52f6acbe68fb1fa14feb5"
+"@bunq-community/bunq-js-client@^0.10.4":
+  version "0.10.4"
+  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.10.4.tgz#23d9c64384305402ab381e0a8011b46e5d108966"
 
 "@types/axios@^0.14.0":
   version "0.14.0"
@@ -4671,7 +4671,7 @@ material-ui-icons@^1.0.0-beta.17:
   dependencies:
     recompose "^0.26.0"
 
-material-ui@^1.0.0-beta.31s:
+material-ui@^1.0.0-beta.31:
   version "1.0.0-beta.31"
   resolved "https://registry.yarnpkg.com/material-ui/-/material-ui-1.0.0-beta.31.tgz#5d832d0c4d9eceea2cbf1647dc7f57a4031f0243"
   dependencies:
