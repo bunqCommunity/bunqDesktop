@@ -14,6 +14,8 @@ import Typography from "material-ui/Typography";
 import { FormControl, FormControlLabel } from "material-ui/Form";
 import Radio from "material-ui/Radio";
 import Switch from "material-ui/Switch";
+import Avatar from "material-ui/Avatar";
+import Chip from "material-ui/Chip";
 import Dialog, {
     DialogActions,
     DialogContent,
@@ -70,9 +72,18 @@ class Pay extends React.Component {
             descriptionError: false,
             description: "",
 
-            // default target field
+            // target field input field
             targetError: false,
             target: "",
+
+            // a list of all the targets
+            targets: [
+                {
+                    type: "IBAN",
+                    value: "IBAN102301241244",
+                    name: "Gregory"
+                }
+            ],
 
             // name field for IBAN targets
             ibanNameError: false,
@@ -150,6 +161,11 @@ class Pay extends React.Component {
         );
     };
 
+    // add a target from the current text inputs to the target list
+    addTarget = () => {
+        this.validateForm();
+    };
+
     // validates all the possible input combinations
     validateForm = () => {
         const {
@@ -159,12 +175,14 @@ class Pay extends React.Component {
             ibanName,
             selectedAccount,
             selectedTargetAccount,
-            targetType
+            targetType,
+            targets
         } = this.state;
 
         const account = this.props.accounts[selectedAccount]
             .MonetaryAccountBank;
 
+        const noTargetsCondition = targets.length < 0;
         const insufficientFundsCondition =
             amount !== "" &&
             amount > (account.balance ? account.balance.value : 0);
@@ -202,6 +220,7 @@ class Pay extends React.Component {
             ibanNameError: ibanNameErrorCondition,
             targetError: targetErrorCondition,
             validForm:
+                !noTargetsCondition &&
                 !insufficientFundsCondition &&
                 !amountErrorCondition &&
                 !descriptionErrorCondition &&
@@ -368,7 +387,11 @@ class Pay extends React.Component {
                         </List>
                     </DialogContent>
                     <DialogActions>
-                        <Button raised onClick={this.closeModal} color="secondary">
+                        <Button
+                            raised
+                            onClick={this.closeModal}
+                            color="secondary"
+                        >
                             Cancel
                         </Button>
                         <Button
@@ -452,7 +475,7 @@ class Pay extends React.Component {
         );
 
         let targetContent = null;
-        switch (this.state.targetType) {
+        switch (targetType) {
             case "TRANSFER":
                 targetContent = (
                     <AccountSelectorDialog
@@ -548,9 +571,53 @@ class Pay extends React.Component {
                             </InputLabel>
                         ) : null}
 
+                        {this.state.targets.map(target => {
+                            let icon = null;
+                            switch (target.type) {
+                                case "EMAIL":
+                                    icon = <EmailIcon />;
+                                    break;
+                                case "PHONE":
+                                    icon = <PhoneIcon />;
+                                    break;
+                                case "TRANSFER":
+                                    icon = <CompareArrowsIcon />;
+                                    break;
+                                default:
+                                case "IBAN":
+                                    icon = <AccountBalanceIcon />;
+                                    break;
+                            }
+                            return (
+                                <Chip
+                                    avatar={<Avatar>{icon}</Avatar>}
+                                    label={target.value}
+                                    onDelete={console.log}
+                                />
+                            );
+                        })}
+
                         {targetTypeSelection}
 
                         {targetContent}
+
+                        <Button
+                            raised
+                            color="primary"
+                            disabled={
+                                // target input error
+                                this.state.targetError ||
+                                // no target input value and no other targets
+                                (this.state.target.length === 0 &&
+                                    this.state.targets.length === 0) ||
+                                // already loading
+                                this.props.payLoading
+                            }
+                            style={styles.payButton}
+                            onClick={this.addTarget}
+                        >
+                            Add target
+                        </Button>
 
                         <TextField
                             fullWidth
