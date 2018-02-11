@@ -127,12 +127,10 @@ class TargetSelection extends React.Component {
                     break;
                 case "TRANSFER":
                     // for transfers we can try to display a description
-                    this.props.accounts.map(account => {
-                        if (account.MonetaryAccountBank.id === targetValue) {
-                            targetValue =
-                                account.MonetaryAccountBank.description;
-                        }
-                    });
+                    if (this.props.accounts[target]) {
+                        targetValue = this.props.accounts[target]
+                            .MonetaryAccountBank.description;
+                    }
                     Icon = CompareArrowsIcon;
                     break;
                 default:
@@ -233,7 +231,8 @@ class TargetSelection extends React.Component {
                             // target input error
                             this.props.targetError ||
                             // no target input value yet
-                            this.props.target.length === 0 ||
+                            (this.props.target.length <= 0 &&
+                                this.props.targetType !== "TRANSFER") ||
                             // already loading
                             this.props.payLoading
                         }

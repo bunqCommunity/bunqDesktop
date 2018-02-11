@@ -181,11 +181,19 @@ class Pay extends React.Component {
             // target is valid, add it to the list
             if (valid) {
                 const newTargets = [...this.state.targets];
-                newTargets.push({
-                    type: this.state.targetType,
-                    value: this.state.target,
-                    name: this.state.ibanName
-                });
+                if (this.state.targetType === "TRANSFER") {
+                    newTargets.push({
+                        type: this.state.targetType,
+                        value: this.state.selectedTargetAccount,
+                        name: this.state.ibanName
+                    });
+                } else {
+                    newTargets.push({
+                        type: this.state.targetType,
+                        value: this.state.target,
+                        name: this.state.ibanName
+                    });
+                }
 
                 this.setState(
                     {
@@ -242,7 +250,7 @@ class Pay extends React.Component {
         this.setState(
             {
                 targetError: targetErrorCondition,
-                ibanNameError: !ibanNameErrorCondition
+                ibanNameError: ibanNameErrorCondition
             },
             () => callback(!targetErrorCondition)
         );
@@ -306,69 +314,75 @@ class Pay extends React.Component {
         const {
             sendDraftPayment,
             selectedAccount,
-            selectedTargetAccount,
             description,
             amount,
-            target,
+            targets,
             ibanName,
             targetType
         } = this.state;
+
+        // account the payment is made from
         const account = accounts[selectedAccount].MonetaryAccountBank;
+        // our user id
         const userId = user.id;
 
-        // check if the target is valid based onthe targetType
-        let targetInfo = false;
-        switch (targetType) {
-            case "EMAIL":
-                targetInfo = {
-                    type: "EMAIL",
-                    value: target.trim()
-                };
-                break;
-            case "PHONE":
-                targetInfo = {
-                    type: "PHONE_NUMBER",
-                    value: target.trim()
-                };
-                break;
-            case "TRANSFER":
-                const otherAccount =
-                    accounts[selectedTargetAccount].MonetaryAccountBank;
+        const targetInfoList = targets.map(target => {
+            // check if the target is valid based onthe targetType
+            let targetInfo = false;
+            switch (targetType) {
+                case "EMAIL":
+                    targetInfo = {
+                        type: "EMAIL",
+                        value: target.trim()
+                    };
+                    break;
+                case "PHONE":
+                    targetInfo = {
+                        type: "PHONE_NUMBER",
+                        value: target.trim()
+                    };
+                    break;
+                case "TRANSFER":
+                    const otherAccount =
+                        accounts[selectedTargetAccount].MonetaryAccountBank;
 
-                otherAccount.alias.map(alias => {
-                    if (alias.type === "IBAN") {
-                        targetInfo = {
-                            type: "IBAN",
-                            value: alias.value.trim(),
-                            name: alias.name
-                        };
-                    }
-                });
-                break;
-            default:
-            case "IBAN":
-                const filteredTarget = target.replace(/ /g, "");
-                targetInfo = {
-                    type: "IBAN",
-                    value: filteredTarget,
-                    name: ibanName
-                };
-                break;
-        }
+                    otherAccount.alias.map(alias => {
+                        if (alias.type === "IBAN") {
+                            targetInfo = {
+                                type: "IBAN",
+                                value: alias.value.trim(),
+                                name: alias.name
+                            };
+                        }
+                    });
+                    break;
+                default:
+                case "IBAN":
+                    const filteredTarget = target.replace(/ /g, "");
+                    targetInfo = {
+                        type: "IBAN",
+                        value: filteredTarget,
+                        name: ibanName
+                    };
+                    break;
+            }
+
+            return targetInfo;
+        });
 
         const amountInfo = {
             value: amount + "", // sigh
             currency: "EUR"
         };
 
-        this.props.paySend(
-            userId,
-            account.id,
-            description,
-            amountInfo,
-            targetInfo,
-            sendDraftPayment
-        );
+        // this.props.paySend(
+        //     userId,
+        //     account.id,
+        //     description,
+        //     amountInfo,
+        //     targetInfoList,
+        //     sendDraftPayment
+        // );
         this.clearForm();
     };
 
