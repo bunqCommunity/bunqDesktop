@@ -12,30 +12,24 @@ import Button from "material-ui/Button";
 import Paper from "material-ui/Paper";
 import Typography from "material-ui/Typography";
 import { FormControl, FormControlLabel } from "material-ui/Form";
-import Radio from "material-ui/Radio";
 import Switch from "material-ui/Switch";
-import Avatar from "material-ui/Avatar";
-import Chip from "material-ui/Chip";
 import Dialog, {
     DialogActions,
     DialogContent,
     DialogTitle
 } from "material-ui/Dialog";
 
-import AccountBalanceIcon from "material-ui-icons/AccountBalance";
-import EmailIcon from "material-ui-icons/Email";
-import PhoneIcon from "material-ui-icons/Phone";
-import CompareArrowsIcon from "material-ui-icons/CompareArrows";
+import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
+import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
+import TargetSelection from "./TargetSelection";
 
-import AccountSelectorDialog from "../Components/FormFields/AccountSelectorDialog";
-import MoneyFormatInput from "../Components/FormFields/MoneyFormatInput";
-import PhoneFormatInput from "../Components/FormFields/PhoneFormatInput";
-import { openSnackbar } from "../Actions/snackbar";
-import { paySend } from "../Actions/pay";
+import { openSnackbar } from "../../Actions/snackbar";
+import { paySend } from "../../Actions/pay";
 
 const styles = {
     payButton: {
-        width: "100%"
+        width: "100%",
+        marginTop: 10
     },
     formControlAlt: {
         marginBottom: 10
@@ -77,13 +71,7 @@ class Pay extends React.Component {
             target: "",
 
             // a list of all the targets
-            targets: [
-                {
-                    type: "IBAN",
-                    value: "IBAN102301241244",
-                    name: "Gregory"
-                }
-            ],
+            targets: [],
 
             // name field for IBAN targets
             ibanNameError: false,
@@ -138,7 +126,10 @@ class Pay extends React.Component {
             {
                 [name]: event.target.value
             },
-            this.validateForm
+            () => {
+                this.validateForm();
+                this.validateTargetInput();
+            }
         );
     };
     handleChangeFormatted = valueObject => {
@@ -149,7 +140,10 @@ class Pay extends React.Component {
                         ? valueObject.floatValue
                         : ""
             },
-            this.validateForm
+            () => {
+                this.validateForm();
+                this.validateTargetInput();
+            }
         );
     };
     handleChangeDirect = name => value => {
@@ -157,37 +151,69 @@ class Pay extends React.Component {
             {
                 [name]: value
             },
-            this.validateForm
+            () => {
+                this.validateForm();
+                this.validateTargetInput();
+            }
         );
+    };
+
+    // remove a key from the target list
+    removeTarget = key => {
+        const newTargets = [...this.state.targets];
+        if (newTargets[key]) {
+            newTargets.splice(key, 1);
+            this.setState(
+                {
+                    targets: newTargets
+                },
+                () => {
+                    this.validateForm();
+                    this.validateTargetInput();
+                }
+            );
+        }
     };
 
     // add a target from the current text inputs to the target list
     addTarget = () => {
-        this.validateForm();
+        this.validateTargetInput(valid => {
+            // target is valid, add it to the list
+            if (valid) {
+                const newTargets = [...this.state.targets];
+                newTargets.push({
+                    type: this.state.targetType,
+                    value: this.state.target,
+                    name: this.state.ibanName
+                });
+
+                this.setState(
+                    {
+                        // set the new target list
+                        targets: newTargets,
+                        // reset the inputs
+                        target: "",
+                        ibanName: ""
+                    },
+                    () => {
+                        this.validateForm();
+                        this.validateTargetInput();
+                    }
+                );
+            }
+        });
     };
 
-    // validates all the possible input combinations
-    validateForm = () => {
+    // validate only the taret inputs
+    validateTargetInput = (callback = () => {}) => {
         const {
-            description,
-            amount,
             target,
             ibanName,
             selectedAccount,
             selectedTargetAccount,
-            targetType,
-            targets
+            targetType
         } = this.state;
 
-        const account = this.props.accounts[selectedAccount]
-            .MonetaryAccountBank;
-
-        const noTargetsCondition = targets.length < 0;
-        const insufficientFundsCondition =
-            amount !== "" &&
-            amount > (account.balance ? account.balance.value : 0);
-        const amountErrorCondition = amount < 0.01 || amount > 10000;
-        const descriptionErrorCondition = description.length > 140;
         const ibanNameErrorCondition =
             ibanName.length < 1 || ibanName.length > 64;
 
@@ -213,18 +239,48 @@ class Pay extends React.Component {
                 break;
         }
 
+        this.setState(
+            {
+                targetError: targetErrorCondition,
+                ibanNameError: !ibanNameErrorCondition
+            },
+            () => callback(!targetErrorCondition)
+        );
+    };
+
+    // validates all the possible input combinations
+    validateForm = () => {
+        const {
+            description,
+            amount,
+            ibanName,
+            selectedAccount,
+            targets
+        } = this.state;
+
+        const account = this.props.accounts[selectedAccount]
+            .MonetaryAccountBank;
+
+        const noTargetsCondition = targets.length < 0;
+        const insufficientFundsCondition =
+            amount !== "" &&
+            amount > (account.balance ? account.balance.value : 0);
+        const amountErrorCondition = amount < 0.01 || amount > 10000;
+        const descriptionErrorCondition = description.length > 140;
+        const ibanNameErrorCondition =
+            ibanName.length < 1 || ibanName.length > 64;
+
         this.setState({
             amountError: amountErrorCondition,
             insufficientFundsCondition: insufficientFundsCondition,
             descriptionError: descriptionErrorCondition,
             ibanNameError: ibanNameErrorCondition,
-            targetError: targetErrorCondition,
             validForm:
                 !noTargetsCondition &&
                 !insufficientFundsCondition &&
                 !amountErrorCondition &&
                 !descriptionErrorCondition &&
-                !targetErrorCondition
+                targets.length > 0
         });
     };
 
@@ -406,146 +462,6 @@ class Pay extends React.Component {
             );
         }
 
-        const targetTypeSelection = (
-            <Grid container spacing={24}>
-                <Grid item xs={6} sm={3}>
-                    <FormControlLabel
-                        control={
-                            <Radio
-                                icon={<AccountBalanceIcon />}
-                                checkedIcon={<AccountBalanceIcon />}
-                                checked={this.state.targetType === "IBAN"}
-                                onChange={this.setTargetType("IBAN")}
-                                value="IBAN"
-                                name="target-type-iban"
-                            />
-                        }
-                        label="IBAN"
-                    />
-                </Grid>
-                <Grid item xs={6} sm={3}>
-                    <FormControlLabel
-                        control={
-                            <Radio
-                                icon={<EmailIcon />}
-                                checkedIcon={<EmailIcon />}
-                                color={"secondary"}
-                                checked={this.state.targetType === "EMAIL"}
-                                onChange={this.setTargetType("EMAIL")}
-                                value="EMAIL"
-                                name="target-type-email"
-                            />
-                        }
-                        label="EMAIL"
-                    />
-                </Grid>
-                <Grid item xs={6} sm={3}>
-                    <FormControlLabel
-                        control={
-                            <Radio
-                                icon={<PhoneIcon />}
-                                checkedIcon={<PhoneIcon />}
-                                color={"secondary"}
-                                checked={this.state.targetType === "PHONE"}
-                                onChange={this.setTargetType("PHONE")}
-                                value="PHONE"
-                                name="target-type-phone"
-                            />
-                        }
-                        label="PHONE"
-                    />
-                </Grid>
-                <Grid item xs={6} sm={3}>
-                    <FormControlLabel
-                        control={
-                            <Radio
-                                icon={<CompareArrowsIcon />}
-                                checkedIcon={<CompareArrowsIcon />}
-                                color={"secondary"}
-                                checked={this.state.targetType === "TRANSFER"}
-                                onChange={this.setTargetType("TRANSFER")}
-                                value="TRANSFER"
-                                name="target-type-transfer"
-                            />
-                        }
-                        label="Transfer"
-                    />
-                </Grid>
-            </Grid>
-        );
-
-        let targetContent = null;
-        switch (targetType) {
-            case "TRANSFER":
-                targetContent = (
-                    <AccountSelectorDialog
-                        id="target"
-                        value={this.state.selectedTargetAccount}
-                        onChange={this.handleChangeDirect(
-                            "selectedTargetAccount"
-                        )}
-                        accounts={this.props.accounts}
-                        BunqJSClient={this.props.BunqJSClient}
-                    />
-                );
-                break;
-            case "PHONE":
-                targetContent = (
-                    <FormControl fullWidth error={this.state.targetError}>
-                        <Typography type="body1">
-                            Phone numbers should contain no spaces and include
-                            the land code. For example: +316123456789
-                        </Typography>
-                        <PhoneFormatInput
-                            id="target"
-                            placeholder="+316123456789"
-                            error={this.state.targetError}
-                            value={this.state.target}
-                            onChange={this.handleChange("target")}
-                        />
-                    </FormControl>
-                );
-                break;
-            case "EMAIL":
-                targetContent = (
-                    <TextField
-                        error={this.state.targetError}
-                        fullWidth
-                        required
-                        id="target"
-                        type="email"
-                        label="Email"
-                        value={this.state.target}
-                        onChange={this.handleChange("target")}
-                    />
-                );
-                break;
-            default:
-            case "IBAN":
-                targetContent = [
-                    <TextField
-                        error={this.state.targetError}
-                        fullWidth
-                        required
-                        id="target"
-                        label="IBAN number"
-                        value={this.state.target}
-                        onChange={this.handleChange("target")}
-                    />,
-                    <TextField
-                        fullWidth
-                        required
-                        error={this.state.ibanNameError}
-                        id="ibanName"
-                        label="IBAN name"
-                        value={this.state.ibanName}
-                        onChange={this.handleChange("ibanName")}
-                        margin="normal"
-                    />
-                ];
-                break;
-        }
-
         return (
             <Grid container spacing={24} align={"center"} justify={"center"}>
                 <Helmet>
@@ -571,53 +487,24 @@ class Pay extends React.Component {
                             </InputLabel>
                         ) : null}
 
-                        {this.state.targets.map(target => {
-                            let icon = null;
-                            switch (target.type) {
-                                case "EMAIL":
-                                    icon = <EmailIcon />;
-                                    break;
-                                case "PHONE":
-                                    icon = <PhoneIcon />;
-                                    break;
-                                case "TRANSFER":
-                                    icon = <CompareArrowsIcon />;
-                                    break;
-                                default:
-                                case "IBAN":
-                                    icon = <AccountBalanceIcon />;
-                                    break;
+                        <TargetSelection
+                            selectedTargetAccount={
+                                this.state.selectedTargetAccount
                             }
-                            return (
-                                <Chip
-                                    avatar={<Avatar>{icon}</Avatar>}
-                                    label={target.value}
-                                    onDelete={console.log}
-                                />
-                            );
-                        })}
-
-                        {targetTypeSelection}
-
-                        {targetContent}
-
-                        <Button
-                            raised
-                            color="primary"
-                            disabled={
-                                // target input error
-                                this.state.targetError ||
-                                // no target input value and no other targets
-                                (this.state.target.length === 0 &&
-                                    this.state.targets.length === 0) ||
-                                // already loading
-                                this.props.payLoading
-                            }
-                            style={styles.payButton}
-                            onClick={this.addTarget}
-                        >
-                            Add target
-                        </Button>
+                            targetType={this.state.targetType}
+                            targets={this.state.targets}
+                            target={this.state.target}
+                            ibanNameError={this.state.ibanNameError}
+                            ibanName={this.state.ibanName}
+                            targetError={this.state.targetError}
+                            validForm={this.state.validForm}
+                            accounts={this.props.accounts}
+                            handleChangeDirect={this.handleChangeDirect}
+                            handleChange={this.handleChange}
+                            setTargetType={this.setTargetType}
+                            removeTarget={this.removeTarget}
+                            addTarget={this.addTarget}
+                        />
 
                         <TextField
                             fullWidth
