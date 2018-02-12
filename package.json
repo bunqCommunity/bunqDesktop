@@ -62,7 +62,7 @@
     "universal-analytics": "^0.4.15"
   },
   "devDependencies": {
-    "@bunq-community/bunq-js-client": "^0.10.3",
+    "@bunq-community/bunq-js-client": "0.11.0",
     "@types/axios": "^0.14.0",
     "@types/jest": "^22.1.2",
     "awaiting": "^2.0.1",
