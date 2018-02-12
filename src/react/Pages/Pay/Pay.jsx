@@ -13,6 +13,7 @@ import Paper from "material-ui/Paper";
 import Typography from "material-ui/Typography";
 import { FormControl, FormControlLabel } from "material-ui/Form";
 import Switch from "material-ui/Switch";
+import Divider from "material-ui/Divider";
 import Dialog, {
     DialogActions,
     DialogContent,
@@ -180,25 +181,37 @@ class Pay extends React.Component {
         this.validateTargetInput(valid => {
             // target is valid, add it to the list
             if (valid) {
-                const newTargets = [...this.state.targets];
-                if (this.state.targetType === "TRANSFER") {
-                    newTargets.push({
+                const currentTargets = [...this.state.targets];
+
+                let foundDuplicate = false;
+                const targetValue =
+                    this.state.targetType === "TRANSFER"
+                        ? this.state.selectedTargetAccount
+                        : this.state.target.trim();
+
+                // check for duplicates in existing target list
+                currentTargets.map(newTarget => {
+                    if (newTarget.type === this.state.targetType) {
+                        if (newTarget.value === targetValue) {
+                            foundDuplicate = true;
+                        }
+                    }
+                });
+
+                if (!foundDuplicate) {
+                    currentTargets.push({
                         type: this.state.targetType,
-                        value: this.state.selectedTargetAccount,
+                        value: targetValue,
                         name: this.state.ibanName
                     });
                 } else {
-                    newTargets.push({
-                        type: this.state.targetType,
-                        value: this.state.target,
-                        name: this.state.ibanName
-                    });
+                    this.props.openSnackbar("This target seems to be added already");
                 }
 
                 this.setState(
                     {
                         // set the new target list
-                        targets: newTargets,
+                        targets: currentTargets,
                         // reset the inputs
                         target: "",
                         ibanName: ""
@@ -305,7 +318,11 @@ class Pay extends React.Component {
 
     // send the actual payment
     sendPayment = () => {
-        if (!this.state.validForm || this.props.payLoading) {
+        if (
+            !this.state.validForm ||
+            this.props.payLoading ||
+            this.state.targets.length <= 0
+        ) {
             return false;
         }
         this.closeModal();
@@ -316,9 +333,7 @@ class Pay extends React.Component {
             selectedAccount,
             description,
             amount,
-            targets,
-            ibanName,
-            targetType
+            targets
         } = this.state;
 
         // account the payment is made from
@@ -326,25 +341,26 @@ class Pay extends React.Component {
         // our user id
         const userId = user.id;
 
-        const targetInfoList = targets.map(target => {
+        const targetInfoList = [];
+        targets.map(target => {
             // check if the target is valid based onthe targetType
             let targetInfo = false;
-            switch (targetType) {
+            switch (target.type) {
                 case "EMAIL":
                     targetInfo = {
                         type: "EMAIL",
-                        value: target.trim()
+                        value: target.value.trim()
                     };
                     break;
                 case "PHONE":
                     targetInfo = {
                         type: "PHONE_NUMBER",
-                        value: target.trim()
+                        value: target.value.trim()
                     };
                     break;
                 case "TRANSFER":
                     const otherAccount =
-                        accounts[selectedTargetAccount].MonetaryAccountBank;
+                        accounts[target.value].MonetaryAccountBank;
 
                     otherAccount.alias.map(alias => {
                         if (alias.type === "IBAN") {
@@ -356,34 +372,35 @@ class Pay extends React.Component {
                         }
                     });
                     break;
-                default:
                 case "IBAN":
-                    const filteredTarget = target.replace(/ /g, "");
+                    const filteredTarget = target.value.replace(/ /g, "");
                     targetInfo = {
                         type: "IBAN",
                         value: filteredTarget,
-                        name: ibanName
+                        name: target.name
                     };
+                    break;
+                default:
+                    // invalid type
                     break;
             }
 
-            return targetInfo;
+            if (targetInfo !== false) targetInfoList.push(targetInfo);
         });
 
         const amountInfo = {
-            value: amount + "", // sigh
+            value: amount + "", // sigh, number has to be sent as a string
             currency: "EUR"
         };
 
-        // this.props.paySend(
-        //     userId,
-        //     account.id,
-        //     description,
-        //     amountInfo,
-        //     targetInfoList,
-        //     sendDraftPayment
-        // );
-        this.clearForm();
+        this.props.paySend(
+            userId,
+            account.id,
+            description,
+            amountInfo,
+            targetInfoList,
+            sendDraftPayment
+        );
     };
 
     render() {
@@ -391,17 +408,51 @@ class Pay extends React.Component {
             selectedTargetAccount,
             selectedAccount,
             description,
-            targetType,
-            ibanName,
             amount,
-            target
+            targets
         } = this.state;
 
         let confirmationModal = null;
         if (this.state.confirmModalOpen) {
             const account = this.props.accounts[selectedAccount]
                 .MonetaryAccountBank;
-            const filteredTarget = target.replace(/ /g, "");
+
+            // create a list of ListItems with our targets
+            const confirmationModelTargets = targets.map(
+                targetItem => {
+                    let primaryText = "";
+                    let secondaryText = "";
+
+                    switch (targetItem.type) {
+                        case "PHONE":
+                            primaryText = `Phone: ${targetItem.value}`;
+                            break;
+                        case "EMAIL":
+                            primaryText = `Email: ${targetItem.value}`;
+                            break;
+                        case "IBAN":
+                            primaryText = `IBAN: ${targetItem.value.replace(/ /g, "")}`;
+                            secondaryText = `Name: ${targetItem.name}`;
+                            break;
+                        case "TRANSFER":
+                            const account = this.props.accounts[
+                                selectedTargetAccount
+                            ].MonetaryAccountBank;
+                            primaryText = `Transfer: ${account.description}`;
+                            break;
+                    }
+
+                    return [
+                        <ListItem>
+                            <ListItemText
+                                primary={primaryText}
+                                secondary={secondaryText}
+                            />
+                        </ListItem>,
+                        <Divider />
+                    ];
+                }
+            );
 
             confirmationModal = (
                 <Dialog
@@ -416,14 +467,19 @@ class Pay extends React.Component {
                                 <ListItemText
                                     primary="From"
                                     secondary={`${account.description} ${account
-                                        .balance.value}
-                                    ${account.balance.currency}`}
+                                        .balance.value}`}
                                 />
                             </ListItem>
                             <ListItem>
                                 <ListItemText
                                     primary="Description"
-                                    secondary={description}
+                                    secondary={
+                                        description.length <= 0 ? (
+                                            "None"
+                                        ) : (
+                                            description
+                                        )
+                                    }
                                 />
                             </ListItem>
                             <ListItem>
@@ -434,26 +490,10 @@ class Pay extends React.Component {
                                 />
                             </ListItem>
                             <ListItem>
-                                <ListItemText
-                                    primary="To"
-                                    secondary={(() => {
-                                        switch (targetType) {
-                                            case "PHONE":
-                                                return `Phone: ${target}`;
-                                            case "EMAIL":
-                                                return `Email: ${target}`;
-                                            case "IBAN":
-                                                return `IBAN: ${filteredTarget} - Name: ${ibanName}`;
-                                            case "TRANSFER":
-                                                const account = this.props
-                                                    .accounts[
-                                                    selectedTargetAccount
-                                                ].MonetaryAccountBank;
-                                                return `Transfer ${account.description}`;
-                                        }
-                                    })()}
-                                />
+                                <ListItemText primary="Targets: " />
                             </ListItem>
+                            <Divider />
+                            {confirmationModelTargets}
                         </List>
                     </DialogContent>
                     <DialogActions>
@@ -603,7 +643,7 @@ const mapDispatchToProps = (dispatch, props) => {
             accountId,
             description,
             amount,
-            target,
+            targets,
             draft = false
         ) =>
             dispatch(
@@ -613,7 +653,7 @@ const mapDispatchToProps = (dispatch, props) => {
                     accountId,
                     description,
                     amount,
-                    target,
+                    targets,
                     draft
                 )
             ),
