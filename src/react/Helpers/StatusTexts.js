@@ -62,16 +62,16 @@ export const masterCardActionText = masterCardAction => {
     }
 };
 
-export const masterCardActionParser = masterCardActionType => {
-    switch (masterCardActionType) {
-        case "ATM":
-            return "ATM";
-        case "ICC":
-            return "Tap & Pay";
-        case "MAGNETIC_STRIPE":
-            return "MAGNETIC_STRIPE";
-        case "E_COMMERCE":
-            return "E_COMMERCE";
+export const masterCardActionParser = masterCardAction => {
+    if (masterCardAction.label_card) {
+        switch (masterCardAction.label_card.type) {
+            case "MAESTRO_MOBILE_NFC":
+                return "Mobile Tap & Pay";
+            case "MASTERCARD":
+                return "Mastercard Payment";
+            case "MAESTRO":
+                return "Maestro payment";
+        }
     }
-    return masterCardActionType;
+    return "Card payment";
 };
