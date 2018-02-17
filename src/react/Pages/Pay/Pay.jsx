@@ -305,17 +305,6 @@ class Pay extends React.Component {
         });
     };
 
-    // clears the input fields to default
-    clearForm = () => {
-        this.setState(
-            {
-                amount: "",
-                description: ""
-            },
-            this.validateForm
-        );
-    };
-
     // send the actual payment
     sendPayment = () => {
         if (
