@@ -24,3 +24,9 @@ export function setHideBalance(hideBalance) {
         }
     };
 }
+
+export function resetApplication() {
+    return {
+        type: "OPTIONS_RESET_APPLICATION"
+    };
+}
