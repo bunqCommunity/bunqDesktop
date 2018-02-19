@@ -88,6 +88,13 @@ class OptionsDrawer extends React.Component {
         this.props.setHideBalance(!this.props.hideBalance);
     };
 
+    handleHideInactivityCheckChange = event => {
+        this.props.toggleInactivityCheck(!this.props.checkInactivity);
+    };
+    handleHideInactivityDurationChange = event => {
+        this.props.setInactivityCheckDuration(event.target.value);
+    };
+
     render() {
         const { theme, open } = this.props;
 
@@ -139,13 +146,27 @@ class OptionsDrawer extends React.Component {
                             value={this.props.inactivityCheckDuration}
                             onChange={this.handleHideInactivityDurationChange}
                         >
-                            <MenuItem key={60} value={60}>1 Minute</MenuItem>
-                            <MenuItem key={120} value={120}>2 Minutes</MenuItem>
-                            <MenuItem key={300} value={300}>5 Minutes</MenuItem>
-                            <MenuItem key={600} value={600}>10 Minutes</MenuItem>
-                            <MenuItem key={1800} value={1800}>30 Minutes</MenuItem>
-                            <MenuItem key={3600} value={3600}>1 Hour</MenuItem>
-                            <MenuItem key={7200} value={7200}>2 Hours</MenuItem>
+                            <MenuItem key={60} value={60}>
+                                1 Minute
+                            </MenuItem>
+                            <MenuItem key={120} value={120}>
+                                2 Minutes
+                            </MenuItem>
+                            <MenuItem key={300} value={300}>
+                                5 Minutes
+                            </MenuItem>
+                            <MenuItem key={600} value={600}>
+                                10 Minutes
+                            </MenuItem>
+                            <MenuItem key={1800} value={1800}>
+                                30 Minutes
+                            </MenuItem>
+                            <MenuItem key={3600} value={3600}>
+                                1 Hour
+                            </MenuItem>
+                            <MenuItem key={7200} value={7200}>
+                                2 Hours
+                            </MenuItem>
                         </Select>
                     ) : null}
                 </ListItem>

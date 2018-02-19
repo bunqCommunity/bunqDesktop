@@ -15,8 +15,8 @@ export const THEME_LOCATION = "BUNQDESKTOP_THEME";
 
 // get stored values
 const nativeFrameStored = settings.get("USE_NATIVE_FRAME");
-const checkInactivityStored = settings.get("CHECK_INACTIVITY_DURATION");
-const inactivityCheckDurationStored = settings.get("CHECK_INACTIVITY_ENABLED");
+const checkInactivityStored = settings.get("CHECK_INACTIVITY_ENABLED");
+const inactivityCheckDurationStored = settings.get("CHECK_INACTIVITY_DURATION");
 const hideBalanceStored = store.get("HIDE_BALANCE");
 const themeDefaultStored = store.get(THEME_LOCATION);
 
