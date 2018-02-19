@@ -14,9 +14,9 @@ import PhoneIcon from "material-ui-icons/Phone";
 import EmailIcon from "material-ui-icons/Email";
 import PersonIcon from "material-ui-icons/Person";
 
-import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
-import AccountQRFullscreen from "../../Components/QR/AccountQRFullscreen";
-import { formatMoney } from "../../Helpers/Utils";
+import LazyAttachmentImage from "./AttachmentImage/LazyAttachmentImage";
+import AccountQRFullscreen from "./QR/AccountQRFullscreen";
+import { formatMoney } from "../Helpers/Utils";
 
 const styles = {
     avatar: {

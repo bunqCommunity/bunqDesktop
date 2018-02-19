@@ -42,3 +42,10 @@ export function setInactivityCheckDuration(inactivityCheckDuration) {
         }
     };
 }
+
+
+export function resetApplication() {
+    return {
+        type: "OPTIONS_RESET_APPLICATION"
+    };
+}

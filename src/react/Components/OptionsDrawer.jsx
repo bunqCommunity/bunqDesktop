@@ -10,14 +10,16 @@ import { FormControl, FormControlLabel } from "material-ui/Form";
 import Select from "material-ui/Select";
 import Switch from "material-ui/Switch";
 import Typography from "material-ui/Typography";
-import ArrowBackIcon from "material-ui-icons/ArrowBack";
 import TextField from "material-ui/TextField";
+
+import ArrowBackIcon from "material-ui-icons/ArrowBack";
+import ClearIcon from "material-ui-icons/Clear";
 
 import {
     setTheme,
     setNativeFrame,
     setHideBalance,
-    toggleInactivityCheck,
+    resetApplication,
     setInactivityCheckDuration
 } from "../Actions/options";
 import { closeOptionsDrawer } from "../Actions/options_drawer";
@@ -86,14 +88,8 @@ class OptionsDrawer extends React.Component {
         this.props.setHideBalance(!this.props.hideBalance);
     };
 
-    handleHideInactivityCheckChange = event => {
-        this.props.toggleInactivityCheck(!this.props.checkInactivity);
-    };
-    handleHideInactivityDurationChange = event => {
-        this.props.setInactivityCheckDuration(event.target.value);
-    };
-
     render() {
+        console.log("drawer",this.props.theme);
         const { theme, open } = this.props;
 
         const drawerList = (
@@ -176,6 +172,17 @@ class OptionsDrawer extends React.Component {
                 <ListItem
                     button
                     style={styles.listBottomItem}
+                    onClick={this.resetApplication}
+                >
+                    <ListItemIcon>
+                        <ClearIcon />
+                    </ListItemIcon>
+                    <Typography type="subheading">Reset BunqDesktop</Typography>
+                </ListItem>
+
+                <ListItem
+                    button
+                    style={styles.listBottomItem}
                     onClick={this.backToMain}
                 >
                     <ListItemIcon>
@@ -215,6 +222,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        resetApplication: () => dispatch(resetApplication()),
         openSnackbar: message => dispatch(openSnackbar(message)),
         setTheme: theme => dispatch(setTheme(theme)),
         setNativeFrame: useFrame => dispatch(setNativeFrame(useFrame)),

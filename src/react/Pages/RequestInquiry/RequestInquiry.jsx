@@ -197,17 +197,6 @@ class RequestInquiry extends React.Component {
         });
     };
 
-    // clears the input fields to default
-    clearForm = () => {
-        this.setState(
-            {
-                amount: "",
-                description: ""
-            },
-            this.validateForm
-        );
-    };
-
     // send the actual requiry
     sendInquiry = () => {
         if (!this.state.validForm || this.props.payLoading) {
@@ -271,7 +260,6 @@ class RequestInquiry extends React.Component {
             targetInfo,
             options
         );
-        this.clearForm();
     };
 
     render() {
@@ -392,7 +380,6 @@ class RequestInquiry extends React.Component {
 
                         <Collapse
                             in={this.state.expandedCollapse}
-                            transitionDuration="auto"
                             unmountOnExit
                         >
                             <MinimumAge

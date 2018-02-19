@@ -62,7 +62,6 @@ class Layout extends React.Component {
             initialBunqConnect: false
         };
 
-
         ipcRenderer.on('change-path', (event, path) => {
             const currentPath = this.props.history.location.pathname;
 

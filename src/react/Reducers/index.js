@@ -12,7 +12,7 @@ import users from "./users";
 import registration from "./registration";
 import request_filter from "./request_filter";
 import snackbar from "./snackbar";
-import theme from "./options";
+import theme from "./theme";
 import main_drawer from "./main_drawer";
 import master_card_actions from "./master_card_actions";
 import master_card_action_info from "./master_card_action_info";

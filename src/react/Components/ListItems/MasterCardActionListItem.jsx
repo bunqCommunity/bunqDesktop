@@ -12,6 +12,7 @@ import { formatMoney } from "../../Helpers/Utils";
 import NavLink from "../../Components/Routing/NavLink";
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 import MoneyAmountLabel from "../MoneyAmountLabel";
+import {masterCardActionParser} from "../../Helpers/StatusTexts";
 
 const styles = {
     smallAvatar: {
@@ -63,7 +64,7 @@ class MasterCardActionListItem extends React.Component {
                 </Avatar>
                 <ListItemText
                     primary={displayName}
-                    secondary={"Card payment"}
+                    secondary={masterCardActionParser(masterCardAction)}
                 />
                 <ListItemSecondaryAction>
                     <MoneyAmountLabel

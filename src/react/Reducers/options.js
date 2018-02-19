@@ -1,5 +1,15 @@
 import store from "store";
+import localforage from "localforage";
 const settings = require("electron").remote.require("electron-settings");
+
+// configure the localforage instance
+localforage.config({
+    driver: localforage.INDEXEDDB,
+    name: "BunqDesktop",
+    version: 1.0,
+    storeName: "bunq_desktop_images",
+    description: "Image cache for bunq desktop in indexed db"
+});
 
 export const THEME_LOCATION = "BUNQDESKTOP_THEME";
 
@@ -73,6 +83,21 @@ export default function reducer(state = defaultState, action) {
             return {
                 ...state,
                 hide_balance: action.payload.hide_balance
+            };
+        case "OPTIONS_RESET_APPLICATION":
+            // reset localstorage settings
+            store.clearAll();
+
+            // reset electron settings
+            settings.deleteAll();
+
+            // clear image cache and reload once that completes
+            localforage.clear().then(done => {
+                location.reload();
+            });
+
+            return {
+                ...state
             };
     }
     return state;

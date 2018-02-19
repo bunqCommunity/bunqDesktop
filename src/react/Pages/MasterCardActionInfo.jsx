@@ -165,7 +165,7 @@ class MasterCardActionInfo extends React.Component {
                                 <ListItemText
                                     primary={"Payment Type"}
                                     secondary={masterCardActionParser(
-                                        masterCardAction.pan_entry_mode_user
+                                        masterCardAction
                                     )}
                                 />
                             </ListItem>
