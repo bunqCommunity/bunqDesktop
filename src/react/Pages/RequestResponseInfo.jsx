@@ -11,6 +11,7 @@ import ArrowBackIcon from "material-ui-icons/ArrowBack";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 import Tooltip from "material-ui/Tooltip";
+import Collapse from "material-ui/transitions/Collapse";
 
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import { requestResponseText } from "../Helpers/StatusTexts";
@@ -39,7 +40,9 @@ const styles = {
 class RequestResponseInfo extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+        this.state = {
+            accepted: false
+        };
     }
 
     componentDidMount() {
@@ -183,6 +186,8 @@ class RequestResponseInfo extends React.Component {
                             <Divider />
                         </List>
 
+                        {console.log(requestResponse)}
+
                         {requestResponse.status === "PENDING" ? (
                             <Grid container spacing={16}>
                                 <Grid item xs={12} sm={6}>
@@ -191,6 +196,11 @@ class RequestResponseInfo extends React.Component {
                                             raised
                                             color="primary"
                                             style={styles.button}
+                                            onClick={() => {
+                                                this.setState({
+                                                    accepted: true
+                                                });
+                                            }}
                                         >
                                             Accept
                                         </Button>
@@ -212,6 +222,15 @@ class RequestResponseInfo extends React.Component {
                                 </Grid>
                             </Grid>
                         ) : null}
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <Collapse
+                            in={this.state.accepted}
+                            collapsedHeight="0px"
+                        >
+                            <Paper elevation={4}>asdf</Paper>
+                        </Collapse>
                     </Grid>
                 </Grid>
             );
