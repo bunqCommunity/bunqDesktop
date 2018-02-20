@@ -1,7 +1,6 @@
 import { combineReducers } from "redux";
 
 import accounts from "./accounts";
-import activity from "./activity";
 import application from "./application";
 import bunq_me_tabs from "./bunq_me_tabs";
 import bunq_me_tab_filter from "./bunq_me_tab_filter";
@@ -32,7 +31,6 @@ import request_response_info from "./request_response_info";
 
 export default combineReducers({
     accounts,
-    activity,
     application,
     bunq_me_tab,
     bunq_me_tab_filter,
