@@ -18,7 +18,9 @@ import {
     setTheme,
     setNativeFrame,
     setHideBalance,
-    resetApplication
+    resetApplication,
+    toggleInactivityCheck,
+    setInactivityCheckDuration
 } from "../Actions/options";
 import { closeOptionsDrawer } from "../Actions/options_drawer";
 import { openMainDrawer } from "../Actions/main_drawer";
@@ -86,12 +88,14 @@ class OptionsDrawer extends React.Component {
         this.props.setHideBalance(!this.props.hideBalance);
     };
 
-    resetApplication = event => {
-        this.props.resetApplication();
+    handleHideInactivityCheckChange = event => {
+        this.props.toggleInactivityCheck(!this.props.checkInactivity);
+    };
+    handleHideInactivityDurationChange = event => {
+        this.props.setInactivityCheckDuration(event.target.value);
     };
 
     render() {
-        console.log("drawer",this.props.theme);
         const { theme, open } = this.props;
 
         const drawerList = (
@@ -124,6 +128,47 @@ class OptionsDrawer extends React.Component {
                         }
                         label="Use the native frame"
                     />
+                </ListItem>
+
+                <ListItem>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                id="inactivity-check-selection"
+                                checked={this.props.checkInactivity}
+                                onChange={this.handleHideInactivityCheckChange}
+                            />
+                        }
+                        label="Logout automatically"
+                    />
+                    {this.props.checkInactivity ? (
+                        <Select
+                            value={this.props.inactivityCheckDuration}
+                            onChange={this.handleHideInactivityDurationChange}
+                        >
+                            <MenuItem key={60} value={60}>
+                                1 Minute
+                            </MenuItem>
+                            <MenuItem key={120} value={120}>
+                                2 Minutes
+                            </MenuItem>
+                            <MenuItem key={300} value={300}>
+                                5 Minutes
+                            </MenuItem>
+                            <MenuItem key={600} value={600}>
+                                10 Minutes
+                            </MenuItem>
+                            <MenuItem key={1800} value={1800}>
+                                30 Minutes
+                            </MenuItem>
+                            <MenuItem key={3600} value={3600}>
+                                1 Hour
+                            </MenuItem>
+                            <MenuItem key={7200} value={7200}>
+                                2 Hours
+                            </MenuItem>
+                        </Select>
+                    ) : null}
                 </ListItem>
 
                 <ListItem>
@@ -185,8 +230,10 @@ const mapStateToProps = state => {
     return {
         open: state.options_drawer.open,
         theme: state.options.theme,
+        hideBalance: state.options.hide_balance,
         nativeFrame: state.options.native_frame,
-        hideBalance: state.options.hide_balance
+        checkInactivity: state.options.check_inactivity,
+        inactivityCheckDuration: state.options.inactivity_check_duration
     };
 };
 
@@ -197,6 +244,10 @@ const mapDispatchToProps = dispatch => {
         setTheme: theme => dispatch(setTheme(theme)),
         setNativeFrame: useFrame => dispatch(setNativeFrame(useFrame)),
         setHideBalance: hideBalance => dispatch(setHideBalance(hideBalance)),
+        toggleInactivityCheck: inactivityCheck =>
+            dispatch(toggleInactivityCheck(inactivityCheck)),
+        setInactivityCheckDuration: inactivityCheckDuration =>
+            dispatch(setInactivityCheckDuration(inactivityCheckDuration)),
         openMainDrawer: () => dispatch(openMainDrawer()),
         closeOptionsDrawer: () => dispatch(closeOptionsDrawer())
     };
