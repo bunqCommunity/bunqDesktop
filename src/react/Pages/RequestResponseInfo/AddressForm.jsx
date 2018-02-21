@@ -1,11 +1,6 @@
 import React from "react";
-import { connect } from "react-redux";
 import Grid from "material-ui/Grid";
 import TextField from "material-ui/TextField";
-import Paper from "material-ui/Paper";
-import Button from "material-ui/Button";
-import List, { ListItem, ListItemText } from "material-ui/List";
-import Divider from "material-ui/Divider";
 import Typography from "material-ui/Typography";
 import Collapse from "material-ui/transitions/Collapse";
 
@@ -26,7 +21,14 @@ class AddressForm extends React.Component {
             po_box: "",
             postal_code: "",
             city: "",
-            country: ""
+            country: "",
+
+            streetError: false,
+            house_numberError: false,
+            po_boxError: false,
+            postal_codeError: false,
+            cityError: false,
+            countryError: false
         };
     }
 
@@ -55,6 +57,54 @@ class AddressForm extends React.Component {
             postal_code,
             po_box
         } = this.state;
+
+        let hasError = false;
+        const errors = {
+            cityError: false,
+            countryError: false,
+            streetError: false,
+            house_numberError: false,
+            postal_codeError: false
+        };
+
+        if (city.length <= 0) {
+            errors.cityError = true;
+            hasError = true;
+        }
+        if (country.length <= 0) {
+            errors.countryError = true;
+            hasError = true;
+        }
+        if (street.length <= 0) {
+            errors.streetError = true;
+            hasError = true;
+        }
+        if (house_number.length <= 0) {
+            errors.house_numberError = true;
+            hasError = true;
+        }
+        if (postal_code.length <= 0) {
+            errors.postal_codeError = true;
+            hasError = true;
+        }
+
+        if (hasError) {
+            // not valid yet, return false
+            this.onChange(false);
+            this.setState(errors);
+        } else {
+            const address = {
+                city,
+                country,
+                street,
+                house_number,
+                postal_code
+            };
+            if (po_box.length >= 1) {
+                address.po_box = po_box;
+            }
+            this.onChange(address);
+        }
     };
 
     render() {
@@ -76,6 +126,7 @@ class AddressForm extends React.Component {
                             fullWidth
                             id="street"
                             label="Street"
+                            error={this.state.streetError}
                             value={this.state.street}
                             onChange={this.handleChange("street")}
                             margin="normal"
@@ -86,6 +137,7 @@ class AddressForm extends React.Component {
                             fullWidth
                             id="house_number"
                             label="House number"
+                            error={this.state.house_numberError}
                             value={this.state.house_number}
                             onChange={this.handleChange("house_number")}
                             margin="normal"
@@ -95,9 +147,10 @@ class AddressForm extends React.Component {
                         <TextField
                             fullWidth
                             id="postal_code"
-                            label="Street"
-                            value={this.state.street}
-                            onChange={this.handleChange("street")}
+                            label="Postal Code"
+                            error={this.state.postal_codeError}
+                            value={this.state.postal_code}
+                            onChange={this.handleChange("postal_code")}
                             margin="normal"
                         />
                     </Grid>
@@ -106,6 +159,7 @@ class AddressForm extends React.Component {
                             fullWidth
                             id="city"
                             label="City"
+                            error={this.state.cityError}
                             value={this.state.city}
                             onChange={this.handleChange("city")}
                             margin="normal"
@@ -116,6 +170,7 @@ class AddressForm extends React.Component {
                             fullWidth
                             id="country"
                             label="Country"
+                            error={this.state.countryError}
                             value={this.state.country}
                             onChange={this.handleChange("country")}
                             margin="normal"
@@ -126,6 +181,7 @@ class AddressForm extends React.Component {
                             fullWidth
                             id="po_box"
                             label="PO Box (optional)"
+                            error={this.state.po_boxError}
                             value={this.state.po_box}
                             onChange={this.handleChange("po_box")}
                             margin="normal"

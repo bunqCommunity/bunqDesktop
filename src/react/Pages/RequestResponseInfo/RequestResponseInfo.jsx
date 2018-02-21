@@ -134,6 +134,26 @@ class RequestResponseInfo extends React.Component {
             const formattedPaymentAmount = formatMoney(paymentAmount);
             const requestResponseLabel = requestResponseText(requestResponse);
 
+            const billingAddressRequired = [
+                "BILLING",
+                "BILLING_SHIPPING"
+            ].includes(requestResponse.require_address);
+            const billingAddressVisible = [
+                "OPTIONAL",
+                "BILLING",
+                "BILLING_SHIPPING"
+            ].includes(requestResponse.require_address);
+
+            const shippingAddressRequired = [
+                "SHIPPING",
+                "BILLING_SHIPPING"
+            ].includes(requestResponse.require_address);
+            const shippingAddressVisible = [
+                "OPTIONAL",
+                "SHIPPING",
+                "BILLING_SHIPPING"
+            ].includes(requestResponse.require_address);
+
             content = [
                 <Paper style={styles.paper}>
                     <Grid
@@ -247,15 +267,8 @@ class RequestResponseInfo extends React.Component {
                             <Grid item xs={12}>
                                 <AddressForm
                                     requestResponse={requestResponse}
-                                    required={[
-                                        "SHIPPING",
-                                        "BILLING_SHIPPING"
-                                    ].includes(requestResponse.require_address)}
-                                    visible={[
-                                        "OPTIONAL",
-                                        "SHIPPING",
-                                        "BILLING_SHIPPING"
-                                    ].includes(requestResponse.require_address)}
+                                    required={shippingAddressRequired}
+                                    visible={shippingAddressVisible}
                                     labelValue={"Shipping Address"}
                                     onChange={this.handleChange(
                                         "address_shipping"
@@ -263,15 +276,8 @@ class RequestResponseInfo extends React.Component {
                                 />
                                 <AddressForm
                                     requestResponse={requestResponse}
-                                    required={[
-                                        "BILLING",
-                                        "BILLING_SHIPPING"
-                                    ].includes(requestResponse.require_address)}
-                                    visible={[
-                                        "OPTIONAL",
-                                        "BILLING",
-                                        "BILLING_SHIPPING"
-                                    ].includes(requestResponse.require_address)}
+                                    required={billingAddressRequired}
+                                    visible={billingAddressVisible}
                                     labelValue={"Billing Address"}
                                     onChange={this.handleChange(
                                         "address_billing"
