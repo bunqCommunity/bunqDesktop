@@ -19,7 +19,7 @@ const RequestInquiry = CL(() =>
     import(/* webpackChunkName: "requestinquiry" */ "./Pages/RequestInquiry/RequestInquiry")
 );
 const RequestResponseInfo = CL(() =>
-    import(/* webpackChunkName: "requestresponseinfo" */ "./Pages/RequestResponseInfo")
+    import(/* webpackChunkName: "requestresponseinfo" */ "./Pages/RequestResponseInfo/RequestResponseInfo")
 );
 const RequestInquiryInfo = CL(() =>
     import(/* webpackChunkName: "requestinquiryinfo" */ "./Pages/RequestInquiryInfo")
