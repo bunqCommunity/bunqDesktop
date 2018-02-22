@@ -23,8 +23,6 @@ import {
 } from "../../Actions/request_response";
 import TransactionHeader from "../../Components/TransactionHeader";
 
-const testData = require("./test.json");
-
 const styles = {
     btn: {},
     button: {
@@ -93,19 +91,15 @@ class RequestResponseInfo extends React.Component {
 
     acceptRequest = () => {
         const { requestResponseId } = this.props.match.params;
-        let {
+        const {
             user,
             requestResponseInfo,
             requestResponseAccountId
         } = this.props;
-        requestResponseInfo = testData;
 
         const requestResponse = requestResponseInfo.RequestResponse;
 
-        const options = {
-            address_shipping: false,
-            address_billing: false
-        };
+        const options = {};
 
         this.props.requestResponseAccept(
             user.id,
@@ -117,13 +111,12 @@ class RequestResponseInfo extends React.Component {
     };
 
     render() {
-        let {
+        const {
             accountsSelectedAccount,
             requestResponseInfo,
             requestResponseInfoLoading,
             requestResponseLoading
         } = this.props;
-        requestResponseInfo = testData;
         const paramAccountId = this.props.match.params.accountId;
 
         // we require a selected account before we can display payment information
