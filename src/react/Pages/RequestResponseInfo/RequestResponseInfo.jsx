@@ -17,9 +17,14 @@ import { requestResponseText } from "../../Helpers/StatusTexts";
 import MoneyAmountLabel from "../../Components/MoneyAmountLabel";
 
 import { requestResponseUpdate } from "../../Actions/request_response_info";
-import { requestResponseReject } from "../../Actions/request_response";
+import {
+    requestResponseReject,
+    requestResponseAccept
+} from "../../Actions/request_response";
 import TransactionHeader from "../../Components/TransactionHeader";
 import AddressForm from "./AddressForm";
+
+const testData = require("./test.json");
 
 const styles = {
     btn: {},
@@ -42,7 +47,9 @@ class RequestResponseInfo extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            accepted: false
+            accepted: false,
+            address_billing: false,
+            address_shipping: false
         };
     }
 
@@ -96,13 +103,67 @@ class RequestResponseInfo extends React.Component {
         );
     };
 
+    acceptRequest = () => {
+        const { requestResponseId } = this.props.match.params;
+        let {
+            user,
+            requestResponseInfo,
+            requestResponseAccountId
+        } = this.props;
+        requestResponseInfo = testData;
+
+        const requestResponse = requestResponseInfo.RequestResponse;
+
+        const billingAddressRequired = ["BILLING", "BILLING_SHIPPING"].includes(
+            requestResponse.require_address
+        );
+        const shippingAddressRequired = [
+            "SHIPPING",
+            "BILLING_SHIPPING"
+        ].includes(requestResponse.require_address);
+
+        const options = {
+            address_shipping: false,
+            address_billing: false
+        };
+        if (billingAddressRequired) {
+            if (this.state.address_billing === false) {
+                return false;
+            }
+            options.address_billing = this.state.address_billing;
+        }
+        if (shippingAddressRequired) {
+            if (this.state.address_shipping === false) {
+                return false;
+            }
+            options.address_shipping = this.state.address_shipping;
+        }
+
+        console.log(
+            user.id,
+            requestResponseAccountId,
+            requestResponseId,
+            requestResponse.amount_inquired,
+            options
+        );
+
+        this.props.requestResponseAccept(
+            user.id,
+            requestResponseAccountId,
+            requestResponseId,
+            requestResponse.amount_inquired,
+            options
+        );
+    };
+
     render() {
-        const {
+        let {
             accountsSelectedAccount,
             requestResponseInfo,
             requestResponseInfoLoading,
             requestResponseLoading
         } = this.props;
+        requestResponseInfo = testData;
         const paramAccountId = this.props.match.params.accountId;
 
         // we require a selected account before we can display payment information
@@ -274,6 +335,7 @@ class RequestResponseInfo extends React.Component {
                                         "address_shipping"
                                     )}
                                 />
+
                                 <AddressForm
                                     requestResponse={requestResponse}
                                     required={billingAddressRequired}
@@ -283,15 +345,22 @@ class RequestResponseInfo extends React.Component {
                                         "address_billing"
                                     )}
                                 />
-                                <Typography variant="title">
-                                    Are you sure you wish to accept this
-                                    request?
-                                </Typography>
+
                                 <Button
                                     raised
+                                    disabled={
+                                        (shippingAddressRequired
+                                            ? this.state.address_shipping ===
+                                              false
+                                            : false) ||
+                                        (billingAddressRequired
+                                            ? this.state.address_billing ===
+                                              false
+                                            : false)
+                                    }
                                     color="primary"
                                     style={styles.button}
-                                    onClick={() => {}}
+                                    onClick={this.acceptRequest}
                                 >
                                     Accept request
                                 </Button>
@@ -328,6 +397,7 @@ const mapStateToProps = state => {
     return {
         user: state.user.user,
         requestResponseInfo: state.request_response_info.request_response_info,
+        requestResponseAccountId: state.request_response_info.account_id,
         requestResponseInfoLoading: state.request_response_info.loading,
         requestResponseLoading: state.request_response.loading,
         accountsSelectedAccount: state.accounts.selectedAccount
@@ -344,6 +414,23 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                     user_id,
                     account_id,
                     request_response_id
+                )
+            ),
+        requestResponseAccept: (
+            user_id,
+            account_id,
+            request_response_id,
+            amount_responded,
+            options
+        ) =>
+            dispatch(
+                requestResponseAccept(
+                    BunqJSClient,
+                    user_id,
+                    account_id,
+                    request_response_id,
+                    amount_responded,
+                    options
                 )
             ),
         requestResponseReject: (user_id, account_id, request_response_id) =>

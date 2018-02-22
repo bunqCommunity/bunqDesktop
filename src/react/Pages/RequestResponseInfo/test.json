@@ -1,0 +1,100 @@
+{
+    "RequestResponse": {
+        "id": 4107,
+        "created": "2018-02-22 12:35:44.982945",
+        "updated": "2018-02-22 12:35:44.982945",
+        "time_responded": null,
+        "time_expiry": null,
+        "monetary_account_id": 3580,
+        "amount_inquired": {
+            "currency": "EUR",
+            "value": "5.00"
+        },
+        "amount_responded": null,
+        "status": "PENDING",
+        "description": "",
+        "alias": {
+            "iban": "NL52BUNQ9900036603",
+            "is_light": false,
+            "display_name": "Sandbox Company",
+            "avatar": {
+                "uuid": "203143d3-7916-4fd1-a5ba-fe885369b1ec",
+                "image": [
+                    {
+                        "attachment_public_uuid": "118895d5-48c6-42c4-8aa9-ac8d5c2a0621",
+                        "height": 300,
+                        "width": 300,
+                        "content_type": "image\/png"
+                    }
+                ],
+                "anchor_uuid": null
+            },
+            "label_user": {
+                "uuid": "c17cabb3-063a-44eb-bf9a-8f35d36b2597",
+                "display_name": "Sandbox Company",
+                "country": "NL",
+                "avatar": {
+                    "uuid": "646d3802-881e-415c-96f9-35397ce7cc9a",
+                    "image": [
+                        {
+                            "attachment_public_uuid": "0d10b1c4-b249-4c49-a442-5379bae0a030",
+                            "height": 640,
+                            "width": 640,
+                            "content_type": "image\/png"
+                        }
+                    ],
+                    "anchor_uuid": "c17cabb3-063a-44eb-bf9a-8f35d36b2597"
+                },
+                "public_nick_name": "Sandbox Company"
+            },
+            "country": "NL"
+        },
+        "counterparty_alias": {
+            "iban": "NL76BUNQ9900037723",
+            "is_light": false,
+            "display_name": "J. Bean",
+            "avatar": {
+                "uuid": "53b43367-c503-43f2-9b1b-db74f231d59a",
+                "image": [
+                    {
+                        "attachment_public_uuid": "61c3be0b-4953-4762-8118-b42b0ee994bb",
+                        "height": 1024,
+                        "width": 1024,
+                        "content_type": "image\/png"
+                    }
+                ],
+                "anchor_uuid": null
+            },
+            "label_user": {
+                "uuid": "713e8014-3285-4ced-a5ea-749048fd4a5a",
+                "display_name": "J. Bean",
+                "country": "NL",
+                "avatar": {
+                    "uuid": "6a2e1b46-f2b7-4f59-879a-0eb32b672f33",
+                    "image": [
+                        {
+                            "attachment_public_uuid": "5fbfa537-50b3-4511-8265-07c89a6f5819",
+                            "height": 480,
+                            "width": 480,
+                            "content_type": "image\/jpeg"
+                        }
+                    ],
+                    "anchor_uuid": "713e8014-3285-4ced-a5ea-749048fd4a5a"
+                },
+                "public_nick_name": "Jenna Bean"
+            },
+            "country": "NL"
+        },
+        "attachment": null,
+        "minimum_age": null,
+        "require_address": "OPTIONAL",
+        "geolocation": null,
+        "type": "INTERNAL",
+        "sub_type": "NONE",
+        "redirect_url": null,
+        "address_billing": null,
+        "address_shipping": null,
+        "allow_chat": true,
+        "eligible_whitelist_id": null
+    }
+}
