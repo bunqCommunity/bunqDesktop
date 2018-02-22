@@ -22,7 +22,6 @@ import {
     requestResponseAccept
 } from "../../Actions/request_response";
 import TransactionHeader from "../../Components/TransactionHeader";
-import AddressForm from "./AddressForm";
 
 const testData = require("./test.json");
 
@@ -47,9 +46,7 @@ class RequestResponseInfo extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            accepted: false,
-            address_billing: false,
-            address_shipping: false
+            accepted: false
         };
     }
 
@@ -83,15 +80,6 @@ class RequestResponseInfo extends React.Component {
         }
     }
 
-    handleChange = name => event => {
-        this.setState(
-            {
-                [name]: event.target ? event.target.value : event
-            },
-            this.validateForm
-        );
-    };
-
     rejectRequest = () => {
         const { requestResponseId, accountId } = this.props.match.params;
         this.props.requestResponseReject(
@@ -114,30 +102,10 @@ class RequestResponseInfo extends React.Component {
 
         const requestResponse = requestResponseInfo.RequestResponse;
 
-        const billingAddressRequired = ["BILLING", "BILLING_SHIPPING"].includes(
-            requestResponse.require_address
-        );
-        const shippingAddressRequired = [
-            "SHIPPING",
-            "BILLING_SHIPPING"
-        ].includes(requestResponse.require_address);
-
         const options = {
             address_shipping: false,
             address_billing: false
         };
-        if (billingAddressRequired) {
-            if (this.state.address_billing === false) {
-                return false;
-            }
-            options.address_billing = this.state.address_billing;
-        }
-        if (shippingAddressRequired) {
-            if (this.state.address_shipping === false) {
-                return false;
-            }
-            options.address_shipping = this.state.address_shipping;
-        }
 
         this.props.requestResponseAccept(
             user.id,
@@ -186,26 +154,6 @@ class RequestResponseInfo extends React.Component {
             const paymentAmount = requestResponse.amount_inquired.value;
             const formattedPaymentAmount = formatMoney(paymentAmount);
             const requestResponseLabel = requestResponseText(requestResponse);
-
-            const billingAddressRequired = [
-                "BILLING",
-                "BILLING_SHIPPING"
-            ].includes(requestResponse.require_address);
-            const billingAddressVisible = [
-                "OPTIONAL",
-                "BILLING",
-                "BILLING_SHIPPING"
-            ].includes(requestResponse.require_address);
-
-            const shippingAddressRequired = [
-                "SHIPPING",
-                "BILLING_SHIPPING"
-            ].includes(requestResponse.require_address);
-            const shippingAddressVisible = [
-                "OPTIONAL",
-                "SHIPPING",
-                "BILLING_SHIPPING"
-            ].includes(requestResponse.require_address);
 
             content = [
                 <Paper style={styles.paper}>
@@ -318,37 +266,9 @@ class RequestResponseInfo extends React.Component {
                             justify={"center"}
                         >
                             <Grid item xs={12}>
-                                <AddressForm
-                                    requestResponse={requestResponse}
-                                    required={shippingAddressRequired}
-                                    visible={shippingAddressVisible}
-                                    labelValue={"Shipping Address"}
-                                    onChange={this.handleChange(
-                                        "address_shipping"
-                                    )}
-                                />
-                                <AddressForm
-                                    requestResponse={requestResponse}
-                                    required={billingAddressRequired}
-                                    visible={billingAddressVisible}
-                                    labelValue={"Billing Address"}
-                                    onChange={this.handleChange(
-                                        "address_billing"
-                                    )}
-                                />
-
                                 <Button
                                     raised
-                                    disabled={
-                                        (shippingAddressRequired
-                                            ? this.state.address_shipping ===
-                                              false
-                                            : false) ||
-                                        (billingAddressRequired
-                                            ? this.state.address_billing ===
-                                              false
-                                            : false)
-                                    }
+                                    disabled={false}
                                     color="primary"
                                     style={styles.button}
                                     onClick={this.acceptRequest}
