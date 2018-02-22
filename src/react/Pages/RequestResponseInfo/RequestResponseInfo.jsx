@@ -139,14 +139,6 @@ class RequestResponseInfo extends React.Component {
             options.address_shipping = this.state.address_shipping;
         }
 
-        console.log(
-            user.id,
-            requestResponseAccountId,
-            requestResponseId,
-            requestResponse.amount_inquired,
-            options
-        );
-
         this.props.requestResponseAccept(
             user.id,
             requestResponseAccountId,
@@ -335,7 +327,6 @@ class RequestResponseInfo extends React.Component {
                                         "address_shipping"
                                     )}
                                 />
-
                                 <AddressForm
                                     requestResponse={requestResponse}
                                     required={billingAddressRequired}
