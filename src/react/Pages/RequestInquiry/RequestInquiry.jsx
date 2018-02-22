@@ -343,7 +343,6 @@ class RequestInquiry extends React.Component {
                             label="Description"
                             value={this.state.description}
                             onChange={this.handleChange("description")}
-                            margin="normal"
                         />
 
                         <FormControl
