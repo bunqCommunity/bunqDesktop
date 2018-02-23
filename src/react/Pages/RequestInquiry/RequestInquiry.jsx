@@ -5,7 +5,6 @@ import EmailValidator from "email-validator";
 
 import Grid from "material-ui/Grid";
 import TextField from "material-ui/TextField";
-import { InputLabel } from "material-ui/Input";
 import Button from "material-ui/Button";
 import Paper from "material-ui/Paper";
 import Typography from "material-ui/Typography";
@@ -14,11 +13,11 @@ import Switch from "material-ui/Switch";
 import { FormControl, FormControlLabel } from "material-ui/Form";
 
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
+import TargetSelection from "../../Components/TargetSelection";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
 import PhoneFormatInput from "../../Components/FormFields/PhoneFormatInput";
 import { openSnackbar } from "../../Actions/snackbar";
 import { requestInquirySend } from "../../Actions/request_inquiry";
-import TargetSelection from "./TargetSelection";
 import MinimumAge from "./Options/MinimumAge";
 import RedirectUrl from "../../Components/FormFields/RedirectUrl";
 import ConfirmationDialog from "./ConfirmationDialog";
@@ -74,6 +73,9 @@ class RequestInquiry extends React.Component {
             // default target field
             targetError: false,
             target: "",
+
+            //
+            targets: [],
 
             // defines which type is used
             targetType: "EMAIL"
@@ -332,6 +334,19 @@ class RequestInquiry extends React.Component {
                         <TargetSelection
                             targetType={this.state.targetType}
                             setTargetType={this.setTargetType}
+                        />
+
+                        <TargetSelection
+                            targetType={this.state.targetType}
+                            targets={this.state.targets}
+                            target={this.state.target}
+                            targetError={this.state.targetError}
+                            validForm={this.state.validForm}
+                            handleChangeDirect={this.handleChangeDirect}
+                            handleChange={this.handleChange}
+                            setTargetType={this.setTargetType}
+                            removeTarget={this.removeTarget}
+                            addTarget={this.addTarget}
                         />
 
                         {targetContent}
