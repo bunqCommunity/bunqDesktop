@@ -16,6 +16,14 @@ import { openSnackbar } from "../Actions/snackbar";
 import { bunqMeTabPut } from "../Actions/bunq_me_tab";
 import { humanReadableDate } from "../Helpers/Utils";
 
+import {
+    paymentFilter,
+    bunqMeTabsFilter,
+    masterCardActionFilter,
+    requestInquiryFilter,
+    requestResponseFilter
+} from "../Helpers/DataFilters";
+
 const styles = {
     list: {
         textAlign: "left"
@@ -33,46 +41,35 @@ class CombinedList extends React.Component {
     };
 
     paymentMapper = () => {
-        return this.props.payments.filter(this.paymentFilter).map(payment => {
-            return {
-                component: (
-                    <PaymentListItem
-                        payment={payment.Payment}
-                        BunqJSClient={this.props.BunqJSClient}
-                    />
-                ),
-                filterDate: payment.Payment.created,
-                info: payment.Payment
-            };
-        });
-    };
-
-    paymentFilter = payment => {
-        if (this.props.paymentVisibility === false) {
-            return false;
-        }
-        const paymentInfo = payment.Payment;
-
-        // hide mastercard payments
-        if (paymentInfo.type === "MASTERCARD") {
-            return false;
-        }
-
-        if (this.props.paymentType === "received") {
-            if (paymentInfo.amount.value <= 0) {
-                return false;
-            }
-        } else if (this.props.paymentType === "sent") {
-            if (paymentInfo.amount.value >= 0) {
-                return false;
-            }
-        }
-        return true;
+        return this.props.payments
+            .filter(
+                paymentFilter({
+                    paymentVisibility: this.props.paymentVisibility,
+                    paymentType: this.props.paymentType
+                })
+            )
+            .map(payment => {
+                return {
+                    component: (
+                        <PaymentListItem
+                            payment={payment.Payment}
+                            BunqJSClient={this.props.BunqJSClient}
+                        />
+                    ),
+                    filterDate: payment.Payment.created,
+                    info: payment.Payment
+                };
+            });
     };
 
     bunqMeTabsMapper = () => {
         return this.props.bunqMeTabs
-            .filter(this.bunqMeTabsFilter)
+            .filter(
+                bunqMeTabsFilter({
+                    bunqMeTabVisibility: this.props.bunqMeTabVisibility,
+                    bunqMeTabType: this.props.bunqMeTabType
+                })
+            )
             .map(bunqMeTab => {
                 return {
                     component: (
@@ -92,24 +89,14 @@ class CombinedList extends React.Component {
             });
     };
 
-    bunqMeTabsFilter = bunqMeTab => {
-        if (this.props.bunqMeTabVisibility === false) {
-            return false;
-        }
-        switch (this.props.bunqMeTabType) {
-            case "active":
-                return bunqMeTab.BunqMeTab.status === "WAITING_FOR_PAYMENT";
-            case "cancelled":
-                return bunqMeTab.BunqMeTab.status === "CANCELLED";
-            case "expired":
-                return bunqMeTab.BunqMeTab.status === "EXPIRED";
-        }
-        return true;
-    };
-
     masterCardActionMapper = () => {
         return this.props.masterCardActions
-            .filter(this.masterCardActionFilter)
+            .filter(
+                masterCardActionFilter({
+                    paymentVisibility: this.props.paymentVisibility,
+                    paymentType: this.props.paymentType
+                })
+            )
             .map(masterCardAction => {
                 return {
                     component: (
@@ -124,17 +111,14 @@ class CombinedList extends React.Component {
             });
     };
 
-    masterCardActionFilter = masterCardAction => {
-        if (this.props.paymentVisibility === false) {
-            return false;
-        }
-
-        return this.props.paymentType !== "received";
-    };
-
     requestResponseMapper = () => {
         return this.props.requestResponses
-            .filter(this.requestResponseFilter)
+            .filter(
+                requestResponseFilter({
+                    requestVisibility: this.props.requestVisibility,
+                    requestType: this.props.requestType
+                })
+            )
             .map(requestResponse => {
                 return {
                     component: (
@@ -149,23 +133,14 @@ class CombinedList extends React.Component {
             });
     };
 
-    requestResponseFilter = requestResponse => {
-        if (this.props.requestVisibility === false) {
-            return false;
-        }
-
-        // hide accepted payments
-        if (requestResponse.RequestResponse.status === "ACCEPTED") return false;
-
-        return !(
-            this.props.requestType !== "sent" &&
-            this.props.requestType !== "default"
-        );
-    };
-
     requestInquiryMapper = () => {
         return this.props.requestInquiries
-            .filter(this.requestInquiryFilter)
+            .filter(
+                requestInquiryFilter({
+                    requestVisibility: this.props.requestVisibility,
+                    requestType: this.props.requestType
+                })
+            )
             .map(requestInquiry => {
                 return {
                     component: (
@@ -178,19 +153,6 @@ class CombinedList extends React.Component {
                     info: requestInquiry.RequestInquiry
                 };
             });
-    };
-
-    requestInquiryFilter = requestInquiry => {
-        if (this.props.requestVisibility === false) {
-            return false;
-        }
-
-        if (requestInquiry.RequestInquiry.status === "ACCEPTED") return false;
-
-        return !(
-            this.props.requestType !== "received" &&
-            this.props.requestType !== "default"
-        );
     };
 
     render() {

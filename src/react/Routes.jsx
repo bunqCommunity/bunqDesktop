@@ -36,6 +36,9 @@ const ApplicationInfo = CL(() =>
 const AccountInfo = CL(() =>
     import(/* webpackChunkName: "accountinfo" */ "./Pages/AccountInfo")
 );
+const Stats = CL(() =>
+    import(/* webpackChunkName: "accountinfo" */ "./Pages/Stats")
+);
 
 // router react component
 export default class Routes extends React.Component {
@@ -161,6 +164,19 @@ export default class Routes extends React.Component {
                             derivedPassword={this.props.derivedPassword}
                             render={props => (
                                 <AccountInfo
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
+                            )}
+                        />
+
+                        <PrivateRoute
+                            path="/stats"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <Stats
                                     {...props}
                                     {...this.props.childProps}
                                 />
