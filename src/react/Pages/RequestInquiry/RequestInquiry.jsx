@@ -22,6 +22,7 @@ import MinimumAge from "./Options/MinimumAge";
 import RedirectUrl from "../../Components/FormFields/RedirectUrl";
 import ConfirmationDialog from "./ConfirmationDialog";
 import AllowBunqMe from "./Options/AllowBunqMe";
+import iban from "iban";
 
 const styles = {
     payButton: {
@@ -149,6 +150,113 @@ class RequestInquiry extends React.Component {
             this.validateForm
         );
     };
+
+    // add a target from the current text inputs to the target list
+    addTarget = () => {
+        this.validateTargetInput(valid => {
+            // target is valid, add it to the list
+            if (valid) {
+                const currentTargets = [...this.state.targets];
+
+                let foundDuplicate = false;
+                const targetValue = this.state.target.trim();
+
+                // check for duplicates in existing target list
+                currentTargets.map(newTarget => {
+                    if (newTarget.type === this.state.targetType) {
+                        if (newTarget.value === targetValue) {
+                            foundDuplicate = true;
+                        }
+                    }
+                });
+
+                if (!foundDuplicate) {
+                    currentTargets.push({
+                        type: this.state.targetType,
+                        value: targetValue,
+                        name: ""
+                    });
+                } else {
+                    this.props.openSnackbar("This target seems to be added already");
+                }
+
+                this.setState(
+                    {
+                        // set the new target list
+                        targets: currentTargets,
+                        // reset the input
+                        target: ""
+                    },
+                    () => {
+                        this.validateForm();
+                        this.validateTargetInput();
+                    }
+                );
+            }
+        });
+    };
+
+    // validate only the taret inputs
+    validateTargetInput = (callback = () => {}) => {
+        const {
+            target,
+            targetType
+        } = this.state;
+
+        // check if the target is valid based onthe targetType
+        let targetErrorCondition = false;
+        switch (targetType) {
+            case "EMAIL":
+                targetErrorCondition = !EmailValidator.validate(target);
+                break;
+            case "PHONE":
+                targetErrorCondition = target.length < 5 || target.length > 64;
+                break;
+        }
+
+        this.setState(
+            {
+                targetError: targetErrorCondition
+            },
+            () => callback(!targetErrorCondition)
+        );
+    };
+
+    // validates all the possible input combinations
+    // validateForm = () => {
+    //     const {
+    //         description,
+    //         amount,
+    //         ibanName,
+    //         selectedAccount,
+    //         targets
+    //     } = this.state;
+    //
+    //     const account = this.props.accounts[selectedAccount]
+    //         .MonetaryAccountBank;
+    //
+    //     const noTargetsCondition = targets.length < 0;
+    //     const insufficientFundsCondition =
+    //         amount !== "" &&
+    //         amount > (account.balance ? account.balance.value : 0);
+    //     const amountErrorCondition = amount < 0.01 || amount > 10000;
+    //     const descriptionErrorCondition = description.length > 140;
+    //     const ibanNameErrorCondition =
+    //         ibanName.length < 1 || ibanName.length > 64;
+    //
+    //     this.setState({
+    //         amountError: amountErrorCondition,
+    //         insufficientFundsCondition: insufficientFundsCondition,
+    //         descriptionError: descriptionErrorCondition,
+    //         ibanNameError: ibanNameErrorCondition,
+    //         validForm:
+    //         !noTargetsCondition &&
+    //         !insufficientFundsCondition &&
+    //         !amountErrorCondition &&
+    //         !descriptionErrorCondition &&
+    //         targets.length > 0
+    //     });
+    // };
 
     // validates all the possible input combinations
     validateForm = () => {
@@ -279,41 +387,6 @@ class RequestInquiry extends React.Component {
         const account = this.props.accounts[selectedAccount]
             .MonetaryAccountBank;
 
-        let targetContent = null;
-        switch (this.state.targetType) {
-            case "PHONE":
-                targetContent = (
-                    <FormControl fullWidth error={this.state.targetError}>
-                        <Typography type="body1">
-                            Phone numbers should contain no spaces and include
-                            the land code. For example: +316123456789
-                        </Typography>
-                        <PhoneFormatInput
-                            id="target"
-                            placeholder="+316123456789"
-                            error={this.state.targetError}
-                            value={this.state.target}
-                            onChange={this.handleChange("target")}
-                        />
-                    </FormControl>
-                );
-                break;
-            case "EMAIL":
-                targetContent = (
-                    <TextField
-                        error={this.state.targetError}
-                        fullWidth
-                        required
-                        id="target"
-                        type="email"
-                        label="Email"
-                        value={this.state.target}
-                        onChange={this.handleChange("target")}
-                    />
-                );
-                break;
-        }
-
         return (
             <Grid container spacing={24} align={"center"} justify={"center"}>
                 <Helmet>
@@ -333,11 +406,6 @@ class RequestInquiry extends React.Component {
 
                         <TargetSelection
                             targetType={this.state.targetType}
-                            setTargetType={this.setTargetType}
-                        />
-
-                        <TargetSelection
-                            targetType={this.state.targetType}
                             targets={this.state.targets}
                             target={this.state.target}
                             targetError={this.state.targetError}
@@ -347,9 +415,8 @@ class RequestInquiry extends React.Component {
                             setTargetType={this.setTargetType}
                             removeTarget={this.removeTarget}
                             addTarget={this.addTarget}
+                            disabledTypes={["IBAN", "TRANSFER"]}
                         />
-
-                        {targetContent}
 
                         <TextField
                             fullWidth
