@@ -6,20 +6,12 @@ export function requestInquirySend(
     BunqJSClient,
     userId,
     accountId,
-    description,
-    amount,
-    target,
-    options = {
-        status: false,
-        minimum_age: false,
-        allow_bunqme: false,
-        redirect_url: false
-    }
+    requestInquiries
 ) {
     return dispatch => {
         dispatch(requestInquiryLoading());
-        BunqJSClient.api.requestInquiry
-            .post(userId, accountId, description, amount, target, options)
+        BunqJSClient.api.requestInquiryBatch
+            .post(userId, accountId, requestInquiries, false, {})
             .then(result => {
                 dispatch(openSnackbar("Request was sent successfully!"));
                 dispatch(requestInquiryNotLoading());
@@ -29,7 +21,7 @@ export function requestInquirySend(
                 BunqErrorHandler(
                     dispatch,
                     error,
-                    "We received the following error while sending your request inquiry"
+                    "We received the following error while sending your request"
                 );
             });
     };
@@ -46,9 +38,7 @@ export function requestInquiryCancel(
         BunqJSClient.api.requestInquiry
             .put(userId, accountId, requestInquiryId, "REVOKED")
             .then(result => {
-                dispatch(
-                    openSnackbar("Request was cancelled successfully!")
-                );
+                dispatch(openSnackbar("Request was cancelled successfully!"));
                 dispatch(requestInquiryNotLoading());
 
                 // update the information page

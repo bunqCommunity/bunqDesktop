@@ -1,4 +1,6 @@
 import React from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
 import Grid from "material-ui/Grid";
 import Radio from "material-ui/Radio";
@@ -15,11 +17,9 @@ import EmailIcon from "material-ui-icons/Email";
 import PhoneIcon from "material-ui-icons/Phone";
 import CompareArrowsIcon from "material-ui-icons/CompareArrows";
 
-import PhoneFormatInput from "../../Components/FormFields/PhoneFormatInput";
-import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
-import { connect } from "react-redux";
-import { paySend } from "../../Actions/pay";
-import { openSnackbar } from "../../Actions/snackbar";
+import PhoneFormatInput from "./FormFields/PhoneFormatInput";
+import AccountSelectorDialog from "./FormFields/AccountSelectorDialog";
+import { openSnackbar } from "../Actions/snackbar";
 
 const styles = {
     payButton: {
@@ -173,69 +173,82 @@ class TargetSelection extends React.Component {
                 <Grid item xs={12}>
                     {chipList}
                 </Grid>
-                <Grid item xs={6} sm={3}>
-                    <FormControlLabel
-                        control={
-                            <Radio
-                                icon={<AccountBalanceIcon />}
-                                checkedIcon={<AccountBalanceIcon />}
-                                checked={this.props.targetType === "IBAN"}
-                                onChange={this.props.setTargetType("IBAN")}
-                                value="IBAN"
-                                name="target-type-iban"
-                            />
-                        }
-                        label="IBAN"
-                    />
-                </Grid>
-                <Grid item xs={6} sm={3}>
-                    <FormControlLabel
-                        control={
-                            <Radio
-                                icon={<EmailIcon />}
-                                checkedIcon={<EmailIcon />}
-                                color={"secondary"}
-                                checked={this.props.targetType === "EMAIL"}
-                                onChange={this.props.setTargetType("EMAIL")}
-                                value="EMAIL"
-                                name="target-type-email"
-                            />
-                        }
-                        label="EMAIL"
-                    />
-                </Grid>
-                <Grid item xs={6} sm={3}>
-                    <FormControlLabel
-                        control={
-                            <Radio
-                                icon={<PhoneIcon />}
-                                checkedIcon={<PhoneIcon />}
-                                color={"secondary"}
-                                checked={this.props.targetType === "PHONE"}
-                                onChange={this.props.setTargetType("PHONE")}
-                                value="PHONE"
-                                name="target-type-phone"
-                            />
-                        }
-                        label="PHONE"
-                    />
-                </Grid>
-                <Grid item xs={6} sm={3}>
-                    <FormControlLabel
-                        control={
-                            <Radio
-                                icon={<CompareArrowsIcon />}
-                                checkedIcon={<CompareArrowsIcon />}
-                                color={"secondary"}
-                                checked={this.props.targetType === "TRANSFER"}
-                                onChange={this.props.setTargetType("TRANSFER")}
-                                value="TRANSFER"
-                                name="target-type-transfer"
-                            />
-                        }
-                        label="Transfer"
-                    />
-                </Grid>
+                {this.props.disabledTypes.includes("IBAN") ? null : (
+                    <Grid item xs={6} sm={3}>
+                        <FormControlLabel
+                            control={
+                                <Radio
+                                    icon={<AccountBalanceIcon />}
+                                    checkedIcon={<AccountBalanceIcon />}
+                                    checked={this.props.targetType === "IBAN"}
+                                    onChange={this.props.setTargetType("IBAN")}
+                                    value="IBAN"
+                                    name="target-type-iban"
+                                />
+                            }
+                            label="IBAN"
+                        />
+                    </Grid>
+                )}
+                {this.props.disabledTypes.includes("EMAIL") ? null : (
+                    <Grid item xs={6} sm={3}>
+                        <FormControlLabel
+                            control={
+                                <Radio
+                                    icon={<EmailIcon />}
+                                    checkedIcon={<EmailIcon />}
+                                    color={"secondary"}
+                                    checked={this.props.targetType === "EMAIL"}
+                                    onChange={this.props.setTargetType("EMAIL")}
+                                    value="EMAIL"
+                                    name="target-type-email"
+                                />
+                            }
+                            label="EMAIL"
+                        />
+                    </Grid>
+                )}
+                {this.props.disabledTypes.includes("PHONE") ? null : (
+                    <Grid item xs={6} sm={3}>
+                        <FormControlLabel
+                            control={
+                                <Radio
+                                    icon={<PhoneIcon />}
+                                    checkedIcon={<PhoneIcon />}
+                                    color={"secondary"}
+                                    checked={this.props.targetType === "PHONE"}
+                                    onChange={this.props.setTargetType("PHONE")}
+                                    value="PHONE"
+                                    name="target-type-phone"
+                                />
+                            }
+                            label="PHONE"
+                        />
+                    </Grid>
+                )}
+                {this.props.disabledTypes.includes("TRANSFER") ? null : (
+                    <Grid item xs={6} sm={3}>
+                        <FormControlLabel
+                            control={
+                                <Radio
+                                    icon={<CompareArrowsIcon />}
+                                    checkedIcon={<CompareArrowsIcon />}
+                                    color={"secondary"}
+                                    checked={
+                                        this.props.targetType === "TRANSFER"
+                                    }
+                                    onChange={this.props.setTargetType(
+                                        "TRANSFER"
+                                    )}
+                                    value="TRANSFER"
+                                    name="target-type-transfer"
+                                />
+                            }
+                            label="Transfer"
+                        />
+                    </Grid>
+                )}
+
                 <Grid item xs={12}>
                     {targetContent}
                 </Grid>
@@ -271,6 +284,13 @@ const mapDispatchToProps = dispatch => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message))
     };
+};
+
+TargetSelection.propTypes = {
+    disabledTypes: PropTypes.array
+};
+TargetSelection.defaultProps = {
+    disabledTypes: []
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TargetSelection);

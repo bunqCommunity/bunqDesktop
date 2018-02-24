@@ -49,7 +49,6 @@ class MinimumAge extends React.Component {
                     error={minimumAgeError}
                     value={minimumAge}
                     onChange={handleChange}
-                    margin="normal"
                     endAdornment={
                         <InputAdornment position="end">
                             <IconButton
