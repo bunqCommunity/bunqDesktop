@@ -126,11 +126,15 @@ class AccountList extends React.Component {
                 ));
         }
 
-        const totalBalance = this.props.accounts.reduce(
-            (total, account) =>
-                total + parseFloat(account.MonetaryAccountBank.balance.value),
-            0
-        );
+        const totalBalance = this.props.accounts.reduce((total, account) => {
+            if (account.MonetaryAccountBank.balance) {
+                return (
+                    total +
+                    parseFloat(account.MonetaryAccountBank.balance.value)
+                );
+            }
+            return total;
+        }, 0);
         const formattedTotalBalance = formatMoney(totalBalance);
 
         return (
