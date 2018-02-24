@@ -5,7 +5,7 @@ import Grid from "material-ui/Grid";
 import { withStyles } from "material-ui/styles";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import createMuiTheme from "material-ui/styles/createMuiTheme";
-import { ipcRenderer } from 'electron'
+import { ipcRenderer } from "electron";
 
 // custom components
 import Logger from "../Helpers/Logger";
@@ -29,7 +29,7 @@ const ThemeList = {
 // redux actions
 import { applicationSetStatus } from "../Actions/application.js";
 import { userLogin } from "../Actions/user.js";
-import { usersClear, usersUpdate } from "../Actions/users";
+import { usersUpdate } from "../Actions/users";
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
 import {
@@ -62,8 +62,11 @@ class Layout extends React.Component {
             initialBunqConnect: false
         };
 
+        this.activityTimer = null;
+        window.onmousemove = this.onActivityEvent.bind(this);
+        window.onkeypress = this.onActivityEvent.bind(this);
 
-        ipcRenderer.on('change-path', (event, path) => {
+        ipcRenderer.on("change-path", (event, path) => {
             const currentPath = this.props.history.location.pathname;
 
             if (currentPath !== path) {
@@ -90,6 +93,9 @@ class Layout extends React.Component {
                 );
             }
         });
+
+        // set initial timeout trigger
+        this.setActivityTimeout();
     }
 
     componentWillUpdate(nextProps) {
@@ -117,6 +123,7 @@ class Layout extends React.Component {
                 window.ga("send", "pageview");
             }
         }
+        return true;
     }
 
     checkBunqSetup = async (nextProps = false) => {
@@ -238,6 +245,31 @@ class Layout extends React.Component {
         this.props.usersUpdate(true);
     };
 
+    onActivityEvent = e => {
+        if (this.props.checkInactivity) {
+            this.clearActivityTimeout();
+            this.setActivityTimeout();
+        } else {
+            this.clearActivityTimeout();
+        }
+    };
+
+    setActivityTimeout = () => {
+        this.activityTimer = setTimeout(() => {
+            // check if option is still enabled
+            if (this.props.checkInactivity) {
+                // reload the app
+                location.reload();
+            }
+            // time in seconds * 1000 for milliseconds
+        }, this.props.inactivityCheckDuration * 1000);
+    };
+
+    clearActivityTimeout = () => {
+        clearTimeout(this.activityTimer);
+        this.activityTimer = null;
+    };
+
     render() {
         const { classes } = this.props;
         const childProps = {
@@ -298,6 +330,9 @@ const mapStateToProps = state => {
     return {
         theme: state.theme.theme,
 
+        checkInactivity: state.options.check_inactivity,
+        inactivityCheckDuration: state.options.inactivity_check_duration,
+
         derivedPassword: state.registration.derivedPassword,
         registrationIsLoading: state.registration.loading,
         environment: state.registration.environment,
@@ -335,7 +370,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(userLogin(BunqJSClient, userType, updated)),
 
         // functions to clear user data
-        registrationClearUserInfo: () => dispatch(registrationClearUserInfo()),
+        registrationClearUserInfo: () => dispatch(registrationClearUserInfo())
     };
 };
 

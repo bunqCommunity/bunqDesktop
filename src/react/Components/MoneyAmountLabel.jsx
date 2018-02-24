@@ -119,6 +119,12 @@ class MoneyAmountLabel extends React.Component {
                     ...theme.styles.masterCardAction.blocked,
                     ...style
                 };
+            case "CLEARING_REFUND":
+                return {
+                    color: theme.palette.masterCardAction.refunded,
+                    ...theme.styles.masterCardAction.refunded,
+                    ...style
+                };
             default:
             case "PENDING":
                 return {

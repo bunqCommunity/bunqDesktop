@@ -1,22 +1,21 @@
 import path from "path";
 import url from "url";
 import log from "electron-log";
+import electron from "electron";
 import settings from "electron-settings";
 import { app, Menu } from "electron";
 import { devMenuTemplate } from "./menu/dev_menu_template";
 import { editMenuTemplate } from "./menu/edit_menu_template";
 import createWindow from "./helpers/window";
 import registerShortcuts from "./helpers/shortcuts";
-import registerTouchBar from './helpers/touchbar';
+import registerTouchBar from "./helpers/touchbar";
 
 // Special module holding environment variables which you declared
 // in config/env_xxx.json file.
 import env from "./env";
 
 const setApplicationMenu = () => {
-    const menus = [
-        editMenuTemplate
-    ];
+    const menus = [editMenuTemplate];
     if (env.name === "development") {
         menus.push(devMenuTemplate);
     }
@@ -74,7 +73,14 @@ app.on("ready", () => {
         mainWindow.setMenu(null);
     }
 
-
+    // reload the window if the system goes into sleep mode
+    electron.powerMonitor.on("resume", () => {
+        log.debug("resume");
+        mainWindow.reload();
+    });
+    electron.powerMonitor.on("suspend", () => {
+        log.debug("suspend");
+    });
 });
 
 app.on("window-all-closed", () => {

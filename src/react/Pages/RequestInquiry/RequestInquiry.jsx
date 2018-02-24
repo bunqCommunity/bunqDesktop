@@ -5,7 +5,6 @@ import EmailValidator from "email-validator";
 
 import Grid from "material-ui/Grid";
 import TextField from "material-ui/TextField";
-import { InputLabel } from "material-ui/Input";
 import Button from "material-ui/Button";
 import Paper from "material-ui/Paper";
 import Typography from "material-ui/Typography";
@@ -14,15 +13,16 @@ import Switch from "material-ui/Switch";
 import { FormControl, FormControlLabel } from "material-ui/Form";
 
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
+import TargetSelection from "../../Components/TargetSelection";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
 import PhoneFormatInput from "../../Components/FormFields/PhoneFormatInput";
 import { openSnackbar } from "../../Actions/snackbar";
 import { requestInquirySend } from "../../Actions/request_inquiry";
-import TargetSelection from "./TargetSelection";
 import MinimumAge from "./Options/MinimumAge";
 import RedirectUrl from "../../Components/FormFields/RedirectUrl";
 import ConfirmationDialog from "./ConfirmationDialog";
 import AllowBunqMe from "./Options/AllowBunqMe";
+import iban from "iban";
 
 const styles = {
     payButton: {
@@ -74,6 +74,9 @@ class RequestInquiry extends React.Component {
             // default target field
             targetError: false,
             target: "",
+
+            //
+            targets: [],
 
             // defines which type is used
             targetType: "EMAIL"
@@ -148,12 +151,100 @@ class RequestInquiry extends React.Component {
         );
     };
 
+    // remove a key from the target list
+    removeTarget = key => {
+        const newTargets = [...this.state.targets];
+        if (newTargets[key]) {
+            newTargets.splice(key, 1);
+            this.setState(
+                {
+                    targets: newTargets
+                },
+                () => {
+                    this.validateForm();
+                    this.validateTargetInput();
+                }
+            );
+        }
+    };
+
+    // add a target from the current text inputs to the target list
+    addTarget = () => {
+        this.validateTargetInput(valid => {
+            // target is valid, add it to the list
+            if (valid) {
+                const currentTargets = [...this.state.targets];
+
+                let foundDuplicate = false;
+                const targetValue = this.state.target.trim();
+
+                // check for duplicates in existing target list
+                currentTargets.map(newTarget => {
+                    if (newTarget.type === this.state.targetType) {
+                        if (newTarget.value === targetValue) {
+                            foundDuplicate = true;
+                        }
+                    }
+                });
+
+                if (!foundDuplicate) {
+                    currentTargets.push({
+                        type: this.state.targetType,
+                        value: targetValue,
+                        name: ""
+                    });
+                } else {
+                    this.props.openSnackbar(
+                        "This target seems to be added already"
+                    );
+                }
+
+                this.setState(
+                    {
+                        // set the new target list
+                        targets: currentTargets,
+                        // reset the input
+                        target: ""
+                    },
+                    () => {
+                        this.validateForm();
+                        this.validateTargetInput();
+                    }
+                );
+            }
+        });
+    };
+
+    // validate only the taret inputs
+    validateTargetInput = (callback = () => {}) => {
+        const { target, targetType } = this.state;
+
+        // check if the target is valid based onthe targetType
+        let targetErrorCondition = false;
+        switch (targetType) {
+            case "EMAIL":
+                targetErrorCondition = !EmailValidator.validate(target);
+                break;
+            case "PHONE":
+                targetErrorCondition = target.length < 5 || target.length > 64;
+                break;
+        }
+
+        this.setState(
+            {
+                targetError: targetErrorCondition
+            },
+            () => callback(!targetErrorCondition)
+        );
+    };
+
     // validates all the possible input combinations
     validateForm = () => {
         const {
             description,
             amount,
             target,
+            targets,
             setMinimumAge,
             minimumAge,
             setRedirectUrl,
@@ -193,19 +284,8 @@ class RequestInquiry extends React.Component {
                 !minimumAgeErrorCondition &&
                 !redurectUrlErrorCondition &&
                 !descriptionErrorCondition &&
-                !targetErrorCondition
+                targets.length > 0
         });
-    };
-
-    // clears the input fields to default
-    clearForm = () => {
-        this.setState(
-            {
-                amount: "",
-                description: ""
-            },
-            this.validateForm
-        );
     };
 
     // send the actual requiry
@@ -220,58 +300,65 @@ class RequestInquiry extends React.Component {
             selectedAccount,
             description,
             amount,
-            target,
+            targets,
             setMinimumAge,
             minimumAge,
             setRedirectUrl,
             redirectUrl,
-            allowBunqMe,
-            targetType
+            allowBunqMe
         } = this.state;
         const minimumAgeInt = parseInt(minimumAge);
+
+        // account the payment is made from
         const account = accounts[selectedAccount].MonetaryAccountBank;
+        // our user id
         const userId = user.id;
 
-        // check if the target is valid based onthe targetType
-        let targetInfo = false;
-        switch (targetType) {
-            case "EMAIL":
-                targetInfo = {
-                    type: "EMAIL",
-                    value: target.trim()
-                };
-                break;
-            case "PHONE":
-                targetInfo = {
-                    type: "PHONE_NUMBER",
-                    value: target.trim()
-                };
-                break;
-            default:
-                this.props.openSnackbar("We failed to send this payment");
-                return;
-        }
-
+        // amount inquired for all the requestInquiries
         const amountInfo = {
-            value: amount + "", // sigh
+            value: amount + "", // sigh, number has to be sent as a string
             currency: "EUR"
         };
 
-        let options = {
-            allow_bunqme: allowBunqMe,
-            minimum_age: setMinimumAge ? minimumAgeInt : false,
-            redirect_url: setRedirectUrl ? redirectUrl : false
-        };
+        const requestInquiries = [];
+        targets.map(target => {
+            // check if the target is valid based onthe targetType
+            let targetInfo = false;
+            switch (target.type) {
+                case "EMAIL":
+                    targetInfo = {
+                        type: "EMAIL",
+                        value: target.value.trim()
+                    };
+                    break;
+                case "PHONE":
+                    targetInfo = {
+                        type: "PHONE_NUMBER",
+                        value: target.value.trim()
+                    };
+                    break;
+                default:
+                    // invalid type
+                    break;
+            }
 
-        this.props.requestInquirySend(
-            userId,
-            account.id,
-            description,
-            amountInfo,
-            targetInfo,
-            options
-        );
-        this.clearForm();
+            const requestInquiry = {
+                amount_inquired: amountInfo,
+                counterparty_alias: targetInfo,
+                description: description,
+                allow_bunqme: allowBunqMe
+            };
+            if (setMinimumAge) {
+                requestInquiry.minimum_age = minimumAgeInt;
+            }
+            if (setRedirectUrl) {
+                requestInquiry.redirect_url = redirectUrl;
+            }
+
+            if (targetInfo !== false) requestInquiries.push(requestInquiry);
+        });
+
+        this.props.requestInquirySend(userId, account.id, requestInquiries);
     };
 
     render() {
@@ -281,48 +368,14 @@ class RequestInquiry extends React.Component {
             targetType,
             allowBunqMe,
             amount,
-            target
+            target,
+            targets
         } = this.state;
         if (!this.props.accounts[selectedAccount]) {
             return null;
         }
         const account = this.props.accounts[selectedAccount]
             .MonetaryAccountBank;
-
-        let targetContent = null;
-        switch (this.state.targetType) {
-            case "PHONE":
-                targetContent = (
-                    <FormControl fullWidth error={this.state.targetError}>
-                        <Typography type="body1">
-                            Phone numbers should contain no spaces and include
-                            the land code. For example: +316123456789
-                        </Typography>
-                        <PhoneFormatInput
-                            id="target"
-                            placeholder="+316123456789"
-                            error={this.state.targetError}
-                            value={this.state.target}
-                            onChange={this.handleChange("target")}
-                        />
-                    </FormControl>
-                );
-                break;
-            case "EMAIL":
-                targetContent = (
-                    <TextField
-                        error={this.state.targetError}
-                        fullWidth
-                        required
-                        id="target"
-                        type="email"
-                        label="Email"
-                        value={this.state.target}
-                        onChange={this.handleChange("target")}
-                    />
-                );
-                break;
-        }
 
         return (
             <Grid container spacing={24} align={"center"} justify={"center"}>
@@ -343,10 +396,17 @@ class RequestInquiry extends React.Component {
 
                         <TargetSelection
                             targetType={this.state.targetType}
+                            targets={this.state.targets}
+                            target={this.state.target}
+                            targetError={this.state.targetError}
+                            validForm={this.state.validForm}
+                            handleChangeDirect={this.handleChangeDirect}
+                            handleChange={this.handleChange}
                             setTargetType={this.setTargetType}
+                            removeTarget={this.removeTarget}
+                            addTarget={this.addTarget}
+                            disabledTypes={["IBAN", "TRANSFER"]}
                         />
-
-                        {targetContent}
 
                         <TextField
                             fullWidth
@@ -355,7 +415,6 @@ class RequestInquiry extends React.Component {
                             label="Description"
                             value={this.state.description}
                             onChange={this.handleChange("description")}
-                            margin="normal"
                         />
 
                         <FormControl
@@ -447,6 +506,7 @@ class RequestInquiry extends React.Component {
                         account={account}
                         amount={amount}
                         target={target}
+                        targets={targets}
                     />
                 </Grid>
             </Grid>
@@ -466,23 +526,13 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, props) => {
     const { BunqJSClient } = props;
     return {
-        requestInquirySend: (
-            userId,
-            accountId,
-            description,
-            amount,
-            target,
-            options
-        ) =>
+        requestInquirySend: (userId, accountId, requestInquiries) =>
             dispatch(
                 requestInquirySend(
                     BunqJSClient,
                     userId,
                     accountId,
-                    description,
-                    amount,
-                    target,
-                    options
+                    requestInquiries
                 )
             ),
         openSnackbar: message => dispatch(openSnackbar(message))

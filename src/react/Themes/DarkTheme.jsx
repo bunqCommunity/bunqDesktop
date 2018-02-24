@@ -20,6 +20,7 @@ export default {
         },
         masterCardAction: {
             authorized: "#FF3333",
+            refunded: "#a4a6a4",
             blocked: "#a4a6a4",
             pending: "#2196f3"
         },
@@ -53,6 +54,9 @@ export default {
         },
         masterCardAction: {
             blocked: {
+                textDecoration: "line-through"
+            },
+            refunded: {
                 textDecoration: "line-through"
             }
         }
