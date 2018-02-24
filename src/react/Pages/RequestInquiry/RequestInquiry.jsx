@@ -151,6 +151,23 @@ class RequestInquiry extends React.Component {
         );
     };
 
+    // remove a key from the target list
+    removeTarget = key => {
+        const newTargets = [...this.state.targets];
+        if (newTargets[key]) {
+            newTargets.splice(key, 1);
+            this.setState(
+                {
+                    targets: newTargets
+                },
+                () => {
+                    this.validateForm();
+                    this.validateTargetInput();
+                }
+            );
+        }
+    };
+
     // add a target from the current text inputs to the target list
     addTarget = () => {
         this.validateTargetInput(valid => {
@@ -177,7 +194,9 @@ class RequestInquiry extends React.Component {
                         name: ""
                     });
                 } else {
-                    this.props.openSnackbar("This target seems to be added already");
+                    this.props.openSnackbar(
+                        "This target seems to be added already"
+                    );
                 }
 
                 this.setState(
@@ -198,10 +217,7 @@ class RequestInquiry extends React.Component {
 
     // validate only the taret inputs
     validateTargetInput = (callback = () => {}) => {
-        const {
-            target,
-            targetType
-        } = this.state;
+        const { target, targetType } = this.state;
 
         // check if the target is valid based onthe targetType
         let targetErrorCondition = false;
@@ -223,47 +239,12 @@ class RequestInquiry extends React.Component {
     };
 
     // validates all the possible input combinations
-    // validateForm = () => {
-    //     const {
-    //         description,
-    //         amount,
-    //         ibanName,
-    //         selectedAccount,
-    //         targets
-    //     } = this.state;
-    //
-    //     const account = this.props.accounts[selectedAccount]
-    //         .MonetaryAccountBank;
-    //
-    //     const noTargetsCondition = targets.length < 0;
-    //     const insufficientFundsCondition =
-    //         amount !== "" &&
-    //         amount > (account.balance ? account.balance.value : 0);
-    //     const amountErrorCondition = amount < 0.01 || amount > 10000;
-    //     const descriptionErrorCondition = description.length > 140;
-    //     const ibanNameErrorCondition =
-    //         ibanName.length < 1 || ibanName.length > 64;
-    //
-    //     this.setState({
-    //         amountError: amountErrorCondition,
-    //         insufficientFundsCondition: insufficientFundsCondition,
-    //         descriptionError: descriptionErrorCondition,
-    //         ibanNameError: ibanNameErrorCondition,
-    //         validForm:
-    //         !noTargetsCondition &&
-    //         !insufficientFundsCondition &&
-    //         !amountErrorCondition &&
-    //         !descriptionErrorCondition &&
-    //         targets.length > 0
-    //     });
-    // };
-
-    // validates all the possible input combinations
     validateForm = () => {
         const {
             description,
             amount,
             target,
+            targets,
             setMinimumAge,
             minimumAge,
             setRedirectUrl,
@@ -303,7 +284,7 @@ class RequestInquiry extends React.Component {
                 !minimumAgeErrorCondition &&
                 !redurectUrlErrorCondition &&
                 !descriptionErrorCondition &&
-                !targetErrorCondition
+                targets.length > 0
         });
     };
 
@@ -319,57 +300,65 @@ class RequestInquiry extends React.Component {
             selectedAccount,
             description,
             amount,
-            target,
+            targets,
             setMinimumAge,
             minimumAge,
             setRedirectUrl,
             redirectUrl,
-            allowBunqMe,
-            targetType
+            allowBunqMe
         } = this.state;
         const minimumAgeInt = parseInt(minimumAge);
+
+        // account the payment is made from
         const account = accounts[selectedAccount].MonetaryAccountBank;
+        // our user id
         const userId = user.id;
 
-        // check if the target is valid based onthe targetType
-        let targetInfo = false;
-        switch (targetType) {
-            case "EMAIL":
-                targetInfo = {
-                    type: "EMAIL",
-                    value: target.trim()
-                };
-                break;
-            case "PHONE":
-                targetInfo = {
-                    type: "PHONE_NUMBER",
-                    value: target.trim()
-                };
-                break;
-            default:
-                this.props.openSnackbar("We failed to send this payment");
-                return;
-        }
-
+        // amount inquired for all the requestInquiries
         const amountInfo = {
-            value: amount + "", // sigh
+            value: amount + "", // sigh, number has to be sent as a string
             currency: "EUR"
         };
 
-        let options = {
-            allow_bunqme: allowBunqMe,
-            minimum_age: setMinimumAge ? minimumAgeInt : false,
-            redirect_url: setRedirectUrl ? redirectUrl : false
-        };
+        const requestInquiries = [];
+        targets.map(target => {
+            // check if the target is valid based onthe targetType
+            let targetInfo = false;
+            switch (target.type) {
+                case "EMAIL":
+                    targetInfo = {
+                        type: "EMAIL",
+                        value: target.value.trim()
+                    };
+                    break;
+                case "PHONE":
+                    targetInfo = {
+                        type: "PHONE_NUMBER",
+                        value: target.value.trim()
+                    };
+                    break;
+                default:
+                    // invalid type
+                    break;
+            }
 
-        this.props.requestInquirySend(
-            userId,
-            account.id,
-            description,
-            amountInfo,
-            targetInfo,
-            options
-        );
+            const requestInquiry = {
+                amount_inquired: amountInfo,
+                counterparty_alias: targetInfo,
+                description: description,
+                allow_bunqme: allowBunqMe
+            };
+            if (setMinimumAge) {
+                requestInquiry.minimum_age = minimumAgeInt;
+            }
+            if (setRedirectUrl) {
+                requestInquiry.redirect_url = redirectUrl;
+            }
+
+            if (targetInfo !== false) requestInquiries.push(requestInquiry);
+        });
+
+        this.props.requestInquirySend(userId, account.id, requestInquiries);
     };
 
     render() {
@@ -379,7 +368,8 @@ class RequestInquiry extends React.Component {
             targetType,
             allowBunqMe,
             amount,
-            target
+            target,
+            targets
         } = this.state;
         if (!this.props.accounts[selectedAccount]) {
             return null;
@@ -516,6 +506,7 @@ class RequestInquiry extends React.Component {
                         account={account}
                         amount={amount}
                         target={target}
+                        targets={targets}
                     />
                 </Grid>
             </Grid>
@@ -535,23 +526,13 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, props) => {
     const { BunqJSClient } = props;
     return {
-        requestInquirySend: (
-            userId,
-            accountId,
-            description,
-            amount,
-            target,
-            options
-        ) =>
+        requestInquirySend: (userId, accountId, requestInquiries) =>
             dispatch(
                 requestInquirySend(
                     BunqJSClient,
                     userId,
                     accountId,
-                    description,
-                    amount,
-                    target,
-                    options
+                    requestInquiries
                 )
             ),
         openSnackbar: message => dispatch(openSnackbar(message))
