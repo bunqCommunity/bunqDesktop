@@ -150,7 +150,8 @@ class Layout extends React.Component {
                 nextProps.apiKey,
                 nextProps.deviceName,
                 nextProps.environment,
-                encryptionKey
+                encryptionKey,
+                true
             )
                 .then(() => {
                     nextProps.registrationNotLoading();
@@ -167,11 +168,21 @@ class Layout extends React.Component {
         }
     };
 
+    /**
+     * Setup the BunqJSClient
+     * @param apiKey             - the bunq api key
+     * @param deviceName         - device name used in the bunq app
+     * @param environment        - Production/sandbox environment
+     * @param encryptionKey      - Key used to encrypt/decrypt all data
+     * @param allowReRun         - When true the function can call itself to restart in certain situations
+     * @returns {Promise<void>}
+     */
     setupBunqClient = async (
         apiKey,
         deviceName,
         environment = "SANDBOX",
-        encryptionKey = false
+        encryptionKey = false,
+        allowReRun = false
     ) => {
         try {
             await this.props.BunqJSClient.run(
@@ -236,6 +247,37 @@ class Layout extends React.Component {
                 "We failed to create a new session",
                 "Something went wrong"
             );
+
+            // custom error handling to prevent
+            if (exception.errorCode) {
+                switch (exception.errorCode) {
+                    case BunqJSClient.errorCodes.INSTALLATION_HAS_SESSION:
+                        Logger.error(
+                            `Error while creating a new session: ${exception.errorCode}`
+                        );
+
+                        if (allowReRun) {
+                            // this might be solved by reseting the bunq client
+                            await BunqJSClient.destroySession();
+                            // try one re-run but with allowReRun false this time
+                            await this.setupBunqClient(
+                                apiKey,
+                                deviceName,
+                                environment,
+                                encryptionKey,
+                                false
+                            );
+
+                            return;
+                        }
+
+                        break;
+                    default:
+                        // just log the error
+                        Logger.error(exception);
+                        break;
+                }
+            }
             throw exception;
         }
 

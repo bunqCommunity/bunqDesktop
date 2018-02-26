@@ -31,9 +31,9 @@ class PaymentListItem extends React.Component {
         };
     }
 
-    shouldComponentUpdate(nextProps) {
-        return nextProps.payment.id !== this.props.payment.id;
-    }
+    // shouldComponentUpdate(nextProps) {
+    //     return nextProps.payment.id !== this.props.payment.id;
+    // }
 
     render() {
         const { payment } = this.props;

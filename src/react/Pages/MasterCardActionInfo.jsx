@@ -118,6 +118,7 @@ class MasterCardActionInfo extends React.Component {
                         BunqJSClient={this.props.BunqJSClient}
                         to={masterCardAction.counterparty_alias}
                         from={masterCardAction.alias}
+                        user={this.props.user}
                         swap={paymentAmount > 0}
                     />
 

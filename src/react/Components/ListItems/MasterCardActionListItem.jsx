@@ -32,9 +32,9 @@ class MasterCardActionListItem extends React.Component {
         };
     }
 
-    shouldComponentUpdate(nextProps) {
-        return nextProps.masterCardAction.id !== this.props.masterCardAction.id;
-    }
+    // shouldComponentUpdate(nextProps) {
+    //     return nextProps.masterCardAction.id !== this.props.masterCardAction.id;
+    // }
 
     render() {
         const { masterCardAction, theme } = this.props;

@@ -160,6 +160,7 @@ class RequestResponseInfo extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                             to={requestResponse.alias}
                             from={requestResponse.counterparty_alias}
+                            user={this.props.user}
                         />
 
                         <Grid item xs={12}>

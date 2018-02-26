@@ -31,9 +31,9 @@ class RequestInquiryListItem extends React.Component {
         };
     }
 
-    shouldComponentUpdate(nextProps) {
-        return nextProps.requestInquiry.id !== this.props.requestInquiry.id;
-    }
+    // shouldComponentUpdate(nextProps) {
+    //     return nextProps.requestInquiry.id !== this.props.requestInquiry.id;
+    // }
 
     render() {
         const { requestInquiry } = this.props;

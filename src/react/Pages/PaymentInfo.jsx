@@ -107,6 +107,8 @@ class PaymentInfo extends React.Component {
                         BunqJSClient={this.props.BunqJSClient}
                         to={payment.counterparty_alias}
                         from={payment.alias}
+                        user={this.props.user}
+                        accounts={this.props.accounts}
                         swap={paymentAmount > 0}
                     />
 
@@ -195,7 +197,8 @@ const mapStateToProps = state => {
         user: state.user.user,
         payment: state.payment_info.payment,
         paymentLoading: state.payment_info.loading,
-        accountsSelectedAccount: state.accounts.selectedAccount
+        accountsSelectedAccount: state.accounts.selectedAccount,
+        accounts: state.accounts.accounts
     };
 };
 

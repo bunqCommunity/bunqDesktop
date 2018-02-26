@@ -129,6 +129,7 @@ class RequestInquiryInfo extends React.Component {
                         BunqJSClient={this.props.BunqJSClient}
                         to={requestInquiry.counterparty_alias}
                         from={requestInquiry.user_alias_created}
+                        user={this.props.user}
                     />
 
                     <Grid item xs={12}>
