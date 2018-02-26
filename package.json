@@ -1,7 +1,8 @@
 {
-    "description": "BunqDesktop application",
     "name": "bunqdesktop",
+    "description": "A desktop implementation for the bunq API",
     "productName": "BunqDesktop",
+    "homepage": "https://bunqdesktop.com/",
     "version": "0.8.0",
     "author": {
         "name": "BunqCommunity",
