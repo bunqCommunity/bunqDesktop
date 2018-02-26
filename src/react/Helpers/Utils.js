@@ -20,7 +20,7 @@ export const formatMoney = (value, stayNegative = false) => {
         parsedValue < 0 && stayNegative === false
             ? parsedValue * -1
             : parsedValue;
-    
+
     return parsedValue.toLocaleString(undefined, {
         currency: "EUR",
         style: "currency",

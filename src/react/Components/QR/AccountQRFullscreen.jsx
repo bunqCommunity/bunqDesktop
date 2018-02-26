@@ -82,8 +82,6 @@ class AccountQRFullscreen extends React.PureComponent {
                 open={this.state.open}
                 onClose={this.handleRequestClose}
                 onClick={this.handleRequestClose}
-                onEscapeKeyUp={this.handleRequestClose}
-                onBackdropClick={this.handleRequestClose}
                 transition={Transition}
             >
                 <div className={classes.content}>
