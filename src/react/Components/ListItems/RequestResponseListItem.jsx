@@ -31,9 +31,9 @@ class RequestResponseListItem extends React.Component {
         };
     }
 
-    shouldComponentUpdate(nextProps) {
-        return nextProps.requestResponse.id !== this.props.requestResponse.id;
-    }
+    // shouldComponentUpdate(nextProps) {
+    //     return nextProps.requestResponse.id !== this.props.requestResponse.id;
+    // }
 
     render() {
         const { requestResponse } = this.props;
