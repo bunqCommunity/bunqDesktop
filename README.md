@@ -1,10 +1,8 @@
-<p align="center">
- <img align="center" src="https://i.gyazo.com/aacd73b20ef1a2b0ea4e94c8569a6ffd.gif" />
-</p>
-<h1 align="center">BunqDesktop</h1>
-<h4 align="center">
-A desktop implementation for bunq's API. This app does everything within the application so you don't 
-have to worry about sharing your API key with anyone else!</h4>
+![Screenshot of the app](https://i.gyazo.com/aacd73b20ef1a2b0ea4e94c8569a6ffd.gif)
+
+# BunqDesktop
+
+#### A desktop implementation for bunq's API. This app does everything within the application so you don't  have to worry about sharing your API key with anyone else!
 
 ___   
 
@@ -14,6 +12,8 @@ Download the latest version of BunqDesktop from the [GitHub releases page.](http
 ## Features
 - View all your accounts and payments
 - Send new payments to other users
+- Create and view bunq.me requests
+- Accept and decline requests
 - Encrypted storage on your device
 - Available on Windows, Linux and Mac
 
