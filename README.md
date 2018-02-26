@@ -1,6 +1,6 @@
 ![Screenshot of the app](https://i.gyazo.com/aacd73b20ef1a2b0ea4e94c8569a6ffd.gif)
 
-# BunqDesktop
+# BunqDesktop ![build status for master branch](https://api.travis-ci.org/BunqCommunity/BunqJSClient.svg?branch=master)
 
 #### A desktop implementation for bunq's API. This app does everything within the application so you don't  have to worry about sharing your API key with anyone else!
 
