@@ -14,14 +14,21 @@ export const { preferedThousandSeparator, preferedDecimalSeparator } = (() => {
 })();
 
 // parses strings as float and returns a correct localized format
-export const formatMoney = value =>
-    parseFloat(value).toLocaleString(undefined, {
+export const formatMoney = (value, stayNegative = false) => {
+    let parsedValue = parseFloat(value);
+    parsedValue =
+        parsedValue < 0 && stayNegative === false
+            ? parsedValue * -1
+            : parsedValue;
+    
+    return parsedValue.toLocaleString(undefined, {
         currency: "EUR",
         style: "currency",
         currencyDisplay: "symbol",
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     });
+};
 
 // validates json input
 export const validateJSON = input => {
