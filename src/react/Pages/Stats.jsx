@@ -13,7 +13,8 @@ class Stats extends React.Component {
     }
 
     paymentMapper = () => {
-        return this.props.payments
+        const data = [];
+        this.props.payments
             .filter(
                 paymentFilter({
                     paymentVisibility: this.props.paymentVisibility,
@@ -22,21 +23,28 @@ class Stats extends React.Component {
             )
             .map(payment => {
                 const paymentInfo = payment.Payment;
-
                 let change = parseFloat(paymentInfo.amount.value);
-                // if (paymentInfo.sub_type === "PAYMENT") {
-                //     change = change * -1;
-                // }
+                if (change < 0) change = change * -1;
 
-                return {
+                if (
+                    paymentInfo.alias.label_user.uuid ===
+                    this.props.user.public_uuid
+                ) {
+                    // incoming payment
+                    change = change * -1;
+                }
+
+                data.push({
                     date: new Date(paymentInfo.updated),
                     change: change
-                };
+                });
             });
+        return data;
     };
 
     masterCardActionMapper = () => {
-        return this.props.masterCardActions
+        const data = [];
+        this.props.masterCardActions
             .filter(
                 masterCardActionFilter({
                     paymentVisibility: this.props.paymentVisibility,
@@ -44,15 +52,37 @@ class Stats extends React.Component {
                 })
             )
             .map(masterCardAction => {
-                return {
-                    date: new Date(masterCardAction.MasterCardAction.updated),
-                    change:
-                        parseFloat(
-                            masterCardAction.MasterCardAction.amount_billing
-                                .value
-                        ) * -1
-                };
+                const masterCardInfo = masterCardAction.MasterCardAction;
+
+                const change = parseFloat(masterCardInfo.amount_billing.value);
+                const validTypes = [
+                    "CLEARING_REFUND",
+                    "PRE_AUTHORISED",
+                    "PRE_AUTHORISATION_FINALISED",
+                    "ACQUIRER_AUTHORISED",
+                    "AUTHORISED",
+                    "AUTHORISED_PARTIAL",
+                    "STAND_IN_AUTHORISED",
+                    "UNAUTHORISED_CLEARING"
+                ];
+
+                if (validTypes.includes(masterCardInfo.authorisation_status)) {
+                    data.push({
+                        date: new Date(masterCardInfo.updated),
+                        change: -change
+                    });
+                }
             });
+        return data;
+    };
+
+    roundMoney = amount => {
+        return Math.round(amount * 100) / 100;
+    };
+
+    labelFormat = date => {
+        return `${date.getMonth() + 1}/${date.getDate()}`;
+        // return `${date.getFullYear()}/${date.getMonth()}/${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
     };
 
     render() {
@@ -68,29 +98,49 @@ class Stats extends React.Component {
                 accountInfo = account.MonetaryAccountBank;
             }
         });
-
-        // current balance
         let currentBalance = parseFloat(accountInfo.balance.value);
-        const yList = [];
+
+        const yList = [currentBalance];
         const xList = [];
+        const data = {};
+
+        // generate empty list for dates in the past 30 days
+        for (let day = 0; day < 30; day++) {
+            const dateOffset = day <= 0 ? 0 : 24 * 60 * 60 * 1000 * day;
+            const myDate = new Date();
+            myDate.setTime(myDate.getTime() - dateOffset);
+            const label = this.labelFormat(myDate);
+
+            data[label] = [];
+            xList.push(label);
+        }
 
         // combine the list
         [...masterCardActions, ...payments]
-            // sort by date
             .sort((a, b) => {
                 return b.date - a.date;
             })
-            .reverse()
-            // create the x/y list
-            .map(item => {
-                const date = item.date;
-                currentBalance = currentBalance + item.change;
-
-                yList.push(
-                    `${date.getFullYear()}/${date.getMonth()}/${date.getDate()} ${date.getHours()}/${date.getMinutes()}`
-                );
-                xList.push(Math.round(currentBalance * 100) / 100);
+            .forEach(item => {
+                const label = this.labelFormat(item.date);
+                if (data[label]) {
+                    data[label].push(item);
+                }
             });
+
+        // loop through all the days
+        Object.keys(data).map(label => {
+            // calculate the total change for that day
+            let dailyChange = 0;
+            data[label].map(item => {
+                dailyChange = dailyChange + item.change;
+            });
+
+            // update balance and push it to the list
+            currentBalance = currentBalance + dailyChange;
+            yList.push(this.roundMoney(currentBalance));
+        });
+
+        console.log(xList, yList);
 
         return (
             <Grid container spacing={16}>
@@ -143,23 +193,9 @@ const mapStateToProps = state => {
 
         paymentType: state.payment_filter.type,
         paymentVisibility: state.payment_filter.visible,
-        bunqMeTabType: state.bunq_me_tab_filter.type,
-        bunqMeTabVisibility: state.bunq_me_tab_filter.visible,
-        requestType: state.request_filter.type,
-        requestVisibility: state.request_filter.visible,
-
-        bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
-        bunqMeTabsLoading: state.bunq_me_tabs.loading,
-        bunqMeTabLoading: state.bunq_me_tab.loading,
 
         masterCardActions: state.master_card_actions.master_card_actions,
         masterCardActionsLoading: state.master_card_actions.loading,
-
-        requestInquiries: state.request_inquiries.request_inquiries,
-        requestInquiriesLoading: state.request_inquiries.loading,
-
-        requestResponses: state.request_responses.request_responses,
-        requestResponsesLoading: state.request_responses.loading,
 
         payments: state.payments.payments,
         paymentsLoading: state.payments.loading
