@@ -1,9 +1,14 @@
 import React from "react";
+import { Bar } from "react-chartjs-2";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Paper from "material-ui/Paper";
 import Grid from "material-ui/Grid";
-import { Line } from "react-chartjs-2";
+import ListSubheader from "material-ui/List/ListSubheader";
+import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
+import Divider from "material-ui/Divider";
+import InboxIcon from "material-ui-icons/Inbox";
+
 import { masterCardActionFilter, paymentFilter } from "../Helpers/DataFilters";
 
 class Stats extends React.Component {
@@ -23,20 +28,12 @@ class Stats extends React.Component {
             )
             .map(payment => {
                 const paymentInfo = payment.Payment;
-                let change = parseFloat(paymentInfo.amount.value);
-                if (change < 0) change = change * -1;
-
-                if (
-                    paymentInfo.alias.label_user.uuid ===
-                    this.props.user.public_uuid
-                ) {
-                    // incoming payment
-                    change = change * -1;
-                }
+                const change = parseFloat(paymentInfo.amount.value);
 
                 data.push({
-                    date: new Date(paymentInfo.updated),
-                    change: change
+                    date: new Date(paymentInfo.created),
+                    change: -change,
+                    amount: paymentInfo.amount.value
                 });
             });
         return data;
@@ -53,8 +50,8 @@ class Stats extends React.Component {
             )
             .map(masterCardAction => {
                 const masterCardInfo = masterCardAction.MasterCardAction;
-
                 const change = parseFloat(masterCardInfo.amount_billing.value);
+
                 const validTypes = [
                     "CLEARING_REFUND",
                     "PRE_AUTHORISED",
@@ -68,8 +65,9 @@ class Stats extends React.Component {
 
                 if (validTypes.includes(masterCardInfo.authorisation_status)) {
                     data.push({
-                        date: new Date(masterCardInfo.updated),
-                        change: -change
+                        date: new Date(masterCardInfo.created),
+                        change: change,
+                        amount: masterCardInfo.amount_billing.value
                     });
                 }
             });
@@ -82,7 +80,6 @@ class Stats extends React.Component {
 
     labelFormat = date => {
         return `${date.getMonth() + 1}/${date.getDate()}`;
-        // return `${date.getFullYear()}/${date.getMonth()}/${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
     };
 
     render() {
@@ -100,19 +97,19 @@ class Stats extends React.Component {
         });
         let currentBalance = parseFloat(accountInfo.balance.value);
 
-        const yList = [currentBalance];
-        const xList = [];
-        const data = {};
+        let transactionCountData = [];
+        let balanceHistoryData = [];
+        let labelData = [];
+        const dataCollection = {};
 
         // generate empty list for dates in the past 30 days
-        for (let day = 0; day < 30; day++) {
+        for (let day = 0; day < 60; day++) {
             const dateOffset = day <= 0 ? 0 : 24 * 60 * 60 * 1000 * day;
             const myDate = new Date();
             myDate.setTime(myDate.getTime() - dateOffset);
             const label = this.labelFormat(myDate);
 
-            data[label] = [];
-            xList.push(label);
+            dataCollection[label] = [];
         }
 
         // combine the list
@@ -122,25 +119,120 @@ class Stats extends React.Component {
             })
             .forEach(item => {
                 const label = this.labelFormat(item.date);
-                if (data[label]) {
-                    data[label].push(item);
+                if (dataCollection[label]) {
+                    dataCollection[label].push(item);
                 }
             });
 
         // loop through all the days
-        Object.keys(data).map(label => {
+        Object.keys(dataCollection).map(label => {
             // calculate the total change for that day
             let dailyChange = 0;
-            data[label].map(item => {
+            dataCollection[label].map(item => {
+                console.log(item.change, item.amount);
                 dailyChange = dailyChange + item.change;
             });
 
+            console.log(label, currentBalance);
+            console.log("==================");
+
             // update balance and push it to the list
+            balanceHistoryData.push(this.roundMoney(currentBalance));
+            transactionCountData.push(dataCollection[label].length);
             currentBalance = currentBalance + dailyChange;
-            yList.push(this.roundMoney(currentBalance));
+
+            // push the label here so we can ignore certain days if required
+            labelData.push(label);
         });
 
-        console.log(xList, yList);
+        console.log(labelData, balanceHistoryData);
+
+        const dataColor1 = "rgb(255, 99, 132)";
+        const dataColor2 = "rgb(54, 162, 235)";
+
+        const chartData = {
+            labels: labelData,
+            datasets: [
+                {
+                    type: "line",
+                    label: "Balance history",
+                    data: balanceHistoryData,
+                    fill: false,
+                    lineTension: 0,
+                    pointRadius: 5,
+                    borderColor: dataColor1,
+                    backgroundColor: dataColor1,
+                    pointBorderColor: dataColor1,
+                    pointBackgroundColor: dataColor1,
+                    pointHoverBackgroundColor: dataColor1,
+                    pointHoverBorderColor: dataColor1,
+                    yAxisID: "balance"
+                },
+                {
+                    type: "bar",
+                    label: "Transactions",
+                    data: transactionCountData,
+                    fill: false,
+                    backgroundColor: dataColor2,
+                    borderColor: dataColor2,
+                    hoverBackgroundColor: dataColor2,
+                    hoverBorderColor: dataColor2,
+                    yAxisID: "transaction"
+                }
+            ]
+        };
+
+        const chartOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            tooltips: {
+                enabled: true,
+                mode: "nearest"
+            },
+            scales: {
+                xAxes: [
+                    {
+                        display: true,
+                        gridLines: {
+                            display: true
+                        },
+                        labels: labelData
+                    }
+                ],
+                yAxes: [
+                    {
+                        type: "linear",
+                        display: true,
+                        position: "left",
+                        id: "balance",
+                        labels: {
+                            show: true
+                        },
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    },
+                    {
+                        type: "linear",
+                        display: true,
+                        position: "right",
+                        id: "transaction",
+                        labels: {
+                            show: true
+                        },
+                        ticks: {
+                            beginAtZero: true,
+                            callback: value => {
+                                // only show integer values
+                                if (value % 1 === 0) {
+                                    return value;
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        };
 
         return (
             <Grid container spacing={16}>
@@ -150,35 +242,85 @@ class Stats extends React.Component {
 
                 <Grid item xs={12}>
                     <Paper>
-                        <Line
-                            data={{
-                                labels: yList,
-                                datasets: [
-                                    {
-                                        label: "My First dataset",
-                                        backgroundColor: "rgb(255, 99, 132)",
-                                        borderColor: "rgb(255, 99, 132)",
-                                        data: xList,
-                                        fill: false
-                                    }
-                                ]
-                            }}
+                        <Bar
                             height={450}
-                            options={{
-                                maintainAspectRatio: false,
-                                responsive: true,
-                                title: {
-                                    display: true,
-                                    text: "Data title haha"
-                                },
-                                tooltips: {
-                                    position: "nearest",
-                                    mode: "index",
-                                    intersect: false
-                                }
-                            }}
+                            data={chartData}
+                            options={chartOptions}
                         />
                     </Paper>
+                </Grid>
+                <Grid item xs={12}>
+                    <Grid container spacing={16}>
+                        <Grid item xs={12} md={6}>
+                            <Paper>
+                                <List component="nav">
+                                    <ListSubheader>Statistics</ListSubheader>
+                                    <ListItem>
+                                        <ListItemIcon>
+                                            <InboxIcon />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary="Payments"
+                                            secondary={
+                                                this.props.payments.length
+                                            }
+                                        />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemIcon>
+                                            <InboxIcon />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary="Mastercard payments"
+                                            secondary={
+                                                this.props.masterCardActions
+                                                    .length
+                                            }
+                                        />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemIcon>
+                                            <InboxIcon />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary="Requests sent"
+                                            secondary={
+                                                this.props.requestInquiries
+                                                    .length
+                                            }
+                                        />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemIcon>
+                                            <InboxIcon />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary="Requests received"
+                                            secondary={
+                                                this.props.requestResponses
+                                                    .length
+                                            }
+                                        />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemIcon>
+                                            <InboxIcon />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary="Bunq.me requests"
+                                            secondary={
+                                                this.props.bunqMeTabs
+                                                    .length
+                                            }
+                                        />
+                                    </ListItem>
+                                </List>
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <Paper>b</Paper>
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Grid>
         );
@@ -191,14 +333,14 @@ const mapStateToProps = state => {
         accounts: state.accounts.accounts,
         selectedAccount: state.accounts.selectedAccount,
 
-        paymentType: state.payment_filter.type,
-        paymentVisibility: state.payment_filter.visible,
-
-        masterCardActions: state.master_card_actions.master_card_actions,
-        masterCardActionsLoading: state.master_card_actions.loading,
-
         payments: state.payments.payments,
-        paymentsLoading: state.payments.loading
+        bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
+        requestInquiries: state.request_inquiries.request_inquiries,
+        requestResponses: state.request_responses.request_responses,
+        masterCardActions: state.master_card_actions.master_card_actions,
+
+        paymentType: state.payment_filter.type,
+        paymentVisibility: state.payment_filter.visible
     };
 };
 
