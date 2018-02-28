@@ -105,3 +105,9 @@ export const generateGUID = () => {
         s4()
     );
 };
+
+// get the week for a specific date
+export const getWeek = function(date) {
+    const onejan = new Date(date.getFullYear(), 0, 1);
+    return Math.ceil(((date - onejan) / 86400000 + onejan.getDay() + 1) / 7);
+};

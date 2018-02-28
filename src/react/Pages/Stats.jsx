@@ -6,17 +6,23 @@ import Paper from "material-ui/Paper";
 import Grid from "material-ui/Grid";
 import ListSubheader from "material-ui/List/ListSubheader";
 import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
+import Radio, { RadioGroup } from "material-ui/Radio";
+import { FormControlLabel } from "material-ui/Form";
+
 import Divider from "material-ui/Divider";
 import InboxIcon from "material-ui-icons/Inbox";
 
 import LoadOlderButton from "../Components/LoadOlderButton";
 
 import { masterCardActionFilter, paymentFilter } from "../Helpers/DataFilters";
+import { getWeek } from "../Helpers/Utils";
 
 class Stats extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+        this.state = {
+            timescale: "daily"
+        };
     }
 
     paymentMapper = () => {
@@ -82,8 +88,12 @@ class Stats extends React.Component {
 
     labelFormat = (date, type = "daily") => {
         switch (type) {
+            case "yearly":
+                return `${date.getFullYear()}`;
             case "monthly":
                 return `${date.getFullYear()}/${date.getMonth() + 1}`;
+            case "weekly":
+                return `${date.getFullYear()}/${getWeek(date)}`;
             case "daily":
             default:
                 return `${date.getMonth() + 1}/${date.getDate()}`;
@@ -108,10 +118,30 @@ class Stats extends React.Component {
         const dataCollection = {};
 
         switch (type) {
+            case "yearly":
+                for (let year = 0; year < 2; year++) {
+                    const myDate = new Date();
+                    myDate.setFullYear(myDate.getFullYear() - year);
+                    const label = this.labelFormat(myDate, type);
+
+                    dataCollection[label] = [];
+                }
+                break;
             case "monthly":
                 for (let month = 0; month < 12; month++) {
                     const myDate = new Date();
                     myDate.setMonth(myDate.getMonth() - month);
+                    const label = this.labelFormat(myDate, type);
+
+                    dataCollection[label] = [];
+                }
+                break;
+            case "weekly":
+                for (let week = 0; week < 52; week++) {
+                    const dateOffset =
+                        week <= 0 ? 0 : 24 * 60 * 60 * 1000 * 7 * week;
+                    const myDate = new Date();
+                    myDate.setTime(myDate.getTime() - dateOffset);
                     const label = this.labelFormat(myDate, type);
 
                     dataCollection[label] = [];
@@ -206,7 +236,7 @@ class Stats extends React.Component {
             responsive: true,
             tooltips: {
                 enabled: true,
-                mode: "nearest"
+                mode: "label"
             },
             scales: {
                 xAxes: [
@@ -229,7 +259,7 @@ class Stats extends React.Component {
                         },
                         gridLines: {
                             display: true,
-                            color: "rgba(239, 158, 175, 0.32)"
+                            color: "rgba(239, 158, 175, 0.75)"
                         },
                         ticks: {
                             beginAtZero: true
@@ -245,7 +275,7 @@ class Stats extends React.Component {
                         },
                         gridLines: {
                             display: true,
-                            color: "rgba(131, 196, 239, 0.32)"
+                            color: "rgba(131, 196, 239, 0.75)"
                         },
                         ticks: {
                             beginAtZero: true,
@@ -264,6 +294,10 @@ class Stats extends React.Component {
         return [chartData, chartOptions];
     };
 
+    handleChange = (event, value) => {
+        this.setState({ timescale: value });
+    };
+
     render() {
         const payments = this.paymentMapper();
         const masterCardActions = this.masterCardActionMapper();
@@ -272,22 +306,11 @@ class Stats extends React.Component {
             labelData,
             balanceHistoryData,
             transactionCountData
-        ] = this.getData(payments, masterCardActions, "daily");
+        ] = this.getData(payments, masterCardActions, this.state.timescale);
         const [chartData, chartOptions] = this.generateChart(
             labelData,
             balanceHistoryData,
             transactionCountData
-        );
-
-        const [
-            labelDataMonthly,
-            balanceHistoryDataMonthly,
-            transactionCountDataMonthly
-        ] = this.getData(payments, masterCardActions, "monthly");
-        const [chartDataMonthly, chartOptionsMonthly] = this.generateChart(
-            labelDataMonthly,
-            balanceHistoryDataMonthly,
-            transactionCountDataMonthly
         );
 
         return (
@@ -295,6 +318,37 @@ class Stats extends React.Component {
                 <Helmet>
                     <title>{`BunqDesktop - Stats`}</title>
                 </Helmet>
+
+                <Grid item xs={12}>
+                    <RadioGroup
+                        aria-label="timescale"
+                        name="timescale"
+                        value={this.state.timescale}
+                        onChange={this.handleChange}
+                        style={{ flexDirection: "row" }}
+                    >
+                        <FormControlLabel
+                            value="daily"
+                            control={<Radio />}
+                            label="Daily"
+                        />
+                        <FormControlLabel
+                            value="weekly"
+                            control={<Radio />}
+                            label="Weekly"
+                        />
+                        <FormControlLabel
+                            value="monthly"
+                            control={<Radio />}
+                            label="Monthly"
+                        />
+                        <FormControlLabel
+                            value="yearly"
+                            control={<Radio />}
+                            label="Yearly"
+                        />
+                    </RadioGroup>
+                </Grid>
 
                 <Grid item xs={12}>
                     <Paper>
@@ -307,30 +361,18 @@ class Stats extends React.Component {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <Paper>
-                        <Bar
-                            height={450}
-                            data={chartDataMonthly}
-                            options={chartOptionsMonthly}
-                        />
-                    </Paper>
-                </Grid>
-                <Grid item xs={12}>
                     <LoadOlderButton
                         BunqJSClient={this.props.BunqJSClient}
                         initialBunqConnect={this.props.initialBunqConnect}
                     />
                 </Grid>
-                    <Grid item xs={12}>
+                <Grid item xs={12}>
                     <Grid container spacing={16}>
                         <Grid item xs={12} md={6}>
                             <Paper>
                                 <List component="nav">
                                     <ListSubheader>Statistics</ListSubheader>
                                     <ListItem>
-                                        {/*<ListItemIcon>*/}
-                                        {/*<InboxIcon />*/}
-                                        {/*</ListItemIcon>*/}
                                         <ListItemText
                                             primary="Payments"
                                             secondary={
@@ -339,9 +381,6 @@ class Stats extends React.Component {
                                         />
                                     </ListItem>
                                     <ListItem>
-                                        {/*<ListItemIcon>*/}
-                                        {/*<InboxIcon />*/}
-                                        {/*</ListItemIcon>*/}
                                         <ListItemText
                                             primary="Mastercard payments"
                                             secondary={
@@ -351,9 +390,6 @@ class Stats extends React.Component {
                                         />
                                     </ListItem>
                                     <ListItem>
-                                        {/*<ListItemIcon>*/}
-                                        {/*<InboxIcon />*/}
-                                        {/*</ListItemIcon>*/}
                                         <ListItemText
                                             primary="Requests sent"
                                             secondary={
@@ -363,9 +399,6 @@ class Stats extends React.Component {
                                         />
                                     </ListItem>
                                     <ListItem>
-                                        {/*<ListItemIcon>*/}
-                                        {/*<InboxIcon />*/}
-                                        {/*</ListItemIcon>*/}
                                         <ListItemText
                                             primary="Requests received"
                                             secondary={
@@ -375,9 +408,6 @@ class Stats extends React.Component {
                                         />
                                     </ListItem>
                                     <ListItem>
-                                        {/*<ListItemIcon>*/}
-                                        {/*<InboxIcon />*/}
-                                        {/*</ListItemIcon>*/}
                                         <ListItemText
                                             primary="Bunq.me requests"
                                             secondary={
