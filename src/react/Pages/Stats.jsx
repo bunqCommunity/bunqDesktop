@@ -9,6 +9,8 @@ import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
 import Divider from "material-ui/Divider";
 import InboxIcon from "material-ui-icons/Inbox";
 
+import LoadOlderButton from "../Components/LoadOlderButton";
+
 import { masterCardActionFilter, paymentFilter } from "../Helpers/DataFilters";
 
 class Stats extends React.Component {
@@ -78,14 +80,17 @@ class Stats extends React.Component {
         return Math.round(amount * 100) / 100;
     };
 
-    labelFormat = date => {
-        return `${date.getMonth() + 1}/${date.getDate()}`;
+    labelFormat = (date, type = "daily") => {
+        switch (type) {
+            case "monthly":
+                return `${date.getFullYear()}/${date.getMonth() + 1}`;
+            case "daily":
+            default:
+                return `${date.getMonth() + 1}/${date.getDate()}`;
+        }
     };
 
-    render() {
-        const payments = this.paymentMapper();
-        const masterCardActions = this.masterCardActionMapper();
-
+    getData = (payments, masterCardActions, type = "daily") => {
         let accountInfo = false;
         this.props.accounts.map(account => {
             if (
@@ -102,14 +107,26 @@ class Stats extends React.Component {
         let labelData = [];
         const dataCollection = {};
 
-        // generate empty list for dates in the past 30 days
-        for (let day = 0; day < 60; day++) {
-            const dateOffset = day <= 0 ? 0 : 24 * 60 * 60 * 1000 * day;
-            const myDate = new Date();
-            myDate.setTime(myDate.getTime() - dateOffset);
-            const label = this.labelFormat(myDate);
+        switch (type) {
+            case "monthly":
+                for (let month = 0; month < 12; month++) {
+                    const myDate = new Date();
+                    myDate.setMonth(myDate.getMonth() - month);
+                    const label = this.labelFormat(myDate, type);
 
-            dataCollection[label] = [];
+                    dataCollection[label] = [];
+                }
+                break;
+            case "daily":
+                for (let day = 0; day < 30; day++) {
+                    const dateOffset = day <= 0 ? 0 : 24 * 60 * 60 * 1000 * day;
+                    const myDate = new Date();
+                    myDate.setTime(myDate.getTime() - dateOffset);
+                    const label = this.labelFormat(myDate, type);
+
+                    dataCollection[label] = [];
+                }
+                break;
         }
 
         // combine the list
@@ -118,7 +135,7 @@ class Stats extends React.Component {
                 return b.date - a.date;
             })
             .forEach(item => {
-                const label = this.labelFormat(item.date);
+                const label = this.labelFormat(item.date, type);
                 if (dataCollection[label]) {
                     dataCollection[label].push(item);
                 }
@@ -129,12 +146,8 @@ class Stats extends React.Component {
             // calculate the total change for that day
             let dailyChange = 0;
             dataCollection[label].map(item => {
-                console.log(item.change, item.amount);
                 dailyChange = dailyChange + item.change;
             });
-
-            console.log(label, currentBalance);
-            console.log("==================");
 
             // update balance and push it to the list
             balanceHistoryData.push(this.roundMoney(currentBalance));
@@ -145,8 +158,14 @@ class Stats extends React.Component {
             labelData.push(label);
         });
 
-        console.log(labelData, balanceHistoryData);
+        return [
+            labelData.reverse(),
+            balanceHistoryData.reverse(),
+            transactionCountData.reverse()
+        ];
+    };
 
+    generateChart = (labelData, balanceHistoryData, transactionCountData) => {
         const dataColor1 = "rgb(255, 99, 132)";
         const dataColor2 = "rgb(54, 162, 235)";
 
@@ -208,6 +227,10 @@ class Stats extends React.Component {
                         labels: {
                             show: true
                         },
+                        gridLines: {
+                            display: true,
+                            color: "rgba(239, 158, 175, 0.32)"
+                        },
                         ticks: {
                             beginAtZero: true
                         }
@@ -219,6 +242,10 @@ class Stats extends React.Component {
                         id: "transaction",
                         labels: {
                             show: true
+                        },
+                        gridLines: {
+                            display: true,
+                            color: "rgba(131, 196, 239, 0.32)"
                         },
                         ticks: {
                             beginAtZero: true,
@@ -233,6 +260,35 @@ class Stats extends React.Component {
                 ]
             }
         };
+
+        return [chartData, chartOptions];
+    };
+
+    render() {
+        const payments = this.paymentMapper();
+        const masterCardActions = this.masterCardActionMapper();
+
+        const [
+            labelData,
+            balanceHistoryData,
+            transactionCountData
+        ] = this.getData(payments, masterCardActions, "daily");
+        const [chartData, chartOptions] = this.generateChart(
+            labelData,
+            balanceHistoryData,
+            transactionCountData
+        );
+
+        const [
+            labelDataMonthly,
+            balanceHistoryDataMonthly,
+            transactionCountDataMonthly
+        ] = this.getData(payments, masterCardActions, "monthly");
+        const [chartDataMonthly, chartOptionsMonthly] = this.generateChart(
+            labelDataMonthly,
+            balanceHistoryDataMonthly,
+            transactionCountDataMonthly
+        );
 
         return (
             <Grid container spacing={16}>
@@ -249,16 +305,32 @@ class Stats extends React.Component {
                         />
                     </Paper>
                 </Grid>
+
                 <Grid item xs={12}>
+                    <Paper>
+                        <Bar
+                            height={450}
+                            data={chartDataMonthly}
+                            options={chartOptionsMonthly}
+                        />
+                    </Paper>
+                </Grid>
+                <Grid item xs={12}>
+                    <LoadOlderButton
+                        BunqJSClient={this.props.BunqJSClient}
+                        initialBunqConnect={this.props.initialBunqConnect}
+                    />
+                </Grid>
+                    <Grid item xs={12}>
                     <Grid container spacing={16}>
                         <Grid item xs={12} md={6}>
                             <Paper>
                                 <List component="nav">
                                     <ListSubheader>Statistics</ListSubheader>
                                     <ListItem>
-                                        <ListItemIcon>
-                                            <InboxIcon />
-                                        </ListItemIcon>
+                                        {/*<ListItemIcon>*/}
+                                        {/*<InboxIcon />*/}
+                                        {/*</ListItemIcon>*/}
                                         <ListItemText
                                             primary="Payments"
                                             secondary={
@@ -267,9 +339,9 @@ class Stats extends React.Component {
                                         />
                                     </ListItem>
                                     <ListItem>
-                                        <ListItemIcon>
-                                            <InboxIcon />
-                                        </ListItemIcon>
+                                        {/*<ListItemIcon>*/}
+                                        {/*<InboxIcon />*/}
+                                        {/*</ListItemIcon>*/}
                                         <ListItemText
                                             primary="Mastercard payments"
                                             secondary={
@@ -279,9 +351,9 @@ class Stats extends React.Component {
                                         />
                                     </ListItem>
                                     <ListItem>
-                                        <ListItemIcon>
-                                            <InboxIcon />
-                                        </ListItemIcon>
+                                        {/*<ListItemIcon>*/}
+                                        {/*<InboxIcon />*/}
+                                        {/*</ListItemIcon>*/}
                                         <ListItemText
                                             primary="Requests sent"
                                             secondary={
@@ -291,9 +363,9 @@ class Stats extends React.Component {
                                         />
                                     </ListItem>
                                     <ListItem>
-                                        <ListItemIcon>
-                                            <InboxIcon />
-                                        </ListItemIcon>
+                                        {/*<ListItemIcon>*/}
+                                        {/*<InboxIcon />*/}
+                                        {/*</ListItemIcon>*/}
                                         <ListItemText
                                             primary="Requests received"
                                             secondary={
@@ -303,14 +375,13 @@ class Stats extends React.Component {
                                         />
                                     </ListItem>
                                     <ListItem>
-                                        <ListItemIcon>
-                                            <InboxIcon />
-                                        </ListItemIcon>
+                                        {/*<ListItemIcon>*/}
+                                        {/*<InboxIcon />*/}
+                                        {/*</ListItemIcon>*/}
                                         <ListItemText
                                             primary="Bunq.me requests"
                                             secondary={
-                                                this.props.bunqMeTabs
-                                                    .length
+                                                this.props.bunqMeTabs.length
                                             }
                                         />
                                     </ListItem>
