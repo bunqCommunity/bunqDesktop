@@ -39,17 +39,28 @@ export function paymentInfoUpdate(
 ) {
     return dispatch => {
         dispatch(paymentsLoading());
+
         BunqJSClient.api.payment
             .list(user_id, account_id, options)
             .then(payments => {
                 // if we have a newer/older id we need to trigger a different event
                 if (options.newer_id && options.newer_id !== false) {
                     dispatch(
-                        paymentsSetInfo(payments, account_id, options.newer_id, false)
+                        paymentsSetInfo(
+                            payments,
+                            account_id,
+                            options.newer_id,
+                            false
+                        )
                     );
                 } else if (options.older_id && options.older_id !== false) {
                     dispatch(
-                        paymentsSetInfo(payments, account_id, false, options.older_id)
+                        paymentsSetInfo(
+                            payments,
+                            account_id,
+                            false,
+                            options.older_id
+                        )
                     );
                 } else {
                     dispatch(paymentsSetInfo(payments, account_id));

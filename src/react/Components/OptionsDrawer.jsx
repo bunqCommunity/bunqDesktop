@@ -189,7 +189,7 @@ class OptionsDrawer extends React.Component {
                 <ListItem
                     button
                     style={styles.listBottomItem}
-                    onClick={this.resetApplication}
+                    onClick={this.props.resetApplication}
                 >
                     <ListItemIcon>
                         <ClearIcon />

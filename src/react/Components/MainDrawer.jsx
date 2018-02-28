@@ -184,7 +184,7 @@ class MainDrawer extends React.Component {
         );
 
         return [
-            <Hidden smUp>
+            <Hidden mdUp>
                 <Drawer
                     type="temporary"
                     open={open}
