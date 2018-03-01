@@ -1,6 +1,7 @@
 import React from "react";
-import { Bar } from "react-chartjs-2";
+import { Bar, Pie } from "react-chartjs-2";
 import { connect } from "react-redux";
+import StickyBox from "react-sticky-box";
 import Helmet from "react-helmet";
 import Paper from "material-ui/Paper";
 import Grid from "material-ui/Grid";
@@ -16,6 +17,14 @@ import LoadOlderButton from "../Components/LoadOlderButton";
 
 import { masterCardActionFilter, paymentFilter } from "../Helpers/DataFilters";
 import { getWeek } from "../Helpers/Utils";
+
+const balanceColor = "#ff6384";
+const eventCountColor = "#36a2eb";
+const paymentColor = "#17e655";
+const masterCardActionColor = "#29dbe6";
+const requestInquiryColor = "#4c79ff";
+const requestResponseColor = "#e9dc38";
+const bunqMeTabColor = "#ff5d6c";
 
 class Stats extends React.Component {
     constructor(props, context) {
@@ -264,9 +273,6 @@ class Stats extends React.Component {
     };
 
     generateBalanceChart = (labels, balanceHistoryData, eventCountHistory) => {
-        const balanceColor = "#ff6384";
-        const eventCountColor = "#36a2eb";
-
         const chartData = {
             labels: labels,
             datasets: [
@@ -312,7 +318,7 @@ class Stats extends React.Component {
                         stacked: true,
                         display: true,
                         gridLines: {
-                            display: false
+                            display: true
                         },
                         labels: labels
                     }
@@ -328,7 +334,7 @@ class Stats extends React.Component {
                         },
                         gridLines: {
                             display: true,
-                            color: balanceColor + "75"
+                            color: balanceColor + "BF" // 75%
                         },
                         ticks: {
                             beginAtZero: true
@@ -345,7 +351,7 @@ class Stats extends React.Component {
                         },
                         gridLines: {
                             display: true,
-                            color: eventCountColor + "75"
+                            color: eventCountColor + "BF" // 75%
                         },
                         ticks: {
                             beginAtZero: true,
@@ -371,11 +377,6 @@ class Stats extends React.Component {
         requestResponseHistory,
         bunqMeTabHistory
     ) => {
-        const paymentColor = "#17e655";
-        const requestInquiryColor = "#4c79ff";
-        const requestResponseColor = "#e9dc38";
-        const bunqMeTabColor = "#ff5d6c";
-
         const chartData = {
             labels: labels,
             datasets: [
@@ -416,17 +417,17 @@ class Stats extends React.Component {
 
         const barChartInfo = (
             id,
-            showGrid = false,
-            showLabels = false,
+            showAxis = false,
+            color = "#36A2EBBF",
             changes = {}
         ) => {
             return {
                 stacked: true,
-                display: showLabels,
+                display: showAxis,
                 type: "linear",
                 gridLines: {
-                    display: showGrid,
-                    color: "rgba(131, 196, 239, 0.75)"
+                    display: showAxis,
+                    color: color + "BF"
                 },
                 ticks: {
                     beginAtZero: true,
@@ -460,10 +461,14 @@ class Stats extends React.Component {
                     }
                 ],
                 yAxes: [
-                    barChartInfo("payment", true, true),
-                    barChartInfo("requestInquiry"),
-                    barChartInfo("requestResponse"),
-                    barChartInfo("bunqMeTab")
+                    barChartInfo("payment", true, paymentColor),
+                    barChartInfo("requestInquiry", false, requestInquiryColor),
+                    barChartInfo(
+                        "requestResponse",
+                        false,
+                        requestResponseColor
+                    ),
+                    barChartInfo("bunqMeTab", false, bunqMeTabColor)
                 ]
             }
         };
@@ -517,126 +522,203 @@ class Stats extends React.Component {
             bunqMeTabHistory
         );
 
+        const pieChartData = {
+            labels: [
+                "Payments",
+                "Mastercard payments",
+                "Requests sent",
+                "Requests received",
+                "bunq.me requests"
+            ],
+            datasets: [
+                {
+                    data: [
+                        this.props.payments.length,
+                        this.props.masterCardActions.length,
+                        this.props.requestInquiries.length,
+                        this.props.requestResponses.length,
+                        this.props.bunqMeTabs.length
+                    ],
+                    backgroundColor: [
+                        paymentColor,
+                        masterCardActionColor,
+                        requestInquiryColor,
+                        requestResponseColor,
+                        bunqMeTabColor
+                    ],
+                    hoverBackgroundColor: [
+                        paymentColor,
+                        masterCardActionColor,
+                        requestInquiryColor,
+                        requestResponseColor,
+                        bunqMeTabColor
+                    ]
+                }
+            ]
+        };
+
+        const pieChartOptions = {
+            legend: {
+                position: "top"
+            }
+        };
+
         return (
             <Grid container spacing={16}>
                 <Helmet>
                     <title>{`BunqDesktop - Stats`}</title>
                 </Helmet>
 
-                <Grid item xs={12} style={{
-                    display: "flex",
-                    justifyContent: "space-between"
-                }}>
-                    <RadioGroup
-                        aria-label="timescale"
-                        name="timescale"
-                        value={this.state.timescale}
-                        onChange={this.handleChange}
-                        style={{ flexDirection: "row" }}
-                    >
-                        <FormControlLabel
-                            value="daily"
-                            control={<Radio />}
-                            label="Daily"
-                        />
-                        <FormControlLabel
-                            value="weekly"
-                            control={<Radio />}
-                            label="Weekly"
-                        />
-                        <FormControlLabel
-                            value="monthly"
-                            control={<Radio />}
-                            label="Monthly"
-                        />
-                        <FormControlLabel
-                            value="yearly"
-                            control={<Radio />}
-                            label="Yearly"
-                        />
-                    </RadioGroup>
-                    <LoadOlderButton
-                        wrapperStyle={{margin: 0}}
-                        BunqJSClient={this.props.BunqJSClient}
-                        initialBunqConnect={this.props.initialBunqConnect}
-                    />
+                <Grid item xs={12} sm={5} md={4} lg={3}>
+                    <StickyBox className={"sticky-container"}>
+                        <Paper
+                            style={{
+                                padding: 16
+                            }}
+                        >
+                            <Grid container spacing={16}>
+                                <Grid
+                                    item
+                                    xs={12}
+                                    style={{
+                                        display: "flex"
+                                    }}
+                                >
+                                    <RadioGroup
+                                        aria-label="timescale"
+                                        name="timescale"
+                                        value={this.state.timescale}
+                                        onChange={this.handleChange}
+                                    >
+                                        <FormControlLabel
+                                            value="daily"
+                                            control={<Radio />}
+                                            label="Daily"
+                                        />
+                                        <FormControlLabel
+                                            value="weekly"
+                                            control={<Radio />}
+                                            label="Weekly"
+                                        />
+                                        <FormControlLabel
+                                            value="monthly"
+                                            control={<Radio />}
+                                            label="Monthly"
+                                        />
+                                        <FormControlLabel
+                                            value="yearly"
+                                            control={<Radio />}
+                                            label="Yearly"
+                                        />
+                                    </RadioGroup>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <LoadOlderButton
+                                        wrapperStyle={{ margin: 0 }}
+                                        buttonStyle={{ width: "100%" }}
+                                        BunqJSClient={this.props.BunqJSClient}
+                                        initialBunqConnect={
+                                            this.props.initialBunqConnect
+                                        }
+                                    />
+                                </Grid>
+                            </Grid>
+                        </Paper>
+                    </StickyBox>
                 </Grid>
 
-                <Grid item xs={12}>
-                    <Paper>
-                        <Bar
-                            height={500}
-                            data={chartData}
-                            options={chartOptions}
-                        />
-                    </Paper>
-                </Grid>
-
-                <Grid item xs={12}>
-                    <Paper>
-                        <Bar
-                            height={500}
-                            data={chartData2}
-                            options={chartOptions2}
-                        />
-                    </Paper>
-                </Grid>
-
-                <Grid item xs={12}>
+                <Grid item xs={12} sm={7} md={8} lg={9}>
                     <Grid container spacing={16}>
-                        <Grid item xs={12} md={6}>
+                        <Grid item xs={12}>
                             <Paper>
-                                <List component="nav">
-                                    <ListSubheader>Statistics</ListSubheader>
-                                    <ListItem>
-                                        <ListItemText
-                                            primary="Payments"
-                                            secondary={
-                                                this.props.payments.length
-                                            }
-                                        />
-                                    </ListItem>
-                                    <ListItem>
-                                        <ListItemText
-                                            primary="Mastercard payments"
-                                            secondary={
-                                                this.props.masterCardActions
-                                                    .length
-                                            }
-                                        />
-                                    </ListItem>
-                                    <ListItem>
-                                        <ListItemText
-                                            primary="Requests sent"
-                                            secondary={
-                                                this.props.requestInquiries
-                                                    .length
-                                            }
-                                        />
-                                    </ListItem>
-                                    <ListItem>
-                                        <ListItemText
-                                            primary="Requests received"
-                                            secondary={
-                                                this.props.requestResponses
-                                                    .length
-                                            }
-                                        />
-                                    </ListItem>
-                                    <ListItem>
-                                        <ListItemText
-                                            primary="Bunq.me requests"
-                                            secondary={
-                                                this.props.bunqMeTabs.length
-                                            }
-                                        />
-                                    </ListItem>
-                                </List>
+                                <Bar
+                                    height={500}
+                                    data={chartData}
+                                    options={chartOptions}
+                                />
                             </Paper>
                         </Grid>
-                        {/*<Grid item xs={12} md={6}>*/}
-                        {/*<Paper>b</Paper>*/}
-                        {/*</Grid>*/}
+
+                        <Grid item xs={12}>
+                            <Paper>
+                                <Bar
+                                    height={500}
+                                    data={chartData2}
+                                    options={chartOptions2}
+                                />
+                            </Paper>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Grid container spacing={16}>
+                                <Grid item xs={12} md={6}>
+                                    <Paper>
+                                        <List component="nav">
+                                            <ListSubheader>
+                                                Statistics
+                                            </ListSubheader>
+                                            <ListItem>
+                                                <ListItemText
+                                                    primary="Payments"
+                                                    secondary={
+                                                        this.props.payments
+                                                            .length
+                                                    }
+                                                />
+                                            </ListItem>
+                                            <ListItem>
+                                                <ListItemText
+                                                    primary="Mastercard payments"
+                                                    secondary={
+                                                        this.props
+                                                            .masterCardActions
+                                                            .length
+                                                    }
+                                                />
+                                            </ListItem>
+                                            <ListItem>
+                                                <ListItemText
+                                                    primary="Requests sent"
+                                                    secondary={
+                                                        this.props
+                                                            .requestInquiries
+                                                            .length
+                                                    }
+                                                />
+                                            </ListItem>
+                                            <ListItem>
+                                                <ListItemText
+                                                    primary="Requests received"
+                                                    secondary={
+                                                        this.props
+                                                            .requestResponses
+                                                            .length
+                                                    }
+                                                />
+                                            </ListItem>
+                                            <ListItem>
+                                                <ListItemText
+                                                    primary="Bunq.me requests"
+                                                    secondary={
+                                                        this.props.bunqMeTabs
+                                                            .length
+                                                    }
+                                                />
+                                            </ListItem>
+                                        </List>
+                                    </Paper>
+                                </Grid>
+                                <Grid item xs={12} md={6}>
+                                    <Paper>
+                                        <Pie
+                                            height={350}
+                                            options={pieChartOptions}
+                                            data={pieChartData}
+                                        />
+                                    </Paper>
+                                </Grid>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>
