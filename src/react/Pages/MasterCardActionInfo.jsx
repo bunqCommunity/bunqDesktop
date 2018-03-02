@@ -119,7 +119,6 @@ class MasterCardActionInfo extends React.Component {
                         to={masterCardAction.counterparty_alias}
                         from={masterCardAction.alias}
                         user={this.props.user}
-                        swap={paymentAmount > 0}
                     />
 
                     <Grid item xs={12}>
