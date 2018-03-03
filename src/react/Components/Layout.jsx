@@ -330,7 +330,7 @@ class Layout extends React.Component {
             <MuiThemeProvider theme={ThemeList[this.props.theme]}>
                 <main className={classes.main}>
                     <Header />
-                    <MainDrawer />
+                    <MainDrawer location={this.props.location} />
                     <OptionsDrawer themeList={ThemeList} />
                     <Grid
                         container

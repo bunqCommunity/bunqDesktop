@@ -1,5 +1,5 @@
 import React from "react";
-import { Bar, Pie } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import { connect } from "react-redux";
 import StickyBox from "react-sticky-box";
 import Helmet from "react-helmet";
@@ -13,18 +13,24 @@ import { FormControlLabel } from "material-ui/Form";
 import Divider from "material-ui/Divider";
 import InboxIcon from "material-ui-icons/Inbox";
 
-import LoadOlderButton from "../Components/LoadOlderButton";
+import LoadOlderButton from "../../Components/LoadOlderButton";
+import PieChart from "./PieChart";
 
-import { masterCardActionFilter, paymentFilter } from "../Helpers/DataFilters";
-import { getWeek } from "../Helpers/Utils";
+import {
+    masterCardActionFilter,
+    paymentFilter
+} from "../../Helpers/DataFilters";
+import { getWeek } from "../../Helpers/Utils";
 
-const balanceColor = "#ff6384";
-const eventCountColor = "#36a2eb";
-const paymentColor = "#17e655";
-const masterCardActionColor = "#29dbe6";
-const requestInquiryColor = "#4c79ff";
-const requestResponseColor = "#e9dc38";
-const bunqMeTabColor = "#ff5d6c";
+import {
+    balanceColor,
+    eventCountColor,
+    bunqMeTabColor,
+    masterCardActionColor,
+    paymentColor,
+    requestInquiryColor,
+    requestResponseColor
+} from "./Colors";
 
 class Stats extends React.Component {
     constructor(props, context) {
@@ -522,47 +528,6 @@ class Stats extends React.Component {
             bunqMeTabHistory
         );
 
-        const pieChartData = {
-            labels: [
-                "Payments",
-                "Mastercard payments",
-                "Requests sent",
-                "Requests received",
-                "bunq.me requests"
-            ],
-            datasets: [
-                {
-                    data: [
-                        this.props.payments.length,
-                        this.props.masterCardActions.length,
-                        this.props.requestInquiries.length,
-                        this.props.requestResponses.length,
-                        this.props.bunqMeTabs.length
-                    ],
-                    backgroundColor: [
-                        paymentColor,
-                        masterCardActionColor,
-                        requestInquiryColor,
-                        requestResponseColor,
-                        bunqMeTabColor
-                    ],
-                    hoverBackgroundColor: [
-                        paymentColor,
-                        masterCardActionColor,
-                        requestInquiryColor,
-                        requestResponseColor,
-                        bunqMeTabColor
-                    ]
-                }
-            ]
-        };
-
-        const pieChartOptions = {
-            legend: {
-                position: "top"
-            }
-        };
-
         return (
             <Grid container spacing={16}>
                 <Helmet>
@@ -710,10 +675,18 @@ class Stats extends React.Component {
                                 </Grid>
                                 <Grid item xs={12} md={6}>
                                     <Paper>
-                                        <Pie
-                                            height={350}
-                                            options={pieChartOptions}
-                                            data={pieChartData}
+                                        <PieChart
+                                            payments={this.props.payments}
+                                            masterCardActions={
+                                                this.props.masterCardActions
+                                            }
+                                            requestInquiries={
+                                                this.props.requestInquiries
+                                            }
+                                            requestResponses={
+                                                this.props.requestResponses
+                                            }
+                                            bunqMeTabs={this.props.bunqMeTabs}
                                         />
                                     </Paper>
                                 </Grid>

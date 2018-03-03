@@ -37,7 +37,7 @@ const AccountInfo = CL(() =>
     import(/* webpackChunkName: "accountinfo" */ "./Pages/AccountInfo")
 );
 const Stats = CL(() =>
-    import(/* webpackChunkName: "accountinfo" */ "./Pages/Stats")
+    import(/* webpackChunkName: "accountinfo" */ "./Pages/Stats/Stats")
 );
 
 // router react component
