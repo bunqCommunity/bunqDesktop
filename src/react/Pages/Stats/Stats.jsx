@@ -534,7 +534,7 @@ class Stats extends React.Component {
                     <title>{`BunqDesktop - Stats`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={5} md={4} lg={3}>
+                <Grid item xs={12} sm={4} md={3} lg={2}>
                     <StickyBox className={"sticky-container"}>
                         <Paper
                             style={{
@@ -592,7 +592,7 @@ class Stats extends React.Component {
                     </StickyBox>
                 </Grid>
 
-                <Grid item xs={12} sm={7} md={8} lg={9}>
+                <Grid item xs={12} sm={8} md={9} lg={10}>
                     <Grid container spacing={16}>
                         <Grid item xs={12}>
                             <Paper>
