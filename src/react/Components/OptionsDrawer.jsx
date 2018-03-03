@@ -61,6 +61,11 @@ const styles = {
     }
 };
 
+const humanReadableThemes = {
+    DefaultTheme: "Light theme",
+    DarkTheme: "Dark theme"
+};
+
 class OptionsDrawer extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -111,7 +116,9 @@ class OptionsDrawer extends React.Component {
                             style={styles.selectField}
                         >
                             {Object.keys(this.props.themeList).map(themeKey => (
-                                <MenuItem value={themeKey}>{themeKey}</MenuItem>
+                                <MenuItem value={themeKey}>
+                                    {humanReadableThemes[themeKey]}
+                                </MenuItem>
                             ))}
                         </Select>
                     </FormControl>
