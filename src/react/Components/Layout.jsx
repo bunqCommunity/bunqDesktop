@@ -32,14 +32,15 @@ import { userLogin } from "../Actions/user.js";
 import { usersUpdate } from "../Actions/users";
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
+import { registrationClearUserInfo } from "../Actions/registration";
+import { loadStoredPayments } from "../Actions/payments";
+
 import {
     registrationLoading,
     registrationNotLoading,
     registrationClearApiKey
 } from "../Actions/registration";
 import OptionsDrawer from "./OptionsDrawer";
-
-import { registrationClearUserInfo } from "../Actions/registration";
 
 const styles = theme => ({
     contentContainer: {
@@ -281,6 +282,8 @@ class Layout extends React.Component {
             throw exception;
         }
 
+        this.props.loadStoredPayments();
+
         // setup finished with no errors
         this.props.applicationSetStatus("");
         this.props.usersUpdate(true);
@@ -409,6 +412,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // login the user with a specific type from the list
         userLogin: (userType, updated = false) =>
             dispatch(userLogin(BunqJSClient, userType, updated)),
+
+        // get latest user list from BunqJSClient
+        loadStoredPayments: () =>
+            dispatch(loadStoredPayments(BunqJSClient)),
 
         // functions to clear user data
         registrationClearUserInfo: () => dispatch(registrationClearUserInfo())

@@ -1,28 +1,15 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
-export function paymentsSetInfo(
-    payments,
-    account_id,
-    newer = false,
-    older = false
-) {
-    // get the newer and older id from the list
-    const { 0: newerItem, [payments.length - 1]: olderItem } = payments;
+export const STORED_PAYMENTS = "STORED_PAYMENTS";
 
-    let type = "PAYMENTS_SET_INFO";
-    if (newer !== false) {
-        type = "PAYMENTS_ADD_NEWER_INFO";
-    } else if (older !== false) {
-        type = "PAYMENTS_ADD_OLDER_INFO";
-    }
+export function paymentsSetInfo(payments, account_id, resetOldItems = false) {
+    const type = resetOldItems ? "PAYMENTS_SET_INFO" : "PAYMENTS_UPDATE_INFO";
 
     return {
         type: type,
         payload: {
             payments,
-            account_id,
-            newer_id: newerItem ? newerItem.Payment.id : newer,
-            older_id: olderItem ? olderItem.Payment.id : older
+            account_id
         }
     };
 }
@@ -42,23 +29,28 @@ export function paymentInfoUpdate(
         BunqJSClient.api.payment
             .list(user_id, account_id, options)
             .then(payments => {
-                // if we have a newer/older id we need to trigger a different event
-                if (options.newer_id && options.newer_id !== false) {
-                    dispatch(
-                        paymentsSetInfo(payments, account_id, options.newer_id, false)
-                    );
-                } else if (options.older_id && options.older_id !== false) {
-                    dispatch(
-                        paymentsSetInfo(payments, account_id, false, options.older_id)
-                    );
-                } else {
-                    dispatch(paymentsSetInfo(payments, account_id));
-                }
-
+                dispatch(paymentsSetInfo(payments, account_id));
                 dispatch(paymentsNotLoading());
             })
             .catch(error => {
                 dispatch(paymentsNotLoading());
+                BunqErrorHandler(
+                    dispatch,
+                    error,
+                    "We failed to load the payments for this monetary account"
+                );
+            });
+    };
+}
+
+export function loadStoredPayments(BunqJSClient) {
+    return dispatch => {
+        BunqJSClient.Session
+            .loadEncryptedData(STORED_PAYMENTS)
+            .then(payments => {
+                console.log(payments);
+            })
+            .catch(error => {
                 BunqErrorHandler(
                     dispatch,
                     error,
