@@ -1,12 +1,11 @@
 import React from "react";
-import { Bar } from "react-chartjs-2";
 import { connect } from "react-redux";
 import StickyBox from "react-sticky-box";
 import Helmet from "react-helmet";
 import Paper from "material-ui/Paper";
 import Grid from "material-ui/Grid";
 import ListSubheader from "material-ui/List/ListSubheader";
-import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
+import List, { ListItem, ListItemText } from "material-ui/List";
 import Radio, { RadioGroup } from "material-ui/Radio";
 import { FormControlLabel } from "material-ui/Form";
 
@@ -15,22 +14,14 @@ import InboxIcon from "material-ui-icons/Inbox";
 
 import LoadOlderButton from "../../Components/LoadOlderButton";
 import PieChart from "./PieChart";
+import BalanceHistoryChart from "./BalanceHistoryChart";
+import EventTypeHistoryChart from "./EventTypeHistoryChart";
 
 import {
     masterCardActionFilter,
     paymentFilter
 } from "../../Helpers/DataFilters";
 import { getWeek } from "../../Helpers/Utils";
-
-import {
-    balanceColor,
-    eventCountColor,
-    bunqMeTabColor,
-    masterCardActionColor,
-    paymentColor,
-    requestInquiryColor,
-    requestResponseColor
-} from "./Colors";
 
 class Stats extends React.Component {
     constructor(props, context) {
@@ -126,7 +117,7 @@ class Stats extends React.Component {
                     data.push({
                         date: new Date(masterCardInfo.created),
                         change: change,
-                        type: "payment"
+                        type: "masterCardAction"
                     });
                 }
             });
@@ -169,6 +160,7 @@ class Stats extends React.Component {
         let eventCountHistory = [];
         // individual count history
         let paymentCountHistory = [];
+        let masterCardActionCountHistory = [];
         let requestInquiryCountHistory = [];
         let requestResponseCountHistory = [];
         let bunqMeTabCountHistory = [];
@@ -232,16 +224,16 @@ class Stats extends React.Component {
         // loop through all the days
         Object.keys(dataCollection).map(label => {
             const timescaleInfo = {
-                payment: 0,
+                masterCardAction: 0,
                 requestResponse: 0,
                 requestInquiry: 0,
-                bunqMeTab: 0
+                bunqMeTab: 0,
+                payment: 0
             };
             let timescaleChange = 0;
             dataCollection[label].map(item => {
                 // increment this type to keep track of the different types
                 timescaleInfo[item.type]++;
-
                 // calculate change
                 timescaleChange = timescaleChange + item.change;
             });
@@ -251,10 +243,11 @@ class Stats extends React.Component {
             // count the events for this timescale
             eventCountHistory.push(dataCollection[label].length);
             // update the individual counts
-            paymentCountHistory.push(timescaleInfo.payment);
+            masterCardActionCountHistory.push(timescaleInfo.masterCardAction);
             requestInquiryCountHistory.push(timescaleInfo.requestInquiry);
             requestResponseCountHistory.push(timescaleInfo.requestResponse);
             bunqMeTabCountHistory.push(timescaleInfo.bunqMeTab);
+            paymentCountHistory.push(timescaleInfo.payment);
 
             // update the balance for the next timescale
             currentBalance = currentBalance + timescaleChange;
@@ -271,215 +264,12 @@ class Stats extends React.Component {
             // total event count
             eventCountHistory: eventCountHistory.reverse(),
             // individual history count
-            paymentHistory: paymentCountHistory.reverse(),
-            requestInquiryHistory: requestInquiryCountHistory.reverse(),
+            masterCardActionHistory: masterCardActionCountHistory.reverse(),
             requestResponseHistory: requestResponseCountHistory.reverse(),
-            bunqMeTabHistory: bunqMeTabCountHistory.reverse()
+            requestInquiryHistory: requestInquiryCountHistory.reverse(),
+            bunqMeTabHistory: bunqMeTabCountHistory.reverse(),
+            paymentHistory: paymentCountHistory.reverse()
         };
-    };
-
-    generateBalanceChart = (labels, balanceHistoryData, eventCountHistory) => {
-        const chartData = {
-            labels: labels,
-            datasets: [
-                {
-                    type: "line",
-                    label: "Balance history",
-                    data: balanceHistoryData,
-                    fill: false,
-                    lineTension: 0,
-                    pointRadius: 5,
-                    borderColor: balanceColor,
-                    backgroundColor: balanceColor,
-                    pointBorderColor: balanceColor,
-                    pointBackgroundColor: balanceColor,
-                    pointHoverBackgroundColor: balanceColor,
-                    pointHoverBorderColor: balanceColor,
-                    yAxisID: "balance"
-                },
-                {
-                    type: "bar",
-                    label: "Total events",
-                    data: eventCountHistory,
-                    fill: false,
-                    backgroundColor: eventCountColor,
-                    borderColor: eventCountColor,
-                    hoverBackgroundColor: eventCountColor,
-                    hoverBorderColor: eventCountColor,
-                    yAxisID: "events"
-                }
-            ]
-        };
-
-        const chartOptions = {
-            maintainAspectRatio: false,
-            responsive: true,
-            tooltips: {
-                enabled: true,
-                mode: "index"
-            },
-            scales: {
-                xAxes: [
-                    {
-                        stacked: true,
-                        display: true,
-                        gridLines: {
-                            display: true
-                        },
-                        labels: labels
-                    }
-                ],
-                yAxes: [
-                    {
-                        type: "linear",
-                        display: true,
-                        position: "left",
-                        id: "balance",
-                        labels: {
-                            show: true
-                        },
-                        gridLines: {
-                            display: true,
-                            color: balanceColor + "BF" // 75%
-                        },
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    },
-                    {
-                        stacked: true,
-                        type: "linear",
-                        display: true,
-                        position: "right",
-                        id: "events",
-                        labels: {
-                            show: true
-                        },
-                        gridLines: {
-                            display: true,
-                            color: eventCountColor + "BF" // 75%
-                        },
-                        ticks: {
-                            beginAtZero: true,
-                            callback: value => {
-                                // only show integer values
-                                if (value % 1 === 0) {
-                                    return value;
-                                }
-                            }
-                        }
-                    }
-                ]
-            }
-        };
-
-        return [chartData, chartOptions];
-    };
-
-    generateEventsChart = (
-        labels,
-        paymentHistory,
-        requestInquiryHistory,
-        requestResponseHistory,
-        bunqMeTabHistory
-    ) => {
-        const chartData = {
-            labels: labels,
-            datasets: [
-                {
-                    label: "Payments",
-                    data: paymentHistory,
-                    backgroundColor: paymentColor,
-                    borderColor: paymentColor,
-                    hoverBackgroundColor: paymentColor,
-                    hoverBorderColor: paymentColor
-                },
-                {
-                    label: "Sent Requests",
-                    data: requestInquiryHistory,
-                    backgroundColor: requestInquiryColor,
-                    borderColor: requestInquiryColor,
-                    hoverBackgroundColor: requestInquiryColor,
-                    hoverBorderColor: requestInquiryColor
-                },
-                {
-                    label: "Received Requests",
-                    data: requestResponseHistory,
-                    backgroundColor: requestResponseColor,
-                    borderColor: requestResponseColor,
-                    hoverBackgroundColor: requestResponseColor,
-                    hoverBorderColor: requestResponseColor
-                },
-                {
-                    label: "bunq.me Tabs",
-                    data: bunqMeTabHistory,
-                    backgroundColor: bunqMeTabColor,
-                    borderColor: bunqMeTabColor,
-                    hoverBackgroundColor: bunqMeTabColor,
-                    hoverBorderColor: bunqMeTabColor
-                }
-            ]
-        };
-
-        const barChartInfo = (
-            id,
-            showAxis = false,
-            color = "#36A2EBBF",
-            changes = {}
-        ) => {
-            return {
-                stacked: true,
-                display: showAxis,
-                type: "linear",
-                gridLines: {
-                    display: showAxis,
-                    color: color + "BF"
-                },
-                ticks: {
-                    beginAtZero: true,
-                    callback: value => {
-                        // only show integer values
-                        if (value % 1 === 0) {
-                            return value;
-                        }
-                    }
-                },
-                ...changes
-            };
-        };
-
-        const chartOptions = {
-            maintainAspectRatio: false,
-            responsive: true,
-            tooltips: {
-                enabled: true,
-                mode: "index"
-            },
-            scales: {
-                xAxes: [
-                    {
-                        stacked: true,
-                        display: true,
-                        gridLines: {
-                            display: true
-                        },
-                        labels: labels
-                    }
-                ],
-                yAxes: [
-                    barChartInfo("payment", true, paymentColor),
-                    barChartInfo("requestInquiry", false, requestInquiryColor),
-                    barChartInfo(
-                        "requestResponse",
-                        false,
-                        requestResponseColor
-                    ),
-                    barChartInfo("bunqMeTab", false, bunqMeTabColor)
-                ]
-            }
-        };
-
-        return [chartData, chartOptions];
     };
 
     handleChange = (event, value) => {
@@ -507,25 +297,76 @@ class Stats extends React.Component {
             labels,
             balanceHistoryData,
             eventCountHistory,
-            paymentHistory,
+            masterCardActionHistory,
             requestInquiryHistory,
             requestResponseHistory,
-            bunqMeTabHistory
+            bunqMeTabHistory,
+            paymentHistory
         } = this.getData(events, this.state.timescale);
 
-        // generate first chart data/options
-        const [chartData, chartOptions] = this.generateBalanceChart(
-            labels,
-            balanceHistoryData,
-            eventCountHistory
-        );
-        // generate second chart data/options
-        const [chartData2, chartOptions2] = this.generateEventsChart(
-            labels,
-            paymentHistory,
-            requestInquiryHistory,
-            requestResponseHistory,
-            bunqMeTabHistory
+        const eventCountStats = (
+            <Grid item xs={12}>
+                <Grid container spacing={16}>
+                    <Grid item xs={12} md={6}>
+                        <Paper>
+                            <List component="nav">
+                                <ListSubheader>Statistics</ListSubheader>
+                                <ListItem>
+                                    <ListItemText
+                                        primary="Payments"
+                                        secondary={this.props.payments.length}
+                                    />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText
+                                        primary="Mastercard payments"
+                                        secondary={
+                                            this.props.masterCardActions.length
+                                        }
+                                    />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText
+                                        primary="Requests sent"
+                                        secondary={
+                                            this.props.requestInquiries.length
+                                        }
+                                    />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText
+                                        primary="Requests received"
+                                        secondary={
+                                            this.props.requestResponses.length
+                                        }
+                                    />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText
+                                        primary="Bunq.me requests"
+                                        secondary={this.props.bunqMeTabs.length}
+                                    />
+                                </ListItem>
+                            </List>
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        <Paper
+                            style={{
+                                padding: 12
+                            }}
+                        >
+                            <PieChart
+                                payments={this.props.payments}
+                                masterCardActions={this.props.masterCardActions}
+                                requestInquiries={this.props.requestInquiries}
+                                requestResponses={this.props.requestResponses}
+                                bunqMeTabs={this.props.bunqMeTabs}
+                            />
+                        </Paper>
+                    </Grid>
+                </Grid>
+            </Grid>
         );
 
         return (
@@ -596,102 +437,36 @@ class Stats extends React.Component {
                     <Grid container spacing={16}>
                         <Grid item xs={12}>
                             <Paper>
-                                <Bar
+                                <BalanceHistoryChart
                                     height={500}
-                                    data={chartData}
-                                    options={chartOptions}
+                                    labels={labels}
+                                    balanceHistoryData={balanceHistoryData}
+                                    eventCountHistory={eventCountHistory}
                                 />
                             </Paper>
                         </Grid>
 
                         <Grid item xs={12}>
                             <Paper>
-                                <Bar
+                                <EventTypeHistoryChart
                                     height={500}
-                                    data={chartData2}
-                                    options={chartOptions2}
+                                    labels={labels}
+                                    masterCardActionHistory={
+                                        masterCardActionHistory
+                                    }
+                                    requestInquiryHistory={
+                                        requestInquiryHistory
+                                    }
+                                    requestResponseHistory={
+                                        requestResponseHistory
+                                    }
+                                    bunqMeTabHistory={bunqMeTabHistory}
+                                    paymentHistory={paymentHistory}
                                 />
                             </Paper>
                         </Grid>
 
-                        <Grid item xs={12}>
-                            <Grid container spacing={16}>
-                                <Grid item xs={12} md={6}>
-                                    <Paper>
-                                        <List component="nav">
-                                            <ListSubheader>
-                                                Statistics
-                                            </ListSubheader>
-                                            <ListItem>
-                                                <ListItemText
-                                                    primary="Payments"
-                                                    secondary={
-                                                        this.props.payments
-                                                            .length
-                                                    }
-                                                />
-                                            </ListItem>
-                                            <ListItem>
-                                                <ListItemText
-                                                    primary="Mastercard payments"
-                                                    secondary={
-                                                        this.props
-                                                            .masterCardActions
-                                                            .length
-                                                    }
-                                                />
-                                            </ListItem>
-                                            <ListItem>
-                                                <ListItemText
-                                                    primary="Requests sent"
-                                                    secondary={
-                                                        this.props
-                                                            .requestInquiries
-                                                            .length
-                                                    }
-                                                />
-                                            </ListItem>
-                                            <ListItem>
-                                                <ListItemText
-                                                    primary="Requests received"
-                                                    secondary={
-                                                        this.props
-                                                            .requestResponses
-                                                            .length
-                                                    }
-                                                />
-                                            </ListItem>
-                                            <ListItem>
-                                                <ListItemText
-                                                    primary="Bunq.me requests"
-                                                    secondary={
-                                                        this.props.bunqMeTabs
-                                                            .length
-                                                    }
-                                                />
-                                            </ListItem>
-                                        </List>
-                                    </Paper>
-                                </Grid>
-                                <Grid item xs={12} md={6}>
-                                    <Paper>
-                                        <PieChart
-                                            payments={this.props.payments}
-                                            masterCardActions={
-                                                this.props.masterCardActions
-                                            }
-                                            requestInquiries={
-                                                this.props.requestInquiries
-                                            }
-                                            requestResponses={
-                                                this.props.requestResponses
-                                            }
-                                            bunqMeTabs={this.props.bunqMeTabs}
-                                        />
-                                    </Paper>
-                                </Grid>
-                            </Grid>
-                        </Grid>
+                        {eventCountStats}
                     </Grid>
                 </Grid>
             </Grid>
@@ -701,6 +476,8 @@ class Stats extends React.Component {
 
 const mapStateToProps = state => {
     return {
+        theme: state.options.theme,
+
         user: state.user.user,
         accounts: state.accounts.accounts,
         selectedAccount: state.accounts.selectedAccount,
