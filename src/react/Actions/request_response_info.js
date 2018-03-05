@@ -40,7 +40,7 @@ export function requestResponseUpdate(
 
                 dispatch(
                     requestResponseSetInfo(
-                        requestResponseInfo[0],
+                        requestResponseInfo,
                         account_id,
                         request_response_id
                     )
