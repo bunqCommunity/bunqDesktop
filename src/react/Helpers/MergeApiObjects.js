@@ -1,6 +1,14 @@
 export default (type, newItems, oldItems) => {
     // no old items so we simply return the new list and new/old ids
     if (oldItems.length <= 0) {
+        if (newItems.length <= 0) {
+            return {
+                items: [],
+                newer_id: false,
+                older_id: false
+            };
+        }
+
         const { 0: newestItem, [newItems.length - 1]: oldestItem } = newItems;
         const newestId = newestItem[type].id;
         const oldestId = oldestItem[type].id;

@@ -1,3 +1,5 @@
+import MergeApiObjects from "../Helpers/MergeApiObjects";
+
 export const defaultState = {
     request_responses: [],
     account_id: false,
@@ -9,57 +11,28 @@ export const defaultState = {
 export default (state = defaultState, action) => {
     let request_responses = [...state.request_responses];
 
-    // check in what order request_responses are prepended/appended/overwritten
     switch (action.type) {
+        case "REQUEST_RESPONSES_UPDATE_INFO":
         case "REQUEST_RESPONSES_SET_INFO":
-            // overwrite current
-            request_responses = [...action.payload.request_responses];
-            break;
-        case "REQUEST_RESPONSES_ADD_NEWER_INFO":
-            // add newer info to the beginning of the request_responses list
-            request_responses = [
-                ...action.payload.request_responses,
-                ...state.request_responses
-            ];
-            break;
-        case "REQUEST_RESPONSES_ADD_OLDER_INFO":
-            // add older info to the end of the request_responses list
-            request_responses = [
-                ...state.request_responses,
-                ...action.payload.request_responses
-            ];
-            break;
-    }
+            // with a set info event or if account id changes we ignore the currently stored items
+            const ignoreOldItems =
+                action.type === "REQUEST_RESPONSES_SET_INFO" ||
+                state.account_id !== action.payload.account_id;
 
-    switch (action.type) {
-        case "REQUEST_RESPONSES_ADD_NEWER_INFO":
-        case "REQUEST_RESPONSES_ADD_OLDER_INFO":
-        case "REQUEST_RESPONSES_SET_INFO":
-            let newerId =
-                state.newer_id === false ||
-                state.newer_id < action.payload.newer_id
-                    ? action.payload.newer_id
-                    : state.newer_id;
-
-            let olderId =
-                state.older_id === false ||
-                state.older_id > action.payload.older_id
-                    ? action.payload.older_id
-                    : state.older_id;
-
-            // this action overwrites previously stored IDs
-            if (action.type === "REQUEST_RESPONSES_SET_INFO") {
-                newerId = action.payload.newer_id;
-                olderId = action.payload.older_id;
-            }
+            const mergedInfo = MergeApiObjects(
+                "RequestResponse",
+                action.payload.requestResponses,
+                ignoreOldItems ? [] : request_responses
+            );
 
             return {
                 ...state,
-                request_responses: request_responses,
+                request_responses: mergedInfo.items,
                 account_id: action.payload.account_id,
-                newer_id: newerId,
-                older_id: olderId
+                newer_id: mergedInfo.newer_id,
+                older_id: mergedInfo.older_id
             };
+
 
         case "REQUEST_RESPONSES_IS_LOADING":
             return {

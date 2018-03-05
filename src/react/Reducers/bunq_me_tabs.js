@@ -1,3 +1,5 @@
+import MergeApiObjects from "../Helpers/MergeApiObjects";
+
 export const defaultState = {
     bunq_me_tabs: [],
     account_id: false,
@@ -9,56 +11,26 @@ export const defaultState = {
 export default (state = defaultState, action) => {
     let bunq_me_tabs = [...state.bunq_me_tabs];
 
-    // check in what order bunq_me_tabs are prepended/appended/overwritten
     switch (action.type) {
+        case "BUNQ_ME_TABS_UPDATE_INFO":
         case "BUNQ_ME_TABS_SET_INFO":
-            // overwrite current
-            bunq_me_tabs = [...action.payload.bunq_me_tabs];
-            break;
-        case "BUNQ_ME_TABS_ADD_NEWER_INFO":
-            // add newer info to the beginning of the bunq_me_tabs list
-            bunq_me_tabs = [
-                ...action.payload.bunq_me_tabs,
-                ...state.bunq_me_tabs
-            ];
-            break;
-        case "BUNQ_ME_TABS_ADD_OLDER_INFO":
-            // add older info to the end of the bunq_me_tabs list
-            bunq_me_tabs = [
-                ...state.bunq_me_tabs,
-                ...action.payload.bunq_me_tabs
-            ];
-            break;
-    }
+            // with a set info event or if account id changes we ignore the currently stored items
+            const ignoreOldItems =
+                action.type === "BUNQ_ME_TABS_SET_INFO" ||
+                state.account_id !== action.payload.account_id;
 
-    switch (action.type) {
-        case "BUNQ_ME_TABS_ADD_NEWER_INFO":
-        case "BUNQ_ME_TABS_ADD_OLDER_INFO":
-        case "BUNQ_ME_TABS_SET_INFO":
-            let newerId =
-                state.newer_id === false ||
-                state.newer_id < action.payload.newer_id
-                    ? action.payload.newer_id
-                    : state.newer_id;
-
-            let olderId =
-                state.older_id === false ||
-                state.older_id > action.payload.older_id
-                    ? action.payload.older_id
-                    : state.older_id;
-
-            // this action overwrites previously stored IDs
-            if (action.type === "BUNQ_ME_TABS_SET_INFO") {
-                newerId = action.payload.newer_id;
-                olderId = action.payload.older_id;
-            }
+            const mergedInfo = MergeApiObjects(
+                "BunqMeTab",
+                action.payload.bunqMeTabs,
+                ignoreOldItems ? [] : bunq_me_tabs
+            );
 
             return {
                 ...state,
-                bunq_me_tabs: bunq_me_tabs,
+                bunq_me_tabs: mergedInfo.items,
                 account_id: action.payload.account_id,
-                newer_id: olderId,
-                older_id: olderId
+                newer_id: mergedInfo.newer_id,
+                older_id: mergedInfo.older_id
             };
 
         case "BUNQ_ME_TABS_IS_LOADING":

@@ -1,31 +1,19 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
 export function requestResponsesSetInfo(
-    request_responses,
+    requestResponses,
     account_id,
-    newer = false,
-    older = false
+    resetOldItems = false
 ) {
-    // get the newer and older id from the list
-    const {
-        0: newerItem,
-        [request_responses.length - 1]: olderItem
-    } = request_responses;
-
-    let type = "REQUEST_RESPONSES_SET_INFO";
-    if (newer !== false) {
-        type = "REQUEST_RESPONSES_ADD_NEWER_INFO";
-    } else if (older !== false) {
-        type = "REQUEST_RESPONSES_ADD_OLDER_INFO";
-    }
+    const type = resetOldItems
+        ? "REQUEST_RESPONSES_SET_INFO"
+        : "REQUEST_RESPONSES_UPDATE_INFO";
 
     return {
         type: type,
         payload: {
-            request_responses,
-            account_id,
-            newer_id: newerItem ? newerItem.RequestResponse.id : newer,
-            older_id: olderItem ? olderItem.RequestResponse.id : older
+            requestResponses,
+            account_id
         }
     };
 }
@@ -45,31 +33,7 @@ export function requestResponsesUpdate(
         BunqJSClient.api.requestResponse
             .list(userId, accountId, options)
             .then(requestResponses => {
-                // if we have a newer/older id we need to trigger a different event
-                if (options.newer_id && options.newer_id !== false) {
-                    dispatch(
-                        requestResponsesSetInfo(
-                            requestResponses,
-                            accountId,
-                            options.newer_id,
-                            false
-                        )
-                    );
-                } else if (options.older_id && options.older_id !== false) {
-                    dispatch(
-                        requestResponsesSetInfo(
-                            requestResponses,
-                            accountId,
-                            false,
-                            options.older_id
-                        )
-                    );
-                } else {
-                    dispatch(
-                        requestResponsesSetInfo(requestResponses, accountId)
-                    );
-                }
-
+                dispatch(requestResponsesSetInfo(requestResponses, accountId));
                 dispatch(requestResponsesNotLoading());
             })
             .catch(error => {

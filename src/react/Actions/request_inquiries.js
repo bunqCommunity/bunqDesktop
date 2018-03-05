@@ -1,31 +1,19 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
 export function requestInquiriesSetInfo(
-    request_inquiries,
+    requestInquiries,
     account_id,
-    newer = false,
-    older = false
+    resetOldItems = false
 ) {
-    // get the newer and older id from the list
-    const {
-        0: newerItem,
-        [request_inquiries.length - 1]: olderItem
-    } = request_inquiries;
-
-    let type = "REQUEST_INQUIRIES_SET_INFO";
-    if (newer !== false) {
-        type = "REQUEST_INQUIRIES_ADD_NEWER_INFO";
-    } else if (older !== false) {
-        type = "REQUEST_INQUIRIES_ADD_OLDER_INFO";
-    }
+    const type = resetOldItems
+        ? "REQUEST_INQUIRIES_SET_INFO"
+        : "REQUEST_INQUIRIES_UPDATE_INFO";
 
     return {
         type: type,
         payload: {
-            request_inquiries,
-            account_id,
-            newer_id: newerItem ? newerItem.RequestInquiry.id : newer,
-            older_id: olderItem ? olderItem.RequestInquiry.id : older
+            requestInquiries,
+            account_id
         }
     };
 }
@@ -45,31 +33,7 @@ export function requestInquiriesUpdate(
         BunqJSClient.api.requestInquiry
             .list(userId, accountId, options)
             .then(requestInquiries => {
-                // if we have a newer/older id we need to trigger a different event
-                if (options.newer_id && options.newer_id !== false) {
-                    dispatch(
-                        requestInquiriesSetInfo(
-                            requestInquiries,
-                            accountId,
-                            options.newer_id,
-                            false
-                        )
-                    );
-                } else if (options.older_id && options.older_id !== false) {
-                    dispatch(
-                        requestInquiriesSetInfo(
-                            requestInquiries,
-                            accountId,
-                            false,
-                            options.older_id
-                        )
-                    );
-                } else {
-                    dispatch(
-                        requestInquiriesSetInfo(requestInquiries, accountId)
-                    );
-                }
-
+                dispatch(requestInquiriesSetInfo(requestInquiries, accountId));
                 dispatch(requestInquiriesNotLoading());
             })
             .catch(error => {
