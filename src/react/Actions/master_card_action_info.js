@@ -28,7 +28,6 @@ export function masterCardActionInfoUpdate(
         BunqJSClient.api.masterCardAction
             .get(user_id, account_id, master_card_action_id)
             .then(masterCardActionInfo => {
-                console.log(masterCardActionInfo);
                 // update this item in the payments list and the stored data
                 dispatch(
                     masterCardActionsSetInfo(
