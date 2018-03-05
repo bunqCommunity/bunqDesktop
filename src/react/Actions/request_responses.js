@@ -3,7 +3,8 @@ import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 export function requestResponsesSetInfo(
     requestResponses,
     account_id,
-    resetOldItems = false
+    resetOldItems = false,
+    BunqJSClient = false
 ) {
     const type = resetOldItems
         ? "REQUEST_RESPONSES_SET_INFO"
@@ -12,6 +13,7 @@ export function requestResponsesSetInfo(
     return {
         type: type,
         payload: {
+            BunqJSClient,
             requestResponses,
             account_id
         }
@@ -33,7 +35,7 @@ export function requestResponsesUpdate(
         BunqJSClient.api.requestResponse
             .list(userId, accountId, options)
             .then(requestResponses => {
-                dispatch(requestResponsesSetInfo(requestResponses, accountId));
+                dispatch(requestResponsesSetInfo(requestResponses, accountId, false, BunqJSClient));
                 dispatch(requestResponsesNotLoading());
             })
             .catch(error => {

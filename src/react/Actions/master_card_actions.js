@@ -3,7 +3,8 @@ import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 export function masterCardActionsSetInfo(
     masterCardActions,
     account_id,
-    resetOldItems = false
+    resetOldItems = false,
+    BunqJSClient = false
 ) {
     const type = resetOldItems
         ? "MASTER_CARD_ACTIONS_SET_INFO"
@@ -12,6 +13,7 @@ export function masterCardActionsSetInfo(
     return {
         type: type,
         payload: {
+            BunqJSClient,
             masterCardActions,
             account_id
         }
@@ -33,7 +35,14 @@ export function masterCardActionsUpdate(
         BunqJSClient.api.masterCardAction
             .list(userId, accountId, options)
             .then(masterCardActions => {
-                dispatch(masterCardActionsSetInfo(masterCardActions, accountId));
+                dispatch(
+                    masterCardActionsSetInfo(
+                        masterCardActions,
+                        accountId,
+                        false,
+                        BunqJSClient
+                    )
+                );
                 dispatch(masterCardActionsNotLoading());
             })
             .catch(error => {

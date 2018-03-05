@@ -3,7 +3,8 @@ import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 export function requestInquiriesSetInfo(
     requestInquiries,
     account_id,
-    resetOldItems = false
+    resetOldItems = false,
+    BunqJSClient = false
 ) {
     const type = resetOldItems
         ? "REQUEST_INQUIRIES_SET_INFO"
@@ -12,6 +13,7 @@ export function requestInquiriesSetInfo(
     return {
         type: type,
         payload: {
+            BunqJSClient,
             requestInquiries,
             account_id
         }

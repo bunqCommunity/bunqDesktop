@@ -2,12 +2,18 @@ import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
 export const STORED_PAYMENTS = "STORED_PAYMENTS";
 
-export function paymentsSetInfo(payments, account_id, resetOldItems = false) {
+export function paymentsSetInfo(
+    payments,
+    account_id,
+    resetOldItems = false,
+    BunqJSClient = false
+) {
     const type = resetOldItems ? "PAYMENTS_SET_INFO" : "PAYMENTS_UPDATE_INFO";
 
     return {
         type: type,
         payload: {
+            BunqJSClient,
             payments,
             account_id
         }
@@ -29,7 +35,9 @@ export function paymentInfoUpdate(
         BunqJSClient.api.payment
             .list(user_id, account_id, options)
             .then(payments => {
-                dispatch(paymentsSetInfo(payments, account_id));
+                dispatch(
+                    paymentsSetInfo(payments, account_id, false, BunqJSClient)
+                );
                 dispatch(paymentsNotLoading());
             })
             .catch(error => {

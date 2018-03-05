@@ -3,7 +3,8 @@ import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 export function bunqMeTabsSetInfo(
     bunqMeTabs,
     account_id,
-    resetOldItems = false
+    resetOldItems = false,
+    BunqJSClient = false
 ) {
     const type = resetOldItems
         ? "BUNQ_ME_TABS_SET_INFO"
@@ -12,6 +13,7 @@ export function bunqMeTabsSetInfo(
     return {
         type: type,
         payload: {
+            BunqJSClient,
             bunqMeTabs,
             account_id
         }
@@ -33,7 +35,14 @@ export function bunqMeTabsUpdate(
         BunqJSClient.api.bunqMeTabs
             .list(user_id, accountId, options)
             .then(bunqMeTabs => {
-                dispatch(bunqMeTabsSetInfo(bunqMeTabs, accountId));
+                dispatch(
+                    bunqMeTabsSetInfo(
+                        bunqMeTabs,
+                        accountId,
+                        false,
+                        BunqJSClient
+                    )
+                );
                 dispatch(bunqMeTabsNotLoading());
             })
             .catch(error => {
