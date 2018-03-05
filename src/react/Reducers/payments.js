@@ -1,3 +1,7 @@
+import MergeApiObjects from "../Helpers/MergeApiObjects";
+
+import { STORED_PAYMENTS } from "../Actions/payments";
+
 export const defaultState = {
     payments: [],
     account_id: false,
@@ -9,50 +13,40 @@ export const defaultState = {
 export default (state = defaultState, action) => {
     let payments = [...state.payments];
 
-    // check in what order payments are prepended/appended/overwritten
     switch (action.type) {
+        case "PAYMENTS_UPDATE_INFO":
         case "PAYMENTS_SET_INFO":
-            // overwrite current
-            payments = [...action.payload.payments];
-            break;
-        case "PAYMENTS_ADD_NEWER_INFO":
-            // add newer info to the beginning of the payments list
-            payments = [...action.payload.payments, ...state.payments];
-            break;
-        case "PAYMENTS_ADD_OLDER_INFO":
-            // add older info to the end of the payments list
-            payments = [...state.payments, ...action.payload.payments];
-            break;
-    }
+            // with a set info event or if account id changes we ignore the currently stored items
+            const ignoreOldItems =
+                action.type === "PAYMENTS_SET_INFO" ||
+                state.account_id !== action.payload.account_id;
 
-    switch (action.type) {
-        case "PAYMENTS_ADD_NEWER_INFO":
-        case "PAYMENTS_ADD_OLDER_INFO":
-        case "PAYMENTS_SET_INFO":
-            let newerId =
-                state.newer_id === false ||
-                state.newer_id < action.payload.newer_id
-                    ? action.payload.newer_id
-                    : state.newer_id;
+            const mergedInfo = MergeApiObjects(
+                "Payment",
+                action.payload.payments,
+                ignoreOldItems ? [] : payments
+            );
 
-            let olderId =
-                state.older_id === false ||
-                state.older_id > action.payload.older_id
-                    ? action.payload.older_id
-                    : state.older_id;
-
-            // this action overwrites previously stored IDs
-            if (action.type === "PAYMENTS_SET_INFO") {
-                newerId = action.payload.newer_id;
-                olderId = action.payload.older_id;
+            // store the data if we have access to the bunqjsclient
+            if (action.payload.BunqJSClient) {
+                action.payload.BunqJSClient.Session
+                    .storeEncryptedData(
+                        {
+                            items: mergedInfo.items,
+                            account_id: action.payload.account_id
+                        },
+                        STORED_PAYMENTS
+                    )
+                    .then(() => {})
+                    .catch(() => {});
             }
 
             return {
                 ...state,
-                payments: payments,
+                payments: mergedInfo.items,
                 account_id: action.payload.account_id,
-                newer_id: newerId,
-                older_id: olderId
+                newer_id: mergedInfo.newer_id,
+                older_id: mergedInfo.older_id
             };
 
         case "PAYMENTS_IS_LOADING":
