@@ -101,7 +101,7 @@ class MasterCardActionInfo extends React.Component {
                 </Grid>
             );
         } else {
-            const masterCardAction = masterCardActionInfo[0].MasterCardAction;
+            const masterCardAction = masterCardActionInfo.MasterCardAction;
             const paymentAmount = masterCardAction.amount_local.value;
             const paymentDate = humanReadableDate(masterCardAction.created);
             const formattedPaymentAmount = formatMoney(paymentAmount);

@@ -33,7 +33,12 @@ import { usersUpdate } from "../Actions/users";
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
 import { registrationClearUserInfo } from "../Actions/registration";
+
 import { loadStoredPayments } from "../Actions/payments";
+import { loadStoredBunqMeTabs } from "../Actions/bunq_me_tabs";
+import { loadStoredMasterCardActions } from "../Actions/master_card_actions";
+import { loadStoredRequestInquiries } from "../Actions/request_inquiries";
+import { loadStoredRequestResponses } from "../Actions/request_responses";
 
 import {
     registrationLoading,
@@ -283,6 +288,10 @@ class Layout extends React.Component {
         }
 
         this.props.loadStoredPayments();
+        this.props.loadStoredBunqMeTabs();
+        this.props.loadStoredMasterCardActions();
+        this.props.loadStoredRequestInquiries();
+        this.props.loadStoredRequestResponses();
 
         // setup finished with no errors
         this.props.applicationSetStatus("");
@@ -413,9 +422,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         userLogin: (userType, updated = false) =>
             dispatch(userLogin(BunqJSClient, userType, updated)),
 
-        // get latest user list from BunqJSClient
-        loadStoredPayments: () =>
-            dispatch(loadStoredPayments(BunqJSClient)),
+        loadStoredPayments: () => dispatch(loadStoredPayments(BunqJSClient)),
+        loadStoredBunqMeTabs: () =>
+            dispatch(loadStoredBunqMeTabs(BunqJSClient)),
+        loadStoredMasterCardActions: () =>
+            dispatch(loadStoredMasterCardActions(BunqJSClient)),
+        loadStoredRequestInquiries: () =>
+            dispatch(loadStoredRequestInquiries(BunqJSClient)),
+        loadStoredRequestResponses: () =>
+            dispatch(loadStoredRequestResponses(BunqJSClient)),
 
         // functions to clear user data
         registrationClearUserInfo: () => dispatch(registrationClearUserInfo())

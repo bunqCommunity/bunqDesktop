@@ -1,4 +1,5 @@
 import MergeApiObjects from "../Helpers/MergeApiObjects";
+import { STORED_REQUEST_INQUIRIES } from "../Actions/request_inquiries";
 
 export const defaultState = {
     request_inquiries: [],
@@ -24,6 +25,20 @@ export default (state = defaultState, action) => {
                 action.payload.requestInquiries,
                 ignoreOldItems ? [] : request_inquiries
             );
+
+            // store the data if we have access to the bunqjsclient
+            if (action.payload.BunqJSClient) {
+                action.payload.BunqJSClient.Session
+                    .storeEncryptedData(
+                        {
+                            items: mergedInfo.items,
+                            account_id: action.payload.account_id
+                        },
+                        STORED_REQUEST_INQUIRIES
+                    )
+                    .then(() => {})
+                    .catch(() => {});
+            }
 
             return {
                 ...state,

@@ -1,4 +1,5 @@
 import MergeApiObjects from "../Helpers/MergeApiObjects";
+import { STORED_BUNQ_ME_TABS } from "../Actions/bunq_me_tabs";
 
 export const defaultState = {
     bunq_me_tabs: [],
@@ -24,6 +25,20 @@ export default (state = defaultState, action) => {
                 action.payload.bunqMeTabs,
                 ignoreOldItems ? [] : bunq_me_tabs
             );
+
+            // store the data if we have access to the bunqjsclient
+            if (action.payload.BunqJSClient) {
+                action.payload.BunqJSClient.Session
+                    .storeEncryptedData(
+                        {
+                            items: mergedInfo.items,
+                            account_id: action.payload.account_id
+                        },
+                        STORED_BUNQ_ME_TABS
+                    )
+                    .then(() => {})
+                    .catch(() => {});
+            }
 
             return {
                 ...state,

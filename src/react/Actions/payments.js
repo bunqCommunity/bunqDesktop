@@ -1,6 +1,6 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
-export const STORED_PAYMENTS = "STORED_PAYMENTS";
+export const STORED_PAYMENTS = "BUNQDESKTOP_STORED_PAYMENTS";
 
 export function paymentsSetInfo(
     payments,
@@ -17,6 +17,18 @@ export function paymentsSetInfo(
             payments,
             account_id
         }
+    };
+}
+
+export function loadStoredPayments(BunqJSClient) {
+    return dispatch => {
+        BunqJSClient.Session
+            .loadEncryptedData(STORED_PAYMENTS)
+            .then(data => {
+                console.log("payments", data);
+                dispatch(paymentsSetInfo(data.items, data.account_id));
+            })
+            .catch(error => {});
     };
 }
 
@@ -42,23 +54,6 @@ export function paymentInfoUpdate(
             })
             .catch(error => {
                 dispatch(paymentsNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We failed to load the payments for this monetary account"
-                );
-            });
-    };
-}
-
-export function loadStoredPayments(BunqJSClient) {
-    return dispatch => {
-        BunqJSClient.Session
-            .loadEncryptedData(STORED_PAYMENTS)
-            .then(payments => {
-                console.log(payments);
-            })
-            .catch(error => {
                 BunqErrorHandler(
                     dispatch,
                     error,

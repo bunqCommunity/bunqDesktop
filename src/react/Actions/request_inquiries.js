@@ -1,5 +1,7 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
+export const STORED_REQUEST_INQUIRIES = "BUNQDESKTOP_REQUEST_INQUIRIES";
+
 export function requestInquiriesSetInfo(
     requestInquiries,
     account_id,
@@ -20,6 +22,18 @@ export function requestInquiriesSetInfo(
     };
 }
 
+export function loadStoredRequestInquiries(BunqJSClient) {
+    return dispatch => {
+        BunqJSClient.Session
+            .loadEncryptedData(STORED_REQUEST_INQUIRIES)
+            .then(data => {
+                console.log("request inquiries", data);
+                dispatch(requestInquiriesSetInfo(data.items, data.account_id));
+            })
+            .catch(error => {});
+    };
+}
+
 export function requestInquiriesUpdate(
     BunqJSClient,
     userId,
@@ -35,7 +49,14 @@ export function requestInquiriesUpdate(
         BunqJSClient.api.requestInquiry
             .list(userId, accountId, options)
             .then(requestInquiries => {
-                dispatch(requestInquiriesSetInfo(requestInquiries, accountId));
+                dispatch(
+                    requestInquiriesSetInfo(
+                        requestInquiries,
+                        accountId,
+                        false,
+                        BunqJSClient
+                    )
+                );
                 dispatch(requestInquiriesNotLoading());
             })
             .catch(error => {

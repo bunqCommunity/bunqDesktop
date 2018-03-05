@@ -1,4 +1,5 @@
 import MergeApiObjects from "../Helpers/MergeApiObjects";
+import { STORED_REQUEST_RESPONSES } from "../Actions/request_responses";
 
 export const defaultState = {
     request_responses: [],
@@ -25,6 +26,20 @@ export default (state = defaultState, action) => {
                 ignoreOldItems ? [] : request_responses
             );
 
+            // store the data if we have access to the bunqjsclient
+            if (action.payload.BunqJSClient) {
+                action.payload.BunqJSClient.Session
+                    .storeEncryptedData(
+                        {
+                            items: mergedInfo.items,
+                            account_id: action.payload.account_id
+                        },
+                        STORED_REQUEST_RESPONSES
+                    )
+                    .then(() => {})
+                    .catch(() => {});
+            }
+
             return {
                 ...state,
                 request_responses: mergedInfo.items,
@@ -32,7 +47,6 @@ export default (state = defaultState, action) => {
                 newer_id: mergedInfo.newer_id,
                 older_id: mergedInfo.older_id
             };
-
 
         case "REQUEST_RESPONSES_IS_LOADING":
             return {

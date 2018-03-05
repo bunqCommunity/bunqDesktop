@@ -1,5 +1,7 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
+export const STORED_MASTER_CARD_ACTIONS = "BUNQDESKTOP_MASTER_CARD_ACTIONS";
+
 export function masterCardActionsSetInfo(
     masterCardActions,
     account_id,
@@ -17,6 +19,18 @@ export function masterCardActionsSetInfo(
             masterCardActions,
             account_id
         }
+    };
+}
+
+export function loadStoredMasterCardActions(BunqJSClient) {
+    return dispatch => {
+        BunqJSClient.Session
+            .loadEncryptedData(STORED_MASTER_CARD_ACTIONS)
+            .then(data => {
+                console.log("master card actions", data);
+                dispatch(masterCardActionsSetInfo(data.items, data.account_id));
+            })
+            .catch(error => {});
     };
 }
 

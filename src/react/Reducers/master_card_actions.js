@@ -1,4 +1,5 @@
 import MergeApiObjects from "../Helpers/MergeApiObjects";
+import { STORED_MASTER_CARD_ACTIONS } from "../Actions/master_card_actions";
 
 export const defaultState = {
     master_card_actions: [],
@@ -24,6 +25,20 @@ export default (state = defaultState, action) => {
                 action.payload.masterCardActions,
                 ignoreOldItems ? [] : master_card_actions
             );
+
+            // store the data if we have access to the bunqjsclient
+            if (action.payload.BunqJSClient) {
+                action.payload.BunqJSClient.Session
+                    .storeEncryptedData(
+                        {
+                            items: mergedInfo.items,
+                            account_id: action.payload.account_id
+                        },
+                        STORED_MASTER_CARD_ACTIONS
+                    )
+                    .then(() => {})
+                    .catch(() => {});
+            }
 
             return {
                 ...state,
