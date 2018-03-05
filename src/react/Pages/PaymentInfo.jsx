@@ -68,7 +68,11 @@ class PaymentInfo extends React.Component {
     }
 
     render() {
-        const { accountsSelectedAccount, payment, paymentLoading } = this.props;
+        const {
+            accountsSelectedAccount,
+            paymentInfo,
+            paymentLoading
+        } = this.props;
         const paramAccountId = this.props.match.params.accountId;
 
         // we require a selected account before we can display payment information
@@ -78,7 +82,7 @@ class PaymentInfo extends React.Component {
         }
 
         let content;
-        if (payment === false || paymentLoading === true) {
+        if (paymentInfo === false || paymentLoading === true) {
             content = (
                 <Grid container spacing={24} justify={"center"}>
                     <Grid item xs={12}>
@@ -89,6 +93,7 @@ class PaymentInfo extends React.Component {
                 </Grid>
             );
         } else {
+            const payment = paymentInfo.Payment;
             const paymentDescription = payment.description;
             const paymentDate = humanReadableDate(payment.updated);
             const paymentAmount = payment.amount.value;
@@ -195,7 +200,7 @@ class PaymentInfo extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-        payment: state.payment_info.payment,
+        paymentInfo: state.payment_info.payment,
         paymentLoading: state.payment_info.loading,
         accountsSelectedAccount: state.accounts.selectedAccount,
         accounts: state.accounts.accounts
