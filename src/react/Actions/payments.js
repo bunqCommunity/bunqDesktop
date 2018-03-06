@@ -1,29 +1,34 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
+export const STORED_PAYMENTS = "BUNQDESKTOP_STORED_PAYMENTS";
+
 export function paymentsSetInfo(
     payments,
     account_id,
-    newer = false,
-    older = false
+    resetOldItems = false,
+    BunqJSClient = false
 ) {
-    // get the newer and older id from the list
-    const { 0: newerItem, [payments.length - 1]: olderItem } = payments;
-
-    let type = "PAYMENTS_SET_INFO";
-    if (newer !== false) {
-        type = "PAYMENTS_ADD_NEWER_INFO";
-    } else if (older !== false) {
-        type = "PAYMENTS_ADD_OLDER_INFO";
-    }
+    const type = resetOldItems ? "PAYMENTS_SET_INFO" : "PAYMENTS_UPDATE_INFO";
 
     return {
         type: type,
         payload: {
+            BunqJSClient,
             payments,
-            account_id,
-            newer_id: newerItem ? newerItem.Payment.id : newer,
-            older_id: olderItem ? olderItem.Payment.id : older
+            account_id
         }
+    };
+}
+
+export function loadStoredPayments(BunqJSClient) {
+    return dispatch => {
+        BunqJSClient.Session
+            .loadEncryptedData(STORED_PAYMENTS)
+            .then(data => {
+                console.log("payments", data);
+                dispatch(paymentsSetInfo(data.items, data.account_id));
+            })
+            .catch(error => {});
     };
 }
 
@@ -43,29 +48,9 @@ export function paymentInfoUpdate(
         BunqJSClient.api.payment
             .list(user_id, account_id, options)
             .then(payments => {
-                // if we have a newer/older id we need to trigger a different event
-                if (options.newer_id && options.newer_id !== false) {
-                    dispatch(
-                        paymentsSetInfo(
-                            payments,
-                            account_id,
-                            options.newer_id,
-                            false
-                        )
-                    );
-                } else if (options.older_id && options.older_id !== false) {
-                    dispatch(
-                        paymentsSetInfo(
-                            payments,
-                            account_id,
-                            false,
-                            options.older_id
-                        )
-                    );
-                } else {
-                    dispatch(paymentsSetInfo(payments, account_id));
-                }
-
+                dispatch(
+                    paymentsSetInfo(payments, account_id, false, BunqJSClient)
+                );
                 dispatch(paymentsNotLoading());
             })
             .catch(error => {

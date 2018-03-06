@@ -32,14 +32,20 @@ import { userLogin } from "../Actions/user.js";
 import { usersUpdate } from "../Actions/users";
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
+import { registrationClearUserInfo } from "../Actions/registration";
+
+import { loadStoredPayments } from "../Actions/payments";
+import { loadStoredBunqMeTabs } from "../Actions/bunq_me_tabs";
+import { loadStoredMasterCardActions } from "../Actions/master_card_actions";
+import { loadStoredRequestInquiries } from "../Actions/request_inquiries";
+import { loadStoredRequestResponses } from "../Actions/request_responses";
+
 import {
     registrationLoading,
     registrationNotLoading,
     registrationClearApiKey
 } from "../Actions/registration";
 import OptionsDrawer from "./OptionsDrawer";
-
-import { registrationClearUserInfo } from "../Actions/registration";
 
 const styles = theme => ({
     contentContainer: {
@@ -281,6 +287,12 @@ class Layout extends React.Component {
             throw exception;
         }
 
+        this.props.loadStoredPayments();
+        this.props.loadStoredBunqMeTabs();
+        this.props.loadStoredMasterCardActions();
+        this.props.loadStoredRequestInquiries();
+        this.props.loadStoredRequestResponses();
+
         // setup finished with no errors
         this.props.applicationSetStatus("");
         this.props.usersUpdate(true);
@@ -408,6 +420,16 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // login the user with a specific type from the list
         userLogin: (userType, updated = false) =>
             dispatch(userLogin(BunqJSClient, userType, updated)),
+
+        loadStoredPayments: () => dispatch(loadStoredPayments(BunqJSClient)),
+        loadStoredBunqMeTabs: () =>
+            dispatch(loadStoredBunqMeTabs(BunqJSClient)),
+        loadStoredMasterCardActions: () =>
+            dispatch(loadStoredMasterCardActions(BunqJSClient)),
+        loadStoredRequestInquiries: () =>
+            dispatch(loadStoredRequestInquiries(BunqJSClient)),
+        loadStoredRequestResponses: () =>
+            dispatch(loadStoredRequestResponses(BunqJSClient)),
 
         // functions to clear user data
         registrationClearUserInfo: () => dispatch(registrationClearUserInfo())
