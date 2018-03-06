@@ -1,15 +1,19 @@
+import React from "react";
 import Avatar from "material-ui/Avatar";
 import Chip from "material-ui/Chip";
 import Icon from "material-ui/Icon";
 
 export default props => {
-    const { category } = props;
+    const {
+        category,
+        style = {
+            margin: 6
+        }
+    } = props;
 
     return (
         <Chip
-            // style={{
-            //     backgroundColor: category.color
-            // }}
+            style={style}
             label={category.label}
             onDelete={console.log}
             avatar={
@@ -20,8 +24,8 @@ export default props => {
                 >
                     <Icon
                         style={{
-                            height: 23,
-                            width: 23
+                            height: 24,
+                            width: 24
                         }}
                     >
                         {category.icon}

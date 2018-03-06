@@ -15,10 +15,30 @@ const categoriesTest = {
         label: "Custom category",
         color: "#64ffa2",
         icon: "star"
+    },
+    randomId2: {
+        id: "randomId2",
+        label: "Gifts",
+        color: "#31acff",
+        icon: "credit_card"
+    },
+    randomId3: {
+        id: "randomId3",
+        label: "Rent",
+        color: "#ff0009",
+        icon: "home"
     }
 };
 const categoryConnectionsTest = {
     randomId: {
+        Payment: [79695, 79693],
+        BunqMeTab: [159, 149]
+    },
+    randomId2: {
+        Payment: [79695, 79693],
+        BunqMeTab: [159, 149]
+    },
+    randomId3: {
         Payment: [79695, 79693],
         BunqMeTab: [159, 149]
     }

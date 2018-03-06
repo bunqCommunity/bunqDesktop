@@ -17,9 +17,10 @@ import CategoryHelper from "../Helpers/CategoryHelper";
 
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import TransactionHeader from "../Components/TransactionHeader";
-import CategoryChip from "../Components/CategoryChip";
+import CategoryChip from "../Components/Categories/CategoryChip";
 
 import { paymentsUpdate } from "../Actions/payment_info";
+import CategoryChips from "../Components/Categories/CategoryChips";
 
 const styles = {
     btn: {},
@@ -111,10 +112,6 @@ class PaymentInfo extends React.Component {
                 payment.id
             );
 
-            const categoryList = categories.map(category => {
-                return <CategoryChip category={category} />;
-            });
-
             content = (
                 <Grid
                     container
@@ -140,8 +137,6 @@ class PaymentInfo extends React.Component {
                         >
                             {formattedPaymentAmount}
                         </MoneyAmountLabel>
-
-                        {categoryList}
 
                         <Typography
                             style={{ textAlign: "center" }}
@@ -185,6 +180,15 @@ class PaymentInfo extends React.Component {
                                 />
                             </ListItem>
                             <Divider />
+
+                            <CategoryChips
+                                categories={this.props.categories}
+                                category_connections={
+                                    this.props.category_connections
+                                }
+                                type={"Payment"}
+                                payment={payment}
+                            />
                         </List>
                     </Grid>
                 </Grid>
