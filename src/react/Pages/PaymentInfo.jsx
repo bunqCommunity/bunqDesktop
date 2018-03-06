@@ -13,8 +13,11 @@ import Typography from "material-ui/Typography";
 
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import { paymentText, paymentTypeParser } from "../Helpers/StatusTexts";
+import CategoryHelper from "../Helpers/CategoryHelper";
+
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import TransactionHeader from "../Components/TransactionHeader";
+import CategoryChip from "../Components/CategoryChip";
 
 import { paymentsUpdate } from "../Actions/payment_info";
 
@@ -101,6 +104,17 @@ class PaymentInfo extends React.Component {
             const paymentLabel = paymentText(payment);
             const counterPartyIban = payment.counterparty_alias.iban;
 
+            const categories = CategoryHelper(
+                this.props.categories,
+                this.props.category_connections,
+                "Payment",
+                payment.id
+            );
+
+            const categoryList = categories.map(category => {
+                return <CategoryChip category={category} />;
+            });
+
             content = (
                 <Grid
                     container
@@ -126,6 +140,8 @@ class PaymentInfo extends React.Component {
                         >
                             {formattedPaymentAmount}
                         </MoneyAmountLabel>
+
+                        {categoryList}
 
                         <Typography
                             style={{ textAlign: "center" }}
@@ -200,6 +216,10 @@ class PaymentInfo extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+
+        categories: state.categories.categories,
+        category_connections: state.categories.category_connections,
+
         paymentInfo: state.payment_info.payment,
         paymentLoading: state.payment_info.loading,
         accountsSelectedAccount: state.accounts.selectedAccount,
