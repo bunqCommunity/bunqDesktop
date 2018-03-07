@@ -85,16 +85,18 @@ class LoadOlderButton extends React.Component {
                 style={{
                     display: "flex",
                     justifyContent: "center",
-                    margin: 10
+                    margin: 10,
+                    ...this.props.wrapperStyle
                 }}
             >
                 {loadingState ? (
-                    <CircularProgress />
+                    <CircularProgress style={this.props.loaderStyle} />
                 ) : (
                     <Button
-                        fab
+                        raised
                         color="primary"
-                        aria-label="add"
+                        aria-label="Load more items"
+                        style={this.props.buttonStyle}
                         onClick={this.update}
                         disabled={loadingState}
                     >
@@ -107,7 +109,10 @@ class LoadOlderButton extends React.Component {
 }
 
 LoadOlderButton.defaultProps = {
-    updateExternal: false
+    updateExternal: false,
+    wrapperStyle: {},
+    loaderStyle: {},
+    buttonStyle: {}
 };
 
 const mapStateToProps = state => {

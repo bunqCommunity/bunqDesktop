@@ -333,7 +333,7 @@ class Layout extends React.Component {
             // modal and snackbar helpers
             openModal: this.props.openModal,
             openSnackbar: this.props.openSnackbar,
-            // helps all child components to prevent calls before the BunqJSClietn is finished setting up
+            // helps all child components to prevent calls before the BunqJSClient is finished setting up
             initialBunqConnect: this.state.initialBunqConnect
         };
 
@@ -342,7 +342,7 @@ class Layout extends React.Component {
             <MuiThemeProvider theme={ThemeList[this.props.theme]}>
                 <main className={classes.main}>
                     <Header />
-                    <MainDrawer />
+                    <MainDrawer location={this.props.location} />
                     <OptionsDrawer themeList={ThemeList} />
                     <Grid
                         container
@@ -381,8 +381,7 @@ class Layout extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        theme: state.theme.theme,
-
+        theme: state.options.theme,
         checkInactivity: state.options.check_inactivity,
         inactivityCheckDuration: state.options.inactivity_check_duration,
 
