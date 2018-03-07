@@ -15,12 +15,12 @@ import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import { paymentText, paymentTypeParser } from "../Helpers/StatusTexts";
 import CategoryHelper from "../Helpers/CategoryHelper";
 
+import CategorySelector from "../Components/Categories/CategorySelector";
+import CategoryChips from "../Components/Categories/CategoryChips";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import TransactionHeader from "../Components/TransactionHeader";
-import CategoryChip from "../Components/Categories/CategoryChip";
 
 import { paymentsUpdate } from "../Actions/payment_info";
-import CategoryChips from "../Components/Categories/CategoryChips";
 
 const styles = {
     btn: {},
@@ -174,10 +174,7 @@ class PaymentInfo extends React.Component {
                             </ListItem>
                             <Divider />
 
-                            <CategoryChips
-                                type={"Payment"}
-                                id={payment.id}
-                            />
+                            <CategoryChips type={"Payment"} id={payment.id} />
                         </List>
                     </Grid>
                 </Grid>
@@ -201,6 +198,7 @@ class PaymentInfo extends React.Component {
                 <Grid item xs={12} sm={8}>
                     <Paper style={styles.paper}>{content}</Paper>
                 </Grid>
+                <CategorySelector BunqJSClient={this.props.BunqJSClient} />
             </Grid>
         );
     }

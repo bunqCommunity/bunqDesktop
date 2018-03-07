@@ -7,6 +7,7 @@ import List, { ListItem, ListItemText, ListItemIcon } from "material-ui/List";
 import Hidden from "material-ui/Hidden";
 import Typography from "material-ui/Typography";
 import Avatar from "material-ui/Avatar";
+import Divider from "material-ui/Divider";
 
 import PowerSettingsIcon from "material-ui-icons/PowerSettingsNew";
 import ArrowUpwardIcon from "material-ui-icons/ArrowUpward";
@@ -113,6 +114,7 @@ class MainDrawer extends React.Component {
                       text="bunq.me Requests"
                       location={this.props.location}
                   />,
+                  <Divider />,
                   <ListItemWrapper
                       to="/stats"
                       icon={TimeLineIcon}

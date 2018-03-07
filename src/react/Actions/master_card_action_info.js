@@ -32,7 +32,7 @@ export function masterCardActionInfoUpdate(
                 dispatch(
                     masterCardActionsSetInfo(
                         [masterCardActionInfo],
-                        account_id,
+                        parseInt(account_id),
                         false,
                         BunqJSClient
                     )
@@ -41,7 +41,7 @@ export function masterCardActionInfoUpdate(
                 dispatch(
                     masterCardActionSetInfo(
                         masterCardActionInfo,
-                        account_id,
+                        parseInt(account_id),
                         master_card_action_id
                     )
                 );
