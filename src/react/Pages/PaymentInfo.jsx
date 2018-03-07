@@ -105,13 +105,6 @@ class PaymentInfo extends React.Component {
             const paymentLabel = paymentText(payment);
             const counterPartyIban = payment.counterparty_alias.iban;
 
-            const categories = CategoryHelper(
-                this.props.categories,
-                this.props.category_connections,
-                "Payment",
-                payment.id
-            );
-
             content = (
                 <Grid
                     container
@@ -182,10 +175,6 @@ class PaymentInfo extends React.Component {
                             <Divider />
 
                             <CategoryChips
-                                categories={this.props.categories}
-                                category_connections={
-                                    this.props.category_connections
-                                }
                                 type={"Payment"}
                                 payment={payment}
                             />
@@ -220,9 +209,6 @@ class PaymentInfo extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-
-        categories: state.categories.categories,
-        category_connections: state.categories.category_connections,
 
         paymentInfo: state.payment_info.payment,
         paymentLoading: state.payment_info.loading,

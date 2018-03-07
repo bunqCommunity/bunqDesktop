@@ -25,7 +25,7 @@ const categoriesTest = {
     randomId3: {
         id: "randomId3",
         label: "Rent",
-        color: "#ff0009",
+        color: "#ff2c2c",
         icon: "home"
     }
 };
@@ -35,11 +35,11 @@ const categoryConnectionsTest = {
         BunqMeTab: [159, 149]
     },
     randomId2: {
-        Payment: [79695, 79693],
+        Payment: [79695],
         BunqMeTab: [159, 149]
     },
     randomId3: {
-        Payment: [79695, 79693],
+        Payment: [79693],
         BunqMeTab: [159, 149]
     }
 };
@@ -54,6 +54,7 @@ const categoryConnectionsStoredDefault =
 
 // construct the default state
 export const defaultState = {
+    last_update: new Date().getTime(),
     categories: categoriesStoredDefault,
     category_connections: categoryConnectionsStoredDefault
 };
@@ -67,6 +68,7 @@ export default function reducer(state = defaultState, action) {
             store.set(BUNQDESKTOP_CATEGORIES, action.payload.categories);
             return {
                 ...state,
+                last_update: new Date().getTime(),
                 categories: action.payload.categories
             };
 
@@ -85,6 +87,7 @@ export default function reducer(state = defaultState, action) {
             store.set(BUNQDESKTOP_CATEGORIES, action.payload.categories);
             return {
                 ...state,
+                last_update: new Date().getTime(),
                 categories: categories
             };
 
@@ -95,6 +98,7 @@ export default function reducer(state = defaultState, action) {
             );
             return {
                 ...state,
+                last_update: new Date().getTime(),
                 category_connections: action.payload.category_connections
             };
 
@@ -121,6 +125,7 @@ export default function reducer(state = defaultState, action) {
             store.set(BUNQDESKTOP_CATEGORY_CONNECTIONS, category_connections);
             return {
                 ...state,
+                last_update: new Date().getTime(),
                 category_connections: category_connections
             };
     }

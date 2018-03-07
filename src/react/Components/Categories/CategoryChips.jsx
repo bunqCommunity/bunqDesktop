@@ -1,6 +1,14 @@
 import React from "react";
+import { connect } from "react-redux";
 import CategoryChip from "./CategoryChip";
 import CategoryHelper from "../../Helpers/CategoryHelper";
+
+const style = {
+    // marginTop: 6,
+    flexWrap: "wrap",
+    display: "flex",
+    justifyContent: "center"
+};
 
 class CategoryChips extends React.Component {
     constructor(props, context) {
@@ -8,8 +16,21 @@ class CategoryChips extends React.Component {
         this.state = {};
     }
 
-    componentShouldUpdate() {
-        return true;
+    shouldComponentUpdate(nextProps, nextState, _) {
+        if (
+            this.props.categories_last_udate !== nextProps.categories_last_udate
+        ) {
+            console.log(1);
+            return true;
+        }
+
+        if (this.props.payment.id !== nextProps.payment.id) {
+            console.log(2);
+            return true;
+        }
+
+        console.log(3);
+        return false;
     }
 
     render() {
@@ -29,18 +50,27 @@ class CategoryChips extends React.Component {
             );
         });
 
-        return <div style={this.props.style}>{chips}</div>;
+        return <div style={{ ...style, ...this.props.style }}>{chips}</div>;
     }
 }
 
 CategoryChips.defaultProps = {
     chipStyle: {
-        margin: 6
+        margin: 5
     },
-    style: {
-        display: "flex",
-        justifyContent: "center"
-    }
+    style: style
 };
 
-export default CategoryChips;
+const mapStateToProps = state => {
+    return {
+        categories: state.categories.categories,
+        categories_last_udate: state.categories.last_update,
+        category_connections: state.categories.category_connections
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CategoryChips);

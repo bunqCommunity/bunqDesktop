@@ -9,8 +9,10 @@ import Divider from "material-ui/Divider";
 
 import { formatMoney } from "../../Helpers/Utils";
 import { requestResponseText } from "../../Helpers/StatusTexts";
+
 import NavLink from "../../Components/Routing/NavLink";
-import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
+import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
+import CategoryChips from "../Categories/CategoryChips";
 import MoneyAmountLabel from "../MoneyAmountLabel";
 
 const styles = {
@@ -79,6 +81,9 @@ class RequestResponseListItem extends React.Component {
                     </MoneyAmountLabel>
                 </ListItemSecondaryAction>
             </ListItem>,
+            <div>
+                <CategoryChips type={"RequestResponse"} payment={requestResponse} />
+            </div>,
             <Divider />
         ];
     }

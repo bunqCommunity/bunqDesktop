@@ -12,6 +12,7 @@ import { paymentText } from "../../Helpers/StatusTexts";
 import NavLink from "../Routing/NavLink";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 import MoneyAmountLabel from "../MoneyAmountLabel";
+import CategoryChips from "../Categories/CategoryChips";
 
 const styles = {
     smallAvatar: {
@@ -76,6 +77,9 @@ class PaymentListItem extends React.Component {
                     </MoneyAmountLabel>
                 </ListItemSecondaryAction>
             </ListItem>,
+            <div>
+                <CategoryChips type={"Payment"} payment={payment} />
+            </div>,
             <Divider />
         ];
     }

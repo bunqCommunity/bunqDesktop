@@ -16,6 +16,7 @@ import CopyIcon from "material-ui-icons/ContentCopy";
 import Share from "material-ui-icons/Share";
 
 import PaymentListItem from "./PaymentListItem";
+import CategoryChips from "../Categories/CategoryChips";
 import { humanReadableDate, formatMoney } from "../../Helpers/Utils";
 
 const styles = {
@@ -110,6 +111,9 @@ class BunqMeTabListItem extends React.Component {
                     </CopyToClipboard>
                 </ListItemSecondaryAction>
             </ListItem>,
+            <div>
+                <CategoryChips type={"BunqMeTab"} payment={bunqMeTab} />
+            </div>,
             <Collapse in={this.state.extraInfoOpen} unmountOnExit>
                 <ListItem dense>
                     <ListItemText primary={`Created`} secondary={createdDate} />
