@@ -27,8 +27,9 @@ export function loadStoredBunqMeTabs(BunqJSClient) {
         BunqJSClient.Session
             .loadEncryptedData(STORED_BUNQ_ME_TABS)
             .then(data => {
-                console.log("bunq me tabs", data);
-                dispatch(bunqMeTabsSetInfo(data.items, data.account_id));
+                if(data && data.items) {
+                    dispatch(bunqMeTabsSetInfo(data.items, data.account_id));
+                }
             })
             .catch(error => {});
     };

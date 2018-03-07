@@ -27,8 +27,9 @@ export function loadStoredMasterCardActions(BunqJSClient) {
         BunqJSClient.Session
             .loadEncryptedData(STORED_MASTER_CARD_ACTIONS)
             .then(data => {
-                console.log("master card actions", data);
-                dispatch(masterCardActionsSetInfo(data.items, data.account_id));
+                if(data && data.items) {
+                    dispatch(masterCardActionsSetInfo(data.items, data.account_id));
+                }
             })
             .catch(error => {});
     };

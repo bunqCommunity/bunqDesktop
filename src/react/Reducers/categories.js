@@ -31,15 +31,17 @@ const categoriesTest = {
 };
 const categoryConnectionsTest = {
     randomId: {
-        Payment: [79695, 79693],
+        Payment: [73704904, 79695, 79693],
+        MasterCardAction: [13924069],
         BunqMeTab: [159, 149]
     },
     randomId2: {
         Payment: [79695],
+        MasterCardAction: [13924069],
         BunqMeTab: [159, 149]
     },
     randomId3: {
-        Payment: [79693],
+        Payment: [73704904, 79693],
         BunqMeTab: [159, 149]
     }
 };

@@ -20,16 +20,13 @@ class CategoryChips extends React.Component {
         if (
             this.props.categories_last_udate !== nextProps.categories_last_udate
         ) {
-            console.log(1);
             return true;
         }
 
         if (this.props.id !== nextProps.id) {
-            console.log(2);
             return true;
         }
 
-        console.log(3);
         return false;
     }
 

@@ -27,8 +27,9 @@ export function loadStoredRequestResponses(BunqJSClient) {
         BunqJSClient.Session
             .loadEncryptedData(STORED_REQUEST_RESPONSES)
             .then(data => {
-                console.log("request responses", data);
-                dispatch(requestResponsesSetInfo(data.items, data.account_id));
+                if(data && data.items) {
+                    dispatch(requestResponsesSetInfo(data.items, data.account_id));
+                }
             })
             .catch(error => {});
     };
