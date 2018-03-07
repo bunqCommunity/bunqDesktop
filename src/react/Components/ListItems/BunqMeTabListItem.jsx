@@ -112,7 +112,7 @@ class BunqMeTabListItem extends React.Component {
                 </ListItemSecondaryAction>
             </ListItem>,
             <div>
-                <CategoryChips type={"BunqMeTab"} payment={bunqMeTab} />
+                <CategoryChips type={"BunqMeTab"} id={bunqMeTab.id} />
             </div>,
             <Collapse in={this.state.extraInfoOpen} unmountOnExit>
                 <ListItem dense>

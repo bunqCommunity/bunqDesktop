@@ -81,7 +81,7 @@ class RequestInquiryListItem extends React.Component {
                 </ListItemSecondaryAction>
             </ListItem>,
             <div>
-                <CategoryChips type={"RequestInquiry"} payment={requestInquiry} />
+                <CategoryChips type={"RequestInquiry"} id={requestInquiry.id} />
             </div>,
             <Divider />
         ];

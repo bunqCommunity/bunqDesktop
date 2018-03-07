@@ -81,7 +81,7 @@ class MasterCardActionListItem extends React.Component {
             <div>
                 <CategoryChips
                     type={"MasterCardAction"}
-                    payment={masterCardAction}
+                    id={masterCardAction.id}
                 />
             </div>,
             <Divider />

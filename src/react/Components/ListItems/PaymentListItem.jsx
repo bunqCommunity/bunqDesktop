@@ -78,7 +78,7 @@ class PaymentListItem extends React.Component {
                 </ListItemSecondaryAction>
             </ListItem>,
             <div>
-                <CategoryChips type={"Payment"} payment={payment} />
+                <CategoryChips type={"Payment"} id={payment.id} />
             </div>,
             <Divider />
         ];

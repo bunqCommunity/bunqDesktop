@@ -82,7 +82,10 @@ class RequestResponseListItem extends React.Component {
                 </ListItemSecondaryAction>
             </ListItem>,
             <div>
-                <CategoryChips type={"RequestResponse"} payment={requestResponse} />
+                <CategoryChips
+                    type={"RequestResponse"}
+                    id={requestResponse.id}
+                />
             </div>,
             <Divider />
         ];

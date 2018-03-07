@@ -176,7 +176,7 @@ class PaymentInfo extends React.Component {
 
                             <CategoryChips
                                 type={"Payment"}
-                                payment={payment}
+                                id={payment.id}
                             />
                         </List>
                     </Grid>

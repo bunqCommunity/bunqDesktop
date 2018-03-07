@@ -24,7 +24,7 @@ class CategoryChips extends React.Component {
             return true;
         }
 
-        if (this.props.payment.id !== nextProps.payment.id) {
+        if (this.props.id !== nextProps.id) {
             console.log(2);
             return true;
         }
@@ -38,7 +38,7 @@ class CategoryChips extends React.Component {
             this.props.categories,
             this.props.category_connections,
             this.props.type,
-            this.props.payment.id
+            this.props.id
         );
 
         const chips = categories.map(category => {
