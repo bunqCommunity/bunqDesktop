@@ -71,7 +71,7 @@ class RequestResponseListItem extends React.Component {
                     />
                 </Avatar>
                 <ListItemText primary={displayName} secondary={paymentLabel} />
-                <ListItemSecondaryAction>
+                <ListItemSecondaryAction style={{ marginTop: -40 }}>
                     <MoneyAmountLabel
                         style={styles.moneyAmountLabel}
                         info={requestResponse}
@@ -80,13 +80,12 @@ class RequestResponseListItem extends React.Component {
                         {formattedPaymentAmount}
                     </MoneyAmountLabel>
                 </ListItemSecondaryAction>
-            </ListItem>,
-            <div>
                 <CategoryIcons
+                    style={{ marginTop: 26 }}
                     type={"RequestResponse"}
                     id={requestResponse.id}
                 />
-            </div>,
+            </ListItem>,
             <Divider />
         ];
     }

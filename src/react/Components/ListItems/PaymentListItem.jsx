@@ -67,7 +67,7 @@ class PaymentListItem extends React.Component {
                     primary={displayName}
                     secondary={paymentTypeLabel}
                 />
-                <ListItemSecondaryAction>
+                <ListItemSecondaryAction style={{ marginTop: -40 }}>
                     <MoneyAmountLabel
                         style={styles.moneyAmountLabel}
                         info={payment}
@@ -76,10 +76,12 @@ class PaymentListItem extends React.Component {
                         {formattedPaymentAmount}
                     </MoneyAmountLabel>
                 </ListItemSecondaryAction>
+                <CategoryIcons
+                    style={{ marginTop: 26 }}
+                    type={"Payment"}
+                    id={payment.id}
+                />
             </ListItem>,
-            <div>
-                <CategoryIcons type={"Payment"} id={payment.id} />
-            </div>,
             <Divider />
         ];
     }

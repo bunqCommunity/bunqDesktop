@@ -4,7 +4,7 @@ import Icon from "material-ui/Icon";
 import CategoryHelper from "../../Helpers/CategoryHelper";
 
 const style = {
-    marginTop: -10,
+    marginTop: -20,
     flexWrap: "wrap",
     display: "flex",
     justifyContent: "flex-end"
@@ -38,10 +38,14 @@ class CategoryIcons extends React.Component {
             this.props.id
         );
 
+        if (categories.length === 0) return null;
+
         const chips = categories.map(category => {
             return (
-                <div style={{width: 32}}>
-                    <Icon style={{color: category.color}}>{category.icon}</Icon>
+                <div style={{ width: 32 }}>
+                    <Icon style={{ color: category.color }}>
+                        {category.icon}
+                    </Icon>
                 </div>
             );
         });

@@ -100,7 +100,7 @@ class BunqMeTabListItem extends React.Component {
                     primary={primaryText}
                     secondary={bunqMeTab.bunqme_tab_entry.description}
                 />
-                <ListItemSecondaryAction>
+                <ListItemSecondaryAction style={{ marginTop: -40 }}>
                     <CopyToClipboard
                         text={shareUrl}
                         onCopy={this.props.copiedValue("the bunq.me tab url")}
@@ -110,10 +110,12 @@ class BunqMeTabListItem extends React.Component {
                         </IconButton>
                     </CopyToClipboard>
                 </ListItemSecondaryAction>
+                <CategoryIcons
+                    style={{ marginTop: 26 }}
+                    type={"BunqMeTab"}
+                    id={bunqMeTab.id}
+                />
             </ListItem>,
-            <div>
-                <CategoryIcons type={"BunqMeTab"} id={bunqMeTab.id} />
-            </div>,
             <Collapse in={this.state.extraInfoOpen} unmountOnExit>
                 <ListItem dense>
                     <ListItemText primary={`Created`} secondary={createdDate} />

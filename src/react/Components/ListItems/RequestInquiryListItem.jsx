@@ -70,7 +70,7 @@ class RequestInquiryListItem extends React.Component {
                     />
                 </Avatar>
                 <ListItemText primary={displayName} secondary={paymentLabel} />
-                <ListItemSecondaryAction>
+                <ListItemSecondaryAction style={{ marginTop: -40 }}>
                     <MoneyAmountLabel
                         style={styles.moneyAmountLabel}
                         info={requestInquiry}
@@ -79,10 +79,12 @@ class RequestInquiryListItem extends React.Component {
                         {formattedPaymentAmount}
                     </MoneyAmountLabel>
                 </ListItemSecondaryAction>
+                <CategoryIcons
+                    style={{ marginTop: 26 }}
+                    type={"RequestInquiry"}
+                    id={requestInquiry.id}
+                />
             </ListItem>,
-            <div>
-                <CategoryIcons type={"RequestInquiry"} id={requestInquiry.id} />
-            </div>,
             <Divider />
         ];
     }

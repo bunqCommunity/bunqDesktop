@@ -68,7 +68,7 @@ class MasterCardActionListItem extends React.Component {
                     primary={displayName}
                     secondary={masterCardActionParser(masterCardAction)}
                 />
-                <ListItemSecondaryAction>
+                <ListItemSecondaryAction style={{ marginTop: -40 }}>
                     <MoneyAmountLabel
                         style={styles.moneyAmountLabel}
                         info={masterCardAction}
@@ -77,13 +77,13 @@ class MasterCardActionListItem extends React.Component {
                         {formattedPaymentAmount}
                     </MoneyAmountLabel>
                 </ListItemSecondaryAction>
-            </ListItem>,
-            <div>
                 <CategoryIcons
+                    style={{ marginTop: 26 }}
                     type={"MasterCardAction"}
                     id={masterCardAction.id}
                 />
-            </div>,
+            </ListItem>,
+
             <Divider />
         ];
     }
