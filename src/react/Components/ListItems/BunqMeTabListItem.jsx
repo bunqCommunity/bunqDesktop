@@ -16,7 +16,7 @@ import CopyIcon from "material-ui-icons/ContentCopy";
 import Share from "material-ui-icons/Share";
 
 import PaymentListItem from "./PaymentListItem";
-import CategoryChips from "../Categories/CategoryChips";
+import CategoryIcons from "../Categories/CategoryIcons";
 import { humanReadableDate, formatMoney } from "../../Helpers/Utils";
 
 const styles = {
@@ -112,7 +112,7 @@ class BunqMeTabListItem extends React.Component {
                 </ListItemSecondaryAction>
             </ListItem>,
             <div>
-                <CategoryChips type={"BunqMeTab"} id={bunqMeTab.id} />
+                <CategoryIcons type={"BunqMeTab"} id={bunqMeTab.id} />
             </div>,
             <Collapse in={this.state.extraInfoOpen} unmountOnExit>
                 <ListItem dense>

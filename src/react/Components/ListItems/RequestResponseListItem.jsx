@@ -12,7 +12,7 @@ import { requestResponseText } from "../../Helpers/StatusTexts";
 
 import NavLink from "../../Components/Routing/NavLink";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
-import CategoryChips from "../Categories/CategoryChips";
+import CategoryIcons from "../Categories/CategoryIcons";
 import MoneyAmountLabel from "../MoneyAmountLabel";
 
 const styles = {
@@ -82,7 +82,7 @@ class RequestResponseListItem extends React.Component {
                 </ListItemSecondaryAction>
             </ListItem>,
             <div>
-                <CategoryChips
+                <CategoryIcons
                     type={"RequestResponse"}
                     id={requestResponse.id}
                 />

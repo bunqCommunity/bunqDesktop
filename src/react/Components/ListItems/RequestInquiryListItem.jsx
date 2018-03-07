@@ -11,7 +11,7 @@ import { formatMoney } from "../../Helpers/Utils";
 import { requestInquiryText } from "../../Helpers/StatusTexts";
 import NavLink from "../../Components/Routing/NavLink";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
-import CategoryChips from "../Categories/CategoryChips";
+import CategoryIcons from "../Categories/CategoryIcons";
 import MoneyAmountLabel from "../MoneyAmountLabel";
 
 const styles = {
@@ -81,7 +81,7 @@ class RequestInquiryListItem extends React.Component {
                 </ListItemSecondaryAction>
             </ListItem>,
             <div>
-                <CategoryChips type={"RequestInquiry"} id={requestInquiry.id} />
+                <CategoryIcons type={"RequestInquiry"} id={requestInquiry.id} />
             </div>,
             <Divider />
         ];

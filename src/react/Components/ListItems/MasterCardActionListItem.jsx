@@ -10,7 +10,7 @@ import Divider from "material-ui/Divider";
 
 import NavLink from "../../Components/Routing/NavLink";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
-import CategoryChips from "../Categories/CategoryChips";
+import CategoryIcons from "../Categories/CategoryIcons";
 import MoneyAmountLabel from "../MoneyAmountLabel";
 
 import { masterCardActionParser } from "../../Helpers/StatusTexts";
@@ -79,7 +79,7 @@ class MasterCardActionListItem extends React.Component {
                 </ListItemSecondaryAction>
             </ListItem>,
             <div>
-                <CategoryChips
+                <CategoryIcons
                     type={"MasterCardAction"}
                     id={masterCardAction.id}
                 />

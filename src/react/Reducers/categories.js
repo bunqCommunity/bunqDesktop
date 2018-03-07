@@ -27,22 +27,33 @@ const categoriesTest = {
         label: "Rent",
         color: "#ff2c2c",
         icon: "home"
+    },
+    randomId4: {
+        id: "randomId4",
+        label: "Food",
+        color: "#fff44a",
+        icon: "restaurant"
     }
 };
 const categoryConnectionsTest = {
     randomId: {
-        Payment: [73704904, 79695, 79693],
+        Payment: [72971618, 79695, 79693],
         MasterCardAction: [13924069],
         BunqMeTab: [159, 149]
     },
     randomId2: {
-        Payment: [79695],
+        Payment: [72971618, 79695],
         MasterCardAction: [13924069],
         BunqMeTab: [159, 149]
     },
     randomId3: {
-        Payment: [73704904, 79693],
+        Payment: [72971618, 79693],
+        MasterCardAction: [13924069],
         BunqMeTab: [159, 149]
+    },
+    randomId4: {
+        Payment: [72971618],
+        MasterCardAction: [13924069]
     }
 };
 
