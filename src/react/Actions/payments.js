@@ -44,6 +44,7 @@ export function paymentInfoUpdate(
 ) {
     return dispatch => {
         dispatch(paymentsLoading());
+
         BunqJSClient.api.payment
             .list(user_id, account_id, options)
             .then(payments => {
