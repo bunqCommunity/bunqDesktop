@@ -172,9 +172,6 @@ class PaymentInfo extends React.Component {
                                     secondary={counterPartyIban}
                                 />
                             </ListItem>
-                            <Divider />
-
-                            <CategoryChips type={"Payment"} id={payment.id} />
                         </List>
                     </Grid>
                 </Grid>
@@ -198,7 +195,16 @@ class PaymentInfo extends React.Component {
                 <Grid item xs={12} sm={8}>
                     <Paper style={styles.paper}>{content}</Paper>
                 </Grid>
-                <CategorySelector BunqJSClient={this.props.BunqJSClient} />
+
+                <Grid item xs={12} sm={2} />
+                <Grid item xs={12} sm={2} />
+                <Grid item xs={12} sm={8}>
+                    <CategorySelector
+                        item={paymentInfo}
+                        type={"Payment"}
+                        BunqJSClient={this.props.BunqJSClient}
+                    />
+                </Grid>
             </Grid>
         );
     }

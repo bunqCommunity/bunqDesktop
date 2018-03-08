@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import CategoryChip from "./CategoryChip";
 import CategoryHelper from "../../Helpers/CategoryHelper";
+import PrioritySorter from "./PrioritySorter";
 
 const style = {
     // marginTop: 6,
@@ -32,13 +33,22 @@ class CategoryChips extends React.Component {
 
     render() {
         const categories = CategoryHelper(
-            this.props.categories,
+            this.props.customCategories
+                ? this.props.customCategories
+                : this.props.categories,
             this.props.category_connections,
             this.props.type,
             this.props.id
         );
 
-        const chips = categories.map(category => {
+        // sort by priority
+        const sortedCategories = PrioritySorter(categories);
+
+        // limit to 5 categories
+        sortedCategories.slice(0, 5);
+
+        // create a list of chips
+        const chips = sortedCategories.map(category => {
             return (
                 <CategoryChip
                     category={category}
@@ -55,6 +65,7 @@ CategoryChips.defaultProps = {
     chipStyle: {
         margin: 5
     },
+    customCategories: false,
     style: style
 };
 

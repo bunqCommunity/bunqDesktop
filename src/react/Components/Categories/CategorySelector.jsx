@@ -1,47 +1,48 @@
 import React from "react";
 import { connect } from "react-redux";
-import CategoryChip from "./CategoryChip";
+import Paper from "material-ui/Paper";
+
 import CategoryHelper from "../../Helpers/CategoryHelper";
+import CategoryChips from "./CategoryChips";
 
 class CategorySelector extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+        this.state = {
+            categories: {},
+            category_connections: {}
+        };
     }
 
-    // shouldComponentUpdate(nextProps, nextState, _) {
-    //     if (
-    //         this.props.categories_last_udate !== nextProps.categories_last_udate
-    //     ) {
-    //         return true;
-    //     }
-    //
-    //     if (this.props.id !== nextProps.id) {
-    //         return true;
-    //     }
-    //
-    //     return false;
-    // }
+    componentDidMount() {
+        // set the current categories in the state so we can work outside the app
+        this.setState({
+            categories: this.props.categories,
+            current_categories: this.props.category_connections
+        });
+    }
 
     render() {
+        const { item, type } = this.props;
+        if (!item[type]) return null;
+        const itemInfo = item[type];
+
         // const categories = CategoryHelper(
-        //     this.props.categories,
-        //     this.props.category_connections,
-        //     this.props.type,
-        //     this.props.id
+        //     this.state.categories,
+        //     this.state.category_connections,
+        //     type,
+        //     itemInfo.id
         // );
-        //
-        // const chips = categories.map(category => {
-        //     return (
-        //         <CategoryChip
-        //             category={category}
-        //             style={this.props.chipStyle}
-        //         />
-        //     );
-        // });
-        //
-        // return <div style={{ ...style, ...this.props.style }}>{chips}</div>;
-        return null;
+
+        return (
+            <Paper>
+                <CategoryChips
+                    type={"Payment"}
+                    id={itemInfo.id}
+                    customCategories={this.state.categories}
+                />
+            </Paper>
+        );
     }
 }
 

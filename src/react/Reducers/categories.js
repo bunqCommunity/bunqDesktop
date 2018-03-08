@@ -14,24 +14,28 @@ const categoriesTest = {
         id: "randomId",
         label: "Custom category",
         color: "#64ffa2",
+        priority: 3,
         icon: "star"
     },
     randomId2: {
         id: "randomId2",
         label: "Gifts",
         color: "#31acff",
+        priority: 3,
         icon: "credit_card"
     },
     randomId3: {
         id: "randomId3",
         label: "Rent",
         color: "#ff2c2c",
+        priority: 8,
         icon: "home"
     },
     randomId4: {
         id: "randomId4",
         label: "Food",
         color: "#fff44a",
+        priority: 1,
         icon: "restaurant"
     }
 };
@@ -100,6 +104,7 @@ export default function reducer(state = defaultState, action) {
                 id: randomId,
                 label: action.payload.label,
                 color: action.payload.color,
+                priority: action.payload.priority,
                 ...action.payload.options
             };
 

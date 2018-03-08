@@ -5,12 +5,13 @@ import {
     BUNQDESKTOP_CATEGORY_CONNECTIONS
 } from "../Reducers/categories";
 
-export const setCategory = (label, color, options = {}) => {
+export const setCategory = (label, color, priority = 5, options = {}) => {
     return {
         action: "CATEGORIES_SET_CATEGORY",
         payload: {
             label: label,
             color: color,
+            priority: priority,
             options: options
         }
     };

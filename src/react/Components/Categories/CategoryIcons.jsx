@@ -2,12 +2,14 @@ import React from "react";
 import { connect } from "react-redux";
 import Icon from "material-ui/Icon";
 import CategoryHelper from "../../Helpers/CategoryHelper";
+import PrioritySorter from "./PrioritySorter";
 
 const style = {
     marginTop: -20,
     flexWrap: "wrap",
     display: "flex",
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
+    minWidth: 160
 };
 
 class CategoryIcons extends React.Component {
@@ -40,7 +42,14 @@ class CategoryIcons extends React.Component {
 
         if (categories.length === 0) return null;
 
-        const chips = categories.map(category => {
+        // sort by priority
+        const sortedCategories = PrioritySorter(categories);
+
+        // limit to 5 categories
+        sortedCategories.slice(0, 5);
+
+        // create a list of chips
+        const chips = sortedCategories.map(category => {
             return (
                 <div style={{ width: 32 }}>
                     <Icon style={{ color: category.color }}>
