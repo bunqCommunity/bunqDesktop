@@ -17,7 +17,6 @@ export function loadStoredAccounts(BunqJSClient) {
         BunqJSClient.Session
             .loadEncryptedData(STORED_ACCOUNTS)
             .then(data => {
-                console.log(data);
                 if (data && data.items) {
                     dispatch(accountsSetInfo(data.items, BunqJSClient));
                 }

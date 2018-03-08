@@ -41,6 +41,7 @@ class CategorySelector extends React.Component {
         // });
         //
         // return <div style={{ ...style, ...this.props.style }}>{chips}</div>;
+        return null;
     }
 }
 
