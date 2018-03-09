@@ -13,10 +13,8 @@ import Typography from "material-ui/Typography";
 
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import { paymentText, paymentTypeParser } from "../Helpers/StatusTexts";
-import CategoryHelper from "../Helpers/CategoryHelper";
 
 import CategorySelector from "../Components/Categories/CategorySelector";
-import CategoryChips from "../Components/Categories/CategoryChips";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import TransactionHeader from "../Components/TransactionHeader";
 

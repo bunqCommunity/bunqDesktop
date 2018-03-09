@@ -1,9 +1,19 @@
 import React from "react";
 import { connect } from "react-redux";
+
 import Paper from "material-ui/Paper";
+import Button from "material-ui/Button";
 import Collapse from "material-ui/transitions/Collapse";
 
-import CategoryHelper from "../../Helpers/CategoryHelper";
+import {
+    CompactPicker,
+    SwatchesPicker,
+    CirclePicker,
+    MaterialPicker
+} from "react-color";
+import MaterialUiIconPicker from "react-material-ui-icon-picker";
+
+// import CategoryHelper from "../../Helpers/CategoryHelper";
 import CategoryChips from "./CategoryChips";
 
 class CategorySelector extends React.Component {
@@ -36,8 +46,18 @@ class CategorySelector extends React.Component {
                     id={itemInfo.id}
                     customCategories={this.state.categories}
                 />
+                <Button
+                    onClick={() =>
+                        this.setState({ newVisible: !this.state.newVisible })}
+                >
+                    Add more
+                </Button>
                 <Collapse in={this.state.newVisible} unmountOnExit>
-
+                    <MaterialUiIconPicker onPick={console.log} />
+                    <CompactPicker />
+                    <SwatchesPicker />
+                    <CirclePicker />
+                    <MaterialPicker />
                 </Collapse>
             </Paper>
         );

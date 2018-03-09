@@ -30,6 +30,7 @@ const MasterCardActionInfo = CL(() =>
 const PaymentInfo = CL(() =>
     import(/* webpackChunkName: "paymentinfo" */ "./Pages/PaymentInfo")
 );
+// import PaymentInfo from "./Pages/PaymentInfo";
 const ApplicationInfo = CL(() =>
     import(/* webpackChunkName: "applicationinfo" */ "./Pages/ApplicationInfo")
 );
@@ -176,10 +177,7 @@ export default class Routes extends React.Component {
                             userType={this.props.userType}
                             derivedPassword={this.props.derivedPassword}
                             render={props => (
-                                <Stats
-                                    {...props}
-                                    {...this.props.childProps}
-                                />
+                                <Stats {...props} {...this.props.childProps} />
                             )}
                         />
 
