@@ -196,7 +196,7 @@ class PaymentInfo extends React.Component {
                     <Paper style={styles.paper}>{content}</Paper>
                 </Grid>
 
-                <Grid item xs={12} sm={2} />
+                <Grid item xs={12} />
                 <Grid item xs={12} sm={2} />
                 <Grid item xs={12} sm={8}>
                     <CategorySelector

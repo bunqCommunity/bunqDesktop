@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import Paper from "material-ui/Paper";
+import Collapse from "material-ui/transitions/Collapse";
 
 import CategoryHelper from "../../Helpers/CategoryHelper";
 import CategoryChips from "./CategoryChips";
@@ -9,6 +10,7 @@ class CategorySelector extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
+            newVisible: false,
             categories: {},
             category_connections: {}
         };
@@ -27,13 +29,6 @@ class CategorySelector extends React.Component {
         if (!item[type]) return null;
         const itemInfo = item[type];
 
-        // const categories = CategoryHelper(
-        //     this.state.categories,
-        //     this.state.category_connections,
-        //     type,
-        //     itemInfo.id
-        // );
-
         return (
             <Paper>
                 <CategoryChips
@@ -41,6 +36,9 @@ class CategorySelector extends React.Component {
                     id={itemInfo.id}
                     customCategories={this.state.categories}
                 />
+                <Collapse in={this.state.newVisible} unmountOnExit>
+
+                </Collapse>
             </Paper>
         );
     }
