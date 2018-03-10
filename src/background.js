@@ -56,12 +56,6 @@ app.on("ready", () => {
         show: false
     });
 
-    // wait until it is ready to show
-    mainWindow.once('ready-to-show', () => {
-        mainWindow.show();
-        mainWindow.openDevTools();
-    });
-
     mainWindow.loadURL(
         url.format({
             pathname: path.join(__dirname, "app.html"),
@@ -74,6 +68,7 @@ app.on("ready", () => {
     registerTouchBar(mainWindow);
 
     if (env.name === "development") {
+        mainWindow.openDevTools();
     } else {
         // remove the menu in production
         mainWindow.setMenu(null);
