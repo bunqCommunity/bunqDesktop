@@ -5,7 +5,7 @@ import Button from "material-ui/Button";
 import IconButton from "material-ui/IconButton";
 import Dialog, { DialogTitle } from "material-ui/Dialog";
 
-import Icons from "../Helpers/Icons";
+import Icons from "../../Helpers/Icons";
 
 class IconPicker extends React.Component {
     constructor(props, context) {
@@ -35,11 +35,11 @@ class IconPicker extends React.Component {
 
     render() {
         return (
-            <div>
+            <div style={this.props.style}>
                 <Button
                     key={"randomkey1"}
                     raised
-                    color="primary"
+                    color="default"
                     onClick={this.handleOpen}
                     style={this.props.buttonStyle}
                     {...this.props.buttonProps}
@@ -72,6 +72,7 @@ class IconPicker extends React.Component {
 
 IconPicker.defaultProps = {
     buttonLabel: "Pick an icon",
+    style: {},
     buttonStyle: {},
     buttonProps: {}
 };

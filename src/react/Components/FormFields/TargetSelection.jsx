@@ -17,9 +17,9 @@ import EmailIcon from "material-ui-icons/Email";
 import PhoneIcon from "material-ui-icons/Phone";
 import CompareArrowsIcon from "material-ui-icons/CompareArrows";
 
-import PhoneFormatInput from "./FormFields/PhoneFormatInput";
-import AccountSelectorDialog from "./FormFields/AccountSelectorDialog";
-import { openSnackbar } from "../Actions/snackbar";
+import PhoneFormatInput from "./PhoneFormatInput";
+import AccountSelectorDialog from "./AccountSelectorDialog";
+import { openSnackbar } from "../../Actions/snackbar";
 
 const styles = {
     payButton: {

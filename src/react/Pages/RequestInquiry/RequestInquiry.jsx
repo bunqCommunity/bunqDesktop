@@ -13,7 +13,7 @@ import Switch from "material-ui/Switch";
 import { FormControl, FormControlLabel } from "material-ui/Form";
 
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
-import TargetSelection from "../../Components/TargetSelection";
+import TargetSelection from "../../Components/FormFields/TargetSelection";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
 import PhoneFormatInput from "../../Components/FormFields/PhoneFormatInput";
 import { openSnackbar } from "../../Actions/snackbar";

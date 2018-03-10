@@ -1,6 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import { ChromePicker } from "react-color";
 
 import Chip from "material-ui/Chip";
 import Icon from "material-ui/Icon";
@@ -13,20 +12,17 @@ import Typography from "material-ui/Typography";
 import Collapse from "material-ui/transitions/Collapse";
 
 import CategoryChips from "./CategoryChips";
-import IconPicker from "../IconPicker";
+import IconPicker from "../FormFields/IconPicker";
+import ColorPicker from "../FormFields/ColorPicker";
 
 const styles = {
     titles: { textAlign: "center" },
     iconPicker: {
         width: "100%"
     },
-    categorryLabelInput: {
+    categoryLabelInput: {
         width: "100%",
         marginTop: 0
-    },
-    colorPickerContainer: {
-        display: "flex",
-        justifyContent: "center"
     },
     colorPicker: {
         margin: 5,
@@ -78,6 +74,10 @@ class CategorySelector extends React.Component {
 
     iconChange = icon => {
         this.setState({ icon: icon });
+    };
+
+    cancelEditing = event => {
+        this.setState({ categoryId: false });
     };
 
     selectChipEvent = event => {
@@ -158,47 +158,47 @@ class CategorySelector extends React.Component {
                                 {this.state.icon}
                             </Icon>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={2} />
-                        <Grid
-                            item
-                            xs={12}
-                            sm={6}
-                            md={4}
-                            style={styles.colorPickerContainer}
-                        >
-                            <ChromePicker
-                                style={styles.colorPicker}
-                                color={this.state.color}
-                                onChangeComplete={this.colorChange}
+
+                        <Grid item xs={12} sm={12} md={1} lg={2} />
+
+                        <Grid item xs={12} sm={6} md={5} lg={4}>
+                            <TextField
+                                label="Category label"
+                                value={this.state.label}
+                                onChange={this.labelChange}
+                                margin="normal"
+                                style={styles.categoryLabelInput}
                             />
-                        </Grid>
-                        <Grid
-                            item
-                            xs={12}
-                            sm={6}
-                            md={4}
-                            style={{
-                                display: "flex",
-                                flexDirection: "column"
-                            }}
-                        >
-                            <div>
-                                <TextField
-                                    label="Category label"
-                                    value={this.state.label}
-                                    onChange={this.labelChange}
-                                    margin="normal"
-                                    style={styles.categorryLabelInput}
-                                />
-                            </div>
+
+                            <ColorPicker
+                                buttonStyle={styles.button}
+                                pickerProps={{
+                                    style: styles.colorPicker,
+                                    color: this.state.color,
+                                    onChangeComplete: this.colorChange
+                                }}
+                            />
 
                             <IconPicker
+                                style={styles.button}
                                 onClick={this.iconChange}
                                 buttonStyle={{
                                     width: "100%"
                                 }}
                             />
+                        </Grid>
 
+                        <Grid
+                            item
+                            xs={12}
+                            sm={6}
+                            md={5}
+                            lg={4}
+                            style={{
+                                display: "flex",
+                                flexDirection: "column"
+                            }}
+                        >
                             <div style={{ flex: "1 1 100%" }} />
 
                             {this.state.categoryId ? (
@@ -206,13 +206,18 @@ class CategorySelector extends React.Component {
                                     raised
                                     color="secondary"
                                     style={styles.button}
+                                    onClick={this.cancelEditing}
                                 >
-                                    Cancel editing the category
+                                    Cancel editing
                                 </Button>
                             ) : null}
 
                             <Button
                                 raised
+                                disabled={
+                                    this.state.label.length == 0 ||
+                                    this.state.label.length >= 26
+                                }
                                 color="primary"
                                 style={styles.button}
                             >
