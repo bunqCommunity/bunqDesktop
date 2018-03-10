@@ -52,6 +52,8 @@ class CategoryChips extends React.Component {
             return (
                 <CategoryChip
                     category={category}
+                    onClick={this.props.onClick}
+                    onDelete={this.props.onClick}
                     style={this.props.chipStyle}
                 />
             );
@@ -65,6 +67,8 @@ CategoryChips.defaultProps = {
     chipStyle: {
         margin: 5
     },
+    onClick: false,
+    onDelete: false,
     customCategories: false,
     style: style
 };

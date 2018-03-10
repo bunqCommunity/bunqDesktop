@@ -45,7 +45,7 @@
         "webpack:dev": "cross-env NODE_ENV=development webpack --debug --watch --progress --colors",
         "postinstall": "install-app-deps",
         "build": "gulp build",
-        "prerelease": "gulp build --env=production && yarn run webpack",
+        "prerelease": "node tasks/generate_material_icons.js && gulp build --env=production && yarn run webpack",
         "release": "build",
         "start": "gulp start --env=development",
         "pretest": "gulp build-unit --env=test",

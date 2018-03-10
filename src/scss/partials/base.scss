@@ -40,3 +40,9 @@ main {
     margin: 40px auto;
     outline: none;
 }
+
+input,
+button,
+textarea {
+    -webkit-app-region: no-drag;
+}

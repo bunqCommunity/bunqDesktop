@@ -1,20 +1,48 @@
 import React from "react";
 import { connect } from "react-redux";
+import { ChromePicker } from "react-color";
 
+import Chip from "material-ui/Chip";
+import Icon from "material-ui/Icon";
+import Grid from "material-ui/Grid";
 import Paper from "material-ui/Paper";
+import Avatar from "material-ui/Avatar";
 import Button from "material-ui/Button";
+import TextField from "material-ui/TextField";
+import Typography from "material-ui/Typography";
 import Collapse from "material-ui/transitions/Collapse";
 
-import {
-    CompactPicker,
-    SwatchesPicker,
-    CirclePicker,
-    MaterialPicker
-} from "react-color";
-import MaterialUiIconPicker from "react-material-ui-icon-picker";
-
-// import CategoryHelper from "../../Helpers/CategoryHelper";
 import CategoryChips from "./CategoryChips";
+import IconPicker from "../IconPicker";
+
+const styles = {
+    titles: { textAlign: "center" },
+    iconPicker: {
+        width: "100%"
+    },
+    categorryLabelInput: {
+        width: "100%",
+        marginTop: 0
+    },
+    colorPickerContainer: {
+        display: "flex",
+        justifyContent: "center"
+    },
+    colorPicker: {
+        margin: 5,
+        width: null
+    },
+    previewChip: {
+        margin: 5
+    },
+    newCategoryContainer: {
+        padding: 5
+    },
+    button: {
+        width: "100%",
+        marginTop: 12
+    }
+};
 
 class CategorySelector extends React.Component {
     constructor(props, context) {
@@ -22,7 +50,13 @@ class CategorySelector extends React.Component {
         this.state = {
             newVisible: false,
             categories: {},
-            category_connections: {}
+            category_connections: {},
+
+            // false or an existing id for updates
+            categoryId: false,
+            label: "",
+            color: "#06D72C",
+            icon: "card_giftcard"
         };
     }
 
@@ -34,6 +68,27 @@ class CategorySelector extends React.Component {
         });
     }
 
+    colorChange = color => {
+        this.setState({ color: color.hex });
+    };
+
+    labelChange = event => {
+        this.setState({ label: event.target.value });
+    };
+
+    iconChange = icon => {
+        this.setState({ icon: icon });
+    };
+
+    selectChipEvent = event => {
+        this.setState({
+            icon: event.category.icon,
+            color: event.category.color,
+            label: event.category.label,
+            categoryId: event.category.id
+        });
+    };
+
     render() {
         const { item, type } = this.props;
         if (!item[type]) return null;
@@ -41,23 +96,134 @@ class CategorySelector extends React.Component {
 
         return (
             <Paper>
-                <CategoryChips
-                    type={"Payment"}
-                    id={itemInfo.id}
-                    customCategories={this.state.categories}
-                />
-                <Button
-                    onClick={() =>
-                        this.setState({ newVisible: !this.state.newVisible })}
-                >
-                    Add more
-                </Button>
+                <Grid container justify="center">
+                    <Grid item xs={12} md={12}>
+                        <CategoryChips
+                            type={"Payment"}
+                            id={itemInfo.id}
+                            onClick={this.selectChipEvent}
+                            onDelete={event => {
+                                console.log(event);
+                            }}
+                            customCategories={this.state.categories}
+                        />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        {this.state.newVisible ? null : (
+                            <Button
+                                style={{ width: "100%" }}
+                                onClick={() =>
+                                    this.setState({
+                                        newVisible: !this.state.newVisible
+                                    })}
+                            >
+                                Add more
+                            </Button>
+                        )}
+                    </Grid>
+                </Grid>
+
                 <Collapse in={this.state.newVisible} unmountOnExit>
-                    <MaterialUiIconPicker onPick={console.log} />
-                    <CompactPicker />
-                    <SwatchesPicker />
-                    <CirclePicker />
-                    <MaterialPicker />
+                    <Grid container style={styles.newCategoryContainer}>
+                        <Grid item xs={12}>
+                            <Typography type={"title"} style={styles.titles}>
+                                Add a new category
+                            </Typography>
+                        </Grid>
+
+                        <Grid item xs={12} style={{ textAlign: "center" }}>
+                            <Chip
+                                style={styles.previewChip}
+                                label={this.state.label}
+                                onDelete={() => {}}
+                                avatar={
+                                    <Avatar
+                                        style={{
+                                            backgroundColor: this.state.color
+                                        }}
+                                    >
+                                        <Icon
+                                            style={{
+                                                height: 24,
+                                                width: 24
+                                            }}
+                                        >
+                                            {this.state.icon}
+                                        </Icon>
+                                    </Avatar>
+                                }
+                            />
+
+                            <Icon style={{ color: this.state.color }}>
+                                {this.state.icon}
+                            </Icon>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={2} />
+                        <Grid
+                            item
+                            xs={12}
+                            sm={6}
+                            md={4}
+                            style={styles.colorPickerContainer}
+                        >
+                            <ChromePicker
+                                style={styles.colorPicker}
+                                color={this.state.color}
+                                onChangeComplete={this.colorChange}
+                            />
+                        </Grid>
+                        <Grid
+                            item
+                            xs={12}
+                            sm={6}
+                            md={4}
+                            style={{
+                                display: "flex",
+                                flexDirection: "column"
+                            }}
+                        >
+                            <div>
+                                <TextField
+                                    label="Category label"
+                                    value={this.state.label}
+                                    onChange={this.labelChange}
+                                    margin="normal"
+                                    style={styles.categorryLabelInput}
+                                />
+                            </div>
+
+                            <IconPicker
+                                onClick={this.iconChange}
+                                buttonStyle={{
+                                    width: "100%"
+                                }}
+                            />
+
+                            <div style={{ flex: "1 1 100%" }} />
+
+                            {this.state.categoryId ? (
+                                <Button
+                                    raised
+                                    color="secondary"
+                                    style={styles.button}
+                                >
+                                    Cancel editing the category
+                                </Button>
+                            ) : null}
+
+                            <Button
+                                raised
+                                color="primary"
+                                style={styles.button}
+                            >
+                                {this.state.categoryId ? (
+                                    "Update category"
+                                ) : (
+                                    "Add new category"
+                                )}
+                            </Button>
+                        </Grid>
+                    </Grid>
                 </Collapse>
             </Paper>
         );

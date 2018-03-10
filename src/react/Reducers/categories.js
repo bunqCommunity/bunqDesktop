@@ -41,12 +41,12 @@ const categoriesTest = {
 };
 const categoryConnectionsTest = {
     randomId: {
-        Payment: [72971618, 79695, 79693],
+        Payment: [73876865, 72971618, 79695, 79693],
         MasterCardAction: [13924069],
         BunqMeTab: [159, 149]
     },
     randomId2: {
-        Payment: [72971618, 79695],
+        Payment: [73876865, 72971618, 79695],
         MasterCardAction: [13924069],
         BunqMeTab: [159, 149],
         RequestResponse: [10134004],
@@ -54,12 +54,12 @@ const categoryConnectionsTest = {
         MasterCardAction: [13924069]
     },
     randomId3: {
-        Payment: [72971618, 79693],
+        Payment: [73876865, 72971618, 79693],
         MasterCardAction: [13924069],
         BunqMeTab: [159, 149]
     },
     randomId4: {
-        Payment: [72971618],
+        Payment: [73876865, 72971618],
         BunqMeTab: [126845],
         RequestResponse: [10134004],
         RequestInquiry: [10032747],

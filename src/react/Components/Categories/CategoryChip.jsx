@@ -8,14 +8,35 @@ export default props => {
         category,
         style = {
             margin: 6
-        }
+        },
+        onClick,
+        onDelete
     } = props;
+
+    const chipProps = {
+        style: style,
+        label: category.label
+    };
+
+    // only add these if set so we don't make the chip clickable
+    if (onClick)
+        chipProps.onClick = event => {
+            onClick({
+                category: category,
+                event: event
+            });
+        };
+    if (onDelete)
+        chipProps.onDelete = event => {
+            onDelete({
+                category: category,
+                event: event
+            });
+        };
 
     return (
         <Chip
-            style={style}
-            label={category.label}
-            onDelete={console.log}
+            {...chipProps}
             avatar={
                 <Avatar
                     style={{

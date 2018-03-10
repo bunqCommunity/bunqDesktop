@@ -52,7 +52,14 @@ app.on("ready", () => {
         frame: USE_NATIVE_FRAME,
         webPreferences: { webSecurity: false },
         width: 1000,
-        height: 800
+        height: 800,
+        show: false
+    });
+
+    // wait until it is ready to show
+    mainWindow.once('ready-to-show', () => {
+        mainWindow.show();
+        mainWindow.openDevTools();
     });
 
     mainWindow.loadURL(
@@ -67,7 +74,6 @@ app.on("ready", () => {
     registerTouchBar(mainWindow);
 
     if (env.name === "development") {
-        mainWindow.openDevTools();
     } else {
         // remove the menu in production
         mainWindow.setMenu(null);
