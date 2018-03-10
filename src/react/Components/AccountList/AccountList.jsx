@@ -37,6 +37,7 @@ class AccountList extends React.Component {
             fetchedExternal: false,
             fetchedAccounts: false
         };
+        this.delayedUpdate = null;
     }
 
     componentDidMount() {
@@ -89,7 +90,12 @@ class AccountList extends React.Component {
             this.state.fetchedExternal === false
         ) {
             this.setState({ fetchedExternal: true });
-            this.updateExternal(user.id, accountsAccountId);
+
+            // delay the initial loading by 1000ms to improve startup ui performance
+            if (this.delayedUpdate) clearTimeout(this.delayedUpdate);
+            this.delayedUpdate = setTimeout(() => {
+                this.updateExternal(user.id, accountsAccountId);
+            }, 1000);
         }
 
         // no accounts loaded
