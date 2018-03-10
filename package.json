@@ -142,6 +142,7 @@
         "uglifyjs-webpack-plugin": "^1.0.1",
         "universal-analytics": "^0.4.15",
         "webpack": "^3.8.1",
-        "webpack-bundle-analyzer": "^2.9.0"
+        "webpack-bundle-analyzer": "^2.9.0",
+        "worker-loader": "^1.1.1"
     }
 }
