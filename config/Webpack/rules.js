@@ -25,5 +25,9 @@ module.exports = [
             fallback: "style-loader!css-loader!sass-loader",
             use: "css-loader!sass-loader"
         })
+    },
+    {
+        test: /\.worker\.js$/,
+        use: { loader: "worker-loader" }
     }
 ];
