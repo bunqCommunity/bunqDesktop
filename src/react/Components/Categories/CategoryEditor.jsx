@@ -178,7 +178,7 @@ class CategoryEditor extends React.Component {
 
                     {this.props.selectedCategoryId ? (
                         <Button
-                            raised
+                            variant="raised"
                             color="secondary"
                             style={styles.button}
                             onClick={this.props.deselectChip}
@@ -188,7 +188,7 @@ class CategoryEditor extends React.Component {
                     ) : null}
 
                     <Button
-                        raised
+                        variant="raised"
                         disabled={
                             this.state.labelError ||
                             this.state.label.length === 0

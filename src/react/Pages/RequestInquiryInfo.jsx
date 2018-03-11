@@ -145,7 +145,7 @@ class RequestInquiryInfo extends React.Component {
 
                         <Typography
                             style={{ textAlign: "center" }}
-                            type={"body1"}
+                            variant={"body1"}
                         >
                             {requestInquiryLabel}
                         </Typography>
@@ -188,7 +188,7 @@ class RequestInquiryInfo extends React.Component {
                             <Grid container spacing={16} justify="center">
                                 <Grid item xs={12} sm={6}>
                                     <Button
-                                        raised
+                                        variant="raised"
                                         disabled={
                                             requestInquiryLoading ||
                                             requestInquiryInfoLoading

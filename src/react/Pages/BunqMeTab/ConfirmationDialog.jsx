@@ -55,14 +55,14 @@ export default class ConfirmationDialog extends React.Component {
                 </DialogContent>
                 <DialogActions>
                     <Button
-                        raised
+                        variant="raised"
                         onClick={this.props.closeModal}
                         color="secondary"
                     >
                         Cancel
                     </Button>
                     <Button
-                        raised
+                        variant="raised"
                         onClick={this.props.sendInquiry}
                         color="primary"
                     >

@@ -155,7 +155,9 @@ class FilterDrawer extends React.Component {
                         <Radio
                             style={styles.radioBtn}
                             icon={<CompareArrowsIcon />}
-                            checkedIcon={<CompareArrowsIcon />}
+                            checkedIcon={
+                                <CompareArrowsIcon color={"primary"} />
+                            }
                             value={"default"}
                         />
                         <Radio
@@ -205,7 +207,9 @@ class FilterDrawer extends React.Component {
                         <Radio
                             style={styles.radioBtn}
                             icon={<CompareArrowsIcon />}
-                            checkedIcon={<CompareArrowsIcon />}
+                            checkedIcon={
+                                <CompareArrowsIcon color={"primary"} />
+                            }
                             value={"default"}
                         />
                         <Radio
@@ -255,7 +259,9 @@ class FilterDrawer extends React.Component {
                         <Radio
                             style={styles.radioBtn}
                             icon={<CompareArrowsIcon />}
-                            checkedIcon={<CompareArrowsIcon />}
+                            checkedIcon={
+                                <CompareArrowsIcon color={"primary"} />
+                            }
                             value={"default"}
                         />
                         <Radio
@@ -335,14 +341,14 @@ class FilterDrawer extends React.Component {
                     <ListItemIcon>
                         <ClearIcon />
                     </ListItemIcon>
-                    <Typography type="subheading">Clear filters</Typography>
+                    <Typography variant="subheading">Clear filters</Typography>
                 </ListItem>
             </List>
         );
 
         const button = this.props.bigButton ? (
             <Button
-                raised
+                variant="raised"
                 key={"button"}
                 onClick={this.openDrawer}
                 {...this.props.buttonProps}

@@ -162,7 +162,7 @@ class BunqMeTabListItem extends React.Component {
                     <ListItemSecondaryAction>
                         {canBeCanceled ? (
                             <Button
-                                raised
+                                variant="raised"
                                 disabled={
                                     this.props.bunqMeTabLoading ||
                                     this.props.bunqMeTabsLoading

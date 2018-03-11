@@ -26,7 +26,7 @@ class ClearFilter extends React.Component {
 
         return this.props.bigButton ? (
             <Button
-                raised
+                variant="raised"
                 key={"button"}
                 onClick={this.props.resetFilters}
                 {...this.props.buttonProps}

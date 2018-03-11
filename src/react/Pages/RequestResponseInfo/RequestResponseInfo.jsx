@@ -220,7 +220,7 @@ class RequestResponseInfo extends React.Component {
                                 <Grid container spacing={16}>
                                     <Grid item xs={12} sm={6}>
                                         <Button
-                                            raised
+                                            variant="raised"
                                             color="primary"
                                             style={styles.button}
                                             disabled={this.state.accepted}
@@ -235,7 +235,7 @@ class RequestResponseInfo extends React.Component {
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Button
-                                            raised
+                                            variant="raised"
                                             color="secondary"
                                             disabled={
                                                 requestResponseInfoLoading ||
@@ -267,7 +267,7 @@ class RequestResponseInfo extends React.Component {
                         >
                             <Grid item xs={12}>
                                 <Button
-                                    raised
+                                    variant="raised"
                                     disabled={false}
                                     color="primary"
                                     style={styles.button}

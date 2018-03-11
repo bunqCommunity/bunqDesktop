@@ -81,7 +81,7 @@ class IconPicker extends React.Component {
             <div style={this.props.style}>
                 <Button
                     key={"randomkey1"}
-                    raised
+                    variant="raised"
                     color="default"
                     onClick={this.handleOpen}
                     style={this.props.buttonStyle}

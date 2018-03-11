@@ -66,7 +66,7 @@ class TargetSelection extends React.Component {
             case "PHONE":
                 targetContent = (
                     <FormControl fullWidth error={this.props.targetError}>
-                        <Typography type="body1">
+                        <Typography variant="body1">
                             Phone numbers should contain no spaces and include
                             the land code. For example: +316123456789
                         </Typography>
@@ -254,7 +254,7 @@ class TargetSelection extends React.Component {
                 </Grid>
                 <Grid item xs={12}>
                     <Button
-                        raised
+                        variant="raised"
                         color="primary"
                         disabled={
                             // target input error

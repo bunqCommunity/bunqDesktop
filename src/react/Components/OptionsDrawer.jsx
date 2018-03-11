@@ -201,7 +201,7 @@ class OptionsDrawer extends React.Component {
                     <ListItemIcon>
                         <ClearIcon />
                     </ListItemIcon>
-                    <Typography type="subheading">Reset BunqDesktop</Typography>
+                    <Typography variant="subheading">Reset BunqDesktop</Typography>
                 </ListItem>
 
                 <ListItem
@@ -212,7 +212,7 @@ class OptionsDrawer extends React.Component {
                     <ListItemIcon>
                         <ArrowBackIcon />
                     </ListItemIcon>
-                    <Typography type="subheading">Back</Typography>
+                    <Typography variant="subheading">Back</Typography>
                 </ListItem>
             </List>
         );

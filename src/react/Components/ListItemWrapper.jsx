@@ -50,7 +50,7 @@ export default ({
                     </IconButton>
                 </ListItemSecondaryAction>
             ) : null}
-            <Typography type="subheading">{text}</Typography>
+            <Typography variant="subheading">{text}</Typography>
         </ListItem>
     );
 };

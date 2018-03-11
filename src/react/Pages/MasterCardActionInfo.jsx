@@ -134,7 +134,7 @@ class MasterCardActionInfo extends React.Component {
 
                         <Typography
                             style={{ textAlign: "center" }}
-                            type={"body1"}
+                            variant={"body1"}
                         >
                             {paymentLabel}
                         </Typography>

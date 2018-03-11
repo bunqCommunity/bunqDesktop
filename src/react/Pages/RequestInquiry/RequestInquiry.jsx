@@ -385,7 +385,7 @@ class RequestInquiry extends React.Component {
 
                 <Grid item xs={12} sm={10} md={8} lg={6}>
                     <Paper style={styles.paper}>
-                        <Typography type="headline">Request Payment</Typography>
+                        <Typography variant="headline">Request Payment</Typography>
 
                         <AccountSelectorDialog
                             value={this.state.selectedAccount}
@@ -483,7 +483,7 @@ class RequestInquiry extends React.Component {
                         </Collapse>
 
                         <Button
-                            raised
+                            variant="raised"
                             color="primary"
                             disabled={
                                 !this.state.validForm ||
