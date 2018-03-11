@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import WindowedList from "react-windowed-list";
 import Icon from "material-ui/Icon";
 import Button from "material-ui/Button";
 import IconButton from "material-ui/IconButton";
@@ -7,18 +8,19 @@ import Dialog, { DialogTitle } from "material-ui/Dialog";
 
 import Icons from "../../Helpers/Icons";
 
+const styles = {
+    iconContainer: {
+        height: 500,
+        overflow: "auto"
+    }
+};
+
 class IconPicker extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
             open: false
         };
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        if (nextState.open !== this.props.open) return true;
-
-        return false;
     }
 
     handleClose = () => {
@@ -32,6 +34,15 @@ class IconPicker extends React.Component {
     selectIcon = icon => event => {
         this.props.onClick(icon);
         this.handleClose();
+    };
+
+    itemRenderer = (index, key) => {
+        const icon = Icons.icons[index];
+        return (
+            <IconButton key={key} onClick={this.selectIcon(icon)}>
+                <Icon>{icon}</Icon>
+            </IconButton>
+        );
     };
 
     render() {
@@ -53,17 +64,13 @@ class IconPicker extends React.Component {
                     onClose={this.handleClose}
                 >
                     <DialogTitle>Pick an icon</DialogTitle>
-                    <div>
-                        {Icons.icons.map((icon, iconIndex) => {
-                            return (
-                                <IconButton
-                                    key={iconIndex}
-                                    onClick={this.selectIcon(icon)}
-                                >
-                                    <Icon>{icon}</Icon>
-                                </IconButton>
-                            );
-                        })}
+                    <div style={styles.iconContainer}>
+                        <WindowedList
+                            isLazy
+                            itemRenderer={this.itemRenderer}
+                            length={Icons.icons.length}
+                            type="uniform"
+                        />
                     </div>
                 </Dialog>
             </div>
