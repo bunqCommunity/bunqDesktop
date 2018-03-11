@@ -1,5 +1,11 @@
 import { getWeek } from "../Helpers/Utils";
-import { masterCardActionFilter, paymentFilter } from "../Helpers/DataFilters";
+import {
+    bunqMeTabsFilter,
+    masterCardActionFilter,
+    paymentFilter,
+    requestInquiryFilter,
+    requestResponseFilter
+} from "../Helpers/DataFilters";
 
 const labelFormat = (date, type = "daily") => {
     switch (type) {
@@ -19,39 +25,45 @@ const roundMoney = amount => {
     return Math.round(amount * 100) / 100;
 };
 
-const bunqMeTabMapper = bunqMeTabs => {
+const bunqMeTabMapper = (bunqMeTabs, bunqMeTabFilterSettings) => {
     const data = [];
-    bunqMeTabs.map(bunqMeTab => {
-        data.push({
-            date: new Date(bunqMeTab.BunqMeTab.created),
-            change: 0,
-            type: "bunqMeTab"
+    bunqMeTabs
+        .filter(bunqMeTabsFilter(bunqMeTabFilterSettings))
+        .map(bunqMeTab => {
+            data.push({
+                date: new Date(bunqMeTab.BunqMeTab.created),
+                change: 0,
+                type: "bunqMeTab"
+            });
         });
-    });
     return data;
 };
 
-const requestInquiryMapper = requestInquiries => {
+const requestInquiryMapper = (requestInquiries, requestFilterSettings) => {
     const data = [];
-    requestInquiries.map(requestInquiry => {
-        data.push({
-            date: new Date(requestInquiry.RequestInquiry.created),
-            change: 0,
-            type: "requestInquiry"
+    requestInquiries
+        .filter(requestInquiryFilter(requestFilterSettings))
+        .map(requestInquiry => {
+            data.push({
+                date: new Date(requestInquiry.RequestInquiry.created),
+                change: 0,
+                type: "requestInquiry"
+            });
         });
-    });
     return data;
 };
 
-const requestResponseMapper = requestResponses => {
+const requestResponseMapper = (requestResponses, requestFilterSettings) => {
     const data = [];
-    requestResponses.map(requestResponse => {
-        data.push({
-            date: new Date(requestResponse.RequestResponse.created),
-            change: 0,
-            type: "requestResponse"
+    requestResponses
+        .filter(requestResponseFilter(requestFilterSettings))
+        .map(requestResponse => {
+            data.push({
+                date: new Date(requestResponse.RequestResponse.created),
+                change: 0,
+                type: "requestResponse"
+            });
         });
-    });
     return data;
 };
 
@@ -232,9 +244,15 @@ const getData = (events, accounts, selectedAccount, type = "daily") => {
 
 onmessage = e => {
     const events = [
-        ...bunqMeTabMapper(e.data.bunqMeTabs),
-        ...requestInquiryMapper(e.data.requestInquiries),
-        ...requestResponseMapper(e.data.requestResponses),
+        ...bunqMeTabMapper(e.data.bunqMeTabs, e.data.bunqMeTabFilterSettings),
+        ...requestInquiryMapper(
+            e.data.requestInquiries,
+            e.data.requestFilterSettings
+        ),
+        ...requestResponseMapper(
+            e.data.requestResponses,
+            e.data.requestFilterSettings
+        ),
         ...paymentMapper(e.data.payments, e.data.paymentFilterSettings),
         ...masterCardActionMapper(
             e.data.masterCardActions,

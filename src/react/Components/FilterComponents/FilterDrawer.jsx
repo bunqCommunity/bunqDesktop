@@ -1,7 +1,13 @@
 import React from "react";
+import { connect } from "react-redux";
+import DateTimePicker from "material-ui-pickers/DateTimePicker/index.js";
 import { withTheme } from "material-ui/styles";
 import IconButton from "material-ui/IconButton";
+import Icon from "material-ui/Icon";
+import Button from "material-ui/Button";
 import Drawer from "material-ui/Drawer";
+import Divider from "material-ui/Divider";
+import TextField from "material-ui/TextField";
 import Typography from "material-ui/Typography";
 import Radio, { RadioGroup } from "material-ui/Radio";
 import List, {
@@ -22,8 +28,6 @@ import CheckCircle from "material-ui-icons/CheckCircle";
 import TimerOff from "material-ui-icons/TimerOff";
 import Cancel from "material-ui-icons/Cancel";
 
-import { Divider } from "material-ui";
-import { connect } from "react-redux";
 import {
     clearPaymentFilterType,
     togglePaymentFilterVisibility,
@@ -60,13 +64,18 @@ const styles = {
     },
     checked: {
         color: "green"
+    },
+    dateInput: {
+        width: 208,
+        margin: 5
     }
 };
 
-class DisplayDrawer extends React.Component {
+class FilterDrawer extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
+            selectedDate: new Date(),
             open: false
         };
     }
@@ -104,6 +113,10 @@ class DisplayDrawer extends React.Component {
     };
     toggleBunqMeTabVisibilityChange = () => {
         this.props.toggleBunqMeTabFilterVisibility();
+    };
+
+    handleDateChange = date => {
+        this.setState({ selectedDate: date });
     };
 
     render() {
@@ -290,20 +303,32 @@ class DisplayDrawer extends React.Component {
                     </RadioGroup>
                 </ListItem>
 
-                {/*<ListItem style={styles.listItem}>*/}
-                {/*<TextField*/}
-                {/*id="from-datetime"*/}
-                {/*label="From"*/}
-                {/*type="datetime-local"*/}
-                {/*/>*/}
-                {/*</ListItem>*/}
-                {/*<ListItem style={styles.listItem}>*/}
-                {/*<TextField*/}
-                {/*id="to-datetime"*/}
-                {/*label="To"*/}
-                {/*type="datetime-local"*/}
-                {/*/>*/}
-                {/*</ListItem>*/}
+                <ListItem style={styles.listItem}>
+                    <DateTimePicker
+                        id="from-date"
+                        helperText="From date"
+                        openTo="date"
+                        disableFuture
+                        style={styles.dateInput}
+                        value={this.state.selectedDate}
+                        onChange={this.handleDateChange}
+                        leftArrowIcon={<Icon>keyboard_arrow_left</Icon>}
+                        rightArrowIcon={<Icon>keyboard_arrow_right</Icon>}
+                    />
+                </ListItem>
+                <ListItem style={styles.listItem}>
+                    <DateTimePicker
+                        id="to-date"
+                        helperText="To date"
+                        openTo="date"
+                        disablePast
+                        style={styles.dateInput}
+                        value={this.state.selectedDate}
+                        onChange={this.handleDateChange}
+                        leftArrowIcon={<Icon>keyboard_arrow_left</Icon>}
+                        rightArrowIcon={<Icon>keyboard_arrow_right</Icon>}
+                    />
+                </ListItem>
 
                 <Divider />
                 <ListItem button onClick={this.clearAll}>
@@ -315,11 +340,29 @@ class DisplayDrawer extends React.Component {
             </List>
         );
 
-        return [
-            <IconButton onClick={this.openDrawer}>
+        const button = this.props.bigButton ? (
+            <Button
+                raised
+                key={"button"}
+                onClick={this.openDrawer}
+                {...this.props.buttonProps}
+            >
+                Filter <FilterListIcon />
+            </Button>
+        ) : (
+            <IconButton
+                key={"iconbutton"}
+                onClick={this.openDrawer}
+                {...this.props.buttonProps}
+            >
                 <FilterListIcon />
-            </IconButton>,
+            </IconButton>
+        );
+
+        return [
+            button,
             <Drawer
+                key={"drawer"}
                 open={this.state.open}
                 className="options-drawer"
                 onClose={this.closeDrawer}
@@ -333,6 +376,12 @@ class DisplayDrawer extends React.Component {
         ];
     }
 }
+
+FilterDrawer.defaultProps = {
+    bigButton: false,
+    buttonProps: {},
+    buttonContent: null
+};
 
 const mapStateToProps = state => {
     return {
@@ -367,5 +416,5 @@ const mapDispatchToProps = dispatch => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-    withTheme()(DisplayDrawer)
+    withTheme()(FilterDrawer)
 );

@@ -11,11 +11,12 @@ import RequestResponseListItem from "./ListItems/RequestResponseListItem";
 import RequestInquiryListItem from "./ListItems/RequestInquiryListItem";
 
 import ClearBtn from "../Components/FilterComponents/ClearFilter";
-import DisplayDrawerBtn from "../Components/FilterComponents/FilterDrawer";
+import FilterDrawer from "../Components/FilterComponents/FilterDrawer";
+
 import { openSnackbar } from "../Actions/snackbar";
 import { bunqMeTabPut } from "../Actions/bunq_me_tab";
-import { humanReadableDate } from "../Helpers/Utils";
 
+import { humanReadableDate } from "../Helpers/Utils";
 import {
     paymentFilter,
     bunqMeTabsFilter,
@@ -236,7 +237,7 @@ class CombinedList extends React.Component {
                     Payments and requests
                     <ListItemSecondaryAction>
                         <ClearBtn />
-                        <DisplayDrawerBtn />
+                        <FilterDrawer />
                     </ListItemSecondaryAction>
                 </ListSubheader>
                 {loadingContent}

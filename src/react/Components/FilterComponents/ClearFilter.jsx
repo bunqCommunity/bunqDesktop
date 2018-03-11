@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import Button from "material-ui/Button";
 import IconButton from "material-ui/IconButton";
 import ClearIcon from "material-ui-icons/Clear";
 
@@ -22,13 +23,32 @@ class ClearFilter extends React.Component {
         ) {
             return null;
         }
-        return (
-            <IconButton onClick={this.props.resetFilters}>
+
+        return this.props.bigButton ? (
+            <Button
+                raised
+                key={"button"}
+                onClick={this.props.resetFilters}
+                {...this.props.buttonProps}
+            >
+                Clear <ClearIcon />
+            </Button>
+        ) : (
+            <IconButton
+                key={"iconbutton"}
+                onClick={this.props.resetFilters}
+                {...this.props.buttonProps}
+            >
                 <ClearIcon />
             </IconButton>
         );
     }
 }
+
+ClearFilter.defaultProps = {
+    bigButton: false,
+    buttonProps: {}
+};
 
 const mapStateToProps = state => {
     return {

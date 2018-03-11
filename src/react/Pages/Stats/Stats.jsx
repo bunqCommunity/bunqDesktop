@@ -10,6 +10,8 @@ import Radio, { RadioGroup } from "material-ui/Radio";
 import { FormControlLabel } from "material-ui/Form";
 
 import LoadOlderButton from "../../Components/LoadOlderButton";
+import ClearBtn from "../../Components/FilterComponents/ClearFilter";
+import FilterDrawer from "../../Components/FilterComponents/FilterDrawer";
 import StatsWorker from "../../WebWorkers/stats.worker";
 import PieChart from "./PieChart";
 import BalanceHistoryChart from "./BalanceHistoryChart";
@@ -56,6 +58,14 @@ class Stats extends React.Component {
             paymentFilterSettings: {
                 paymentVisibility: this.props.paymentVisibility,
                 paymentType: this.props.paymentType
+            },
+            bunqMeTabFilterSettings: {
+                bunqMeTabVisibility: this.props.bunqMeTabVisibility,
+                bunqMeTabType: this.props.bunqMeTabType
+            },
+            requestFilterSettings: {
+                requestVisibility: this.props.requestVisibility,
+                requestType: this.props.requestType
             },
             timescale: this.state.timescale
         });
@@ -146,7 +156,7 @@ class Stats extends React.Component {
                   };
 
         let bigCharts = [
-            <Grid item xs={12}>
+            <Grid item xs={12} key={"balancechart"}>
                 <Paper>
                     <BalanceHistoryChart
                         height={500}
@@ -156,7 +166,7 @@ class Stats extends React.Component {
                     />
                 </Paper>
             </Grid>,
-            <Grid item xs={12}>
+            <Grid item xs={12} key={"eventschart"}>
                 <Paper>
                     <EventTypeHistoryChart
                         height={500}
@@ -220,6 +230,7 @@ class Stats extends React.Component {
                                         />
                                     </RadioGroup>
                                 </Grid>
+
                                 <Grid item xs={12}>
                                     <LoadOlderButton
                                         wrapperStyle={{ margin: 0 }}
@@ -228,6 +239,30 @@ class Stats extends React.Component {
                                         initialBunqConnect={
                                             this.props.initialBunqConnect
                                         }
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <FilterDrawer
+                                        bigButton={true}
+                                        buttonProps={{
+                                            style: {
+                                                width: "100%"
+                                            },
+                                            color: "primary"
+                                        }}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <ClearBtn
+                                        bigButton={true}
+                                        buttonProps={{
+                                            style: {
+                                                width: "100%"
+                                            },
+                                            color: "secondary"
+                                        }}
                                     />
                                 </Grid>
                             </Grid>
@@ -268,7 +303,11 @@ const mapStateToProps = state => {
         masterCardActionsLoading: state.master_card_actions.loading,
 
         paymentType: state.payment_filter.type,
-        paymentVisibility: state.payment_filter.visible
+        paymentVisibility: state.payment_filter.visible,
+        bunqMeTabType: state.bunq_me_tab_filter.type,
+        bunqMeTabVisibility: state.bunq_me_tab_filter.visible,
+        requestType: state.request_filter.type,
+        requestVisibility: state.request_filter.visible
     };
 };
 

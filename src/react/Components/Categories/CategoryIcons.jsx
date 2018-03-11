@@ -43,10 +43,10 @@ class CategoryIcons extends React.Component {
         if (categories.length === 0) return null;
 
         // sort by priority
-        const sortedCategories = PrioritySorter(categories);
+        let sortedCategories = PrioritySorter(categories);
 
-        // limit to 5 categories
-        sortedCategories.slice(0, 5);
+        // limit the amount of icons visible
+        sortedCategories = sortedCategories.slice(0, this.props.iconCount);
 
         // create a list of chips
         const chips = sortedCategories.map(category => {
@@ -67,6 +67,7 @@ CategoryIcons.defaultProps = {
     chipStyle: {
         margin: 5
     },
+    iconCount: 5,
     style: style
 };
 
