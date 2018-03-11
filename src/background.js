@@ -52,8 +52,7 @@ app.on("ready", () => {
         frame: USE_NATIVE_FRAME,
         webPreferences: { webSecurity: false },
         width: 1000,
-        height: 800,
-        show: false
+        height: 800
     });
 
     mainWindow.loadURL(

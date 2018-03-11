@@ -117,7 +117,7 @@ class CategorySelector extends React.Component {
                                         newVisible: !this.state.newVisible
                                     })}
                             >
-                                Add more
+                                Add more categories
                             </Button>
                         )}
                     </Grid>
