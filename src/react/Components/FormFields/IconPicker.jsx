@@ -4,6 +4,7 @@ import WindowedList from "react-windowed-list";
 import Icon from "material-ui/Icon";
 import Button from "material-ui/Button";
 import IconButton from "material-ui/IconButton";
+import TextField from "material-ui/TextField";
 import Dialog, { DialogTitle } from "material-ui/Dialog";
 
 import Icons from "../../Helpers/Icons";
@@ -11,7 +12,12 @@ import Icons from "../../Helpers/Icons";
 const styles = {
     iconContainer: {
         height: 500,
+        width: 600,
         overflow: "auto"
+    },
+    searchInput: {
+        width: "95%",
+        margin: 8
     }
 };
 
@@ -19,7 +25,9 @@ class IconPicker extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            open: false
+            open: false,
+            searchTerm: "",
+            icons: Icons.icons
         };
     }
 
@@ -31,13 +39,36 @@ class IconPicker extends React.Component {
         this.setState({ open: true });
     };
 
+    changeSearchTerm = event => {
+        const searchTerm = event.target.value.trim().toLowerCase();
+
+        // only filter if search term isn't empty
+        if (searchTerm.length > 0) {
+            // loop through items and match
+            let iconList = Icons.icons.filter(icon => {
+                const alternateIcon = icon.replace("_", " ");
+                return (
+                    icon.includes(searchTerm) ||
+                    alternateIcon.includes(searchTerm)
+                );
+            });
+
+            this.setState({
+                icons: iconList,
+                searchTerm: searchTerm
+            });
+        } else {
+            this.setState({ searchTerm: searchTerm });
+        }
+    };
+
     selectIcon = icon => event => {
         this.props.onClick(icon);
         this.handleClose();
     };
 
     itemRenderer = (index, key) => {
-        const icon = Icons.icons[index];
+        const icon = this.state.icons[index];
         return (
             <IconButton key={key} onClick={this.selectIcon(icon)}>
                 <Icon>{icon}</Icon>
@@ -64,11 +95,17 @@ class IconPicker extends React.Component {
                     onClose={this.handleClose}
                 >
                     <DialogTitle>Pick an icon</DialogTitle>
+                    <TextField
+                        label={"Search for icons"}
+                        style={styles.searchInput}
+                        value={this.state.searchTerm}
+                        onChange={this.changeSearchTerm}
+                    />
                     <div style={styles.iconContainer}>
                         <WindowedList
                             isLazy
                             itemRenderer={this.itemRenderer}
-                            length={Icons.icons.length}
+                            length={this.state.icons.length}
                             type="uniform"
                         />
                     </div>
