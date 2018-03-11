@@ -12,16 +12,17 @@ import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 import Collapse from "material-ui/transitions/Collapse";
 
+import MoneyAmountLabel from "../../Components/MoneyAmountLabel";
+import TransactionHeader from "../../Components/TransactionHeader";
+import CategorySelector from "../../Components/Categories/CategorySelector";
+
 import { formatMoney, humanReadableDate } from "../../Helpers/Utils";
 import { requestResponseText } from "../../Helpers/StatusTexts";
-import MoneyAmountLabel from "../../Components/MoneyAmountLabel";
-
 import { requestResponseUpdate } from "../../Actions/request_response_info";
 import {
     requestResponseReject,
     requestResponseAccept
 } from "../../Actions/request_response";
-import TransactionHeader from "../../Components/TransactionHeader";
 
 const styles = {
     btn: {},
@@ -248,6 +249,11 @@ class RequestResponseInfo extends React.Component {
                                     </Grid>
                                 </Grid>
                             ) : null}
+
+                            <CategorySelector
+                                type={"RequestResponse"}
+                                item={requestResponseInfo}
+                            />
                         </Grid>
                     </Grid>
                 </Paper>,

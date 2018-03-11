@@ -16,6 +16,7 @@ import HomeIcon from "material-ui-icons/Home";
 import SettingsIcon from "material-ui-icons/Settings";
 import ShareIcon from "material-ui-icons/Share";
 import TimeLineIcon from "material-ui-icons/Timeline";
+import ListIcon from "material-ui-icons/List";
 
 import NavLink from "./Routing/NavLink";
 import ListItemWrapper from "./ListItemWrapper";
@@ -119,6 +120,12 @@ class MainDrawer extends React.Component {
                       to="/stats"
                       icon={TimeLineIcon}
                       text="Stats"
+                      location={this.props.location}
+                  />,
+                  <ListItemWrapper
+                      to="/category-dashboard"
+                      icon={ListIcon}
+                      text="Category dashboard"
                       location={this.props.location}
                   />
               ];

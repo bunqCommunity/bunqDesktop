@@ -8,72 +8,11 @@ export const BUNQDESKTOP_CATEGORY_CONNECTIONS =
 const categoriesStored = store.get(BUNQDESKTOP_CATEGORIES);
 const categoryConnectionsStored = store.get(BUNQDESKTOP_CATEGORY_CONNECTIONS);
 
-// test data for defaults
-const categoriesTest = {
-    randomId: {
-        id: "randomId",
-        label: "Custom category",
-        color: "#64ffa2",
-        priority: 3,
-        icon: "star"
-    },
-    randomId2: {
-        id: "randomId2",
-        label: "Gifts",
-        color: "#31acff",
-        priority: 3,
-        icon: "credit_card"
-    },
-    randomId3: {
-        id: "randomId3",
-        label: "Rent",
-        color: "#ff2c2c",
-        priority: 8,
-        icon: "home"
-    },
-    randomId4: {
-        id: "randomId4",
-        label: "Food",
-        color: "#fff44a",
-        priority: 1,
-        icon: "restaurant"
-    }
-};
-const categoryConnectionsTest = {
-    randomId: {
-        Payment: [73876865, 72971618, 79695, 79693],
-        MasterCardAction: [13924069],
-        BunqMeTab: [159, 149]
-    },
-    randomId2: {
-        Payment: [73876865, 72971618, 79695],
-        MasterCardAction: [13924069],
-        BunqMeTab: [159, 149],
-        RequestResponse: [10134004],
-        RequestInquiry: [10032747],
-        MasterCardAction: [13924069]
-    },
-    randomId3: {
-        Payment: [73876865, 72971618, 79693],
-        MasterCardAction: [13924069],
-        BunqMeTab: [159, 149]
-    },
-    randomId4: {
-        Payment: [73876865, 72971618],
-        BunqMeTab: [126845],
-        RequestResponse: [10134004],
-        RequestInquiry: [10032747],
-        MasterCardAction: [13924069]
-    }
-};
-
 // default values if no data is stored
 const categoriesStoredDefault =
-    categoriesStored !== undefined ? categoriesStored : categoriesTest;
+    categoriesStored !== undefined ? categoriesStored : {};
 const categoryConnectionsStoredDefault =
-    categoryConnectionsStored !== undefined
-        ? categoryConnectionsStored
-        : categoryConnectionsTest;
+    categoryConnectionsStored !== undefined ? categoryConnectionsStored : {};
 
 // construct the default state
 export const defaultState = {
@@ -104,15 +43,85 @@ export default function reducer(state = defaultState, action) {
                 id: randomId,
                 label: action.payload.label,
                 color: action.payload.color,
+                icon: action.payload.icon,
                 priority: action.payload.priority,
                 ...action.payload.options
             };
 
-            store.set(BUNQDESKTOP_CATEGORIES, action.payload.categories);
+            store.set(BUNQDESKTOP_CATEGORIES, categories);
             return {
                 ...state,
                 last_update: new Date().getTime(),
                 categories: categories
+            };
+
+        case "CATEGORIES_REMOVE_CATEGORY":
+            const currentCategories = { ...state.categories };
+            const currentCategoryConnections = {
+                ...state.category_connections
+            };
+            const removeCategoryId = action.payload.category_id;
+
+            // delete this category from the list
+            if (currentCategories[removeCategoryId]) {
+                delete currentCategories[removeCategoryId];
+            }
+
+            // delete this category from the list
+            if (currentCategoryConnections[removeCategoryId]) {
+                delete currentCategoryConnections[removeCategoryId];
+            }
+
+            store.set(BUNQDESKTOP_CATEGORIES, currentCategories);
+            store.set(
+                BUNQDESKTOP_CATEGORY_CONNECTIONS,
+                currentCategoryConnections
+            );
+            return {
+                ...state,
+                last_update: new Date().getTime(),
+                categories: currentCategories,
+                category_connections: currentCategoryConnections
+            };
+
+        case "CATEGORIES_REMOVE_CATEGORY_CONNECTION":
+            const currentCategoryConnections2 = {
+                ...state.category_connections
+            };
+            const categoryId = action.payload.category_id;
+            const type = action.payload.item_type;
+            const id = action.payload.item_id;
+
+            if (currentCategoryConnections2[categoryId]) {
+                if (!type) {
+                    // remove all existing connections for this category
+                    delete currentCategoryConnections2[categoryId];
+                } else if (currentCategoryConnections2[categoryId][type]) {
+                    if (!id) {
+                        // remove all existing connections for this category > type
+                        delete currentCategoryConnections2[categoryId][type];
+                    } else {
+                        const idIndex = currentCategoryConnections2[categoryId][
+                            type
+                        ].indexOf(id);
+                        // remove all existing connections for this category > type > id
+                        if (idIndex > -1) {
+                            currentCategoryConnections2[categoryId][
+                                type
+                            ].splice(idIndex, 1);
+                        }
+                    }
+                }
+            }
+
+            store.set(
+                BUNQDESKTOP_CATEGORY_CONNECTIONS,
+                currentCategoryConnections2
+            );
+            return {
+                ...state,
+                last_update: new Date().getTime(),
+                category_connections: currentCategoryConnections2
             };
 
         case "CATEGORIES_SET_CATEGORY_CONNECTIONS":
@@ -127,23 +136,23 @@ export default function reducer(state = defaultState, action) {
             };
 
         case "CATEGORIES_SET_CATEGORY_CONNECTION":
-            const categoryId = action.payload.category_id;
+            const categoryId2 = action.payload.category_id;
             const itemType = action.payload.item_type;
             const itemId = action.payload.item_id;
 
-            if (!category_connections[categoryId]) {
-                category_connections[categoryId] = {};
+            if (!category_connections[categoryId2]) {
+                category_connections[categoryId2] = {};
             }
-            if (!category_connections[categoryId][itemType]) {
-                category_connections[categoryId][itemType] = [];
+            if (!category_connections[categoryId2][itemType]) {
+                category_connections[categoryId2][itemType] = [];
             }
 
             // prevent duplicates
             if (
-                category_connections[categoryId][itemType].includes(itemId) ===
+                category_connections[categoryId2][itemType].includes(itemId) ===
                 false
             ) {
-                category_connections[categoryId][itemType].push(itemId);
+                category_connections[categoryId2][itemType].push(itemId);
             }
 
             store.set(BUNQDESKTOP_CATEGORY_CONNECTIONS, category_connections);

@@ -31,6 +31,7 @@ class IconPicker extends React.Component {
 
     selectIcon = icon => event => {
         this.props.onClick(icon);
+        this.handleClose();
     };
 
     render() {

@@ -30,7 +30,7 @@ class Stats extends React.Component {
     }
 
     componentWillUnmount() {
-        this.worker.destroy();
+        this.worker.terminate();
     }
 
     componentDidMount() {

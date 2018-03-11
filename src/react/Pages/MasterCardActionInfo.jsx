@@ -12,14 +12,15 @@ import ArrowBackIcon from "material-ui-icons/ArrowBack";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
+import TransactionHeader from "../Components/TransactionHeader";
+import MoneyAmountLabel from "../Components/MoneyAmountLabel";
+import CategorySelector from "../Components/Categories/CategorySelector";
+
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import {
     masterCardActionText,
     masterCardActionParser
 } from "../Helpers/StatusTexts";
-import TransactionHeader from "../Components/TransactionHeader";
-import MoneyAmountLabel from "../Components/MoneyAmountLabel";
-
 import { masterCardActionInfoUpdate } from "../Actions/master_card_action_info";
 
 const styles = {
@@ -198,6 +199,11 @@ class MasterCardActionInfo extends React.Component {
                             </ListItem>
                             <Divider />
                         </List>
+
+                        <CategorySelector
+                            type={"MasterCardAction"}
+                            item={masterCardActionInfo}
+                        />
                     </Grid>
                 </Grid>
             );

@@ -14,9 +14,9 @@ import Typography from "material-ui/Typography";
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import { paymentText, paymentTypeParser } from "../Helpers/StatusTexts";
 
-import CategorySelector from "../Components/Categories/CategorySelector";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import TransactionHeader from "../Components/TransactionHeader";
+import CategorySelector from "../Components/Categories/CategorySelector";
 
 import { paymentsUpdate } from "../Actions/payment_info";
 
@@ -171,6 +171,8 @@ class PaymentInfo extends React.Component {
                                 />
                             </ListItem>
                         </List>
+
+                        <CategorySelector type={"Payment"} item={paymentInfo} />
                     </Grid>
                 </Grid>
             );
@@ -192,16 +194,6 @@ class PaymentInfo extends React.Component {
                 </Grid>
                 <Grid item xs={12} sm={8}>
                     <Paper style={styles.paper}>{content}</Paper>
-                </Grid>
-
-                <Grid item xs={12} />
-                <Grid item xs={12} sm={2} />
-                <Grid item xs={12} sm={8}>
-                    <CategorySelector
-                        item={paymentInfo}
-                        type={"Payment"}
-                        BunqJSClient={this.props.BunqJSClient}
-                    />
                 </Grid>
             </Grid>
         );

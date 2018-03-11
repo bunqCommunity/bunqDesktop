@@ -1,16 +1,11 @@
-import store from "store";
-
-import {
-    BUNQDESKTOP_CATEGORIES,
-    BUNQDESKTOP_CATEGORY_CONNECTIONS
-} from "../Reducers/categories";
-
-export const setCategory = (label, color, priority = 5, options = {}) => {
+export const setCategory = (id = false, label, color, icon, priority = 5, options = {}) => {
     return {
-        action: "CATEGORIES_SET_CATEGORY",
+        type: "CATEGORIES_SET_CATEGORY",
         payload: {
+            id: id,
             label: label,
             color: color,
+            icon: icon,
             priority: priority,
             options: options
         }
@@ -19,7 +14,27 @@ export const setCategory = (label, color, priority = 5, options = {}) => {
 
 export const setCategoryConnection = (categoryId, itemType, itemId) => {
     return {
-        action: "CATEGORIES_SET_CATEGORY_CONNECTION",
+        type: "CATEGORIES_SET_CATEGORY_CONNECTION",
+        payload: {
+            category_id: categoryId,
+            item_type: itemType,
+            item_id: itemId
+        }
+    };
+};
+
+export const removeCategory = categoryId => {
+    return {
+        type: "CATEGORIES_REMOVE_CATEGORY",
+        payload: {
+            category_id: categoryId
+        }
+    };
+};
+
+export const removeCategoryConnection = (categoryId, itemType = false, itemId = false) => {
+    return {
+        type: "CATEGORIES_REMOVE_CATEGORY_CONNECTION",
         payload: {
             category_id: categoryId,
             item_type: itemType,
@@ -30,7 +45,7 @@ export const setCategoryConnection = (categoryId, itemType, itemId) => {
 
 export const setCategories = categories => {
     return {
-        action: "CATEGORIES_SET_CATEGORIES",
+        type: "CATEGORIES_SET_CATEGORIES",
         payload: {
             categories: categories
         }
@@ -39,19 +54,9 @@ export const setCategories = categories => {
 
 export const setCategoryConnections = categoryConnections => {
     return {
-        action: "CATEGORIES_SET_CATEGORY_CONNECTIONS",
+        type: "CATEGORIES_SET_CATEGORY_CONNECTIONS",
         payload: {
             category_connections: categoryConnections
         }
     };
-};
-
-export const loadCategories = () => {
-    const categories = store.get(BUNQDESKTOP_CATEGORIES);
-    return setCategories(categories);
-};
-
-export const loadCategoryConnections = () => {
-    const categoryConnections = store.get(BUNQDESKTOP_CATEGORY_CONNECTIONS);
-    return setCategoryConnections(categoryConnections);
 };
