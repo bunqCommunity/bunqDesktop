@@ -7,7 +7,7 @@ import Icon from "material-ui/Icon";
 import Button from "material-ui/Button";
 import Drawer from "material-ui/Drawer";
 import Divider from "material-ui/Divider";
-import TextField from "material-ui/TextField";
+import InputAdornment from "material-ui/Input/InputAdornment";
 import Typography from "material-ui/Typography";
 import Radio, { RadioGroup } from "material-ui/Radio";
 import List, {
@@ -31,18 +31,14 @@ import Cancel from "material-ui-icons/Cancel";
 import {
     clearPaymentFilterType,
     togglePaymentFilterVisibility,
-    setPaymentFilterType
-} from "../../Actions/payment_filter";
-import {
+    setPaymentFilterType,
+    clearRequestFilterType,
+    toggleRequestFilterVisibility,
+    setRequestFilterType,
     clearBunqMeTabFilterType,
     toggleBunqMeTabFilterVisibility,
     setBunqMeTabFilterType
-} from "../../Actions/bunq_me_tab_filter";
-import {
-    clearRequestFilterType,
-    toggleRequestFilterVisibility,
-    setRequestFilterType
-} from "../../Actions/request_filter";
+} from "../../Actions/filters";
 
 const styles = {
     list: {
@@ -67,7 +63,9 @@ const styles = {
     },
     dateInput: {
         width: 208,
-        margin: 5
+        margin: 5,
+        marginBottom: 12,
+        marginTop: 8
     }
 };
 
@@ -75,7 +73,8 @@ class FilterDrawer extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            selectedDate: new Date(),
+            selectedDateFrom: null,
+            selectedDateTo: null,
             open: false
         };
     }
@@ -83,7 +82,6 @@ class FilterDrawer extends React.Component {
     openDrawer = () => {
         this.setState({ open: true });
     };
-
     closeDrawer = () => {
         this.setState({ open: false });
     };
@@ -115,8 +113,17 @@ class FilterDrawer extends React.Component {
         this.props.toggleBunqMeTabFilterVisibility();
     };
 
-    handleDateChange = date => {
-        this.setState({ selectedDate: date });
+    handleDateFromChange = date => {
+        this.setState({ selectedDateFrom: date });
+    };
+    handleDateToChange = date => {
+        this.setState({ selectedDateTo: date });
+    };
+    clearDateTo = event => {
+        this.setState({ selectedDateTo: null });
+    };
+    clearDateFrom = event => {
+        this.setState({ selectedDateFrom: null });
     };
 
     render() {
@@ -309,30 +316,47 @@ class FilterDrawer extends React.Component {
                     </RadioGroup>
                 </ListItem>
 
+                <ListSubheader>Date range filter</ListSubheader>
                 <ListItem style={styles.listItem}>
                     <DateTimePicker
                         id="from-date"
                         helperText="From date"
+                        emptyLabel="No filter"
                         openTo="date"
                         disableFuture
                         style={styles.dateInput}
-                        value={this.state.selectedDate}
-                        onChange={this.handleDateChange}
-                        leftArrowIcon={<Icon>keyboard_arrow_left</Icon>}
-                        rightArrowIcon={<Icon>keyboard_arrow_right</Icon>}
+                        value={this.state.selectedDateFrom}
+                        onChange={this.handleDateFromChange}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton onClick={this.clearDateFrom}>
+                                        <Icon>clear</Icon>
+                                    </IconButton>
+                                </InputAdornment>
+                            )
+                        }}
                     />
                 </ListItem>
                 <ListItem style={styles.listItem}>
                     <DateTimePicker
                         id="to-date"
                         helperText="To date"
+                        emptyLabel="No filter"
                         openTo="date"
                         disablePast
                         style={styles.dateInput}
-                        value={this.state.selectedDate}
-                        onChange={this.handleDateChange}
-                        leftArrowIcon={<Icon>keyboard_arrow_left</Icon>}
-                        rightArrowIcon={<Icon>keyboard_arrow_right</Icon>}
+                        value={this.state.selectedDateTo}
+                        onChange={this.handleDateToChange}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton onClick={this.clearDateTo}>2
+                                        <Icon>clear</Icon>
+                                    </IconButton>
+                                </InputAdornment>
+                            )
+                        }}
                     />
                 </ListItem>
 

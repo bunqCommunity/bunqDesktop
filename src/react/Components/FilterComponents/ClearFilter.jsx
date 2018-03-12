@@ -4,7 +4,7 @@ import Button from "material-ui/Button";
 import IconButton from "material-ui/IconButton";
 import ClearIcon from "material-ui-icons/Clear";
 
-import { resetFilters } from "../../Actions/general_filter";
+import { resetFilters } from "../../Actions/filters";
 
 class ClearFilter extends React.Component {
     constructor(props, context) {
