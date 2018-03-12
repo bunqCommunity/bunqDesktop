@@ -83,6 +83,10 @@ class CategoryEditor extends React.Component {
         this.setState({ color: color.hex });
     };
 
+    priorityChange = event => {
+        this.setState({ priority: event.target.value });
+    };
+
     labelChange = event => {
         const labelValue = event.target.value;
 
@@ -157,6 +161,16 @@ class CategoryEditor extends React.Component {
                         onChange={this.labelChange}
                         margin="normal"
                         style={styles.categoryLabelInput}
+                    />
+
+                    <TextField
+                        type="number"
+                        margin="normal"
+                        label="Category priority"
+                        value={this.state.priority}
+                        onChange={this.priorityChange}
+                        style={styles.categoryLabelInput}
+                        InputProps={{ inputProps: { min: 0, max: 10 } }}
                     />
 
                     <ColorPicker

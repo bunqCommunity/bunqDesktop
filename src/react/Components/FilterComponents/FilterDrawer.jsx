@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import DateTimePicker from "material-ui-pickers/DateTimePicker/index.js";
+import DatePicker from "material-ui-pickers/DatePicker/index.js";
 import { withTheme } from "material-ui/styles";
 import IconButton from "material-ui/IconButton";
 import Icon from "material-ui/Icon";
@@ -37,7 +37,11 @@ import {
     setRequestFilterType,
     clearBunqMeTabFilterType,
     toggleBunqMeTabFilterVisibility,
-    setBunqMeTabFilterType
+    setBunqMeTabFilterType,
+    setFromDateFilter,
+    setToDateFilter,
+    clearFromDateFilter,
+    clearToDateFilter
 } from "../../Actions/filters";
 
 const styles = {
@@ -114,16 +118,16 @@ class FilterDrawer extends React.Component {
     };
 
     handleDateFromChange = date => {
-        this.setState({ selectedDateFrom: date });
+        this.props.setFromDateFilter(date);
     };
     handleDateToChange = date => {
-        this.setState({ selectedDateTo: date });
-    };
-    clearDateTo = event => {
-        this.setState({ selectedDateTo: null });
+        this.props.setToDateFilter(date);
     };
     clearDateFrom = event => {
-        this.setState({ selectedDateFrom: null });
+        this.props.clearFromDateFilter();
+    };
+    clearDateTo = event => {
+        this.props.clearToDateFilter();
     };
 
     render() {
@@ -318,14 +322,15 @@ class FilterDrawer extends React.Component {
 
                 <ListSubheader>Date range filter</ListSubheader>
                 <ListItem style={styles.listItem}>
-                    <DateTimePicker
+                    <DatePicker
                         id="from-date"
                         helperText="From date"
                         emptyLabel="No filter"
-                        openTo="date"
+                        format="MMMM DD, YYYY"
                         disableFuture
                         style={styles.dateInput}
-                        value={this.state.selectedDateFrom}
+                        maxDate={this.props.dateToFilter}
+                        value={this.props.dateFromFilter}
                         onChange={this.handleDateFromChange}
                         InputProps={{
                             endAdornment: (
@@ -339,19 +344,20 @@ class FilterDrawer extends React.Component {
                     />
                 </ListItem>
                 <ListItem style={styles.listItem}>
-                    <DateTimePicker
+                    <DatePicker
                         id="to-date"
                         helperText="To date"
                         emptyLabel="No filter"
-                        openTo="date"
-                        disablePast
+                        format="MMMM DD, YYYY"
+                        disableFuture
                         style={styles.dateInput}
-                        value={this.state.selectedDateTo}
+                        minDate={this.props.dateFromFilter}
+                        value={this.props.dateToFilter}
                         onChange={this.handleDateToChange}
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">
-                                    <IconButton onClick={this.clearDateTo}>2
+                                    <IconButton onClick={this.clearDateTo}>
                                         <Icon>clear</Icon>
                                     </IconButton>
                                 </InputAdornment>
@@ -422,7 +428,10 @@ const mapStateToProps = state => {
         bunqMeTabVisibility: state.bunq_me_tab_filter.visible,
 
         requestType: state.request_filter.type,
-        requestVisibility: state.request_filter.visible
+        requestVisibility: state.request_filter.visible,
+
+        dateFromFilter: state.date_filter.from_date,
+        dateToFilter: state.date_filter.to_date,
     };
 };
 
@@ -441,7 +450,12 @@ const mapDispatchToProps = dispatch => {
         clearBunqMeTabFilterType: () => dispatch(clearBunqMeTabFilterType()),
         setBunqMeTabFilterType: type => dispatch(setBunqMeTabFilterType(type)),
         toggleBunqMeTabFilterVisibility: () =>
-            dispatch(toggleBunqMeTabFilterVisibility())
+            dispatch(toggleBunqMeTabFilterVisibility()),
+
+        setFromDateFilter: date => dispatch(setFromDateFilter(date)),
+        setToDateFilter: date => dispatch(setToDateFilter(date)),
+        clearFromDateFilter: () => dispatch(clearFromDateFilter()),
+        clearToDateFilter: () => dispatch(clearToDateFilter())
     };
 };
 

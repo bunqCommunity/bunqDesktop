@@ -57,16 +57,24 @@ class Stats extends React.Component {
             selectedAccount: this.props.selectedAccount,
             paymentFilterSettings: {
                 paymentVisibility: this.props.paymentVisibility,
-                paymentType: this.props.paymentType
+                paymentType: this.props.paymentType,
+                dateFromFilter: this.props.dateFromFilter,
+                dateToFilter: this.props.dateToFilter
             },
             bunqMeTabFilterSettings: {
                 bunqMeTabVisibility: this.props.bunqMeTabVisibility,
-                bunqMeTabType: this.props.bunqMeTabType
+                bunqMeTabType: this.props.bunqMeTabType,
+                dateFromFilter: this.props.dateFromFilter,
+                dateToFilter: this.props.dateToFilter
             },
             requestFilterSettings: {
                 requestVisibility: this.props.requestVisibility,
-                requestType: this.props.requestType
+                requestType: this.props.requestType,
+                dateFromFilter: this.props.dateFromFilter,
+                dateToFilter: this.props.dateToFilter
             },
+            timeTo: this.props.dateToFilter,
+            timeFrom: this.props.dateFromFilter,
             timescale: this.state.timescale
         });
     };
@@ -307,7 +315,9 @@ const mapStateToProps = state => {
         bunqMeTabType: state.bunq_me_tab_filter.type,
         bunqMeTabVisibility: state.bunq_me_tab_filter.visible,
         requestType: state.request_filter.type,
-        requestVisibility: state.request_filter.visible
+        requestVisibility: state.request_filter.visible,
+        dateFromFilter: state.date_filter.from_date,
+        dateToFilter: state.date_filter.to_date,
     };
 };
 

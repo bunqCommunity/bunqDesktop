@@ -66,3 +66,33 @@ export function clearRequestFilterType() {
         type: "REQUEST_FILTER_CLEAR"
     };
 }
+
+export function setFromDateFilter(date = null) {
+    return {
+        type: "DATE_FILTER_FROM_SET",
+        payload: {
+            date: date
+        }
+    };
+}
+
+export function setToDateFilter(date = null) {
+    return {
+        type: "DATE_FILTER_TO_SET",
+        payload: {
+            date: date
+        }
+    };
+}
+
+export function clearFromDateFilter() {
+    return {
+        type: "DATE_FILTER_FROM_CLEAR"
+    };
+}
+
+export function clearToDateFilter() {
+    return {
+        type: "DATE_FILTER_TO_CLEAR"
+    };
+}

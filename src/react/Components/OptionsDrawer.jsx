@@ -32,7 +32,8 @@ const styles = {
         paddingBottom: 50,
         display: "flex",
         flexDirection: "column",
-        WebkitAppRegion: "no-drag"
+        WebkitAppRegion: "no-drag",
+        flexGrow: 1
     },
     listItem: {
         paddingTop: 0,
@@ -191,8 +192,6 @@ class OptionsDrawer extends React.Component {
                     />
                 </ListItem>
 
-                <ListItem style={styles.listFiller} />
-
                 <ListItem
                     button
                     style={styles.listBottomItem}
@@ -203,6 +202,8 @@ class OptionsDrawer extends React.Component {
                     </ListItemIcon>
                     <Typography variant="subheading">Reset BunqDesktop</Typography>
                 </ListItem>
+
+                <ListItem style={styles.listFiller} />
 
                 <ListItem
                     button

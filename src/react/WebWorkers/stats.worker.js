@@ -1,3 +1,4 @@
+import DateFNSformat from "date-fns/format";
 import { getWeek } from "../Helpers/Utils";
 import {
     bunqMeTabsFilter,
@@ -10,14 +11,14 @@ import {
 const labelFormat = (date, type = "daily") => {
     switch (type) {
         case "yearly":
-            return `${date.getFullYear()}`;
+            return DateFNSformat(date, "YYYY");
         case "monthly":
-            return `${date.getFullYear()}/${date.getMonth() + 1}`;
+            return DateFNSformat(date, "MMM YYYY");
         case "weekly":
-            return `${date.getFullYear()}/${getWeek(date)}`;
+            return DateFNSformat(date, "WW/YYYY");
         case "daily":
         default:
-            return `${date.getMonth() + 1}/${date.getDate()}`;
+            return DateFNSformat(date, "D MMM");
     }
 };
 
@@ -112,7 +113,14 @@ const masterCardActionMapper = (masterCardActions, paymentFilterSettings) => {
     return data;
 };
 
-const getData = (events, accounts, selectedAccount, type = "daily") => {
+const getData = (
+    events,
+    accounts,
+    selectedAccount,
+    timeFrom = null,
+    timeTo = new Date(),
+    type = "daily"
+) => {
     let accountInfo = false;
     accounts.map(account => {
         if (
@@ -137,22 +145,35 @@ const getData = (events, accounts, selectedAccount, type = "daily") => {
     let labelData = [];
     const dataCollection = {};
 
+    // get newest item to check its date
     switch (type) {
         case "yearly":
             for (let year = 0; year < 2; year++) {
-                const myDate = new Date();
-                myDate.setFullYear(myDate.getFullYear() - year);
-                const label = labelFormat(myDate, type);
+                const startDate = new Date();
+                startDate.setFullYear(startDate.getFullYear() - year);
+                // if (timeFrom !== null) {
+                //     if (startDate.getTime() < timeFrom.getTime()) continue;
+                // }
+                // if (timeTo !== null) {
+                //     if (startDate.getTime() > timeTo.getTime()) continue;
+                // }
 
+                const label = labelFormat(startDate, type);
                 dataCollection[label] = [];
             }
             break;
         case "monthly":
             for (let month = 0; month < 12; month++) {
-                const myDate = new Date();
-                myDate.setMonth(myDate.getMonth() - month);
-                const label = labelFormat(myDate, type);
+                const startDate = new Date();
+                startDate.setMonth(startDate.getMonth() - month);
+                // if (timeFrom !== null) {
+                //     if (startDate.getTime() < timeFrom.getTime()) continue;
+                // }
+                // if (timeTo !== null) {
+                //     if (startDate.getTime() > timeTo.getTime()) continue;
+                // }
 
+                const label = labelFormat(startDate, type);
                 dataCollection[label] = [];
             }
             break;
@@ -160,20 +181,34 @@ const getData = (events, accounts, selectedAccount, type = "daily") => {
             for (let week = 0; week < 52; week++) {
                 const dateOffset =
                     week <= 0 ? 0 : 24 * 60 * 60 * 1000 * 7 * week;
-                const myDate = new Date();
-                myDate.setTime(myDate.getTime() - dateOffset);
-                const label = labelFormat(myDate, type);
 
+                const startDate = new Date();
+                startDate.setTime(startDate.getTime() - dateOffset);
+                // if (timeFrom !== null) {
+                //     if (startDate.getTime() < timeFrom.getTime()) continue;
+                // }
+                // if (timeTo !== null) {
+                //     if (startDate.getTime() > timeTo.getTime()) continue;
+                // }
+
+                const label = labelFormat(startDate, type);
                 dataCollection[label] = [];
             }
             break;
         case "daily":
             for (let day = 0; day < 30; day++) {
                 const dateOffset = day <= 0 ? 0 : 24 * 60 * 60 * 1000 * day;
-                const myDate = new Date();
-                myDate.setTime(myDate.getTime() - dateOffset);
-                const label = labelFormat(myDate, type);
 
+                const startDate = new Date();
+                startDate.setTime(startDate.getTime() - dateOffset);
+                // if (timeFrom !== null) {
+                //     if (startDate.getTime() < timeFrom.getTime()) continue;
+                // }
+                // if (timeTo !== null) {
+                //     if (startDate.getTime() > timeTo.getTime()) continue;
+                // }
+
+                const label = labelFormat(startDate, type);
                 dataCollection[label] = [];
             }
             break;
@@ -262,8 +297,15 @@ onmessage = e => {
 
     const data = getData(
         events,
+        // account data
         e.data.accounts,
+        // selected account
         e.data.selectedAccount,
+        // date from range
+        e.data.timeFrom,
+        // date to
+        e.data.timeTo,
+        // display charts with daily/weekly/monthyl/yearly increments
         e.data.timescale
     );
 
