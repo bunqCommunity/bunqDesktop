@@ -30,7 +30,6 @@ const MasterCardActionInfo = CL(() =>
 const PaymentInfo = CL(() =>
     import(/* webpackChunkName: "paymentinfo" */ "./Pages/PaymentInfo")
 );
-// import PaymentInfo from "./Pages/PaymentInfo";
 const ApplicationInfo = CL(() =>
     import(/* webpackChunkName: "applicationinfo" */ "./Pages/ApplicationInfo")
 );
@@ -38,10 +37,10 @@ const AccountInfo = CL(() =>
     import(/* webpackChunkName: "accountinfo" */ "./Pages/AccountInfo")
 );
 const Stats = CL(() =>
-    import(/* webpackChunkName: "accountinfo" */ "./Pages/Stats/Stats")
+    import(/* webpackChunkName: "stats" */ "./Pages/Stats/Stats")
 );
 const CategoryDashboard = CL(() =>
-    import(/* webpackChunkName: "accountinfo" */ "./Pages/CategoryDashboard")
+    import(/* webpackChunkName: "category_dashboard" */ "./Pages/CategoryDashboard")
 );
 
 // router react component
