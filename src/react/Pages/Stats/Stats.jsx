@@ -35,47 +35,62 @@ class Stats extends React.Component {
         this.worker.terminate();
     }
 
+    componentWillUpdate(nextProps, nextState) {
+        let triggerWorker = false;
+        const { timescale } = this.state;
+        const { generalFilterDate } = this.props;
+
+        // if any of these values changed we should always update
+        if (timescale !== nextState.timescale) triggerWorker = true;
+        if (generalFilterDate !== nextProps.generalFilterDate)
+            triggerWorker = true;
+
+        if (triggerWorker) {
+            console.log("update");
+            // trigger an update with the next changed props
+            this.triggerWorker(nextProps, nextState);
+        }
+    }
+
     componentDidMount() {
         this.triggerWorker();
     }
 
     handleChange = (event, value) => {
-        this.setState({ timescale: value }, () => {
-            this.triggerWorker();
-        });
+        this.setState({ timescale: value });
     };
 
-    triggerWorker = () => {
+    triggerWorker = (props = this.props, state = this.state) => {
         this.worker.postMessage({
-            payments: this.props.payments,
-            masterCardActions: this.props.masterCardActions,
-            bunqMeTabs: this.props.bunqMeTabs,
-            requestInquiries: this.props.requestInquiries,
-            requestResponses: this.props.requestResponses,
-            accounts: this.props.accounts,
+            payments: props.payments,
+            masterCardActions: props.masterCardActions,
+            bunqMeTabs: props.bunqMeTabs,
+            requestInquiries: props.requestInquiries,
+            requestResponses: props.requestResponses,
+            accounts: props.accounts,
 
-            selectedAccount: this.props.selectedAccount,
+            selectedAccount: props.selectedAccount,
             paymentFilterSettings: {
-                paymentVisibility: this.props.paymentVisibility,
-                paymentType: this.props.paymentType,
-                dateFromFilter: this.props.dateFromFilter,
-                dateToFilter: this.props.dateToFilter
+                paymentVisibility: props.paymentVisibility,
+                paymentType: props.paymentType,
+                dateFromFilter: props.dateFromFilter,
+                dateToFilter: props.dateToFilter
             },
             bunqMeTabFilterSettings: {
-                bunqMeTabVisibility: this.props.bunqMeTabVisibility,
-                bunqMeTabType: this.props.bunqMeTabType,
-                dateFromFilter: this.props.dateFromFilter,
-                dateToFilter: this.props.dateToFilter
+                bunqMeTabVisibility: props.bunqMeTabVisibility,
+                bunqMeTabType: props.bunqMeTabType,
+                dateFromFilter: props.dateFromFilter,
+                dateToFilter: props.dateToFilter
             },
             requestFilterSettings: {
-                requestVisibility: this.props.requestVisibility,
-                requestType: this.props.requestType,
-                dateFromFilter: this.props.dateFromFilter,
-                dateToFilter: this.props.dateToFilter
+                requestVisibility: props.requestVisibility,
+                requestType: props.requestType,
+                dateFromFilter: props.dateFromFilter,
+                dateToFilter: props.dateToFilter
             },
-            timeTo: this.props.dateToFilter,
-            timeFrom: this.props.dateFromFilter,
-            timescale: this.state.timescale
+            timeTo: props.dateToFilter,
+            timeFrom: props.dateFromFilter,
+            timescale: state.timescale
         });
     };
 
@@ -318,6 +333,8 @@ const mapStateToProps = state => {
         requestVisibility: state.request_filter.visible,
         dateFromFilter: state.date_filter.from_date,
         dateToFilter: state.date_filter.to_date,
+
+        generalFilterDate: state.general_filter.date
     };
 };
 

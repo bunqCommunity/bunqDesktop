@@ -117,6 +117,9 @@ const masterCardActionMapper = (masterCardActions, paymentFilterSettings) => {
 const formatLabels = (events, type) => {
     const dataCollection = {};
 
+    // nothing to do with no events
+    if(events.length <= 0) return dataCollection;
+
     // get newest item to check its date
     switch (type) {
         case "yearly":
