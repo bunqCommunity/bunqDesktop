@@ -1,6 +1,7 @@
 import DateFNSformat from "date-fns/format";
 import getDayOfYear from "date-fns/getDayOfYear";
 import { getWeek } from "../Helpers/Utils";
+import CategoryHelper from "../Helpers/CategoryHelper";
 import {
     bunqMeTabsFilter,
     masterCardActionFilter,
@@ -27,7 +28,12 @@ const roundMoney = amount => {
     return Math.round(amount * 100) / 100;
 };
 
-const bunqMeTabMapper = (bunqMeTabs, bunqMeTabFilterSettings) => {
+const bunqMeTabMapper = (
+    bunqMeTabs,
+    bunqMeTabFilterSettings,
+    categories,
+    categoryConnections
+) => {
     const data = [];
     bunqMeTabs
         .filter(bunqMeTabsFilter(bunqMeTabFilterSettings))
@@ -35,13 +41,24 @@ const bunqMeTabMapper = (bunqMeTabs, bunqMeTabFilterSettings) => {
             data.push({
                 date: new Date(bunqMeTab.BunqMeTab.created),
                 change: 0,
-                type: "bunqMeTab"
+                type: "bunqMeTab",
+                categories: CategoryHelper(
+                    categories,
+                    categoryConnections,
+                    "BunqMeTab",
+                    bunqMeTab.BunqMeTab.id
+                )
             });
         });
     return data;
 };
 
-const requestInquiryMapper = (requestInquiries, requestFilterSettings) => {
+const requestInquiryMapper = (
+    requestInquiries,
+    requestFilterSettings,
+    categories,
+    categoryConnections
+) => {
     const data = [];
     requestInquiries
         .filter(requestInquiryFilter(requestFilterSettings))
@@ -49,13 +66,24 @@ const requestInquiryMapper = (requestInquiries, requestFilterSettings) => {
             data.push({
                 date: new Date(requestInquiry.RequestInquiry.created),
                 change: 0,
-                type: "requestInquiry"
+                type: "requestInquiry",
+                categories: CategoryHelper(
+                    categories,
+                    categoryConnections,
+                    "RequestInquiry",
+                    requestInquiry.RequestInquiry.id
+                )
             });
         });
     return data;
 };
 
-const requestResponseMapper = (requestResponses, requestFilterSettings) => {
+const requestResponseMapper = (
+    requestResponses,
+    requestFilterSettings,
+    categories,
+    categoryConnections
+) => {
     const data = [];
     requestResponses
         .filter(requestResponseFilter(requestFilterSettings))
@@ -63,13 +91,24 @@ const requestResponseMapper = (requestResponses, requestFilterSettings) => {
             data.push({
                 date: new Date(requestResponse.RequestResponse.created),
                 change: 0,
-                type: "requestResponse"
+                type: "requestResponse",
+                categories: CategoryHelper(
+                    categories,
+                    categoryConnections,
+                    "RequestResponse",
+                    requestResponse.RequestResponse.id
+                )
             });
         });
     return data;
 };
 
-const paymentMapper = (payments, paymentFilterSettings) => {
+const paymentMapper = (
+    payments,
+    paymentFilterSettings,
+    categories,
+    categoryConnections
+) => {
     const data = [];
     payments.filter(paymentFilter(paymentFilterSettings)).map(payment => {
         const paymentInfo = payment.Payment;
@@ -78,13 +117,24 @@ const paymentMapper = (payments, paymentFilterSettings) => {
         data.push({
             date: new Date(paymentInfo.created),
             change: -change,
-            type: "payment"
+            type: "payment",
+            categories: CategoryHelper(
+                categories,
+                categoryConnections,
+                "Payment",
+                paymentInfo.id
+            )
         });
     });
     return data;
 };
 
-const masterCardActionMapper = (masterCardActions, paymentFilterSettings) => {
+const masterCardActionMapper = (
+    masterCardActions,
+    paymentFilterSettings,
+    categories,
+    categoryConnections
+) => {
     const data = [];
     masterCardActions
         .filter(masterCardActionFilter(paymentFilterSettings))
@@ -107,7 +157,13 @@ const masterCardActionMapper = (masterCardActions, paymentFilterSettings) => {
                 data.push({
                     date: new Date(masterCardInfo.created),
                     change: change,
-                    type: "masterCardAction"
+                    type: "masterCardAction",
+                    categories: CategoryHelper(
+                        categories,
+                        categoryConnections,
+                        "MasterCardAction",
+                        masterCardInfo.id
+                    )
                 });
             }
         });
@@ -118,7 +174,7 @@ const formatLabels = (events, type) => {
     const dataCollection = {};
 
     // nothing to do with no events
-    if(events.length <= 0) return dataCollection;
+    if (events.length <= 0) return dataCollection;
 
     // get newest item to check its date
     switch (type) {
@@ -222,6 +278,7 @@ const formatLabels = (events, type) => {
 const getData = (
     events,
     accounts,
+    categories,
     selectedAccount,
     timeFrom = null,
     timeTo = new Date(),
@@ -275,12 +332,17 @@ const getData = (
             bunqMeTab: 0,
             payment: 0
         };
+
+        const categoryCount = Object.keys(categories);
+
         let timescaleChange = 0;
         dataCollection[label].map(item => {
             // increment this type to keep track of the different types
             timescaleInfo[item.type]++;
             // calculate change
             timescaleChange = timescaleChange + item.change;
+
+            console.log(item.categories);
         });
 
         // update balance and push it to the list
@@ -319,19 +381,35 @@ const getData = (
 
 onmessage = e => {
     const events = [
-        ...bunqMeTabMapper(e.data.bunqMeTabs, e.data.bunqMeTabFilterSettings),
+        ...bunqMeTabMapper(
+            e.data.bunqMeTabs,
+            e.data.bunqMeTabFilterSettings,
+            e.data.categories,
+            e.data.categoryConnections
+        ),
         ...requestInquiryMapper(
             e.data.requestInquiries,
-            e.data.requestFilterSettings
+            e.data.requestFilterSettings,
+            e.data.categories,
+            e.data.categoryConnections
         ),
         ...requestResponseMapper(
             e.data.requestResponses,
-            e.data.requestFilterSettings
+            e.data.requestFilterSettings,
+            e.data.categories,
+            e.data.categoryConnections
         ),
-        ...paymentMapper(e.data.payments, e.data.paymentFilterSettings),
+        ...paymentMapper(
+            e.data.payments,
+            e.data.paymentFilterSettings,
+            e.data.categories,
+            e.data.categoryConnections
+        ),
         ...masterCardActionMapper(
             e.data.masterCardActions,
-            e.data.paymentFilterSettings
+            e.data.paymentFilterSettings,
+            e.data.categories,
+            e.data.categoryConnections
         )
     ];
 
@@ -339,6 +417,8 @@ onmessage = e => {
         events,
         // account data
         e.data.accounts,
+        // full list of categories
+        e.data.categories,
         // selected account
         e.data.selectedAccount,
         // date from range

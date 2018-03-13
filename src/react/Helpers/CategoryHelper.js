@@ -6,7 +6,7 @@ export default (
     // unique id for this item
     itemId,
     // if true a negative search is done which returns all categories which aren't connected to the item
-    reverseChips = false
+    negativeSearch = false
 ) => {
     const results = [];
 
@@ -27,8 +27,8 @@ export default (
 
         // if found and we're not doing a negative lookup add the category to the list
         if (
-            (reverseChips === false && foundConnection === true) ||
-            (reverseChips === true && foundConnection === false)
+            (negativeSearch === false && foundConnection === true) ||
+            (negativeSearch === true && foundConnection === false)
         ) {
             results.push(categoryInfo);
         }

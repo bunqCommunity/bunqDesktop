@@ -46,7 +46,6 @@ class Stats extends React.Component {
             triggerWorker = true;
 
         if (triggerWorker) {
-            console.log("update");
             // trigger an update with the next changed props
             this.triggerWorker(nextProps, nextState);
         }
@@ -62,14 +61,18 @@ class Stats extends React.Component {
 
     triggerWorker = (props = this.props, state = this.state) => {
         this.worker.postMessage({
+            // all endpoints
             payments: props.payments,
             masterCardActions: props.masterCardActions,
             bunqMeTabs: props.bunqMeTabs,
             requestInquiries: props.requestInquiries,
             requestResponses: props.requestResponses,
-            accounts: props.accounts,
 
+            // the accounts and selectedAccount so a balance can be calcualted
+            accounts: props.accounts,
             selectedAccount: props.selectedAccount,
+
+            // different filter objects used in filtering the endpoints
             paymentFilterSettings: {
                 paymentVisibility: props.paymentVisibility,
                 paymentType: props.paymentType,
@@ -88,6 +91,12 @@ class Stats extends React.Component {
                 dateFromFilter: props.dateFromFilter,
                 dateToFilter: props.dateToFilter
             },
+
+            // category data
+            categories: props.categories,
+            categoryConnections: props.categoryConnections,
+
+            // date range filters and timescale setting
             timeTo: props.dateToFilter,
             timeFrom: props.dateFromFilter,
             timescale: state.timescale
@@ -96,6 +105,8 @@ class Stats extends React.Component {
 
     handleWorkerEvent = event => {
         this.setState({ parsedData: event.data });
+
+        console.log(event.data);
     };
 
     render() {
@@ -325,6 +336,9 @@ const mapStateToProps = state => {
         requestResponsesLoading: state.request_responses.loading,
         masterCardActionsLoading: state.master_card_actions.loading,
 
+        categories: state.categories.categories,
+        categoryConnections: state.categories.category_connections,
+
         paymentType: state.payment_filter.type,
         paymentVisibility: state.payment_filter.visible,
         bunqMeTabType: state.bunq_me_tab_filter.type,
@@ -333,7 +347,6 @@ const mapStateToProps = state => {
         requestVisibility: state.request_filter.visible,
         dateFromFilter: state.date_filter.from_date,
         dateToFilter: state.date_filter.to_date,
-
         generalFilterDate: state.general_filter.date
     };
 };
