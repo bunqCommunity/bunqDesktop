@@ -1,4 +1,5 @@
 import DateFNSformat from "date-fns/format";
+import getDayOfYear from "date-fns/getDayOfYear";
 import { getWeek } from "../Helpers/Utils";
 import {
     bunqMeTabsFilter,
@@ -11,7 +12,7 @@ import {
 const labelFormat = (date, type = "daily") => {
     switch (type) {
         case "yearly":
-            return DateFNSformat(date, "YYYY");
+            return DateFNSformat(date, "_YYYY");
         case "monthly":
             return DateFNSformat(date, "MMM YYYY");
         case "weekly":
@@ -113,6 +114,108 @@ const masterCardActionMapper = (masterCardActions, paymentFilterSettings) => {
     return data;
 };
 
+const formatLabels = (events, type) => {
+    const dataCollection = {};
+
+    // get newest item to check its date
+    switch (type) {
+        case "yearly":
+            const startDateYearly = new Date();
+            const endDateYearly = events[events.length - 1].date;
+            const yearDifference1 =
+                startDateYearly.getFullYear() - endDateYearly.getFullYear() + 1;
+
+            for (let year = 0; year < yearDifference1; year++) {
+                const startDate = new Date();
+                startDate.setFullYear(startDate.getFullYear() - year);
+
+                const label = labelFormat(startDate, type);
+                dataCollection[label] = [];
+            }
+            break;
+
+        case "monthly":
+            const startDateMonthly = new Date();
+            const endDateMonthly = events[events.length - 1].date;
+            const yearDifference2 =
+                startDateMonthly.getFullYear() - endDateMonthly.getFullYear();
+
+            // calculate difference in months between the two dates
+            let monthDifference =
+                startDateMonthly.getMonth() -
+                endDateMonthly.getMonth() +
+                1 +
+                yearDifference2 * 12;
+
+            // limit to 24 months
+            monthDifference = monthDifference > 24 ? 24 : monthDifference;
+
+            for (let month = 0; month < monthDifference; month++) {
+                const startDate = new Date();
+                startDate.setMonth(startDate.getMonth() - month);
+
+                const label = labelFormat(startDate, type);
+                dataCollection[label] = [];
+            }
+            break;
+
+        case "weekly":
+            const startDateWeekly = new Date();
+            const endDateWeekly = events[events.length - 1].date;
+            const yearDifference3 =
+                startDateWeekly.getFullYear() - endDateWeekly.getFullYear();
+
+            // calculate difference in weeks between the two dates
+            let weekDifference =
+                getWeek(startDateWeekly) -
+                getWeek(endDateWeekly) +
+                1 +
+                yearDifference3 * 53;
+
+            // limit to 53 weeks
+            weekDifference = weekDifference > 53 ? 53 : weekDifference;
+
+            for (let week = 0; week < weekDifference; week++) {
+                const dateOffset =
+                    week <= 0 ? 0 : 24 * 60 * 60 * 1000 * 7 * week;
+
+                const startDate = new Date();
+                startDate.setTime(startDate.getTime() - dateOffset);
+
+                const label = labelFormat(startDate, type);
+                dataCollection[label] = [];
+            }
+            break;
+
+        case "daily":
+            const startDateDayly = new Date();
+            const endDateDayly = events[events.length - 1].date;
+            const yearDifference4 =
+                startDateDayly.getFullYear() - endDateDayly.getFullYear();
+
+            // calculate the difference in days between the two dates
+            let dayDifference =
+                getDayOfYear(startDateDayly) -
+                getDayOfYear(endDateDayly) +
+                yearDifference4 * 365;
+
+            // limit to 60 days
+            dayDifference = dayDifference > 60 ? 60 : dayDifference;
+
+            for (let day = 0; day < dayDifference; day++) {
+                const dateOffset = day <= 0 ? 0 : 24 * 60 * 60 * 1000 * day;
+
+                const startDate = new Date();
+                startDate.setTime(startDate.getTime() - dateOffset);
+
+                const label = labelFormat(startDate, type);
+                dataCollection[label] = [];
+            }
+            break;
+    }
+    return dataCollection;
+};
+
 const getData = (
     events,
     accounts,
@@ -143,88 +246,22 @@ const getData = (
     let requestResponseCountHistory = [];
     let bunqMeTabCountHistory = [];
     let labelData = [];
-    const dataCollection = {};
 
-    // get newest item to check its date
-    switch (type) {
-        case "yearly":
-            for (let year = 0; year < 2; year++) {
-                const startDate = new Date();
-                startDate.setFullYear(startDate.getFullYear() - year);
-                // if (timeFrom !== null) {
-                //     if (startDate.getTime() < timeFrom.getTime()) continue;
-                // }
-                // if (timeTo !== null) {
-                //     if (startDate.getTime() > timeTo.getTime()) continue;
-                // }
+    // sort all events by date first
+    const sortedEvents = events.sort((a, b) => {
+        return b.date - a.date;
+    });
 
-                const label = labelFormat(startDate, type);
-                dataCollection[label] = [];
-            }
-            break;
-        case "monthly":
-            for (let month = 0; month < 12; month++) {
-                const startDate = new Date();
-                startDate.setMonth(startDate.getMonth() - month);
-                // if (timeFrom !== null) {
-                //     if (startDate.getTime() < timeFrom.getTime()) continue;
-                // }
-                // if (timeTo !== null) {
-                //     if (startDate.getTime() > timeTo.getTime()) continue;
-                // }
-
-                const label = labelFormat(startDate, type);
-                dataCollection[label] = [];
-            }
-            break;
-        case "weekly":
-            for (let week = 0; week < 52; week++) {
-                const dateOffset =
-                    week <= 0 ? 0 : 24 * 60 * 60 * 1000 * 7 * week;
-
-                const startDate = new Date();
-                startDate.setTime(startDate.getTime() - dateOffset);
-                // if (timeFrom !== null) {
-                //     if (startDate.getTime() < timeFrom.getTime()) continue;
-                // }
-                // if (timeTo !== null) {
-                //     if (startDate.getTime() > timeTo.getTime()) continue;
-                // }
-
-                const label = labelFormat(startDate, type);
-                dataCollection[label] = [];
-            }
-            break;
-        case "daily":
-            for (let day = 0; day < 30; day++) {
-                const dateOffset = day <= 0 ? 0 : 24 * 60 * 60 * 1000 * day;
-
-                const startDate = new Date();
-                startDate.setTime(startDate.getTime() - dateOffset);
-                // if (timeFrom !== null) {
-                //     if (startDate.getTime() < timeFrom.getTime()) continue;
-                // }
-                // if (timeTo !== null) {
-                //     if (startDate.getTime() > timeTo.getTime()) continue;
-                // }
-
-                const label = labelFormat(startDate, type);
-                dataCollection[label] = [];
-            }
-            break;
-    }
+    // create the correct labels for the X axis
+    const dataCollection = formatLabels(events, type);
 
     // combine the list
-    events
-        .sort((a, b) => {
-            return b.date - a.date;
-        })
-        .forEach(item => {
-            const label = labelFormat(item.date, type);
-            if (dataCollection[label]) {
-                dataCollection[label].push(item);
-            }
-        });
+    sortedEvents.forEach(item => {
+        const label = labelFormat(item.date, type);
+        if (dataCollection[label]) {
+            dataCollection[label].push(item);
+        }
+    });
 
     // loop through all the days
     Object.keys(dataCollection).map(label => {
