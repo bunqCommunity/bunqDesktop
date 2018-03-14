@@ -1,7 +1,18 @@
-import DateFNSformat from "date-fns/format";
-import getDayOfYear from "date-fns/getDayOfYear";
+import {
+    addDays,
+    addWeeks,
+    addMonths,
+    addYears,
+    subDays,
+    subWeeks,
+    subMonths,
+    subYears,
+    getDayOfYear,
+    format as DateFNSformat
+} from "date-fns";
 import { getWeek } from "../Helpers/Utils";
 import CategoryHelper from "../Helpers/CategoryHelper";
+
 import {
     bunqMeTabsFilter,
     masterCardActionFilter,
@@ -363,13 +374,52 @@ const getData = (
             timescaleChange = timescaleChange + item.change;
         });
 
+        // fix the date ranges
+        let timeToFixed = timeTo;
+        let timeFromFixed = timeFrom;
+        switch (type) {
+            case "yearly":
+                timeToFixed = timeTo === null ? null : addYears(timeTo, 1);
+                timeFromFixed =
+                    timeFrom === null ? null : subYears(timeFrom, 1);
+                break;
+            case "monthly":
+                timeToFixed = timeTo === null ? null : addMonths(timeTo, 1);
+                timeFromFixed =
+                    timeFrom === null ? null : subMonths(timeFrom, 1);
+                break;
+            case "weekly":
+                timeToFixed = timeTo === null ? null : addWeeks(timeTo, 1);
+                timeFromFixed =
+                    timeFrom === null ? null : subWeeks(timeFrom, 1);
+                break;
+            case "daily":
+                timeToFixed = timeTo === null ? null : addDays(timeTo, 1);
+                timeFromFixed = timeFrom === null ? null : subDays(timeFrom, 1);
+                break;
+        }
+
+        if (timeTo !== null) {
+            console.log("timeTo", label);
+            console.log(
+                `${timescaleDate.getTime()} <= ${timeTo.getTime() + 86400000}`
+            );
+        }
+
+        if (timeFrom !== null) {
+            console.log("timeFrom", label);
+            console.log(
+                `${timescaleDate.getTime()} >= ${timeFrom.getTime() - 86400000}`
+            );
+        }
+
         if (
-            timeTo === null ||
-            timescaleDate.getTime() <= timeTo.getTime() + 86400000
+            timeToFixed === null ||
+            timescaleDate.getTime() <= timeToFixed.getTime()
         ) {
             if (
-                timeFrom === null ||
-                timescaleDate.getTime() >= timeFrom.getTime() - 86400000
+                timeFromFixed === null ||
+                timescaleDate.getTime() >= timeFromFixed.getTime()
             ) {
                 // only push this data and label if they are within the range
 

@@ -332,15 +332,16 @@ class FilterDrawer extends React.Component {
                         maxDate={this.props.dateToFilter}
                         value={this.props.dateFromFilter}
                         onChange={this.handleDateFromChange}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton onClick={this.clearDateFrom}>
-                                        <Icon>clear</Icon>
+                        clearable={true}
+                         InputProps={{
+                             endAdornment: (
+                                 <InputAdornment position="end">
+                                     <IconButton onClick={this.clearDateFrom}>
+                                         <Icon>clear</Icon>
                                     </IconButton>
-                                </InputAdornment>
+                                 </InputAdornment>
                             )
-                        }}
+                         }}
                     />
                 </ListItem>
                 <ListItem style={styles.listItem}>
@@ -354,6 +355,7 @@ class FilterDrawer extends React.Component {
                         minDate={this.props.dateFromFilter}
                         value={this.props.dateToFilter}
                         onChange={this.handleDateToChange}
+                        clearable={true}
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">
