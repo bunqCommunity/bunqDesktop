@@ -8,7 +8,7 @@ module.exports = [
         use: "babel-loader"
     },
     {
-        test: /\.ts$/,
+        test: /\.tsx?$/,
         include: /(src)|(\.ts$)/,
         use: "ts-loader"
     },

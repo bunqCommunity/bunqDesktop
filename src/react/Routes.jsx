@@ -40,7 +40,7 @@ const Stats = CL(() =>
     import(/* webpackChunkName: "stats" */ "./Pages/Stats/Stats")
 );
 const CategoryDashboard = CL(() =>
-    import(/* webpackChunkName: "category_dashboard" */ "./Pages/CategoryDashboard")
+    import(/* webpackChunkName: "category_dashboard" */ "./Pages/CategoryDashboard/CategoryDashboard")
 );
 
 // router react component

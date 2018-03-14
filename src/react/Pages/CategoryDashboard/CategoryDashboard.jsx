@@ -4,12 +4,13 @@ import Helmet from "react-helmet";
 import Paper from "material-ui/Paper";
 import Grid from "material-ui/Grid";
 
-import CategoryEditor from "../Components/Categories/CategoryEditor";
-import CategoryChip from "../Components/Categories/CategoryChip";
+import CategoryEditor from "../../Components/Categories/CategoryEditor";
+import CategoryChip from "../../Components/Categories/CategoryChip";
+import { FilterCreator } from "./FilterCreator.tsx";
 import {
     removeCategory,
     removeCategoryConnection
-} from "../Actions/categories";
+} from "../../Actions/categories";
 
 const styles = {
     chipWrapper: {
@@ -68,17 +69,27 @@ class CategoryDashboard extends React.Component {
                     <title>{`BunqDesktop - Categroy Editor`}</title>
                 </Helmet>
 
-                <Grid item xs={12} md={4}>
-                    <Paper>
-                        <CategoryEditor
-                            selectedCategoryId={this.state.selectedCategoryId}
-                            deselectChip={this.deselectChip}
-                        />
-                    </Paper>
+                <Grid item xs={12}>
+                    <Grid container spacing={16}>
+                        <Grid item xs={12} md={4}>
+                            <Paper>
+                                <CategoryEditor
+                                    selectedCategoryId={
+                                        this.state.selectedCategoryId
+                                    }
+                                    deselectChip={this.deselectChip}
+                                />
+                            </Paper>
+                        </Grid>
+
+                        <Grid item xs={12} md={8} style={{ marginTop: -8 }}>
+                            <Paper style={styles.chipWrapper}>{chips}</Paper>
+                        </Grid>
+                    </Grid>
                 </Grid>
 
-                <Grid item xs={12} md={8}>
-                    <Paper style={styles.chipWrapper}>{chips}</Paper>
+                <Grid item xs={12}>
+                    <FilterCreator categories={this.props.categories} />
                 </Grid>
             </Grid>
         );
