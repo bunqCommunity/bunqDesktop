@@ -105,8 +105,6 @@ class Stats extends React.Component {
 
     handleWorkerEvent = event => {
         this.setState({ parsedData: event.data });
-
-        console.log(event.data);
     };
 
     render() {

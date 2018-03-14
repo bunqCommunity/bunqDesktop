@@ -42,12 +42,13 @@ const bunqMeTabMapper = (
                 date: new Date(bunqMeTab.BunqMeTab.created),
                 change: 0,
                 type: "bunqMeTab",
-                categories: CategoryHelper(
-                    categories,
-                    categoryConnections,
-                    "BunqMeTab",
-                    bunqMeTab.BunqMeTab.id
-                )
+                categories: []
+                // categories: CategoryHelper(
+                //     categories,
+                //     categoryConnections,
+                //     "BunqMeTab",
+                //     bunqMeTab.BunqMeTab.id
+                // )
             });
         });
     return data;
@@ -67,12 +68,13 @@ const requestInquiryMapper = (
                 date: new Date(requestInquiry.RequestInquiry.created),
                 change: 0,
                 type: "requestInquiry",
-                categories: CategoryHelper(
-                    categories,
-                    categoryConnections,
-                    "RequestInquiry",
-                    requestInquiry.RequestInquiry.id
-                )
+                categories: []
+                // categories: CategoryHelper(
+                //     categories,
+                //     categoryConnections,
+                //     "RequestInquiry",
+                //     requestInquiry.RequestInquiry.id
+                // )
             });
         });
     return data;
@@ -92,12 +94,13 @@ const requestResponseMapper = (
                 date: new Date(requestResponse.RequestResponse.created),
                 change: 0,
                 type: "requestResponse",
-                categories: CategoryHelper(
-                    categories,
-                    categoryConnections,
-                    "RequestResponse",
-                    requestResponse.RequestResponse.id
-                )
+                categories: []
+                // categories: CategoryHelper(
+                //     categories,
+                //     categoryConnections,
+                //     "RequestResponse",
+                //     requestResponse.RequestResponse.id
+                // )
             });
         });
     return data;
@@ -118,12 +121,13 @@ const paymentMapper = (
             date: new Date(paymentInfo.created),
             change: -change,
             type: "payment",
-            categories: CategoryHelper(
-                categories,
-                categoryConnections,
-                "Payment",
-                paymentInfo.id
-            )
+            categories: []
+            // categories: CategoryHelper(
+            //     categories,
+            //     categoryConnections,
+            //     "Payment",
+            //     paymentInfo.id
+            // )
         });
     });
     return data;
@@ -158,12 +162,13 @@ const masterCardActionMapper = (
                     date: new Date(masterCardInfo.created),
                     change: change,
                     type: "masterCardAction",
-                    categories: CategoryHelper(
-                        categories,
-                        categoryConnections,
-                        "MasterCardAction",
-                        masterCardInfo.id
-                    )
+                    categories: []
+                    // categories: CategoryHelper(
+                    //     categories,
+                    //     categoryConnections,
+                    //     "MasterCardAction",
+                    //     masterCardInfo.id
+                    // )
                 });
             }
         });
@@ -189,7 +194,10 @@ const formatLabels = (events, type) => {
                 startDate.setFullYear(startDate.getFullYear() - year);
 
                 const label = labelFormat(startDate, type);
-                dataCollection[label] = [];
+                dataCollection[label] = {
+                    data: [],
+                    date: startDate
+                };
             }
             break;
 
@@ -214,7 +222,10 @@ const formatLabels = (events, type) => {
                 startDate.setMonth(startDate.getMonth() - month);
 
                 const label = labelFormat(startDate, type);
-                dataCollection[label] = [];
+                dataCollection[label] = {
+                    data: [],
+                    date: startDate
+                };
             }
             break;
 
@@ -242,7 +253,10 @@ const formatLabels = (events, type) => {
                 startDate.setTime(startDate.getTime() - dateOffset);
 
                 const label = labelFormat(startDate, type);
-                dataCollection[label] = [];
+                dataCollection[label] = {
+                    data: [],
+                    date: startDate
+                };
             }
             break;
 
@@ -268,7 +282,10 @@ const formatLabels = (events, type) => {
                 startDate.setTime(startDate.getTime() - dateOffset);
 
                 const label = labelFormat(startDate, type);
-                dataCollection[label] = [];
+                dataCollection[label] = {
+                    data: [],
+                    date: startDate
+                };
             }
             break;
     }
@@ -319,12 +336,17 @@ const getData = (
     sortedEvents.forEach(item => {
         const label = labelFormat(item.date, type);
         if (dataCollection[label]) {
-            dataCollection[label].push(item);
+            dataCollection[label].data.push(item);
         }
     });
 
     // loop through all the days
     Object.keys(dataCollection).map(label => {
+        const dataItem = dataCollection[label];
+
+        const timescaleData = dataItem.data;
+        const timescaleDate = dataItem.date;
+
         const timescaleInfo = {
             masterCardAction: 0,
             requestResponse: 0,
@@ -333,34 +355,44 @@ const getData = (
             payment: 0
         };
 
-        const categoryCount = Object.keys(categories);
-
         let timescaleChange = 0;
-        dataCollection[label].map(item => {
+        timescaleData.map(item => {
             // increment this type to keep track of the different types
             timescaleInfo[item.type]++;
             // calculate change
             timescaleChange = timescaleChange + item.change;
-
-            console.log(item.categories);
         });
 
-        // update balance and push it to the list
-        balanceHistoryData.push(roundMoney(currentBalance));
-        // count the events for this timescale
-        eventCountHistory.push(dataCollection[label].length);
-        // update the individual counts
-        masterCardActionCountHistory.push(timescaleInfo.masterCardAction);
-        requestInquiryCountHistory.push(timescaleInfo.requestInquiry);
-        requestResponseCountHistory.push(timescaleInfo.requestResponse);
-        bunqMeTabCountHistory.push(timescaleInfo.bunqMeTab);
-        paymentCountHistory.push(timescaleInfo.payment);
+        if (
+            timeTo === null ||
+            timescaleDate.getTime() <= timeTo.getTime() + 86400000
+        ) {
+            if (
+                timeFrom === null ||
+                timescaleDate.getTime() >= timeFrom.getTime() - 86400000
+            ) {
+                // only push this data and label if they are within the range
 
-        // update the balance for the next timescale
+                // update balance and push it to the list
+                balanceHistoryData.push(roundMoney(currentBalance));
+                // count the events for this timescale
+                eventCountHistory.push(timescaleData.length);
+                // update the individual counts
+                masterCardActionCountHistory.push(
+                    timescaleInfo.masterCardAction
+                );
+                requestInquiryCountHistory.push(timescaleInfo.requestInquiry);
+                requestResponseCountHistory.push(timescaleInfo.requestResponse);
+                bunqMeTabCountHistory.push(timescaleInfo.bunqMeTab);
+                paymentCountHistory.push(timescaleInfo.payment);
+
+                // push the label here so we can ignore certain days if required
+                labelData.push(label);
+            }
+        }
+
+        // always update the balance for the next timescale
         currentBalance = currentBalance + timescaleChange;
-
-        // push the label here so we can ignore certain days if required
-        labelData.push(label);
     });
 
     return {
