@@ -7,10 +7,10 @@ import {
     subWeeks,
     subMonths,
     subYears,
+    getISOWeek as getWeek,
     getDayOfYear,
     format as DateFNSformat
 } from "date-fns";
-import { getWeek } from "../Helpers/Utils";
 import CategoryHelper from "../Helpers/CategoryHelper";
 
 import {
@@ -397,20 +397,6 @@ const getData = (
                 timeToFixed = timeTo === null ? null : addDays(timeTo, 1);
                 timeFromFixed = timeFrom === null ? null : subDays(timeFrom, 1);
                 break;
-        }
-
-        if (timeTo !== null) {
-            console.log("timeTo", label);
-            console.log(
-                `${timescaleDate.getTime()} <= ${timeTo.getTime() + 86400000}`
-            );
-        }
-
-        if (timeFrom !== null) {
-            console.log("timeFrom", label);
-            console.log(
-                `${timescaleDate.getTime()} >= ${timeFrom.getTime() - 86400000}`
-            );
         }
 
         if (

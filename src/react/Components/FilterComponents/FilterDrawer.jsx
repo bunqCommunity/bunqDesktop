@@ -46,14 +46,31 @@ import {
 
 const styles = {
     list: {
-        width: 250
+        width: 250,
+        paddingBottom: 50,
+        textAlign: "left",
+        display: "flex",
+        flexDirection: "column",
+        WebkitAppRegion: "no-drag",
+        flexGrow: 1
     },
     listItem: {
         paddingTop: 0,
         paddingBottom: 0
     },
+    radioListItem: {
+        paddingTop: 0,
+        paddingBottom: 0,
+        height: 38
+    },
+    subheaderTitle: {
+        height: 40
+    },
     listItemFiller: {
         flexGrow: 1
+    },
+    listFiller: {
+        flex: "1 1 100%"
     },
     radioGroup: {
         display: "flex",
@@ -145,7 +162,7 @@ class FilterDrawer extends React.Component {
         const drawerList = (
             <List style={styles.list}>
                 {/* filters for both normal payments and master card actions */}
-                <ListSubheader>
+                <ListSubheader style={styles.subheaderTitle}>
                     Payments
                     <ListItemSecondaryAction>
                         <IconButton
@@ -156,7 +173,7 @@ class FilterDrawer extends React.Component {
                         </IconButton>
                     </ListItemSecondaryAction>
                 </ListSubheader>
-                <ListItem style={styles.listItem}>
+                <ListItem style={styles.radioListItem}>
                     <RadioGroup
                         name="payment-type"
                         style={styles.radioGroup}
@@ -197,7 +214,7 @@ class FilterDrawer extends React.Component {
                 </ListItem>
 
                 {/* filters for both request-responses and request-requests*/}
-                <ListSubheader>
+                <ListSubheader style={styles.subheaderTitle}>
                     Requests
                     <ListItemSecondaryAction>
                         <IconButton
@@ -208,7 +225,7 @@ class FilterDrawer extends React.Component {
                         </IconButton>
                     </ListItemSecondaryAction>
                 </ListSubheader>
-                <ListItem style={styles.listItem}>
+                <ListItem style={styles.radioListItem}>
                     <RadioGroup
                         name="request-type"
                         style={styles.radioGroup}
@@ -249,7 +266,7 @@ class FilterDrawer extends React.Component {
                 </ListItem>
 
                 {/* filters bunq.me tabs */}
-                <ListSubheader>
+                <ListSubheader style={styles.subheaderTitle}>
                     bunq.me requests
                     <ListItemSecondaryAction>
                         <IconButton
@@ -260,7 +277,7 @@ class FilterDrawer extends React.Component {
                         </IconButton>
                     </ListItemSecondaryAction>
                 </ListSubheader>
-                <ListItem style={styles.listItem}>
+                <ListItem style={styles.radioListItem}>
                     <RadioGroup
                         name="bunqmetab-type"
                         style={styles.radioGroup}
@@ -320,7 +337,9 @@ class FilterDrawer extends React.Component {
                     </RadioGroup>
                 </ListItem>
 
-                <ListSubheader>Date range filter</ListSubheader>
+                <ListSubheader style={styles.subheaderTitle}>
+                    Date range filter
+                </ListSubheader>
                 <ListItem style={styles.listItem}>
                     <DatePicker
                         id="from-date"
@@ -333,15 +352,15 @@ class FilterDrawer extends React.Component {
                         value={this.props.dateFromFilter}
                         onChange={this.handleDateFromChange}
                         clearable={true}
-                         InputProps={{
-                             endAdornment: (
-                                 <InputAdornment position="end">
-                                     <IconButton onClick={this.clearDateFrom}>
-                                         <Icon>clear</Icon>
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton onClick={this.clearDateFrom}>
+                                        <Icon>clear</Icon>
                                     </IconButton>
-                                 </InputAdornment>
+                                </InputAdornment>
                             )
-                         }}
+                        }}
                     />
                 </ListItem>
                 <ListItem style={styles.listItem}>
@@ -367,6 +386,8 @@ class FilterDrawer extends React.Component {
                         }}
                     />
                 </ListItem>
+
+                <ListItem style={styles.listFiller} />
 
                 <Divider />
                 <ListItem button onClick={this.clearAll}>
@@ -433,7 +454,7 @@ const mapStateToProps = state => {
         requestVisibility: state.request_filter.visible,
 
         dateFromFilter: state.date_filter.from_date,
-        dateToFilter: state.date_filter.to_date,
+        dateToFilter: state.date_filter.to_date
     };
 };
 
