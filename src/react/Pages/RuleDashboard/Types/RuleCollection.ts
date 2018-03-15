@@ -1,10 +1,12 @@
 import { Rule } from "./Types";
 import { generateGUID } from "../../../Helpers/Utils";
 
+export type RuleCollectionMatchType = "OR" | "AND";
+
 export default class RuleCollection {
     private id: string = null;
     private title: string = "";
-    private matchType: "OR" | "AND" = "OR";
+    private matchType: RuleCollectionMatchType = "OR";
     private filters: Rule[] = [];
     private categories: string[] = [];
 
@@ -53,7 +55,7 @@ export default class RuleCollection {
         return this.id;
     }
 
-    public generateId() : void{
+    public generateId(): void {
         this.id = generateGUID();
     }
 }

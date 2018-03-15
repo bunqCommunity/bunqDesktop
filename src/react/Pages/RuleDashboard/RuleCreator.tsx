@@ -1,14 +1,22 @@
 import * as React from "react";
+import Grid from "material-ui/Grid";
 import Paper from "material-ui/Paper";
+import Input from "material-ui/Input";
+import Select from "material-ui/Select";
 import Button from "material-ui/Button";
-import Divider from "material-ui/Divider";
 import IconButton from "material-ui/IconButton";
+import Divider from "material-ui/Divider";
+import { MenuItem } from "material-ui/Menu";
+import TextField from "material-ui/TextField";
+import { InputLabel } from "material-ui/Input";
 import Typography from "material-ui/Typography";
+import { FormControl } from "material-ui/Form";
 import Table, { TableCell, TableHead, TableRow } from "material-ui/Table";
 
 import AddButton from "material-ui-icons/Add";
 
 import { Rule } from "./Types/Types";
+import { RuleCollectionMatchType } from "./Types/RuleCollection";
 import ValueRuleItem from "./RuleTypeItems/ValueRuleItem";
 import CategoryChip from "../../Components/Categories/CategoryChip";
 
@@ -23,6 +31,12 @@ const styles = {
     chipsWrapper: {
         display: "flex",
         justifyContent: "center"
+    },
+    matchTypeCell: {
+        padding: 4
+    },
+    inputField: {
+        width: "100%"
     },
     wrapper: {
         padding: 16,
@@ -57,10 +71,13 @@ class RuleCreator extends React.Component<any, any> {
                 value: "/a/g"
             }
         ];
+        const categoryIds: string[] = [];
+        const matchType: RuleCollectionMatchType = "AND";
 
         this.state = {
             title: "Rule 1",
-            categoryIds: [],
+            matchType: matchType,
+            categoryIds: categoryIds,
             rules: rules
         };
     }
@@ -73,7 +90,6 @@ class RuleCreator extends React.Component<any, any> {
             this.setState({ categoryIds: categoryIds });
         }
     };
-
     removeCategory = categoryInfo => event => {
         const categories: string[] = [...this.state.categoryIds];
         const index = categories.indexOf(categoryInfo.id);
@@ -86,15 +102,14 @@ class RuleCreator extends React.Component<any, any> {
 
     removeRule = ruleKey => event => {
         const rules: Rule[] = [...this.state.rules];
-        console.log(rules, ruleKey);
-
-        rules.splice(ruleKey, 1);
-
-        console.log(rules, ruleKey);
-
+        const removed = rules.splice(ruleKey, 1);
         this.setState({ rules: rules });
     };
-
+    updateRule = ruleKey => (rule: Rule) => {
+        const rules: Rule[] = [...this.state.rules];
+        rules[ruleKey] = rule;
+        this.setState({ rules: rules });
+    };
     addRule = event => {
         const rules = [...this.state.rules];
         const newRule: Rule = {
@@ -106,6 +121,14 @@ class RuleCreator extends React.Component<any, any> {
         };
         rules.push(newRule);
         this.setState({ rules: rules });
+    };
+
+    handleMatchTypeChange = event => {
+        this.setState({ matchType: event.target.value });
+    };
+
+    handleTitleChange = event => {
+        this.setState({ title: event.target.value });
     };
 
     render() {
@@ -147,53 +170,126 @@ class RuleCreator extends React.Component<any, any> {
             );
         });
 
-        return [
-            <Paper style={styles.wrapper} key={"rulesWrapper"}>
+        return (
+            <React.Fragment>
                 <Typography variant="headline" style={styles.title}>
                     {title}
                 </Typography>
-                <Typography variant="title" style={styles.subTitle}>
-                    Rules
-                </Typography>
-                <Table>
-                    <TableHead key={"tableHead"}>
-                        <TableRow>
-                            <TableCell>{null}</TableCell>
-                            <TableCell>{null}</TableCell>
-                            <TableCell>{null}</TableCell>
-                            <TableCell>
-                                <Button onClick={this.addRule}>
-                                    <AddButton /> New
-                                </Button>
-                            </TableCell>
-                        </TableRow>
-                    </TableHead>
-                    {rules.map((rule, ruleKey) => {
-                        switch (rule.ruleType) {
-                            case "VALUE":
-                                return (
-                                    <ValueRuleItem
-                                        removeRule={this.removeRule(ruleKey)}
-                                        rule={rule}
-                                        key={ruleKey}
-                                    />
-                                );
-                            case "ITEM_TYPE":
-                                return null;
-                        }
-                    })}
-                </Table>
-            </Paper>,
 
-            <Paper style={styles.wrapper} key={"categoryChipsWrapper"}>
-                <Typography variant="title" style={styles.subTitle}>
-                    Categories
-                </Typography>
-                <div>{includedChips}</div>
-                <Divider />
-                <div>{excludedChips}</div>
-            </Paper>
-        ];
+                <Paper style={styles.wrapper} key={"settingsWrapper"}>
+                    <Typography variant="title" style={styles.subTitle}>
+                        Settings
+                    </Typography>
+
+                    <Grid container spacing={16}>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                label={"Filter title"}
+                                value={this.state.title}
+                                style={styles.inputField}
+                                onChange={this.handleTitleChange}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <FormControl style={styles.inputField}>
+                                <InputLabel>Match requirements</InputLabel>
+                                <Select
+                                    value={this.state.matchType}
+                                    onChange={this.handleMatchTypeChange}
+                                    input={
+                                        <Input name="field" id="field-helper" />
+                                    }
+                                >
+                                    <MenuItem value={"AND"}>
+                                        Require all rules to match
+                                    </MenuItem>
+                                    <MenuItem value={"OR"}>
+                                        Only require 1 rule to match
+                                    </MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <Button
+                                variant="raised"
+                                color="primary"
+                                style={{ width: "100%" }}
+                            >
+                                Save
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Paper>
+
+                <Paper style={styles.wrapper} key={"rulesWrapper"}>
+                    <Table>
+                        <TableHead key={"tableHead"}>
+                            <TableRow>
+                                <TableCell style={{ paddingLeft: 0 }}>
+                                    <Typography
+                                        variant="title"
+                                        style={styles.subTitle}
+                                    >
+                                        Rules
+                                    </Typography>
+                                </TableCell>
+                                <TableCell>{null}</TableCell>
+                                <TableCell>{null}</TableCell>
+                                <TableCell>
+                                    <IconButton onClick={this.addRule}>
+                                        <AddButton />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        {rules.map((rule, ruleKey) => {
+                            switch (rule.ruleType) {
+                                case "VALUE":
+                                    return (
+                                        <ValueRuleItem
+                                            removeRule={this.removeRule(
+                                                ruleKey
+                                            )}
+                                            updateRule={this.updateRule(
+                                                ruleKey
+                                            )}
+                                            rule={rule}
+                                            key={ruleKey}
+                                        />
+                                    );
+                                case "ITEM_TYPE":
+                                    return null;
+                            }
+                        })}
+                    </Table>
+                </Paper>
+
+                <Paper style={styles.wrapper} key={"categoryChipsWrapper"}>
+                    <Typography variant="title" style={styles.subTitle}>
+                        Categories
+                    </Typography>
+                    <div>
+                        <Typography
+                            variant="subheading"
+                            style={styles.subTitle}
+                        >
+                            Categories that will be connected
+                        </Typography>
+                        {includedChips}
+                    </div>
+                    <Divider />
+                    <div>
+                        <Typography
+                            variant="subheading"
+                            style={styles.subTitle}
+                        >
+                            Categories that will be ignored
+                        </Typography>
+                        {excludedChips}
+                    </div>
+                </Paper>
+            </React.Fragment>
+        );
     }
 }
 

@@ -1,18 +1,18 @@
 import * as React from "react";
 import Select from "material-ui/Select";
-import Button from "material-ui/Button";
 import TextField from "material-ui/TextField";
-import IconButton from "material-ui/IconButton";
-import Input, { InputLabel } from "material-ui/Input";
+import Input  from "material-ui/Input";
 import { MenuItem } from "material-ui/Menu";
 import { FormControl, FormHelperText } from "material-ui/Form";
 import { TableBody, TableCell, TableRow } from "material-ui/Table";
 
 import { ValueRule } from "../Types/Types";
+import RuleItemMenu from "../RuleItemMenu";
 
 interface IPropTypes {
     rule: ValueRule;
     removeRule: any;
+    updateRule: any;
 }
 
 const styles = {
@@ -38,37 +38,26 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
         };
     }
 
-    componentDidUpdate() {
-        const rule: ValueRule = this.state.rule;
-        const propsRule: ValueRule = this.props.rule;
-
-        if (rule.id !== propsRule.id) {
-            this.setState({
-                rule: propsRule
-            });
-        }
-    }
-
     handleFieldChange = event => {
-        const rule: ValueRule = this.state.rule;
+        const rule: ValueRule = this.props.rule;
         rule.field = event.target.value;
-        this.setState({ rule: rule });
+        this.props.updateRule(rule);
     };
 
     handleMatchTypeChange = event => {
-        const rule: ValueRule = this.state.rule;
+        const rule: ValueRule = this.props.rule;
         rule.matchType = event.target.value;
-        this.setState({ rule: rule });
+        this.props.updateRule(rule);
     };
 
     handleValueChange = event => {
-        const rule: ValueRule = this.state.rule;
+        const rule: ValueRule = this.props.rule;
         rule.value = event.target.value;
-        this.setState({ rule: rule });
+        this.props.updateRule(rule);
     };
 
     render() {
-        const rule: ValueRule = this.state.rule;
+        const rule: ValueRule = this.props.rule;
 
         return [
             <TableBody key={"tableBody"}>
@@ -80,7 +69,7 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
                                 onChange={this.handleFieldChange}
                                 input={<Input name="field" id="field-helper" />}
                             >
-                                <MenuItem value={"IBAN"}>Iban</MenuItem>
+                                <MenuItem value={"IBAN"}>IBAN number</MenuItem>
                                 <MenuItem value={"DESCRIPTION"}>
                                     Description
                                 </MenuItem>
@@ -109,6 +98,12 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
                                 <MenuItem value={"CONTAINS"}>
                                     Contains text
                                 </MenuItem>
+                                <MenuItem value={"STARTS_WITH"}>
+                                    Starts with
+                                </MenuItem>
+                                <MenuItem value={"ENDS_WITH"}>
+                                    Ends with
+                                </MenuItem>
                                 <MenuItem value={"REGEX"}>Regex</MenuItem>
                             </Select>
                             <FormHelperText>
@@ -127,12 +122,7 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
                     </TableCell>
 
                     <TableCell style={styles.tableIconCell}>
-                        <Button
-                            color="secondary"
-                            onClick={this.props.removeRule}
-                        >
-                            Remove
-                        </Button>
+                        <RuleItemMenu removeRule={this.props.removeRule}/>
                     </TableCell>
                 </TableRow>
             </TableBody>

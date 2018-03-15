@@ -192,6 +192,8 @@ class OptionsDrawer extends React.Component {
                     />
                 </ListItem>
 
+                <ListItem/>
+
                 <ListItem
                     button
                     style={styles.listBottomItem}
