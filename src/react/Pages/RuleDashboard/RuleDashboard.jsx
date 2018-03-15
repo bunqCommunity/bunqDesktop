@@ -4,23 +4,12 @@ import Helmet from "react-helmet";
 import Paper from "material-ui/Paper";
 import Grid from "material-ui/Grid";
 
-import CategoryEditor from "../../Components/Categories/CategoryEditor";
 import CategoryChip from "../../Components/Categories/CategoryChip";
-import {FilterCreator} from "./FilterCreator.tsx";
-import {
-    removeCategory,
-    removeCategoryConnection
-} from "../../Actions/categories";
+import RuleCreator from "./RuleCreator.tsx";
 
-const styles = {
-    chipWrapper: {
-        display: "flex",
-        justifyContent: "center",
-        flexWrap: "wrap"
-    }
-};
+const styles = {};
 
-class CategoryDashboard extends React.Component {
+class RuleDashboard extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -70,7 +59,7 @@ class CategoryDashboard extends React.Component {
                 </Helmet>
 
                 <Grid item xs={12}>
-                    <FilterCreator categories={this.props.categories} />
+                    <RuleCreator categories={this.props.categories} />
                 </Grid>
             </Grid>
         );
@@ -86,11 +75,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-    return {
-        removeCategory: (...params) => dispatch(removeCategory(...params)),
-        removeCategoryConnection: (...params) =>
-            dispatch(removeCategoryConnection(...params))
-    };
+    return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CategoryDashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(RuleDashboard);

@@ -1,6 +1,7 @@
 import * as React from "react";
-import Divider from "material-ui/Divider";
 import Paper from "material-ui/Paper";
+import Button from "material-ui/Button";
+import Divider from "material-ui/Divider";
 import IconButton from "material-ui/IconButton";
 import Typography from "material-ui/Typography";
 import Table, { TableCell, TableHead, TableRow } from "material-ui/Table";
@@ -29,7 +30,7 @@ const styles = {
     }
 };
 
-export class RuleCreator extends React.Component<any, any> {
+class RuleCreator extends React.Component<any, any> {
     constructor(props: any, context: any) {
         super(props, context);
 
@@ -65,7 +66,7 @@ export class RuleCreator extends React.Component<any, any> {
     }
 
     addCategory = categoryInfo => event => {
-        const categoryIds: any[] = [...this.state.categoryIds];
+        const categoryIds: string[] = [...this.state.categoryIds];
         if (!categoryIds.includes(categoryInfo.id)) {
             categoryIds.push(categoryInfo.id);
 
@@ -74,7 +75,7 @@ export class RuleCreator extends React.Component<any, any> {
     };
 
     removeCategory = categoryInfo => event => {
-        const categories = [...this.state.categoryIds];
+        const categories: string[] = [...this.state.categoryIds];
         const index = categories.indexOf(categoryInfo.id);
 
         if (index !== -1) {
@@ -84,8 +85,13 @@ export class RuleCreator extends React.Component<any, any> {
     };
 
     removeRule = ruleKey => event => {
-        const rules = [...this.state.rules];
+        const rules: Rule[] = [...this.state.rules];
+        console.log(rules, ruleKey);
+
         rules.splice(ruleKey, 1);
+
+        console.log(rules, ruleKey);
+
         this.setState({ rules: rules });
     };
 
@@ -155,11 +161,10 @@ export class RuleCreator extends React.Component<any, any> {
                             <TableCell>{null}</TableCell>
                             <TableCell>{null}</TableCell>
                             <TableCell>{null}</TableCell>
-                            <TableCell>{null}</TableCell>
                             <TableCell>
-                                <IconButton onClick={this.addRule}>
-                                    <AddButton />
-                                </IconButton>
+                                <Button onClick={this.addRule}>
+                                    <AddButton /> New
+                                </Button>
                             </TableCell>
                         </TableRow>
                     </TableHead>
@@ -191,3 +196,5 @@ export class RuleCreator extends React.Component<any, any> {
         ];
     }
 }
+
+export default RuleCreator;

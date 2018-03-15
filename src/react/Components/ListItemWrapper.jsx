@@ -1,13 +1,7 @@
 import React from "react";
 import { matchPath } from "react-router";
-import IconButton from "material-ui/IconButton";
 import Typography from "material-ui/Typography";
-import {
-    ListItem,
-    ListItemIcon,
-    ListItemSecondaryAction
-} from "material-ui/List";
-import ArrowRightIcon from "material-ui-icons/KeyboardArrowRight";
+import { ListItem, ListItemIcon } from "material-ui/List";
 
 import NavLink from "./Routing/NavLink";
 
@@ -41,15 +35,8 @@ export default ({
     return (
         <ListItem style={styles.listBottomItem} {...rest}>
             <ListItemIcon>
-                <PropIcon />
+                <PropIcon color={isActive ? "primary" : "inherit"} />
             </ListItemIcon>
-            {isActive ? (
-                <ListItemSecondaryAction>
-                    <IconButton>
-                        <ArrowRightIcon />
-                    </IconButton>
-                </ListItemSecondaryAction>
-            ) : null}
             <Typography variant="subheading">{text}</Typography>
         </ListItem>
     );

@@ -130,9 +130,9 @@ class MainDrawer extends React.Component {
                       location={this.props.location}
                   />,
                   <ListItemWrapper
-                      to="/category-dashboard"
+                      to="/rules-dashboard"
                       icon={ListIcon}
-                      text="Category dashboard"
+                      text="Rules editor"
                       location={this.props.location}
                   />
               ];
