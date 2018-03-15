@@ -13,8 +13,10 @@ import Typography from "material-ui/Typography";
 
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import { paymentText, paymentTypeParser } from "../Helpers/StatusTexts";
+
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import TransactionHeader from "../Components/TransactionHeader";
+import CategorySelector from "../Components/Categories/CategorySelector";
 
 import { paymentsUpdate } from "../Actions/payment_info";
 
@@ -129,7 +131,7 @@ class PaymentInfo extends React.Component {
 
                         <Typography
                             style={{ textAlign: "center" }}
-                            type={"body1"}
+                            variant={"body1"}
                         >
                             {paymentLabel}
                         </Typography>
@@ -168,8 +170,9 @@ class PaymentInfo extends React.Component {
                                     secondary={counterPartyIban}
                                 />
                             </ListItem>
-                            <Divider />
                         </List>
+
+                        <CategorySelector type={"Payment"} item={paymentInfo} />
                     </Grid>
                 </Grid>
             );
@@ -200,6 +203,7 @@ class PaymentInfo extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+
         paymentInfo: state.payment_info.payment,
         paymentLoading: state.payment_info.loading,
         accountsSelectedAccount: state.accounts.selectedAccount,

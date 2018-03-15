@@ -103,10 +103,10 @@ class ApplicationInfo extends React.Component {
                             </Grid>
 
                             <Grid item sm={9} md={10}>
-                                <Typography type={"headline"}>
+                                <Typography variant={"headline"}>
                                     BunqDesktop
                                 </Typography>
-                                <Typography type={"body2"}>
+                                <Typography variant={"body2"}>
                                     Version: {process.env.CURRENT_VERSION}
                                 </Typography>
                             </Grid>
@@ -121,10 +121,10 @@ class ApplicationInfo extends React.Component {
                                     )}
                                 >
                                     <div>
-                                        <Typography type={"body2"}>
+                                        <Typography variant={"body2"}>
                                             Settings:
                                         </Typography>
-                                        <Typography type={"body2"}>
+                                        <Typography variant={"body2"}>
                                             {app.getPath("userData")}/settings.json
                                         </Typography>
                                     </div>
@@ -137,10 +137,10 @@ class ApplicationInfo extends React.Component {
                                     onCopy={this.copiedValue("log location")}
                                 >
                                     <div>
-                                        <Typography type={"body2"}>
+                                        <Typography variant={"body2"}>
                                             Log file:
                                         </Typography>
-                                        <Typography type={"body2"}>
+                                        <Typography variant={"body2"}>
                                             {app.getPath("userData")}/BunqDesktop.log.txt
                                         </Typography>
                                     </div>
@@ -148,13 +148,13 @@ class ApplicationInfo extends React.Component {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Button raised component={NavLink} to={"/"}>
+                                <Button variant="raised" component={NavLink} to={"/"}>
                                     Back
                                 </Button>
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Typography type={"title"}>Releases</Typography>
+                                <Typography variant={"title"}>Releases</Typography>
                                 <List>{releaseItems}</List>
                             </Grid>
                         </Grid>

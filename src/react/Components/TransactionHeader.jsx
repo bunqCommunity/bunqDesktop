@@ -74,7 +74,7 @@ const TransactionHeader = props => {
                 BunqJSClient={props.BunqJSClient}
                 imageUUID={fromAvatar}
             />
-            <Typography type="subheading">{fromLabelName}</Typography>
+            <Typography variant="subheading">{fromLabelName}</Typography>
         </Grid>,
 
         <Grid item md={2} hidden={{ smDown: true }} style={styles.arrow}>
@@ -92,7 +92,7 @@ const TransactionHeader = props => {
                 imageUUID={toAvatar}
             />
 
-            <Typography type="subheading">{toLabelName}</Typography>
+            <Typography variant="subheading">{toLabelName}</Typography>
         </Grid>
     ];
 

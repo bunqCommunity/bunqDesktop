@@ -16,7 +16,7 @@ export function bunqMeTabSend(
             .post(userId, accountId, description, amount, options)
             .then(result => {
                 dispatch(openSnackbar("Bunq.me request created successfully!"));
-                dispatch(bunqMeTabsUpdate(BunqJSClient, userId, accountId));
+                dispatch(bunqMeTabsUpdate(BunqJSClient, userId,  parseInt(accountId)));
                 dispatch(bunqMeTabNotLoading());
             })
             .catch(error => {

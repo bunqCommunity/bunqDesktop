@@ -11,11 +11,12 @@ import RequestResponseListItem from "./ListItems/RequestResponseListItem";
 import RequestInquiryListItem from "./ListItems/RequestInquiryListItem";
 
 import ClearBtn from "../Components/FilterComponents/ClearFilter";
-import DisplayDrawerBtn from "../Components/FilterComponents/FilterDrawer";
+import FilterDrawer from "../Components/FilterComponents/FilterDrawer";
+
 import { openSnackbar } from "../Actions/snackbar";
 import { bunqMeTabPut } from "../Actions/bunq_me_tab";
-import { humanReadableDate } from "../Helpers/Utils";
 
+import { humanReadableDate } from "../Helpers/Utils";
 import {
     paymentFilter,
     bunqMeTabsFilter,
@@ -45,7 +46,9 @@ class CombinedList extends React.Component {
             .filter(
                 paymentFilter({
                     paymentVisibility: this.props.paymentVisibility,
-                    paymentType: this.props.paymentType
+                    paymentType: this.props.paymentType,
+                    dateFromFilter: this.props.dateFromFilter,
+                    dateToFilter: this.props.dateToFilter
                 })
             )
             .map(payment => {
@@ -67,7 +70,9 @@ class CombinedList extends React.Component {
             .filter(
                 bunqMeTabsFilter({
                     bunqMeTabVisibility: this.props.bunqMeTabVisibility,
-                    bunqMeTabType: this.props.bunqMeTabType
+                    bunqMeTabType: this.props.bunqMeTabType,
+                    dateFromFilter: this.props.dateFromFilter,
+                    dateToFilter: this.props.dateToFilter
                 })
             )
             .map(bunqMeTab => {
@@ -94,7 +99,9 @@ class CombinedList extends React.Component {
             .filter(
                 masterCardActionFilter({
                     paymentVisibility: this.props.paymentVisibility,
-                    paymentType: this.props.paymentType
+                    paymentType: this.props.paymentType,
+                    dateFromFilter: this.props.dateFromFilter,
+                    dateToFilter: this.props.dateToFilter
                 })
             )
             .map(masterCardAction => {
@@ -116,7 +123,9 @@ class CombinedList extends React.Component {
             .filter(
                 requestResponseFilter({
                     requestVisibility: this.props.requestVisibility,
-                    requestType: this.props.requestType
+                    requestType: this.props.requestType,
+                    dateFromFilter: this.props.dateFromFilter,
+                    dateToFilter: this.props.dateToFilter
                 })
             )
             .map(requestResponse => {
@@ -138,7 +147,9 @@ class CombinedList extends React.Component {
             .filter(
                 requestInquiryFilter({
                     requestVisibility: this.props.requestVisibility,
-                    requestType: this.props.requestType
+                    requestType: this.props.requestType,
+                    dateFromFilter: this.props.dateFromFilter,
+                    dateToFilter: this.props.dateToFilter
                 })
             )
             .map(requestInquiry => {
@@ -236,7 +247,7 @@ class CombinedList extends React.Component {
                     Payments and requests
                     <ListItemSecondaryAction>
                         <ClearBtn />
-                        <DisplayDrawerBtn />
+                        <FilterDrawer />
                     </ListItemSecondaryAction>
                 </ListSubheader>
                 {loadingContent}
@@ -257,6 +268,8 @@ const mapStateToProps = state => {
         bunqMeTabVisibility: state.bunq_me_tab_filter.visible,
         requestType: state.request_filter.type,
         requestVisibility: state.request_filter.visible,
+        dateFromFilter: state.date_filter.from_date,
+        dateToFilter: state.date_filter.to_date,
 
         bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
         bunqMeTabsLoading: state.bunq_me_tabs.loading,

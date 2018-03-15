@@ -176,7 +176,7 @@ class BunqMeTab extends React.Component {
 
         return [
             <div style={styles.paper}>
-                <Typography type="headline">Create new Bunq.me request</Typography>
+                <Typography variant="headline">Create new Bunq.me request</Typography>
 
                 <AccountSelectorDialog
                     value={this.state.selectedAccount}
@@ -214,7 +214,7 @@ class BunqMeTab extends React.Component {
                 </FormControl>
 
                 <Button
-                    raised
+                    variant="raised"
                     color="primary"
                     disabled={
                         !this.state.validForm ||

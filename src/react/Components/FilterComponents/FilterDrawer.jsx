@@ -1,7 +1,13 @@
 import React from "react";
+import { connect } from "react-redux";
+import DatePicker from "material-ui-pickers/DatePicker/index.js";
 import { withTheme } from "material-ui/styles";
 import IconButton from "material-ui/IconButton";
+import Icon from "material-ui/Icon";
+import Button from "material-ui/Button";
 import Drawer from "material-ui/Drawer";
+import Divider from "material-ui/Divider";
+import InputAdornment from "material-ui/Input/InputAdornment";
 import Typography from "material-ui/Typography";
 import Radio, { RadioGroup } from "material-ui/Radio";
 import List, {
@@ -22,34 +28,49 @@ import CheckCircle from "material-ui-icons/CheckCircle";
 import TimerOff from "material-ui-icons/TimerOff";
 import Cancel from "material-ui-icons/Cancel";
 
-import { Divider } from "material-ui";
-import { connect } from "react-redux";
 import {
     clearPaymentFilterType,
     togglePaymentFilterVisibility,
-    setPaymentFilterType
-} from "../../Actions/payment_filter";
-import {
-    clearBunqMeTabFilterType,
-    toggleBunqMeTabFilterVisibility,
-    setBunqMeTabFilterType
-} from "../../Actions/bunq_me_tab_filter";
-import {
+    setPaymentFilterType,
     clearRequestFilterType,
     toggleRequestFilterVisibility,
-    setRequestFilterType
-} from "../../Actions/request_filter";
+    setRequestFilterType,
+    clearBunqMeTabFilterType,
+    toggleBunqMeTabFilterVisibility,
+    setBunqMeTabFilterType,
+    setFromDateFilter,
+    setToDateFilter,
+    clearFromDateFilter,
+    clearToDateFilter
+} from "../../Actions/filters";
 
 const styles = {
     list: {
-        width: 250
+        width: 250,
+        paddingBottom: 50,
+        textAlign: "left",
+        display: "flex",
+        flexDirection: "column",
+        WebkitAppRegion: "no-drag",
+        flexGrow: 1
     },
     listItem: {
         paddingTop: 0,
         paddingBottom: 0
     },
+    radioListItem: {
+        paddingTop: 0,
+        paddingBottom: 0,
+        height: 38
+    },
+    subheaderTitle: {
+        height: 40
+    },
     listItemFiller: {
         flexGrow: 1
+    },
+    listFiller: {
+        flex: "1 1 100%"
     },
     radioGroup: {
         display: "flex",
@@ -60,13 +81,21 @@ const styles = {
     },
     checked: {
         color: "green"
+    },
+    dateInput: {
+        width: 208,
+        margin: 5,
+        marginBottom: 12,
+        marginTop: 8
     }
 };
 
-class DisplayDrawer extends React.Component {
+class FilterDrawer extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
+            selectedDateFrom: null,
+            selectedDateTo: null,
             open: false
         };
     }
@@ -74,7 +103,6 @@ class DisplayDrawer extends React.Component {
     openDrawer = () => {
         this.setState({ open: true });
     };
-
     closeDrawer = () => {
         this.setState({ open: false });
     };
@@ -106,6 +134,19 @@ class DisplayDrawer extends React.Component {
         this.props.toggleBunqMeTabFilterVisibility();
     };
 
+    handleDateFromChange = date => {
+        this.props.setFromDateFilter(date);
+    };
+    handleDateToChange = date => {
+        this.props.setToDateFilter(date);
+    };
+    clearDateFrom = event => {
+        this.props.clearFromDateFilter();
+    };
+    clearDateTo = event => {
+        this.props.clearToDateFilter();
+    };
+
     render() {
         const {
             theme,
@@ -121,7 +162,7 @@ class DisplayDrawer extends React.Component {
         const drawerList = (
             <List style={styles.list}>
                 {/* filters for both normal payments and master card actions */}
-                <ListSubheader>
+                <ListSubheader style={styles.subheaderTitle}>
                     Payments
                     <ListItemSecondaryAction>
                         <IconButton
@@ -132,7 +173,7 @@ class DisplayDrawer extends React.Component {
                         </IconButton>
                     </ListItemSecondaryAction>
                 </ListSubheader>
-                <ListItem style={styles.listItem}>
+                <ListItem style={styles.radioListItem}>
                     <RadioGroup
                         name="payment-type"
                         style={styles.radioGroup}
@@ -142,7 +183,9 @@ class DisplayDrawer extends React.Component {
                         <Radio
                             style={styles.radioBtn}
                             icon={<CompareArrowsIcon />}
-                            checkedIcon={<CompareArrowsIcon />}
+                            checkedIcon={
+                                <CompareArrowsIcon color={"primary"} />
+                            }
                             value={"default"}
                         />
                         <Radio
@@ -171,7 +214,7 @@ class DisplayDrawer extends React.Component {
                 </ListItem>
 
                 {/* filters for both request-responses and request-requests*/}
-                <ListSubheader>
+                <ListSubheader style={styles.subheaderTitle}>
                     Requests
                     <ListItemSecondaryAction>
                         <IconButton
@@ -182,7 +225,7 @@ class DisplayDrawer extends React.Component {
                         </IconButton>
                     </ListItemSecondaryAction>
                 </ListSubheader>
-                <ListItem style={styles.listItem}>
+                <ListItem style={styles.radioListItem}>
                     <RadioGroup
                         name="request-type"
                         style={styles.radioGroup}
@@ -192,7 +235,9 @@ class DisplayDrawer extends React.Component {
                         <Radio
                             style={styles.radioBtn}
                             icon={<CompareArrowsIcon />}
-                            checkedIcon={<CompareArrowsIcon />}
+                            checkedIcon={
+                                <CompareArrowsIcon color={"primary"} />
+                            }
                             value={"default"}
                         />
                         <Radio
@@ -221,7 +266,7 @@ class DisplayDrawer extends React.Component {
                 </ListItem>
 
                 {/* filters bunq.me tabs */}
-                <ListSubheader>
+                <ListSubheader style={styles.subheaderTitle}>
                     bunq.me requests
                     <ListItemSecondaryAction>
                         <IconButton
@@ -232,7 +277,7 @@ class DisplayDrawer extends React.Component {
                         </IconButton>
                     </ListItemSecondaryAction>
                 </ListSubheader>
-                <ListItem style={styles.listItem}>
+                <ListItem style={styles.radioListItem}>
                     <RadioGroup
                         name="bunqmetab-type"
                         style={styles.radioGroup}
@@ -242,7 +287,9 @@ class DisplayDrawer extends React.Component {
                         <Radio
                             style={styles.radioBtn}
                             icon={<CompareArrowsIcon />}
-                            checkedIcon={<CompareArrowsIcon />}
+                            checkedIcon={
+                                <CompareArrowsIcon color={"primary"} />
+                            }
                             value={"default"}
                         />
                         <Radio
@@ -290,36 +337,91 @@ class DisplayDrawer extends React.Component {
                     </RadioGroup>
                 </ListItem>
 
-                {/*<ListItem style={styles.listItem}>*/}
-                {/*<TextField*/}
-                {/*id="from-datetime"*/}
-                {/*label="From"*/}
-                {/*type="datetime-local"*/}
-                {/*/>*/}
-                {/*</ListItem>*/}
-                {/*<ListItem style={styles.listItem}>*/}
-                {/*<TextField*/}
-                {/*id="to-datetime"*/}
-                {/*label="To"*/}
-                {/*type="datetime-local"*/}
-                {/*/>*/}
-                {/*</ListItem>*/}
+                <ListSubheader style={styles.subheaderTitle}>
+                    Date range filter
+                </ListSubheader>
+                <ListItem style={styles.listItem}>
+                    <DatePicker
+                        id="from-date"
+                        helperText="From date"
+                        emptyLabel="No filter"
+                        format="MMMM DD, YYYY"
+                        disableFuture
+                        style={styles.dateInput}
+                        maxDate={this.props.dateToFilter}
+                        value={this.props.dateFromFilter}
+                        onChange={this.handleDateFromChange}
+                        clearable={true}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton onClick={this.clearDateFrom}>
+                                        <Icon>clear</Icon>
+                                    </IconButton>
+                                </InputAdornment>
+                            )
+                        }}
+                    />
+                </ListItem>
+                <ListItem style={styles.listItem}>
+                    <DatePicker
+                        id="to-date"
+                        helperText="To date"
+                        emptyLabel="No filter"
+                        format="MMMM DD, YYYY"
+                        disableFuture
+                        style={styles.dateInput}
+                        minDate={this.props.dateFromFilter}
+                        value={this.props.dateToFilter}
+                        onChange={this.handleDateToChange}
+                        clearable={true}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton onClick={this.clearDateTo}>
+                                        <Icon>clear</Icon>
+                                    </IconButton>
+                                </InputAdornment>
+                            )
+                        }}
+                    />
+                </ListItem>
+
+                <ListItem style={styles.listFiller} />
 
                 <Divider />
                 <ListItem button onClick={this.clearAll}>
                     <ListItemIcon>
                         <ClearIcon />
                     </ListItemIcon>
-                    <Typography type="subheading">Clear filters</Typography>
+                    <Typography variant="subheading">Clear filters</Typography>
                 </ListItem>
             </List>
         );
 
-        return [
-            <IconButton onClick={this.openDrawer}>
+        const button = this.props.bigButton ? (
+            <Button
+                variant="raised"
+                key={"button"}
+                onClick={this.openDrawer}
+                {...this.props.buttonProps}
+            >
+                Filter <FilterListIcon />
+            </Button>
+        ) : (
+            <IconButton
+                key={"iconbutton"}
+                onClick={this.openDrawer}
+                {...this.props.buttonProps}
+            >
                 <FilterListIcon />
-            </IconButton>,
+            </IconButton>
+        );
+
+        return [
+            button,
             <Drawer
+                key={"drawer"}
                 open={this.state.open}
                 className="options-drawer"
                 onClose={this.closeDrawer}
@@ -334,6 +436,12 @@ class DisplayDrawer extends React.Component {
     }
 }
 
+FilterDrawer.defaultProps = {
+    bigButton: false,
+    buttonProps: {},
+    buttonContent: null
+};
+
 const mapStateToProps = state => {
     return {
         paymentType: state.payment_filter.type,
@@ -343,7 +451,10 @@ const mapStateToProps = state => {
         bunqMeTabVisibility: state.bunq_me_tab_filter.visible,
 
         requestType: state.request_filter.type,
-        requestVisibility: state.request_filter.visible
+        requestVisibility: state.request_filter.visible,
+
+        dateFromFilter: state.date_filter.from_date,
+        dateToFilter: state.date_filter.to_date
     };
 };
 
@@ -362,10 +473,15 @@ const mapDispatchToProps = dispatch => {
         clearBunqMeTabFilterType: () => dispatch(clearBunqMeTabFilterType()),
         setBunqMeTabFilterType: type => dispatch(setBunqMeTabFilterType(type)),
         toggleBunqMeTabFilterVisibility: () =>
-            dispatch(toggleBunqMeTabFilterVisibility())
+            dispatch(toggleBunqMeTabFilterVisibility()),
+
+        setFromDateFilter: date => dispatch(setFromDateFilter(date)),
+        setToDateFilter: date => dispatch(setToDateFilter(date)),
+        clearFromDateFilter: () => dispatch(clearFromDateFilter()),
+        clearToDateFilter: () => dispatch(clearToDateFilter())
     };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-    withTheme()(DisplayDrawer)
+    withTheme()(FilterDrawer)
 );

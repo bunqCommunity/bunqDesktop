@@ -1,11 +1,27 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
-export function accountsSetInfo(accounts) {
+export const STORED_ACCOUNTS = "BUNQDESKTOP_STORED_ACCOUNTS";
+
+export function accountsSetInfo(accounts, BunqJSClient = false) {
     return {
         type: "ACCOUNTS_SET_INFO",
         payload: {
-            accounts: accounts
+            accounts: accounts,
+            BunqJSClient
         }
+    };
+}
+
+export function loadStoredAccounts(BunqJSClient) {
+    return dispatch => {
+        BunqJSClient.Session
+            .loadEncryptedData(STORED_ACCOUNTS)
+            .then(data => {
+                if (data && data.items) {
+                    dispatch(accountsSetInfo(data.items, BunqJSClient));
+                }
+            })
+            .catch(error => {});
     };
 }
 
@@ -15,7 +31,7 @@ export function accountsUpdate(BunqJSClient, userId) {
         BunqJSClient.api.monetaryAccount
             .list(userId)
             .then(accounts => {
-                dispatch(accountsSetInfo(accounts));
+                dispatch(accountsSetInfo(accounts, BunqJSClient));
                 dispatch(accountsNotLoading());
             })
             .catch(error => {

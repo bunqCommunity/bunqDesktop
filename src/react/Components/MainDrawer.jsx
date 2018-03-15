@@ -7,6 +7,7 @@ import List, { ListItem, ListItemText, ListItemIcon } from "material-ui/List";
 import Hidden from "material-ui/Hidden";
 import Typography from "material-ui/Typography";
 import Avatar from "material-ui/Avatar";
+import Divider from "material-ui/Divider";
 
 import PowerSettingsIcon from "material-ui-icons/PowerSettingsNew";
 import ArrowUpwardIcon from "material-ui-icons/ArrowUpward";
@@ -15,6 +16,7 @@ import HomeIcon from "material-ui-icons/Home";
 import SettingsIcon from "material-ui-icons/Settings";
 import ShareIcon from "material-ui-icons/Share";
 import TimeLineIcon from "material-ui-icons/Timeline";
+import ListIcon from "material-ui-icons/List";
 
 import NavLink from "./Routing/NavLink";
 import ListItemWrapper from "./ListItemWrapper";
@@ -28,7 +30,8 @@ const styles = {
         textAlign: "left",
         display: "flex",
         flexDirection: "column",
-        WebkitAppRegion: "no-drag"
+        WebkitAppRegion: "no-drag",
+        flexGrow: 1
     },
     listItem: {
         paddingTop: 0,
@@ -113,10 +116,17 @@ class MainDrawer extends React.Component {
                       text="bunq.me Requests"
                       location={this.props.location}
                   />,
+                  <Divider />,
                   <ListItemWrapper
                       to="/stats"
                       icon={TimeLineIcon}
                       text="Stats"
+                      location={this.props.location}
+                  />,
+                  <ListItemWrapper
+                      to="/category-dashboard"
+                      icon={ListIcon}
+                      text="Category dashboard"
                       location={this.props.location}
                   />
               ];
@@ -150,7 +160,7 @@ class MainDrawer extends React.Component {
                     <ListItemIcon>
                         <SettingsIcon />
                     </ListItemIcon>
-                    <Typography type="subheading">Settings</Typography>
+                    <Typography variant="subheading">Settings</Typography>
                 </ListItem>
 
                 <ListItem
@@ -161,7 +171,7 @@ class MainDrawer extends React.Component {
                     <ListItemIcon>
                         <PowerSettingsIcon />
                     </ListItemIcon>
-                    <Typography type="subheading">Quit BunqDesktop</Typography>
+                    <Typography variant="subheading">Quit BunqDesktop</Typography>
                 </ListItem>
             </List>
         );
@@ -169,7 +179,7 @@ class MainDrawer extends React.Component {
         return [
             <Hidden mdUp>
                 <Drawer
-                    type="temporary"
+                    variant="temporary"
                     open={open}
                     onClose={this.props.closeDrawer}
                     className="options-drawer"
@@ -183,7 +193,7 @@ class MainDrawer extends React.Component {
             </Hidden>,
             <Hidden smDown implementation="css">
                 <Drawer
-                    type="permanent"
+                    variant="permanent"
                     open={open}
                     onClose={this.props.closeDrawer}
                     anchor="left"

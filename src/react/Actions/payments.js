@@ -25,8 +25,9 @@ export function loadStoredPayments(BunqJSClient) {
         BunqJSClient.Session
             .loadEncryptedData(STORED_PAYMENTS)
             .then(data => {
-                console.log("payments", data);
-                dispatch(paymentsSetInfo(data.items, data.account_id));
+                if(data && data.items) {
+                    dispatch(paymentsSetInfo(data.items, data.account_id));
+                }
             })
             .catch(error => {});
     };

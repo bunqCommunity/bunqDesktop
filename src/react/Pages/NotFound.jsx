@@ -14,7 +14,7 @@ class NotFound extends React.Component {
                 <Helmet>
                     <title>{`BunqDesktop - 404 Not Found`}</title>
                 </Helmet>
-                <Typography type="title">Page Not Found</Typography>
+                <Typography variant="title">Page Not Found</Typography>
             </div>
         );
     }

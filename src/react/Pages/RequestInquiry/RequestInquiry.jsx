@@ -13,7 +13,7 @@ import Switch from "material-ui/Switch";
 import { FormControl, FormControlLabel } from "material-ui/Form";
 
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
-import TargetSelection from "../../Components/TargetSelection";
+import TargetSelection from "../../Components/FormFields/TargetSelection";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
 import PhoneFormatInput from "../../Components/FormFields/PhoneFormatInput";
 import { openSnackbar } from "../../Actions/snackbar";
@@ -385,7 +385,7 @@ class RequestInquiry extends React.Component {
 
                 <Grid item xs={12} sm={10} md={8} lg={6}>
                     <Paper style={styles.paper}>
-                        <Typography type="headline">Request Payment</Typography>
+                        <Typography variant="headline">Request Payment</Typography>
 
                         <AccountSelectorDialog
                             value={this.state.selectedAccount}
@@ -483,7 +483,7 @@ class RequestInquiry extends React.Component {
                         </Collapse>
 
                         <Button
-                            raised
+                            variant="raised"
                             color="primary"
                             disabled={
                                 !this.state.validForm ||

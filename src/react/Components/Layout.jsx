@@ -35,6 +35,7 @@ import { openSnackbar } from "../Actions/snackbar";
 import { registrationClearUserInfo } from "../Actions/registration";
 
 import { loadStoredPayments } from "../Actions/payments";
+import { loadStoredAccounts } from "../Actions/accounts";
 import { loadStoredBunqMeTabs } from "../Actions/bunq_me_tabs";
 import { loadStoredMasterCardActions } from "../Actions/master_card_actions";
 import { loadStoredRequestInquiries } from "../Actions/request_inquiries";
@@ -287,6 +288,7 @@ class Layout extends React.Component {
             throw exception;
         }
 
+        this.props.loadStoredAccounts();
         this.props.loadStoredPayments();
         this.props.loadStoredBunqMeTabs();
         this.props.loadStoredMasterCardActions();
@@ -428,6 +430,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(loadStoredMasterCardActions(BunqJSClient)),
         loadStoredRequestInquiries: () =>
             dispatch(loadStoredRequestInquiries(BunqJSClient)),
+        loadStoredAccounts: () => dispatch(loadStoredAccounts(BunqJSClient)),
         loadStoredRequestResponses: () =>
             dispatch(loadStoredRequestResponses(BunqJSClient)),
 

@@ -9,8 +9,10 @@ import Divider from "material-ui/Divider";
 
 import { formatMoney } from "../../Helpers/Utils";
 import { requestResponseText } from "../../Helpers/StatusTexts";
+
 import NavLink from "../../Components/Routing/NavLink";
-import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
+import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
+import CategoryIcons from "../Categories/CategoryIcons";
 import MoneyAmountLabel from "../MoneyAmountLabel";
 
 const styles = {
@@ -69,7 +71,7 @@ class RequestResponseListItem extends React.Component {
                     />
                 </Avatar>
                 <ListItemText primary={displayName} secondary={paymentLabel} />
-                <ListItemSecondaryAction>
+                <ListItemSecondaryAction style={{ marginTop: -40 }}>
                     <MoneyAmountLabel
                         style={styles.moneyAmountLabel}
                         info={requestResponse}
@@ -78,6 +80,11 @@ class RequestResponseListItem extends React.Component {
                         {formattedPaymentAmount}
                     </MoneyAmountLabel>
                 </ListItemSecondaryAction>
+                <CategoryIcons
+                    style={{ marginTop: 26 }}
+                    type={"RequestResponse"}
+                    id={requestResponse.id}
+                />
             </ListItem>,
             <Divider />
         ];

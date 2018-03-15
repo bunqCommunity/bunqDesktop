@@ -22,7 +22,7 @@ import Dialog, {
 
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
-import TargetSelection from "../../Components/TargetSelection";
+import TargetSelection from "../../Components/FormFields/TargetSelection";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { paySend } from "../../Actions/pay";
@@ -487,14 +487,14 @@ class Pay extends React.Component {
                     </DialogContent>
                     <DialogActions>
                         <Button
-                            raised
+                            variant="raised"
                             onClick={this.closeModal}
                             color="secondary"
                         >
                             Cancel
                         </Button>
                         <Button
-                            raised
+                            variant="raised"
                             onClick={this.sendPayment}
                             color="primary"
                         >
@@ -513,7 +513,7 @@ class Pay extends React.Component {
 
                 <Grid item xs={12} sm={10} md={8} lg={6}>
                     <Paper style={styles.paper}>
-                        <Typography type="headline">New Payment</Typography>
+                        <Typography variant="headline">New Payment</Typography>
 
                         <AccountSelectorDialog
                             value={this.state.selectedAccount}
@@ -596,7 +596,7 @@ class Pay extends React.Component {
                         </FormControl>
 
                         <Button
-                            raised
+                            variant="raised"
                             color="primary"
                             disabled={
                                 !this.state.validForm || this.props.payLoading

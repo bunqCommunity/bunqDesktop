@@ -23,7 +23,7 @@ export function paymentsUpdate(BunqJSClient, user_id, account_id, payment_id) {
                 dispatch(
                     paymentsSetInfo(
                         [paymentInfo],
-                        account_id,
+                        parseInt(account_id),
                         false,
                         BunqJSClient
                     )
@@ -31,7 +31,7 @@ export function paymentsUpdate(BunqJSClient, user_id, account_id, payment_id) {
 
                 // set the payment info page data
                 dispatch(
-                    paymentInfoSetInfo(paymentInfo, account_id, payment_id)
+                    paymentInfoSetInfo(paymentInfo,  parseInt(account_id),  parseInt(payment_id))
                 );
                 dispatch(paymentInfoNotLoading());
             })

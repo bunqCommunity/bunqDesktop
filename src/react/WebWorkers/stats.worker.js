@@ -1,17 +1,37 @@
-import { getWeek } from "../Helpers/Utils";
-import { masterCardActionFilter, paymentFilter } from "../Helpers/DataFilters";
+import {
+    addDays,
+    addWeeks,
+    addMonths,
+    addYears,
+    subDays,
+    subWeeks,
+    subMonths,
+    subYears,
+    getISOWeek as getWeek,
+    getDayOfYear,
+    format as DateFNSformat
+} from "date-fns";
+import CategoryHelper from "../Helpers/CategoryHelper";
+
+import {
+    bunqMeTabsFilter,
+    masterCardActionFilter,
+    paymentFilter,
+    requestInquiryFilter,
+    requestResponseFilter
+} from "../Helpers/DataFilters";
 
 const labelFormat = (date, type = "daily") => {
     switch (type) {
         case "yearly":
-            return `${date.getFullYear()}`;
+            return DateFNSformat(date, "_YYYY");
         case "monthly":
-            return `${date.getFullYear()}/${date.getMonth() + 1}`;
+            return DateFNSformat(date, "MMM YYYY");
         case "weekly":
-            return `${date.getFullYear()}/${getWeek(date)}`;
+            return DateFNSformat(date, "WW/YYYY");
         case "daily":
         default:
-            return `${date.getMonth() + 1}/${date.getDate()}`;
+            return DateFNSformat(date, "D MMM");
     }
 };
 
@@ -19,43 +39,90 @@ const roundMoney = amount => {
     return Math.round(amount * 100) / 100;
 };
 
-const bunqMeTabMapper = bunqMeTabs => {
+const bunqMeTabMapper = (
+    bunqMeTabs,
+    bunqMeTabFilterSettings,
+    categories,
+    categoryConnections
+) => {
     const data = [];
-    bunqMeTabs.map(bunqMeTab => {
-        data.push({
-            date: new Date(bunqMeTab.BunqMeTab.created),
-            change: 0,
-            type: "bunqMeTab"
+    bunqMeTabs
+        .filter(bunqMeTabsFilter(bunqMeTabFilterSettings))
+        .map(bunqMeTab => {
+            data.push({
+                date: new Date(bunqMeTab.BunqMeTab.created),
+                change: 0,
+                type: "bunqMeTab",
+                categories: []
+                // categories: CategoryHelper(
+                //     categories,
+                //     categoryConnections,
+                //     "BunqMeTab",
+                //     bunqMeTab.BunqMeTab.id
+                // )
+            });
         });
-    });
     return data;
 };
 
-const requestInquiryMapper = requestInquiries => {
+const requestInquiryMapper = (
+    requestInquiries,
+    requestFilterSettings,
+    categories,
+    categoryConnections
+) => {
     const data = [];
-    requestInquiries.map(requestInquiry => {
-        data.push({
-            date: new Date(requestInquiry.RequestInquiry.created),
-            change: 0,
-            type: "requestInquiry"
+    requestInquiries
+        .filter(requestInquiryFilter(requestFilterSettings))
+        .map(requestInquiry => {
+            data.push({
+                date: new Date(requestInquiry.RequestInquiry.created),
+                change: 0,
+                type: "requestInquiry",
+                categories: []
+                // categories: CategoryHelper(
+                //     categories,
+                //     categoryConnections,
+                //     "RequestInquiry",
+                //     requestInquiry.RequestInquiry.id
+                // )
+            });
         });
-    });
     return data;
 };
 
-const requestResponseMapper = requestResponses => {
+const requestResponseMapper = (
+    requestResponses,
+    requestFilterSettings,
+    categories,
+    categoryConnections
+) => {
     const data = [];
-    requestResponses.map(requestResponse => {
-        data.push({
-            date: new Date(requestResponse.RequestResponse.created),
-            change: 0,
-            type: "requestResponse"
+    requestResponses
+        .filter(requestResponseFilter(requestFilterSettings))
+        .map(requestResponse => {
+            data.push({
+                date: new Date(requestResponse.RequestResponse.created),
+                change: 0,
+                type: "requestResponse",
+                categories: []
+                // categories: CategoryHelper(
+                //     categories,
+                //     categoryConnections,
+                //     "RequestResponse",
+                //     requestResponse.RequestResponse.id
+                // )
+            });
         });
-    });
     return data;
 };
 
-const paymentMapper = (payments, paymentFilterSettings) => {
+const paymentMapper = (
+    payments,
+    paymentFilterSettings,
+    categories,
+    categoryConnections
+) => {
     const data = [];
     payments.filter(paymentFilter(paymentFilterSettings)).map(payment => {
         const paymentInfo = payment.Payment;
@@ -64,13 +131,25 @@ const paymentMapper = (payments, paymentFilterSettings) => {
         data.push({
             date: new Date(paymentInfo.created),
             change: -change,
-            type: "payment"
+            type: "payment",
+            categories: []
+            // categories: CategoryHelper(
+            //     categories,
+            //     categoryConnections,
+            //     "Payment",
+            //     paymentInfo.id
+            // )
         });
     });
     return data;
 };
 
-const masterCardActionMapper = (masterCardActions, paymentFilterSettings) => {
+const masterCardActionMapper = (
+    masterCardActions,
+    paymentFilterSettings,
+    categories,
+    categoryConnections
+) => {
     const data = [];
     masterCardActions
         .filter(masterCardActionFilter(paymentFilterSettings))
@@ -93,14 +172,146 @@ const masterCardActionMapper = (masterCardActions, paymentFilterSettings) => {
                 data.push({
                     date: new Date(masterCardInfo.created),
                     change: change,
-                    type: "masterCardAction"
+                    type: "masterCardAction",
+                    categories: []
+                    // categories: CategoryHelper(
+                    //     categories,
+                    //     categoryConnections,
+                    //     "MasterCardAction",
+                    //     masterCardInfo.id
+                    // )
                 });
             }
         });
     return data;
 };
 
-const getData = (events, accounts, selectedAccount, type = "daily") => {
+const formatLabels = (events, type) => {
+    const dataCollection = {};
+
+    // nothing to do with no events
+    if (events.length <= 0) return dataCollection;
+
+    // get newest item to check its date
+    switch (type) {
+        case "yearly":
+            const startDateYearly = new Date();
+            const endDateYearly = events[events.length - 1].date;
+            const yearDifference1 =
+                startDateYearly.getFullYear() - endDateYearly.getFullYear() + 1;
+
+            for (let year = 0; year < yearDifference1; year++) {
+                const startDate = new Date();
+                startDate.setFullYear(startDate.getFullYear() - year);
+
+                const label = labelFormat(startDate, type);
+                dataCollection[label] = {
+                    data: [],
+                    date: startDate
+                };
+            }
+            break;
+
+        case "monthly":
+            const startDateMonthly = new Date();
+            const endDateMonthly = events[events.length - 1].date;
+            const yearDifference2 =
+                startDateMonthly.getFullYear() - endDateMonthly.getFullYear();
+
+            // calculate difference in months between the two dates
+            let monthDifference =
+                startDateMonthly.getMonth() -
+                endDateMonthly.getMonth() +
+                1 +
+                yearDifference2 * 12;
+
+            // limit to 24 months
+            monthDifference = monthDifference > 24 ? 24 : monthDifference;
+
+            for (let month = 0; month < monthDifference; month++) {
+                const startDate = new Date();
+                startDate.setMonth(startDate.getMonth() - month);
+
+                const label = labelFormat(startDate, type);
+                dataCollection[label] = {
+                    data: [],
+                    date: startDate
+                };
+            }
+            break;
+
+        case "weekly":
+            const startDateWeekly = new Date();
+            const endDateWeekly = events[events.length - 1].date;
+            const yearDifference3 =
+                startDateWeekly.getFullYear() - endDateWeekly.getFullYear();
+
+            // calculate difference in weeks between the two dates
+            let weekDifference =
+                getWeek(startDateWeekly) -
+                getWeek(endDateWeekly) +
+                1 +
+                yearDifference3 * 53;
+
+            // limit to 53 weeks
+            weekDifference = weekDifference > 53 ? 53 : weekDifference;
+
+            for (let week = 0; week < weekDifference; week++) {
+                const dateOffset =
+                    week <= 0 ? 0 : 24 * 60 * 60 * 1000 * 7 * week;
+
+                const startDate = new Date();
+                startDate.setTime(startDate.getTime() - dateOffset);
+
+                const label = labelFormat(startDate, type);
+                dataCollection[label] = {
+                    data: [],
+                    date: startDate
+                };
+            }
+            break;
+
+        case "daily":
+            const startDateDayly = new Date();
+            const endDateDayly = events[events.length - 1].date;
+            const yearDifference4 =
+                startDateDayly.getFullYear() - endDateDayly.getFullYear();
+
+            // calculate the difference in days between the two dates
+            let dayDifference =
+                getDayOfYear(startDateDayly) -
+                getDayOfYear(endDateDayly) +
+                yearDifference4 * 365;
+
+            // limit to 60 days
+            dayDifference = dayDifference > 60 ? 60 : dayDifference;
+
+            for (let day = 0; day < dayDifference; day++) {
+                const dateOffset = day <= 0 ? 0 : 24 * 60 * 60 * 1000 * day;
+
+                const startDate = new Date();
+                startDate.setTime(startDate.getTime() - dateOffset);
+
+                const label = labelFormat(startDate, type);
+                dataCollection[label] = {
+                    data: [],
+                    date: startDate
+                };
+            }
+            break;
+    }
+    return dataCollection;
+};
+
+const getData = (
+    events,
+    accounts,
+    categories,
+    selectedAccount,
+    timeFrom = null,
+    timeTo = new Date(),
+    type = "daily"
+) => {
     let accountInfo = false;
     accounts.map(account => {
         if (
@@ -123,64 +334,30 @@ const getData = (events, accounts, selectedAccount, type = "daily") => {
     let requestResponseCountHistory = [];
     let bunqMeTabCountHistory = [];
     let labelData = [];
-    const dataCollection = {};
 
-    switch (type) {
-        case "yearly":
-            for (let year = 0; year < 2; year++) {
-                const myDate = new Date();
-                myDate.setFullYear(myDate.getFullYear() - year);
-                const label = labelFormat(myDate, type);
+    // sort all events by date first
+    const sortedEvents = events.sort((a, b) => {
+        return b.date - a.date;
+    });
 
-                dataCollection[label] = [];
-            }
-            break;
-        case "monthly":
-            for (let month = 0; month < 12; month++) {
-                const myDate = new Date();
-                myDate.setMonth(myDate.getMonth() - month);
-                const label = labelFormat(myDate, type);
-
-                dataCollection[label] = [];
-            }
-            break;
-        case "weekly":
-            for (let week = 0; week < 52; week++) {
-                const dateOffset =
-                    week <= 0 ? 0 : 24 * 60 * 60 * 1000 * 7 * week;
-                const myDate = new Date();
-                myDate.setTime(myDate.getTime() - dateOffset);
-                const label = labelFormat(myDate, type);
-
-                dataCollection[label] = [];
-            }
-            break;
-        case "daily":
-            for (let day = 0; day < 30; day++) {
-                const dateOffset = day <= 0 ? 0 : 24 * 60 * 60 * 1000 * day;
-                const myDate = new Date();
-                myDate.setTime(myDate.getTime() - dateOffset);
-                const label = labelFormat(myDate, type);
-
-                dataCollection[label] = [];
-            }
-            break;
-    }
+    // create the correct labels for the X axis
+    const dataCollection = formatLabels(events, type);
 
     // combine the list
-    events
-        .sort((a, b) => {
-            return b.date - a.date;
-        })
-        .forEach(item => {
-            const label = labelFormat(item.date, type);
-            if (dataCollection[label]) {
-                dataCollection[label].push(item);
-            }
-        });
+    sortedEvents.forEach(item => {
+        const label = labelFormat(item.date, type);
+        if (dataCollection[label]) {
+            dataCollection[label].data.push(item);
+        }
+    });
 
     // loop through all the days
     Object.keys(dataCollection).map(label => {
+        const dataItem = dataCollection[label];
+
+        const timescaleData = dataItem.data;
+        const timescaleDate = dataItem.date;
+
         const timescaleInfo = {
             masterCardAction: 0,
             requestResponse: 0,
@@ -188,30 +365,70 @@ const getData = (events, accounts, selectedAccount, type = "daily") => {
             bunqMeTab: 0,
             payment: 0
         };
+
         let timescaleChange = 0;
-        dataCollection[label].map(item => {
+        timescaleData.map(item => {
             // increment this type to keep track of the different types
             timescaleInfo[item.type]++;
             // calculate change
             timescaleChange = timescaleChange + item.change;
         });
 
-        // update balance and push it to the list
-        balanceHistoryData.push(roundMoney(currentBalance));
-        // count the events for this timescale
-        eventCountHistory.push(dataCollection[label].length);
-        // update the individual counts
-        masterCardActionCountHistory.push(timescaleInfo.masterCardAction);
-        requestInquiryCountHistory.push(timescaleInfo.requestInquiry);
-        requestResponseCountHistory.push(timescaleInfo.requestResponse);
-        bunqMeTabCountHistory.push(timescaleInfo.bunqMeTab);
-        paymentCountHistory.push(timescaleInfo.payment);
+        // fix the date ranges
+        let timeToFixed = timeTo;
+        let timeFromFixed = timeFrom;
+        switch (type) {
+            case "yearly":
+                timeToFixed = timeTo === null ? null : addYears(timeTo, 1);
+                timeFromFixed =
+                    timeFrom === null ? null : subYears(timeFrom, 1);
+                break;
+            case "monthly":
+                timeToFixed = timeTo === null ? null : addMonths(timeTo, 1);
+                timeFromFixed =
+                    timeFrom === null ? null : subMonths(timeFrom, 1);
+                break;
+            case "weekly":
+                timeToFixed = timeTo === null ? null : addWeeks(timeTo, 1);
+                timeFromFixed =
+                    timeFrom === null ? null : subWeeks(timeFrom, 1);
+                break;
+            case "daily":
+                timeToFixed = timeTo === null ? null : addDays(timeTo, 1);
+                timeFromFixed = timeFrom === null ? null : subDays(timeFrom, 1);
+                break;
+        }
 
-        // update the balance for the next timescale
+        if (
+            timeToFixed === null ||
+            timescaleDate.getTime() <= timeToFixed.getTime()
+        ) {
+            if (
+                timeFromFixed === null ||
+                timescaleDate.getTime() >= timeFromFixed.getTime()
+            ) {
+                // only push this data and label if they are within the range
+
+                // update balance and push it to the list
+                balanceHistoryData.push(roundMoney(currentBalance));
+                // count the events for this timescale
+                eventCountHistory.push(timescaleData.length);
+                // update the individual counts
+                masterCardActionCountHistory.push(
+                    timescaleInfo.masterCardAction
+                );
+                requestInquiryCountHistory.push(timescaleInfo.requestInquiry);
+                requestResponseCountHistory.push(timescaleInfo.requestResponse);
+                bunqMeTabCountHistory.push(timescaleInfo.bunqMeTab);
+                paymentCountHistory.push(timescaleInfo.payment);
+
+                // push the label here so we can ignore certain days if required
+                labelData.push(label);
+            }
+        }
+
+        // always update the balance for the next timescale
         currentBalance = currentBalance + timescaleChange;
-
-        // push the label here so we can ignore certain days if required
-        labelData.push(label);
     });
 
     return {
@@ -232,20 +449,51 @@ const getData = (events, accounts, selectedAccount, type = "daily") => {
 
 onmessage = e => {
     const events = [
-        ...bunqMeTabMapper(e.data.bunqMeTabs),
-        ...requestInquiryMapper(e.data.requestInquiries),
-        ...requestResponseMapper(e.data.requestResponses),
-        ...paymentMapper(e.data.payments, e.data.paymentFilterSettings),
+        ...bunqMeTabMapper(
+            e.data.bunqMeTabs,
+            e.data.bunqMeTabFilterSettings,
+            e.data.categories,
+            e.data.categoryConnections
+        ),
+        ...requestInquiryMapper(
+            e.data.requestInquiries,
+            e.data.requestFilterSettings,
+            e.data.categories,
+            e.data.categoryConnections
+        ),
+        ...requestResponseMapper(
+            e.data.requestResponses,
+            e.data.requestFilterSettings,
+            e.data.categories,
+            e.data.categoryConnections
+        ),
+        ...paymentMapper(
+            e.data.payments,
+            e.data.paymentFilterSettings,
+            e.data.categories,
+            e.data.categoryConnections
+        ),
         ...masterCardActionMapper(
             e.data.masterCardActions,
-            e.data.paymentFilterSettings
+            e.data.paymentFilterSettings,
+            e.data.categories,
+            e.data.categoryConnections
         )
     ];
 
     const data = getData(
         events,
+        // account data
         e.data.accounts,
+        // full list of categories
+        e.data.categories,
+        // selected account
         e.data.selectedAccount,
+        // date from range
+        e.data.timeFrom,
+        // date to
+        e.data.timeTo,
+        // display charts with daily/weekly/monthyl/yearly increments
         e.data.timescale
     );
 

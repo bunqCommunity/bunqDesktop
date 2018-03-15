@@ -5,6 +5,8 @@ import application from "./application";
 import bunq_me_tabs from "./bunq_me_tabs";
 import bunq_me_tab_filter from "./bunq_me_tab_filter";
 import bunq_me_tab from "./bunq_me_tab";
+import categories from "./categories";
+import date_filter from "./date_filter";
 import general_filter from "./general_filter";
 import modal from "./modal";
 import user from "./user";
@@ -35,6 +37,8 @@ export default combineReducers({
     bunq_me_tab,
     bunq_me_tab_filter,
     bunq_me_tabs,
+    categories,
+    date_filter,
     general_filter,
     modal,
     user,

@@ -73,7 +73,6 @@ class AccountList extends React.Component {
             paymentsAccountId,
             paymentsLoading,
             initialBunqConnect,
-            accounts,
             user
         } = props;
 
@@ -100,7 +99,6 @@ class AccountList extends React.Component {
 
         // no accounts loaded
         if (
-            accounts.length === 0 &&
             this.state.fetchedAccounts === false &&
             props.user.id &&
             props.accountsLoading === false

@@ -44,7 +44,7 @@ class Dashboard extends React.Component {
                 </Helmet>
 
                 <Grid item xs={8} sm={10}>
-                    <Typography type="title" gutterBottom>
+                    <Typography variant="title" gutterBottom>
                         Welcome {this.props.user.display_name}
                     </Typography>
                 </Grid>
