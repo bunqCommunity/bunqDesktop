@@ -6,7 +6,7 @@ import Grid from "material-ui/Grid";
 
 import CategoryEditor from "../../Components/Categories/CategoryEditor";
 import CategoryChip from "../../Components/Categories/CategoryChip";
-import { FilterCreator } from "./FilterCreator.tsx";
+import {FilterCreator} from "./FilterCreator.tsx";
 import {
     removeCategory,
     removeCategoryConnection

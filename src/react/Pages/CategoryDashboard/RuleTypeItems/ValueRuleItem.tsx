@@ -1,15 +1,19 @@
 import * as React from "react";
 import TextField from "material-ui/TextField";
+import IconButton from "material-ui/IconButton";
 import Input, { InputLabel } from "material-ui/Input";
 import { MenuItem } from "material-ui/Menu";
 import { FormControl, FormHelperText } from "material-ui/Form";
-import { TableBody, TableCell, TableHead, TableRow } from "material-ui/Table";
+import { TableBody, TableCell, TableRow } from "material-ui/Table";
 import Select from "material-ui/Select";
 
-import { ValueFilter } from "../Types/Types";
+import RemoveIcon from "material-ui-icons/Remove";
+
+import { ValueRule } from "../Types/Types";
 
 interface IPropTypes {
-    filter: ValueFilter;
+    rule: ValueRule;
+    removeRule: any;
 }
 
 const styles = {
@@ -18,52 +22,42 @@ const styles = {
     },
     tableCell: {
         padding: 2
+    },
+    tableIconCell: {
+        padding: 2,
+        width: 30
     }
 };
 
-class ValueFilterItem extends React.Component<IPropTypes, any> {
+class ValueRuleItem extends React.Component<IPropTypes, any> {
     constructor(props: IPropTypes, context: any) {
         super(props, context);
-        this.state = {};
+        this.state = {
+            rule: this.props.rule
+        };
+    }
+
+    componentDidUpdate() {
+        const rule: ValueRule = this.state.rule;
+        const propsRule: ValueRule = this.props.rule;
+
+        if (rule.id !== propsRule.id) {
+            this.setState( {
+                rule: propsRule
+            });
+        }
     }
 
     public render() {
-        const filter: ValueFilter = this.props.filter;
+        const rule: ValueRule = this.state.rule;
 
         return [
-            <TableHead key={"tableHead"}>
-                <TableRow>
-                    <TableCell style={{width: 70}}>Filter type</TableCell>
-                    <TableCell style={{width: 90}}>Type</TableCell>
-                    <TableCell style={{width: 90}}>Match</TableCell>
-                    <TableCell>Value</TableCell>
-                </TableRow>
-            </TableHead>,
             <TableBody key={"tableBody"}>
                 <TableRow>
                     <TableCell style={styles.tableCell}>
                         <FormControl style={styles.textField}>
                             <Select
-                                value={filter.filterType}
-                                input={
-                                    <Input
-                                        name="field"
-                                        id="filter-type-helper"
-                                    />
-                                }
-                            >
-                                <MenuItem value={"VALUE"}>Default</MenuItem>
-                            </Select>
-                            <FormHelperText>
-                                Which field to check
-                            </FormHelperText>
-                        </FormControl>
-                    </TableCell>
-
-                    <TableCell style={styles.tableCell}>
-                        <FormControl style={styles.textField}>
-                            <Select
-                                value={filter.field}
+                                value={rule.field}
                                 input={<Input name="field" id="field-helper" />}
                             >
                                 <MenuItem value={"IBAN"}>Iban</MenuItem>
@@ -73,22 +67,17 @@ class ValueFilterItem extends React.Component<IPropTypes, any> {
                                 <MenuItem value={"COUNTERPARTY_NAME"}>
                                     Display name
                                 </MenuItem>
-                                {/*<MenuItem value={"CUSTOM"}>Custom</MenuItem>*/}
                             </Select>
                             <FormHelperText>
                                 Which field to check
                             </FormHelperText>
                         </FormControl>
-                        {/*<TextField*/}
-                        {/*style={styles.textField}*/}
-                        {/*defaultValue={filter.matchType}*/}
-                        {/*/>*/}
                     </TableCell>
 
                     <TableCell style={styles.tableCell}>
                         <FormControl style={styles.textField}>
                             <Select
-                                value={filter.matchType}
+                                value={rule.matchType}
                                 input={
                                     <Input name="age" id="match-type-helper" />
                                 }
@@ -110,8 +99,15 @@ class ValueFilterItem extends React.Component<IPropTypes, any> {
                     <TableCell style={styles.tableCell}>
                         <TextField
                             style={styles.textField}
-                            defaultValue={filter.value}
+                            defaultValue={rule.value}
+                            helperText={"Value to check for"}
                         />
+                    </TableCell>
+
+                    <TableCell style={styles.tableIconCell}>
+                        <IconButton onClick={this.props.removeRule}>
+                            <RemoveIcon />
+                        </IconButton>
                     </TableCell>
                 </TableRow>
             </TableBody>
@@ -119,4 +115,4 @@ class ValueFilterItem extends React.Component<IPropTypes, any> {
     }
 }
 
-export default ValueFilterItem;
+export default ValueRuleItem;

@@ -1,10 +1,14 @@
 import * as React from "react";
 import Divider from "material-ui/Divider";
 import Paper from "material-ui/Paper";
+import IconButton from "material-ui/IconButton";
 import Typography from "material-ui/Typography";
-import Table from "material-ui/Table";
+import Table, { TableCell, TableHead, TableRow } from "material-ui/Table";
 
-import ValueFilterItem from "./FilterTypeItems/ValueFilterItem";
+import AddButton from "material-ui-icons/Add";
+
+import { Rule } from "./Types/Types";
+import ValueRuleItem from "./RuleTypeItems/ValueRuleItem";
 import CategoryChip from "../../Components/Categories/CategoryChip";
 
 const styles = {
@@ -25,59 +29,81 @@ const styles = {
     }
 };
 
-export class FilterCreator extends React.Component<any, any> {
+export class RuleCreator extends React.Component<any, any> {
     constructor(props: any, context: any) {
         super(props, context);
 
+        const rules: Rule[] = [
+            {
+                id: null,
+                ruleType: "VALUE",
+                field: "IBAN",
+                matchType: "EXACT",
+                value: "NL06BUNQ2290608785"
+            },
+            {
+                id: null,
+                ruleType: "VALUE",
+                field: "DESCRIPTION",
+                matchType: "CONTAINS",
+                value: "WINDESHEIM"
+            },
+            {
+                id: null,
+                ruleType: "VALUE",
+                field: "DESCRIPTION",
+                matchType: "REGEX",
+                value: "/a/g"
+            }
+        ];
+
         this.state = {
-            title: "Filter name 1",
-            categoryIds: ["randomId"],
-            filters: [
-                {
-                    filterType: "VALUE",
-                    field: "IBAN",
-                    matchType: "EXACT",
-                    value: "NL06BUNQ2290608785"
-                },
-                {
-                    filterType: "VALUE",
-                    field: "DESCRIPTION",
-                    matchType: "CONTAINS",
-                    value: "WINDESHEIM"
-                },
-                {
-                    filterType: "VALUE",
-                    field: "DESCRIPTION",
-                    matchType: "REGEX",
-                    value: "/a/g"
-                }
-            ]
+            title: "Rule 1",
+            categoryIds: [],
+            rules: rules
         };
     }
 
     addCategory = categoryInfo => event => {
-        const categories = [...this.state.categoryIds];
-        if (!categories.includes(categoryInfo.id)) {
-            categories.push(categoryInfo.id);
+        const categoryIds: any[] = [...this.state.categoryIds];
+        if (!categoryIds.includes(categoryInfo.id)) {
+            categoryIds.push(categoryInfo.id);
 
-            this.setState({ categories: categories });
+            this.setState({ categoryIds: categoryIds });
         }
     };
 
     removeCategory = categoryInfo => event => {
         const categories = [...this.state.categoryIds];
         const index = categories.indexOf(categoryInfo.id);
-        if (index !== -1) {
-            const categoriesUpdated = categories.splice(index, 1);
 
-            this.setState({ categories: categoriesUpdated });
+        if (index !== -1) {
+            categories.splice(index, 1);
+            this.setState({ categoryIds: categories });
         }
     };
 
-    render() {
-        const { categoryIds, title, filters } = this.state;
+    removeRule = ruleKey => event => {
+        const rules = [...this.state.rules];
+        rules.splice(ruleKey, 1);
+        this.setState({ rules: rules });
+    };
 
-        console.log(categoryIds);
+    addRule = event => {
+        const rules = [...this.state.rules];
+        const newRule: Rule = {
+            id: null,
+            ruleType: "VALUE",
+            field: "DESCRIPTION",
+            matchType: "EXACT",
+            value: ""
+        };
+        rules.push(newRule);
+        this.setState({ rules: rules });
+    };
+
+    render() {
+        const { categoryIds, title, rules } = this.state;
 
         const categoriesIncluded = [];
         const categoriesExcluded = [];
@@ -124,13 +150,27 @@ export class FilterCreator extends React.Component<any, any> {
                     Rules
                 </Typography>
                 <Table>
-                    {filters.map((filter, filterKey) => {
-                        switch (filter.filterType) {
+                    <TableHead key={"tableHead"}>
+                        <TableRow>
+                            <TableCell>{null}</TableCell>
+                            <TableCell>{null}</TableCell>
+                            <TableCell>{null}</TableCell>
+                            <TableCell>{null}</TableCell>
+                            <TableCell>
+                                <IconButton onClick={this.addRule}>
+                                    <AddButton />
+                                </IconButton>
+                            </TableCell>
+                        </TableRow>
+                    </TableHead>
+                    {rules.map((rule, ruleKey) => {
+                        switch (rule.ruleType) {
                             case "VALUE":
                                 return (
-                                    <ValueFilterItem
-                                        filter={filter}
-                                        key={filterKey}
+                                    <ValueRuleItem
+                                        removeRule={this.removeRule(ruleKey)}
+                                        rule={rule}
+                                        key={ruleKey}
                                     />
                                 );
                             case "ITEM_TYPE":

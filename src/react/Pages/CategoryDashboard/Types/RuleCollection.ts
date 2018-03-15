@@ -1,21 +1,23 @@
-import { Filter } from "./Types";
+import { Rule } from "./Types";
+import { generateGUID } from "../../../Helpers/Utils";
 
-export default class FilterCollection {
-    private matchType: "OR" | "AND" = "OR";
+export default class RuleCollection {
+    private id: string = null;
     private title: string = "";
-    private filters: Filter[] = [];
+    private matchType: "OR" | "AND" = "OR";
+    private filters: Rule[] = [];
     private categories: string[] = [];
 
-    constructor(filters: Filter[] = [], categories: string[] = []) {
+    constructor(filters: Rule[] = [], categories: string[] = []) {
         this.filters = filters;
         this.categories = categories;
     }
 
-    public setFilters(filters: Filter[]): void {
+    public setRules(filters: Rule[]): void {
         this.filters = filters;
     }
 
-    public getFilters(): Filter[] {
+    public getRules(): Rule[] {
         return this.filters;
     }
 
@@ -41,5 +43,17 @@ export default class FilterCollection {
 
     public getMatchType(): string {
         return this.matchType;
+    }
+
+    public setId(id: string): void {
+        this.id = id;
+    }
+
+    public getId(): string {
+        return this.id;
+    }
+
+    public generateId() : void{
+        this.id = generateGUID();
     }
 }

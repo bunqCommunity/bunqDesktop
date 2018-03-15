@@ -1,20 +1,22 @@
-export type Filter = ValueFilter | TypeFilter;
+export type Rule = ValueRule | TypeRule;
 
-export type ValueFilter = {
-    filterType: "VALUE";
-    field: ValueFilterField;
-    matchType: ValueFilterMatchType;
+export type ValueRule = {
+    id: string | null;
+    ruleType: "VALUE";
+    field: ValueRuleField;
+    matchType: ValueRuleMatchType;
     value: string;
     // value: string | RegExp;
 };
-export type ValueFilterField = "DESCRIPTION"| "IBAN" | "COUNTERPARTY_NAME";
-export type ValueFilterMatchType = "REGEX" | "EXACT" | "CONTAINS";
+export type ValueRuleField = "DESCRIPTION" | "IBAN" | "COUNTERPARTY_NAME";
+export type ValueRuleMatchType = "REGEX" | "EXACT" | "CONTAINS";
 
-export type TypeFilter = {
-    filterType: "ITEM_TYPE";
-    matchType: TypeFilterMatchType;
+export type TypeRule = {
+    id: string | null;
+    ruleType: "ITEM_TYPE";
+    matchType: TypeRuleMatchType;
 };
-export type TypeFilterMatchType =
+export type TypeRuleMatchType =
     | "PAYMENT"
     | "BUNQ_ME_TAB"
     | "PAYMENT"
