@@ -1,11 +1,12 @@
 import * as React from "react";
 import Select from "material-ui/Select";
-import TextField from "material-ui/TextField";
 import Input from "material-ui/Input";
+import Typography from "material-ui/Typography";
 import { MenuItem } from "material-ui/Menu";
-import { FormControl, FormHelperText } from "material-ui/Form";
+import { FormControl } from "material-ui/Form";
 import { TableBody, TableCell, TableRow } from "material-ui/Table";
 
+import MoneyFormatInputDefault from "../../../Components/FormFields/MoneyFormatInputDefault";
 import { TransactionAmountRule } from "../Types/Types";
 import RuleItemMenu from "../RuleItemMenu";
 
@@ -53,15 +54,12 @@ class TransactionAmountRuleItem extends React.Component<IPropTypes, any> {
     render() {
         const rule: TransactionAmountRule = this.props.rule;
 
-        const moneyFieldProps = {
-            min: 0,
-            step: 0.01
-        };
-
         return [
             <TableBody key={"tableBody"}>
                 <TableRow>
-                    <TableCell>Transaction amount</TableCell>
+                    <TableCell>
+                        <Typography variant="subheading">Transaction amount</Typography>
+                    </TableCell>
 
                     <TableCell style={styles.tableCell}>
                         <FormControl style={styles.textField}>
@@ -91,14 +89,24 @@ class TransactionAmountRuleItem extends React.Component<IPropTypes, any> {
                     </TableCell>
 
                     <TableCell style={styles.tableCell}>
-                        <TextField
-                            style={styles.textField}
-                            value={rule.amount}
-                            type={"number"}
-                            onChange={this.handleValueChange}
-                            helperText={"Amount to check"}
-                            {...moneyFieldProps}
-                        />
+                        {/*<TextField*/}
+                            {/*style={styles.textField}*/}
+                            {/*value={rule.amount}*/}
+                            {/*type={"number"}*/}
+                            {/*onChange={this.handleValueChange}*/}
+                        {/*/>*/}
+                        <FormControl
+                            error={this.state.amountError}
+                            fullWidth
+                        >
+                            <MoneyFormatInputDefault
+                                id="amount"
+                                fontSize={16}
+                                style={styles.textField}
+                                value={rule.amount}
+                                onChange={this.handleValueChange}
+                            />
+                        </FormControl>
                     </TableCell>
 
                     <TableCell style={styles.tableIconCell}>
