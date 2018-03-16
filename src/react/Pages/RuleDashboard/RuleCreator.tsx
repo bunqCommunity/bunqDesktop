@@ -15,9 +15,12 @@ import Table, { TableCell, TableHead, TableRow } from "material-ui/Table";
 
 import AddButton from "material-ui-icons/Add";
 
-import { Rule } from "./Types/Types";
+import { Rule, RuleTypes } from "./Types/Types";
 import { RuleCollectionMatchType } from "./Types/RuleCollection";
+
+import NewRuleItemMenu from "./NewRuleItemMenu";
 import ValueRuleItem from "./RuleTypeItems/ValueRuleItem";
+import TransactionAmountRuleItem from "./RuleTypeItems/TransactionAmountRuleItem";
 import CategoryChip from "../../Components/Categories/CategoryChip";
 
 const styles = {
@@ -51,10 +54,9 @@ class RuleCreator extends React.Component<any, any> {
         const rules: Rule[] = [
             {
                 id: null,
-                ruleType: "VALUE",
-                field: "IBAN",
-                matchType: "EXACT",
-                value: "NL06BUNQ2290608785"
+                ruleType: "TRANSACTION_AMOUNT",
+                matchType: "MORE_EQUALS",
+                amount: 5
             },
             {
                 id: null,
@@ -110,15 +112,41 @@ class RuleCreator extends React.Component<any, any> {
         rules[ruleKey] = rule;
         this.setState({ rules: rules });
     };
-    addRule = event => {
+    addRule = (ruleType: RuleTypes) => {
         const rules = [...this.state.rules];
-        const newRule: Rule = {
-            id: null,
-            ruleType: "VALUE",
-            field: "DESCRIPTION",
-            matchType: "EXACT",
-            value: ""
-        };
+        let newRule: Rule;
+
+        switch (ruleType) {
+            case "VALUE":
+                newRule = {
+                    id: null,
+                    ruleType: "VALUE",
+                    field: "DESCRIPTION",
+                    matchType: "EXACT",
+                    value: ""
+                };
+                break;
+            case "TRANSACTION_AMOUNT":
+                newRule = {
+                    id: null,
+                    ruleType: "TRANSACTION_AMOUNT",
+                    matchType: "MORE",
+                    amount: 5
+                };
+                break;
+            // case "ITEM_TYPE":
+            //     newRule = {
+            //         id: null,
+            //         ruleType: "ITEM_TYPE",
+            //         matchType: "PAYMENT"
+            //     };
+            //     break;
+            default:
+                return false;
+        }
+
+        console.log(ruleType, newRule);
+
         rules.push(newRule);
         this.setState({ rules: rules });
     };
@@ -236,13 +264,11 @@ class RuleCreator extends React.Component<any, any> {
                                 <TableCell>{null}</TableCell>
                                 <TableCell>{null}</TableCell>
                                 <TableCell>
-                                    <IconButton onClick={this.addRule}>
-                                        <AddButton />
-                                    </IconButton>
+                                    <NewRuleItemMenu addRule={this.addRule} />
                                 </TableCell>
                             </TableRow>
                         </TableHead>
-                        {rules.map((rule, ruleKey) => {
+                        {rules.map((rule: Rule, ruleKey: string) => {
                             switch (rule.ruleType) {
                                 case "VALUE":
                                     return (
@@ -257,8 +283,19 @@ class RuleCreator extends React.Component<any, any> {
                                             key={ruleKey}
                                         />
                                     );
-                                case "ITEM_TYPE":
-                                    return null;
+                                case "TRANSACTION_AMOUNT":
+                                    return (
+                                        <TransactionAmountRuleItem
+                                            removeRule={this.removeRule(
+                                                ruleKey
+                                            )}
+                                            updateRule={this.updateRule(
+                                                ruleKey
+                                            )}
+                                            rule={rule}
+                                            key={ruleKey}
+                                        />
+                                    );
                             }
                         })}
                     </Table>

@@ -77,9 +77,9 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
                                     Display name
                                 </MenuItem>
                             </Select>
-                            <FormHelperText>
-                                Which field to check
-                            </FormHelperText>
+                            {/*<FormHelperText>*/}
+                                {/*Which field to check*/}
+                            {/*</FormHelperText>*/}
                         </FormControl>
                     </TableCell>
 
@@ -106,9 +106,9 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
                                 </MenuItem>
                                 <MenuItem value={"REGEX"}>Regex</MenuItem>
                             </Select>
-                            <FormHelperText>
-                                How to check the field
-                            </FormHelperText>
+                            {/*<FormHelperText>*/}
+                                {/*How to check the field*/}
+                            {/*</FormHelperText>*/}
                         </FormControl>
                     </TableCell>
 
@@ -117,9 +117,9 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
                             style={styles.textField}
                             value={rule.value}
                             onChange={this.handleValueChange}
-                            helperText={"Value to check for"}
                         />
                     </TableCell>
+                    {/*helperText={"Value to check for"}*/}
 
                     <TableCell style={styles.tableIconCell}>
                         <RuleItemMenu removeRule={this.props.removeRule}/>
