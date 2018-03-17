@@ -84,6 +84,10 @@ class RuleCreator extends React.Component<any, any> {
         };
     }
 
+    componentDidUpdate(){
+        this.props.updateRuleCollection
+    }
+
     addCategory = categoryInfo => event => {
         const categoryIds: string[] = [...this.state.categoryIds];
         if (!categoryIds.includes(categoryInfo.id)) {

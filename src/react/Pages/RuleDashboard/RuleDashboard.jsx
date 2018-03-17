@@ -12,46 +12,10 @@ const styles = {};
 class RuleDashboard extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {
-            selectedCategoryId: false
-        };
+        this.state = {};
     }
-
-    componentDidUpdate() {
-        if (
-            this.props.userType !== false &&
-            this.props.userLoading === false &&
-            this.props.usersLoading === false &&
-            this.props.user === false
-        ) {
-            this.props.userLogin(this.props.userType, false);
-        }
-    }
-
-    deleteCategory = categoryId => event => {
-        this.props.removeCategory(categoryId);
-    };
-
-    selectChip = categoryId => event => {
-        this.setState({ selectedCategoryId: categoryId });
-    };
-
-    deselectChip = event => {
-        this.setState({ selectedCategoryId: false });
-    };
 
     render() {
-        const chips = Object.keys(this.props.categories).map(categoryId => {
-            return (
-                <CategoryChip
-                    category={this.props.categories[categoryId]}
-                    onClick={this.selectChip(categoryId)}
-                    onDelete={this.deleteCategory(categoryId)}
-                    style={this.props.chipStyle}
-                />
-            );
-        });
-
         return (
             <Grid container spacing={16}>
                 <Helmet>
@@ -68,9 +32,7 @@ class RuleDashboard extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        categories: state.categories.categories,
-        categories_last_udate: state.categories.last_update,
-        category_connections: state.categories.category_connections
+        categories: state.categories.categories
     };
 };
 
