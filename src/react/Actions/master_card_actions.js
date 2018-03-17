@@ -1,6 +1,6 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
-export const STORED_MASTER_CARD_ACTIONS = "BUNQDESKTOP_MASTER_CARD_ACTIONS";
+export const STORED_MASTER_CARD_ACTIONS = "BUNQDESKTOP_STORED_MASTER_CARD_ACTIONS";
 
 export function masterCardActionsSetInfo(
     masterCardActions,

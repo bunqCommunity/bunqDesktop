@@ -45,6 +45,24 @@ class Stats extends React.Component {
         if (generalFilterDate !== nextProps.generalFilterDate)
             triggerWorker = true;
 
+        const isCurrentlyLoading =
+            this.props.bunqMeTabsLoading ||
+            this.props.paymentsLoading ||
+            this.props.requestResponsesLoading ||
+            this.props.requestInquiriesLoading ||
+            this.props.masterCardActionsLoading;
+        const willBeLoading =
+            nextProps.bunqMeTabsLoading ||
+            nextProps.paymentsLoading ||
+            nextProps.requestResponsesLoading ||
+            nextProps.requestInquiriesLoading ||
+            nextProps.masterCardActionsLoading;
+
+        if (isCurrentlyLoading === true && willBeLoading === false) {
+            // items are no longer loading so we can update trhe worker here
+            triggerWorker = true;
+        }
+
         if (triggerWorker) {
             // trigger an update with the next changed props
             this.triggerWorker(nextProps, nextState);

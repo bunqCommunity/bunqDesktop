@@ -1,6 +1,6 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
-export const STORED_BUNQ_ME_TABS = "BUNQDESKTOP_BUNQ_ME_TABS";
+export const STORED_BUNQ_ME_TABS = "BUNQDESKTOP_STORED_BUNQ_ME_TABS";
 
 export function bunqMeTabsSetInfo(
     bunqMeTabs,
