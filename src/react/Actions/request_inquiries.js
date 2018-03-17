@@ -1,6 +1,6 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
-export const STORED_REQUEST_INQUIRIES = "BUNQDESKTOP_REQUEST_INQUIRIES";
+export const STORED_REQUEST_INQUIRIES = "BUNQDESKTOP_STORED_REQUEST_INQUIRIES";
 
 export function requestInquiriesSetInfo(
     requestInquiries,
