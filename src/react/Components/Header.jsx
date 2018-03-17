@@ -15,6 +15,7 @@ const styles = {
         zIndex: 1000
     },
     header: {
+        // background: "url(images/bunq-colours-bar-2.png)",
         WebkitAppRegion: "drag",
         WebkitUserSelect: "none",
         position: "fixed",
@@ -23,8 +24,6 @@ const styles = {
         zIndex: 10000,
         height: 50,
         zIndex: 1000,
-        background:
-            "url(images/bunq-colours-bar-2.png)",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center center"
@@ -39,7 +38,7 @@ class Header extends React.Component {
 
     render() {
         return (
-            <header style={styles.header}>
+            <header style={styles.header} className={"rainbow-background"}>
                 <Hidden mdUp>
                     <IconButton
                         aria-label="view main drawer"
