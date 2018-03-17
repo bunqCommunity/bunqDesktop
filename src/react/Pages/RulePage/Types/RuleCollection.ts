@@ -58,4 +58,26 @@ export default class RuleCollection {
     public generateId(): void {
         this.id = generateGUID();
     }
+
+    public toString(): string {
+        return JSON.stringify({
+            id: this.getId(),
+            title: this.getTitle(),
+            match_type: this.getMatchType(),
+            categories: this.getCategories(),
+            rules: this.getRules()
+        });
+    }
+
+    public fromString(jsonString: string): RuleCollection {
+        const json = JSON.parse(jsonString);
+
+        this.setCategories(json.categories);
+        this.setMatchType(json.match_type);
+        this.setRules(json.rules);
+        this.setTitle(json.title);
+        this.setId(json.id);
+
+        return this;
+    }
 }
