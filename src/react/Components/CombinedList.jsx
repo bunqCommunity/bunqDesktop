@@ -37,6 +37,26 @@ class CombinedList extends React.Component {
         this.state = {};
     }
 
+    shouldComponentUpdate(nextProps) {
+        const isCurrentlyLoading =
+            this.props.bunqMeTabsLoading ||
+            this.props.paymentsLoading ||
+            this.props.requestResponsesLoading ||
+            this.props.requestInquiriesLoading ||
+            this.props.masterCardActionsLoading;
+        const willBeLoading =
+            nextProps.bunqMeTabsLoading ||
+            nextProps.paymentsLoading ||
+            nextProps.requestResponsesLoading ||
+            nextProps.requestInquiriesLoading ||
+            nextProps.masterCardActionsLoading;
+
+        // don't update the components if we are loading now and will be loading in the next update
+        if (isCurrentlyLoading && willBeLoading) return false;
+
+        return true;
+    }
+
     copiedValue = type => callback => {
         this.props.openSnackbar(`Copied ${type} to your clipboard`);
     };
