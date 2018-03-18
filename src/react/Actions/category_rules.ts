@@ -61,8 +61,6 @@ export function loadCategoryRules(BunqJSClient) {
                         formattedList[categoryRuleId] = ruleCollection;
                     });
 
-                    console.log("formattedList", formattedList);
-
                     dispatch(setCategoryRules(BunqJSClient, formattedList));
                 }
             })

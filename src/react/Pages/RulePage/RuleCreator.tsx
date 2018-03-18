@@ -229,9 +229,9 @@ class RuleCreator extends React.Component<any, any> {
 
         return (
             <React.Fragment>
-                <Typography variant="headline" style={styles.title}>
-                    {title}
-                </Typography>
+                {/*<Typography variant="headline" style={styles.title}>*/}
+                    {/*{title}*/}
+                {/*</Typography>*/}
 
                 <Paper style={styles.wrapper} key={"settingsWrapper"}>
                     <Typography variant="title" style={styles.subTitle}>
@@ -241,7 +241,7 @@ class RuleCreator extends React.Component<any, any> {
                     <Grid container spacing={16}>
                         <Grid item xs={12} sm={6}>
                             <TextField
-                                label={"Filter title"}
+                                label={"Rule set title"}
                                 value={this.state.title}
                                 style={styles.inputField}
                                 onChange={this.handleTitleChange}
