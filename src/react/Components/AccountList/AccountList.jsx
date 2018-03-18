@@ -82,6 +82,7 @@ class AccountList extends React.Component {
 
         // check if the stored selected account isn't already loaded
         if (
+            user &&
             user.id &&
             accountsAccountId !== false &&
             accountsAccountId !== paymentsAccountId &&

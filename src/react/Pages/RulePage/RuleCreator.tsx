@@ -4,19 +4,20 @@ import Paper from "material-ui/Paper";
 import Input from "material-ui/Input";
 import Select from "material-ui/Select";
 import Button from "material-ui/Button";
-import IconButton from "material-ui/IconButton";
+import Switch from "material-ui/Switch";
 import Divider from "material-ui/Divider";
 import { MenuItem } from "material-ui/Menu";
 import TextField from "material-ui/TextField";
 import { InputLabel } from "material-ui/Input";
 import Typography from "material-ui/Typography";
-import { FormControl } from "material-ui/Form";
+import { FormControl, FormControlLabel } from "material-ui/Form";
 import Table, { TableCell, TableHead, TableRow } from "material-ui/Table";
 
-import AddButton from "material-ui-icons/Add";
-
 import { Rule, RuleTypes } from "./Types/Types";
-import { RuleCollectionMatchType } from "./Types/RuleCollection";
+import {
+    default as RuleCollection,
+    RuleCollectionMatchType
+} from "./Types/RuleCollection";
 
 import NewRuleItemMenu from "./NewRuleItemMenu";
 import ValueRuleItem from "./RuleTypeItems/ValueRuleItem";
@@ -30,6 +31,11 @@ const styles = {
     },
     subTitle: {
         margin: 12
+    },
+    checkboxGridWrapper: {
+        paddingTop: 12,
+        paddingBottom: 0,
+        paddingLeft: 16
     },
     chipsWrapper: {
         display: "flex",
@@ -51,41 +57,31 @@ class RuleCreator extends React.Component<any, any> {
     constructor(props: any, context: any) {
         super(props, context);
 
-        const rules: Rule[] = [
-            {
-                id: null,
-                ruleType: "TRANSACTION_AMOUNT",
-                matchType: "MORE_EQUALS",
-                amount: 5
-            },
-            {
-                id: null,
-                ruleType: "VALUE",
-                field: "DESCRIPTION",
-                matchType: "CONTAINS",
-                value: "WINDESHEIM"
-            },
-            {
-                id: null,
-                ruleType: "VALUE",
-                field: "DESCRIPTION",
-                matchType: "REGEX",
-                value: "/a/g"
-            }
-        ];
-        const categoryIds: string[] = [];
         const matchType: RuleCollectionMatchType = "AND";
-
         this.state = {
-            title: "Rule 1",
+            id: "",
+            title: "",
             matchType: matchType,
-            categoryIds: categoryIds,
-            rules: rules
+            categoryIds: [],
+            rules: [],
+            enabled: false
         };
     }
 
-    componentDidUpdate(){
-        this.props.updateRuleCollection
+    componentDidMount() {
+        const ruleCollection: RuleCollection = this.props.ruleCollection;
+        const ruleCollectionId = ruleCollection.getId();
+        if (ruleCollectionId !== null) {
+            // we should have a valid rule collection so extract the data
+            this.setState({
+                id: ruleCollectionId,
+                title: ruleCollection.getTitle(),
+                matchType: ruleCollection.getMatchType(),
+                categoryIds: ruleCollection.getCategories(),
+                rules: ruleCollection.getRules(),
+                enabled: ruleCollection.isEnabled()
+            });
+        }
     }
 
     addCategory = categoryInfo => event => {
@@ -108,7 +104,7 @@ class RuleCreator extends React.Component<any, any> {
 
     removeRule = ruleKey => event => {
         const rules: Rule[] = [...this.state.rules];
-        const removed = rules.splice(ruleKey, 1);
+        rules.splice(ruleKey, 1);
         this.setState({ rules: rules });
     };
     updateRule = ruleKey => (rule: Rule) => {
@@ -123,7 +119,6 @@ class RuleCreator extends React.Component<any, any> {
         switch (ruleType) {
             case "VALUE":
                 newRule = {
-                    id: null,
                     ruleType: "VALUE",
                     field: "DESCRIPTION",
                     matchType: "EXACT",
@@ -132,7 +127,6 @@ class RuleCreator extends React.Component<any, any> {
                 break;
             case "TRANSACTION_AMOUNT":
                 newRule = {
-                    id: null,
                     ruleType: "TRANSACTION_AMOUNT",
                     matchType: "MORE",
                     amount: 5
@@ -161,6 +155,10 @@ class RuleCreator extends React.Component<any, any> {
 
     handleTitleChange = event => {
         this.setState({ title: event.target.value });
+    };
+
+    handleEnabledToggle = event => {
+        this.setState({ enabled: !this.state.enabled });
     };
 
     render() {
@@ -220,6 +218,23 @@ class RuleCreator extends React.Component<any, any> {
                                 value={this.state.title}
                                 style={styles.inputField}
                                 onChange={this.handleTitleChange}
+                            />
+                        </Grid>
+                        <Grid
+                            item
+                            xs={12}
+                            sm={6}
+                            style={styles.checkboxGridWrapper}
+                        >
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        color="primary"
+                                        checked={this.state.enabled}
+                                        onChange={this.handleEnabledToggle}
+                                    />
+                                }
+                                label="Enable or disable this rule set"
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -314,7 +329,7 @@ class RuleCreator extends React.Component<any, any> {
                             variant="subheading"
                             style={styles.subTitle}
                         >
-                            Categories that will be connected
+                            Categories that will be added
                         </Typography>
                         {includedChips}
                     </div>
@@ -324,7 +339,7 @@ class RuleCreator extends React.Component<any, any> {
                             variant="subheading"
                             style={styles.subTitle}
                         >
-                            Categories that will be ignored
+                            Categories
                         </Typography>
                         {excludedChips}
                     </div>

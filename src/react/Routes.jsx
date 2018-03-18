@@ -45,7 +45,7 @@ const CategoryDashboard = CL(() =>
 const RuleDashboard = CL(() =>
     import(/* webpackChunkName: "rules_dashboard" */ "./Pages/RuleDashboard/RuleDashboard")
 );
-const RulesPage = CL(() =>
+const RulePage = CL(() =>
     import(/* webpackChunkName: "rules_page" */ "./Pages/RulePage/RulePage")
 );
 
@@ -216,12 +216,12 @@ export default class Routes extends React.Component {
                         />
 
                         <PrivateRoute
-                            path="/rules-page/:rule_id"
+                            path="/rule-page/:ruleId"
                             apiKey={this.props.apiKey}
                             userType={this.props.userType}
                             derivedPassword={this.props.derivedPassword}
                             render={props => (
-                                <RulesPage
+                                <RulePage
                                     {...props}
                                     {...this.props.childProps}
                                 />

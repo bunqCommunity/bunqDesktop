@@ -1,11 +1,17 @@
+import RuleCollection from "./RuleCollection";
+
 export type Rule = ValueRule | TransactionAmountRule | TypeRule;
+
+// an object filled with ruleCollections with the ruleCollectionId as a key
+export type RuleCollectionList = {
+    [key: string]: RuleCollection;
+};
 
 // all valid rule types
 export type RuleTypes = "VALUE" | "TRANSACTION_AMOUNT" | "ITEM_TYPE";
 
 // value based rule type
 export type ValueRule = {
-    id: string | null;
     ruleType: "VALUE";
     field: ValueRuleField;
     matchType: ValueRuleMatchType;
@@ -17,7 +23,6 @@ export type ValueRuleMatchType = "REGEX" | "EXACT" | "CONTAINS";
 
 // transaction amount rule type
 export type TransactionAmountRule = {
-    id: string | null;
     ruleType: "TRANSACTION_AMOUNT";
     matchType: TransactionAmountType;
     amount: number;
@@ -30,7 +35,6 @@ export type TransactionAmountType =
 
 // eventtype rule type
 export type TypeRule = {
-    id: string | null;
     ruleType: "ITEM_TYPE";
     matchType: TypeRuleMatchType;
 };

@@ -11,23 +11,18 @@ import NavLink from "../../Components/Routing/NavLink";
 class RuleCollectionItem extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {
-            id: null
-        };
+        this.state = {};
     }
 
     render() {
-
+        const { rule } = this.props;
         return [
-            <ListItem
-                button
-                component={NavLink}
-                to={`/rule-page/a`}
-            >
-                <ListItemText primary={"a"} secondary={"b"} />
-                <ListItemSecondaryAction >
-                    other text
-                </ListItemSecondaryAction>
+            <ListItem button component={NavLink} to={`/rule-page/${rule.id}`}>
+                <ListItemText
+                    primary={rule.getTitle()}
+                    secondary={`${rule.getRules().length} rules`}
+                />
+                {/*<ListItemSecondaryAction>other text</ListItemSecondaryAction>*/}
             </ListItem>,
             <Divider />
         ];

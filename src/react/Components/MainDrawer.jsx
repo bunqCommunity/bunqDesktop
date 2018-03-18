@@ -133,7 +133,7 @@ class MainDrawer extends React.Component {
                   <ListItemWrapper
                       to="/rules-dashboard"
                       icon={CreateIcon}
-                      text="Rules editor"
+                      text="Category rules"
                       location={this.props.location}
                   />
               ];
