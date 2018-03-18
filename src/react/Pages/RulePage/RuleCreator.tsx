@@ -13,19 +13,20 @@ import Typography from "material-ui/Typography";
 import { FormControl, FormControlLabel } from "material-ui/Form";
 import Table, { TableCell, TableHead, TableRow } from "material-ui/Table";
 
-import { Rule, RuleTypes } from "./Types/Types";
+import Rule from "../../Types/Rules/Rule";
+import { RuleTypes } from "../../Types/Types";
 import {
     default as RuleCollection,
     RuleCollectionMatchType
-} from "./Types/RuleCollection";
+} from "../../Types/RuleCollection";
 
+import CategoryChip from "../../Components/Categories/CategoryChip";
+import ExportDialog from "../../Components/ExportDialog";
+import ImportDialog from "../../Components/ImportDialog";
 import NewRuleItemMenu from "./NewRuleItemMenu";
 import ValueRuleItem from "./RuleTypeItems/ValueRuleItem";
 import RuleCollectionMenu from "./RuleCollectionMenu";
 import TransactionAmountRuleItem from "./RuleTypeItems/TransactionAmountRuleItem";
-import CategoryChip from "../../Components/Categories/CategoryChip";
-import ExportDialog from "../../Components/ExportDialog";
-import NavLink from "../../Components/Routing/NavLink";
 
 const styles = {
     title: {
@@ -55,7 +56,7 @@ const styles = {
     },
     wrapper: {
         padding: 16,
-        marginTop: 8
+        marginBottom: 8
     }
 };
 
@@ -73,6 +74,7 @@ class RuleCreator extends React.Component<any, any> {
             enabled: false,
 
             titleError: false,
+            openImportDialog: false,
             openExportDialog: false,
             exportData: null
         };
@@ -202,6 +204,14 @@ class RuleCreator extends React.Component<any, any> {
     closeExportDialog = event => {
         this.setState({ openExportDialog: false, exportData: null });
     };
+
+    openImportDialog = (data = false) => {
+        this.setState({ openImportDialog: true });
+    };
+    closeImportDialog = event => {
+        this.setState({ openImportDialog: false });
+    };
+    importData = (rule: Rule) => {};
 
     render() {
         const { categories, title, rules, titleError } = this.state;
@@ -404,6 +414,12 @@ class RuleCreator extends React.Component<any, any> {
                     title="Export data"
                     open={this.state.openExportDialog}
                     object={this.state.exportData}
+                />
+                <ImportDialog
+                    closeModal={this.closeImportDialog}
+                    importData={this.importData}
+                    title="Import rule"
+                    open={this.state.openImportDialog}
                 />
             </React.Fragment>
         );

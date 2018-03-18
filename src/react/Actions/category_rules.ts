@@ -1,6 +1,6 @@
-import RuleCollection from "../Pages/RulePage/Types/RuleCollection";
+import RuleCollection from "../Types/RuleCollection";
 
-import { RuleCollectionList } from "../Pages/RulePage/Types/Types";
+import { RuleCollectionList } from "../Types/Types";
 
 export const STORED_CATEGORY_RULES = "BUNQDESKTOP_STORED_CATEGORY_RULES";
 
@@ -46,8 +46,6 @@ export function loadCategoryRules(BunqJSClient) {
             .loadEncryptedData(STORED_CATEGORY_RULES)
             .then(data => {
                 if (data && data.items) {
-                    console.log(data.items);
-
                     const formattedList: RuleCollectionList = {};
 
                     Object.keys(data.items).forEach(categoryRuleId => {

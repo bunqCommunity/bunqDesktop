@@ -8,10 +8,13 @@ import Button from "material-ui/Button";
 import Typography from "material-ui/Typography";
 import List from "material-ui/List";
 
-import RuleItem from "./RuleItem";
+import FileDownloadIcon from "material-ui-icons/FileDownload";
+import AddIcon from "material-ui-icons/Add";
 
-import { setCategoryRule } from "../../Actions/category_rules";
+import RuleItem from "./RuleItem";
 import NavLink from "../../Components/Routing/NavLink";
+import ImportDialog from "../../Components/ImportDialog";
+import RuleCollection from "../../Types/RuleCollection";
 
 const styles = {
     paper: {
@@ -19,14 +22,36 @@ const styles = {
     },
     newRuleButton: {
         width: "100%"
+    },
+    buttonIcons: {
+        marginLeft: 8
     }
 };
 
 class RuleDashboard extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+        this.state = {
+            openImportDialog: false
+        };
     }
+
+    openImportDialog = event => {
+        this.setState({ openImportDialog: true });
+    };
+    closeImportDialog = event => {
+        this.setState({ openImportDialog: false });
+    };
+    importData = ruleCollectionObject => {
+        this.closeImportDialog();
+
+        const ruleCollection = new RuleCollection();
+        const isValid = ruleCollection.validateRuleCollection(
+            ruleCollectionObject
+        );
+
+        console.log(ruleCollection);
+    };
 
     render() {
         const { categoryRules } = this.props;
@@ -43,15 +68,37 @@ class RuleDashboard extends React.Component {
                     <title>{`BunqDesktop - Rule Dashboard`}</title>
                 </Helmet>
 
+                <ImportDialog
+                    title="Import rule collection"
+                    closeModal={this.closeImportDialog}
+                    importData={this.importData}
+                    open={this.state.openImportDialog}
+                />
+
                 <Grid item xs={12}>
                     <Paper style={styles.paper}>
                         <Grid container spacing={16}>
-                            <Grid item xs={6} sm={8} md={9}>
+                            <Grid item xs={6} sm={6} md={8}>
                                 <Typography variant={"headline"}>
                                     Rules
                                 </Typography>
                             </Grid>
-                            <Grid item xs={12} sm={4} md={3}>
+
+                            <Grid item xs={12} sm={3} md={2}>
+                                <Button
+                                    variant="raised"
+                                    color="primary"
+                                    style={styles.newRuleButton}
+                                    onClick={this.openImportDialog}
+                                >
+                                    Import
+                                    <FileDownloadIcon
+                                        style={styles.buttonIcons}
+                                    />
+                                </Button>
+                            </Grid>
+
+                            <Grid item xs={12} sm={3} md={2}>
                                 <Button
                                     variant="raised"
                                     color="primary"
@@ -59,9 +106,11 @@ class RuleDashboard extends React.Component {
                                     to={`/rule-page/null`}
                                     style={styles.newRuleButton}
                                 >
-                                    New rule set
+                                    New
+                                    <AddIcon style={styles.buttonIcons} />
                                 </Button>
                             </Grid>
+
                             <Grid item xs={12}>
                                 <List>
                                     <Divider />

@@ -4,7 +4,7 @@ import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
 
 import RuleCreator from "./RuleCreator.tsx";
-import RuleCollection from "./Types/RuleCollection";
+import RuleCollection from "../../Types/RuleCollection";
 import { setCategoryRule } from "../../Actions/category_rules";
 
 const styles = {};

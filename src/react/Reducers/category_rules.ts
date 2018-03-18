@@ -1,7 +1,7 @@
 import { STORED_CATEGORY_RULES } from "../Actions/category_rules";
 
-import { RuleCollectionList } from "../Pages/RulePage/Types/Types";
-import RuleCollection from "../Pages/RulePage/Types/RuleCollection";
+import { RuleCollectionList } from "../Types/Types";
+import RuleCollection from "../Types/RuleCollection";
 
 // construct the default state
 const categoryRulesDefault: RuleCollectionList = {};

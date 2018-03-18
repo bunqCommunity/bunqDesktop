@@ -4,7 +4,7 @@ import Divider from "material-ui/Divider";
 import Menu, { MenuItem } from "material-ui/Menu";
 import { ListItemIcon, ListItemText } from "material-ui/List";
 
-import ImportExportIcon from "material-ui-icons/ImportExport";
+import FileUploadIcon from "material-ui-icons/FileUpload";
 import DeleteIcon from "material-ui-icons/Delete";
 import MoreVertIcon from "material-ui-icons/MoreVert";
 
@@ -51,7 +51,7 @@ class RuleItemMenu extends React.Component<any, any> {
                 >
                     <MenuItem onClick={this.openExportDialog}>
                         <ListItemIcon>
-                            <ImportExportIcon />
+                            <FileUploadIcon />
                         </ListItemIcon>
                         <ListItemText inset primary="Export" />
                     </MenuItem>

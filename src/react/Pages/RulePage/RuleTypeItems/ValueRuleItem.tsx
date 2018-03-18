@@ -6,7 +6,7 @@ import { MenuItem } from "material-ui/Menu";
 import { FormControl, FormHelperText } from "material-ui/Form";
 import { TableBody, TableCell, TableRow } from "material-ui/Table";
 
-import { ValueRule } from "../Types/Types";
+import { ValueRule } from "../../../Types/Rules/ValueRule";
 import RuleItemMenu from "../RuleItemMenu";
 
 interface IPropTypes {

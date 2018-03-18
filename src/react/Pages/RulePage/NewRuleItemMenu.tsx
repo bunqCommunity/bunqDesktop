@@ -4,9 +4,9 @@ import IconButton from "material-ui/IconButton";
 import Menu, { MenuItem } from "material-ui/Menu";
 import { ListItemIcon, ListItemText } from "material-ui/List";
 
-import { RuleTypes } from "./Types/Types";
+import { RuleTypes } from "../../Types/Types";
 
-import ImportExportIcon from "material-ui-icons/ImportExport";
+import FileDownloadIcon from "material-ui-icons/FileDownload";
 import AddIcon from "material-ui-icons/Add";
 
 class NewRuleItemMenu extends React.Component<any, any> {
@@ -63,7 +63,7 @@ class NewRuleItemMenu extends React.Component<any, any> {
 
                     <MenuItem>
                         <ListItemIcon>
-                            <ImportExportIcon />
+                            <FileDownloadIcon />
                         </ListItemIcon>
                         <ListItemText inset primary="Import" />
                     </MenuItem>

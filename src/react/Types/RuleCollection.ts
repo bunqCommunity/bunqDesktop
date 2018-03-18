@@ -1,5 +1,5 @@
-import { Rule } from "./Types";
-import { generateGUID } from "../../../Helpers/Utils";
+import { Rule } from "./Rules/Rule";
+import { generateGUID } from "../Helpers/Utils";
 
 export type RuleCollectionMatchType = "OR" | "AND";
 
@@ -91,5 +91,37 @@ export default class RuleCollection {
         this.setId(object.id);
 
         return this;
+    }
+
+    public validateRuleCollection(ruleCollection: any): boolean {
+        // basic type checks
+        if (typeof ruleCollection.categories !== "object") return false;
+        if (typeof ruleCollection.matchType !== "string") return false;
+        if (typeof ruleCollection.enabled !== "boolean") return false;
+        if (typeof ruleCollection.rules !== "object") return false;
+        if (typeof ruleCollection.title !== "string") return false;
+        if (ruleCollection.id === null || typeof ruleCollection.id !== "string")
+            return false;
+
+        // validate categories and rules are arrays
+        if (ruleCollection.categories instanceof Array === false) return false;
+        if (ruleCollection.rules instanceof Array === false) return false;
+
+        // validate that all given categories are strings
+        const allCategoriesAreStrings = ruleCollection.categories.every(
+            categoryId => typeof categoryId === "string"
+        );
+        if (allCategoriesAreStrings === false) return false;
+
+        // validate that all given rules are valid rules
+        const allRulesAreValid = ruleCollection.rules.every(rule =>
+            this.validateRule(rule)
+        );
+        if (allRulesAreValid === false) return false;
+
+        return true;
+    }
+    public validateRule(rule: any): boolean {
+        return true;
     }
 }

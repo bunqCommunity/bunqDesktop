@@ -7,7 +7,7 @@ import { FormControl } from "material-ui/Form";
 import { TableBody, TableCell, TableRow } from "material-ui/Table";
 
 import MoneyFormatInputDefault from "../../../Components/FormFields/MoneyFormatInputDefault";
-import { TransactionAmountRule } from "../Types/Types";
+import { TransactionAmountRule } from "../../../Types/Rules/TransactionAmountRule";
 import RuleItemMenu from "../RuleItemMenu";
 
 interface IPropTypes {

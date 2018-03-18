@@ -5,7 +5,6 @@ import TextField from "material-ui/TextField";
 import Dialog, {
     DialogActions,
     DialogContent,
-    DialogContentText,
     DialogTitle
 } from "material-ui/Dialog";
 import Slide from "material-ui/transitions/Slide";
@@ -31,7 +30,7 @@ export default props => {
                     multiline
                     rows="8"
                     style={{
-                        width: 350
+                        width: 450
                     }}
                 />
             </DialogContent>
