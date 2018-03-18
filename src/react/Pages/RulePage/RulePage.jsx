@@ -5,7 +5,7 @@ import Grid from "material-ui/Grid";
 
 import RuleCreator from "./RuleCreator.tsx";
 import RuleCollection from "../../Types/RuleCollection";
-import { setCategoryRule } from "../../Actions/category_rules";
+import { setCategoryRule, removeCategoryRule } from "../../Actions/category_rules";
 
 const styles = {};
 
@@ -14,10 +14,6 @@ class RulesPage extends React.Component {
         super(props, context);
         this.state = {};
     }
-
-    saveRuleCollection = ruleCollection => {
-        this.props.setCategoryRule(ruleCollection);
-    };
 
     render() {
         const { categoryRules, match } = this.props;
@@ -44,7 +40,8 @@ class RulesPage extends React.Component {
                     <RuleCreator
                         categories={this.props.categories}
                         ruleCollection={ruleCollection}
-                        saveRuleCollection={this.saveRuleCollection}
+                        saveRuleCollection={this.props.setCategoryRule}
+                        removeCategoryCollection={this.props.removeCategoryRule}
                     />
                 </Grid>
             </Grid>
@@ -63,7 +60,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         setCategoryRule: rule_collection =>
-            dispatch(setCategoryRule(BunqJSClient, rule_collection))
+            dispatch(setCategoryRule(BunqJSClient, rule_collection)),
+        removeCategoryRule: category_rule_id =>
+            dispatch(removeCategoryRule(BunqJSClient, category_rule_id))
     };
 };
 

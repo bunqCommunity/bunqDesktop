@@ -52,14 +52,17 @@ class RuleCollectionMenu extends React.Component<any, any> {
                         <ListItemText inset primary="Export" />
                     </MenuItem>
 
-                    <Divider />
-
-                    <MenuItem>
-                        <ListItemIcon>
-                            <DeleteIcon />
-                        </ListItemIcon>
-                        <ListItemText inset primary="Delete" />
-                    </MenuItem>
+                    {this.props.canBeDeleted ? (
+                        <React.Fragment>
+                            <Divider />
+                            <MenuItem onClick={this.props.deleteRuleCollection}>
+                                <ListItemIcon>
+                                    <DeleteIcon />
+                                </ListItemIcon>
+                                <ListItemText inset primary="Delete" />
+                            </MenuItem>
+                        </React.Fragment>
+                    ) : null}
                 </Menu>
             </div>
         );

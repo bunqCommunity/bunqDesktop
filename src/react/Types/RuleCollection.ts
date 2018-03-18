@@ -64,7 +64,7 @@ export default class RuleCollection {
     }
     public ensureId(): void {
         if (this.id === null || this.id.length === 0) {
-            this.id = generateGUID();
+            this.generateId();
         }
     }
     public generateId(): void {
@@ -151,8 +151,8 @@ export default class RuleCollection {
             };
 
         // validate that all given rules are valid rules
-        const allRulesAreValid = ruleCollection.rules.every(rule =>
-            this.validateRule(rule)
+        const allRulesAreValid = ruleCollection.rules.every(
+            rule => this.validateRule(rule) === true
         );
         if (allRulesAreValid === false)
             return {
@@ -162,7 +162,14 @@ export default class RuleCollection {
 
         return true;
     }
-    public validateRule(rule: any): boolean {
+
+    public validateRule(rule: any): ValidationResult | true {
+        if (typeof rule.ruleType !== "string")
+            return {
+                valid: false,
+                message: "Rule contained invalid ruleType"
+            };
+
         return true;
     }
 }

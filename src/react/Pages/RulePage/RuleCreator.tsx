@@ -1,4 +1,5 @@
 import * as React from "react";
+import Redirect from "react-router-dom/Redirect";
 import Grid from "material-ui/Grid";
 import Paper from "material-ui/Paper";
 import Input from "material-ui/Input";
@@ -66,7 +67,7 @@ class RuleCreator extends React.Component<any, any> {
 
         const matchType: RuleCollectionMatchType = "AND";
         this.state = {
-            id: "",
+            id: null,
             title: "",
             matchType: matchType,
             categories: [],
@@ -76,7 +77,9 @@ class RuleCreator extends React.Component<any, any> {
             titleError: false,
             openImportDialog: false,
             openExportDialog: false,
-            exportData: null
+            exportData: null,
+
+            goToDashboard: false
         };
     }
 
@@ -164,13 +167,11 @@ class RuleCreator extends React.Component<any, any> {
     handleMatchTypeChange = event => {
         this.setState({ matchType: event.target.value });
     };
-
     handleTitleChange = event => {
         const title = event.target.value;
         const titleError = title.length <= 0 || title.length > 32;
         this.setState({ title: title, titleError: titleError });
     };
-
     handleEnabledToggle = event => {
         this.setState({ enabled: !this.state.enabled });
     };
@@ -194,6 +195,10 @@ class RuleCreator extends React.Component<any, any> {
 
         return ruleCollection;
     };
+    deleteRuleCollection = () => {
+        this.props.removeCategoryCollection(this.state.id);
+        this.setState({ goToDashboard: true });
+    };
 
     openExportDialog = (data = false) => {
         this.setState({
@@ -205,7 +210,7 @@ class RuleCreator extends React.Component<any, any> {
         this.setState({ openExportDialog: false, exportData: null });
     };
 
-    openImportDialog = (data = false) => {
+    openImportDialog = event => {
         this.setState({ openImportDialog: true });
     };
     closeImportDialog = event => {
@@ -214,7 +219,17 @@ class RuleCreator extends React.Component<any, any> {
     importData = (rule: Rule) => {};
 
     render() {
-        const { categories, title, rules, titleError } = this.state;
+        const {
+            categories,
+            title,
+            rules,
+            titleError,
+            goToDashboard
+        } = this.state;
+
+        if (goToDashboard) {
+            return <Redirect to="/rules-dashboard" />;
+        }
 
         const categoriesIncluded = [];
         const categoriesExcluded = [];
@@ -263,6 +278,8 @@ class RuleCreator extends React.Component<any, any> {
                         </Grid>
                         <Grid item xs={1}>
                             <RuleCollectionMenu
+                                canBeDeleted={this.state.id !== null}
+                                deleteRuleCollection={this.deleteRuleCollection}
                                 openExportDialog={this.openExportDialog}
                             />
                         </Grid>
@@ -270,7 +287,7 @@ class RuleCreator extends React.Component<any, any> {
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 label={"Rule set title"}
-                                value={this.state.title}
+                                value={title}
                                 style={styles.inputField}
                                 onChange={this.handleTitleChange}
                                 error={titleError}
