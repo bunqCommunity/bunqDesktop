@@ -1,14 +1,14 @@
 import * as React from "react";
-import IconButton from "material-ui/IconButton";
 import Divider from "material-ui/Divider";
+import IconButton from "material-ui/IconButton";
 import Menu, { MenuItem } from "material-ui/Menu";
 import { ListItemIcon, ListItemText } from "material-ui/List";
 
+import MoreVertIcon from "material-ui-icons/MoreVert";
 import ImportExportIcon from "material-ui-icons/ImportExport";
 import DeleteIcon from "material-ui-icons/Delete";
-import MoreVertIcon from "material-ui-icons/MoreVert";
 
-class RuleItemMenu extends React.Component<any, any> {
+class RuleCollectionMenu extends React.Component<any, any> {
     state = {
         anchorEl: null
     };
@@ -21,12 +21,8 @@ class RuleItemMenu extends React.Component<any, any> {
         this.setState({ anchorEl: null });
     };
 
-    removeRule = event => {
-        this.props.removeRule();
-        this.handleClose();
-    };
-    openExportDialog = event => {
-        this.props.openExportDialog(this.props.rule);
+    exportData = event => {
+        this.props.openExportDialog();
         this.handleClose();
     };
 
@@ -36,7 +32,7 @@ class RuleItemMenu extends React.Component<any, any> {
         return (
             <div>
                 <IconButton
-                    aria-label="More"
+                    aria-label="Rule collection settings"
                     aria-owns={anchorEl ? "long-menu" : null}
                     aria-haspopup="true"
                     onClick={this.handleClick}
@@ -49,19 +45,20 @@ class RuleItemMenu extends React.Component<any, any> {
                     open={Boolean(anchorEl)}
                     onClose={this.handleClose}
                 >
-                    <MenuItem onClick={this.openExportDialog}>
+                    <MenuItem onClick={this.exportData}>
                         <ListItemIcon>
                             <ImportExportIcon />
                         </ListItemIcon>
                         <ListItemText inset primary="Export" />
                     </MenuItem>
+
                     <Divider />
 
-                    <MenuItem onClick={this.removeRule}>
+                    <MenuItem>
                         <ListItemIcon>
                             <DeleteIcon />
                         </ListItemIcon>
-                        <ListItemText inset primary="Remove" />
+                        <ListItemText inset primary="Delete" />
                     </MenuItem>
                 </Menu>
             </div>
@@ -69,4 +66,4 @@ class RuleItemMenu extends React.Component<any, any> {
     }
 }
 
-export default RuleItemMenu;
+export default RuleCollectionMenu;

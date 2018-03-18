@@ -21,8 +21,11 @@ import {
 
 import NewRuleItemMenu from "./NewRuleItemMenu";
 import ValueRuleItem from "./RuleTypeItems/ValueRuleItem";
+import RuleCollectionMenu from "./RuleCollectionMenu";
 import TransactionAmountRuleItem from "./RuleTypeItems/TransactionAmountRuleItem";
 import CategoryChip from "../../Components/Categories/CategoryChip";
+import ExportDialog from "../../Components/ExportDialog";
+import NavLink from "../../Components/Routing/NavLink";
 
 const styles = {
     title: {
@@ -69,7 +72,9 @@ class RuleCreator extends React.Component<any, any> {
             rules: [],
             enabled: false,
 
-            titleError: false
+            titleError: false,
+            openExportDialog: false,
+            exportData: null
         };
     }
 
@@ -172,20 +177,30 @@ class RuleCreator extends React.Component<any, any> {
         if (this.state.titleError) {
             return;
         }
-
+        const ruleCollection = this.createRuleCollection();
+        // get the new ID so we can update instead of creating infinite clones
+        this.setState({ id: ruleCollection.getId() });
+        // send the updated class to the parent
+        this.props.saveRuleCollection(ruleCollection);
+    };
+    createRuleCollection = (): RuleCollection => {
         const ruleCollection = new RuleCollection();
-
         // parse the current state
         ruleCollection.fromObject(this.state);
-
         // make sure this collection has a valid ID
         ruleCollection.ensureId();
 
-        // get the new ID so we can update instead of creating infinite clones
-        this.setState({ id: ruleCollection.getId() });
+        return ruleCollection;
+    };
 
-        // send the updated class to the parent
-        this.props.saveRuleCollection(ruleCollection);
+    openExportDialog = (data = false) => {
+        this.setState({
+            openExportDialog: true,
+            exportData: data === false ? this.createRuleCollection() : data
+        });
+    };
+    closeExportDialog = event => {
+        this.setState({ openExportDialog: false, exportData: null });
     };
 
     render() {
@@ -229,16 +244,19 @@ class RuleCreator extends React.Component<any, any> {
 
         return (
             <React.Fragment>
-                {/*<Typography variant="headline" style={styles.title}>*/}
-                    {/*{title}*/}
-                {/*</Typography>*/}
-
-                <Paper style={styles.wrapper} key={"settingsWrapper"}>
-                    <Typography variant="title" style={styles.subTitle}>
-                        Settings
-                    </Typography>
-
+                <Paper style={styles.wrapper}>
                     <Grid container spacing={16}>
+                        <Grid item xs={11}>
+                            <Typography variant="title" style={styles.subTitle}>
+                                Settings
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={1}>
+                            <RuleCollectionMenu
+                                openExportDialog={this.openExportDialog}
+                            />
+                        </Grid>
+
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 label={"Rule set title"}
@@ -330,6 +348,9 @@ class RuleCreator extends React.Component<any, any> {
                                 case "VALUE":
                                     return (
                                         <ValueRuleItem
+                                            openExportDialog={
+                                                this.openExportDialog
+                                            }
                                             removeRule={this.removeRule(
                                                 ruleKey
                                             )}
@@ -343,6 +364,9 @@ class RuleCreator extends React.Component<any, any> {
                                 case "TRANSACTION_AMOUNT":
                                     return (
                                         <TransactionAmountRuleItem
+                                            openExportDialog={
+                                                this.openExportDialog
+                                            }
                                             removeRule={this.removeRule(
                                                 ruleKey
                                             )}
@@ -372,16 +396,15 @@ class RuleCreator extends React.Component<any, any> {
                         {includedChips}
                     </div>
                     <Divider />
-                    <div>
-                        <Typography
-                            variant="subheading"
-                            style={styles.subTitle}
-                        >
-                            Categories
-                        </Typography>
-                        {excludedChips}
-                    </div>
+                    <div>{excludedChips}</div>
                 </Paper>
+
+                <ExportDialog
+                    closeModal={this.closeExportDialog}
+                    title="Export data"
+                    open={this.state.openExportDialog}
+                    object={this.state.exportData}
+                />
             </React.Fragment>
         );
     }

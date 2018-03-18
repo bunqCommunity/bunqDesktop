@@ -10,7 +10,7 @@ import { withTheme } from "material-ui/styles";
 
 class MoneyFormatInputDefault extends React.Component {
     NumberFormatCustom = props => {
-        const { inputRef, fontSize = 24, ...other } = props;
+        const { inputRef, fontSize, ...other } = props;
 
         return (
             <NumberFormat
@@ -19,8 +19,8 @@ class MoneyFormatInputDefault extends React.Component {
                 margin="normal"
                 placeholder="€ 0.00"
                 style={{
-                    fontSize: fontSize,
-                    ...this.props.theme.styles.moneyInput
+                    ...this.props.theme.styles.moneyInput,
+                    fontSize: fontSize
                 }}
                 decimalScale={2}
                 fixedDecimalScale={true}
@@ -41,6 +41,10 @@ class MoneyFormatInputDefault extends React.Component {
             />
         );
     }
+}
+
+MoneyFormatInputDefault.defaultProps = {
+    fontSize: 24
 }
 
 export default withTheme()(MoneyFormatInputDefault);

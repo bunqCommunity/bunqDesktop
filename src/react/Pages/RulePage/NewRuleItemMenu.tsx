@@ -26,6 +26,10 @@ class NewRuleItemMenu extends React.Component<any, any> {
         this.props.addRule(ruleType);
         this.handleClose();
     };
+    exportData = event => {
+        this.props.openExportDialog();
+        this.handleClose();
+    };
 
     render() {
         const { anchorEl } = this.state;
@@ -57,7 +61,7 @@ class NewRuleItemMenu extends React.Component<any, any> {
                     </MenuItem>
                     <Divider />
 
-                    <MenuItem onClick={this.addRule("ITEM_TYPE")}>
+                    <MenuItem>
                         <ListItemIcon>
                             <ImportExportIcon />
                         </ListItemIcon>

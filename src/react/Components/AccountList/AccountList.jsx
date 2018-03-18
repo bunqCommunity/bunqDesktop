@@ -48,6 +48,11 @@ class AccountList extends React.Component {
         this.checkUpdateRequirement(nextprops);
     }
 
+    componentWillUnmount() {
+        // prevent data from being loaded after we unmount
+        if (this.delayedUpdate) clearTimeout(this.delayedUpdate);
+    }
+
     updateAccounts = () => {
         this.props.accountsUpdate(this.props.user.id);
     };

@@ -1,7 +1,7 @@
 import * as React from "react";
 import Select from "material-ui/Select";
 import TextField from "material-ui/TextField";
-import Input  from "material-ui/Input";
+import Input from "material-ui/Input";
 import { MenuItem } from "material-ui/Menu";
 import { FormControl, FormHelperText } from "material-ui/Form";
 import { TableBody, TableCell, TableRow } from "material-ui/Table";
@@ -13,6 +13,7 @@ interface IPropTypes {
     rule: ValueRule;
     removeRule: any;
     updateRule: any;
+    openExportDialog: any;
 }
 
 const styles = {
@@ -78,7 +79,7 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
                                 </MenuItem>
                             </Select>
                             {/*<FormHelperText>*/}
-                                {/*Which field to check*/}
+                            {/*Which field to check*/}
                             {/*</FormHelperText>*/}
                         </FormControl>
                     </TableCell>
@@ -107,7 +108,7 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
                                 <MenuItem value={"REGEX"}>Regex</MenuItem>
                             </Select>
                             {/*<FormHelperText>*/}
-                                {/*How to check the field*/}
+                            {/*How to check the field*/}
                             {/*</FormHelperText>*/}
                         </FormControl>
                     </TableCell>
@@ -122,7 +123,11 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
                     {/*helperText={"Value to check for"}*/}
 
                     <TableCell style={styles.tableIconCell}>
-                        <RuleItemMenu removeRule={this.props.removeRule}/>
+                        <RuleItemMenu
+                            removeRule={this.props.removeRule}
+                            rule={this.state.rule}
+                            openExportDialog={this.props.openExportDialog}
+                        />
                     </TableCell>
                 </TableRow>
             </TableBody>

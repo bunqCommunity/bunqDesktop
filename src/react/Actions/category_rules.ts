@@ -46,6 +46,8 @@ export function loadCategoryRules(BunqJSClient) {
             .loadEncryptedData(STORED_CATEGORY_RULES)
             .then(data => {
                 if (data && data.items) {
+                    console.log(data.items);
+
                     const formattedList: RuleCollectionList = {};
 
                     Object.keys(data.items).forEach(categoryRuleId => {
@@ -55,7 +57,7 @@ export function loadCategoryRules(BunqJSClient) {
                         const ruleObject: string = data.items[categoryRuleId];
 
                         // load the stored object string into the object
-                        ruleCollection.fromJSON(ruleObject);
+                        ruleCollection.fromObject(ruleObject);
 
                         // add to the list
                         formattedList[categoryRuleId] = ruleCollection;

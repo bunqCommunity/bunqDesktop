@@ -14,7 +14,7 @@ const Transition = props => <Slide direction="left" {...props} />
 // redux actions
 import { closeModal } from "../Actions/modal.js";
 
-class Main extends React.Component {
+class MainDialog extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {};
@@ -62,4 +62,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export default connect(mapStateToProps, mapDispatchToProps)(MainDialog);

@@ -67,10 +67,6 @@ export default class RuleCollection {
     }
 
     public toString(): string {
-        return this.toJSON();
-    }
-
-    public toJSON(): string {
         return JSON.stringify({
             id: this.getId(),
             rules: this.getRules(),

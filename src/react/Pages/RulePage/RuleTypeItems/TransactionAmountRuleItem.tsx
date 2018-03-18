@@ -14,6 +14,7 @@ interface IPropTypes {
     rule: TransactionAmountRule;
     removeRule: any;
     updateRule: any;
+    openExportDialog: any;
 }
 
 const styles = {
@@ -58,7 +59,9 @@ class TransactionAmountRuleItem extends React.Component<IPropTypes, any> {
             <TableBody key={"tableBody"}>
                 <TableRow>
                     <TableCell>
-                        <Typography variant="subheading">Transaction amount</Typography>
+                        <Typography variant="subheading">
+                            Transaction amount
+                        </Typography>
                     </TableCell>
 
                     <TableCell style={styles.tableCell}>
@@ -83,22 +86,19 @@ class TransactionAmountRuleItem extends React.Component<IPropTypes, any> {
                                 </MenuItem>
                             </Select>
                             {/*<FormHelperText>*/}
-                                {/*How to check the amount*/}
+                            {/*How to check the amount*/}
                             {/*</FormHelperText>*/}
                         </FormControl>
                     </TableCell>
 
                     <TableCell style={styles.tableCell}>
                         {/*<TextField*/}
-                            {/*style={styles.textField}*/}
-                            {/*value={rule.amount}*/}
-                            {/*type={"number"}*/}
-                            {/*onChange={this.handleValueChange}*/}
+                        {/*style={styles.textField}*/}
+                        {/*value={rule.amount}*/}
+                        {/*type={"number"}*/}
+                        {/*onChange={this.handleValueChange}*/}
                         {/*/>*/}
-                        <FormControl
-                            error={this.state.amountError}
-                            fullWidth
-                        >
+                        <FormControl error={this.state.amountError} fullWidth>
                             <MoneyFormatInputDefault
                                 id="amount"
                                 fontSize={16}
@@ -110,7 +110,11 @@ class TransactionAmountRuleItem extends React.Component<IPropTypes, any> {
                     </TableCell>
 
                     <TableCell style={styles.tableIconCell}>
-                        <RuleItemMenu removeRule={this.props.removeRule} />
+                        <RuleItemMenu
+                            removeRule={this.props.removeRule}
+                            rule={this.state.rule}
+                            openExportDialog={this.props.openExportDialog}
+                        />
                     </TableCell>
                 </TableRow>
             </TableBody>
