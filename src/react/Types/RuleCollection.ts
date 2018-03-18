@@ -3,6 +3,11 @@ import { generateGUID } from "../Helpers/Utils";
 
 export type RuleCollectionMatchType = "OR" | "AND";
 
+export type ValidationResult = {
+    valid: boolean;
+    message: string;
+};
+
 export default class RuleCollection {
     private id: string | null = null;
     private title: string = "";
@@ -93,31 +98,67 @@ export default class RuleCollection {
         return this;
     }
 
-    public validateRuleCollection(ruleCollection: any): boolean {
+    public validateRuleCollection(
+        ruleCollection: any
+    ): ValidationResult | true {
         // basic type checks
-        if (typeof ruleCollection.categories !== "object") return false;
-        if (typeof ruleCollection.matchType !== "string") return false;
-        if (typeof ruleCollection.enabled !== "boolean") return false;
-        if (typeof ruleCollection.rules !== "object") return false;
-        if (typeof ruleCollection.title !== "string") return false;
-        if (ruleCollection.id === null || typeof ruleCollection.id !== "string")
-            return false;
+        if (typeof ruleCollection.categories !== "object")
+            return {
+                valid: false,
+                message: "Invalid 'categories'"
+            };
+        if (typeof ruleCollection.matchType !== "string")
+            return {
+                valid: false,
+                message: "Invalid 'matchType'"
+            };
+        if (typeof ruleCollection.enabled !== "boolean")
+            return {
+                valid: false,
+                message: "Invalid 'enabled' value"
+            };
+        if (typeof ruleCollection.rules !== "object")
+            return {
+                valid: false,
+                message: "Invalid 'rules'"
+            };
+        if (typeof ruleCollection.title !== "string")
+            return {
+                valid: false,
+                message: "Invalid 'title'"
+            };
 
         // validate categories and rules are arrays
-        if (ruleCollection.categories instanceof Array === false) return false;
-        if (ruleCollection.rules instanceof Array === false) return false;
+        if (ruleCollection.categories instanceof Array === false)
+            return {
+                valid: false,
+                message: "Invalid 'categories'"
+            };
+        if (ruleCollection.rules instanceof Array === false)
+            return {
+                valid: false,
+                message: "Invalid 'rules'"
+            };
 
         // validate that all given categories are strings
         const allCategoriesAreStrings = ruleCollection.categories.every(
             categoryId => typeof categoryId === "string"
         );
-        if (allCategoriesAreStrings === false) return false;
+        if (allCategoriesAreStrings === false)
+            return {
+                valid: false,
+                message: "One or more given categories are invalid"
+            };
 
         // validate that all given rules are valid rules
         const allRulesAreValid = ruleCollection.rules.every(rule =>
             this.validateRule(rule)
         );
-        if (allRulesAreValid === false) return false;
+        if (allRulesAreValid === false)
+            return {
+                valid: false,
+                message: "One or more given rules are invalid"
+            };
 
         return true;
     }

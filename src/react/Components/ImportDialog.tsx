@@ -31,7 +31,7 @@ class ImportDialog extends React.Component<any, any> {
             const data = JSON.parse(this.state.importContent);
 
             // if imported as new item, reset ID
-            if (asNew && data.id) {
+            if (asNew) {
                 data.id = null;
             }
 
@@ -87,18 +87,17 @@ class ImportDialog extends React.Component<any, any> {
 
                     <Button
                         variant="raised"
-                        onClick={this.importDataOverwrite}
-                        color="primary"
+                        onClick={this.importDataNew}
                     >
-                        Import and overwrite
+                        Import as new
                     </Button>
 
                     <Button
                         variant="raised"
-                        onClick={this.importDataNew}
+                        onClick={this.importDataOverwrite}
                         color="primary"
                     >
-                        Import as new
+                        Import
                     </Button>
                 </DialogActions>
             </Dialog>

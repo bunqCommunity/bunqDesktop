@@ -15,6 +15,7 @@ import RuleItem from "./RuleItem";
 import NavLink from "../../Components/Routing/NavLink";
 import ImportDialog from "../../Components/ImportDialog";
 import RuleCollection from "../../Types/RuleCollection";
+import { setCategoryRule } from "../../Actions/category_rules";
 
 const styles = {
     paper: {
@@ -50,7 +51,24 @@ class RuleDashboard extends React.Component {
             ruleCollectionObject
         );
 
-        console.log(ruleCollection);
+        if (isValid !== true) {
+            // display error
+            console.log(isValid);
+            return;
+        }
+
+        // import the data
+        ruleCollection.fromObject(ruleCollectionObject);
+
+        // ensure we have a valid ID
+        ruleCollection.ensureId();
+
+        // save the item
+        this.saveRuleCollection(ruleCollection);
+    };
+
+    saveRuleCollection = ruleCollection => {
+        this.props.setCategoryRule(ruleCollection);
     };
 
     render() {
@@ -133,7 +151,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
-    return {};
+    return {
+        setCategoryRule: rule_collection =>
+            dispatch(setCategoryRule(BunqJSClient, rule_collection))
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(RuleDashboard);
