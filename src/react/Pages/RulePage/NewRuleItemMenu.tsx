@@ -1,7 +1,11 @@
 import * as React from "react";
-import Button from "material-ui/IconButton";
+import Divider from "material-ui/Divider";
+import IconButton from "material-ui/IconButton";
 import Menu, { MenuItem } from "material-ui/Menu";
+
 import { RuleTypes } from "./Types/Types";
+
+import AddIcon from "material-ui-icons/Add";
 
 class NewRuleItemMenu extends React.Component<any, any> {
     state = {
@@ -26,14 +30,14 @@ class NewRuleItemMenu extends React.Component<any, any> {
 
         return (
             <div>
-                <Button
-                    aria-label="More"
+                <IconButton
+                    aria-label="New rule"
                     aria-owns={anchorEl ? "long-menu" : null}
                     aria-haspopup="true"
                     onClick={this.handleClick}
                 >
-                    New
-                </Button>
+                    <AddIcon />
+                </IconButton>
                 <Menu
                     id="long-menu"
                     anchorEl={this.state.anchorEl}
@@ -48,6 +52,10 @@ class NewRuleItemMenu extends React.Component<any, any> {
                     </MenuItem>
                     <MenuItem onClick={this.addRule("ITEM_TYPE")}>
                         Event type
+                    </MenuItem>
+                    <Divider />
+                    <MenuItem onClick={this.addRule("ITEM_TYPE")}>
+                        Import
                     </MenuItem>
                 </Menu>
             </div>

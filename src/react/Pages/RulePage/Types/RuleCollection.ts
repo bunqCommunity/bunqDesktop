@@ -57,7 +57,11 @@ export default class RuleCollection {
     public getId(): string {
         return this.id;
     }
-
+    public ensureId(): void {
+        if (this.id === null || this.id.length === 0) {
+            this.id = generateGUID();
+        }
+    }
     public generateId(): void {
         this.id = generateGUID();
     }
@@ -72,7 +76,7 @@ export default class RuleCollection {
             rules: this.getRules(),
             title: this.getTitle(),
             enabled: this.isEnabled(),
-            match_type: this.getMatchType(),
+            matchType: this.getMatchType(),
             categories: this.getCategories()
         });
     }
@@ -84,7 +88,7 @@ export default class RuleCollection {
 
     public fromObject(object: any): RuleCollection {
         this.setCategories(object.categories);
-        this.setMatchType(object.match_type);
+        this.setMatchType(object.matchType);
         this.setEnabled(object.enabled);
         this.setRules(object.rules);
         this.setTitle(object.title);

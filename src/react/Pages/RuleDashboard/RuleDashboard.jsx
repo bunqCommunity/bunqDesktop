@@ -62,10 +62,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
-    return {
-        setCategoryRule: rule_collection =>
-            dispatch(setCategoryRule(BunqJSClient, rule_collection))
-    };
+    return {};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(RuleDashboard);

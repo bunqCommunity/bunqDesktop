@@ -32,6 +32,9 @@ const styles = {
     subTitle: {
         margin: 12
     },
+    saveButtonGridWrapper: {
+        paddingTop: 18
+    },
     checkboxGridWrapper: {
         paddingTop: 12,
         paddingBottom: 0,
@@ -62,9 +65,11 @@ class RuleCreator extends React.Component<any, any> {
             id: "",
             title: "",
             matchType: matchType,
-            categoryIds: [],
+            categories: [],
             rules: [],
-            enabled: false
+            enabled: false,
+
+            titleError: false
         };
     }
 
@@ -77,28 +82,30 @@ class RuleCreator extends React.Component<any, any> {
                 id: ruleCollectionId,
                 title: ruleCollection.getTitle(),
                 matchType: ruleCollection.getMatchType(),
-                categoryIds: ruleCollection.getCategories(),
+                categories: ruleCollection.getCategories(),
                 rules: ruleCollection.getRules(),
                 enabled: ruleCollection.isEnabled()
             });
+        } else {
+            this.setState({ titleError: true });
         }
     }
 
     addCategory = categoryInfo => event => {
-        const categoryIds: string[] = [...this.state.categoryIds];
-        if (!categoryIds.includes(categoryInfo.id)) {
-            categoryIds.push(categoryInfo.id);
+        const categories: string[] = [...this.state.categories];
+        if (!categories.includes(categoryInfo.id)) {
+            categories.push(categoryInfo.id);
 
-            this.setState({ categoryIds: categoryIds });
+            this.setState({ categories: categories });
         }
     };
     removeCategory = categoryInfo => event => {
-        const categories: string[] = [...this.state.categoryIds];
+        const categories: string[] = [...this.state.categories];
         const index = categories.indexOf(categoryInfo.id);
 
         if (index !== -1) {
             categories.splice(index, 1);
-            this.setState({ categoryIds: categories });
+            this.setState({ categories: categories });
         }
     };
 
@@ -143,8 +150,6 @@ class RuleCreator extends React.Component<any, any> {
                 return false;
         }
 
-        console.log(ruleType, newRule);
-
         rules.push(newRule);
         this.setState({ rules: rules });
     };
@@ -154,20 +159,42 @@ class RuleCreator extends React.Component<any, any> {
     };
 
     handleTitleChange = event => {
-        this.setState({ title: event.target.value });
+        const title = event.target.value;
+        const titleError = title.length <= 0 || title.length > 32;
+        this.setState({ title: title, titleError: titleError });
     };
 
     handleEnabledToggle = event => {
         this.setState({ enabled: !this.state.enabled });
     };
 
+    saveRuleCollection = event => {
+        if (this.state.titleError) {
+            return;
+        }
+
+        const ruleCollection = new RuleCollection();
+
+        // parse the current state
+        ruleCollection.fromObject(this.state);
+
+        // make sure this collection has a valid ID
+        ruleCollection.ensureId();
+
+        // get the new ID so we can update instead of creating infinite clones
+        this.setState({ id: ruleCollection.getId() });
+
+        // send the updated class to the parent
+        this.props.saveRuleCollection(ruleCollection);
+    };
+
     render() {
-        const { categoryIds, title, rules } = this.state;
+        const { categories, title, rules, titleError } = this.state;
 
         const categoriesIncluded = [];
         const categoriesExcluded = [];
         Object.keys(this.props.categories).map(categoryId => {
-            if (categoryIds.includes(categoryId)) {
+            if (categories.includes(categoryId)) {
                 categoriesIncluded.push(this.props.categories[categoryId]);
             } else {
                 categoriesExcluded.push(this.props.categories[categoryId]);
@@ -218,8 +245,10 @@ class RuleCreator extends React.Component<any, any> {
                                 value={this.state.title}
                                 style={styles.inputField}
                                 onChange={this.handleTitleChange}
+                                error={titleError}
                             />
                         </Grid>
+
                         <Grid
                             item
                             xs={12}
@@ -237,6 +266,7 @@ class RuleCreator extends React.Component<any, any> {
                                 label="Enable or disable this rule set"
                             />
                         </Grid>
+
                         <Grid item xs={12} sm={6}>
                             <FormControl style={styles.inputField}>
                                 <InputLabel>Match requirements</InputLabel>
@@ -256,11 +286,19 @@ class RuleCreator extends React.Component<any, any> {
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+
+                        <Grid
+                            item
+                            xs={12}
+                            sm={6}
+                            style={styles.saveButtonGridWrapper}
+                        >
                             <Button
                                 variant="raised"
                                 color="primary"
                                 style={{ width: "100%" }}
+                                onClick={this.saveRuleCollection}
+                                disabled={titleError}
                             >
                                 Save
                             </Button>

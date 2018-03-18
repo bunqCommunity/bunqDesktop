@@ -15,12 +15,15 @@ export default (state = defaultState, action) => {
 
     switch (action.type) {
         case "CATEGORY_RULE_SET_CATEGORY_RULES":
+            const category_rules_new: RuleCollectionList =
+                action.payload.category_rules;
+
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
                 action.payload.BunqJSClient.Session
                     .storeEncryptedData(
                         {
-                            items: category_rules
+                            items: category_rules_new
                         },
                         STORED_CATEGORY_RULES
                     )
