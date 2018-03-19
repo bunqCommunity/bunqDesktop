@@ -90,18 +90,28 @@ class RuleCreator extends React.Component<any, any> {
         const ruleCollectionId = ruleCollection.getId();
         if (ruleCollectionId !== null) {
             // we should have a valid rule collection so extract the data
-            this.setState({
-                id: ruleCollectionId,
-                title: ruleCollection.getTitle(),
-                matchType: ruleCollection.getMatchType(),
-                categories: ruleCollection.getCategories(),
-                rules: ruleCollection.getRules(),
-                enabled: ruleCollection.isEnabled()
-            });
+            this.setState(
+                {
+                    id: ruleCollectionId,
+                    title: ruleCollection.getTitle(),
+                    matchType: ruleCollection.getMatchType(),
+                    categories: ruleCollection.getCategories(),
+                    rules: ruleCollection.getRules(),
+                    enabled: ruleCollection.isEnabled()
+                },
+                this.updatePreview
+            );
         } else {
-            this.setState({ titleError: true });
+            this.setState({ titleError: true }, this.updatePreview);
         }
     }
+
+    // sends an update event to the parent class to update the preview list
+    updatePreview = () => {
+        const ruleCollection = new RuleCollection();
+        ruleCollection.fromObject(this.state);
+        this.props.updatePreview(ruleCollection);
+    };
 
     addCategory = categoryInfo => event => {
         const categories: string[] = [...this.state.categories];
@@ -124,12 +134,12 @@ class RuleCreator extends React.Component<any, any> {
     removeRule = ruleKey => event => {
         const rules: Rule[] = [...this.state.rules];
         rules.splice(ruleKey, 1);
-        this.setState({ rules: rules });
+        this.setState({ rules: rules }, this.updatePreview);
     };
     updateRule = ruleKey => (rule: Rule) => {
         const rules: Rule[] = [...this.state.rules];
         rules[ruleKey] = rule;
-        this.setState({ rules: rules });
+        this.setState({ rules: rules }, this.updatePreview);
     };
     addRule = (ruleType: RuleTypes) => {
         const rules = [...this.state.rules];
@@ -162,19 +172,22 @@ class RuleCreator extends React.Component<any, any> {
         }
 
         rules.push(newRule);
-        this.setState({ rules: rules });
+        this.setState({ rules: rules }, this.updatePreview);
     };
 
     handleMatchTypeChange = (event: any) => {
-        this.setState({ matchType: event.target.value });
+        this.setState({ matchType: event.target.value }, this.updatePreview);
     };
     handleTitleChange = (event: any) => {
         const title = event.target.value;
         const titleError = title.length <= 0 || title.length > 32;
-        this.setState({ title: title, titleError: titleError });
+        this.setState(
+            { title: title, titleError: titleError },
+            this.updatePreview
+        );
     };
     handleEnabledToggle = (event: any) => {
-        this.setState({ enabled: !this.state.enabled });
+        this.setState({ enabled: !this.state.enabled }, this.updatePreview);
     };
 
     saveRuleCollection = (event: any) => {
@@ -183,7 +196,7 @@ class RuleCreator extends React.Component<any, any> {
         }
         const ruleCollection = this.createRuleCollection();
         // get the new ID so we can update instead of creating infinite clones
-        this.setState({ id: ruleCollection.getId() });
+        this.setState({ id: ruleCollection.getId() }, this.updatePreview);
         // send the updated class to the parent
         this.props.saveRuleCollection(ruleCollection);
     };
@@ -231,7 +244,7 @@ class RuleCreator extends React.Component<any, any> {
         // add the rule to the rule set
         const rules: Rule[] = [...this.state.rules];
         rules.push(rule);
-        this.setState({ rules: rules });
+        this.setState({ rules: rules }, this.updatePreview);
     };
 
     render() {

@@ -5,16 +5,26 @@ import Grid from "material-ui/Grid";
 
 import RuleCreator from "./RuleCreator.tsx";
 import RuleCollection from "../../Types/RuleCollection";
-import { setCategoryRule, removeCategoryRule } from "../../Actions/category_rules";
-import {openSnackbar} from "../../Actions/snackbar";
+import {
+    setCategoryRule,
+    removeCategoryRule
+} from "../../Actions/category_rules";
+import { openSnackbar } from "../../Actions/snackbar";
+import RuleCollectionPreview from "./RuleCollectionPreview";
 
 const styles = {};
 
 class RulesPage extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+        this.state = {
+            previewRuleCollection: null
+        };
     }
+
+    updatePreview = ruleCollection => {
+        this.setState({ previewRuleCollection: ruleCollection });
+    };
 
     render() {
         const { categoryRules, match } = this.props;
@@ -41,9 +51,20 @@ class RulesPage extends React.Component {
                     <RuleCreator
                         categories={this.props.categories}
                         ruleCollection={ruleCollection}
+                        updatePreview={this.updatePreview}
                         openSnackbar={this.props.openSnackbar}
                         saveRuleCollection={this.props.setCategoryRule}
                         removeCategoryCollection={this.props.removeCategoryRule}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <RuleCollectionPreview
+                        ruleCollection={this.state.previewRuleCollection}
+                        payments={this.props.payments}
+                        bunqMeTabs={this.props.bunqMeTabs}
+                        masterCardActions={this.props.masterCardActions}
+                        requestInquiries={this.props.requestInquiries}
+                        requestResponses={this.props.requestResponses}
                     />
                 </Grid>
             </Grid>
@@ -54,7 +75,19 @@ class RulesPage extends React.Component {
 const mapStateToProps = state => {
     return {
         categories: state.categories.categories,
-        categoryRules: state.category_rules.category_rules
+        categoryRules: state.category_rules.category_rules,
+
+        paymentsLoading: state.payments.loading,
+        bunqMeTabsLoading: state.bunq_me_tabs.loading,
+        masterCardActionsLoading: state.master_card_actions.loading,
+        requestInquiriesLoading: state.request_inquiries.loading,
+        requestResponsesLoading: state.request_responses.loading,
+
+        requestResponses: state.request_responses.request_responses,
+        payments: state.payments.payments,
+        bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
+        masterCardActions: state.master_card_actions.master_card_actions,
+        requestInquiries: state.request_inquiries.request_inquiries
     };
 };
 

@@ -181,4 +181,8 @@ class BunqMeTabListItem extends React.Component {
     }
 }
 
+BunqMeTabListItem.defaultProps = {
+    minimalDisplay: false
+}
+
 export default withTheme()(BunqMeTabListItem);

@@ -8,6 +8,22 @@ export type ValidationResult = {
     message: string;
 };
 
+export type EventTypes =
+    | "Payment"
+    | "BunqMeTab"
+    | "RequestInquiry"
+    | "RequestResponse"
+    | "MasterCardAction";
+export type EventObject = {
+    type: EventTypes;
+    item: any;
+};
+export type EventObjectResult = {
+    type: EventTypes;
+    matches: boolean;
+    item: any;
+};
+
 export default class RuleCollection {
     private id: string | null = null;
     private title: string = "";
@@ -62,15 +78,137 @@ export default class RuleCollection {
     public getId(): string {
         return this.id;
     }
+
+    /**
+     * Ensure a valid ID is set and generate a new one if not
+     */
     public ensureId(): void {
         if (this.id === null || this.id.length === 0) {
             this.generateId();
         }
     }
+
+    /**
+     * Generate a random ID for this collection
+     */
     public generateId(): void {
         this.id = generateGUID();
     }
 
+    // Goes through all events and returns the ones
+    public filterItems(events: EventObject[]): EventObjectResult[] {
+        const resultingEvents: EventObjectResult[] = [];
+        const ruleCount = this.rules.length;
+
+        events.forEach((event: EventObject) => {
+            let matches = false;
+            if (ruleCount === 0) {
+                // if rule count is 0 it automatically matches
+                matches = true;
+            } else if (this.checkRules(event)) {
+                matches = true;
+            }
+
+            // add this event to the resulting events list
+            resultingEvents.push({
+                type: event.type,
+                matches: matches,
+                item: event.item
+            });
+        });
+        return resultingEvents;
+    }
+
+    // Checks if a single item matches all the currently set rules
+    public checkRules(event: EventObject): boolean {
+        if (this.matchType === "AND") {
+            // all rules should match so we return using "every" which returns true of all are true
+            return this.rules.every((rule: Rule) =>
+                this.checkRule(rule, event)
+            );
+        }
+        // only one has to match so we return using "some" which stops on the first match
+        return this.rules.some((rule: Rule) => this.checkRule(rule, event));
+    }
+
+    // Checks if a single item matches a single rule
+    public checkRule(rule: Rule, event: EventObject): boolean {
+        // return an iterator function which has access to the event
+        switch (rule.ruleType) {
+            case "VALUE":
+                return this.checkValueRule(rule, event);
+            case "TRANSACTION_AMOUNT":
+                return this.checkTransactionAmountRule(rule, event);
+            case "ITEM_TYPE": {
+                return this.checkItemTypeRule(rule, event);
+            }
+        }
+        return false;
+    }
+
+    private checkValueRule(rule: Rule, event: EventObject): boolean {
+        return false;
+    }
+
+    private checkTransactionAmountRule(
+        rule: Rule,
+        event: EventObject
+    ): boolean {
+        return false;
+    }
+
+    /**
+     * Checks if the given matchType for the rule matches the event type
+     * @param {Rule} rule
+     * @param {EventObject} event
+     * @returns {boolean}
+     */
+    private checkItemTypeRule(rule: Rule, event: EventObject): boolean {
+        if (event.type === "Payment") {
+            console.log(event.type, rule.matchType);
+        }
+
+        // simply check if the event type matches the requried rule type
+        switch (rule.matchType) {
+            case "PAYMENT":
+                return (
+                    event.type === "Payment" ||
+                    event.type === "MasterCardAction"
+                );
+            case "PAYMENT_RECEIVED":
+                // not a payment so false
+                if (event.type !== "Payment") return false;
+
+                return event.item.amount.value > 0;
+            case "PAYMENT_SENT":
+                // all mastercardactions are outgoing payments
+                if (event.type === "MasterCardAction") return true;
+                // not mastercard or payment so false
+                if (event.type !== "Payment") return false;
+
+                return event.item.amount.value < 0;
+            case "REGULAR_PAYMENT":
+                return event.type === "Payment";
+            case "MASTERCARD_PAYMENT":
+                return event.type === "MasterCardAction";
+            case "REQUEST":
+                return (
+                    event.type === "RequestResponse" ||
+                    event.type === "RequestInquiry"
+                );
+            case "REQUEST_INQUIRY":
+                return event.type === "RequestInquiry";
+            case "REQUEST_RESPONSE":
+                return event.type === "RequestResponse";
+            case "BUNQ_ME_TAB":
+                return event.type === "BunqMeTab";
+        }
+    }
+
+    /**
+     * Return JSON stringified versio nof this object
+     * @returns {string}
+     */
     public toString(): string {
         return JSON.stringify({
             id: this.getId(),
@@ -82,11 +220,21 @@ export default class RuleCollection {
         });
     }
 
+    /**
+     * Turn JSON string into a valid RuleCollection
+     * @param {string} jsonString
+     * @returns {RuleCollection}
+     */
     public fromJSON(jsonString: string): RuleCollection {
         const plainObject = JSON.parse(jsonString);
         return this.fromObject(plainObject);
     }
 
+    /**
+     * Turn a plain object into a valid RuleCollection
+     * @param object
+     * @returns {RuleCollection}
+     */
     public fromObject(object: any): RuleCollection {
         this.setCategories(object.categories);
         this.setMatchType(object.matchType);
@@ -98,6 +246,11 @@ export default class RuleCollection {
         return this;
     }
 
+    /**
+     * Validate a plain ruleCollection object
+     * @param ruleCollection
+     * @returns {ValidationResult | true}
+     */
     public static validateRuleCollection(
         ruleCollection: any
     ): ValidationResult | true {
@@ -163,6 +316,11 @@ export default class RuleCollection {
         return true;
     }
 
+    /**
+     * Validate a plain rule object
+     * @param rule
+     * @returns {ValidationResult | true}
+     */
     public static validateRule(rule: any): ValidationResult | true {
         if (typeof rule !== "object")
             return {
