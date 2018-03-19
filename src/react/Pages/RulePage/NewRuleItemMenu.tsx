@@ -14,11 +14,11 @@ class NewRuleItemMenu extends React.Component<any, any> {
         anchorEl: null
     };
 
-    handleClick = event => {
+    handleClick = (event: any) => {
         this.setState({ anchorEl: event.currentTarget });
     };
 
-    handleClose = () => {
+    handleClose = (event: any = null) => {
         this.setState({ anchorEl: null });
     };
 
@@ -26,8 +26,8 @@ class NewRuleItemMenu extends React.Component<any, any> {
         this.props.addRule(ruleType);
         this.handleClose();
     };
-    exportData = event => {
-        this.props.openExportDialog();
+    openImportDialog = (event: any) => {
+        this.props.openImportDialog();
         this.handleClose();
     };
 
@@ -61,7 +61,7 @@ class NewRuleItemMenu extends React.Component<any, any> {
                     </MenuItem>
                     <Divider />
 
-                    <MenuItem>
+                    <MenuItem onClick={this.openImportDialog}>
                         <ListItemIcon>
                             <FileDownloadIcon />
                         </ListItemIcon>

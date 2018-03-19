@@ -14,20 +14,22 @@ import Typography from "material-ui/Typography";
 import { FormControl, FormControlLabel } from "material-ui/Form";
 import Table, { TableCell, TableHead, TableRow } from "material-ui/Table";
 
+import CategoryChip from "../../Components/Categories/CategoryChip";
+import ExportDialog from "../../Components/ExportDialog";
+import ImportDialog from "../../Components/ImportDialog";
+import NewRuleItemMenu from "./NewRuleItemMenu";
+import RuleCollectionMenu from "./RuleCollectionMenu";
+
+import ValueRuleItem from "./RuleTypeItems/ValueRuleItem";
+import TransactionAmountRuleItem from "./RuleTypeItems/TransactionAmountRuleItem";
+import ItemTypeRuleItem from "./RuleTypeItems/ItemTypeRuleItem";
+
 import Rule from "../../Types/Rules/Rule";
 import { RuleTypes } from "../../Types/Types";
 import {
     default as RuleCollection,
     RuleCollectionMatchType
 } from "../../Types/RuleCollection";
-
-import CategoryChip from "../../Components/Categories/CategoryChip";
-import ExportDialog from "../../Components/ExportDialog";
-import ImportDialog from "../../Components/ImportDialog";
-import NewRuleItemMenu from "./NewRuleItemMenu";
-import ValueRuleItem from "./RuleTypeItems/ValueRuleItem";
-import RuleCollectionMenu from "./RuleCollectionMenu";
-import TransactionAmountRuleItem from "./RuleTypeItems/TransactionAmountRuleItem";
 
 const styles = {
     title: {
@@ -149,13 +151,12 @@ class RuleCreator extends React.Component<any, any> {
                     amount: 5
                 };
                 break;
-            // case "ITEM_TYPE":
-            //     newRule = {
-            //         id: null,
-            //         ruleType: "ITEM_TYPE",
-            //         matchType: "PAYMENT"
-            //     };
-            //     break;
+            case "ITEM_TYPE":
+                newRule = {
+                    ruleType: "ITEM_TYPE",
+                    matchType: "PAYMENT"
+                };
+                break;
             default:
                 return false;
         }
@@ -164,19 +165,19 @@ class RuleCreator extends React.Component<any, any> {
         this.setState({ rules: rules });
     };
 
-    handleMatchTypeChange = event => {
+    handleMatchTypeChange = (event: any) => {
         this.setState({ matchType: event.target.value });
     };
-    handleTitleChange = event => {
+    handleTitleChange = (event: any) => {
         const title = event.target.value;
         const titleError = title.length <= 0 || title.length > 32;
         this.setState({ title: title, titleError: titleError });
     };
-    handleEnabledToggle = event => {
+    handleEnabledToggle = (event: any) => {
         this.setState({ enabled: !this.state.enabled });
     };
 
-    saveRuleCollection = event => {
+    saveRuleCollection = (event: any) => {
         if (this.state.titleError) {
             return;
         }
@@ -206,17 +207,32 @@ class RuleCreator extends React.Component<any, any> {
             exportData: data === false ? this.createRuleCollection() : data
         });
     };
-    closeExportDialog = event => {
+    closeExportDialog = (event: any) => {
         this.setState({ openExportDialog: false, exportData: null });
     };
 
-    openImportDialog = event => {
+    openImportDialog = (event: any) => {
         this.setState({ openImportDialog: true });
     };
-    closeImportDialog = event => {
+    closeImportDialog = (event: any) => {
         this.setState({ openImportDialog: false });
     };
-    importData = (rule: Rule) => {};
+    importRule = (rule: Rule) => {
+        this.closeImportDialog(null);
+
+        const isValid = RuleCollection.validateRule(rule);
+
+        if (isValid !== true) {
+            // display error
+            this.props.openSnackbar(isValid.message);
+            return;
+        }
+
+        // add the rule to the rule set
+        const rules: Rule[] = [...this.state.rules];
+        rules.push(rule);
+        this.setState({ rules: rules });
+    };
 
     render() {
         const {
@@ -265,6 +281,41 @@ class RuleCreator extends React.Component<any, any> {
                     onClick={this.addCategory(categoryInfo)}
                 />
             );
+        });
+
+        const ruleItems = rules.map((rule: Rule, ruleKey: string) => {
+            switch (rule.ruleType) {
+                case "VALUE":
+                    return (
+                        <ValueRuleItem
+                            openExportDialog={this.openExportDialog}
+                            removeRule={this.removeRule(ruleKey)}
+                            updateRule={this.updateRule(ruleKey)}
+                            rule={rule}
+                            key={ruleKey}
+                        />
+                    );
+                case "TRANSACTION_AMOUNT":
+                    return (
+                        <TransactionAmountRuleItem
+                            openExportDialog={this.openExportDialog}
+                            removeRule={this.removeRule(ruleKey)}
+                            updateRule={this.updateRule(ruleKey)}
+                            rule={rule}
+                            key={ruleKey}
+                        />
+                    );
+                case "ITEM_TYPE":
+                    return (
+                        <ItemTypeRuleItem
+                            openExportDialog={this.openExportDialog}
+                            removeRule={this.removeRule(ruleKey)}
+                            updateRule={this.updateRule(ruleKey)}
+                            rule={rule}
+                            key={ruleKey}
+                        />
+                    );
+            }
         });
 
         return (
@@ -366,46 +417,14 @@ class RuleCreator extends React.Component<any, any> {
                                 <TableCell>{null}</TableCell>
                                 <TableCell>{null}</TableCell>
                                 <TableCell>
-                                    <NewRuleItemMenu addRule={this.addRule} />
+                                    <NewRuleItemMenu
+                                        addRule={this.addRule}
+                                        openImportDialog={this.openImportDialog}
+                                    />
                                 </TableCell>
                             </TableRow>
                         </TableHead>
-                        {rules.map((rule: Rule, ruleKey: string) => {
-                            switch (rule.ruleType) {
-                                case "VALUE":
-                                    return (
-                                        <ValueRuleItem
-                                            openExportDialog={
-                                                this.openExportDialog
-                                            }
-                                            removeRule={this.removeRule(
-                                                ruleKey
-                                            )}
-                                            updateRule={this.updateRule(
-                                                ruleKey
-                                            )}
-                                            rule={rule}
-                                            key={ruleKey}
-                                        />
-                                    );
-                                case "TRANSACTION_AMOUNT":
-                                    return (
-                                        <TransactionAmountRuleItem
-                                            openExportDialog={
-                                                this.openExportDialog
-                                            }
-                                            removeRule={this.removeRule(
-                                                ruleKey
-                                            )}
-                                            updateRule={this.updateRule(
-                                                ruleKey
-                                            )}
-                                            rule={rule}
-                                            key={ruleKey}
-                                        />
-                                    );
-                            }
-                        })}
+                        {ruleItems}
                     </Table>
                 </Paper>
 
@@ -434,7 +453,7 @@ class RuleCreator extends React.Component<any, any> {
                 />
                 <ImportDialog
                     closeModal={this.closeImportDialog}
-                    importData={this.importData}
+                    importData={this.importRule}
                     title="Import rule"
                     open={this.state.openImportDialog}
                 />

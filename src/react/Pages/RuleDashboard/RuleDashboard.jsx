@@ -16,6 +16,7 @@ import NavLink from "../../Components/Routing/NavLink";
 import ImportDialog from "../../Components/ImportDialog";
 import RuleCollection from "../../Types/RuleCollection";
 import { setCategoryRule } from "../../Actions/category_rules";
+import { openSnackbar } from "../../Actions/snackbar";
 
 const styles = {
     paper: {
@@ -46,16 +47,16 @@ class RuleDashboard extends React.Component {
     importData = ruleCollectionObject => {
         this.closeImportDialog();
 
-        const ruleCollection = new RuleCollection();
-        const isValid = ruleCollection.validateRuleCollection(
+        const isValid = RuleCollection.validateRuleCollection(
             ruleCollectionObject
         );
 
         if (isValid !== true) {
             // display error
-            console.log(isValid);
+            this.props.openSnackbar(isValid.message);
             return;
         }
+        const ruleCollection = new RuleCollection();
 
         // import the data
         ruleCollection.fromObject(ruleCollectionObject);
@@ -88,6 +89,7 @@ class RuleDashboard extends React.Component {
 
                 <ImportDialog
                     title="Import rule collection"
+                    showAsNewButton={true}
                     closeModal={this.closeImportDialog}
                     importData={this.importData}
                     open={this.state.openImportDialog}
@@ -152,6 +154,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
+        openSnackbar: message => dispatch(openSnackbar(message)),
         setCategoryRule: rule_collection =>
             dispatch(setCategoryRule(BunqJSClient, rule_collection))
     };

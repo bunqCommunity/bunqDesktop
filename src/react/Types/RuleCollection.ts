@@ -98,7 +98,7 @@ export default class RuleCollection {
         return this;
     }
 
-    public validateRuleCollection(
+    public static validateRuleCollection(
         ruleCollection: any
     ): ValidationResult | true {
         // basic type checks
@@ -163,11 +163,16 @@ export default class RuleCollection {
         return true;
     }
 
-    public validateRule(rule: any): ValidationResult | true {
+    public static validateRule(rule: any): ValidationResult | true {
+        if (typeof rule !== "object")
+            return {
+                valid: false,
+                message: "Rule isn't a valid object"
+            };
         if (typeof rule.ruleType !== "string")
             return {
                 valid: false,
-                message: "Rule contained invalid ruleType"
+                message: "Rule contained invalid 'ruleType'"
             };
 
         return true;

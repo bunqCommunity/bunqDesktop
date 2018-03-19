@@ -8,7 +8,7 @@ import Dialog, {
 } from "material-ui/Dialog";
 import Slide from "material-ui/transitions/Slide";
 
-const Transition = props => <Slide direction="right" {...props} />;
+const Transition = props => <Slide direction="left" {...props} />;
 
 class ImportDialog extends React.Component<any, any> {
     constructor(props: any, context: any) {
@@ -54,7 +54,8 @@ class ImportDialog extends React.Component<any, any> {
     };
 
     render() {
-        const { open, closeModal, title } = this.props;
+        let { open, closeModal, title, showAsNewButton } = this.props;
+        if (!showAsNewButton) showAsNewButton = false;
 
         return (
             <Dialog
@@ -85,12 +86,11 @@ class ImportDialog extends React.Component<any, any> {
                         Cancel
                     </Button>
 
-                    <Button
-                        variant="raised"
-                        onClick={this.importDataNew}
-                    >
-                        Import as new
-                    </Button>
+                    {showAsNewButton ? (
+                        <Button variant="raised" onClick={this.importDataNew}>
+                            Import as new
+                        </Button>
+                    ) : null}
 
                     <Button
                         variant="raised"

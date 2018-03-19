@@ -6,6 +6,7 @@ import Grid from "material-ui/Grid";
 import RuleCreator from "./RuleCreator.tsx";
 import RuleCollection from "../../Types/RuleCollection";
 import { setCategoryRule, removeCategoryRule } from "../../Actions/category_rules";
+import {openSnackbar} from "../../Actions/snackbar";
 
 const styles = {};
 
@@ -40,6 +41,7 @@ class RulesPage extends React.Component {
                     <RuleCreator
                         categories={this.props.categories}
                         ruleCollection={ruleCollection}
+                        openSnackbar={this.props.openSnackbar}
                         saveRuleCollection={this.props.setCategoryRule}
                         removeCategoryCollection={this.props.removeCategoryRule}
                     />
@@ -59,6 +61,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
+        openSnackbar: message => dispatch(openSnackbar(message)),
         setCategoryRule: rule_collection =>
             dispatch(setCategoryRule(BunqJSClient, rule_collection)),
         removeCategoryRule: category_rule_id =>
