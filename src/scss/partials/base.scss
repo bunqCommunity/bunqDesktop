@@ -13,6 +13,12 @@ body {
     display: flex;
 }
 
+input,
+button,
+textarea {
+    -webkit-app-region: no-drag;
+}
+
 #app {
     width: 100%;
     display: flex;
@@ -41,8 +47,6 @@ main {
     outline: none;
 }
 
-input,
-button,
-textarea {
-    -webkit-app-region: no-drag;
+.rainbow-background{
+    background-image: $backgroundRainbow;
 }

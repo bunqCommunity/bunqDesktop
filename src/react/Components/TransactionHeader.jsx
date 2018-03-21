@@ -50,7 +50,7 @@ const TransactionHeader = props => {
         if (props.accounts) {
             // loop through accounts
             props.accounts.forEach(account => {
-                const accountInfo = account.MonetaryAccountBank;
+                const accountInfo = account;
                 // loop through alias to find the iban and check if it matches
                 accountInfo.alias.forEach(alias => {
                     // if IBAN check if it matches the from or to alias

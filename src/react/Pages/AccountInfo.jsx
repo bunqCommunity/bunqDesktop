@@ -75,8 +75,8 @@ class AccountInfo extends React.Component {
 
         let accountInfo = false;
         accounts.map(account => {
-            if (account.MonetaryAccountBank.id === accountId) {
-                accountInfo = account.MonetaryAccountBank;
+            if (account.id === accountId) {
+                accountInfo = account;
             }
         });
 

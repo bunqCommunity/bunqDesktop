@@ -37,7 +37,7 @@ class AccountSelector extends React.Component {
         const style = otherProps.style ? otherProps.style : {};
 
         const accountItems = accounts.map((account, accountKey) => {
-            const bankAccount = account.MonetaryAccountBank;
+            const bankAccount = account;
             const balance = bankAccount.balance.value;
             const description = bankAccount.description;
 
@@ -50,7 +50,7 @@ class AccountSelector extends React.Component {
 
         let selectedAccountItem = null;
         if (value !== "" && accounts[value]) {
-            const account = accounts[value].MonetaryAccountBank;
+            const account = accounts[value];
             if (account.status !== "ACTIVE") {
                 return null;
             }

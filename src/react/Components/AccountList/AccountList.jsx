@@ -120,8 +120,8 @@ class AccountList extends React.Component {
             accounts = this.props.accounts
                 .filter(account => {
                     if (
-                        account.MonetaryAccountBank &&
-                        account.MonetaryAccountBank.status !== "ACTIVE"
+                        account &&
+                        account.status !== "ACTIVE"
                     ) {
                         return false;
                     }
@@ -131,16 +131,16 @@ class AccountList extends React.Component {
                     <AccountListItem
                         BunqJSClient={this.props.BunqJSClient}
                         updateExternal={this.updateExternal}
-                        account={account.MonetaryAccountBank}
+                        account={account}
                     />
                 ));
         }
 
         const totalBalance = this.props.accounts.reduce((total, account) => {
-            if (account.MonetaryAccountBank.balance) {
+            if (account.balance) {
                 return (
                     total +
-                    parseFloat(account.MonetaryAccountBank.balance.value)
+                    parseFloat(account.balance.value)
                 );
             }
             return total;

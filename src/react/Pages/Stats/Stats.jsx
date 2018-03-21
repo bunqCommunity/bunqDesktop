@@ -87,7 +87,7 @@ class Stats extends React.Component {
             requestResponses: props.requestResponses,
 
             // the accounts and selectedAccount so a balance can be calcualted
-            accounts: props.accounts,
+            accounts: props.accounts.map(account => account.toJSON()),
             selectedAccount: props.selectedAccount,
 
             // different filter objects used in filtering the endpoints
