@@ -8,7 +8,7 @@ import { CircularProgress } from "material-ui/Progress";
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
 
 import CombinedList from "../Components/CombinedList";
-import AccountCard from "./ApplicationInfo/AccountCard";
+import AccountCard from "../Components/AccountCard";
 
 import { openSnackbar } from "../Actions/snackbar";
 import { accountsUpdate } from "../Actions/accounts";
@@ -44,7 +44,7 @@ class AccountInfo extends React.Component {
 
             const userId = this.props.user.id;
             const accountId = parseFloat(this.props.match.params.accountId);
-            
+
             this.props.paymentsUpdate(userId, accountId);
             this.props.bunqMeTabsUpdate(userId, accountId);
             this.props.requestResponsesUpdate(userId, accountId);
@@ -75,8 +75,8 @@ class AccountInfo extends React.Component {
 
         let accountInfo = false;
         accounts.map(account => {
-            if (account.MonetaryAccountBank.id === accountId) {
-                accountInfo = account.MonetaryAccountBank;
+            if (account.id === accountId) {
+                accountInfo = account;
             }
         });
 

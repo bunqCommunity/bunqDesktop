@@ -13,8 +13,10 @@ import Typography from "material-ui/Typography";
 
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import { paymentText, paymentTypeParser } from "../Helpers/StatusTexts";
+
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import TransactionHeader from "../Components/TransactionHeader";
+import CategorySelector from "../Components/Categories/CategorySelector";
 
 import { paymentsUpdate } from "../Actions/payment_info";
 
@@ -68,7 +70,11 @@ class PaymentInfo extends React.Component {
     }
 
     render() {
-        const { accountsSelectedAccount, payment, paymentLoading } = this.props;
+        const {
+            accountsSelectedAccount,
+            paymentInfo,
+            paymentLoading
+        } = this.props;
         const paramAccountId = this.props.match.params.accountId;
 
         // we require a selected account before we can display payment information
@@ -78,7 +84,7 @@ class PaymentInfo extends React.Component {
         }
 
         let content;
-        if (payment === false || paymentLoading === true) {
+        if (paymentInfo === false || paymentLoading === true) {
             content = (
                 <Grid container spacing={24} justify={"center"}>
                     <Grid item xs={12}>
@@ -89,6 +95,7 @@ class PaymentInfo extends React.Component {
                 </Grid>
             );
         } else {
+            const payment = paymentInfo.Payment;
             const paymentDescription = payment.description;
             const paymentDate = humanReadableDate(payment.updated);
             const paymentAmount = payment.amount.value;
@@ -107,6 +114,8 @@ class PaymentInfo extends React.Component {
                         BunqJSClient={this.props.BunqJSClient}
                         to={payment.counterparty_alias}
                         from={payment.alias}
+                        user={this.props.user}
+                        accounts={this.props.accounts}
                         swap={paymentAmount > 0}
                     />
 
@@ -122,7 +131,7 @@ class PaymentInfo extends React.Component {
 
                         <Typography
                             style={{ textAlign: "center" }}
-                            type={"body1"}
+                            variant={"body1"}
                         >
                             {paymentLabel}
                         </Typography>
@@ -161,8 +170,9 @@ class PaymentInfo extends React.Component {
                                     secondary={counterPartyIban}
                                 />
                             </ListItem>
-                            <Divider />
                         </List>
+
+                        <CategorySelector type={"Payment"} item={paymentInfo} />
                     </Grid>
                 </Grid>
             );
@@ -193,9 +203,11 @@ class PaymentInfo extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-        payment: state.payment_info.payment,
+
+        paymentInfo: state.payment_info.payment,
         paymentLoading: state.payment_info.loading,
-        accountsSelectedAccount: state.accounts.selectedAccount
+        accountsSelectedAccount: state.accounts.selectedAccount,
+        accounts: state.accounts.accounts
     };
 };
 

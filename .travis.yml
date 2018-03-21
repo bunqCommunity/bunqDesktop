@@ -1,22 +1,21 @@
 matrix:
   include:
-    - os: osx
-      osx_image: xcode9.0
-      language: node_js
-      node_js: "8"
-      env:
-        - ELECTRON_CACHE=$HOME/.cache/electron
-        - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
-
-    - os: linux
-      services: docker
-      language: generic
+  - os: osx
+    osx_image: xcode9.2
+    language: node_js
+    node_js: "9"
+    env:
+    - ELECTRON_CACHE=$HOME/.cache/electron
+    - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+  - os: linux
+    services: docker
+    language: generic
 
 cache:
   directories:
   - node_modules
-  - $HOME/.cache/electron
-  - $HOME/.cache/electron-builder
+  - "$HOME/.cache/electron"
+  - "$HOME/.cache/electron-builder"
 
 before_install:
   - |
@@ -25,7 +24,10 @@ before_install:
       export PATH="/tmp/git-lfs:$PATH"
     fi
 before_script:
-  - git lfs pull
+- git lfs pull
+
+after_script:
+- ls dist
 
 script:
   - |
@@ -40,9 +42,29 @@ script:
     else
       yarn release
     fi
-before_cache:
-  - rm -rf $HOME/.cache/electron-builder/wine
 
-branches:
-  only:
-  - release
+before_cache:
+- rm -rf $HOME/.cache/electron-builder/wine
+
+#branches:
+#  only:
+#  - release
+#  - bug/api-key-loading
+
+deploy:
+  provider: releases
+  overwrite: true
+  tag_name: $TRAVIS_TAG
+  name: $TRAVIS_TAG
+  api_key:
+    secure: fuXvloxR1qV4Xj8PecoF8gmQHCPukRF3nR7+szuHsoumUusyko0N5QbItdIfYTwpV9pIGwujV5mB0Ya/CKQzILkdlXo+cJzpCvFGJ1Q9wKk9hwLnouOiyF3wsagia8dpX4iLzVEATu4+LM3jol+KlXLGl8OxkGIy5Vifbd5GTbEiSrTxT9cF48/0ubgf/9rjjJyo5exuE30pRLs+m9cqnCSwgwcH6368OfYOlbRSgtGtzR9eEoGlqiNk2UHGmZUwy8dqOhid+meM7IGXwPjua8hrp1/nc/k8+UcwQxxly8xjp8bib6ier+2GbfbwxHiPWUtKFHoNzJlGWfj6xahz6fPL412HGeWVCrbVJcI3bTb/Ed1EjsjQyr4rUwvFnGitzRQAYqg/s2tpl4mVFPYyLgVMnlqiGNMkAaGfqYgErwdCkaYTtWGmLdIUkDsPMCSc4hOlajWNlb2n/ArYHOCmD+KC1KJ8hsJTxXQWD9Tfv5JBKd8g+63YIS+YEifUsxa9W4UhtODsPwBBcot/m4EH1FJS7wsticqB7rbkVq2iiMLWWMOImX47FSBqFG/0ioeWFayLIuDz+Ulvska/Nz4+R0tCQc4t1l1FDT56WI54H4KE2oYIQ8Y3U304mS6URhVRN+561HwzxVJA4halN30H4aOQjhjm5LW1e4PcSRiRalo=
+  file_glob: true
+  file:
+    - dist/BunqDesktop Setup *.exe
+    - dist/bunqdesktop_*_amd64.deb
+    - dist/BunqDesktop-*.dmg
+    - dist/bunqdesktop-*-x86_64.AppImage
+  draft: true
+  skip_cleanup: true
+  on:
+    tags: true

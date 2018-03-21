@@ -11,10 +11,19 @@ import RequestResponseListItem from "./ListItems/RequestResponseListItem";
 import RequestInquiryListItem from "./ListItems/RequestInquiryListItem";
 
 import ClearBtn from "../Components/FilterComponents/ClearFilter";
-import DisplayDrawerBtn from "../Components/FilterComponents/FilterDrawer";
+import FilterDrawer from "../Components/FilterComponents/FilterDrawer";
+
 import { openSnackbar } from "../Actions/snackbar";
 import { bunqMeTabPut } from "../Actions/bunq_me_tab";
+
 import { humanReadableDate } from "../Helpers/Utils";
+import {
+    paymentFilter,
+    bunqMeTabsFilter,
+    masterCardActionFilter,
+    requestInquiryFilter,
+    requestResponseFilter
+} from "../Helpers/DataFilters";
 
 const styles = {
     list: {
@@ -28,51 +37,64 @@ class CombinedList extends React.Component {
         this.state = {};
     }
 
+    shouldComponentUpdate(nextProps) {
+        const isCurrentlyLoading =
+            this.props.bunqMeTabsLoading ||
+            this.props.paymentsLoading ||
+            this.props.requestResponsesLoading ||
+            this.props.requestInquiriesLoading ||
+            this.props.masterCardActionsLoading;
+        const willBeLoading =
+            nextProps.bunqMeTabsLoading ||
+            nextProps.paymentsLoading ||
+            nextProps.requestResponsesLoading ||
+            nextProps.requestInquiriesLoading ||
+            nextProps.masterCardActionsLoading;
+
+        // don't update the components if we are loading now and will be loading in the next update
+        if (isCurrentlyLoading && willBeLoading) return false;
+
+        return true;
+    }
+
     copiedValue = type => callback => {
         this.props.openSnackbar(`Copied ${type} to your clipboard`);
     };
 
     paymentMapper = () => {
-        return this.props.payments.filter(this.paymentFilter).map(payment => {
-            return {
-                component: (
-                    <PaymentListItem
-                        payment={payment.Payment}
-                        BunqJSClient={this.props.BunqJSClient}
-                    />
-                ),
-                filterDate: payment.Payment.created,
-                info: payment.Payment
-            };
-        });
-    };
-
-    paymentFilter = payment => {
-        if (this.props.paymentVisibility === false) {
-            return false;
-        }
-        const paymentInfo = payment.Payment;
-
-        // hide mastercard payments
-        if (paymentInfo.type === "MASTERCARD") {
-            return false;
-        }
-
-        if (this.props.paymentType === "received") {
-            if (paymentInfo.amount.value <= 0) {
-                return false;
-            }
-        } else if (this.props.paymentType === "sent") {
-            if (paymentInfo.amount.value >= 0) {
-                return false;
-            }
-        }
-        return true;
+        return this.props.payments
+            .filter(
+                paymentFilter({
+                    paymentVisibility: this.props.paymentVisibility,
+                    paymentType: this.props.paymentType,
+                    dateFromFilter: this.props.dateFromFilter,
+                    dateToFilter: this.props.dateToFilter
+                })
+            )
+            .map(payment => {
+                return {
+                    component: (
+                        <PaymentListItem
+                            payment={payment.Payment}
+                            BunqJSClient={this.props.BunqJSClient}
+                        />
+                    ),
+                    filterDate: payment.Payment.created,
+                    info: payment.Payment
+                };
+            });
     };
 
     bunqMeTabsMapper = () => {
         return this.props.bunqMeTabs
-            .filter(this.bunqMeTabsFilter)
+            .filter(
+                bunqMeTabsFilter({
+                    bunqMeTabVisibility: this.props.bunqMeTabVisibility,
+                    bunqMeTabType: this.props.bunqMeTabType,
+                    dateFromFilter: this.props.dateFromFilter,
+                    dateToFilter: this.props.dateToFilter
+                })
+            )
             .map(bunqMeTab => {
                 return {
                     component: (
@@ -92,24 +114,16 @@ class CombinedList extends React.Component {
             });
     };
 
-    bunqMeTabsFilter = bunqMeTab => {
-        if (this.props.bunqMeTabVisibility === false) {
-            return false;
-        }
-        switch (this.props.bunqMeTabType) {
-            case "active":
-                return bunqMeTab.BunqMeTab.status === "WAITING_FOR_PAYMENT";
-            case "cancelled":
-                return bunqMeTab.BunqMeTab.status === "CANCELLED";
-            case "expired":
-                return bunqMeTab.BunqMeTab.status === "EXPIRED";
-        }
-        return true;
-    };
-
     masterCardActionMapper = () => {
         return this.props.masterCardActions
-            .filter(this.masterCardActionFilter)
+            .filter(
+                masterCardActionFilter({
+                    paymentVisibility: this.props.paymentVisibility,
+                    paymentType: this.props.paymentType,
+                    dateFromFilter: this.props.dateFromFilter,
+                    dateToFilter: this.props.dateToFilter
+                })
+            )
             .map(masterCardAction => {
                 return {
                     component: (
@@ -124,17 +138,16 @@ class CombinedList extends React.Component {
             });
     };
 
-    masterCardActionFilter = masterCardAction => {
-        if (this.props.paymentVisibility === false) {
-            return false;
-        }
-
-        return this.props.paymentType !== "received";
-    };
-
     requestResponseMapper = () => {
         return this.props.requestResponses
-            .filter(this.requestResponseFilter)
+            .filter(
+                requestResponseFilter({
+                    requestVisibility: this.props.requestVisibility,
+                    requestType: this.props.requestType,
+                    dateFromFilter: this.props.dateFromFilter,
+                    dateToFilter: this.props.dateToFilter
+                })
+            )
             .map(requestResponse => {
                 return {
                     component: (
@@ -149,23 +162,16 @@ class CombinedList extends React.Component {
             });
     };
 
-    requestResponseFilter = requestResponse => {
-        if (this.props.requestVisibility === false) {
-            return false;
-        }
-
-        // hide accepted payments
-        if (requestResponse.RequestResponse.status === "ACCEPTED") return false;
-
-        return !(
-            this.props.requestType !== "sent" &&
-            this.props.requestType !== "default"
-        );
-    };
-
     requestInquiryMapper = () => {
         return this.props.requestInquiries
-            .filter(this.requestInquiryFilter)
+            .filter(
+                requestInquiryFilter({
+                    requestVisibility: this.props.requestVisibility,
+                    requestType: this.props.requestType,
+                    dateFromFilter: this.props.dateFromFilter,
+                    dateToFilter: this.props.dateToFilter
+                })
+            )
             .map(requestInquiry => {
                 return {
                     component: (
@@ -178,19 +184,6 @@ class CombinedList extends React.Component {
                     info: requestInquiry.RequestInquiry
                 };
             });
-    };
-
-    requestInquiryFilter = requestInquiry => {
-        if (this.props.requestVisibility === false) {
-            return false;
-        }
-
-        if (requestInquiry.RequestInquiry.status === "ACCEPTED") return false;
-
-        return !(
-            this.props.requestType !== "received" &&
-            this.props.requestType !== "default"
-        );
     };
 
     render() {
@@ -274,7 +267,7 @@ class CombinedList extends React.Component {
                     Payments and requests
                     <ListItemSecondaryAction>
                         <ClearBtn />
-                        <DisplayDrawerBtn />
+                        <FilterDrawer />
                     </ListItemSecondaryAction>
                 </ListSubheader>
                 {loadingContent}
@@ -295,6 +288,8 @@ const mapStateToProps = state => {
         bunqMeTabVisibility: state.bunq_me_tab_filter.visible,
         requestType: state.request_filter.type,
         requestVisibility: state.request_filter.visible,
+        dateFromFilter: state.date_filter.from_date,
+        dateToFilter: state.date_filter.to_date,
 
         bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
         bunqMeTabsLoading: state.bunq_me_tabs.loading,

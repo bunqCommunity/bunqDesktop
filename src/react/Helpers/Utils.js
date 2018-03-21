@@ -14,14 +14,21 @@ export const { preferedThousandSeparator, preferedDecimalSeparator } = (() => {
 })();
 
 // parses strings as float and returns a correct localized format
-export const formatMoney = value =>
-    parseFloat(value).toLocaleString(undefined, {
+export const formatMoney = (value, stayNegative = false) => {
+    let parsedValue = parseFloat(value);
+    parsedValue =
+        parsedValue < 0 && stayNegative === false
+            ? parsedValue * -1
+            : parsedValue;
+
+    return parsedValue.toLocaleString(undefined, {
         currency: "EUR",
         style: "currency",
         currencyDisplay: "symbol",
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     });
+};
 
 // validates json input
 export const validateJSON = input => {
@@ -97,4 +104,10 @@ export const generateGUID = () => {
         s4() +
         s4()
     );
+};
+
+// get the week for a specific date
+export const getWeek = date => {
+    const onejan = new Date(date.getFullYear(), 0, 1);
+    return Math.ceil(((date - onejan) / 86400000 + onejan.getDay() + 1) / 7);
 };

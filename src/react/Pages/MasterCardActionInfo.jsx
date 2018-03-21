@@ -12,14 +12,15 @@ import ArrowBackIcon from "material-ui-icons/ArrowBack";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
+import TransactionHeader from "../Components/TransactionHeader";
+import MoneyAmountLabel from "../Components/MoneyAmountLabel";
+import CategorySelector from "../Components/Categories/CategorySelector";
+
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import {
     masterCardActionText,
     masterCardActionParser
 } from "../Helpers/StatusTexts";
-import TransactionHeader from "../Components/TransactionHeader";
-import MoneyAmountLabel from "../Components/MoneyAmountLabel";
-
 import { masterCardActionInfoUpdate } from "../Actions/master_card_action_info";
 
 const styles = {
@@ -101,7 +102,7 @@ class MasterCardActionInfo extends React.Component {
                 </Grid>
             );
         } else {
-            const masterCardAction = masterCardActionInfo[0].MasterCardAction;
+            const masterCardAction = masterCardActionInfo.MasterCardAction;
             const paymentAmount = masterCardAction.amount_local.value;
             const paymentDate = humanReadableDate(masterCardAction.created);
             const formattedPaymentAmount = formatMoney(paymentAmount);
@@ -118,7 +119,7 @@ class MasterCardActionInfo extends React.Component {
                         BunqJSClient={this.props.BunqJSClient}
                         to={masterCardAction.counterparty_alias}
                         from={masterCardAction.alias}
-                        swap={paymentAmount > 0}
+                        user={this.props.user}
                     />
 
                     <Grid item xs={12}>
@@ -133,7 +134,7 @@ class MasterCardActionInfo extends React.Component {
 
                         <Typography
                             style={{ textAlign: "center" }}
-                            type={"body1"}
+                            variant={"body1"}
                         >
                             {paymentLabel}
                         </Typography>
@@ -165,7 +166,7 @@ class MasterCardActionInfo extends React.Component {
                                 <ListItemText
                                     primary={"Payment Type"}
                                     secondary={masterCardActionParser(
-                                        masterCardAction.pan_entry_mode_user
+                                        masterCardAction
                                     )}
                                 />
                             </ListItem>
@@ -198,6 +199,11 @@ class MasterCardActionInfo extends React.Component {
                             </ListItem>
                             <Divider />
                         </List>
+
+                        <CategorySelector
+                            type={"MasterCardAction"}
+                            item={masterCardActionInfo}
+                        />
                     </Grid>
                 </Grid>
             );

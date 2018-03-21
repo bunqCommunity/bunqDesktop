@@ -12,6 +12,7 @@ import { paymentText } from "../../Helpers/StatusTexts";
 import NavLink from "../Routing/NavLink";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 import MoneyAmountLabel from "../MoneyAmountLabel";
+import CategoryIcons from "../Categories/CategoryIcons";
 
 const styles = {
     smallAvatar: {
@@ -31,9 +32,9 @@ class PaymentListItem extends React.Component {
         };
     }
 
-    shouldComponentUpdate(nextProps) {
-        return nextProps.payment.id !== this.props.payment.id;
-    }
+    // shouldComponentUpdate(nextProps) {
+    //     return nextProps.payment.id !== this.props.payment.id;
+    // }
 
     render() {
         const { payment } = this.props;
@@ -66,7 +67,7 @@ class PaymentListItem extends React.Component {
                     primary={displayName}
                     secondary={paymentTypeLabel}
                 />
-                <ListItemSecondaryAction>
+                <ListItemSecondaryAction style={{ marginTop: -40 }}>
                     <MoneyAmountLabel
                         style={styles.moneyAmountLabel}
                         info={payment}
@@ -75,6 +76,11 @@ class PaymentListItem extends React.Component {
                         {formattedPaymentAmount}
                     </MoneyAmountLabel>
                 </ListItemSecondaryAction>
+                <CategoryIcons
+                    style={{ marginTop: 26 }}
+                    type={"Payment"}
+                    id={payment.id}
+                />
             </ListItem>,
             <Divider />
         ];

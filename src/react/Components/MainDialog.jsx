@@ -26,7 +26,7 @@ class Main extends React.Component {
                 open={this.props.modalOpen}
                 transition={Transition}
                 keepMounted
-                onRequestClose={this.props.closeModal}
+                onClose={this.props.closeModal}
             >
                 <DialogTitle>{this.props.modalTitle}</DialogTitle>
                 <DialogContent>
@@ -36,7 +36,7 @@ class Main extends React.Component {
                 </DialogContent>
                 <DialogActions>
                     <Button
-                        raised
+                        variant="raised"
                         onClick={this.props.closeModal}
                         color="primary"
                     >

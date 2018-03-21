@@ -1,11 +1,13 @@
 import { combineReducers } from "redux";
 
-import application from "./application";
 import accounts from "./accounts";
+import application from "./application";
 import bunq_me_tabs from "./bunq_me_tabs";
 import bunq_me_tab_filter from "./bunq_me_tab_filter";
 import bunq_me_tab from "./bunq_me_tab";
+import categories from "./categories";
 import cards from "./cards";
+import date_filter from "./date_filter";
 import general_filter from "./general_filter";
 import modal from "./modal";
 import user from "./user";
@@ -13,7 +15,7 @@ import users from "./users";
 import registration from "./registration";
 import request_filter from "./request_filter";
 import snackbar from "./snackbar";
-import theme from "./options";
+import theme from "./theme";
 import main_drawer from "./main_drawer";
 import master_card_actions from "./master_card_actions";
 import master_card_action_info from "./master_card_action_info";
@@ -31,12 +33,14 @@ import request_response from "./request_response";
 import request_response_info from "./request_response_info";
 
 export default combineReducers({
-    application,
     accounts,
+    application,
     bunq_me_tab,
     bunq_me_tab_filter,
     bunq_me_tabs,
+    categories,
 	cards,
+    date_filter,
     general_filter,
     modal,
     user,

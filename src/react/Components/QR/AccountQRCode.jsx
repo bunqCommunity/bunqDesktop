@@ -26,8 +26,8 @@ class AccountQRCode extends React.Component {
 
         let currentAccount = false;
         props.accounts.map(account => {
-            if (account.MonetaryAccountBank.id === selectedAccount) {
-                currentAccount = account.MonetaryAccountBank;
+            if (account.id === selectedAccount) {
+                currentAccount = account;
             }
         });
 

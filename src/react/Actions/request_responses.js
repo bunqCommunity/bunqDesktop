@@ -1,22 +1,63 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
-export function requestResponsesSetInfo(requestResponses, account_id) {
+export const STORED_REQUEST_RESPONSES = "BUNQDESKTOP_STORED_REQUEST_RESPONSES";
+
+export function requestResponsesSetInfo(
+    requestResponses,
+    account_id,
+    resetOldItems = false,
+    BunqJSClient = false
+) {
+    const type = resetOldItems
+        ? "REQUEST_RESPONSES_SET_INFO"
+        : "REQUEST_RESPONSES_UPDATE_INFO";
+
     return {
-        type: "REQUEST_RESPONSES_SET_INFO",
+        type: type,
         payload: {
-            request_responses: requestResponses,
-            account_id: account_id
+            BunqJSClient,
+            requestResponses,
+            account_id
         }
     };
 }
 
-export function requestResponsesUpdate(BunqJSClient, userId, accountId) {
+export function loadStoredRequestResponses(BunqJSClient) {
+    return dispatch => {
+        BunqJSClient.Session
+            .loadEncryptedData(STORED_REQUEST_RESPONSES)
+            .then(data => {
+                if(data && data.items) {
+                    dispatch(requestResponsesSetInfo(data.items, data.account_id));
+                }
+            })
+            .catch(error => {});
+    };
+}
+
+export function requestResponsesUpdate(
+    BunqJSClient,
+    userId,
+    accountId,
+    options = {
+        count: 50,
+        newer_id: false,
+        older_id: false
+    }
+) {
     return dispatch => {
         dispatch(requestResponsesLoading());
         BunqJSClient.api.requestResponse
-            .list(userId, accountId)
+            .list(userId, accountId, options)
             .then(requestResponses => {
-                dispatch(requestResponsesSetInfo(requestResponses, accountId));
+                dispatch(
+                    requestResponsesSetInfo(
+                        requestResponses,
+                        accountId,
+                        false,
+                        BunqJSClient
+                    )
+                );
                 dispatch(requestResponsesNotLoading());
             })
             .catch(error => {

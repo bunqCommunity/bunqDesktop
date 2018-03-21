@@ -11,7 +11,7 @@ import Login from "./Pages/Login/Login";
 const NotFound = CL(() =>
     import(/* webpackChunkName: "notfound" */ "./Pages/NotFound")
 );
-const Pay = CL(() => import(/* webpackChunkName: "pay" */ "./Pages/Pay"));
+const Pay = CL(() => import(/* webpackChunkName: "pay" */ "./Pages/Pay/Pay"));
 const BunqMeTab = CL(() =>
     import(/* webpackChunkName: "bunqmetab" */ "./Pages/BunqMeTab/BunqMeTab")
 );
@@ -19,7 +19,7 @@ const RequestInquiry = CL(() =>
     import(/* webpackChunkName: "requestinquiry" */ "./Pages/RequestInquiry/RequestInquiry")
 );
 const RequestResponseInfo = CL(() =>
-    import(/* webpackChunkName: "requestresponseinfo" */ "./Pages/RequestResponseInfo")
+    import(/* webpackChunkName: "requestresponseinfo" */ "./Pages/RequestResponseInfo/RequestResponseInfo")
 );
 const RequestInquiryInfo = CL(() =>
     import(/* webpackChunkName: "requestinquiryinfo" */ "./Pages/RequestInquiryInfo")
@@ -35,6 +35,12 @@ const ApplicationInfo = CL(() =>
 );
 const AccountInfo = CL(() =>
     import(/* webpackChunkName: "accountinfo" */ "./Pages/AccountInfo")
+);
+const Stats = CL(() =>
+    import(/* webpackChunkName: "stats" */ "./Pages/Stats/Stats")
+);
+const CategoryDashboard = CL(() =>
+    import(/* webpackChunkName: "category_dashboard" */ "./Pages/CategoryDashboard")
 );
 const Card = CL(() =>
     import(/* webpackChunkName: "cards" */ "./Pages/Card")
@@ -164,6 +170,29 @@ export default class Routes extends React.Component {
                             derivedPassword={this.props.derivedPassword}
                             render={props => (
                                 <AccountInfo
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
+                            )}
+                        />
+
+                        <PrivateRoute
+                            path="/stats"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <Stats {...props} {...this.props.childProps} />
+                            )}
+                        />
+
+                        <PrivateRoute
+                            path="/category-dashboard"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <CategoryDashboard
                                     {...props}
                                     {...this.props.childProps}
                                 />

@@ -41,7 +41,6 @@ class RedirectUrl extends React.Component {
                     error={redirectUrlError === true}
                     value={redirectUrl}
                     onChange={handleChange}
-                    margin="normal"
                     endAdornment={
                         <InputAdornment position="end">
                             <IconButton

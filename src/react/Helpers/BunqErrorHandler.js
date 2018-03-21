@@ -1,5 +1,5 @@
 import { openModal } from "../Actions/modal";
-import Logger  from "./Logger";
+import Logger from "./Logger";
 
 const defaultErrorMessage = dispatch => {
     dispatch(
@@ -17,8 +17,7 @@ const defaultErrorMessage = dispatch => {
  * @returns {*}
  */
 export default (dispatch, error, customError = false) => {
-    Logger.error(error.toString());
-    Logger.error(error.response.data);
+    Logger.error(error.response ? error.response.data : error.toString());
 
     if (!error.response) {
         return defaultErrorMessage(dispatch);

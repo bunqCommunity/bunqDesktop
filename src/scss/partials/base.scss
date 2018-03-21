@@ -13,6 +13,12 @@ body {
     display: flex;
 }
 
+input,
+button,
+textarea {
+    -webkit-app-region: no-drag;
+}
+
 #app {
     width: 100%;
     display: flex;
@@ -29,9 +35,8 @@ main {
 }
 
 .sticky-container {
-    top:60px !important;
+    top: 60px !important;
 }
-
 
 .money-input {
     width: 50%;
@@ -40,4 +45,8 @@ main {
     text-align: center;
     margin: 40px auto;
     outline: none;
+}
+
+.rainbow-background{
+    background-image: $backgroundRainbow;
 }

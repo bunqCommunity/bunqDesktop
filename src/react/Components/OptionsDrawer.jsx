@@ -10,9 +10,18 @@ import { FormControl, FormControlLabel } from "material-ui/Form";
 import Select from "material-ui/Select";
 import Switch from "material-ui/Switch";
 import Typography from "material-ui/Typography";
-import ArrowBackIcon from "material-ui-icons/ArrowBack";
 
-import { setTheme, setNativeFrame, setHideBalance } from "../Actions/options";
+import ArrowBackIcon from "material-ui-icons/ArrowBack";
+import ClearIcon from "material-ui-icons/Clear";
+
+import {
+    setTheme,
+    setNativeFrame,
+    setHideBalance,
+    resetApplication,
+    toggleInactivityCheck,
+    setInactivityCheckDuration
+} from "../Actions/options";
 import { closeOptionsDrawer } from "../Actions/options_drawer";
 import { openMainDrawer } from "../Actions/main_drawer";
 import { openSnackbar } from "../Actions/snackbar";
@@ -23,7 +32,8 @@ const styles = {
         paddingBottom: 50,
         display: "flex",
         flexDirection: "column",
-        WebkitAppRegion: "no-drag"
+        WebkitAppRegion: "no-drag",
+        flexGrow: 1
     },
     listItem: {
         paddingTop: 0,
@@ -50,6 +60,11 @@ const styles = {
         color: "inherit",
         textDecoration: "none"
     }
+};
+
+const humanReadableThemes = {
+    DefaultTheme: "Light theme",
+    DarkTheme: "Dark theme"
 };
 
 class OptionsDrawer extends React.Component {
@@ -79,6 +94,13 @@ class OptionsDrawer extends React.Component {
         this.props.setHideBalance(!this.props.hideBalance);
     };
 
+    handleHideInactivityCheckChange = event => {
+        this.props.toggleInactivityCheck(!this.props.checkInactivity);
+    };
+    handleHideInactivityDurationChange = event => {
+        this.props.setInactivityCheckDuration(event.target.value);
+    };
+
     render() {
         const { theme, open } = this.props;
 
@@ -95,7 +117,9 @@ class OptionsDrawer extends React.Component {
                             style={styles.selectField}
                         >
                             {Object.keys(this.props.themeList).map(themeKey => (
-                                <MenuItem value={themeKey}>{themeKey}</MenuItem>
+                                <MenuItem value={themeKey}>
+                                    {humanReadableThemes[themeKey]}
+                                </MenuItem>
                             ))}
                         </Select>
                     </FormControl>
@@ -118,6 +142,47 @@ class OptionsDrawer extends React.Component {
                     <FormControlLabel
                         control={
                             <Switch
+                                id="inactivity-check-selection"
+                                checked={this.props.checkInactivity}
+                                onChange={this.handleHideInactivityCheckChange}
+                            />
+                        }
+                        label="Logout automatically"
+                    />
+                    {this.props.checkInactivity ? (
+                        <Select
+                            value={this.props.inactivityCheckDuration}
+                            onChange={this.handleHideInactivityDurationChange}
+                        >
+                            <MenuItem key={60} value={60}>
+                                1 Minute
+                            </MenuItem>
+                            <MenuItem key={120} value={120}>
+                                2 Minutes
+                            </MenuItem>
+                            <MenuItem key={300} value={300}>
+                                5 Minutes
+                            </MenuItem>
+                            <MenuItem key={600} value={600}>
+                                10 Minutes
+                            </MenuItem>
+                            <MenuItem key={1800} value={1800}>
+                                30 Minutes
+                            </MenuItem>
+                            <MenuItem key={3600} value={3600}>
+                                1 Hour
+                            </MenuItem>
+                            <MenuItem key={7200} value={7200}>
+                                2 Hours
+                            </MenuItem>
+                        </Select>
+                    ) : null}
+                </ListItem>
+
+                <ListItem>
+                    <FormControlLabel
+                        control={
+                            <Switch
                                 id="hide-balance-selection"
                                 checked={this.props.hideBalance}
                                 onChange={this.handleHideBalanceCheckChange}
@@ -125,6 +190,17 @@ class OptionsDrawer extends React.Component {
                         }
                         label="Hide monetary account balances"
                     />
+                </ListItem>
+
+                <ListItem
+                    button
+                    style={styles.listBottomItem}
+                    onClick={this.props.resetApplication}
+                >
+                    <ListItemIcon>
+                        <ClearIcon />
+                    </ListItemIcon>
+                    <Typography variant="subheading">Reset BunqDesktop</Typography>
                 </ListItem>
 
                 <ListItem style={styles.listFiller} />
@@ -137,7 +213,7 @@ class OptionsDrawer extends React.Component {
                     <ListItemIcon>
                         <ArrowBackIcon />
                     </ListItemIcon>
-                    <Typography type="subheading">Back</Typography>
+                    <Typography variant="subheading">Back</Typography>
                 </ListItem>
             </List>
         );
@@ -146,7 +222,7 @@ class OptionsDrawer extends React.Component {
             <Drawer
                 open={open}
                 className="options-drawer"
-                onRequestClose={this.props.closeOptionsDrawer}
+                onClose={this.props.closeOptionsDrawer}
                 anchor={theme.direction === "rtl" ? "right" : "left"}
                 SlideProps={{
                     style: { top: 50 }
@@ -162,17 +238,24 @@ const mapStateToProps = state => {
     return {
         open: state.options_drawer.open,
         theme: state.options.theme,
+        hideBalance: state.options.hide_balance,
         nativeFrame: state.options.native_frame,
-        hideBalance: state.options.hide_balance
+        checkInactivity: state.options.check_inactivity,
+        inactivityCheckDuration: state.options.inactivity_check_duration
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
+        resetApplication: () => dispatch(resetApplication()),
         openSnackbar: message => dispatch(openSnackbar(message)),
         setTheme: theme => dispatch(setTheme(theme)),
         setNativeFrame: useFrame => dispatch(setNativeFrame(useFrame)),
         setHideBalance: hideBalance => dispatch(setHideBalance(hideBalance)),
+        toggleInactivityCheck: inactivityCheck =>
+            dispatch(toggleInactivityCheck(inactivityCheck)),
+        setInactivityCheckDuration: inactivityCheckDuration =>
+            dispatch(setInactivityCheckDuration(inactivityCheckDuration)),
         openMainDrawer: () => dispatch(openMainDrawer()),
         closeOptionsDrawer: () => dispatch(closeOptionsDrawer())
     };

@@ -7,15 +7,20 @@ import List, { ListItem, ListItemText, ListItemIcon } from "material-ui/List";
 import Hidden from "material-ui/Hidden";
 import Typography from "material-ui/Typography";
 import Avatar from "material-ui/Avatar";
+import Divider from "material-ui/Divider";
+
 import PowerSettingsIcon from "material-ui-icons/PowerSettingsNew";
 import ArrowUpwardIcon from "material-ui-icons/ArrowUpward";
 import ArrowDownwardIcon from "material-ui-icons/ArrowDownward";
 import HomeIcon from "material-ui-icons/Home";
 import SettingsIcon from "material-ui-icons/Settings";
 import ShareIcon from "material-ui-icons/Share";
+import TimeLineIcon from "material-ui-icons/Timeline";
+import ListIcon from "material-ui-icons/List";
 import CardIcon from "material-ui-icons/CreditCard";
 
 import NavLink from "./Routing/NavLink";
+import ListItemWrapper from "./ListItemWrapper";
 import { closeMainDrawer } from "../Actions/main_drawer";
 import { openOptionsDrawer } from "../Actions/options_drawer";
 
@@ -26,7 +31,8 @@ const styles = {
         textAlign: "left",
         display: "flex",
         flexDirection: "column",
-        WebkitAppRegion: "no-drag"
+        WebkitAppRegion: "no-drag",
+        flexGrow: 1
     },
     listItem: {
         paddingTop: 0,
@@ -52,7 +58,12 @@ const styles = {
 class MainDrawer extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+        this.state = {
+            // keep track if we checked for our previous location yet
+            initialLoad: false,
+            // current active item
+            activeItem: "home"
+        };
     }
 
     closeApp() {
@@ -81,51 +92,32 @@ class MainDrawer extends React.Component {
         const navigationItems = disableNavigationItems
             ? null
             : [
-                  <ListItem
-                      button
-                      style={styles.listBottomItem}
-                      component={NavLink}
+                  <ListItemWrapper
+                      exact
                       to="/"
-                  >
-                      <ListItemIcon>
-                          <HomeIcon />
-                      </ListItemIcon>
-                      <Typography type="subheading">Dashboard</Typography>
-                  </ListItem>,
-                  <ListItem
-                      button
-                      style={styles.listBottomItem}
-                      component={NavLink}
+                      icon={HomeIcon}
+                      text="Dashboard"
+                      location={this.props.location}
+                  />,
+                  <ListItemWrapper
                       to="/pay"
-                  >
-                      <ListItemIcon>
-                          <ArrowUpwardIcon />
-                      </ListItemIcon>
-                      <Typography type="subheading">Pay</Typography>
-                  </ListItem>,
-                  <ListItem
-                      button
-                      style={styles.listBottomItem}
-                      component={NavLink}
+                      icon={ArrowUpwardIcon}
+                      text="Pay"
+                      location={this.props.location}
+                  />,
+                  <ListItemWrapper
                       to="/request"
-                  >
-                      <ListItemIcon>
-                          <ArrowDownwardIcon />
-                      </ListItemIcon>
-                      <Typography type="subheading">Request</Typography>
-                  </ListItem>,
-                  <ListItem
-                      button
-                      style={styles.listBottomItem}
-                      component={NavLink}
+                      icon={ArrowDownwardIcon}
+                      text="Request"
+                      location={this.props.location}
+                  />,
+                  <ListItemWrapper
                       to="/bunqme-tab"
-                  >
-                      <ListItemIcon>
-                          <ShareIcon />
-                      </ListItemIcon>
-                      <Typography type="subheading">bunq.me Requests</Typography>
-                  </ListItem>,
-				  <ListItem
+                      icon={ShareIcon}
+                      text="bunq.me Requests"
+                      location={this.props.location}
+                  />,
+                  <ListItem
                       button
                       style={styles.listBottomItem}
                       component={NavLink}
@@ -136,6 +128,19 @@ class MainDrawer extends React.Component {
                       </ListItemIcon>
                       <Typography type="subheading">Cards</Typography>
                   </ListItem>
+                  <Divider />,
+                  <ListItemWrapper
+                      to="/stats"
+                      icon={TimeLineIcon}
+                      text="Stats"
+                      location={this.props.location}
+                  />,
+                  <ListItemWrapper
+                      to="/category-dashboard"
+                      icon={ListIcon}
+                      text="Category dashboard"
+                      location={this.props.location}
+                  />
               ];
 
         const drawerList = (
@@ -167,7 +172,7 @@ class MainDrawer extends React.Component {
                     <ListItemIcon>
                         <SettingsIcon />
                     </ListItemIcon>
-                    <Typography type="subheading">Settings</Typography>
+                    <Typography variant="subheading">Settings</Typography>
                 </ListItem>
 
                 <ListItem
@@ -178,7 +183,7 @@ class MainDrawer extends React.Component {
                     <ListItemIcon>
                         <PowerSettingsIcon />
                     </ListItemIcon>
-                    <Typography type="subheading">Quit BunqDesktop</Typography>
+                    <Typography variant="subheading">Quit BunqDesktop</Typography>
                 </ListItem>
             </List>
         );
@@ -186,9 +191,9 @@ class MainDrawer extends React.Component {
         return [
             <Hidden mdUp>
                 <Drawer
-                    type="temporary"
+                    variant="temporary"
                     open={open}
-                    onRequestClose={this.props.closeDrawer}
+                    onClose={this.props.closeDrawer}
                     className="options-drawer"
                     anchor={theme.direction === "rtl" ? "right" : "left"}
                     SlideProps={{
@@ -198,11 +203,11 @@ class MainDrawer extends React.Component {
                     {drawerList}
                 </Drawer>
             </Hidden>,
-            <Hidden mdDown implementation="css">
+            <Hidden smDown implementation="css">
                 <Drawer
-                    type="permanent"
+                    variant="permanent"
                     open={open}
-                    onRequestClose={this.props.closeDrawer}
+                    onClose={this.props.closeDrawer}
                     anchor="left"
                     className="options-drawer"
                     classes={{

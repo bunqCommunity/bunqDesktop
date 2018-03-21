@@ -37,6 +37,7 @@ class AccountList extends React.Component {
             fetchedExternal: false,
             fetchedAccounts: false
         };
+        this.delayedUpdate = null;
     }
 
     componentDidMount() {
@@ -72,7 +73,6 @@ class AccountList extends React.Component {
             paymentsAccountId,
             paymentsLoading,
             initialBunqConnect,
-            accounts,
             user
         } = props;
 
@@ -89,12 +89,16 @@ class AccountList extends React.Component {
             this.state.fetchedExternal === false
         ) {
             this.setState({ fetchedExternal: true });
-            this.updateExternal(user.id, accountsAccountId);
+
+            // delay the initial loading by 1000ms to improve startup ui performance
+            if (this.delayedUpdate) clearTimeout(this.delayedUpdate);
+            this.delayedUpdate = setTimeout(() => {
+                this.updateExternal(user.id, accountsAccountId);
+            }, 1000);
         }
 
         // no accounts loaded
         if (
-            accounts.length === 0 &&
             this.state.fetchedAccounts === false &&
             props.user.id &&
             props.accountsLoading === false
@@ -110,8 +114,8 @@ class AccountList extends React.Component {
             accounts = this.props.accounts
                 .filter(account => {
                     if (
-                        account.MonetaryAccountBank &&
-                        account.MonetaryAccountBank.status !== "ACTIVE"
+                        account &&
+                        account.status !== "ACTIVE"
                     ) {
                         return false;
                     }
@@ -121,16 +125,20 @@ class AccountList extends React.Component {
                     <AccountListItem
                         BunqJSClient={this.props.BunqJSClient}
                         updateExternal={this.updateExternal}
-                        account={account.MonetaryAccountBank}
+                        account={account}
                     />
                 ));
         }
 
-        const totalBalance = this.props.accounts.reduce(
-            (total, account) =>
-                total + parseFloat(account.MonetaryAccountBank.balance.value),
-            0
-        );
+        const totalBalance = this.props.accounts.reduce((total, account) => {
+            if (account.balance) {
+                return (
+                    total +
+                    parseFloat(account.balance.value)
+                );
+            }
+            return total;
+        }, 0);
         const formattedTotalBalance = formatMoney(totalBalance);
 
         return (

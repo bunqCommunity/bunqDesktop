@@ -110,15 +110,15 @@ class LoginPassword extends React.Component {
 
         const cardContent = registrationLoading ? (
             <CardContent style={{ textAlign: "center" }}>
-                <Typography type="headline" component="h2">
+                <Typography variant="headline" component="h2">
                     Loading
                 </Typography>
                 <CircularProgress size={50} />
-                <Typography type="subheading">{status_message}</Typography>
+                <Typography variant="subheading">{status_message}</Typography>
             </CardContent>
         ) : (
             <CardContent>
-                <Typography type="headline" component="h2">
+                <Typography variant="headline" component="h2">
                     {hasStoredApiKey ? (
                         "Enter your password"
                     ) : (
@@ -127,12 +127,12 @@ class LoginPassword extends React.Component {
                 </Typography>
 
                 {hasStoredApiKey ? (
-                    <Typography type="body2">
+                    <Typography variant="body2">
                         Enter your password to load your stored API key and
                         session. Click the reset button to enter a new API key.
                     </Typography>
                 ) : (
-                    <Typography type="body2">
+                    <Typography variant="body2">
                         We use this password to securely store your data. We'll
                         only ask for it once when you start BunqDesktop. Losing
                         it just means you'll have to enter a new password and
@@ -158,7 +158,7 @@ class LoginPassword extends React.Component {
                 />
 
                 <Button
-                    raised
+                    variant="raised"
                     disabled={buttonDisabled}
                     color={"primary"}
                     style={styles.loginButton}
@@ -173,8 +173,8 @@ class LoginPassword extends React.Component {
 
                 {hasStoredApiKey ? (
                     <Button
-                        raised
-                        color={"accent"}
+                        variant="raised"
+                        color={"secondary"}
                         style={styles.loginButton}
                         onClick={this.clearApiKey}
                     >
@@ -185,18 +185,18 @@ class LoginPassword extends React.Component {
                 {(hasStoredApiKey === true && useNoPassword === true) ||
                 hasStoredApiKey === false ? (
                     <div style={{ marginTop: 20 }}>
-                        <Typography type="body2">
+                        <Typography variant="body2">
                             Alternatively, you can choose to not encrypt your
                             data.
                         </Typography>
-                        <Typography type="body2">
+                        <Typography variant="body2">
                             If anyone gets access to your computer and they know
                             what they are doing they can get access to your API
                             key!
                         </Typography>
                         <Button
-                            raised
-                            color={"accent"}
+                            variant="raised"
+                            color={"secondary"}
                             style={styles.loginButton}
                             onClick={this.props.useNoPasswordLogin}
                         >
@@ -222,13 +222,13 @@ class LoginPassword extends React.Component {
                     <Grid item xs={12} sm={10} md={8} lg={6}>
                         <Card>
                             <CardContent>
-                                <Typography type="headline">
+                                <Typography variant="headline">
                                     <WarningIcon /> Caution!
                                 </Typography>
-                                <Typography type="body2">
+                                <Typography variant="body2">
                                     This project is still in active development!
                                 </Typography>
-                                <Typography type="body2">
+                                <Typography variant="body2">
                                     We test everything before releasing updates
                                     but until we release version 1.0.0 we advice
                                     against using BunqDesktop to make big

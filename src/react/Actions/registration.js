@@ -62,6 +62,13 @@ export function registrationLoadApiKey(derivedPassword) {
             .then(decryptedString => {
                 dispatch(registrationNotLoading());
 
+                const hexPattern = /[0-9A-Fa-f]*/g;
+                if (!hexPattern.test(decryptedString)) {
+                    Logger.error(
+                        "Non-hex values found in decrypted api key"
+                    );
+                }
+
                 // validate decrypted result
                 if (decryptedString.length !== 64) {
                     // clear the password so the user can try again
@@ -71,14 +78,18 @@ export function registrationLoadApiKey(derivedPassword) {
                             "We failed to load the stored API key. Try again or re-enter the key."
                         )
                     );
-                } else {
-                    dispatch({
-                        type: "REGISTRATION_SET_API_KEY",
-                        payload: {
-                            api_key: decryptedString
-                        }
-                    });
+                    Logger.error(
+                        `Failed to load API key: ${decryptedString} with length: ${decryptedString.length}`
+                    );
+
+                    return;
                 }
+                dispatch({
+                    type: "REGISTRATION_SET_API_KEY",
+                    payload: {
+                        api_key: decryptedString
+                    }
+                });
             })
             .catch(_ => {
                 dispatch(registrationNotLoading());
@@ -171,6 +182,7 @@ export function registrationClearApiKey(BunqJSClient) {
 
 /**
  * Clear the password
+ * @param bool resetNoPassword - set to false when something else is going wrong
  * @returns {{type: string}}
  */
 export function registrationClearPassword() {

@@ -72,12 +72,12 @@ class AccountSelectorDialog extends React.Component {
         const style = otherProps.style ? otherProps.style : {};
 
         const accountItems = accounts.map((account, accountKey) => {
-            if (account.MonetaryAccountBank.status !== "ACTIVE") {
+            if (account.status !== "ACTIVE") {
                 return null;
             }
             return (
                 <AccountItem
-                    account={account.MonetaryAccountBank}
+                    account={account}
                     onClick={this.onClickHandler(accountKey)}
                     hideBalance={this.props.hideBalance}
                     BunqJSClient={BunqJSClient}
@@ -89,7 +89,7 @@ class AccountSelectorDialog extends React.Component {
         if (value !== "" && accounts[value]) {
             selectedAccountItem = (
                 <AccountItem
-                    account={accounts[value].MonetaryAccountBank}
+                    account={accounts[value]}
                     onClick={this.openDialog}
                     BunqJSClient={BunqJSClient}
                     hideBalance={this.props.hideBalance}
@@ -107,7 +107,7 @@ class AccountSelectorDialog extends React.Component {
             <FormControl style={{ ...styles.formControl, ...style }}>
                 <Dialog
                     open={this.state.open}
-                    onRequestClose={this.handleRequestClose}
+                    onClose={this.handleRequestClose}
                 >
                     <DialogTitle>Select an account</DialogTitle>
                     <DialogContent>

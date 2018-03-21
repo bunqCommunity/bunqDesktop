@@ -1,22 +1,63 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
-export function bunqMeTabsSetInfo(bunq_me_tabs, account_id) {
+export const STORED_BUNQ_ME_TABS = "BUNQDESKTOP_STORED_BUNQ_ME_TABS";
+
+export function bunqMeTabsSetInfo(
+    bunqMeTabs,
+    account_id,
+    resetOldItems = false,
+    BunqJSClient = false
+) {
+    const type = resetOldItems
+        ? "BUNQ_ME_TABS_SET_INFO"
+        : "BUNQ_ME_TABS_UPDATE_INFO";
+
     return {
-        type: "BUNQ_ME_TABS_SET_INFO",
+        type: type,
         payload: {
-            bunq_me_tabs: bunq_me_tabs,
-            account_id: account_id
+            BunqJSClient,
+            bunqMeTabs,
+            account_id
         }
     };
 }
 
-export function bunqMeTabsUpdate(BunqJSClient, user_id, account_id) {
+export function loadStoredBunqMeTabs(BunqJSClient) {
+    return dispatch => {
+        BunqJSClient.Session
+            .loadEncryptedData(STORED_BUNQ_ME_TABS)
+            .then(data => {
+                if(data && data.items) {
+                    dispatch(bunqMeTabsSetInfo(data.items, data.account_id));
+                }
+            })
+            .catch(error => {});
+    };
+}
+
+export function bunqMeTabsUpdate(
+    BunqJSClient,
+    user_id,
+    accountId,
+    options = {
+        count: 50,
+        newer_id: false,
+        older_id: false
+    }
+) {
     return dispatch => {
         dispatch(bunqMeTabsLoading());
         BunqJSClient.api.bunqMeTabs
-            .list(user_id, account_id)
+            .list(user_id, accountId, options)
             .then(bunqMeTabs => {
-                dispatch(bunqMeTabsSetInfo(bunqMeTabs, account_id));
+                dispatch(
+                    bunqMeTabsSetInfo(
+                        bunqMeTabs,
+                        accountId,
+                        false,
+                        BunqJSClient
+                    )
+                );
                 dispatch(bunqMeTabsNotLoading());
             })
             .catch(error => {

@@ -1,15 +1,17 @@
 import React from "react";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
+import StickyBox from "react-sticky-box";
 import Paper from "material-ui/Paper";
 import Button from "material-ui/Button";
 import Grid from "material-ui/Grid";
 import Typography from "material-ui/Typography";
 import CombinedList from "../Components/CombinedList";
 import AccountList from "../Components/AccountList/AccountList";
-import StickyBox from "react-sticky-box";
+import LoadOlderButton from "../Components/LoadOlderButton";
 
 import { userLogin, userLogout } from "../Actions/user";
+import Logger from "../Helpers/Logger";
 
 const styles = {
     btn: {
@@ -30,7 +32,7 @@ class Dashboard extends React.Component {
             this.props.usersLoading === false &&
             this.props.user === false
         ) {
-            this.props.userLogin(this.props.userType);
+            this.props.userLogin(this.props.userType, false);
         }
     }
 
@@ -42,7 +44,7 @@ class Dashboard extends React.Component {
                 </Helmet>
 
                 <Grid item xs={8} sm={10}>
-                    <Typography type="title" gutterBottom>
+                    <Typography variant="title" gutterBottom>
                         Welcome {this.props.user.display_name}
                     </Typography>
                 </Grid>
@@ -55,12 +57,14 @@ class Dashboard extends React.Component {
 
                 <Grid item xs={12} md={4}>
                     <StickyBox className={"sticky-container"}>
-                    <Paper>
-                        <AccountList
-                            BunqJSClient={this.props.BunqJSClient}
-                            initialBunqConnect={this.props.initialBunqConnect}
-                        />
-                    </Paper>
+                        <Paper>
+                            <AccountList
+                                BunqJSClient={this.props.BunqJSClient}
+                                initialBunqConnect={
+                                    this.props.initialBunqConnect
+                                }
+                            />
+                        </Paper>
                     </StickyBox>
                 </Grid>
 
@@ -71,6 +75,11 @@ class Dashboard extends React.Component {
                             initialBunqConnect={this.props.initialBunqConnect}
                         />
                     </Paper>
+
+                    <LoadOlderButton
+                        BunqJSClient={this.props.BunqJSClient}
+                        initialBunqConnect={this.props.initialBunqConnect}
+                    />
                 </Grid>
             </Grid>
         );

@@ -183,10 +183,10 @@ class Login extends React.Component {
         const apiKeyContent =
             this.props.apiKey === false ? (
                 <CardContent>
-                    <Typography type="headline" component="h2">
+                    <Typography variant="headline" component="h2">
                         Enter your API Key
                     </Typography>
-                    <Typography type="caption">
+                    <Typography variant="caption">
                         In the bunq app go to your Profile > Security > API Keys
                         and generate a new key
                     </Typography>
@@ -247,7 +247,7 @@ class Login extends React.Component {
                     />
 
                     <Button
-                        raised
+                        variant="raised"
                         disabled={buttonDisabled}
                         color={"primary"}
                         style={styles.loginButton}
@@ -258,16 +258,16 @@ class Login extends React.Component {
                 </CardContent>
             ) : (
                 <CardContent>
-                    <Typography type="headline" component="h2">
+                    <Typography variant="headline" component="h2">
                         You're logged in!
                     </Typography>
-                    <Typography type="caption">
+                    <Typography variant="caption">
                         Click one of the accounts in the list to get started or
                         logout to change the key or environment.
                     </Typography>
                     <Button
-                        raised
-                        color={"accent"}
+                        variant="raised"
+                        color={"secondary"}
                         style={styles.clearButton}
                         onClick={this.clearApiKey}
                         disabled={this.props.userLoading}
@@ -279,11 +279,11 @@ class Login extends React.Component {
 
         const cardContent = this.props.registrationLoading ? (
             <CardContent style={{ textAlign: "center" }}>
-                <Typography type="headline" component="h2">
+                <Typography variant="headline" component="h2">
                     Loading
                 </Typography>
                 <CircularProgress size={50} />
-                <Typography type="subheading">{status_message}</Typography>
+                <Typography variant="subheading">{status_message}</Typography>
             </CardContent>
         ) : (
             apiKeyContent

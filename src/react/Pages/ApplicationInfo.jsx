@@ -103,10 +103,10 @@ class ApplicationInfo extends React.Component {
                             </Grid>
 
                             <Grid item sm={9} md={10}>
-                                <Typography type={"headline"}>
+                                <Typography variant={"headline"}>
                                     BunqDesktop
                                 </Typography>
-                                <Typography type={"body2"}>
+                                <Typography variant={"body2"}>
                                     Version: {process.env.CURRENT_VERSION}
                                 </Typography>
                             </Grid>
@@ -120,31 +120,42 @@ class ApplicationInfo extends React.Component {
                                         "settings location"
                                     )}
                                 >
-                                    <Typography type={"body2"}>
-                                        Settings: {app.getPath("userData")}/settings.json
-                                    </Typography>
+                                    <div>
+                                        <Typography variant={"body2"}>
+                                            Settings:
+                                        </Typography>
+                                        <Typography variant={"body2"}>
+                                            {app.getPath("userData")}/settings.json
+                                        </Typography>
+                                    </div>
                                 </CopyToClipboard>
-
+                                <br />
                                 <CopyToClipboard
                                     text={`${app.getPath(
                                         "userData"
                                     )}/BunqDesktop.log.txt`}
                                     onCopy={this.copiedValue("log location")}
                                 >
-                                    <Typography type={"body2"}>
-                                        Log file: {app.getPath("userData")}/BunqDesktop.log.txt
-                                    </Typography>
+                                    <div>
+                                        <Typography variant={"body2"}>
+                                            Log file:
+                                        </Typography>
+                                        <Typography variant={"body2"}>
+                                            {app.getPath("userData")}/BunqDesktop.log.txt
+                                        </Typography>
+                                    </div>
                                 </CopyToClipboard>
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Typography type={"title"}>Releases</Typography>
-                                <List>{releaseItems}</List>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Button raised component={NavLink} to={"/"}>
+                                <Button variant="raised" component={NavLink} to={"/"}>
                                     Back
                                 </Button>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <Typography variant={"title"}>Releases</Typography>
+                                <List>{releaseItems}</List>
                             </Grid>
                         </Grid>
                     </Paper>

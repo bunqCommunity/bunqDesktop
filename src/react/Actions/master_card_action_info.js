@@ -1,5 +1,7 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
+import { masterCardActionsSetInfo } from "./master_card_actions";
+
 export function masterCardActionSetInfo(
     master_card_action_info,
     account_id,
@@ -25,11 +27,21 @@ export function masterCardActionInfoUpdate(
         dispatch(masterCardActionInfoLoading());
         BunqJSClient.api.masterCardAction
             .get(user_id, account_id, master_card_action_id)
-            .then(paymentInfo => {
+            .then(masterCardActionInfo => {
+                // update this item in the payments list and the stored data
+                dispatch(
+                    masterCardActionsSetInfo(
+                        [masterCardActionInfo],
+                        parseInt(account_id),
+                        false,
+                        BunqJSClient
+                    )
+                );
+
                 dispatch(
                     masterCardActionSetInfo(
-                        paymentInfo,
-                        account_id,
+                        masterCardActionInfo,
+                        parseInt(account_id),
                         master_card_action_id
                     )
                 );

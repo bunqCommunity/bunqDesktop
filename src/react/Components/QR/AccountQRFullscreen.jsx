@@ -62,8 +62,8 @@ class AccountQRFullscreen extends React.PureComponent {
         let accountInfo = false;
         let IBAN = "";
         accounts.map(account => {
-            if (account.MonetaryAccountBank.id === accountId) {
-                accountInfo = account.MonetaryAccountBank;
+            if (account.id === accountId) {
+                accountInfo = account;
             }
         });
         accountInfo.alias.map(alias => {
@@ -80,10 +80,8 @@ class AccountQRFullscreen extends React.PureComponent {
                 fullScreen
                 className={classes.dialog}
                 open={this.state.open}
-                onRequestClose={this.handleRequestClose}
+                onClose={this.handleRequestClose}
                 onClick={this.handleRequestClose}
-                onEscapeKeyUp={this.handleRequestClose}
-                onBackdropClick={this.handleRequestClose}
                 transition={Transition}
             >
                 <div className={classes.content}>

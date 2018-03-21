@@ -1,22 +1,63 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
-export function requestInquiriesSetInfo(request_inquiries, account_id) {
+export const STORED_REQUEST_INQUIRIES = "BUNQDESKTOP_STORED_REQUEST_INQUIRIES";
+
+export function requestInquiriesSetInfo(
+    requestInquiries,
+    account_id,
+    resetOldItems = false,
+    BunqJSClient = false
+) {
+    const type = resetOldItems
+        ? "REQUEST_INQUIRIES_SET_INFO"
+        : "REQUEST_INQUIRIES_UPDATE_INFO";
+
     return {
-        type: "REQUEST_INQUIRIES_SET_INFO",
+        type: type,
         payload: {
-            request_inquiries: request_inquiries,
-            account_id: account_id
+            BunqJSClient,
+            requestInquiries,
+            account_id
         }
     };
 }
 
-export function requestInquiriesUpdate(BunqJSClient, userId, accountId) {
+export function loadStoredRequestInquiries(BunqJSClient) {
+    return dispatch => {
+        BunqJSClient.Session
+            .loadEncryptedData(STORED_REQUEST_INQUIRIES)
+            .then(data => {
+                if(data && data.items) {
+                    dispatch(requestInquiriesSetInfo(data.items, data.account_id));
+                }
+            })
+            .catch(error => {});
+    };
+}
+
+export function requestInquiriesUpdate(
+    BunqJSClient,
+    userId,
+    accountId,
+    options = {
+        count: 50,
+        newer_id: false,
+        older_id: false
+    }
+) {
     return dispatch => {
         dispatch(requestInquiriesLoading());
         BunqJSClient.api.requestInquiry
-            .list(userId, accountId)
+            .list(userId, accountId, options)
             .then(requestInquiries => {
-                dispatch(requestInquiriesSetInfo(requestInquiries, accountId));
+                dispatch(
+                    requestInquiriesSetInfo(
+                        requestInquiries,
+                        accountId,
+                        false,
+                        BunqJSClient
+                    )
+                );
                 dispatch(requestInquiriesNotLoading());
             })
             .catch(error => {
