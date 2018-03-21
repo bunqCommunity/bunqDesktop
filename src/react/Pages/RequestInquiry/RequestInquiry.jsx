@@ -86,7 +86,7 @@ class RequestInquiry extends React.Component {
     componentDidMount() {
         // set the current account selected on the dashboard as the active one
         this.props.accounts.map((account, accountKey) => {
-            if (this.props.selectedAccount === account.MonetaryAccountBank.id) {
+            if (this.props.selectedAccount === account.id) {
                 this.setState({ selectedAccount: accountKey });
             }
         });
@@ -310,7 +310,7 @@ class RequestInquiry extends React.Component {
         const minimumAgeInt = parseInt(minimumAge);
 
         // account the payment is made from
-        const account = accounts[selectedAccount].MonetaryAccountBank;
+        const account = accounts[selectedAccount];
         // our user id
         const userId = user.id;
 
@@ -375,7 +375,7 @@ class RequestInquiry extends React.Component {
             return null;
         }
         const account = this.props.accounts[selectedAccount]
-            .MonetaryAccountBank;
+            ;
 
         return (
             <Grid container spacing={24} align={"center"} justify={"center"}>

@@ -137,7 +137,7 @@ class TargetSelection extends React.Component {
                     // for transfers we can try to display a description
                     if (this.props.accounts[target.value]) {
                         targetValue = this.props.accounts[target.value]
-                            .MonetaryAccountBank.description;
+                            .description;
                     }
                     Icon = CompareArrowsIcon;
                     break;

@@ -59,7 +59,7 @@ class BunqMeTab extends React.Component {
     componentDidMount() {
         // set the current account selected on the dashboard as the active one
         this.props.accounts.map((account, accountKey) => {
-            if (this.props.selectedAccount === account.MonetaryAccountBank.id) {
+            if (this.props.selectedAccount === account.id) {
                 this.setState({ selectedAccount: accountKey });
             }
         });
@@ -148,7 +148,7 @@ class BunqMeTab extends React.Component {
             setRedirectUrl,
             redirectUrl
         } = this.state;
-        const account = accounts[selectedAccount].MonetaryAccountBank;
+        const account = accounts[selectedAccount];
         const userId = user.id;
 
         const amountInfo = {
@@ -231,7 +231,6 @@ class BunqMeTab extends React.Component {
                 sendInquiry={this.sendInquiry}
                 confirmModalOpen={this.state.confirmModalOpen}
                 description={description}
-                account={<account className="MonetaryAccountBank">  </account>}
                 amount={amount}
             />
         ];
