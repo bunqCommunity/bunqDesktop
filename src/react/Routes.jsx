@@ -43,7 +43,7 @@ const CategoryDashboard = CL(() =>
     import(/* webpackChunkName: "category_dashboard" */ "./Pages/CategoryDashboard")
 );
 const Card = CL(() =>
-    import(/* webpackChunkName: "cards" */ "./Pages/Card")
+    import(/* webpackChunkName: "cards" */ "./Pages/Cards/Card")
 );
 
 // router react component
@@ -211,7 +211,7 @@ export default class Routes extends React.Component {
                                 />
                             )}
                         />
-						
+
                         <Route
                             path="/login"
                             render={props => (

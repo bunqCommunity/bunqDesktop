@@ -59,7 +59,10 @@ const styles = theme => ({
             width: "calc(100% - 250px)"
         }
     },
-    main: { marginTop: 50, textAlign: "left" }
+    main: {
+        marginTop: 50,
+        textAlign: "left"
+    }
 });
 
 class Layout extends React.Component {

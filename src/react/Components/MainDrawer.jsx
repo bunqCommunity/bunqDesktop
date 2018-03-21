@@ -127,7 +127,7 @@ class MainDrawer extends React.Component {
                           <CardIcon />
                       </ListItemIcon>
                       <Typography type="subheading">Cards</Typography>
-                  </ListItem>
+                  </ListItem>,
                   <Divider />,
                   <ListItemWrapper
                       to="/stats"
@@ -183,7 +183,9 @@ class MainDrawer extends React.Component {
                     <ListItemIcon>
                         <PowerSettingsIcon />
                     </ListItemIcon>
-                    <Typography variant="subheading">Quit BunqDesktop</Typography>
+                    <Typography variant="subheading">
+                        Quit BunqDesktop
+                    </Typography>
                 </ListItem>
             </List>
         );
