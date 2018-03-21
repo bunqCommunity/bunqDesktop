@@ -1,4 +1,5 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import MonetaryAccount from "../Models/MonetaryAccount";
 
 export const STORED_ACCOUNTS = "BUNQDESKTOP_STORED_ACCOUNTS";
 
@@ -18,7 +19,9 @@ export function loadStoredAccounts(BunqJSClient) {
             .loadEncryptedData(STORED_ACCOUNTS)
             .then(data => {
                 if (data && data.items) {
-                    dispatch(accountsSetInfo(data.items, BunqJSClient));
+                    // turn plain objects back into MonetaryAccount objects
+                    const accountsOld = data.items.map(item => new MonetaryAccount(item));
+                    dispatch(accountsSetInfo(accountsOld, BunqJSClient));
                 }
             })
             .catch(error => {});
@@ -31,7 +34,10 @@ export function accountsUpdate(BunqJSClient, userId) {
         BunqJSClient.api.monetaryAccount
             .list(userId)
             .then(accounts => {
-                dispatch(accountsSetInfo(accounts, BunqJSClient));
+                // turn plain objects into MonetaryAccount objects
+                const accountsNew = accounts.map(item => new MonetaryAccount(item));
+
+                dispatch(accountsSetInfo(accountsNew, BunqJSClient));
                 dispatch(accountsNotLoading());
             })
             .catch(error => {

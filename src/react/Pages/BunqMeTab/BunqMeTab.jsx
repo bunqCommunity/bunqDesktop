@@ -34,7 +34,7 @@ class BunqMeTab extends React.Component {
     componentDidMount() {
         // set the current account selected on the dashboard as the active one
         this.props.accounts.map((account, accountKey) => {
-            if (this.props.selectedAccount === account.MonetaryAccountBank.id) {
+            if (this.props.selectedAccount === account.id) {
                 this.setState({ selectedAccount: accountKey });
             }
         });

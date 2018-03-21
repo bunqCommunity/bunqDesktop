@@ -62,8 +62,8 @@ class AccountQRFullscreen extends React.PureComponent {
         let accountInfo = false;
         let IBAN = "";
         accounts.map(account => {
-            if (account.MonetaryAccountBank.id === accountId) {
-                accountInfo = account.MonetaryAccountBank;
+            if (account.id === accountId) {
+                accountInfo = account;
             }
         });
         accountInfo.alias.map(alias => {
