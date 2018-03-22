@@ -139,7 +139,7 @@ class RuleCreator extends React.Component<any, any> {
     updateRule = ruleKey => (rule: Rule) => {
         const rules: Rule[] = [...this.state.rules];
         rules[ruleKey] = rule;
-        this.setState({ rules: rules }, this.updatePreview);
+        this.setState({ rules: rules });
     };
     addRule = (ruleType: RuleTypes) => {
         const rules = [...this.state.rules];
@@ -182,12 +182,11 @@ class RuleCreator extends React.Component<any, any> {
         const title = event.target.value;
         const titleError = title.length <= 0 || title.length > 32;
         this.setState(
-            { title: title, titleError: titleError },
-            this.updatePreview
+            { title: title, titleError: titleError }
         );
     };
     handleEnabledToggle = (event: any) => {
-        this.setState({ enabled: !this.state.enabled }, this.updatePreview);
+        this.setState({ enabled: !this.state.enabled });
     };
 
     saveRuleCollection = (event: any) => {
