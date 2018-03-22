@@ -29,8 +29,8 @@ const styles = {
     },
     cardInfoPaper: {
         padding: 12,
-        marginTop: 30,
-        height: 350
+        marginTop: 20,
+        height: 370
     },
     loadCvcbutton: {
         width: "100%"
@@ -285,7 +285,7 @@ class Card extends React.Component {
                                 </Grid>
 
                                 <br />
-                                <List>
+                                <List dense>
                                     <Divider />
                                     {connectedAccounts}
                                 </List>

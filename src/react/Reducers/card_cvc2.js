@@ -27,10 +27,13 @@ export default (state = defaultState, action) => {
                 loading: false
             };
 
-        case "CARDS_CVC2_CLEAR":
+        case "CARD_CVC2_CLEAR":
         case "REGISTRATION_CLEAR_API_KEY":
         case "REGISTRATION_CLEAR_USER_INFO":
-            return defaultState;
+            return {
+                ...state,
+                ...defaultState
+            };
     }
     return state;
 };
