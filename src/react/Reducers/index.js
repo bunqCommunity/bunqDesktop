@@ -7,6 +7,7 @@ import bunq_me_tab_filter from "./bunq_me_tab_filter";
 import bunq_me_tab from "./bunq_me_tab";
 import categories from "./categories";
 import cards from "./cards";
+import card_cvc2 from "./card_cvc2";
 import date_filter from "./date_filter";
 import general_filter from "./general_filter";
 import modal from "./modal";
@@ -39,7 +40,8 @@ export default combineReducers({
     bunq_me_tab_filter,
     bunq_me_tabs,
     categories,
-	cards,
+    cards,
+    card_cvc2,
     date_filter,
     general_filter,
     modal,

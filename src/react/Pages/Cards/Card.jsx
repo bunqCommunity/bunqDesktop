@@ -1,9 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
+import Countdown from "react-countdown-now";
+
 import Grid from "material-ui/Grid";
 import Paper from "material-ui/Paper";
+import Button from "material-ui/Button";
 import Divider from "material-ui/Divider";
-import List, { ListItem, ListItemText, ListSubheader } from "material-ui/List";
+import List, { ListItem, ListSubheader, ListItemText } from "material-ui/List";
 import Typography from "material-ui/Typography";
 import { CircularProgress } from "material-ui/Progress";
 
@@ -11,6 +14,10 @@ import CardListItem from "./CardListItem";
 import AccountListItem from "../../Components/AccountList/AccountListItem";
 
 import { cardUpdate } from "../../Actions/card";
+import {
+    cardUpdateCvc2Codes,
+    cardCvc2CodesClear
+} from "../../Actions/card_cvc2";
 
 const styles = {
     gridContainer: {
@@ -18,13 +25,15 @@ const styles = {
         overflow: "hidden"
     },
     cardInfoContainer: {
-        // height: "100%",
         marginTop: "calc(6vh + 20px)"
     },
     cardInfoPaper: {
         padding: 12,
         marginTop: 30,
         height: 350
+    },
+    loadCvcbutton: {
+        width: "100%"
     }
 };
 
@@ -43,8 +52,20 @@ class Card extends React.Component {
         this.props.cardUpdate(this.props.user.id);
     }
 
+    cardUpdateCvc2Codes = event => {
+        const cardInfo = this.props.cards[this.state.selectedCardIndex];
+        this.props.cardUpdateCvc2Codes(
+            this.props.user.id,
+            cardInfo.CardDebit.id
+        );
+    };
+
     handleCardClick = index => {
         this.setState({ selectedCardIndex: index });
+    };
+
+    countDownRenderer = ({ total, days, hours, minutes, seconds }) => {
+        return `Expires in: ${minutes}:${seconds}`;
     };
 
     render() {
@@ -121,12 +142,6 @@ class Card extends React.Component {
                     account => account.id == assignment.monetary_account_id
                 );
 
-                if (!currentAccount) {
-                    return null;
-                    // TODO show that joint accounts aren't available yet
-                    return <ListItem>Joint account</ListItem>;
-                }
-
                 let connectedText = "";
                 switch (assignment.type) {
                     case "PRIMARY":
@@ -143,15 +158,92 @@ class Card extends React.Component {
                         <ListSubheader style={{ height: 28 }}>
                             {connectedText}
                         </ListSubheader>
-                        <AccountListItem
-                            BunqJSClient={this.props.BunqJSClient}
-                            clickable={false}
-                            account={currentAccount}
-                        />
+                        {!currentAccount ? (
+                            <ListItem divider>
+                                <ListItemText
+                                    primary="No account found for this card"
+                                    secondary="This likely means this card is connected to a Joint account"
+                                />
+                            </ListItem>
+                        ) : (
+                            <AccountListItem
+                                BunqJSClient={this.props.BunqJSClient}
+                                clickable={false}
+                                account={currentAccount}
+                            />
+                        )}
                     </React.Fragment>
                 );
             }
         );
+        // cvcLoading: state.card_cvc2.loading,
+        // cvcCardId: state.card_cvc2.card_id,
+        // cvcUserId: state.card_cvc2.user_id,
+        // cvc2Codes: state.card_cvc2.cvc2_codes
+
+        let displayCvcInfo = null;
+        if (cardInfo.type === "MASTERCARD") {
+            // if id is different but not null we don't show the cvc list
+            const idsSet =
+                this.props.cvcCardId === cardInfo.id &&
+                this.props.cvcCardId !== null;
+
+            let cvc2CodeList = null;
+            if (idsSet) {
+                cvc2CodeList =
+                    this.props.cvc2Codes.length > 0 ? (
+                        <List>
+                            {this.props.cvc2Codes.map(cvc2_code => {
+                                const timeMs =
+                                    cvc2_code.expiry_time.getTime() + 3600000;
+                                return (
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={`CVC: ${cvc2_code.cvc2}`}
+                                            secondary={
+                                                <Countdown
+                                                    date={timeMs}
+                                                    onComplete={
+                                                        this.props
+                                                            .cardCvc2CodesClear
+                                                    }
+                                                    renderer={
+                                                        this.countDownRenderer
+                                                    }
+                                                />
+                                            }
+                                        />
+                                    </ListItem>
+                                );
+                            })}
+                        </List>
+                    ) : (
+                        <Typography
+                            variant="body2"
+                            style={{ textAlign: "center" }}
+                        >
+                            No CVC codes available
+                        </Typography>
+                    );
+            }
+
+            displayCvcInfo = (
+                <React.Fragment>
+                    {cvc2CodeList}
+                    <Button
+                        style={styles.loadCvcbutton}
+                        onClick={this.cardUpdateCvc2Codes}
+                        disabled={this.props.cvcLoading}
+                    >
+                        {cvc2CodeList !== null ? (
+                            "Update CVC Codes"
+                        ) : (
+                            "View CVC Codes"
+                        )}
+                    </Button>
+                </React.Fragment>
+            );
+        }
 
         return (
             <Grid container spacing={24} style={styles.gridContainer}>
@@ -186,7 +278,7 @@ class Card extends React.Component {
                                             variant={"body2"}
                                             style={{ textAlign: "right" }}
                                         >
-                                            Expires: <br/>
+                                            Expires: <br />
                                             {cardInfo.expiry_date}
                                         </Typography>
                                     </Grid>
@@ -197,6 +289,8 @@ class Card extends React.Component {
                                     <Divider />
                                     {connectedAccounts}
                                 </List>
+
+                                {displayCvcInfo}
                             </Paper>
                         </Grid>
                     </Grid>
@@ -211,14 +305,23 @@ const mapStateToProps = state => {
         user: state.user.user,
         accounts: state.accounts.accounts,
         cards: state.cards.cards,
-        cardsLoading: state.cards.loading
+        cardsLoading: state.cards.loading,
+
+        cvcLoading: state.card_cvc2.loading,
+        cvcCardId: state.card_cvc2.card_id,
+        cvcUserId: state.card_cvc2.user_id,
+        cvc2Codes: state.card_cvc2.cvc2_codes
     };
 };
 
 const mapDispatchToProps = (dispatch, props) => {
     const { BunqJSClient } = props;
     return {
-        cardUpdate: userId => dispatch(cardUpdate(BunqJSClient, userId))
+        cardUpdate: userId => dispatch(cardUpdate(BunqJSClient, userId)),
+        // list all cvc2 codes
+        cardUpdateCvc2Codes: (userId, cardId) =>
+            dispatch(cardUpdateCvc2Codes(BunqJSClient, userId, cardId)),
+        cardCvc2CodesClear: () => dispatch(cardCvc2CodesClear())
     };
 };
 
