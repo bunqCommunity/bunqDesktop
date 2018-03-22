@@ -2,17 +2,20 @@ import React from "react";
 import { connect } from "react-redux";
 import Grid from "material-ui/Grid";
 import Paper from "material-ui/Paper";
+import Typography from "material-ui/Typography";
+import { CircularProgress } from "material-ui/Progress";
 
 import { cardUpdate } from "../../Actions/card";
 import CardListItem from "./CardListItem";
 
 const styles = {
     gridContainer: {
-        height: "calc(97vh - 50px)",
+        height: "calc(96vh - 50px)",
         overflow: "hidden"
     },
     cardInfoContainer: {
-        height: "100%"
+        // height: "100%",
+        marginTop: "calc(6vh + 20px)"
     },
     cardInfoPaper: {
         marginTop: 30,
@@ -55,6 +58,49 @@ class Card extends React.Component {
                         onClick={this.handleCardClick.bind(this, index)}
                     />
                 ));
+        }
+
+        if (this.props.cardsLoading) {
+            return (
+                <Grid
+                    container
+                    spacing={24}
+                    style={styles.gridContainer}
+                    justify="center"
+                    alignItems="center"
+                >
+                    <Grid item xs={12} style={{ textAlign: "center" }}>
+                        <CircularProgress size={75} />
+                        <Typography
+                            variant="display1"
+                            style={{ textAlign: "center" }}
+                        >
+                            Loading cards...
+                        </Typography>
+                    </Grid>
+                </Grid>
+            );
+        }
+
+        if (cards.length === 0) {
+            return (
+                <Grid
+                    container
+                    spacing={24}
+                    style={styles.gridContainer}
+                    justify="center"
+                    alignItems="center"
+                >
+                    <Grid item xs={12}>
+                        <Typography
+                            variant="display1"
+                            style={{ textAlign: "center" }}
+                        >
+                            You don't have any cards
+                        </Typography>
+                    </Grid>
+                </Grid>
+            );
         }
 
         const translateOffset = this.state.selectedCardIndex * 410;
