@@ -1,5 +1,5 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import {openSnackbar} from "./snackbar";
+import { openSnackbar } from "./snackbar";
 import MonetaryAccount from "../Models/MonetaryAccount";
 
 export const STORED_ACCOUNTS = "BUNQDESKTOP_STORED_ACCOUNTS";
@@ -21,7 +21,9 @@ export function loadStoredAccounts(BunqJSClient) {
             .then(data => {
                 if (data && data.items) {
                     // turn plain objects back into MonetaryAccount objects
-                    const accountsOld = data.items.map(item => new MonetaryAccount(item));
+                    const accountsOld = data.items.map(
+                        item => new MonetaryAccount(item)
+                    );
                     dispatch(accountsSetInfo(accountsOld, BunqJSClient));
                 }
             })
@@ -36,7 +38,9 @@ export function accountsUpdate(BunqJSClient, userId) {
             .list(userId)
             .then(accounts => {
                 // turn plain objects into MonetaryAccount objects
-                const accountsNew = accounts.map(item => new MonetaryAccount(item));
+                const accountsNew = accounts.map(
+                    item => new MonetaryAccount(item)
+                );
 
                 dispatch(accountsSetInfo(accountsNew, BunqJSClient));
                 dispatch(accountsNotLoading());
@@ -111,4 +115,3 @@ export function createAccountLoading() {
 export function createAccountNotLoading() {
     return { type: "CREATE_ACCOUNT_IS_NOT_LOADING" };
 }
-

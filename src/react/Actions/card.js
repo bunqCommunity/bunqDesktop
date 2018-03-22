@@ -4,7 +4,7 @@ export function cardSetInfo(cards, user_id) {
     return {
         type: "CARD_SET_INFO",
         payload: {
-			user_id: user_id,
+            user_id: user_id,
             cards: cards
         }
     };
@@ -32,16 +32,6 @@ export function cardUpdate(BunqJSClient, user_id) {
 
 export function cardLoading() {
     return { type: "CARD_IS_LOADING" };
-}
-
-
-export function cardsSelectCard(card_id) {
-    return {
-        type: "CARD_SELECT_CARD",
-        payload: {
-            selectedCard: card_id
-        }
-    };
 }
 
 export function cardNotLoading() {
