@@ -11,6 +11,7 @@ import { CircularProgress, LinearProgress } from "material-ui/Progress";
 import RefreshIcon from "material-ui-icons/Refresh";
 
 import AccountListItem from "./AccountListItem";
+import AddAccount from "./AddAccount";
 import { formatMoney } from "../../Helpers/Utils";
 
 import { accountsSelectAccount, accountsUpdate } from "../../Actions/accounts";
@@ -167,7 +168,12 @@ class AccountList extends React.Component {
                     </ListItemSecondaryAction>
                 </ListItem>
                 {this.props.accountsLoading ? <LinearProgress /> : <Divider />}
-                <List>{accounts}</List>
+                <List>
+                    {accounts}
+                    <AddAccount
+                        displayAddAccount={this.props.displayAddAccount}
+                    />
+                </List>
             </List>
         );
     }

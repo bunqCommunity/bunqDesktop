@@ -1,4 +1,5 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import {openSnackbar} from "./snackbar";
 
 export function accountsSetInfo(accounts) {
     return {
@@ -29,6 +30,37 @@ export function accountsUpdate(BunqJSClient, userId) {
     };
 }
 
+export function createAccount(
+    BunqJSClient,
+    userId,
+    currency,
+    description,
+    dailyLimit,
+    color
+) {
+    return dispatch => {
+        dispatch(createAccountLoading());
+
+        const monetaryAccountBankApi = BunqJSClient.api.monetaryAccountBank;
+
+        monetaryAccountBankApi
+            .post(userId, currency, description, dailyLimit, color)
+            .then(result => {
+                dispatch(openSnackbar("Account created successfully!"));
+                dispatch(accountsUpdate(BunqJSClient, userId));
+                dispatch(createAccountNotLoading());
+            })
+            .catch(error => {
+                dispatch(createAccountNotLoading());
+                BunqErrorHandler(
+                    dispatch,
+                    error,
+                    "We received the following error while creating your account"
+                );
+            });
+    };
+}
+
 export function accountsLoading() {
     return { type: "ACCOUNTS_IS_LOADING" };
 }
@@ -49,3 +81,12 @@ export function accountsNotLoading() {
 export function accountsClear() {
     return { type: "ACCOUNTS_CLEAR" };
 }
+
+export function createAccountLoading() {
+    return { type: "CREATE_ACCOUNT_IS_LOADING" };
+}
+
+export function createAccountNotLoading() {
+    return { type: "CREATE_ACCOUNT_IS_NOT_LOADING" };
+}
+
