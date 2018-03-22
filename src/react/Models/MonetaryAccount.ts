@@ -61,10 +61,22 @@ export default class MonetaryAccount {
      * Used to store this object in JSON
      * @returns {string}
      */
-    public toJSON(): string {
+    public toJSON(): any {
         return this._rawData;
     }
 
+    /**
+     * Returns the current account balance as float
+     * @returns {number}
+     */
+    public getBalance(): number {
+        return parseFloat(this.balance.value);
+    }
+
+    /**
+     * Normal getters for all properties
+     * @returns {number}
+     */
     get accountType(): AccountType {
         return this._accountType;
     }
@@ -105,7 +117,7 @@ export default class MonetaryAccount {
     get setting(): MonetaryAccountSetting {
         return this._setting;
     }
-    get all_co_owner(): AllCoOwner|undefined{
+    get all_co_owner(): AllCoOwner | undefined {
         return this._all_co_owner;
     }
 }

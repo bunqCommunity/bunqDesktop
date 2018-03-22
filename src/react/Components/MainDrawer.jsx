@@ -16,6 +16,8 @@ import HomeIcon from "material-ui-icons/Home";
 import SettingsIcon from "material-ui-icons/Settings";
 import ShareIcon from "material-ui-icons/Share";
 import TimeLineIcon from "material-ui-icons/Timeline";
+import ListIcon from "material-ui-icons/List";
+import CardIcon from "material-ui-icons/CreditCard";
 import CreateIcon from "material-ui-icons/Create";
 import Bookmark from "material-ui-icons/Bookmark";
 
@@ -117,6 +119,12 @@ class MainDrawer extends React.Component {
                       text="bunq.me Requests"
                       location={this.props.location}
                   />,
+                  <ListItemWrapper
+                      to="/card"
+                      icon={CardIcon}
+                      text="Cards"
+                      location={this.props.location}
+                  />,
                   <Divider />,
                   <ListItemWrapper
                       to="/stats"
@@ -178,7 +186,9 @@ class MainDrawer extends React.Component {
                     <ListItemIcon>
                         <PowerSettingsIcon />
                     </ListItemIcon>
-                    <Typography variant="subheading">Quit BunqDesktop</Typography>
+                    <Typography variant="subheading">
+                        Quit BunqDesktop
+                    </Typography>
                 </ListItem>
             </List>
         );

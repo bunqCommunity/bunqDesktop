@@ -60,7 +60,10 @@ const styles = theme => ({
             width: "calc(100% - 250px)"
         }
     },
-    main: { marginTop: 50, textAlign: "left" }
+    main: {
+        marginTop: 50,
+        textAlign: "left"
+    }
 });
 
 class Layout extends React.Component {
@@ -341,6 +344,11 @@ class Layout extends React.Component {
             initialBunqConnect: this.state.initialBunqConnect
         };
 
+        const strippedLocation = this.props.location.pathname.replace(
+            /\W/g,
+            ""
+        );
+
         const RouteComponent = this.props.routesComponent;
         return (
             <MuiThemeProvider theme={ThemeList[this.props.theme]}>
@@ -352,7 +360,7 @@ class Layout extends React.Component {
                         container
                         spacing={16}
                         justify={"center"}
-                        className={classes.contentContainer}
+                        className={`${classes.contentContainer}  ${strippedLocation}-page`}
                         style={{
                             backgroundColor:
                                 ThemeList[this.props.theme].palette.background

@@ -1,0 +1,26 @@
+.carousel {
+    overflow: hidden;
+
+    margin-top: 6vh;
+
+    -webkit-transition: all .5s ease-in-out;
+    -moz-transition: all .5s ease-in-out;
+    -o-transition: all .5s ease-in-out;
+    transition: all .5s ease-in-out;
+
+    .single-card {
+        text-align: center;
+        list-style-type: none;
+        height: 350px;
+        margin-top: 60px;
+    }
+
+    .card-image {
+        max-width: 100%;
+        height: 100%
+    }
+}
+
+main > .card-page {
+    padding: 4px 16px !important;
+}

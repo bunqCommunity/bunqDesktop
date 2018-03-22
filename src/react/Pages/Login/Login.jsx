@@ -81,9 +81,9 @@ class Login extends React.Component {
             return;
         }
 
-        if (this.state.deviceName.length <= 5) {
+        if (this.state.deviceName.length <= 0) {
             this.props.openSnackbar(
-                "The device name has to be atleast 6 characters."
+                "The device name has to be atleast 1 character."
             );
             return;
         } else if (this.state.deviceName.length > 32) {
@@ -132,7 +132,7 @@ class Login extends React.Component {
             apiKeyValid: apiKey !== false && apiKey.length === 64,
             deviceNameValid:
                 deviceName !== false &&
-                deviceName.length >= 6 &&
+                deviceName.length >= 1 &&
                 deviceName.length <= 32
         });
     };
