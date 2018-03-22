@@ -11,6 +11,7 @@ body {
     min-height: 100%;
     width: 100%;
     display: flex;
+    background-color: rgb(48, 48, 48);
 }
 
 input,
@@ -47,6 +48,6 @@ main {
     outline: none;
 }
 
-.rainbow-background{
+.rainbow-background {
     background-image: $backgroundRainbow;
 }
