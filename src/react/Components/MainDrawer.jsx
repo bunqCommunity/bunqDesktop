@@ -117,17 +117,12 @@ class MainDrawer extends React.Component {
                       text="bunq.me Requests"
                       location={this.props.location}
                   />,
-                  <ListItem
-                      button
-                      style={styles.listBottomItem}
-                      component={NavLink}
+                  <ListItemWrapper
                       to="/card"
-                  >
-                      <ListItemIcon>
-                          <CardIcon />
-                      </ListItemIcon>
-                      <Typography type="subheading">Cards</Typography>
-                  </ListItem>,
+                      icon={CardIcon}
+                      text="Cards"
+                      location={this.props.location}
+                  />,
                   <Divider />,
                   <ListItemWrapper
                       to="/stats"
