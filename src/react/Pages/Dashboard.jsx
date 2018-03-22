@@ -11,7 +11,6 @@ import AccountList from "../Components/AccountList/AccountList";
 import LoadOlderButton from "../Components/LoadOlderButton";
 
 import { userLogin, userLogout } from "../Actions/user";
-import Logger from "../Helpers/Logger";
 
 const styles = {
     btn: {
@@ -44,8 +43,8 @@ class Dashboard extends React.Component {
                 </Helmet>
 
                 <Grid item xs={8} sm={10}>
-                    <Typography variant="title" gutterBottom>
-                        Welcome {this.props.user.display_name}
+                    <Typography type="title" gutterBottom>
+                        Welcome {this.props.user.first_name}
                     </Typography>
                 </Grid>
 
