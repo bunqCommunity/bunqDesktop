@@ -14,7 +14,7 @@ import { cardUpdate } from "../../Actions/card";
 
 const styles = {
     gridContainer: {
-        height: "calc(96vh - 50px)",
+        height: "calc(100vh - 50px)",
         overflow: "hidden"
     },
     cardInfoContainer: {
@@ -153,9 +153,6 @@ class Card extends React.Component {
             }
         );
 
-        console.log("");
-        console.log(cardInfo);
-
         return (
             <Grid container spacing={24} style={styles.gridContainer}>
                 <Grid item xs={6}>
@@ -189,15 +186,11 @@ class Card extends React.Component {
                                             variant={"body2"}
                                             style={{ textAlign: "right" }}
                                         >
+                                            Expires: <br/>
                                             {cardInfo.expiry_date}
                                         </Typography>
                                     </Grid>
                                 </Grid>
-
-                                {/*{cardInfo.primary_account_number_four_digit?*/}
-                                {/*<Typography variant={"body2"}>*/}
-                                {/*____-____-____-{cardInfo.primary_account_number_four_digit}*/}
-                                {/*</Typography>: null}*/}
 
                                 <br />
                                 <List>
