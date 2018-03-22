@@ -14,8 +14,6 @@ import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachment
 import NavLink from "../../Components/Routing/NavLink";
 import { formatMoney } from "../../Helpers/Utils";
 
-import store from "store";
-
 import { accountsSelectAccount } from "../../Actions/accounts.js";
 
 const styles = {
@@ -36,8 +34,12 @@ class AccountListItem extends React.Component {
             if (!this.props.paymentsLoading) {
                 // select this account
                 this.props.selectAccount(accountId);
-                // fetch all payments for the account
-                this.props.updateExternal(this.props.user.id, accountId);
+
+                // check if we have a load callback for click events
+                if (this.props.updateExternal) {
+                    // fetch all payments for the account
+                    this.props.updateExternal(this.props.user.id, accountId);
+                }
             }
         };
     };
@@ -53,12 +55,14 @@ class AccountListItem extends React.Component {
             ? ""
             : formatMoney(account.balance ? account.balance.value : 0);
 
+        const listItemProps = {};
+        if (this.props.clickable) {
+            listItemProps.button = true;
+            listItemProps.onClick = this.fetchPaymentsHandler(account.id);
+        }
+
         return (
-            <ListItem
-                button
-                divider
-                onClick={this.fetchPaymentsHandler(account.id)}
-            >
+            <ListItem divider {...listItemProps}>
                 <Avatar style={styles.bigAvatar}>
                     <LazyAttachmentImage
                         width={60}
@@ -103,6 +107,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         selectAccount: acountId => dispatch(accountsSelectAccount(acountId))
     };
+};
+
+AccountListItem.defaultProps = {
+    clickable: true
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AccountListItem);
