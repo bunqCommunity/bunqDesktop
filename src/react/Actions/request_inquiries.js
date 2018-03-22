@@ -1,6 +1,6 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
-export const STORED_REQUEST_INQUIRIES = "BUNQDESKTOP_REQUEST_INQUIRIES";
+export const STORED_REQUEST_INQUIRIES = "BUNQDESKTOP_STORED_REQUEST_INQUIRIES";
 
 export function requestInquiriesSetInfo(
     requestInquiries,
@@ -27,8 +27,9 @@ export function loadStoredRequestInquiries(BunqJSClient) {
         BunqJSClient.Session
             .loadEncryptedData(STORED_REQUEST_INQUIRIES)
             .then(data => {
-                console.log("request inquiries", data);
-                dispatch(requestInquiriesSetInfo(data.items, data.account_id));
+                if(data && data.items) {
+                    dispatch(requestInquiriesSetInfo(data.items, data.account_id));
+                }
             })
             .catch(error => {});
     };

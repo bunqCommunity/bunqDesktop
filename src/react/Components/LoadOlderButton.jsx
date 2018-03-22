@@ -93,7 +93,7 @@ class LoadOlderButton extends React.Component {
                     <CircularProgress style={this.props.loaderStyle} />
                 ) : (
                     <Button
-                        raised
+                        variant="raised"
                         color="primary"
                         aria-label="Load more items"
                         style={this.props.buttonStyle}

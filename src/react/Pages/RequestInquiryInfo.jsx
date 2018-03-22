@@ -11,11 +11,12 @@ import ArrowBackIcon from "material-ui-icons/ArrowBack";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
-import { formatMoney, humanReadableDate } from "../Helpers/Utils";
-import { requestInquiryText } from "../Helpers/StatusTexts";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import TransactionHeader from "../Components/TransactionHeader";
+import CategorySelector from "../Components/Categories/CategorySelector";
 
+import { formatMoney, humanReadableDate } from "../Helpers/Utils";
+import { requestInquiryText } from "../Helpers/StatusTexts";
 import { requestInquiryCancel } from "../Actions/request_inquiry";
 import { requestInquiryUpdate } from "../Actions/request_inquiry_info";
 
@@ -144,7 +145,7 @@ class RequestInquiryInfo extends React.Component {
 
                         <Typography
                             style={{ textAlign: "center" }}
-                            type={"body1"}
+                            variant={"body1"}
                         >
                             {requestInquiryLabel}
                         </Typography>
@@ -187,7 +188,7 @@ class RequestInquiryInfo extends React.Component {
                             <Grid container spacing={16} justify="center">
                                 <Grid item xs={12} sm={6}>
                                     <Button
-                                        raised
+                                        variant="raised"
                                         disabled={
                                             requestInquiryLoading ||
                                             requestInquiryInfoLoading
@@ -201,6 +202,11 @@ class RequestInquiryInfo extends React.Component {
                                 </Grid>
                             </Grid>
                         ) : null}
+
+                        <CategorySelector
+                            type={"RequestInquiry"}
+                            item={requestInquiryInfo}
+                        />
                     </Grid>
                 </Grid>
             );

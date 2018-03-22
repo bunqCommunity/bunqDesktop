@@ -42,6 +42,9 @@ const AddAccount = CL(() =>
 const Stats = CL(() =>
     import(/* webpackChunkName: "stats" */ "./Pages/Stats/Stats")
 );
+const CategoryDashboard = CL(() =>
+    import(/* webpackChunkName: "category_dashboard" */ "./Pages/CategoryDashboard")
+);
 
 // router react component
 export default class Routes extends React.Component {
@@ -192,7 +195,17 @@ export default class Routes extends React.Component {
                             userType={this.props.userType}
                             derivedPassword={this.props.derivedPassword}
                             render={props => (
-                                <Stats
+                                <Stats {...props} {...this.props.childProps} />
+                            )}
+                        />
+
+                        <PrivateRoute
+                            path="/category-dashboard"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <CategoryDashboard
                                     {...props}
                                     {...this.props.childProps}
                                 />

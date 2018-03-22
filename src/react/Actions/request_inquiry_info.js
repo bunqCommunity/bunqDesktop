@@ -32,7 +32,7 @@ export function requestInquiryUpdate(
                 dispatch(
                     requestInquiriesSetInfo(
                         [requestInquiryInfo],
-                        account_id,
+                        parseInt(account_id),
                         false,
                         BunqJSClient
                     )
@@ -41,7 +41,7 @@ export function requestInquiryUpdate(
                 dispatch(
                     requestInquirySetInfo(
                         requestInquiryInfo,
-                        account_id,
+                        parseInt(account_id),
                         request_inquiry_id
                     )
                 );

@@ -36,7 +36,7 @@ class Main extends React.Component {
                 </DialogContent>
                 <DialogActions>
                     <Button
-                        raised
+                        variant="raised"
                         onClick={this.props.closeModal}
                         color="primary"
                     >

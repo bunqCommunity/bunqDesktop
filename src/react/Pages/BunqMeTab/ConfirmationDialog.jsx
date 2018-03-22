@@ -12,10 +12,8 @@ export default class ConfirmationDialog extends React.Component {
     render() {
         const {
             confirmModalOpen,
-            account,
             description,
-            amount,
-            target
+            amount
         } = this.props;
 
         if (!confirmModalOpen) {
@@ -31,14 +29,6 @@ export default class ConfirmationDialog extends React.Component {
                 <DialogTitle>Confirm the request</DialogTitle>
                 <DialogContent>
                     <List>
-                        {/*<ListItem>*/}
-                            {/*<ListItemText*/}
-                                {/*primary="To"*/}
-                                {/*secondary={`${account.description} ${account*/}
-                                    {/*.balance.value} ${account.balance*/}
-                                    {/*.currency}`}*/}
-                            {/*/>*/}
-                        {/*</ListItem>*/}
                         <ListItem>
                             <ListItemText
                                 primary="Description"
@@ -55,14 +45,14 @@ export default class ConfirmationDialog extends React.Component {
                 </DialogContent>
                 <DialogActions>
                     <Button
-                        raised
+                        variant="raised"
                         onClick={this.props.closeModal}
                         color="secondary"
                     >
                         Cancel
                     </Button>
                     <Button
-                        raised
+                        variant="raised"
                         onClick={this.props.sendInquiry}
                         color="primary"
                     >

@@ -16,6 +16,7 @@ import CopyIcon from "material-ui-icons/ContentCopy";
 import Share from "material-ui-icons/Share";
 
 import PaymentListItem from "./PaymentListItem";
+import CategoryIcons from "../Categories/CategoryIcons";
 import { humanReadableDate, formatMoney } from "../../Helpers/Utils";
 
 const styles = {
@@ -99,7 +100,7 @@ class BunqMeTabListItem extends React.Component {
                     primary={primaryText}
                     secondary={bunqMeTab.bunqme_tab_entry.description}
                 />
-                <ListItemSecondaryAction>
+                <ListItemSecondaryAction style={{ marginTop: -40 }}>
                     <CopyToClipboard
                         text={shareUrl}
                         onCopy={this.props.copiedValue("the bunq.me tab url")}
@@ -109,6 +110,11 @@ class BunqMeTabListItem extends React.Component {
                         </IconButton>
                     </CopyToClipboard>
                 </ListItemSecondaryAction>
+                <CategoryIcons
+                    style={{ marginTop: 26 }}
+                    type={"BunqMeTab"}
+                    id={bunqMeTab.id}
+                />
             </ListItem>,
             <Collapse in={this.state.extraInfoOpen} unmountOnExit>
                 <ListItem dense>
@@ -156,7 +162,7 @@ class BunqMeTabListItem extends React.Component {
                     <ListItemSecondaryAction>
                         {canBeCanceled ? (
                             <Button
-                                raised
+                                variant="raised"
                                 disabled={
                                     this.props.bunqMeTabLoading ||
                                     this.props.bunqMeTabsLoading

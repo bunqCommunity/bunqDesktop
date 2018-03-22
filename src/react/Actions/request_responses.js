@@ -1,6 +1,6 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
-export const STORED_REQUEST_RESPONSES = "BUNQDESKTOP_REQUEST_RESPONSES";
+export const STORED_REQUEST_RESPONSES = "BUNQDESKTOP_STORED_REQUEST_RESPONSES";
 
 export function requestResponsesSetInfo(
     requestResponses,
@@ -27,8 +27,9 @@ export function loadStoredRequestResponses(BunqJSClient) {
         BunqJSClient.Session
             .loadEncryptedData(STORED_REQUEST_RESPONSES)
             .then(data => {
-                console.log("request responses", data);
-                dispatch(requestResponsesSetInfo(data.items, data.account_id));
+                if(data && data.items) {
+                    dispatch(requestResponsesSetInfo(data.items, data.account_id));
+                }
             })
             .catch(error => {});
     };

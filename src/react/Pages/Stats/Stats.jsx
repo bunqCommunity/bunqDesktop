@@ -10,6 +10,8 @@ import Radio, { RadioGroup } from "material-ui/Radio";
 import { FormControlLabel } from "material-ui/Form";
 
 import LoadOlderButton from "../../Components/LoadOlderButton";
+import ClearBtn from "../../Components/FilterComponents/ClearFilter";
+import FilterDrawer from "../../Components/FilterComponents/FilterDrawer";
 import StatsWorker from "../../WebWorkers/stats.worker";
 import PieChart from "./PieChart";
 import BalanceHistoryChart from "./BalanceHistoryChart";
@@ -30,7 +32,41 @@ class Stats extends React.Component {
     }
 
     componentWillUnmount() {
-        this.worker.destroy();
+        this.worker.terminate();
+    }
+
+    componentWillUpdate(nextProps, nextState) {
+        let triggerWorker = false;
+        const { timescale } = this.state;
+        const { generalFilterDate } = this.props;
+
+        // if any of these values changed we should always update
+        if (timescale !== nextState.timescale) triggerWorker = true;
+        if (generalFilterDate !== nextProps.generalFilterDate)
+            triggerWorker = true;
+
+        const isCurrentlyLoading =
+            this.props.bunqMeTabsLoading ||
+            this.props.paymentsLoading ||
+            this.props.requestResponsesLoading ||
+            this.props.requestInquiriesLoading ||
+            this.props.masterCardActionsLoading;
+        const willBeLoading =
+            nextProps.bunqMeTabsLoading ||
+            nextProps.paymentsLoading ||
+            nextProps.requestResponsesLoading ||
+            nextProps.requestInquiriesLoading ||
+            nextProps.masterCardActionsLoading;
+
+        if (isCurrentlyLoading === true && willBeLoading === false) {
+            // items are no longer loading so we can update trhe worker here
+            triggerWorker = true;
+        }
+
+        if (triggerWorker) {
+            // trigger an update with the next changed props
+            this.triggerWorker(nextProps, nextState);
+        }
     }
 
     componentDidMount() {
@@ -38,26 +74,50 @@ class Stats extends React.Component {
     }
 
     handleChange = (event, value) => {
-        this.setState({ timescale: value }, () => {
-            this.triggerWorker();
-        });
+        this.setState({ timescale: value });
     };
 
-    triggerWorker = () => {
+    triggerWorker = (props = this.props, state = this.state) => {
         this.worker.postMessage({
-            payments: this.props.payments,
-            masterCardActions: this.props.masterCardActions,
-            bunqMeTabs: this.props.bunqMeTabs,
-            requestInquiries: this.props.requestInquiries,
-            requestResponses: this.props.requestResponses,
-            accounts: this.props.accounts,
+            // all endpoints
+            payments: props.payments,
+            masterCardActions: props.masterCardActions,
+            bunqMeTabs: props.bunqMeTabs,
+            requestInquiries: props.requestInquiries,
+            requestResponses: props.requestResponses,
 
-            selectedAccount: this.props.selectedAccount,
+            // the accounts and selectedAccount so a balance can be calcualted
+            accounts: props.accounts.map(account => account.toJSON()),
+            selectedAccount: props.selectedAccount,
+
+            // different filter objects used in filtering the endpoints
             paymentFilterSettings: {
-                paymentVisibility: this.props.paymentVisibility,
-                paymentType: this.props.paymentType
+                paymentVisibility: props.paymentVisibility,
+                paymentType: props.paymentType,
+                dateFromFilter: props.dateFromFilter,
+                dateToFilter: props.dateToFilter
             },
-            timescale: this.state.timescale
+            bunqMeTabFilterSettings: {
+                bunqMeTabVisibility: props.bunqMeTabVisibility,
+                bunqMeTabType: props.bunqMeTabType,
+                dateFromFilter: props.dateFromFilter,
+                dateToFilter: props.dateToFilter
+            },
+            requestFilterSettings: {
+                requestVisibility: props.requestVisibility,
+                requestType: props.requestType,
+                dateFromFilter: props.dateFromFilter,
+                dateToFilter: props.dateToFilter
+            },
+
+            // category data
+            categories: props.categories,
+            categoryConnections: props.categoryConnections,
+
+            // date range filters and timescale setting
+            timeTo: props.dateToFilter,
+            timeFrom: props.dateFromFilter,
+            timescale: state.timescale
         });
     };
 
@@ -146,7 +206,7 @@ class Stats extends React.Component {
                   };
 
         let bigCharts = [
-            <Grid item xs={12}>
+            <Grid item xs={12} key={"balancechart"}>
                 <Paper>
                     <BalanceHistoryChart
                         height={500}
@@ -156,7 +216,7 @@ class Stats extends React.Component {
                     />
                 </Paper>
             </Grid>,
-            <Grid item xs={12}>
+            <Grid item xs={12} key={"eventschart"}>
                 <Paper>
                     <EventTypeHistoryChart
                         height={500}
@@ -220,6 +280,7 @@ class Stats extends React.Component {
                                         />
                                     </RadioGroup>
                                 </Grid>
+
                                 <Grid item xs={12}>
                                     <LoadOlderButton
                                         wrapperStyle={{ margin: 0 }}
@@ -228,6 +289,30 @@ class Stats extends React.Component {
                                         initialBunqConnect={
                                             this.props.initialBunqConnect
                                         }
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <FilterDrawer
+                                        bigButton={true}
+                                        buttonProps={{
+                                            style: {
+                                                width: "100%"
+                                            },
+                                            color: "primary"
+                                        }}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <ClearBtn
+                                        bigButton={true}
+                                        buttonProps={{
+                                            style: {
+                                                width: "100%"
+                                            },
+                                            color: "secondary"
+                                        }}
                                     />
                                 </Grid>
                             </Grid>
@@ -267,8 +352,18 @@ const mapStateToProps = state => {
         requestResponsesLoading: state.request_responses.loading,
         masterCardActionsLoading: state.master_card_actions.loading,
 
+        categories: state.categories.categories,
+        categoryConnections: state.categories.category_connections,
+
         paymentType: state.payment_filter.type,
-        paymentVisibility: state.payment_filter.visible
+        paymentVisibility: state.payment_filter.visible,
+        bunqMeTabType: state.bunq_me_tab_filter.type,
+        bunqMeTabVisibility: state.bunq_me_tab_filter.visible,
+        requestType: state.request_filter.type,
+        requestVisibility: state.request_filter.visible,
+        dateFromFilter: state.date_filter.from_date,
+        dateToFilter: state.date_filter.to_date,
+        generalFilterDate: state.general_filter.date
     };
 };
 

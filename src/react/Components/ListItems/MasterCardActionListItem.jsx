@@ -8,11 +8,13 @@ import {
 import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
 
-import { formatMoney } from "../../Helpers/Utils";
 import NavLink from "../../Components/Routing/NavLink";
-import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
+import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
+import CategoryIcons from "../Categories/CategoryIcons";
 import MoneyAmountLabel from "../MoneyAmountLabel";
-import {masterCardActionParser} from "../../Helpers/StatusTexts";
+
+import { masterCardActionParser } from "../../Helpers/StatusTexts";
+import { formatMoney } from "../../Helpers/Utils";
 
 const styles = {
     smallAvatar: {
@@ -66,7 +68,7 @@ class MasterCardActionListItem extends React.Component {
                     primary={displayName}
                     secondary={masterCardActionParser(masterCardAction)}
                 />
-                <ListItemSecondaryAction>
+                <ListItemSecondaryAction style={{ marginTop: -40 }}>
                     <MoneyAmountLabel
                         style={styles.moneyAmountLabel}
                         info={masterCardAction}
@@ -75,7 +77,13 @@ class MasterCardActionListItem extends React.Component {
                         {formattedPaymentAmount}
                     </MoneyAmountLabel>
                 </ListItemSecondaryAction>
+                <CategoryIcons
+                    style={{ marginTop: 26 }}
+                    type={"MasterCardAction"}
+                    id={masterCardAction.id}
+                />
             </ListItem>,
+
             <Divider />
         ];
     }

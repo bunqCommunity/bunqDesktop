@@ -50,7 +50,7 @@ const TransactionHeader = props => {
         if (props.accounts) {
             // loop through accounts
             props.accounts.forEach(account => {
-                const accountInfo = account.MonetaryAccountBank;
+                const accountInfo = account;
                 // loop through alias to find the iban and check if it matches
                 accountInfo.alias.forEach(alias => {
                     // if IBAN check if it matches the from or to alias
@@ -74,7 +74,7 @@ const TransactionHeader = props => {
                 BunqJSClient={props.BunqJSClient}
                 imageUUID={fromAvatar}
             />
-            <Typography type="subheading">{fromLabelName}</Typography>
+            <Typography variant="subheading">{fromLabelName}</Typography>
         </Grid>,
 
         <Grid item md={2} hidden={{ smDown: true }} style={styles.arrow}>
@@ -92,7 +92,7 @@ const TransactionHeader = props => {
                 imageUUID={toAvatar}
             />
 
-            <Typography type="subheading">{toLabelName}</Typography>
+            <Typography variant="subheading">{toLabelName}</Typography>
         </Grid>
     ];
 

@@ -22,7 +22,7 @@ import Dialog, {
 
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
-import TargetSelection from "../../Components/TargetSelection";
+import TargetSelection from "../../Components/FormFields/TargetSelection";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { paySend } from "../../Actions/pay";
@@ -90,7 +90,7 @@ class Pay extends React.Component {
     componentDidMount() {
         // set the current account selected on the dashboard as the active one
         this.props.accounts.map((account, accountKey) => {
-            if (this.props.selectedAccount === account.MonetaryAccountBank.id) {
+            if (this.props.selectedAccount === account.id) {
                 this.setState({ selectedAccount: accountKey });
             }
         });
@@ -280,7 +280,7 @@ class Pay extends React.Component {
         } = this.state;
 
         const account = this.props.accounts[selectedAccount]
-            .MonetaryAccountBank;
+            ;
 
         const noTargetsCondition = targets.length < 0;
         const insufficientFundsCondition =
@@ -326,7 +326,7 @@ class Pay extends React.Component {
         } = this.state;
 
         // account the payment is made from
-        const account = accounts[selectedAccount].MonetaryAccountBank;
+        const account = accounts[selectedAccount];
         // our user id
         const userId = user.id;
 
@@ -349,7 +349,7 @@ class Pay extends React.Component {
                     break;
                 case "TRANSFER":
                     const otherAccount =
-                        accounts[target.value].MonetaryAccountBank;
+                        accounts[target.value];
 
                     otherAccount.alias.map(alias => {
                         if (alias.type === "IBAN") {
@@ -404,7 +404,7 @@ class Pay extends React.Component {
         let confirmationModal = null;
         if (this.state.confirmModalOpen) {
             const account = this.props.accounts[selectedAccount]
-                .MonetaryAccountBank;
+                ;
 
             // create a list of ListItems with our targets
             const confirmationModelTargets = targets.map(
@@ -426,7 +426,7 @@ class Pay extends React.Component {
                         case "TRANSFER":
                             const account = this.props.accounts[
                                 selectedTargetAccount
-                            ].MonetaryAccountBank;
+                            ];
                             primaryText = `Transfer: ${account.description}`;
                             break;
                     }
@@ -487,14 +487,14 @@ class Pay extends React.Component {
                     </DialogContent>
                     <DialogActions>
                         <Button
-                            raised
+                            variant="raised"
                             onClick={this.closeModal}
                             color="secondary"
                         >
                             Cancel
                         </Button>
                         <Button
-                            raised
+                            variant="raised"
                             onClick={this.sendPayment}
                             color="primary"
                         >
@@ -513,7 +513,7 @@ class Pay extends React.Component {
 
                 <Grid item xs={12} sm={10} md={8} lg={6}>
                     <Paper style={styles.paper}>
-                        <Typography type="headline">New Payment</Typography>
+                        <Typography variant="headline">New Payment</Typography>
 
                         <AccountSelectorDialog
                             value={this.state.selectedAccount}
@@ -596,7 +596,7 @@ class Pay extends React.Component {
                         </FormControl>
 
                         <Button
-                            raised
+                            variant="raised"
                             color="primary"
                             disabled={
                                 !this.state.validForm || this.props.payLoading

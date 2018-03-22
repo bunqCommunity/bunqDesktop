@@ -32,7 +32,7 @@ export function requestResponseUpdate(
                 dispatch(
                     requestResponsesSetInfo(
                         [requestResponseInfo],
-                        account_id,
+                        parseInt(account_id),
                         false,
                         BunqJSClient
                     )
@@ -41,7 +41,7 @@ export function requestResponseUpdate(
                 dispatch(
                     requestResponseSetInfo(
                         requestResponseInfo,
-                        account_id,
+                        parseInt(account_id),
                         request_response_id
                     )
                 );

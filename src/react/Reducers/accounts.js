@@ -1,5 +1,7 @@
 const store = require("store");
 
+import { STORED_ACCOUNTS } from "../Actions/accounts";
+
 export const SELECTED_ACCOUNT_LOCAION = "BUNQDESKTOP_SELECTED_ACCOUNT";
 
 const selectedAccountDefault =
@@ -16,6 +18,19 @@ export const defaultState = {
 export default (state = defaultState, action) => {
     switch (action.type) {
         case "ACCOUNTS_SET_INFO":
+            // store the data if we have access to the bunqjsclient
+            if (action.payload.BunqJSClient) {
+                action.payload.BunqJSClient.Session
+                    .storeEncryptedData(
+                        {
+                            items: action.payload.accounts
+                        },
+                        STORED_ACCOUNTS
+                    )
+                    .then(() => {})
+                    .catch(() => {});
+            }
+
             return {
                 ...state,
                 accounts: action.payload.accounts

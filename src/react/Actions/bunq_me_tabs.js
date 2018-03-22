@@ -1,6 +1,6 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
-export const STORED_BUNQ_ME_TABS = "BUNQDESKTOP_BUNQ_ME_TABS";
+export const STORED_BUNQ_ME_TABS = "BUNQDESKTOP_STORED_BUNQ_ME_TABS";
 
 export function bunqMeTabsSetInfo(
     bunqMeTabs,
@@ -27,8 +27,9 @@ export function loadStoredBunqMeTabs(BunqJSClient) {
         BunqJSClient.Session
             .loadEncryptedData(STORED_BUNQ_ME_TABS)
             .then(data => {
-                console.log("bunq me tabs", data);
-                dispatch(bunqMeTabsSetInfo(data.items, data.account_id));
+                if(data && data.items) {
+                    dispatch(bunqMeTabsSetInfo(data.items, data.account_id));
+                }
             })
             .catch(error => {});
     };

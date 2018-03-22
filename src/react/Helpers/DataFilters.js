@@ -1,3 +1,27 @@
+const checkDateRange = (fromDate, toDate, date) => {
+    // nothing to check so always valid
+    if (fromDate === null && toDate === null) return true;
+
+    // turn date into object
+    const dateObject = new Date(date);
+    const time = dateObject.getTime();
+
+    if (fromDate !== null) {
+        if (time < fromDate.getTime()) {
+            // outside from range
+            return false;
+        }
+    }
+    if (toDate !== null) {
+        if (time > toDate.getTime()) {
+            // outside to range
+            return false;
+        }
+    }
+
+    return true;
+};
+
 export const paymentFilter = options => payment => {
     if (options.paymentVisibility === false) {
         return false;
@@ -9,7 +33,7 @@ export const paymentFilter = options => payment => {
         return false;
     }
 
-    if(options.paymentType){
+    if (options.paymentType) {
         if (options.paymentType === "received") {
             if (paymentInfo.amount.value <= 0) {
                 return false;
@@ -20,13 +44,28 @@ export const paymentFilter = options => payment => {
             }
         }
     }
-    return true;
+
+    return checkDateRange(
+        options.dateFromFilter,
+        options.dateToFilter,
+        paymentInfo.created
+    );
 };
 
 export const bunqMeTabsFilter = options => bunqMeTab => {
     if (options.bunqMeTabVisibility === false) {
         return false;
     }
+
+    const dateCheck = checkDateRange(
+        options.dateFromFilter,
+        options.dateToFilter,
+        bunqMeTab.BunqMeTab.created
+    );
+    if (!dateCheck) {
+        return false;
+    }
+
     switch (options.bunqMeTabType) {
         case "active":
             return bunqMeTab.BunqMeTab.status === "WAITING_FOR_PAYMENT";
@@ -35,6 +74,7 @@ export const bunqMeTabsFilter = options => bunqMeTab => {
         case "expired":
             return bunqMeTab.BunqMeTab.status === "EXPIRED";
     }
+
     return true;
 };
 
@@ -43,7 +83,15 @@ export const masterCardActionFilter = options => masterCardAction => {
         return false;
     }
 
-    return options.paymentType !== "received";
+    if (options.paymentType === "received") {
+        return false;
+    }
+
+    return checkDateRange(
+        options.dateFromFilter,
+        options.dateToFilter,
+        masterCardAction.MasterCardAction.updated
+    );
 };
 
 export const requestResponseFilter = options => requestResponse => {
@@ -52,11 +100,20 @@ export const requestResponseFilter = options => requestResponse => {
     }
 
     // hide accepted payments
-    if (requestResponse.RequestResponse.status === "ACCEPTED") return false;
+    if (requestResponse.RequestResponse.status === "ACCEPTED") {
+        return false;
+    }
 
-    return !(
-        options.requestType !== "sent" &&
-        options.requestType !== "default"
+    if (
+        !(options.requestType !== "sent" && options.requestType !== "default")
+    ) {
+        return false;
+    }
+
+    return checkDateRange(
+        options.dateFromFilter,
+        options.dateToFilter,
+        requestResponse.RequestResponse.updated
     );
 };
 
@@ -65,10 +122,22 @@ export const requestInquiryFilter = options => requestInquiry => {
         return false;
     }
 
-    if (requestInquiry.RequestInquiry.status === "ACCEPTED") return false;
+    if (requestInquiry.RequestInquiry.status === "ACCEPTED") {
+        return false;
+    }
 
-    return !(
-        options.requestType !== "received" &&
-        options.requestType !== "default"
+    if (
+        !(
+            options.requestType !== "received" &&
+            options.requestType !== "default"
+        )
+    ) {
+        return false;
+    }
+
+    return checkDateRange(
+        options.dateFromFilter,
+        options.dateToFilter,
+        requestInquiry.RequestInquiry.updated
     );
 };

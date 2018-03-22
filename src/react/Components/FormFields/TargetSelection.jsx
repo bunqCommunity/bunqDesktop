@@ -17,9 +17,9 @@ import EmailIcon from "material-ui-icons/Email";
 import PhoneIcon from "material-ui-icons/Phone";
 import CompareArrowsIcon from "material-ui-icons/CompareArrows";
 
-import PhoneFormatInput from "./FormFields/PhoneFormatInput";
-import AccountSelectorDialog from "./FormFields/AccountSelectorDialog";
-import { openSnackbar } from "../Actions/snackbar";
+import PhoneFormatInput from "./PhoneFormatInput";
+import AccountSelectorDialog from "./AccountSelectorDialog";
+import { openSnackbar } from "../../Actions/snackbar";
 
 const styles = {
     payButton: {
@@ -66,7 +66,7 @@ class TargetSelection extends React.Component {
             case "PHONE":
                 targetContent = (
                     <FormControl fullWidth error={this.props.targetError}>
-                        <Typography type="body1">
+                        <Typography variant="body1">
                             Phone numbers should contain no spaces and include
                             the land code. For example: +316123456789
                         </Typography>
@@ -137,7 +137,7 @@ class TargetSelection extends React.Component {
                     // for transfers we can try to display a description
                     if (this.props.accounts[target.value]) {
                         targetValue = this.props.accounts[target.value]
-                            .MonetaryAccountBank.description;
+                            .description;
                     }
                     Icon = CompareArrowsIcon;
                     break;
@@ -254,7 +254,7 @@ class TargetSelection extends React.Component {
                 </Grid>
                 <Grid item xs={12}>
                     <Button
-                        raised
+                        variant="raised"
                         color="primary"
                         disabled={
                             // target input error
