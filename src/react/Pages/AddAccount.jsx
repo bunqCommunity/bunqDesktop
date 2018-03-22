@@ -175,7 +175,7 @@ class AccountInfo extends React.Component {
                             />
                         </FormControl>
                         <Button
-                            raised
+                            variant="raised"
                             color="primary"
                             disabled={!this.state.validForm}
                             onClick={this.createAccount}
