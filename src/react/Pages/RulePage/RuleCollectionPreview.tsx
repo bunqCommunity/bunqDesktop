@@ -43,10 +43,8 @@ class RuleCollectionPreview extends React.Component<any, any> {
     }
 
     handleWorkerEvent = (eventResults: any) => {
-        console.log("received events", eventResults);
         this.setState({ eventResults: eventResults.data });
     };
-
     triggerWorkerEvent = props => {
         const ruleCollection: RuleCollection | null = this.props.ruleCollection;
         this.worker.postMessage({
@@ -59,7 +57,16 @@ class RuleCollectionPreview extends React.Component<any, any> {
         });
     };
 
-    componentDidUpdate() {}
+    componentDidUpdate(lastProps, lastState) {
+        // if changed, we reload the worker info
+        if (
+            lastProps.ruleCollectionUpdated !== this.props.ruleCollectionUpdated
+        ) {
+            if(this.state.visible){
+                this.triggerWorkerEvent(this.props);
+            }
+        }
+    }
 
     render() {
         const toggleDisplay = (

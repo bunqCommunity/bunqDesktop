@@ -18,12 +18,16 @@ class RulesPage extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            previewRuleCollection: null
+            previewRuleCollection: null,
+            previewUpdated: new Date()
         };
     }
 
     updatePreview = ruleCollection => {
-        this.setState({ previewRuleCollection: ruleCollection });
+        this.setState({
+            previewRuleCollection: ruleCollection,
+            previewUpdated: new Date()
+        });
     };
 
     render() {
@@ -60,6 +64,7 @@ class RulesPage extends React.Component {
                 <Grid item xs={12}>
                     <RuleCollectionPreview
                         ruleCollection={this.state.previewRuleCollection}
+                        ruleCollectionUpdated={this.state.previewUpdated}
                         payments={this.props.payments}
                         bunqMeTabs={this.props.bunqMeTabs}
                         masterCardActions={this.props.masterCardActions}

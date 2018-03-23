@@ -40,6 +40,5 @@ onmessage = (e: MessageEventInit) => {
 
     // filter the results
     const result: EventObjectResult[] = ruleCollection.filterItems(events);
-    console.log("sent result", result);
     postMessage(result);
 };

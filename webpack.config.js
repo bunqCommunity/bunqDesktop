@@ -19,7 +19,7 @@ let config = {
         path: BUILD_DIR,
         filename: OUTPUT_DIR + "[name].js",
         publicPath: "react/",
-        chunkFilename: OUTPUT_DIR + "[name].[chunkhash].bundle.js"
+        chunkFilename: OUTPUT_DIR + "[name].bundle.js"
     },
     resolve: {
         extensions: [".tsx", ".ts", ".js", ".jsx", ".json"],

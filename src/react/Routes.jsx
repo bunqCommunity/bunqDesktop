@@ -197,7 +197,6 @@ export default class Routes extends React.Component {
                             )}
                         />
 
-
                         <PrivateRoute
                             path="/stats"
                             apiKey={this.props.apiKey}
@@ -221,16 +220,13 @@ export default class Routes extends React.Component {
                             )}
                         />
 
-						<PrivateRoute
+                        <PrivateRoute
                             path="/card"
                             apiKey={this.props.apiKey}
                             userType={this.props.userType}
                             derivedPassword={this.props.derivedPassword}
                             render={props => (
-                                <Card
-                                    {...props}
-                                    {...this.props.childProps}
-                                />
+                                <Card {...props} {...this.props.childProps} />
                             )}
                         />
 
