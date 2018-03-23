@@ -1,5 +1,6 @@
 import * as React from "react";
 import Paper from "material-ui/Paper";
+import Button from "material-ui/Button";
 import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
 import RuleCollection, {
     EventObject,
@@ -9,9 +10,19 @@ import RuleCollection, {
 import CheckIcon from "material-ui-icons/Check";
 import CrossIcon from "material-ui-icons/Cancel";
 
+const styles = {
+    toggleVisibilityButton: {
+        width: "100%",
+        marginBottom: 16
+    },
+    paper: {
+        textAlign: "center"
+    }
+};
+
 class RuleCollectionPreview extends React.Component<any, any> {
     state = {
-        showAll: false
+        visible: false
     };
 
     mergeEvents = (): EventObject[] => {
@@ -58,37 +69,59 @@ class RuleCollectionPreview extends React.Component<any, any> {
     };
 
     render() {
-        const ruleCollection: RuleCollection | null = this.props.ruleCollection;
-
-        if (ruleCollection === null) return null;
-
-        const events: EventObject[] = this.mergeEvents();
-        const filteredEvents: EventObjectResult[] = ruleCollection.filterItems(
-            events
+        const toggleDisplay = (
+            <Button
+                variant="raised"
+                style={styles.toggleVisibilityButton}
+                onClick={event =>
+                    this.setState({ visible: !this.state.visible })}
+            >
+                {this.state.visible ? "Hide preview" : "Show preview"}
+            </Button>
         );
 
-        console.log(filteredEvents);
+        let previewContent = null;
+        if (this.state.visible) {
+            const ruleCollection: RuleCollection | null = this.props
+                .ruleCollection;
+            if (ruleCollection === null) return null;
 
-        const items: any[] = filteredEvents.map(
-            (event: EventObjectResult, index: any) => {
-                return (
-                    <ListItem key={index}>
-                        <ListItemText
-                            primary={`Matches: ${event.matches ? "yes" : "no"}`}
-                            secondary={`Type: ${event.type}`}
-                        />
-                        <ListItemIcon>
-                            {event.matches ? <CheckIcon /> : <CrossIcon />}
-                        </ListItemIcon>
-                    </ListItem>
-                );
-            }
-        );
+            const events: EventObject[] = this.mergeEvents();
+            const filteredEvents: EventObjectResult[] = ruleCollection.filterItems(
+                events
+            );
+
+            const items: any[] = filteredEvents.map(
+                (event: EventObjectResult, index: any) => {
+                    return (
+                        <ListItem key={index}>
+                            <ListItemText
+                                primary={`Matches: ${event.matches
+                                    ? "yes"
+                                    : "no"}`}
+                                secondary={`Type: ${event.type}`}
+                            />
+                            <ListItemIcon>
+                                {event.matches ? <CheckIcon /> : <CrossIcon />}
+                            </ListItemIcon>
+                        </ListItem>
+                    );
+                }
+            );
+
+            previewContent = (
+                <Paper style={styles.paper}>
+                    <List>{items}</List>
+                </Paper>
+            );
+        }
 
         return (
-            <Paper>
-                <List>{items}</List>
-            </Paper>
+            <React.Fragment>
+                {toggleDisplay}
+
+                {previewContent}
+            </React.Fragment>
         );
     }
 }

@@ -1,4 +1,7 @@
 import { Rule } from "./Rules/Rule";
+import TransactionAmountRule from "./Rules/TransactionAmountRule";
+import ValueRule from "./Rules/ValueRule";
+import TypeRule from "./Rules/TypeRule";
 import { generateGUID } from "../Helpers/Utils";
 
 export type RuleCollectionMatchType = "OR" | "AND";
@@ -146,15 +149,58 @@ export default class RuleCollection {
         return false;
     }
 
-    private checkValueRule(rule: Rule, event: EventObject): boolean {
+    private checkValueRule(rule: ValueRule, event: EventObject): boolean {
         return false;
     }
 
     private checkTransactionAmountRule(
-        rule: Rule,
+        rule: TransactionAmountRule,
         event: EventObject
     ): boolean {
-        return false;
+        let amount: number = 0;
+        switch (event.type) {
+            case "Payment":
+                amount = parseFloat(event.item.amount.value);
+                break;
+            case "BunqMeTab":
+                // no transaction amount for this so we ignore it
+                return false;
+            case "RequestInquiry":
+                if (event.item.status === "ACCEPTED") {
+                    // accepted so an amount was transfered
+                    amount = parseFloat(event.item.amount_responded.value);
+                } else {
+                    // invalid type, just return false
+                    return false;
+                }
+                break;
+            case "RequestResponse":
+                if (event.item.status === "ACCEPTED") {
+                    // accepted so an amount was transfered
+                    amount = parseFloat(event.item.amount_responded.value);
+                } else {
+                    // invalid type, just return false
+                    return false;
+                }
+                break;
+            case "MasterCardAction":
+                amount = parseFloat(event.item.amount_billing.value);
+                break;
+        }
+
+        // turn negative numbers into possitive numbers for outgoing payments
+        amount = amount < 0 ? amount * -1 : amount;
+
+        switch (rule.matchType) {
+            case "MORE":
+                return rule.amount < amount;
+            case "MORE_EQUALS":
+                return rule.amount <= amount;
+            case "LESS":
+                return rule.amount > amount;
+            case "LESS_EQUALS":
+                return rule.amount >= amount;
+        }
     }
 
     /**
@@ -163,11 +209,7 @@ export default class RuleCollection {
      * @param {EventObject} event
      * @returns {boolean}
      */
-    private checkItemTypeRule(rule: Rule, event: EventObject): boolean {
-        if (event.type === "Payment") {
-            console.log(event.type, rule.matchType);
-        }
-
+    private checkItemTypeRule(rule: TypeRule, event: EventObject): boolean {
         // simply check if the event type matches the requried rule type
         switch (rule.matchType) {
             case "PAYMENT":
