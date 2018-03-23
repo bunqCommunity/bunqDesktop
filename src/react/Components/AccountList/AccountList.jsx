@@ -26,7 +26,7 @@ const styles = {
         textAlign: "left",
         overflowY: "auto",
         overflowX: "hidden",
-        maxHeight: 600
+        maxHeight: "90vh"
     }
 };
 
