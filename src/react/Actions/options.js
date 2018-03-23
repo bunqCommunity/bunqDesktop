@@ -16,6 +16,15 @@ export function setNativeFrame(useFrame) {
     };
 }
 
+export function setStickyMenu(stickyMenu) {
+    return {
+        type: "OPTIONS_SET_STICKY_MENU",
+        payload: {
+            sticky_menu: stickyMenu
+        }
+    };
+}
+
 export function setHideBalance(hideBalance) {
     return {
         type: "OPTIONS_SET_HIDE_BALANCE",

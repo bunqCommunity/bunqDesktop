@@ -1,18 +1,29 @@
 import React from "react";
 import { connect } from "react-redux";
 import IconButton from "material-ui/IconButton";
-import MenuIcon from "material-ui-icons/Menu";
 import Hidden from "material-ui/Hidden";
+
+import MenuIcon from "material-ui-icons/Menu";
+import CloseIcon from "material-ui-icons/Close";
 
 import { openMainDrawer } from "../Actions/main_drawer";
 
+const buttonDefaultStyles = {
+    color: "white",
+    WebkitAppRegion: "no-drag",
+    position: "fixed",
+    top: 1,
+    zIndex: 1000
+};
+
 const styles = {
-    headerBtn: {
-        WebkitAppRegion: "no-drag",
-        position: "fixed",
-        top: 1,
-        left: 5,
-        zIndex: 1000
+    headerMenuBtn: {
+        ...buttonDefaultStyles,
+        left: 5
+    },
+    headerRightBtn: {
+        ...buttonDefaultStyles,
+        right: 5
     },
     header: {
         // background: "url(images/bunq-colours-bar-2.png)",
@@ -36,25 +47,45 @@ class Header extends React.Component {
         this.state = {};
     }
 
+    closeApp() {
+        window.close();
+    }
+
     render() {
+        const menuButton = (
+            <IconButton
+                aria-label="view main drawer"
+                onClick={this.props.openDrawer}
+                style={styles.headerMenuBtn}
+            >
+                <MenuIcon />
+            </IconButton>
+        );
+        const wrappedButton = this.props.stickyMenu ? (
+            <Hidden mdUp>{menuButton}</Hidden>
+        ) : (
+            menuButton
+        );
+
         return (
             <header style={styles.header} className={"rainbow-background"}>
-                <Hidden mdUp>
-                    <IconButton
-                        aria-label="view main drawer"
-                        onClick={this.props.openDrawer}
-                        style={styles.headerBtn}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                </Hidden>
+                {wrappedButton}
+                <IconButton
+                    aria-label="Exit application"
+                    onClick={this.closeApp}
+                    style={styles.headerRightBtn}
+                >
+                    <CloseIcon />
+                </IconButton>
             </header>
         );
     }
 }
 
 const mapStateToProps = store => {
-    return {};
+    return {
+        stickyMenu: store.options.sticky_menu
+    };
 };
 
 const mapDispatchToProps = dispatch => {

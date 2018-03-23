@@ -17,6 +17,7 @@ import {
     registrationSetDeviceName,
     registrationSetEnvironment
 } from "../../Actions/registration";
+import { userLogin } from "../../Actions/user";
 import UserItem from "./UserItem";
 import { Redirect } from "react-router-dom";
 
@@ -69,6 +70,18 @@ class Login extends React.Component {
         this.setState({
             sandboxMode: this.props.environment === "SANDBOX"
         });
+
+        const userTypes = Object.keys(this.props.users);
+        if (userTypes.length === 1) {
+            // only one user we can instantly log in, check requirements again
+            if (
+                this.props.derivedPassword !== false &&
+                this.props.apiKey !== false &&
+                this.props.deviceName !== false
+            ) {
+                this.props.loginUser(userTypes[0], true);
+            }
+        }
 
         this.validateInputs(this.props.apiKey, this.props.deviceName);
     }
@@ -261,10 +274,10 @@ class Login extends React.Component {
                     <Typography variant="headline" component="h2">
                         You're logged in!
                     </Typography>
-                    <Typography variant="caption">
-                        Click one of the accounts in the list to get started or
-                        logout to change the key or environment.
-                    </Typography>
+                    {/*<Typography variant="caption">*/}
+                    {/*Click one of the accounts in the list to get started or*/}
+                    {/*logout to change the key or environment.*/}
+                    {/*</Typography>*/}
                     <Button
                         variant="raised"
                         color={"secondary"}
@@ -339,6 +352,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(registrationSetEnvironment(environment)),
         setDeviceName: device_name =>
             dispatch(registrationSetDeviceName(device_name)),
+
+        // login a given usertype
+        loginUser: (type, updated = false) =>
+            dispatch(userLogin(BunqJSClient, type, updated)),
 
         // get latest user list from BunqJSClient
         usersUpdate: (updated = false) =>

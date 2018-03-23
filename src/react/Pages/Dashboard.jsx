@@ -36,6 +36,8 @@ class Dashboard extends React.Component {
     }
 
     render() {
+        const userTypes = Object.keys(this.props.users);
+
         return (
             <Grid container spacing={16}>
                 <Helmet>
@@ -43,16 +45,22 @@ class Dashboard extends React.Component {
                 </Helmet>
 
                 <Grid item xs={8} sm={10}>
-                    <Typography type="title" gutterBottom>
+                    <Typography variant="title" gutterBottom>
                         Welcome {this.props.user.first_name}
                     </Typography>
                 </Grid>
 
-                <Grid item xs={4} sm={2}>
-                    <Button style={styles.btn} onClick={this.props.logoutUser}>
-                        Switch User
-                    </Button>
-                </Grid>
+                {/* hide the switch button if only one user is set */}
+                {userTypes.length > 1 ? (
+                    <Grid item xs={4} sm={2}>
+                        <Button
+                            style={styles.btn}
+                            onClick={this.props.logoutUser}
+                        >
+                            Switch User
+                        </Button>
+                    </Grid>
+                ) : null}
 
                 <Grid item xs={12} md={4}>
                     <StickyBox className={"sticky-container"}>
@@ -88,6 +96,7 @@ class Dashboard extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+        users: state.users.users,
         userType: state.user.user_type,
         userLoading: state.user.loading,
         usersLoading: state.users.loading
