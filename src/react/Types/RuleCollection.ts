@@ -150,6 +150,7 @@ export default class RuleCollection {
     }
 
     private checkValueRule(rule: ValueRule, event: EventObject): boolean {
+
         return false;
     }
 

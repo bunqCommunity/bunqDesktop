@@ -7,6 +7,9 @@ import RuleCollection, {
     EventObjectResult
 } from "../../Types/RuleCollection";
 
+// import typed worker
+const RuleCollectionCheckWorker: any = require("worker-loader!../../WebWorkers/rule_collection_check.worker.ts");
+
 import CheckIcon from "material-ui-icons/Check";
 import CrossIcon from "material-ui-icons/Cancel";
 
@@ -22,51 +25,41 @@ const styles = {
 
 class RuleCollectionPreview extends React.Component<any, any> {
     state = {
-        visible: false
+        visible: false,
+        eventResults: []
+    };
+    worker: any;
+
+    componentWillMount() {
+        this.worker = new RuleCollectionCheckWorker();
+        this.worker.onmessage = this.handleWorkerEvent;
+
+        const a: any = window;
+        a.triggerWorkerEvent = () => this.triggerWorkerEvent(this.props);
+    }
+
+    componentWillUnmount() {
+        this.worker.terminate();
+    }
+
+    handleWorkerEvent = (eventResults: any) => {
+        console.log("received events", eventResults);
+        this.setState({ eventResults: eventResults.data });
     };
 
-    mergeEvents = (): EventObject[] => {
-        const events = [
-            ...this.props.payments.map(item => {
-                return {
-                    type: "Payment",
-                    item: item.Payment
-                };
-            }),
-            ...this.props.bunqMeTabs.map(item => {
-                return {
-                    type: "BunqMeTab",
-                    item: item.BunqMeTab
-                };
-            }),
-            ...this.props.requestInquiries.map(item => {
-                return {
-                    type: "RequestInquiry",
-                    item: item.RequestInquiry
-                };
-            }),
-            ...this.props.requestResponses.map(item => {
-                return {
-                    type: "RequestResponse",
-                    item: item.RequestResponse
-                };
-            }),
-            ...this.props.masterCardActions.map(item => {
-                return {
-                    type: "MasterCardAction",
-                    item: item.MasterCardAction
-                };
-            })
-        ];
-
-        const sortedEvents = events.sort((a: EventObject, b: EventObject) => {
-            const date1 = new Date(b.item.created);
-            const date2 = new Date(a.item.created);
-            return date1.getTime() - date2.getTime();
+    triggerWorkerEvent = props => {
+        const ruleCollection: RuleCollection | null = this.props.ruleCollection;
+        this.worker.postMessage({
+            ruleCollection: ruleCollection,
+            payments: props.payments,
+            masterCardActions: props.masterCardActions,
+            bunqMeTabs: props.bunqMeTabs,
+            requestInquiries: props.requestInquiries,
+            requestResponses: props.requestResponses
         });
-
-        return sortedEvents;
     };
+
+    componentDidUpdate() {}
 
     render() {
         const toggleDisplay = (
@@ -84,36 +77,35 @@ class RuleCollectionPreview extends React.Component<any, any> {
         if (this.state.visible) {
             const ruleCollection: RuleCollection | null = this.props
                 .ruleCollection;
-            if (ruleCollection === null) return null;
+            if (ruleCollection !== null) {
+                const items: any[] = this.state.eventResults.map(
+                    (event: EventObjectResult, index: any) => {
+                        return (
+                            <ListItem key={index}>
+                                <ListItemText
+                                    primary={`Matches: ${event.matches
+                                        ? "yes"
+                                        : "no"}`}
+                                    secondary={`Type: ${event.type}`}
+                                />
+                                <ListItemIcon>
+                                    {event.matches ? (
+                                        <CheckIcon />
+                                    ) : (
+                                        <CrossIcon />
+                                    )}
+                                </ListItemIcon>
+                            </ListItem>
+                        );
+                    }
+                );
 
-            const events: EventObject[] = this.mergeEvents();
-            const filteredEvents: EventObjectResult[] = ruleCollection.filterItems(
-                events
-            );
-
-            const items: any[] = filteredEvents.map(
-                (event: EventObjectResult, index: any) => {
-                    return (
-                        <ListItem key={index}>
-                            <ListItemText
-                                primary={`Matches: ${event.matches
-                                    ? "yes"
-                                    : "no"}`}
-                                secondary={`Type: ${event.type}`}
-                            />
-                            <ListItemIcon>
-                                {event.matches ? <CheckIcon /> : <CrossIcon />}
-                            </ListItemIcon>
-                        </ListItem>
-                    );
-                }
-            );
-
-            previewContent = (
-                <Paper style={styles.paper}>
-                    <List>{items}</List>
-                </Paper>
-            );
+                previewContent = (
+                    <Paper style={styles.paper}>
+                        <List>{items}</List>
+                    </Paper>
+                );
+            }
         }
 
         return (
