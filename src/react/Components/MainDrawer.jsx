@@ -185,8 +185,45 @@ class MainDrawer extends React.Component {
             </List>
         );
 
-        return [
-            <Hidden mdUp>
+        if (this.props.stickyMenu) {
+            // dynamic menu with a hidden menu on smaller screens
+            return (
+                <React.Fragment>
+                    <Hidden mdUp>
+                        <Drawer
+                            variant="temporary"
+                            open={open}
+                            onClose={this.props.closeDrawer}
+                            className="options-drawer"
+                            anchor={
+                                theme.direction === "rtl" ? "right" : "left"
+                            }
+                            SlideProps={{
+                                style: { top: 50 }
+                            }}
+                        >
+                            {drawerList}
+                        </Drawer>
+                    </Hidden>
+                    <Hidden smDown implementation="css">
+                        <Drawer
+                            variant="permanent"
+                            open={open}
+                            onClose={this.props.closeDrawer}
+                            anchor="left"
+                            className="options-drawer"
+                            classes={{
+                                paper: classes.drawerPaper
+                            }}
+                        >
+                            {drawerList}
+                        </Drawer>
+                    </Hidden>
+                </React.Fragment>
+            );
+        } else {
+            // menu is always hidden by default
+            return (
                 <Drawer
                     variant="temporary"
                     open={open}
@@ -199,28 +236,15 @@ class MainDrawer extends React.Component {
                 >
                     {drawerList}
                 </Drawer>
-            </Hidden>,
-            <Hidden smDown implementation="css">
-                <Drawer
-                    variant="permanent"
-                    open={open}
-                    onClose={this.props.closeDrawer}
-                    anchor="left"
-                    className="options-drawer"
-                    classes={{
-                        paper: classes.drawerPaper
-                    }}
-                >
-                    {drawerList}
-                </Drawer>
-            </Hidden>
-        ];
+            );
+        }
     }
 }
 
 const mapStateToProps = state => {
     return {
         open: state.main_drawer.open,
+        stickyMenu: state.options.sticky_menu,
 
         // used to determine if we need to disable certain items in the menu
         derivedPassword: state.registration.derivedPassword,

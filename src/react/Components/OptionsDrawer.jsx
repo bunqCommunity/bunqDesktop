@@ -20,7 +20,8 @@ import {
     setHideBalance,
     resetApplication,
     toggleInactivityCheck,
-    setInactivityCheckDuration
+    setInactivityCheckDuration,
+    setStickyMenu
 } from "../Actions/options";
 import { closeOptionsDrawer } from "../Actions/options_drawer";
 import { openMainDrawer } from "../Actions/main_drawer";
@@ -90,6 +91,10 @@ class OptionsDrawer extends React.Component {
         this.props.setNativeFrame(!this.props.nativeFrame);
     };
 
+    handleStickyMenuCheckChange = event => {
+        this.props.setStickyMenu(!this.props.stickyMenu);
+    };
+
     handleHideBalanceCheckChange = event => {
         this.props.setHideBalance(!this.props.hideBalance);
     };
@@ -125,7 +130,7 @@ class OptionsDrawer extends React.Component {
                     </FormControl>
                 </ListItem>
 
-                <ListItem>
+                <ListItem dense>
                     <FormControlLabel
                         control={
                             <Switch
@@ -135,6 +140,32 @@ class OptionsDrawer extends React.Component {
                             />
                         }
                         label="Use the native frame"
+                    />
+                </ListItem>
+
+                <ListItem dense>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                id="sticky-menu-selection"
+                                checked={this.props.stickyMenu}
+                                onChange={this.handleStickyMenuCheckChange}
+                            />
+                        }
+                        label="Enable sticky menu"
+                    />
+                </ListItem>
+
+                <ListItem dense>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                id="hide-balance-selection"
+                                checked={this.props.hideBalance}
+                                onChange={this.handleHideBalanceCheckChange}
+                            />
+                        }
+                        label="Hide monetary account balances"
                     />
                 </ListItem>
 
@@ -179,19 +210,9 @@ class OptionsDrawer extends React.Component {
                     ) : null}
                 </ListItem>
 
-                <ListItem>
-                    <FormControlLabel
-                        control={
-                            <Switch
-                                id="hide-balance-selection"
-                                checked={this.props.hideBalance}
-                                onChange={this.handleHideBalanceCheckChange}
-                            />
-                        }
-                        label="Hide monetary account balances"
-                    />
-                </ListItem>
-
+                {/* add space to prevent accidental click */}
+                <ListItem />
+                <ListItem />
                 <ListItem
                     button
                     style={styles.listBottomItem}
@@ -200,7 +221,9 @@ class OptionsDrawer extends React.Component {
                     <ListItemIcon>
                         <ClearIcon />
                     </ListItemIcon>
-                    <Typography variant="subheading">Reset BunqDesktop</Typography>
+                    <Typography variant="subheading">
+                        Reset BunqDesktop
+                    </Typography>
                 </ListItem>
 
                 <ListItem style={styles.listFiller} />
@@ -240,6 +263,7 @@ const mapStateToProps = state => {
         theme: state.options.theme,
         hideBalance: state.options.hide_balance,
         nativeFrame: state.options.native_frame,
+        stickyMenu: state.options.sticky_menu,
         checkInactivity: state.options.check_inactivity,
         inactivityCheckDuration: state.options.inactivity_check_duration
     };
@@ -251,6 +275,8 @@ const mapDispatchToProps = dispatch => {
         openSnackbar: message => dispatch(openSnackbar(message)),
         setTheme: theme => dispatch(setTheme(theme)),
         setNativeFrame: useFrame => dispatch(setNativeFrame(useFrame)),
+        setStickyMenu: userStickyMenu =>
+            dispatch(setStickyMenu(userStickyMenu)),
         setHideBalance: hideBalance => dispatch(setHideBalance(hideBalance)),
         toggleInactivityCheck: inactivityCheck =>
             dispatch(toggleInactivityCheck(inactivityCheck)),

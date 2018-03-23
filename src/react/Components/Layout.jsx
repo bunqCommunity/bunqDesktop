@@ -52,6 +52,11 @@ const styles = theme => ({
     contentContainer: {
         margin: 0,
         marginLeft: 0,
+        width: "100%"
+    },
+    contentContainerSticky: {
+        margin: 0,
+        marginLeft: 0,
         width: "100%",
         [theme.breakpoints.up("md")]: {
             margin: 0,
@@ -347,6 +352,9 @@ class Layout extends React.Component {
             ""
         );
 
+        const contentContainerClass = this.props.stickyMenu
+            ? classes.contentContainerSticky
+            : classes.contentContainer;
         const RouteComponent = this.props.routesComponent;
         return (
             <MuiThemeProvider theme={ThemeList[this.props.theme]}>
@@ -358,7 +366,7 @@ class Layout extends React.Component {
                         container
                         spacing={16}
                         justify={"center"}
-                        className={`${classes.contentContainer}  ${strippedLocation}-page`}
+                        className={`${contentContainerClass}  ${strippedLocation}-page`}
                         style={{
                             backgroundColor:
                                 ThemeList[this.props.theme].palette.background
@@ -392,6 +400,7 @@ class Layout extends React.Component {
 const mapStateToProps = state => {
     return {
         theme: state.options.theme,
+        stickyMenu: state.options.sticky_menu,
         checkInactivity: state.options.check_inactivity,
         inactivityCheckDuration: state.options.inactivity_check_duration,
 

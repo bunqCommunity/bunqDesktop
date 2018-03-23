@@ -8,6 +8,7 @@ import { openMainDrawer } from "../Actions/main_drawer";
 
 const styles = {
     headerBtn: {
+        color: "white",
         WebkitAppRegion: "no-drag",
         position: "fixed",
         top: 1,
@@ -37,24 +38,35 @@ class Header extends React.Component {
     }
 
     render() {
+        const menuButton = (
+            <IconButton
+                aria-label="view main drawer"
+                onClick={this.props.openDrawer}
+                style={styles.headerBtn}
+            >
+                <MenuIcon />
+            </IconButton>
+        );
+
+        if (this.props.stickyMenu) {
+            return (
+                <header style={styles.header} className={"rainbow-background"}>
+                    <Hidden mdUp>{menuButton}</Hidden>
+                </header>
+            );
+        }
         return (
             <header style={styles.header} className={"rainbow-background"}>
-                <Hidden mdUp>
-                    <IconButton
-                        aria-label="view main drawer"
-                        onClick={this.props.openDrawer}
-                        style={styles.headerBtn}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                </Hidden>
+                {menuButton}
             </header>
         );
     }
 }
 
 const mapStateToProps = store => {
-    return {};
+    return {
+        stickyMenu: store.options.sticky_menu
+    };
 };
 
 const mapDispatchToProps = dispatch => {
