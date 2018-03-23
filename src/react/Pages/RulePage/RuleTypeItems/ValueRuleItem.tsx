@@ -35,7 +35,8 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
     constructor(props: IPropTypes, context: any) {
         super(props, context);
         this.state = {
-            rule: this.props.rule
+            rule: this.props.rule,
+            textFieldError: false
         };
     }
 
@@ -52,9 +53,34 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
     };
 
     handleValueChange = event => {
+        const textFieldValue = event.target.value;
         const rule: ValueRule = this.props.rule;
-        rule.value = event.target.value;
-        this.props.updateRule(rule);
+
+        let hasError = false;
+        switch (rule.matchType) {
+            case "REGEX": {
+                // check if regex is valid
+                try {
+                    const regexTest = new RegExp(textFieldValue);
+                    // scream in horror as we test the regex
+                    regexTest.test("1");
+                } catch (err) {
+                    // error occured so regex is invalid
+                    hasError = true;
+                }
+                break;
+            }
+            default:
+                // all other matchTypes just need a non-empty value
+                hasError = textFieldValue.length === 0;
+        }
+
+        // update field error state
+        this.setState({ textFieldError: hasError });
+        if (hasError === false) {
+            rule.value = textFieldValue;
+            this.props.updateRule(rule);
+        }
     };
 
     render() {
@@ -122,6 +148,7 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
 
                     <TableCell style={styles.tableCell}>
                         <TextField
+                            error={this.state.textFieldError}
                             style={styles.textField}
                             value={rule.value}
                             onChange={this.handleValueChange}

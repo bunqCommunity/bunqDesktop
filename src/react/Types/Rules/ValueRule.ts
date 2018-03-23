@@ -12,6 +12,11 @@ export type ValueRuleField =
     | "COUNTERPARTY_NAME"
     | "CUSTOM";
 
-export type ValueRuleMatchType = "REGEX" | "EXACT" | "CONTAINS";
+export type ValueRuleMatchType =
+    | "REGEX"
+    | "EXACT"
+    | "CONTAINS"
+    | "ENDS_WITH"
+    | "STARTS_WITH";
 
 export default ValueRule;

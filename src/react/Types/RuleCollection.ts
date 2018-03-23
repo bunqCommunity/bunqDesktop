@@ -98,7 +98,11 @@ export default class RuleCollection {
         this.id = generateGUID();
     }
 
-    // Goes through all events and returns the ones
+    /**
+     * Goes through all events and returns the ones
+     * @param {EventObject[]} events
+     * @returns {EventObjectResult[]}
+     */
     public filterItems(events: EventObject[]): EventObjectResult[] {
         const resultingEvents: EventObjectResult[] = [];
         const ruleCount = this.rules.length;
@@ -122,7 +126,11 @@ export default class RuleCollection {
         return resultingEvents;
     }
 
-    // Checks if a single item matches all the currently set rules
+    /**
+     * Checks if a single item matches all the currently set rules
+     * @param {EventObject} event
+     * @returns {boolean}
+     */
     public checkRules(event: EventObject): boolean {
         if (this.matchType === "AND") {
             // all rules should match so we return using "every" which returns true of all are true
@@ -134,7 +142,12 @@ export default class RuleCollection {
         return this.rules.some((rule: Rule) => this.checkRule(rule, event));
     }
 
-    // Checks if a single item matches a single rule
+    /**
+     * Checks if a single item matches a single rule
+     * @param {Rule} rule
+     * @param {EventObject} event
+     * @returns {boolean}
+     */
     public checkRule(rule: Rule, event: EventObject): boolean {
         // return an iterator function which has access to the event
         switch (rule.ruleType) {
@@ -142,18 +155,109 @@ export default class RuleCollection {
                 return this.checkValueRule(rule, event);
             case "TRANSACTION_AMOUNT":
                 return this.checkTransactionAmountRule(rule, event);
-            case "ITEM_TYPE": {
+            case "ITEM_TYPE":
                 return this.checkItemTypeRule(rule, event);
-            }
         }
         return false;
     }
 
     private checkValueRule(rule: ValueRule, event: EventObject): boolean {
 
-        return false;
+        let dataToCheck = [];
+        switch (rule.field) {
+            case "DESCRIPTION":
+                if(event.item.description){
+                    dataToCheck.push(event.item.description);
+                }
+                break;
+            case "IBAN":
+                switch (event.type) {
+                    case "BunqMeTab":
+                    case "MasterCardAction":
+                        return false;
+
+                    case "Payment":
+                        // just check both
+                        const ibanAlias = event.item.alias.iban;
+                        const ibanCounterparty = event.item.alias.iban;
+
+                        // don't push invalid/missing iban values
+                        if(ibanAlias) dataToCheck.push(ibanAlias);
+                        if(ibanCounterparty) dataToCheck.push(ibanCounterparty);
+                        break;
+
+                    case "RequestResponse":
+                    case "RequestInquiry":
+                        const iban = event.item.counterparty_alias.iban;
+                        // return false if null
+                        if (iban === null) return false;
+                        dataToCheck.push(iban);
+                        break;
+                }
+
+                dataToCheck = null;
+                break;
+            case "COUNTERPARTY_NAME":
+                dataToCheck.push(event.item.counterparty_alias.display_name);
+                break;
+            case "CUSTOM":
+                // split the custom field on . character
+                const customFieldParts = rule.customField.split(".");
+                break;
+            default:
+                return false;
+        }
+
+        // no data found or null so we return true of the rule value is empty
+        if (dataToCheck.length === 0) return rule.value.length === 0;
+
+        // go through every item
+        let matchedItem = false;
+        for (var index in dataToCheck) {
+            const dataItem = dataToCheck[index];
+
+            switch (rule.matchType) {
+                case "REGEX":
+                    // create a regexp so we can directly use the input value
+                    const regex = new RegExp(rule.value);
+                    // test the data with the regex pattern
+                    matchedItem = regex.test(dataItem.toLowerCase());
+                    break;
+                case "EXACT":
+                    matchedItem =
+                        dataItem.toLowerCase().toLowerCase() ===
+                        rule.value.toLowerCase();
+                    break;
+                case "CONTAINS":
+                    matchedItem = dataItem
+                        .toLowerCase()
+                        .includes(rule.value.toLowerCase());
+                    break;
+                case "ENDS_WITH":
+                    matchedItem = dataItem
+                        .toLowerCase()
+                        .endsWith(rule.value.toLowerCase());
+                    break;
+                case "STARTS_WITH":
+                    matchedItem = dataItem
+                        .toLowerCase()
+                        .startsWith(rule.value.toLowerCase());
+                    break;
+            }
+
+            // break out since we found a match already
+            if (matchedItem) break;
+        }
+
+        return matchedItem;
     }
 
+    /**
+     * Check if for the event type the given amount that was transacted is higher/lower than the rule amount
+     * @param {TransactionAmountRule} rule
+     * @param {EventObject} event
+     * @returns {boolean}
+     */
     private checkTransactionAmountRule(
         rule: TransactionAmountRule,
         event: EventObject
