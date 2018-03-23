@@ -77,11 +77,18 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
                                 <MenuItem value={"COUNTERPARTY_NAME"}>
                                     Display name
                                 </MenuItem>
+                                <MenuItem value={"CUSTOM"}>Other</MenuItem>
                             </Select>
-                            {/*<FormHelperText>*/}
-                            {/*Which field to check*/}
-                            {/*</FormHelperText>*/}
                         </FormControl>
+
+                        {rule.field === "CUSTOM" ? (
+                            <FormControl style={styles.textField}>
+                                <TextField
+                                    name="custom-field"
+                                    value={rule.customField}
+                                />
+                            </FormControl>
+                        ) : null}
                     </TableCell>
 
                     <TableCell style={styles.tableCell}>

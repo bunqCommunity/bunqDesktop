@@ -42,8 +42,27 @@ class RuleCollectionPreview extends React.Component<any, any> {
         this.worker.terminate();
     }
 
+    componentDidUpdate(lastProps, lastState) {
+        // if changed, we reload the worker info
+        if (
+            lastProps.ruleCollectionUpdated !== this.props.ruleCollectionUpdated
+        ) {
+            if (this.state.visible) {
+                this.triggerWorkerEvent(this.props);
+            }
+        }
+    }
+
     handleWorkerEvent = (eventResults: any) => {
         this.setState({ eventResults: eventResults.data });
+    };
+    handleVisibilityToggle = event => {
+        this.setState({ visible: !this.state.visible }, () => {
+            // now visible, update worker
+            if (this.state.visible === true) {
+                this.triggerWorkerEvent(this.props);
+            }
+        });
     };
     triggerWorkerEvent = props => {
         const ruleCollection: RuleCollection | null = this.props.ruleCollection;
@@ -57,24 +76,12 @@ class RuleCollectionPreview extends React.Component<any, any> {
         });
     };
 
-    componentDidUpdate(lastProps, lastState) {
-        // if changed, we reload the worker info
-        if (
-            lastProps.ruleCollectionUpdated !== this.props.ruleCollectionUpdated
-        ) {
-            if(this.state.visible){
-                this.triggerWorkerEvent(this.props);
-            }
-        }
-    }
-
     render() {
         const toggleDisplay = (
             <Button
                 variant="raised"
                 style={styles.toggleVisibilityButton}
-                onClick={event =>
-                    this.setState({ visible: !this.state.visible })}
+                onClick={this.handleVisibilityToggle}
             >
                 {this.state.visible ? "Hide preview" : "Show preview"}
             </Button>
