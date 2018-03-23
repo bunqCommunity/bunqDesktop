@@ -66,10 +66,6 @@ class MainDrawer extends React.Component {
         };
     }
 
-    closeApp() {
-        window.close();
-    }
-
     openOptions = () => {
         // open the options drawer and open the main drawer
         this.props.closeMainDrawer();
@@ -168,19 +164,6 @@ class MainDrawer extends React.Component {
                         <SettingsIcon />
                     </ListItemIcon>
                     <Typography variant="subheading">Settings</Typography>
-                </ListItem>
-
-                <ListItem
-                    button
-                    style={styles.listBottomItem}
-                    onClick={this.closeApp}
-                >
-                    <ListItemIcon>
-                        <PowerSettingsIcon />
-                    </ListItemIcon>
-                    <Typography variant="subheading">
-                        Quit BunqDesktop
-                    </Typography>
                 </ListItem>
             </List>
         );

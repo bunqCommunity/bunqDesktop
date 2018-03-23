@@ -115,7 +115,7 @@ class ApplicationInfo extends React.Component {
                                 <CopyToClipboard
                                     text={`${app.getPath(
                                         "userData"
-                                    )}/BunqDesktop.log.txt`}
+                                    )}/settings.json`}
                                     onCopy={this.copiedValue(
                                         "settings location"
                                     )}
