@@ -44,12 +44,16 @@ export default (state = defaultState, action) => {
             };
 
         case "ACCOUNTS_IS_LOADING":
+        case "ACCOUNT_CREATE_IS_LOADING":
+        case "ACCOUNT_STATUS_IS_LOADING":
             return {
                 ...state,
                 loading: true
             };
 
         case "ACCOUNTS_IS_NOT_LOADING":
+        case "ACCOUNT_CREATE_IS_NOT_LOADING":
+        case "ACCOUNT_STATUS_IS_NOT_LOADING":
             return {
                 ...state,
                 loading: false

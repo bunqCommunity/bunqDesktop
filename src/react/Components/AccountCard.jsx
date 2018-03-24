@@ -2,17 +2,19 @@ import React from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import List, {
     ListItem,
-    ListSubheader,
     ListItemText,
     ListItemIcon,
     ListItemSecondaryAction
 } from "material-ui/List";
 import Paper from "material-ui/Paper";
+import IconButton from "material-ui/IconButton";
 import Avatar from "material-ui/Avatar";
+
 import AccountBalanceIcon from "material-ui-icons/AccountBalance";
 import PhoneIcon from "material-ui-icons/Phone";
 import EmailIcon from "material-ui-icons/Email";
 import PersonIcon from "material-ui-icons/Person";
+import DeleteIcon from "material-ui-icons/Delete";
 
 import LazyAttachmentImage from "./AttachmentImage/LazyAttachmentImage";
 import AccountQRFullscreen from "./QR/AccountQRFullscreen";
@@ -65,6 +67,11 @@ class AccountCard extends React.Component {
                         />
                         <ListItemSecondaryAction>
                             <AccountQRFullscreen accountId={account.id} />
+                            <IconButton
+                                onClick={this.props.toggleDeactivateDialog}
+                            >
+                                <DeleteIcon />
+                            </IconButton>
                         </ListItemSecondaryAction>
                     </ListItem>
                     {account.alias.map(alias => {

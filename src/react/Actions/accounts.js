@@ -87,6 +87,34 @@ export function createAccount(
     };
 }
 
+export function deactivateAccount(BunqJSClient, userId, accountId, reason) {
+    return dispatch => {
+        dispatch(updateAccountStatusLoading());
+
+        BunqJSClient.api.monetaryAccountBank
+            .putCancel(
+                userId,
+                accountId,
+                "CANCELLED",
+                "REDEMPTION_VOLUNTARY",
+                reason
+            )
+            .then(result => {
+                dispatch(openSnackbar("Account de-activated successfully!"));
+                dispatch(accountsUpdate(BunqJSClient, userId));
+                dispatch(updateAccountStatusNotLoading());
+            })
+            .catch(error => {
+                dispatch(updateAccountStatusNotLoading());
+                BunqErrorHandler(
+                    dispatch,
+                    error,
+                    "We received the following error while creating your account"
+                );
+            });
+    };
+}
+
 export function accountsLoading() {
     return { type: "ACCOUNTS_IS_LOADING" };
 }
@@ -109,9 +137,15 @@ export function accountsClear() {
 }
 
 export function createAccountLoading() {
-    return { type: "CREATE_ACCOUNT_IS_LOADING" };
+    return { type: "ACCOUNT_CREATE_IS_LOADING" };
+}
+export function createAccountNotLoading() {
+    return { type: "ACCOUNT_CREATE_IS_NOT_LOADING" };
 }
 
-export function createAccountNotLoading() {
-    return { type: "CREATE_ACCOUNT_IS_NOT_LOADING" };
+export function updateAccountStatusLoading() {
+    return { type: "ACCOUNT_STATUS_IS_LOADING" };
+}
+export function updateAccountStatusNotLoading() {
+    return { type: "ACCOUNT_STATUS_IS_NOT_LOADING" };
 }
