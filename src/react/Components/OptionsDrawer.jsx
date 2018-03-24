@@ -79,6 +79,7 @@ class OptionsDrawer extends React.Component {
     }
 
     backToMain = () => {
+        this.setState({ clearConfirmation: false });
         // open the options drawer and open the main drawer
         this.props.openMainDrawer();
         this.props.closeOptionsDrawer();
@@ -116,6 +117,11 @@ class OptionsDrawer extends React.Component {
         } else {
             this.props.this.props.resetApplication();
         }
+    };
+
+    handleOptionsDrawerClose = () => {
+        this.setState({ clearConfirmation: false });
+        this.props.closeOptionsDrawer();
     };
 
     render() {
@@ -282,7 +288,7 @@ class OptionsDrawer extends React.Component {
             <Drawer
                 open={open}
                 className="options-drawer"
-                onClose={this.props.closeOptionsDrawer}
+                onClose={this.handleOptionsDrawerClose}
                 anchor={theme.direction === "rtl" ? "right" : "left"}
                 SlideProps={{
                     style: { top: 50 }
