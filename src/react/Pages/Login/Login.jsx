@@ -3,12 +3,16 @@ import { Typography } from "material-ui";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
+import IconButton from "material-ui/IconButton";
 import Input from "material-ui/Input";
 import Button from "material-ui/Button";
 import Switch from "material-ui/Switch";
 import { FormControlLabel } from "material-ui/Form";
 import Card, { CardContent } from "material-ui/Card";
 import { CircularProgress } from "material-ui/Progress";
+
+import QRSvg from "../../Components/QR/QRSvg";
+
 import { usersUpdate } from "../../Actions/users";
 import {
     registrationClearApiKey,
@@ -53,8 +57,12 @@ class Login extends React.Component {
             apiKeyValid: false,
             deviceName: "My Device",
             deviceNameValid: true,
-            attemptingLogin: false
+            attemptingLogin: false,
+
+            requestQrCodeBase64: false,
+            requestUuid: false
         };
+        this.checkerInterval = null;
     }
 
     componentDidMount() {
@@ -124,6 +132,52 @@ class Login extends React.Component {
             );
             this.props.setApiKey(this.state.apiKey, this.props.derivedPassword);
         }
+    };
+
+    displayQrCode = () => {
+        this.props.BunqJSClient
+            .createCredentials()
+            .then(({ uuid, status, qr_base64 }) => {
+                this.setState({
+                    requestQrCodeBase64: qr_base64,
+                    requestUuid: uuid
+                });
+
+                // start checking if the code was scanned
+                this.checkForScanEvent();
+            })
+            .catch(console.error);
+    };
+
+    checkForScanEvent = () => {
+        this.checkerInterval = setInterval(() => {
+            if (this.state.requestUuid !== false) {
+                this.props.BunqJSClient
+                    .checkCredentialStatus(this.state.requestUuid)
+                    .then(result => {
+                        console.log(result);
+
+                        if (result.status === "ACCEPTED") {
+                            this.setState(
+                                {
+                                    apiKey: result.api_key,
+                                    requestQrCodeBase64: false,
+                                    requestUuid: false
+                                },
+                                () =>
+                                    this.validateInputs(
+                                        this.state.apiKey,
+                                        this.state.deviceName
+                                    )
+                            );
+
+                            // reset the check event
+                            clearInterval(this.checkerInterval);
+                        }
+                    })
+                    .catch(console.error);
+            }
+        }, 5000);
     };
 
     clearApiKey = () => {
@@ -207,13 +261,20 @@ class Login extends React.Component {
         const apiKeyContent =
             this.props.apiKey === false ? (
                 <CardContent>
-                    <Typography variant="headline" component="h2">
-                        Enter your API Key
-                    </Typography>
-                    <Typography variant="caption">
-                        In the bunq app go to your Profile > Security > API Keys
-                        and generate a new key
-                    </Typography>
+                    <div style={{ textAlign: "center" }}>
+                        {this.state.requestQrCodeBase64 === false ? (
+                            <IconButton onClick={this.displayQrCode}>
+                                <QRSvg />
+                            </IconButton>
+                        ) : (
+                            <img
+                                src={`data:image/png;base64, ${this.state
+                                    .requestQrCodeBase64}`}
+                                style={{ width: 200, height: 200, margin: 16 }}
+                            />
+                        )}
+                    </div>
+
                     <Input
                         style={styles.apiInput}
                         error={!this.state.apiKeyValid}
