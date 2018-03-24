@@ -96,14 +96,13 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = dispatch => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
         setCategoryRule: rule_collection =>
-            dispatch(setCategoryRule(BunqJSClient, rule_collection)),
+            dispatch(setCategoryRule(rule_collection)),
         removeCategoryRule: category_rule_id =>
-            dispatch(removeCategoryRule(BunqJSClient, category_rule_id))
+            dispatch(removeCategoryRule(category_rule_id))
     };
 };
 

@@ -40,7 +40,6 @@ import { loadStoredBunqMeTabs } from "../Actions/bunq_me_tabs";
 import { loadStoredMasterCardActions } from "../Actions/master_card_actions";
 import { loadStoredRequestInquiries } from "../Actions/request_inquiries";
 import { loadStoredRequestResponses } from "../Actions/request_responses";
-import { loadCategoryRules } from "../Actions/category_rules";
 
 import {
     registrationLoading,
@@ -298,7 +297,6 @@ class Layout extends React.Component {
         }
 
         this.props.loadStoredAccounts();
-        this.props.loadCategoryRules();
         this.props.loadStoredPayments();
         this.props.loadStoredBunqMeTabs();
         this.props.loadStoredMasterCardActions();
@@ -458,7 +456,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         loadStoredAccounts: () => dispatch(loadStoredAccounts(BunqJSClient)),
         loadStoredRequestResponses: () =>
             dispatch(loadStoredRequestResponses(BunqJSClient)),
-        loadCategoryRules: () => dispatch(loadCategoryRules(BunqJSClient)),
 
         // functions to clear user data
         registrationClearUserInfo: () => dispatch(registrationClearUserInfo())

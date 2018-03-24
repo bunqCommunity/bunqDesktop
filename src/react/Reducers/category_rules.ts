@@ -1,13 +1,34 @@
+const store = require("store");
 import { STORED_CATEGORY_RULES } from "../Actions/category_rules";
 
 import { RuleCollectionList } from "../Types/Types";
 import RuleCollection from "../Types/RuleCollection";
 
+const categoryRulesStored = store.get(STORED_CATEGORY_RULES);
+const categoryRulesDefault: RuleCollectionList =
+    categoryRulesStored !== undefined ? categoryRulesStored : [];
+
+console.log(categoryRulesDefault)
+
+// new formatted list
+const formattedCategoryRulesDefault: RuleCollectionList = {};
+Object.keys(categoryRulesDefault).forEach(categoryRuleId => {
+    const ruleCollection: RuleCollection = new RuleCollection();
+
+    // get the json value for this key
+    const ruleObject: any = categoryRulesDefault[categoryRuleId];
+    // load the stored object string into the rule collection
+    ruleCollection.fromObject(ruleObject);
+    // add to the list
+    formattedCategoryRulesDefault[categoryRuleId] = ruleCollection;
+});
+
+console.log(formattedCategoryRulesDefault)
+
 // construct the default state
-const categoryRulesDefault: RuleCollectionList = {};
 export const defaultState = {
     last_update: new Date().getTime(),
-    category_rules: categoryRulesDefault
+    category_rules: formattedCategoryRulesDefault
 };
 
 export default (state = defaultState, action) => {
@@ -18,18 +39,8 @@ export default (state = defaultState, action) => {
             const category_rules_new: RuleCollectionList =
                 action.payload.category_rules;
 
-            // store the data if we have access to the bunqjsclient
-            if (action.payload.BunqJSClient) {
-                action.payload.BunqJSClient.Session
-                    .storeEncryptedData(
-                        {
-                            items: category_rules_new
-                        },
-                        STORED_CATEGORY_RULES
-                    )
-                    .then(() => {})
-                    .catch(() => {});
-            }
+            // store the category rules
+            store.set(STORED_CATEGORY_RULES, category_rules_new);
 
             return {
                 ...state,
@@ -40,24 +51,13 @@ export default (state = defaultState, action) => {
         case "CATEGORY_RULE_SET_CATEGORY_RULE":
             const rule_collection: RuleCollection =
                 action.payload.rule_collection;
-
             const categoryRuleId: string = rule_collection.getId();
 
             // store this collection in the list or overwrite existing
             category_rules[categoryRuleId] = rule_collection;
 
-            // store the data if we have access to the bunqjsclient
-            if (action.payload.BunqJSClient) {
-                action.payload.BunqJSClient.Session
-                    .storeEncryptedData(
-                        {
-                            items: category_rules
-                        },
-                        STORED_CATEGORY_RULES
-                    )
-                    .then(() => {})
-                    .catch(() => {});
-            }
+            // store the category rules
+            store.set(STORED_CATEGORY_RULES, category_rules);
 
             return {
                 ...state,
@@ -73,18 +73,8 @@ export default (state = defaultState, action) => {
                 delete category_rules[removeCategoryId];
             }
 
-            // store the data if we have access to the bunqjsclient
-            if (action.payload.BunqJSClient) {
-                action.payload.BunqJSClient.Session
-                    .storeEncryptedData(
-                        {
-                            items: category_rules
-                        },
-                        STORED_CATEGORY_RULES
-                    )
-                    .then(() => {})
-                    .catch(() => {});
-            }
+            // store the category rules
+            store.set(STORED_CATEGORY_RULES, category_rules);
 
             return {
                 ...state,
