@@ -115,7 +115,7 @@ class OptionsDrawer extends React.Component {
         if (this.state.clearConfirmation === false) {
             this.setState({ clearConfirmation: true });
         } else {
-            this.props.this.props.resetApplication();
+            this.props.resetApplication();
         }
     };
 
