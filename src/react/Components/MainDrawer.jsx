@@ -131,14 +131,14 @@ class MainDrawer extends React.Component {
                       icon={Bookmark}
                       text="Category dashboard"
                       location={this.props.location}
+                  />,
+                  <ListItemWrapper
+                      to="/rules-dashboard"
+                      icon={CreateIcon}
+                      text="Category rules"
+                      location={this.props.location}
                   />
               ];
-        {/*<ListItemWrapper*/}
-            {/*to="/rules-dashboard"*/}
-            {/*icon={CreateIcon}*/}
-            {/*text="Category rules"*/}
-            {/*location={this.props.location}*/}
-        {/*/>*/}
 
         const drawerList = (
             <List style={styles.list}>
