@@ -1,9 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import {
-    ListItem,
-    ListItemText
-} from "material-ui/List";
+import { ListItem, ListItemText } from "material-ui/List";
 import Avatar from "material-ui/Avatar";
 import AddBoxIcon from "material-ui-icons/AddBox";
 
@@ -23,19 +20,12 @@ class AddAccount extends React.Component {
     }
 
     render() {
-
         return (
-            <ListItem
-                button
-                to={`/add-account`}
-                component={NavLink}
-            >
+            <ListItem button to={`/add-account`} component={NavLink}>
                 <Avatar style={styles.bigAvatar}>
-                    <AddBoxIcon/>
+                    <AddBoxIcon />
                 </Avatar>
-                <ListItemText
-                    secondary='Open a new bank account for yourself or for a group'
-                />
+                <ListItemText secondary="Open a new bank account for yourself or for a group" />
             </ListItem>
         );
     }
