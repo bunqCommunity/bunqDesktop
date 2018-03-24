@@ -48,12 +48,12 @@ const CategoryDashboard = CL(() =>
 const Card = CL(() =>
     import(/* webpackChunkName: "cards" */ "./Pages/Cards/Card")
 );
-// const RuleDashboard = CL(() =>
-//     import(/* webpackChunkName: "rules_dashboard" */ "./Pages/RuleDashboard/RuleDashboard")
-// );
-// const RulePage = CL(() =>
-//     import(/* webpackChunkName: "rules_page" */ "./Pages/RulePage/RulePage")
-// );
+const RuleDashboard = CL(() =>
+    import(/* webpackChunkName: "rules_dashboard" */ "./Pages/RuleDashboard/RuleDashboard")
+);
+const RulePage = CL(() =>
+    import(/* webpackChunkName: "rules_page" */ "./Pages/RulePage/RulePage")
+);
 
 // router react component
 export default class Routes extends React.Component {
