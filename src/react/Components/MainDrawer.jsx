@@ -9,14 +9,12 @@ import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
 import List, { ListItem, ListItemText, ListItemIcon } from "material-ui/List";
 
-import PowerSettingsIcon from "material-ui-icons/PowerSettingsNew";
 import ArrowUpwardIcon from "material-ui-icons/ArrowUpward";
 import ArrowDownwardIcon from "material-ui-icons/ArrowDownward";
 import HomeIcon from "material-ui-icons/Home";
 import SettingsIcon from "material-ui-icons/Settings";
 import ShareIcon from "material-ui-icons/Share";
 import TimeLineIcon from "material-ui-icons/Timeline";
-import ListIcon from "material-ui-icons/List";
 import CardIcon from "material-ui-icons/CreditCard";
 import CreateIcon from "material-ui-icons/Create";
 import Bookmark from "material-ui-icons/Bookmark";

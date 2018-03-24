@@ -362,8 +362,14 @@ class Layout extends React.Component {
             <MuiThemeProvider theme={ThemeList[this.props.theme]}>
                 <main className={classes.main}>
                     <Header />
-                    <MainDrawer location={this.props.location} />
-                    <OptionsDrawer themeList={ThemeList} />
+                    <MainDrawer
+                        BunqJSClient={this.props.BunqJSClient}
+                        location={this.props.location}
+                    />
+                    <OptionsDrawer
+                        BunqJSClient={this.props.BunqJSClient}
+                        themeList={ThemeList}
+                    />
                     <Grid
                         container
                         spacing={16}
@@ -452,8 +458,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         loadStoredAccounts: () => dispatch(loadStoredAccounts(BunqJSClient)),
         loadStoredRequestResponses: () =>
             dispatch(loadStoredRequestResponses(BunqJSClient)),
-        loadCategoryRules: () =>
-            dispatch(loadCategoryRules(BunqJSClient)),
+        loadCategoryRules: () => dispatch(loadCategoryRules(BunqJSClient)),
 
         // functions to clear user data
         registrationClearUserInfo: () => dispatch(registrationClearUserInfo())

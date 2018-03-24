@@ -71,20 +71,31 @@ class Login extends React.Component {
             sandboxMode: this.props.environment === "SANDBOX"
         });
 
+        this.checkForSingleUser();
+        this.validateInputs(this.props.apiKey, this.props.deviceName);
+    }
+
+    componentDidUpdate() {
+        this.checkForSingleUser();
+    }
+
+    /**
+     * Checks if only 1 user type is set and logs in the user if this is the case
+     */
+    checkForSingleUser = () => {
         const userTypes = Object.keys(this.props.users);
         if (userTypes.length === 1) {
             // only one user we can instantly log in, check requirements again
             if (
                 this.props.derivedPassword !== false &&
                 this.props.apiKey !== false &&
-                this.props.deviceName !== false
+                this.props.deviceName !== false &&
+                this.props.userLoading === false
             ) {
                 this.props.loginUser(userTypes[0], true);
             }
         }
-
-        this.validateInputs(this.props.apiKey, this.props.deviceName);
-    }
+    };
 
     setRegistration = () => {
         if (this.state.apiKey.length !== 64) {

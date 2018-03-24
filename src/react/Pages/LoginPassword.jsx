@@ -230,9 +230,7 @@ class LoginPassword extends React.Component {
                                 </Typography>
                                 <Typography variant="body2">
                                     We test everything before releasing updates
-                                    but until we release version 1.0.0 we advice
-                                    against using BunqDesktop to make big
-                                    payments.
+                                    but you might still notice issues.
                                 </Typography>
                             </CardContent>
                         </Card>
