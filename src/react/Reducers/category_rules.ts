@@ -8,8 +8,6 @@ const categoryRulesStored = store.get(STORED_CATEGORY_RULES);
 const categoryRulesDefault: RuleCollectionList =
     categoryRulesStored !== undefined ? categoryRulesStored : [];
 
-console.log(categoryRulesDefault)
-
 // new formatted list
 const formattedCategoryRulesDefault: RuleCollectionList = {};
 Object.keys(categoryRulesDefault).forEach(categoryRuleId => {
@@ -22,8 +20,6 @@ Object.keys(categoryRulesDefault).forEach(categoryRuleId => {
     // add to the list
     formattedCategoryRulesDefault[categoryRuleId] = ruleCollection;
 });
-
-console.log(formattedCategoryRulesDefault)
 
 // construct the default state
 export const defaultState = {

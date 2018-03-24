@@ -232,19 +232,6 @@ class OptionsDrawer extends React.Component {
                     ) : null}
                 </ListItem>
 
-                <ListItem>
-                    <FormControlLabel
-                        control={
-                            <Switch
-                                id="hide-balance-selection"
-                                checked={this.props.hideBalance}
-                                onChange={this.handleHideBalanceCheckChange}
-                            />
-                        }
-                        label="Hide monetary account balances"
-                    />
-                </ListItem>
-
                 <ListItem style={styles.listFiller} />
 
                 <ListItem
