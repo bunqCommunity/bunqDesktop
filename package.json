@@ -22,6 +22,10 @@
             "target": [
                 "AppImage",
                 "deb"
+            ],
+            "arch": [
+                "x64",
+                "ia32"
             ]
         },
         "win": {
