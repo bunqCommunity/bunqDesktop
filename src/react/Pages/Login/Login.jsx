@@ -72,6 +72,7 @@ class Login extends React.Component {
             requestQrCodeBase64: false,
             requestUuid: false
         };
+        this.displayQrCodeDelay = null;
         this.checkerInterval = null;
     }
 
@@ -91,29 +92,32 @@ class Login extends React.Component {
 
         this.checkForSingleUser();
         this.validateInputs(this.props.apiKey, this.props.deviceName);
+
+        this.displayQrCodeDelay = setTimeout(() => {
+            if (
+                // currently no qr code set/being loaded
+                this.state.loadingQrCode === false &&
+                this.state.requestQrCodeBase64 === false &&
+                //nothing is being loaded/set
+                this.props.apiKey === false &&
+                this.props.userLoading === false &&
+                this.props.derivedPassword !== false &&
+                this.props.registrationLoading === false
+            ) {
+                console.log("trigger qr code");
+                console.log(this.props);
+                this.displayQrCode();
+            }
+        }, 500);
     }
 
     componentDidUpdate() {
-        if (
-            // currently no qr code set/being loaded
-            this.state.loadingQrCode === false &&
-            this.state.requestQrCodeBase64 === false &&
-            //nothing is being loaded/set
-            this.props.apiKey === false &&
-            this.props.userLoading === false &&
-            this.props.derivedPassword !== false &&
-            this.props.registrationLoading === false
-        ) {
-            console.log("trigger qr code");
-            console.log(this.props);
-            this.displayQrCode();
-        }
-
         this.checkForSingleUser();
     }
 
     componentWillUnmount() {
         if (this.checkerInterval) clearInterval(this.checkerInterval);
+        if (this.displayQrCodeDelay) clearTimeout(this.displayQrCodeDelay);
     }
 
     /**
@@ -332,9 +336,9 @@ class Login extends React.Component {
                                 style={styles.qrCode}
                             />
                         )}
-                        <p style={{ fontSize: 11, margin: 0 }}>
-                            Scan with the bunq app to begin!
-                        </p>
+                        <Typography variant="body2" style={{ margin: 0 }}>
+                            Scan the QR code with the bunq app to begin!
+                        </Typography>
                     </div>
 
                     <Input
