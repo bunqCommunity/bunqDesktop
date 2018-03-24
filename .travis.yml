@@ -62,9 +62,11 @@ deploy:
   file_glob: true
   file:
     - dist/BunqDesktop Setup *.exe
-    - dist/bunqdesktop_*_amd64.deb
     - dist/BunqDesktop-*.dmg
+    - dist/bunqdesktop_*_amd64.deb
+    - dist/bunqdesktop_*_i386.deb
     - dist/bunqdesktop-*-x86_64.AppImage
+    - dist/bunqdesktop-*-i386.AppImage
   draft: true
   skip_cleanup: true
   on:
