@@ -62,6 +62,8 @@ class MasterCardActionInfo extends React.Component {
 
     componentWillUpdate(nextProps, nextState) {
         if (
+            nextProps.user &&
+            nextProps.user.id &&
             this.props.initialBunqConnect &&
             this.props.match.params.masterCardActionId !==
                 nextProps.match.params.masterCardActionId

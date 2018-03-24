@@ -59,6 +59,8 @@ class PaymentInfo extends React.Component {
 
     componentWillUpdate(nextProps, nextState) {
         if (
+            nextProps.user &&
+            nextProps.user.id &&
             this.props.initialBunqConnect &&
             this.props.match.params.paymentId !==
                 nextProps.match.params.paymentId

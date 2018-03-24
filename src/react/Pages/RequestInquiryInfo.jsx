@@ -60,6 +60,8 @@ class RequestInquiryInfo extends React.Component {
 
     componentWillUpdate(nextProps, nextState) {
         if (
+            nextProps.user &&
+            nextProps.user.id &&
             this.props.initialBunqConnect &&
             this.props.match.params.requestInquiryId !==
                 nextProps.match.params.requestInquiryId
