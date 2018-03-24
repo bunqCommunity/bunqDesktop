@@ -48,12 +48,12 @@ const CategoryDashboard = CL(() =>
 const Card = CL(() =>
     import(/* webpackChunkName: "cards" */ "./Pages/Cards/Card")
 );
-const RuleDashboard = CL(() =>
-    import(/* webpackChunkName: "rules_dashboard" */ "./Pages/RuleDashboard/RuleDashboard")
-);
-const RulePage = CL(() =>
-    import(/* webpackChunkName: "rules_page" */ "./Pages/RulePage/RulePage")
-);
+// const RuleDashboard = CL(() =>
+//     import(/* webpackChunkName: "rules_dashboard" */ "./Pages/RuleDashboard/RuleDashboard")
+// );
+// const RulePage = CL(() =>
+//     import(/* webpackChunkName: "rules_page" */ "./Pages/RulePage/RulePage")
+// );
 
 // router react component
 export default class Routes extends React.Component {
@@ -230,31 +230,31 @@ export default class Routes extends React.Component {
                             )}
                         />
 
-                        <PrivateRoute
-                            path="/rules-dashboard"
-                            apiKey={this.props.apiKey}
-                            userType={this.props.userType}
-                            derivedPassword={this.props.derivedPassword}
-                            render={props => (
-                                <RuleDashboard
-                                    {...props}
-                                    {...this.props.childProps}
-                                />
-                            )}
-                        />
+                        {/*<PrivateRoute*/}
+                            {/*path="/rules-dashboard"*/}
+                            {/*apiKey={this.props.apiKey}*/}
+                            {/*userType={this.props.userType}*/}
+                            {/*derivedPassword={this.props.derivedPassword}*/}
+                            {/*render={props => (*/}
+                                {/*<RuleDashboard*/}
+                                    {/*{...props}*/}
+                                    {/*{...this.props.childProps}*/}
+                                {/*/>*/}
+                            {/*)}*/}
+                        {/*/>*/}
 
-                        <PrivateRoute
-                            path="/rule-page/:ruleId"
-                            apiKey={this.props.apiKey}
-                            userType={this.props.userType}
-                            derivedPassword={this.props.derivedPassword}
-                            render={props => (
-                                <RulePage
-                                    {...props}
-                                    {...this.props.childProps}
-                                />
-                            )}
-                        />
+                        {/*<PrivateRoute*/}
+                            {/*path="/rule-page/:ruleId"*/}
+                            {/*apiKey={this.props.apiKey}*/}
+                            {/*userType={this.props.userType}*/}
+                            {/*derivedPassword={this.props.derivedPassword}*/}
+                            {/*render={props => (*/}
+                                {/*<RulePage*/}
+                                    {/*{...props}*/}
+                                    {/*{...this.props.childProps}*/}
+                                {/*/>*/}
+                            {/*)}*/}
+                        {/*/>*/}
 
                         <Route
                             path="/login"
