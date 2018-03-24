@@ -24,6 +24,7 @@ import {
 import { userLogin } from "../../Actions/user";
 import UserItem from "./UserItem";
 import { Redirect } from "react-router-dom";
+import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
 
 const styles = {
     loginButton: {
@@ -146,7 +147,7 @@ class Login extends React.Component {
                 // start checking if the code was scanned
                 this.checkForScanEvent();
             })
-            .catch(console.error);
+            .catch(error => this.props.handleBunqError(error));
     };
 
     checkForScanEvent = () => {
@@ -155,8 +156,6 @@ class Login extends React.Component {
                 this.props.BunqJSClient
                     .checkCredentialStatus(this.state.requestUuid)
                     .then(result => {
-                        console.log(result);
-
                         if (result.status === "ACCEPTED") {
                             this.setState(
                                 {
@@ -175,7 +174,10 @@ class Login extends React.Component {
                             clearInterval(this.checkerInterval);
                         }
                     })
-                    .catch(console.error);
+                    .catch(error => {
+                        clearInterval(this.checkerInterval);
+                        this.props.handleBunqError(error);
+                    });
             }
         }, 5000);
     };
@@ -431,7 +433,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
         // get latest user list from BunqJSClient
         usersUpdate: (updated = false) =>
-            dispatch(usersUpdate(BunqJSClient, updated))
+            dispatch(usersUpdate(BunqJSClient, updated)),
+
+        handleBunqError: error => BunqErrorHandler(dispatch, error)
     };
 };
 
