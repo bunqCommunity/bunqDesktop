@@ -1,10 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
-import NavLink from "react-router-dom/NavLink";
 import Helmet from "react-helmet";
 import ReactJson from "react-json-view";
 import Grid from "material-ui/Grid";
-import Button from "material-ui/Button";
 
 const styles = {
     paper: {
@@ -24,12 +22,6 @@ class DebugPage extends React.Component {
                 <Helmet>
                     <title>{`BunqDesktop - Debug page`}</title>
                 </Helmet>
-
-                <Grid item xs={12}>
-                    <Button component={NavLink} to={"/"}>
-                        Back
-                    </Button>
-                </Grid>
 
                 <Grid item xs={12}>
                     <ReactJson
