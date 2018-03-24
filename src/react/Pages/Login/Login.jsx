@@ -104,8 +104,6 @@ class Login extends React.Component {
                 this.props.derivedPassword !== false &&
                 this.props.registrationLoading === false
             ) {
-                console.log("trigger qr code");
-                console.log(this.props);
                 this.displayQrCode();
             }
         }, 500);

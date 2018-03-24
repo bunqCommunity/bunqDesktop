@@ -69,21 +69,21 @@ class Card extends React.Component {
     };
 
     render() {
+        let filteredCards = [];
         let cards = [];
         if (this.props.cards !== false) {
-            cards = this.props.cards
-                .filter(card => {
-                    return !(
-                        card.CardDebit && card.CardDebit.status !== "ACTIVE"
-                    );
-                })
-                .map((card, index) => (
-                    <CardListItem
-                        BunqJSClient={this.props.BunqJSClient}
-                        card={card.CardDebit}
-                        onClick={this.handleCardClick.bind(this, index)}
-                    />
-                ));
+            // first filter the cards
+            filteredCards = this.props.cards.filter(card => {
+                return !(card.CardDebit && card.CardDebit.status !== "ACTIVE");
+            });
+            // then generate the items seperately
+            cards = filteredCards.map((card, index) => (
+                <CardListItem
+                    BunqJSClient={this.props.BunqJSClient}
+                    card={card.CardDebit}
+                    onClick={this.handleCardClick.bind(this, index)}
+                />
+            ));
         }
 
         if (this.props.cardsLoading) {
@@ -129,7 +129,7 @@ class Card extends React.Component {
             );
         }
 
-        const cardInfo = this.props.cards[this.state.selectedCardIndex]
+        const cardInfo = filteredCards[this.state.selectedCardIndex]
             .CardDebit;
         const translateOffset = this.state.selectedCardIndex * 410;
         const carouselTranslate = "translateY(-" + translateOffset + "px)";
