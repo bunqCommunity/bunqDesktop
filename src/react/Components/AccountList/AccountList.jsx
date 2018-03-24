@@ -26,7 +26,7 @@ const styles = {
         textAlign: "left",
         overflowY: "auto",
         overflowX: "hidden",
-        maxHeight: 600
+        maxHeight: "90vh"
     }
 };
 
@@ -47,6 +47,11 @@ class AccountList extends React.Component {
 
     componentWillUpdate(nextprops) {
         this.checkUpdateRequirement(nextprops);
+    }
+
+    componentWillUnmount() {
+        // prevent data from being loaded after we unmount
+        if (this.delayedUpdate) clearTimeout(this.delayedUpdate);
     }
 
     updateAccounts = () => {
@@ -83,6 +88,7 @@ class AccountList extends React.Component {
 
         // check if the stored selected account isn't already loaded
         if (
+            user &&
             user.id &&
             accountsAccountId !== false &&
             accountsAccountId !== paymentsAccountId &&

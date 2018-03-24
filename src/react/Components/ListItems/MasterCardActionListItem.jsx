@@ -89,4 +89,8 @@ class MasterCardActionListItem extends React.Component {
     }
 }
 
+MasterCardActionListItem.defaultProps = {
+    minimalDisplay: false
+}
+
 export default withTheme()(MasterCardActionListItem);

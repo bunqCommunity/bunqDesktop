@@ -7,10 +7,13 @@ import Paper from "material-ui/Paper";
 import Button from "material-ui/Button";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Divider from "material-ui/Divider";
-import ArrowBackIcon from "material-ui-icons/ArrowBack";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
+import ArrowBackIcon from "material-ui-icons/ArrowBack";
+import HelpIcon from "material-ui-icons/Help";
+
+import ExportDialog from "../Components/ExportDialog";
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import { paymentText, paymentTypeParser } from "../Helpers/StatusTexts";
 
@@ -36,7 +39,9 @@ const styles = {
 class PaymentInfo extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+        this.state = {
+            displayExport: false
+        };
     }
 
     componentDidMount() {
@@ -54,6 +59,8 @@ class PaymentInfo extends React.Component {
 
     componentWillUpdate(nextProps, nextState) {
         if (
+            nextProps.user &&
+            nextProps.user.id &&
             this.props.initialBunqConnect &&
             this.props.match.params.paymentId !==
                 nextProps.match.params.paymentId
@@ -192,8 +199,27 @@ class PaymentInfo extends React.Component {
                         <ArrowBackIcon />
                     </Button>
                 </Grid>
+
                 <Grid item xs={12} sm={8}>
                     <Paper style={styles.paper}>{content}</Paper>
+                </Grid>
+
+                <Grid item xs={12} sm={2} style={{ textAlign: "right" }}>
+                    <ExportDialog
+                        closeModal={event =>
+                            this.setState({ displayExport: false })}
+                        title="Export info"
+                        open={this.state.displayExport}
+                        object={this.props.paymentInfo}
+                    />
+
+                    <Button
+                        style={styles.button}
+                        onClick={event =>
+                            this.setState({ displayExport: true })}
+                    >
+                        <HelpIcon />
+                    </Button>
                 </Grid>
             </Grid>
         );

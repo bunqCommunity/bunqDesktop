@@ -360,8 +360,14 @@ class Layout extends React.Component {
             <MuiThemeProvider theme={ThemeList[this.props.theme]}>
                 <main className={classes.main}>
                     <Header />
-                    <MainDrawer location={this.props.location} />
-                    <OptionsDrawer themeList={ThemeList} />
+                    <MainDrawer
+                        BunqJSClient={this.props.BunqJSClient}
+                        location={this.props.location}
+                    />
+                    <OptionsDrawer
+                        BunqJSClient={this.props.BunqJSClient}
+                        themeList={ThemeList}
+                    />
                     <Grid
                         container
                         spacing={16}

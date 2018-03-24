@@ -3,21 +3,21 @@ import { connect } from "react-redux";
 import { withStyles } from "material-ui/styles";
 import PropTypes from "prop-types";
 import Drawer from "material-ui/Drawer";
-import List, { ListItem, ListItemText, ListItemIcon } from "material-ui/List";
 import Hidden from "material-ui/Hidden";
 import Typography from "material-ui/Typography";
 import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
+import List, { ListItem, ListItemText, ListItemIcon } from "material-ui/List";
 
-import PowerSettingsIcon from "material-ui-icons/PowerSettingsNew";
 import ArrowUpwardIcon from "material-ui-icons/ArrowUpward";
 import ArrowDownwardIcon from "material-ui-icons/ArrowDownward";
 import HomeIcon from "material-ui-icons/Home";
 import SettingsIcon from "material-ui-icons/Settings";
 import ShareIcon from "material-ui-icons/Share";
 import TimeLineIcon from "material-ui-icons/Timeline";
-import ListIcon from "material-ui-icons/List";
 import CardIcon from "material-ui-icons/CreditCard";
+import CreateIcon from "material-ui-icons/Create";
+import Bookmark from "material-ui-icons/Bookmark";
 
 import NavLink from "./Routing/NavLink";
 import ListItemWrapper from "./ListItemWrapper";
@@ -128,11 +128,17 @@ class MainDrawer extends React.Component {
                   />,
                   <ListItemWrapper
                       to="/category-dashboard"
-                      icon={ListIcon}
+                      icon={Bookmark}
                       text="Category dashboard"
                       location={this.props.location}
                   />
               ];
+        {/*<ListItemWrapper*/}
+            {/*to="/rules-dashboard"*/}
+            {/*icon={CreateIcon}*/}
+            {/*text="Category rules"*/}
+            {/*location={this.props.location}*/}
+        {/*/>*/}
 
         const drawerList = (
             <List style={styles.list}>

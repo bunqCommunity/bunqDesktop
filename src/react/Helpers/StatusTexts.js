@@ -66,7 +66,7 @@ export const masterCardActionParser = masterCardAction => {
     if (masterCardAction.label_card) {
         switch (masterCardAction.label_card.type) {
             case "MAESTRO_MOBILE_NFC":
-                return "Mobile Tap & Pay";
+                return "Mobile NFC Payment";
             case "MASTERCARD":
                 return "Mastercard Payment";
             case "MAESTRO":

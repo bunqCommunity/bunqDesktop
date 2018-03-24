@@ -271,7 +271,7 @@ class CombinedList extends React.Component {
                     </ListItemSecondaryAction>
                 </ListSubheader>
                 {loadingContent}
-                <List>{combinedComponentList}</List>
+                {combinedComponentList}
             </List>
         );
     }

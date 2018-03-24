@@ -87,4 +87,8 @@ class PaymentListItem extends React.Component {
     }
 }
 
+PaymentListItem.defaultProps = {
+    minimalDisplay: false
+}
+
 export default PaymentListItem;

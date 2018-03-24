@@ -11,6 +11,7 @@ import Select from "material-ui/Select";
 import Switch from "material-ui/Switch";
 import Typography from "material-ui/Typography";
 
+import PowerSettingsIcon from "material-ui-icons/PowerSettingsNew";
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
 import ClearIcon from "material-ui-icons/Clear";
 
@@ -26,6 +27,7 @@ import {
 import { closeOptionsDrawer } from "../Actions/options_drawer";
 import { openMainDrawer } from "../Actions/main_drawer";
 import { openSnackbar } from "../Actions/snackbar";
+import { registrationClearApiKey } from "../Actions/registration";
 
 const styles = {
     list: {
@@ -71,10 +73,13 @@ const humanReadableThemes = {
 class OptionsDrawer extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+        this.state = {
+            clearConfirmation: false
+        };
     }
 
     backToMain = () => {
+        this.setState({ clearConfirmation: false });
         // open the options drawer and open the main drawer
         this.props.openMainDrawer();
         this.props.closeOptionsDrawer();
@@ -106,8 +111,25 @@ class OptionsDrawer extends React.Component {
         this.props.setInactivityCheckDuration(event.target.value);
     };
 
+    handleResetBunqDesktop = event => {
+        if (this.state.clearConfirmation === false) {
+            this.setState({ clearConfirmation: true });
+        } else {
+            this.props.resetApplication();
+        }
+    };
+
+    handleOptionsDrawerClose = () => {
+        this.setState({ clearConfirmation: false });
+        this.props.closeOptionsDrawer();
+    };
+
     render() {
         const { theme, open } = this.props;
+
+        const clearBunqDesktopText = this.state.clearConfirmation
+            ? "Are you absolutely sure?"
+            : "Reset BunqDesktop";
 
         const drawerList = (
             <List style={styles.list}>
@@ -165,7 +187,7 @@ class OptionsDrawer extends React.Component {
                                 onChange={this.handleHideBalanceCheckChange}
                             />
                         }
-                        label="Hide monetary account balances"
+                        label="Hide account balances"
                     />
                 </ListItem>
 
@@ -210,23 +232,31 @@ class OptionsDrawer extends React.Component {
                     ) : null}
                 </ListItem>
 
-                {/* add space to prevent accidental click */}
-                <ListItem />
-                <ListItem />
+                <ListItem style={styles.listFiller} />
+
                 <ListItem
                     button
                     style={styles.listBottomItem}
-                    onClick={this.props.resetApplication}
+                    onClick={this.props.clearApiKey}
+                >
+                    <ListItemIcon>
+                        <PowerSettingsIcon />
+                    </ListItemIcon>
+                    <Typography variant="subheading">Logout</Typography>
+                </ListItem>
+
+                <ListItem
+                    button
+                    style={styles.listBottomItem}
+                    onClick={this.handleResetBunqDesktop}
                 >
                     <ListItemIcon>
                         <ClearIcon />
                     </ListItemIcon>
                     <Typography variant="subheading">
-                        Reset BunqDesktop
+                        {clearBunqDesktopText}
                     </Typography>
                 </ListItem>
-
-                <ListItem style={styles.listFiller} />
 
                 <ListItem
                     button
@@ -245,7 +275,7 @@ class OptionsDrawer extends React.Component {
             <Drawer
                 open={open}
                 className="options-drawer"
-                onClose={this.props.closeOptionsDrawer}
+                onClose={this.handleOptionsDrawerClose}
                 anchor={theme.direction === "rtl" ? "right" : "left"}
                 SlideProps={{
                     style: { top: 50 }
@@ -269,8 +299,10 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, ownProps) => {
+    const { BunqJSClient } = ownProps;
     return {
+        // options and options_drawer handlers
         resetApplication: () => dispatch(resetApplication()),
         openSnackbar: message => dispatch(openSnackbar(message)),
         setTheme: theme => dispatch(setTheme(theme)),
@@ -283,7 +315,10 @@ const mapDispatchToProps = dispatch => {
         setInactivityCheckDuration: inactivityCheckDuration =>
             dispatch(setInactivityCheckDuration(inactivityCheckDuration)),
         openMainDrawer: () => dispatch(openMainDrawer()),
-        closeOptionsDrawer: () => dispatch(closeOptionsDrawer())
+        closeOptionsDrawer: () => dispatch(closeOptionsDrawer()),
+
+        // clear api key from bunqjsclient and bunqdesktop
+        clearApiKey: () => dispatch(registrationClearApiKey(BunqJSClient))
     };
 };
 

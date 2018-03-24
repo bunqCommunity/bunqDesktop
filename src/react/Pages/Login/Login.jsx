@@ -3,12 +3,16 @@ import { Typography } from "material-ui";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
+import IconButton from "material-ui/IconButton";
 import Input from "material-ui/Input";
 import Button from "material-ui/Button";
 import Switch from "material-ui/Switch";
 import { FormControlLabel } from "material-ui/Form";
 import Card, { CardContent } from "material-ui/Card";
 import { CircularProgress } from "material-ui/Progress";
+
+import QRSvg from "../../Components/QR/QRSvg";
+
 import { usersUpdate } from "../../Actions/users";
 import {
     registrationClearApiKey,
@@ -20,6 +24,7 @@ import {
 import { userLogin } from "../../Actions/user";
 import UserItem from "./UserItem";
 import { Redirect } from "react-router-dom";
+import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
 
 const styles = {
     loginButton: {
@@ -53,8 +58,12 @@ class Login extends React.Component {
             apiKeyValid: false,
             deviceName: "My Device",
             deviceNameValid: true,
-            attemptingLogin: false
+            attemptingLogin: false,
+
+            requestQrCodeBase64: false,
+            requestUuid: false
         };
+        this.checkerInterval = null;
     }
 
     componentDidMount() {
@@ -71,20 +80,31 @@ class Login extends React.Component {
             sandboxMode: this.props.environment === "SANDBOX"
         });
 
+        this.checkForSingleUser();
+        this.validateInputs(this.props.apiKey, this.props.deviceName);
+    }
+
+    componentDidUpdate() {
+        this.checkForSingleUser();
+    }
+
+    /**
+     * Checks if only 1 user type is set and logs in the user if this is the case
+     */
+    checkForSingleUser = () => {
         const userTypes = Object.keys(this.props.users);
         if (userTypes.length === 1) {
             // only one user we can instantly log in, check requirements again
             if (
                 this.props.derivedPassword !== false &&
                 this.props.apiKey !== false &&
-                this.props.deviceName !== false
+                this.props.deviceName !== false &&
+                this.props.userLoading === false
             ) {
                 this.props.loginUser(userTypes[0], true);
             }
         }
-
-        this.validateInputs(this.props.apiKey, this.props.deviceName);
-    }
+    };
 
     setRegistration = () => {
         if (this.state.apiKey.length !== 64) {
@@ -113,6 +133,53 @@ class Login extends React.Component {
             );
             this.props.setApiKey(this.state.apiKey, this.props.derivedPassword);
         }
+    };
+
+    displayQrCode = () => {
+        this.props.BunqJSClient
+            .createCredentials()
+            .then(({ uuid, status, qr_base64 }) => {
+                this.setState({
+                    requestQrCodeBase64: qr_base64,
+                    requestUuid: uuid
+                });
+
+                // start checking if the code was scanned
+                this.checkForScanEvent();
+            })
+            .catch(error => this.props.handleBunqError(error));
+    };
+
+    checkForScanEvent = () => {
+        this.checkerInterval = setInterval(() => {
+            if (this.state.requestUuid !== false) {
+                this.props.BunqJSClient
+                    .checkCredentialStatus(this.state.requestUuid)
+                    .then(result => {
+                        if (result.status === "ACCEPTED") {
+                            this.setState(
+                                {
+                                    apiKey: result.api_key,
+                                    requestQrCodeBase64: false,
+                                    requestUuid: false
+                                },
+                                () =>
+                                    this.validateInputs(
+                                        this.state.apiKey,
+                                        this.state.deviceName
+                                    )
+                            );
+
+                            // reset the check event
+                            clearInterval(this.checkerInterval);
+                        }
+                    })
+                    .catch(error => {
+                        clearInterval(this.checkerInterval);
+                        this.props.handleBunqError(error);
+                    });
+            }
+        }, 5000);
     };
 
     clearApiKey = () => {
@@ -196,13 +263,20 @@ class Login extends React.Component {
         const apiKeyContent =
             this.props.apiKey === false ? (
                 <CardContent>
-                    <Typography variant="headline" component="h2">
-                        Enter your API Key
-                    </Typography>
-                    <Typography variant="caption">
-                        In the bunq app go to your Profile > Security > API Keys
-                        and generate a new key
-                    </Typography>
+                    <div style={{ textAlign: "center" }}>
+                        {this.state.requestQrCodeBase64 === false ? (
+                            <IconButton onClick={this.displayQrCode}>
+                                <QRSvg />
+                            </IconButton>
+                        ) : (
+                            <img
+                                src={`data:image/png;base64, ${this.state
+                                    .requestQrCodeBase64}`}
+                                style={{ width: 200, height: 200, margin: 16 }}
+                            />
+                        )}
+                    </div>
+
                     <Input
                         style={styles.apiInput}
                         error={!this.state.apiKeyValid}
@@ -359,7 +433,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
         // get latest user list from BunqJSClient
         usersUpdate: (updated = false) =>
-            dispatch(usersUpdate(BunqJSClient, updated))
+            dispatch(usersUpdate(BunqJSClient, updated)),
+
+        handleBunqError: error => BunqErrorHandler(dispatch, error)
     };
 };
 
