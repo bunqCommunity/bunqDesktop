@@ -14,6 +14,10 @@ import Typography from "material-ui/Typography";
 import PowerSettingsIcon from "material-ui-icons/PowerSettingsNew";
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
 import ClearIcon from "material-ui-icons/Clear";
+import ShareIcon from "material-ui-icons/Share";
+import BugReportIcon from "material-ui-icons/BugReport";
+
+import ListItemWrapper from "./ListItemWrapper";
 
 import {
     setTheme,
@@ -234,16 +238,12 @@ class OptionsDrawer extends React.Component {
 
                 <ListItem style={styles.listFiller} />
 
-                <ListItem
-                    button
-                    style={styles.listBottomItem}
-                    onClick={this.props.clearApiKey}
-                >
-                    <ListItemIcon>
-                        <PowerSettingsIcon />
-                    </ListItemIcon>
-                    <Typography variant="subheading">Logout</Typography>
-                </ListItem>
+                <ListItemWrapper
+                    to="/debug-page"
+                    icon={BugReportIcon}
+                    text="Debug application"
+                    location={this.props.location}
+                />
 
                 <ListItem
                     button
@@ -256,6 +256,17 @@ class OptionsDrawer extends React.Component {
                     <Typography variant="subheading">
                         {clearBunqDesktopText}
                     </Typography>
+                </ListItem>
+
+                <ListItem
+                    button
+                    style={styles.listBottomItem}
+                    onClick={this.props.clearApiKey}
+                >
+                    <ListItemIcon>
+                        <PowerSettingsIcon />
+                    </ListItemIcon>
+                    <Typography variant="subheading">Logout</Typography>
                 </ListItem>
 
                 <ListItem

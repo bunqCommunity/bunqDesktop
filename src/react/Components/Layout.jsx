@@ -367,6 +367,7 @@ class Layout extends React.Component {
                     <OptionsDrawer
                         BunqJSClient={this.props.BunqJSClient}
                         themeList={ThemeList}
+                        location={this.props.location}
                     />
                     <Grid
                         container

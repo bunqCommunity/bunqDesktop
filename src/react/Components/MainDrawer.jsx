@@ -129,7 +129,7 @@ class MainDrawer extends React.Component {
                   <ListItemWrapper
                       to="/category-dashboard"
                       icon={Bookmark}
-                      text="Category dashboard"
+                      text="Categories"
                       location={this.props.location}
                   />
               ];
