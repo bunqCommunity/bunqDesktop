@@ -12,8 +12,11 @@ Download the latest version of BunqDesktop from the [GitHub releases page.](http
 ## Features
 - View all your accounts and payments
 - Send new payments to other users
-- Create and view bunq.me requests
 - Accept and decline requests
+- Create and view bunq.me requests
+- Custom categories to group events
+- View and manage your cards
+- Statistics page
 - Encrypted storage on your device
 - Available on Windows, Linux and Mac
 
