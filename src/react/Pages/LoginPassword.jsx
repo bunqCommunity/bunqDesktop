@@ -31,8 +31,8 @@ const styles = {
         marginTop: 16
     },
     loginButton: {
-        width: "100%",
-        marginTop: 20
+        width: 160,
+        margin: 20
     },
     clearButton: {
         width: "100%",
@@ -179,7 +179,7 @@ class LoginPassword extends React.Component {
                     </Typography>
                 </CardContent>
             ) : (
-                <CardContent>
+                <CardContent style={{ textAlign: "center" }}>
                     <Typography variant="headline" component="h2">
                         {hasStoredApiKey ? (
                             "Enter your password"
@@ -215,11 +215,7 @@ class LoginPassword extends React.Component {
                         style={styles.loginButton}
                         onClick={this.setRegistration}
                     >
-                        {hasStoredApiKey ? (
-                            "Load your API key"
-                        ) : (
-                            "Setup your new password"
-                        )}
+                        Login
                     </Button>
 
                     {hasStoredApiKey ? (
@@ -229,26 +225,20 @@ class LoginPassword extends React.Component {
                             style={styles.loginButton}
                             onClick={this.clearApiKey}
                         >
-                            Remove your stored API key
+                            Logout
                         </Button>
                     ) : null}
 
                     {(hasStoredApiKey === true && useNoPassword === true) ||
                     hasStoredApiKey === false ? (
-                        <div style={{ marginTop: 20 }}>
-                            <Typography variant="body2">
-                                Alternatively, you can choose to not encrypt
-                                your data.
-                            </Typography>
-                            <Button
-                                variant="raised"
-                                color={"secondary"}
-                                style={styles.loginButton}
-                                onClick={this.props.useNoPasswordLogin}
-                            >
-                                Use no password
-                            </Button>
-                        </div>
+                        <Button
+                            variant="raised"
+                            color={"secondary"}
+                            style={styles.loginButton}
+                            onClick={this.props.useNoPasswordLogin}
+                        >
+                            Use no password
+                        </Button>
                     ) : null}
                 </CardContent>
             );
