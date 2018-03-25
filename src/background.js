@@ -79,53 +79,47 @@ app.on("ready", () => {
         path.join(__dirname, "../app/images/32x32.png")
     );
 
-    // setup the tray handler
-    const tray = new Tray(trayIcon);
-    const contextMenu = Menu.buildFromTemplate([
-        {
-            label: "Dashboard",
-            click: () => changePage(mainWindow, "/")
-        },
-        {
-            label: "Pay",
-            click: () => changePage(mainWindow, "/pay")
-        },
-        {
-            label: "Request",
-            click: () => changePage(mainWindow, "/request")
-        },
-        {
-            label: "Cards",
-            click: () => changePage(mainWindow, "/card")
-        },
-        { type: "separator" },
-        {
-            label: "Quit",
-            click: () => app.quit()
-        }
-    ]);
-    tray.setContextMenu(contextMenu);
-    tray.setToolTip("BunqDesktop");
+    const createTrayIcon = () => {
+        // setup the tray handler
+        const tray = new Tray(trayIcon);
+        const contextMenu = Menu.buildFromTemplate([
+            {
+                label: "Dashboard",
+                click: () => changePage(mainWindow, "/")
+            },
+            {
+                label: "Pay",
+                click: () => changePage(mainWindow, "/pay")
+            },
+            {
+                label: "Request",
+                click: () => changePage(mainWindow, "/request")
+            },
+            {
+                label: "Cards",
+                click: () => changePage(mainWindow, "/card")
+            },
+            { type: "separator" },
+            {
+                label: "Quit",
+                click: () => app.quit()
+            }
+        ]);
+        tray.setContextMenu(contextMenu);
+        tray.setToolTip("BunqDesktop");
 
-    // Event handlers
-    tray.on("click", () => {
-        // show app on single click
-        if (!mainWindow.isVisible()) mainWindow.show();
-    });
-    tray.on("double-click", () => {
-        // hide app on double click
-        if (mainWindow.isVisible()) mainWindow.hide();
-    });
+        // Event handlers
+        tray.on("click", () => {
+            // show app on single click
+            if (!mainWindow.isVisible()) mainWindow.show();
+            tray.destroy();
+        });
+    }
 
-    mainWindow.on("show", () => {
-        tray.setHighlightMode("always");
-    });
-    mainWindow.on("hide", () => {
-        tray.setHighlightMode("never");
-    });
     mainWindow.on("minimize", function(event) {
-        const minimizeToTray = !!settings.get("MINIMIZE_TO_TRAY_LOCATION");
+        const minimizeToTray = !!settings.get("MINIMIZE_TO_TRAY");
         if (minimizeToTray) {
+            createTrayIcon();
             event.preventDefault();
             mainWindow.hide();
         }
