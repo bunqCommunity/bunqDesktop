@@ -2,9 +2,13 @@ import React from "react";
 import { connect } from "react-redux";
 import IconButton from "material-ui/IconButton";
 import Hidden from "material-ui/Hidden";
+const remote = require("electron").remote;
 
 import MenuIcon from "material-ui-icons/Menu";
 import CloseIcon from "material-ui-icons/Close";
+import RestoreIcon from "./CustomSVG/Restore";
+import MaximizeIcon from "./CustomSVG/Maximize";
+import MinimizeIcon from "./CustomSVG/Minimize";
 
 import { openMainDrawer } from "../Actions/main_drawer";
 
@@ -25,8 +29,15 @@ const styles = {
         ...buttonDefaultStyles,
         right: 5
     },
+    headerRightBtn2: {
+        ...buttonDefaultStyles,
+        right: 50
+    },
+    headerRightBtn3: {
+        ...buttonDefaultStyles,
+        right: 95
+    },
     header: {
-        // background: "url(images/bunq-colours-bar-2.png)",
         WebkitAppRegion: "drag",
         WebkitUserSelect: "none",
         position: "fixed",
@@ -44,14 +55,32 @@ const styles = {
 class Header extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+        this.state = {
+            forceUpdate: null
+        };
+
+        this.mainWindow = remote.getCurrentWindow();
     }
 
-    closeApp() {
-        window.close();
-    }
+    closeApp = () => {
+        this.mainWindow.close();
+    };
+
+    minimizeApp = () => {
+        this.mainWindow.minimize();
+    };
+
+    maximizeRestoreApp = () => {
+        if (this.mainWindow.isMaximized()) {
+            this.mainWindow.unmaximize();
+        } else if (!this.mainWindow.isMinimized()) {
+            this.mainWindow.maximize();
+        }
+        this.setState({ forceUpdate: new Date() });
+    };
 
     render() {
+        // the actual menu button
         const menuButton = (
             <IconButton
                 aria-label="view main drawer"
@@ -61,15 +90,35 @@ class Header extends React.Component {
                 <MenuIcon />
             </IconButton>
         );
+        // wrap it in a hidden wrapper in case of sticky menu mode
         const wrappedButton = this.props.stickyMenu ? (
             <Hidden mdUp>{menuButton}</Hidden>
         ) : (
             menuButton
         );
 
-        return (
-            <header style={styles.header} className={"rainbow-background"}>
-                {wrappedButton}
+        let middleIcon = null;
+        if (this.mainWindow.isMaximized()) {
+            middleIcon = <RestoreIcon />;
+        } else if (!this.mainWindow.isMinimized()) {
+            middleIcon = <MaximizeIcon />;
+        }
+        const windowControls = true ? (
+            <React.Fragment>
+                <IconButton
+                    aria-label="Minimize application"
+                    onClick={this.minimizeApp}
+                    style={styles.headerRightBtn3}
+                >
+                    <MinimizeIcon />
+                </IconButton>
+                <IconButton
+                    aria-label="Maximize or restore application"
+                    onClick={this.maximizeRestoreApp}
+                    style={styles.headerRightBtn2}
+                >
+                    {middleIcon}
+                </IconButton>
                 <IconButton
                     aria-label="Exit application"
                     onClick={this.closeApp}
@@ -77,6 +126,13 @@ class Header extends React.Component {
                 >
                     <CloseIcon />
                 </IconButton>
+            </React.Fragment>
+        ) : null;
+
+        return (
+            <header style={styles.header} className={"rainbow-background"}>
+                {wrappedButton}
+                {windowControls}
             </header>
         );
     }
@@ -84,7 +140,8 @@ class Header extends React.Component {
 
 const mapStateToProps = store => {
     return {
-        stickyMenu: store.options.sticky_menu
+        stickyMenu: store.options.sticky_menu,
+        minimizeToTray: store.options.minimize_to_tray
     };
 };
 

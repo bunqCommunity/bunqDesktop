@@ -3,17 +3,19 @@ import url from "url";
 import log from "electron-log";
 import electron from "electron";
 import settings from "electron-settings";
-import { app, Menu } from "electron";
+import { app, Menu, Tray } from "electron";
 import { devMenuTemplate } from "./menu/dev_menu_template";
 import { editMenuTemplate } from "./menu/edit_menu_template";
 import createWindow from "./helpers/window";
 import registerShortcuts from "./helpers/shortcuts";
 import registerTouchBar from "./helpers/touchbar";
+import changePage from "./helpers/react_navigate";
 
 // Special module holding environment variables which you declared
 // in config/env_xxx.json file.
 import env from "./env";
 
+// hide/show different native menus based on env
 const setApplicationMenu = () => {
     const menus = [editMenuTemplate];
     if (env.name === "development") {
@@ -23,9 +25,16 @@ const setApplicationMenu = () => {
     Menu.setApplicationMenu(Menu.buildFromTemplate(menus));
 };
 
-// Save userData in separate folders for each environment.
-// Thanks to this you can use production and development versions of the app
-// on same machine like those are two separate apps.
+// returns an url formatted file location
+const getWindowUrl = fileName => {
+    return url.format({
+        pathname: path.join(__dirname, fileName),
+        protocol: "file:",
+        slashes: true
+    });
+};
+
+// Save userData in separate folders for each environment
 if (env.name !== "production") {
     const userDataPath = app.getPath("userData");
     app.setPath("userData", `${userDataPath} (${env.name})`);
@@ -48,6 +57,7 @@ app.on("ready", () => {
         USE_NATIVE_FRAME_STORED !== undefined &&
         USE_NATIVE_FRAME_STORED === true;
 
+    // setup the main window
     const mainWindow = createWindow("main", {
         frame: USE_NATIVE_FRAME,
         webPreferences: { webSecurity: false },
@@ -55,23 +65,67 @@ app.on("ready", () => {
         height: 800
     });
 
-    mainWindow.loadURL(
-        url.format({
-            pathname: path.join(__dirname, "app.html"),
-            protocol: "file:",
-            slashes: true
-        })
-    );
+    // load the app.html file to get started
+    mainWindow.loadURL(getWindowUrl("app.html"));
 
     registerShortcuts(mainWindow, app);
     registerTouchBar(mainWindow);
 
     if (env.name === "development") {
         mainWindow.openDevTools();
-    } else {
-        // remove the menu in production
-        mainWindow.setMenu(null);
     }
+
+    // setup the tray handler
+    const tray = new Tray(path.join(__dirname, "../app/images/icon.ico"));
+    const contextMenu = Menu.buildFromTemplate([
+        {
+            label: "Dashboard",
+            click: () => changePage(mainWindow, "/")
+        },
+        {
+            label: "Pay",
+            click: () => changePage(mainWindow, "/pay")
+        },
+        {
+            label: "Request",
+            click: () => changePage(mainWindow, "/request")
+        },
+        {
+            label: "Cards",
+            click: () => changePage(mainWindow, "/card")
+        },
+        { type: "separator" },
+        {
+            label: "Quit",
+            click: () => app.quit()
+        }
+    ]);
+    tray.setContextMenu(contextMenu);
+    tray.setToolTip("BunqDesktop");
+
+    // Event handlers
+    tray.on("click", () => {
+        // show app on single click
+        if (!mainWindow.isVisible()) mainWindow.show();
+    });
+    tray.on("double-click", () => {
+        // hide app on double click
+        if (mainWindow.isVisible()) mainWindow.hide();
+    });
+
+    mainWindow.on("show", () => {
+        tray.setHighlightMode("always");
+    });
+    mainWindow.on("hide", () => {
+        tray.setHighlightMode("never");
+    });
+    mainWindow.on("minimize", function(event) {
+        const minimizeToTray = !!settings.get("MINIMIZE_TO_TRAY_LOCATION");
+        if(minimizeToTray){
+            event.preventDefault();
+            mainWindow.hide();
+        }
+    });
 
     // reload the window if the system goes into sleep mode
     electron.powerMonitor.on("resume", () => {

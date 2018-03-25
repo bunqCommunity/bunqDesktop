@@ -14,7 +14,6 @@ import Typography from "material-ui/Typography";
 import PowerSettingsIcon from "material-ui-icons/PowerSettingsNew";
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
 import ClearIcon from "material-ui-icons/Clear";
-import ShareIcon from "material-ui-icons/Share";
 import BugReportIcon from "material-ui-icons/BugReport";
 
 import ListItemWrapper from "./ListItemWrapper";
@@ -26,7 +25,8 @@ import {
     resetApplication,
     toggleInactivityCheck,
     setInactivityCheckDuration,
-    setStickyMenu
+    setStickyMenu,
+    setMinimizeToTray
 } from "../Actions/options";
 import { closeOptionsDrawer } from "../Actions/options_drawer";
 import { openMainDrawer } from "../Actions/main_drawer";
@@ -104,6 +104,10 @@ class OptionsDrawer extends React.Component {
         this.props.setStickyMenu(!this.props.stickyMenu);
     };
 
+    handleMinimizeToTrayChange = event => {
+        this.props.setMinimizeToTray(!this.props.minimizeToTray);
+    };
+
     handleHideBalanceCheckChange = event => {
         this.props.setHideBalance(!this.props.hideBalance);
     };
@@ -166,6 +170,19 @@ class OptionsDrawer extends React.Component {
                             />
                         }
                         label="Use the native frame"
+                    />
+                </ListItem>
+
+                <ListItem dense>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                id="minimize-to-try-selection"
+                                checked={this.props.minimizeToTray}
+                                onChange={this.handleMinimizeToTrayChange}
+                            />
+                        }
+                        label="Minimize to tray"
                     />
                 </ListItem>
 
@@ -303,6 +320,7 @@ const mapStateToProps = state => {
         open: state.options_drawer.open,
         theme: state.options.theme,
         hideBalance: state.options.hide_balance,
+        minimizeToTray: state.options.minimize_to_tray,
         nativeFrame: state.options.native_frame,
         stickyMenu: state.options.sticky_menu,
         checkInactivity: state.options.check_inactivity,
@@ -321,6 +339,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         setStickyMenu: userStickyMenu =>
             dispatch(setStickyMenu(userStickyMenu)),
         setHideBalance: hideBalance => dispatch(setHideBalance(hideBalance)),
+        setMinimizeToTray: minimizeToTray =>
+            dispatch(setMinimizeToTray(minimizeToTray)),
         toggleInactivityCheck: inactivityCheck =>
             dispatch(toggleInactivityCheck(inactivityCheck)),
         setInactivityCheckDuration: inactivityCheckDuration =>

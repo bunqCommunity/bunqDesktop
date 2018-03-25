@@ -20,6 +20,13 @@ Download the latest version of BunqDesktop from the [GitHub releases page.](http
 - Encrypted storage on your device
 - Available on Windows, Linux and Mac
 
+## Keybinds
+ - CTRL/CMD + Q : Closes the application
+ - CTRL/CMD + H : Hides the application in the tray
+ - CTRL/CMD + D : Dashboard
+ - CTRL/CMD + P : Payment page
+ - CTRL/CMD + R : Request page
+
 ## Development
 We use [yarn](https://yarnpkg.com/en/) for package management and the following global packages:
 ```bash

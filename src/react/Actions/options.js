@@ -34,6 +34,15 @@ export function setHideBalance(hideBalance) {
     };
 }
 
+export function setMinimizeToTray(minimizeToTray) {
+    return {
+        type: "OPTIONS_SET_HIDE_MINIMIZE_TO_TRAY",
+        payload: {
+            minimize_to_tray: minimizeToTray
+        }
+    };
+}
+
 export function toggleInactivityCheck(checkInactivity) {
     return {
         type: "OPTIONS_SET_CHECK_INACTIVITY",
