@@ -3,12 +3,16 @@ import { Typography } from "material-ui";
 import { connect } from "react-redux";
 import Redirect from "react-router-dom/Redirect";
 import Helmet from "react-helmet";
+import store from "store";
 import Grid from "material-ui/Grid";
 import Input from "material-ui/Input";
 import Button from "material-ui/Button";
 import Card, { CardContent } from "material-ui/Card";
 import { CircularProgress } from "material-ui/Progress";
+
 import WarningIcon from "material-ui-icons/Warning";
+import LockIcon from "material-ui-icons/Lock";
+import BugReportIcon from "material-ui-icons/BugReport";
 
 import {
     registrationClearApiKey,
@@ -20,6 +24,12 @@ import {
 } from "../Actions/registration";
 
 const styles = {
+    wrapperContainer: {
+        height: "100%"
+    },
+    warningCard: {
+        marginTop: 16
+    },
     loginButton: {
         width: "100%",
         marginTop: 20
@@ -46,7 +56,9 @@ class LoginPassword extends React.Component {
         super(props, context);
         this.state = {
             password: "",
-            passwordValid: false
+            passwordValid: false,
+
+            hasReadWarning: !!store.get("HAS_READ_DEV_WARNING")
         };
     }
 
@@ -92,6 +104,11 @@ class LoginPassword extends React.Component {
         this.props.clearApiKey();
     };
 
+    ignoreWarning = event => {
+        store.set("HAS_READ_DEV_WARNING", true);
+        this.setState({ hasReadWarning: true });
+    };
+
     render() {
         const {
             status_message,
@@ -108,134 +125,150 @@ class LoginPassword extends React.Component {
         const buttonDisabled =
             this.state.passwordValid === false || registrationLoading === true;
 
-        const cardContent = registrationLoading ? (
-            <CardContent style={{ textAlign: "center" }}>
-                <Typography variant="headline" component="h2">
-                    Loading
-                </Typography>
-                <CircularProgress size={50} />
-                <Typography variant="subheading">{status_message}</Typography>
-            </CardContent>
-        ) : (
-            <CardContent>
-                <Typography variant="headline" component="h2">
-                    {hasStoredApiKey ? (
-                        "Enter your password"
-                    ) : (
-                        "Enter a password"
-                    )}
-                </Typography>
+        let cardContent = null;
 
-                {hasStoredApiKey ? (
-                    <Typography variant="body2">
-                        Enter your password to load your stored API key and
-                        session. Click the reset button to enter a new API key.
+        if (this.state.hasReadWarning === false) {
+            cardContent = (
+                <Card style={styles.warningCard}>
+                    <CardContent>
+                        <Typography variant="headline">
+                            <WarningIcon /> Caution!
+                        </Typography>
+                        <Typography variant="body2">
+                            This project is still in active development and we
+                            are not responsible if anything goes wrong.
+                        </Typography>
+                        <br />
+                        <Typography variant="headline">
+                            <LockIcon /> Password
+                        </Typography>
+                        <Typography variant="body2">
+                            In order to keep your data safe everything is
+                            encrypted using the password you enter. If you
+                            forget this password all personal data within
+                            BunqDesktop will be reset and you will have to log
+                            back in.
+                        </Typography>
+                        <Typography variant="body2">
+                            If you decide to use an empty password, anyone with
+                            the required knowledge could view your data if they
+                            get access to your physical device!
+                        </Typography>
+                        <div style={{ textAlign: "center" }}>
+                            <Button
+                                variant={"raised"}
+                                style={{ marginTop: 12 }}
+                                onClick={this.ignoreWarning}
+                            >
+                                Don't show this again
+                            </Button>
+                        </div>
+                    </CardContent>
+                </Card>
+            );
+        } else {
+            // actual content
+            cardContent = registrationLoading ? (
+                <CardContent style={{ textAlign: "center" }}>
+                    <Typography variant="headline" component="h2">
+                        Loading
                     </Typography>
-                ) : (
-                    <Typography variant="body2">
-                        We use this password to securely store your data. We'll
-                        only ask for it once when you start BunqDesktop. Losing
-                        it just means you'll have to enter a new password and
-                        enter your API key so we can log you back in.
+                    <CircularProgress size={50} />
+                    <Typography variant="subheading">
+                        {status_message}
                     </Typography>
-                )}
+                </CardContent>
+            ) : (
+                <CardContent>
+                    <Typography variant="headline" component="h2">
+                        {hasStoredApiKey ? (
+                            "Enter your password"
+                        ) : (
+                            "Enter a password"
+                        )}
+                    </Typography>
 
-                <Input
-                    autoFocus
-                    style={styles.passwordInput}
-                    error={!this.state.passwordValid}
-                    type="password"
-                    label="Password"
-                    hint="A secure 7+ character password"
-                    onChange={this.handlePasswordChange}
-                    onKeyPress={ev => {
-                        if (ev.key === "Enter" && buttonDisabled === false) {
-                            this.setRegistration();
-                            ev.preventDefault();
-                        }
-                    }}
-                    value={this.state.password}
-                />
+                    <Input
+                        autoFocus
+                        style={styles.passwordInput}
+                        error={!this.state.passwordValid}
+                        type="password"
+                        label="Password"
+                        hint="A secure 7+ character password"
+                        onChange={this.handlePasswordChange}
+                        onKeyPress={ev => {
+                            if (
+                                ev.key === "Enter" &&
+                                buttonDisabled === false
+                            ) {
+                                this.setRegistration();
+                                ev.preventDefault();
+                            }
+                        }}
+                        value={this.state.password}
+                    />
 
-                <Button
-                    variant="raised"
-                    disabled={buttonDisabled}
-                    color={"primary"}
-                    style={styles.loginButton}
-                    onClick={this.setRegistration}
-                >
-                    {hasStoredApiKey ? (
-                        "Load your API key"
-                    ) : (
-                        "Setup your new password"
-                    )}
-                </Button>
-
-                {hasStoredApiKey ? (
                     <Button
                         variant="raised"
-                        color={"secondary"}
+                        disabled={buttonDisabled}
+                        color={"primary"}
                         style={styles.loginButton}
-                        onClick={this.clearApiKey}
+                        onClick={this.setRegistration}
                     >
-                        Remove your stored API key
+                        {hasStoredApiKey ? (
+                            "Load your API key"
+                        ) : (
+                            "Setup your new password"
+                        )}
                     </Button>
-                ) : null}
 
-                {(hasStoredApiKey === true && useNoPassword === true) ||
-                hasStoredApiKey === false ? (
-                    <div style={{ marginTop: 20 }}>
-                        <Typography variant="body2">
-                            Alternatively, you can choose to not encrypt your
-                            data.
-                        </Typography>
-                        <Typography variant="body2">
-                            If anyone gets access to your computer and they know
-                            what they are doing they can get access to your API
-                            key!
-                        </Typography>
+                    {hasStoredApiKey ? (
                         <Button
                             variant="raised"
                             color={"secondary"}
                             style={styles.loginButton}
-                            onClick={this.props.useNoPasswordLogin}
+                            onClick={this.clearApiKey}
                         >
-                            Use no password
+                            Remove your stored API key
                         </Button>
-                    </div>
-                ) : null}
-            </CardContent>
-        );
+                    ) : null}
+
+                    {(hasStoredApiKey === true && useNoPassword === true) ||
+                    hasStoredApiKey === false ? (
+                        <div style={{ marginTop: 20 }}>
+                            <Typography variant="body2">
+                                Alternatively, you can choose to not encrypt
+                                your data.
+                            </Typography>
+                            <Button
+                                variant="raised"
+                                color={"secondary"}
+                                style={styles.loginButton}
+                                onClick={this.props.useNoPasswordLogin}
+                            >
+                                Use no password
+                            </Button>
+                        </div>
+                    ) : null}
+                </CardContent>
+            );
+        }
 
         return (
-            <Grid container spacing={16} justify={"center"}>
+            <Grid
+                container
+                spacing={16}
+                justify={"center"}
+                alignItems={"center"}
+                style={styles.wrapperContainer}
+            >
                 <Helmet>
                     <title>{`BunqDesktop - Password Setup`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={10} md={8} lg={6}>
+                <Grid item xs={12} sm={8} md={6} lg={4}>
                     <Card>{cardContent}</Card>
                 </Grid>
-                <Grid item xs={12} />
-                {/* Hide the warning if registration is loading 0*/}
-                {this.props.registrationLoading ? null : (
-                    <Grid item xs={12} sm={10} md={8} lg={6}>
-                        <Card>
-                            <CardContent>
-                                <Typography variant="headline">
-                                    <WarningIcon /> Caution!
-                                </Typography>
-                                <Typography variant="body2">
-                                    This project is still in active development!
-                                </Typography>
-                                <Typography variant="body2">
-                                    We test everything before releasing updates
-                                    but you might still notice issues.
-                                </Typography>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                )}
             </Grid>
         );
     }
