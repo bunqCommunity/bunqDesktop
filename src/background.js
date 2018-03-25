@@ -3,7 +3,7 @@ import url from "url";
 import log from "electron-log";
 import electron from "electron";
 import settings from "electron-settings";
-import { app, Menu, Tray } from "electron";
+import { app, Menu, Tray, nativeImage } from "electron";
 import { devMenuTemplate } from "./menu/dev_menu_template";
 import { editMenuTemplate } from "./menu/edit_menu_template";
 import createWindow from "./helpers/window";
@@ -75,8 +75,12 @@ app.on("ready", () => {
         mainWindow.openDevTools();
     }
 
+    const trayIcon = nativeImage.createFromPath(
+        path.join(__dirname, "../app/images/32x32.png")
+    );
+
     // setup the tray handler
-    const tray = new Tray("app/images/icon.ico");
+    const tray = new Tray(trayIcon);
     const contextMenu = Menu.buildFromTemplate([
         {
             label: "Dashboard",
@@ -121,7 +125,7 @@ app.on("ready", () => {
     });
     mainWindow.on("minimize", function(event) {
         const minimizeToTray = !!settings.get("MINIMIZE_TO_TRAY_LOCATION");
-        if(minimizeToTray){
+        if (minimizeToTray) {
             event.preventDefault();
             mainWindow.hide();
         }
