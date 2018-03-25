@@ -32,6 +32,7 @@ import { closeOptionsDrawer } from "../Actions/options_drawer";
 import { openMainDrawer } from "../Actions/main_drawer";
 import { openSnackbar } from "../Actions/snackbar";
 import { registrationClearApiKey } from "../Actions/registration";
+import IsDarwin from "../Helpers/IsDarwin";
 
 const styles = {
     list: {
@@ -304,7 +305,7 @@ class OptionsDrawer extends React.Component {
                 open={open}
                 className="options-drawer"
                 onClose={this.handleOptionsDrawerClose}
-                anchor={theme.direction === "rtl" ? "right" : "left"}
+                anchor={IsDarwin() ? "right" : "left"}
                 SlideProps={{
                     style: { top: 50 }
                 }}

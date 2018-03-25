@@ -3,13 +3,13 @@ import { connect } from "react-redux";
 import IconButton from "material-ui/IconButton";
 import Hidden from "material-ui/Hidden";
 const remote = require("electron").remote;
-
 import MenuIcon from "material-ui-icons/Menu";
 import CloseIcon from "material-ui-icons/Close";
 import RestoreIcon from "./CustomSVG/Restore";
 import MaximizeIcon from "./CustomSVG/Maximize";
 import MinimizeIcon from "./CustomSVG/Minimize";
 
+import IsDarwin from "../Helpers/IsDarwin";
 import { openMainDrawer } from "../Actions/main_drawer";
 
 const buttonDefaultStyles = {
@@ -25,17 +25,21 @@ const styles = {
         ...buttonDefaultStyles,
         left: 5
     },
+    headerMenuBtnDarwin: {
+        ...buttonDefaultStyles,
+        right: 5
+    },
     headerRightBtn: {
         ...buttonDefaultStyles,
         right: 5
     },
     headerRightBtn2: {
         ...buttonDefaultStyles,
-        right: 50
+        right: 45
     },
     headerRightBtn3: {
         ...buttonDefaultStyles,
-        right: 95
+        right: 85
     },
     header: {
         WebkitAppRegion: "drag",
@@ -60,6 +64,7 @@ class Header extends React.Component {
         };
 
         this.mainWindow = remote.getCurrentWindow();
+        window.onresize = () => this.setState({ forceUpdate: new Date() });
     }
 
     closeApp = () => {
@@ -85,7 +90,13 @@ class Header extends React.Component {
             <IconButton
                 aria-label="view main drawer"
                 onClick={this.props.openDrawer}
-                style={styles.headerMenuBtn}
+                style={
+                    !IsDarwin() ? (
+                        styles.headerMenuBtn
+                    ) : (
+                        styles.headerMenuBtnDarwin
+                    )
+                }
             >
                 <MenuIcon />
             </IconButton>
@@ -103,7 +114,7 @@ class Header extends React.Component {
         } else if (!this.mainWindow.isMinimized()) {
             middleIcon = <MaximizeIcon />;
         }
-        const windowControls = true ? (
+        const windowControls = !IsDarwin() ? (
             <React.Fragment>
                 <IconButton
                     aria-label="Minimize application"

@@ -31,8 +31,7 @@ const styles = {
         marginTop: 16
     },
     loginButton: {
-        width: 160,
-        margin: 20
+        width: "100%"
     },
     clearButton: {
         width: "100%",
@@ -208,38 +207,51 @@ class LoginPassword extends React.Component {
                         value={this.state.password}
                     />
 
-                    <Button
-                        variant="raised"
-                        disabled={buttonDisabled}
-                        color={"primary"}
-                        style={styles.loginButton}
-                        onClick={this.setRegistration}
+                    <Grid
+                        container
+                        spacing={16}
+                        justify="center"
+                        style={{ marginTop: 16 }}
                     >
-                        Login
-                    </Button>
+                        <Grid item xs={6}>
+                            <Button
+                                variant="raised"
+                                disabled={buttonDisabled}
+                                color={"primary"}
+                                style={styles.loginButton}
+                                onClick={this.setRegistration}
+                            >
+                                Login
+                            </Button>
+                        </Grid>
 
-                    {hasStoredApiKey ? (
-                        <Button
-                            variant="raised"
-                            color={"secondary"}
-                            style={styles.loginButton}
-                            onClick={this.clearApiKey}
-                        >
-                            Logout
-                        </Button>
-                    ) : null}
+                        {hasStoredApiKey ? (
+                            <Grid item xs={6}>
+                                <Button
+                                    variant="raised"
+                                    color={"secondary"}
+                                    style={styles.loginButton}
+                                    onClick={this.clearApiKey}
+                                >
+                                    Logout
+                                </Button>
+                            </Grid>
+                        ) : null}
 
-                    {(hasStoredApiKey === true && useNoPassword === true) ||
-                    hasStoredApiKey === false ? (
-                        <Button
-                            variant="raised"
-                            color={"secondary"}
-                            style={styles.loginButton}
-                            onClick={this.props.useNoPasswordLogin}
-                        >
-                            Use no password
-                        </Button>
-                    ) : null}
+                        {(hasStoredApiKey === true && useNoPassword === true) ||
+                        hasStoredApiKey === false ? (
+                            <Grid item xs={6}>
+                                <Button
+                                    variant="raised"
+                                    color={"secondary"}
+                                    style={styles.loginButton}
+                                    onClick={this.props.useNoPasswordLogin}
+                                >
+                                    Use no password
+                                </Button>
+                            </Grid>
+                        ) : null}
+                    </Grid>
                 </CardContent>
             );
         }

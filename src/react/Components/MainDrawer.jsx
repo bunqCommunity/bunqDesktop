@@ -23,6 +23,7 @@ import NavLink from "./Routing/NavLink";
 import ListItemWrapper from "./ListItemWrapper";
 import { closeMainDrawer } from "../Actions/main_drawer";
 import { openOptionsDrawer } from "../Actions/options_drawer";
+import IsDarwin from "../Helpers/IsDarwin";
 
 const styles = {
     list: {
@@ -218,7 +219,7 @@ class MainDrawer extends React.Component {
                     open={open}
                     onClose={this.props.closeDrawer}
                     className="options-drawer"
-                    anchor={theme.direction === "rtl" ? "right" : "left"}
+                    anchor={IsDarwin() ? "right" : "left"}
                     SlideProps={{
                         style: { top: 50 }
                     }}
