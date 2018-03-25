@@ -340,6 +340,7 @@ class Login extends React.Component {
                     </div>
 
                     <Input
+                        autoFocus
                         style={styles.apiInput}
                         error={!this.state.deviceNameValid}
                         placeholder="Device Name"

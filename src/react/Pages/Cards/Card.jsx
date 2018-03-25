@@ -46,10 +46,16 @@ class Card extends React.Component {
                 transform: "translateY(0px)"
             }
         };
+
+        window.onkeydown = this.handleKeyDown.bind(this);
     }
 
     componentDidMount() {
         this.props.cardUpdate(this.props.user.id);
+    }
+
+    componentWillUnmount() {
+        window.onkeydown = null;
     }
 
     cardUpdateCvc2Codes = event => {
@@ -58,6 +64,26 @@ class Card extends React.Component {
             this.props.user.id,
             cardInfo.CardDebit.id
         );
+    };
+
+    handleKeyDown = event => {
+        const filteredCards = this.props.cards.filter(card => {
+            return !(card.CardDebit && card.CardDebit.status !== "ACTIVE");
+        });
+
+        if (
+            event.which === 40 &&
+            this.state.selectedCardIndex < filteredCards.length - 1
+        ) {
+            this.setState({
+                selectedCardIndex: this.state.selectedCardIndex + 1
+            });
+        }
+        if (event.which === 38 && this.state.selectedCardIndex > 0) {
+            this.setState({
+                selectedCardIndex: this.state.selectedCardIndex - 1
+            });
+        }
     };
 
     handleCardClick = index => {
@@ -129,8 +155,7 @@ class Card extends React.Component {
             );
         }
 
-        const cardInfo = filteredCards[this.state.selectedCardIndex]
-            .CardDebit;
+        const cardInfo = filteredCards[this.state.selectedCardIndex].CardDebit;
         const translateOffset = this.state.selectedCardIndex * 410;
         const carouselTranslate = "translateY(-" + translateOffset + "px)";
 
