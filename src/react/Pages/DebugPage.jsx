@@ -17,6 +17,20 @@ class DebugPage extends React.Component {
     }
 
     render() {
+        const registrationInfo = this.props.reduxState.registration;
+        const modifiedState = {
+            ...this.props.reduxState,
+            registration: {
+                ...registrationInfo,
+                api_key: registrationInfo.api_key
+                    ? "HIDDEN"
+                    : registrationInfo.api_key,
+                derivedPassword: registrationInfo.derivedPassword
+                    ? "HIDDEN"
+                    : registrationInfo.derivedPassword
+            }
+        };
+
         return (
             <Grid container spacing={24} justify={"center"}>
                 <Helmet>
@@ -26,7 +40,7 @@ class DebugPage extends React.Component {
                 <Grid item xs={12}>
                     <ReactJson
                         style={styles.paper}
-                        src={this.props.reduxState}
+                        src={modifiedState}
                         name="BunqDesktopState"
                         theme="monokai"
                         iconStyle="square"
