@@ -25,7 +25,7 @@ before_install:
     fi
 
 before_script:
-- git lfs pull
+  - git lfs pull
 
 script:
   - |
@@ -42,15 +42,14 @@ script:
     fi
 
 after_script:
-- ls dist
+  - ls dist
+  # Remove build files and display md5 hashes
+  - apt install ucommon-utils
+  - rm -rf dist/linux-*
+  - sha256sum dist/*
 
 before_cache:
-- rm -rf $HOME/.cache/electron-builder/wine
-
-#branches:
-#  only:
-#  - release
-#  - bug/api-key-loading
+  - rm -rf $HOME/.cache/electron-builder/wine
 
 deploy:
   provider: releases
