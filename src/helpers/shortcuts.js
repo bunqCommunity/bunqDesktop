@@ -19,4 +19,7 @@ export default (window, app) => {
     localShortcuts.register(window, "CmdOrCtrl+R", () => {
         changePage(window, "/request")
     });
+    localShortcuts.register(window, "Alt+C", () => {
+        changePage(window, "/card")
+    });
 };

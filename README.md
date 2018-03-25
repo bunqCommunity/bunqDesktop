@@ -26,6 +26,7 @@ Download the latest version of BunqDesktop from the [GitHub releases page.](http
  - CTRL/CMD + D : Dashboard
  - CTRL/CMD + P : Payment page
  - CTRL/CMD + R : Request page
+ - ALT + C      : Cardspage
 
 ## Development
 We use [yarn](https://yarnpkg.com/en/) for package management and the following global packages:

@@ -201,10 +201,6 @@ class Card extends React.Component {
                 );
             }
         );
-        // cvcLoading: state.card_cvc2.loading,
-        // cvcCardId: state.card_cvc2.card_id,
-        // cvcUserId: state.card_cvc2.user_id,
-        // cvc2Codes: state.card_cvc2.cvc2_codes
 
         let displayCvcInfo = null;
         if (cardInfo.type === "MASTERCARD") {
@@ -270,6 +266,14 @@ class Card extends React.Component {
             );
         }
 
+        let second_line = cardInfo.second_line;
+        if (
+            second_line.length === 0 &&
+            cardInfo.type === "MAESTRO_MOBILE_NFC"
+        ) {
+            second_line = "Apple Pay";
+        }
+
         return (
             <Grid container spacing={24} style={styles.gridContainer}>
                 <Grid item xs={6}>
@@ -295,7 +299,7 @@ class Card extends React.Component {
                                             {cardInfo.name_on_card}
                                         </Typography>
                                         <Typography variant={"subheading"}>
-                                            {cardInfo.second_line}
+                                            {second_line}
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
