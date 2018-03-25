@@ -31,6 +31,11 @@ const styles = {
         marginTop: 16
     },
     loginButton: {
+        width: "100%",
+        color: "white",
+        backgroundColor: "#2196f3"
+    },
+    secondaryButtons: {
         width: "100%"
     },
     clearButton: {
@@ -38,6 +43,7 @@ const styles = {
         marginTop: 20
     },
     passwordInput: {
+        color: "white",
         width: "100%",
         marginTop: 20
     },
@@ -47,6 +53,16 @@ const styles = {
     smallAvatar: {
         width: 50,
         height: 50
+    },
+    girlSvg: {
+        zIndex: 0,
+        position: "fixed",
+        right: 0,
+        bottom: 0,
+        width: "35%"
+    },
+    text: {
+        color: "white"
     }
 };
 
@@ -128,48 +144,52 @@ class LoginPassword extends React.Component {
 
         if (this.state.hasReadWarning === false) {
             cardContent = (
-                <Card style={styles.warningCard}>
-                    <CardContent>
-                        <Typography variant="headline">
-                            <WarningIcon /> Caution!
-                        </Typography>
-                        <Typography variant="body2">
-                            This project is still in active development and we
-                            are not responsible if anything goes wrong.
-                        </Typography>
-                        <br />
-                        <Typography variant="headline">
-                            <LockIcon /> Password
-                        </Typography>
-                        <Typography variant="body2">
-                            In order to keep your data safe everything is
-                            encrypted using the password you enter. If you
-                            forget this password all personal data within
-                            BunqDesktop will be reset and you will have to log
-                            back in.
-                        </Typography>
-                        <Typography variant="body2">
-                            If you decide to use an empty password, anyone with
-                            the required knowledge could view your data if they
-                            get access to your physical device!
-                        </Typography>
-                        <div style={{ textAlign: "center" }}>
-                            <Button
-                                variant={"raised"}
-                                style={{ marginTop: 12 }}
-                                onClick={this.ignoreWarning}
-                            >
-                                Don't show this again
-                            </Button>
-                        </div>
-                    </CardContent>
-                </Card>
+                <CardContent style={styles.warningCard}>
+                    <Typography variant="headline">
+                        <WarningIcon /> Caution!
+                    </Typography>
+                    <Typography variant="body2">
+                        This project is still in active development and we are
+                        not responsible if anything goes wrong.
+                    </Typography>
+                    <br />
+                    <Typography variant="headline">
+                        <LockIcon /> Password
+                    </Typography>
+                    <Typography variant="body2">
+                        In order to keep your data safe everything is encrypted
+                        using the password you enter. If you forget this
+                        password all personal data within BunqDesktop will be
+                        reset and you will have to log back in.
+                    </Typography>
+                    <Typography variant="body2">
+                        If you decide to use an empty password, anyone with the
+                        required knowledge could view your data if they get
+                        access to your physical device!
+                    </Typography>
+                    <div style={{ textAlign: "center" }}>
+                        <Button
+                            variant={"raised"}
+                            style={{ marginTop: 12 }}
+                            onClick={this.ignoreWarning}
+                        >
+                            Don't show this again
+                        </Button>
+                    </div>
+                </CardContent>
             );
         } else {
+            const passwordInputError =
+                !this.state.passwordValid && this.state.password.length > 0;
+
             // actual content
             cardContent = registrationLoading ? (
                 <CardContent style={{ textAlign: "center" }}>
-                    <Typography variant="headline" component="h2">
+                    <Typography
+                        variant="headline"
+                        component="h2"
+                        style={styles.text}
+                    >
                         Loading
                     </Typography>
                     <CircularProgress size={50} />
@@ -179,20 +199,34 @@ class LoginPassword extends React.Component {
                 </CardContent>
             ) : (
                 <CardContent style={{ textAlign: "center" }}>
-                    <Typography variant="headline" component="h2">
-                        {hasStoredApiKey ? (
-                            "Enter your password"
-                        ) : (
-                            "Enter a password"
-                        )}
-                    </Typography>
+                    {/*<Typography*/}
+                    {/*variant="headline"*/}
+                    {/*component="h2"*/}
+                    {/*style={styles.text}*/}
+                    {/*>*/}
+                    {/**/}
+                    {/*</Typography>*/}
 
                     <Input
                         autoFocus
                         style={styles.passwordInput}
-                        error={!this.state.passwordValid}
+                        error={passwordInputError}
                         type="password"
                         label="Password"
+                        className={
+                            passwordInputError ? (
+                                "password-input-error"
+                            ) : (
+                                "password-input"
+                            )
+                        }
+                        placeholder={
+                            hasStoredApiKey ? (
+                                "Enter your password"
+                            ) : (
+                                "Enter a password"
+                            )
+                        }
                         hint="A secure 7+ character password"
                         onChange={this.handlePasswordChange}
                         onKeyPress={ev => {
@@ -213,7 +247,7 @@ class LoginPassword extends React.Component {
                         justify="center"
                         style={{ marginTop: 16 }}
                     >
-                        <Grid item xs={6}>
+                        <Grid item xs={12}>
                             <Button
                                 variant="raised"
                                 disabled={buttonDisabled}
@@ -226,11 +260,11 @@ class LoginPassword extends React.Component {
                         </Grid>
 
                         {hasStoredApiKey ? (
-                            <Grid item xs={6}>
+                            <Grid item xs={12}>
                                 <Button
                                     variant="raised"
                                     color={"secondary"}
-                                    style={styles.loginButton}
+                                    style={styles.secondaryButtons}
                                     onClick={this.clearApiKey}
                                 >
                                     Logout
@@ -240,16 +274,18 @@ class LoginPassword extends React.Component {
 
                         {(hasStoredApiKey === true && useNoPassword === true) ||
                         hasStoredApiKey === false ? (
-                            <Grid item xs={6}>
-                                <Button
-                                    variant="raised"
-                                    color={"secondary"}
-                                    style={styles.loginButton}
-                                    onClick={this.props.useNoPasswordLogin}
-                                >
-                                    Use no password
-                                </Button>
-                            </Grid>
+                            <React.Fragment>
+                                <Grid item xs={6} />
+                                <Grid item xs={6}>
+                                    <Button
+                                        color={"secondary"}
+                                        style={styles.secondaryButtons}
+                                        onClick={this.props.useNoPasswordLogin}
+                                    >
+                                        Use no password
+                                    </Button>
+                                </Grid>
+                            </React.Fragment>
                         ) : null}
                     </Grid>
                 </CardContent>
@@ -268,9 +304,11 @@ class LoginPassword extends React.Component {
                     <title>{`BunqDesktop - Password Setup`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={8} md={6} lg={4}>
-                    <Card>{cardContent}</Card>
+                <Grid item xs={12} sm={6} md={4} lg={3} style={{ zIndex: 1 }}>
+                    <div>{cardContent}</div>
                 </Grid>
+
+                <img src="images/svg/girl.svg" style={styles.girlSvg} />
             </Grid>
         );
     }

@@ -51,3 +51,12 @@ main {
 .rainbow-background {
     background-image: $backgroundRainbow;
 }
+
+.password-page {
+    background-color: black !important;
+    .password-input {
+        &:before {
+            background-color: grey !important;
+        }
+    }
+}
