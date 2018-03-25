@@ -107,6 +107,9 @@ class CategoryEditor extends React.Component {
     };
 
     saveCategory = () => {
+        // deselect the chip
+        this.props.deselectChip();
+        // save the data
         this.props.setCategory(
             this.state.categoryId,
             this.state.label,
