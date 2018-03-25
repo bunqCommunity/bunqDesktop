@@ -76,7 +76,7 @@ app.on("ready", () => {
     }
 
     // setup the tray handler
-    const tray = new Tray(path.join(__dirname, "../app/images/icon.ico"));
+    const tray = new Tray("app/images/icon.ico");
     const contextMenu = Menu.buildFromTemplate([
         {
             label: "Dashboard",
