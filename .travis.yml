@@ -11,6 +11,11 @@ matrix:
     services: docker
     language: generic
 
+addons:
+  apt:
+    packages:
+    - ucommon-utils
+
 cache:
   directories:
   - node_modules
@@ -43,10 +48,13 @@ script:
 
 after_script:
   - ls dist
-  # Remove build files and display md5 hashes
-  - apt install ucommon-utils
-  - rm -rf dist/linux-*
-  - sha256sum dist/*
+  # Display sha256 hashes
+  - |
+    if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+      find dist -type f -maxdepth 1 -print0  | xargs -0 shasum -a 256
+    else
+      sha256sum dist/*
+    fi
 
 before_cache:
   - rm -rf $HOME/.cache/electron-builder/wine
