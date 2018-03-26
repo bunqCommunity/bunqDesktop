@@ -72,6 +72,7 @@ deploy:
     - dist/BunqDesktop-*.dmg
     - dist/bunqdesktop_*_amd64.deb
     - dist/bunqdesktop_*_i386.deb
+    - dist/bunqdesktop_*_amd64.snap
     - dist/bunqdesktop-*-x86_64.AppImage
     - dist/bunqdesktop-*-i386.AppImage
   draft: true
