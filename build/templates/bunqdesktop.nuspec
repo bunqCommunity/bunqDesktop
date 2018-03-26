@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>bunqdesktop</id>
+    <version>${VERSION}</version>
+    <!-- <packageSourceUrl>Where is this Chocolatey package located (think GitHub)? packageSourceUrl is highly recommended for the community feed</packageSourceUrl>-->
+    <!-- owners is a poor name for maintainers of the package. It sticks around by this name for compatibility reasons. It basically means you. -->
+    <owners>BunqCommunity</owners>
+    <!-- ============================== -->
+
+    <!-- == SOFTWARE SPECIFIC SECTION == -->
+    <!-- This section is about the software itself -->
+    <title>BunqDesktop</title>
+    <authors>BunqCommunity</authors>
+    <!-- projectUrl is required for the community feed -->
+    <projectUrl>https://github.com/BunqCommunity/BunqDesktop</projectUrl>
+    <iconUrl>https://rawgit.com/BunqCommunity/BunqDesktop/master/app/images/256x256.png</iconUrl>
+
+    <projectSourceUrl>https://github.com/BunqCommunity/BunqDesktop</projectSourceUrl>
+    <docsUrl>https://github.com/BunqCommunity/BunqDesktop</docsUrl>
+    <bugTrackerUrl>https://github.com/BunqCommunity/BunqDesktop/issues</bugTrackerUrl>
+
+    <tags>bunqdesktop finance desktop bunq api</tags>
+    <summary>A desktop implementation for the bunq API</summary>
+    <description>A desktop implementation for bunq's API. This app does everything within the application so you don't  have to worry about sharing your API key with anyone else!</description>
+  </metadata>
+  <files>
+    <!-- this section controls what actually gets packaged into the Chocolatey package -->
+    <file src="dist/BunqDesktop Setup *.exe" target="tools" />
+    <file src="chocolatey/**" target="tools" />
+  </files>
+</package>
