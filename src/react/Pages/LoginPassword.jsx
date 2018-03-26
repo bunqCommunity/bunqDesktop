@@ -132,17 +132,18 @@ class LoginPassword extends React.Component {
             useNoPassword,
             derivedPassword
         } = this.props;
+        const { hasReadWarning, passwordValid } = this.props;
 
         if (derivedPassword !== false) {
             return <Redirect to="/login" />;
         }
 
         const buttonDisabled =
-            this.state.passwordValid === false || registrationLoading === true;
+            passwordValid === false || registrationLoading === true;
 
         let cardContent = null;
 
-        if (this.state.hasReadWarning === false) {
+        if (hasReadWarning === false && registrationLoading === false) {
             cardContent = (
                 <CardContent style={styles.warningCard}>
                     <Typography variant="headline">
@@ -180,7 +181,7 @@ class LoginPassword extends React.Component {
             );
         } else {
             const passwordInputError =
-                !this.state.passwordValid && this.state.password.length > 0;
+                !passwordValid && this.state.password.length > 0;
 
             // actual content
             cardContent = registrationLoading ? (
@@ -240,7 +241,7 @@ class LoginPassword extends React.Component {
                         }}
                         value={this.state.password}
                     />
-
+                    
                     <Grid
                         container
                         spacing={16}
