@@ -7,7 +7,14 @@
 ___   
 
 ## Download
+#### One click installers
 Download the latest version of BunqDesktop from the [GitHub releases page.](https://github.com/BunqCommunity/BunqDesktop/releases)
+
+#### [Snapcraft](https://snapcraft.io/bunqdesktop)
+`sudo snap install bunqdesktop`
+
+#### [Brew Cask](https://caskroom.github.io/)
+`brew cask install bunq`
 
 ## Features
 - View all your accounts and payments
@@ -26,7 +33,7 @@ Download the latest version of BunqDesktop from the [GitHub releases page.](http
  - CTRL/CMD + D : Dashboard
  - CTRL/CMD + P : Payment page
  - CTRL/CMD + R : Request page
- - ALT + C      : Cardspage
+ - ALT + C      : Cards page
 
 ## Development
 We use [yarn](https://yarnpkg.com/en/) for package management and the following global packages:
