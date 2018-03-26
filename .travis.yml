@@ -80,11 +80,3 @@ deploy:
     skip_cleanup: true
     on:
       tags: true
-  - provider: script
-    script: docker run -v $(pwd):$(pwd) -w $(pwd) snapcore/snapcraft sh -c "apt update && snapcraft && snapcraft push dist/bunqdesktop_*_amd64.snap --release edge"
-    skip_cleanup: true
-    on:
-      tags: true
-after_success:
-- openssl aes-256-cbc -K $encrypted_fa19c161f51f_key -iv $encrypted_fa19c161f51f_iv
-  -in .snapcraft/travis_snapcraft.cfg -out .snapcraft/snapcraft.cfg -d

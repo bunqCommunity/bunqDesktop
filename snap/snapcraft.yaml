@@ -1,7 +1,0 @@
-name: bunqdesktop
-version: '0.8.1'
-summary: A desktop implementation for the bunq API
-description: A desktop implementation for the bunq API
-
-grade: stable
-confinement: devmode # use 'strict' once you have the right plugs and slots
