@@ -42,6 +42,7 @@ const styles = {
         right: 85
     },
     header: {
+        backgroundImage: "url('images/svg/bunq_Colors.svg')",
         WebkitAppRegion: "drag",
         WebkitUserSelect: "none",
         position: "fixed",
@@ -141,7 +142,7 @@ class Header extends React.Component {
         ) : null;
 
         return (
-            <header style={styles.header} className={"rainbow-background"}>
+            <header style={styles.header}>
                 {wrappedButton}
                 {windowControls}
             </header>
