@@ -51,6 +51,14 @@ const styles = {
     smallAvatar: {
         width: 50,
         height: 50
+    },
+    fixedImage: {
+        zIndex: 0,
+        position: "fixed",
+        left: 0,
+        bottom: 0,
+        height: "60%",
+        maxWidth: "35%"
     }
 };
 
@@ -329,6 +337,7 @@ class Login extends React.Component {
                             </IconButton>
                         ) : (
                             <img
+                                className="animated fadeIn"
                                 src={`data:image/png;base64, ${this.state
                                     .requestQrCodeBase64}`}
                                 style={styles.qrCode}
@@ -476,6 +485,12 @@ class Login extends React.Component {
                 <Grid item xs={12} />
 
                 {userItems}
+
+                <img
+                    className="animated fadeInUp"
+                    src="images/svg/Flag-Black.svg"
+                    style={styles.fixedImage}
+                />
             </Grid>
         );
     }

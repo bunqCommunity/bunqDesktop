@@ -82,6 +82,7 @@
         "@types/jest": "^22.1.3",
         "@types/moxios": "^0.4.8",
         "@types/node": "^9.4.6",
+        "animate.css": "^3.6.1",
         "awaiting": "^2.0.1",
         "axios": "^0.18.0",
         "babel": "^6.23.0",

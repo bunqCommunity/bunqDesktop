@@ -7,12 +7,11 @@ import store from "store";
 import Grid from "material-ui/Grid";
 import Input from "material-ui/Input";
 import Button from "material-ui/Button";
-import Card, { CardContent } from "material-ui/Card";
+import { CardContent } from "material-ui/Card";
 import { CircularProgress } from "material-ui/Progress";
 
 import WarningIcon from "material-ui-icons/Warning";
 import LockIcon from "material-ui-icons/Lock";
-import BugReportIcon from "material-ui-icons/BugReport";
 
 import {
     registrationClearApiKey,
@@ -59,7 +58,8 @@ const styles = {
         position: "fixed",
         right: 0,
         bottom: 0,
-        width: "35%"
+        height: "50%",
+        maxWidth: "35%"
     },
     text: {
         color: "white"
@@ -241,7 +241,7 @@ class LoginPassword extends React.Component {
                         }}
                         value={this.state.password}
                     />
-                    
+
                     <Grid
                         container
                         spacing={16}
@@ -305,11 +305,23 @@ class LoginPassword extends React.Component {
                     <title>{`BunqDesktop - Password Setup`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={6} md={4} lg={3} style={{ zIndex: 1 }}>
+                <Grid
+                    item
+                    xs={12}
+                    sm={6}
+                    md={4}
+                    lg={3}
+                    style={{ zIndex: 1 }}
+                    className="animated zoomIn"
+                >
                     <div>{cardContent}</div>
                 </Grid>
 
-                <img src="images/svg/girl.svg" style={styles.girlSvg} />
+                <img
+                    className="animated fadeInRight"
+                    src="images/svg/girl.svg"
+                    style={styles.girlSvg}
+                />
             </Grid>
         );
     }
@@ -334,7 +346,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         // use no password
-        useNoPasswordLogin: password => dispatch(registrationUseNoPassword()),
+        useNoPasswordLogin: () => dispatch(registrationUseNoPassword()),
         // use password
         usePasswordLogin: password =>
             dispatch(registrationUsePassword(password)),
