@@ -3,7 +3,7 @@ matrix:
   - os: osx
     osx_image: xcode9.2
     language: node_js
-    node_js: "9"
+    node_js: '9'
     env:
     - ELECTRON_CACHE=$HOME/.cache/electron
     - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
@@ -20,45 +20,43 @@ addons:
 cache:
   directories:
   - node_modules
-  - "$HOME/.cache/electron"
-  - "$HOME/.cache/electron-builder"
+  - $HOME/.cache/electron
+  - $HOME/.cache/electron-builder
 
 before_install:
-  - |
-    if [ "$TRAVIS_OS_NAME" == "osx" ]; then
-      mkdir -p /tmp/git-lfs && curl -L https://github.com/github/git-lfs/releases/download/v2.3.1/git-lfs-$([ "$TRAVIS_OS_NAME" == "linux" ] && echo "linux" || echo "darwin")-amd64-2.3.1.tar.gz | tar -xz -C /tmp/git-lfs --strip-components 1
-      export PATH="/tmp/git-lfs:$PATH"
-    fi
+- |
+  if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+    mkdir -p /tmp/git-lfs && curl -L https://github.com/github/git-lfs/releases/download/v2.3.1/git-lfs-$([ "$TRAVIS_OS_NAME" == "linux" ] && echo "linux" || echo "darwin")-amd64-2.3.1.tar.gz | tar -xz -C /tmp/git-lfs --strip-components 1
+    export PATH="/tmp/git-lfs:$PATH"
+  fi
 
 before_script:
-  - git lfs pull
+- git lfs pull
 
 script:
-  - |
-    if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-      docker run --rm \
-        --env-file <(env | grep -iE 'DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|TRAVIS|APPVEYOR_|CSC_|_TOKEN|_KEY|AWS_|STRIP|BUILD_') \
-        -v ${PWD}:/project \
-        -v ~/.cache/electron:/root/.cache/electron \
-        -v ~/.cache/electron-builder:/root/.cache/electron-builder \
-        electronuserland/builder:wine \
-        /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn release --linux --win"
-    else
-      yarn release
-    fi
-
+- |
+  if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+    docker run --rm \
+      --env-file <(env | grep -iE 'DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|TRAVIS|APPVEYOR_|CSC_|_TOKEN|_KEY|AWS_|STRIP|BUILD_') \
+      -v ${PWD}:/project \
+      -v ~/.cache/electron:/root/.cache/electron \
+      -v ~/.cache/electron-builder:/root/.cache/electron-builder \
+      electronuserland/builder:wine \
+      /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn release --linux --win"
+  else
+    yarn release
+  fi
 after_script:
-  - ls dist
-  # Display sha256 hashes
-  - |
-    if [ "$TRAVIS_OS_NAME" == "osx" ]; then
-      find dist -type f -maxdepth 1 -print0  | xargs -0 shasum -a 256
-    else
-      sha256sum dist/*
-    fi
-
+- ls dist
+- |
+  if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+    find dist -type f -maxdepth 1 -print0  | xargs -0 shasum -a 256
+  else
+    sha256sum dist/*
+  fi
 before_cache:
-  - rm -rf $HOME/.cache/electron-builder/wine
+- rm -rf $HOME/.cache/electron-builder/wine
+
 
 deploy:
   - provider: releases
@@ -81,10 +79,11 @@ deploy:
     on:
       tags: true
   - provider: script
+    condition: "$TRAVIS_OS_NAME" == "linux"
     script: docker run -v $(pwd):$(pwd) -w $(pwd) snapcore/snapcraft sh -c "apt update && snapcraft && snapcraft push dist/bunqdesktop_*_amd64.snap --release edge"
     skip_cleanup: true
     on:
       tags: true
+
 after_success:
-- openssl aes-256-cbc -K $encrypted_fa19c161f51f_key -iv $encrypted_fa19c161f51f_iv
-  -in .snapcraft/travis_snapcraft.cfg -out .snapcraft/snapcraft.cfg -d
+- openssl aes-256-cbc -K $encrypted_6a955bf10c5f_key -iv $encrypted_6a955bf10c5f_iv -in .snapcraft/travis_snapcraft.cfg -out .snapcraft/snapcraft.cfg -d
