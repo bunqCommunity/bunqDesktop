@@ -46,10 +46,10 @@ $ git clone git@github.com:BunqCommunity/BunqDesktop.git && cd BunqDesktop
 $ yarn 
 ```
 Run these commands in 2 seperate consoles. One compiles the react app and the second takes care of 
-running an electron instance.
+running an electron instance with hot reloading.
 ```bash
 $ yarn webpack:dev
-$ yarn start
+$ yarn start:dev 
 ```
 
 ## Contact
