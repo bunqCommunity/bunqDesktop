@@ -75,7 +75,7 @@ export type LabelCard = {
     expiry_date: string;
     status: string;
     label_user: ExtendedAlias;
-}
+};
 
 export type MonetaryAccountSetting = {
     color: string;
@@ -115,6 +115,28 @@ export type PaymentType =
     | "IDEAL"
     | "SWIFT"
     | "FIS";
+
+export type RequestStatus = "ACCEPTED" | "PENDING" | "REJECTED" | "REVOKED";
+
+export type RequestSplitTheBill =
+    | "Payment"
+    | "PaymentBatch"
+    | "ScheduleInstance"
+    | "RequestResponse"
+    | "MasterCardAction";
+
+export type RequestResponseType =
+    | "DIRECT_DEBIT"
+    | "DIRECT_DEBIT_B2B"
+    | "IDEAL"
+    | "SOFORT"
+    | "INTERNAL";
+
+export type RequestResponseSubType =
+    | "ONCE"
+    | "RECURRING"
+    | "DIRECT_DEBIT"
+    | "NONE";
 
 export type RequestReferenceSplitTheBill = {
     type: "RequestInquiry" | "RequestInquiryBatch";

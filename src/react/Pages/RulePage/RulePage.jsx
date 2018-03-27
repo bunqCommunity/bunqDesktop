@@ -46,6 +46,12 @@ class RulesPage extends React.Component {
         }
 
         const payments = this.props.payments.map(item => item.toJSON());
+        const requestInquiries = this.props.requestInquiries.map(item =>
+            item.toJSON()
+        );
+        const requestResponses = this.props.requestResponses.map(item =>
+            item.toJSON()
+        );
         const masterCardActions = this.props.masterCardActions.map(item =>
             item.toJSON()
         );
@@ -71,10 +77,10 @@ class RulesPage extends React.Component {
                         ruleCollection={this.state.previewRuleCollection}
                         ruleCollectionUpdated={this.state.previewUpdated}
                         payments={payments}
+                        requestInquiries={requestInquiries}
                         masterCardActions={masterCardActions}
                         bunqMeTabs={this.props.bunqMeTabs}
-                        requestInquiries={this.props.requestInquiries}
-                        requestResponses={this.props.requestResponses}
+                        requestResponses={requestResponses}
                     />
                 </Grid>
             </Grid>
