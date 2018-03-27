@@ -46,6 +46,10 @@ log.transports.file.level = env.name === "development" ? "debug" : "warn";
 log.transports.file.format = "{h}:{i}:{s}:{ms} {text}";
 log.transports.file.file = `${app.getPath("userData")}/BunqDesktop.log.txt`;
 
+if(env.NODE_ENV === "DEVELOPMENT"){
+    require('electron-reload')(path.join(__dirname, "../app/**"));
+}
+
 app.on("ready", () => {
     setApplicationMenu();
 
