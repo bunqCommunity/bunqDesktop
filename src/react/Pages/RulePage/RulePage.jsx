@@ -45,6 +45,11 @@ class RulesPage extends React.Component {
             ruleCollection = new RuleCollection();
         }
 
+        const payments = this.props.payments.map(item => item.toJSON());
+        const masterCardActions = this.props.masterCardActions.map(item =>
+            item.toJSON()
+        );
+
         return (
             <Grid container spacing={16}>
                 <Helmet>
@@ -65,9 +70,9 @@ class RulesPage extends React.Component {
                     <RuleCollectionPreview
                         ruleCollection={this.state.previewRuleCollection}
                         ruleCollectionUpdated={this.state.previewUpdated}
-                        payments={this.props.payments}
+                        payments={payments}
+                        masterCardActions={masterCardActions}
                         bunqMeTabs={this.props.bunqMeTabs}
-                        masterCardActions={this.props.masterCardActions}
                         requestInquiries={this.props.requestInquiries}
                         requestResponses={this.props.requestResponses}
                     />
