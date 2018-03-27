@@ -68,11 +68,9 @@ export default class Payment implements Event {
     }
 
     /**
-     * Returns the current account balance as float
      * @returns {number}
      */
     public getAmount(): number {
-        // return 1;
         return parseFloat(this.amount.value);
     }
 

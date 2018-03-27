@@ -1,4 +1,7 @@
-export type Amount = Balance;
+export type Amount = {
+    value: string;
+    currency: string | "EUR";
+};
 
 export type AccountType =
     | "MonetaryAccountLight"
@@ -42,7 +45,7 @@ export type AttachmentList = Attachment[];
 
 export type Balance = {
     value: string;
-    currency: "EUR";
+    currency: string | "EUR";
 };
 
 export type ExtendedAlias = Alias & {
@@ -64,6 +67,15 @@ export type Image = {
     height: number;
     width: number;
 };
+
+export type LabelCard = {
+    uuid: string;
+    type: string;
+    second_line: string;
+    expiry_date: string;
+    status: string;
+    label_user: ExtendedAlias;
+}
 
 export type MonetaryAccountSetting = {
     color: string;
