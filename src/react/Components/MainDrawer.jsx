@@ -16,7 +16,6 @@ import SettingsIcon from "material-ui-icons/Settings";
 import ShareIcon from "material-ui-icons/Share";
 import TimeLineIcon from "material-ui-icons/Timeline";
 import CardIcon from "material-ui-icons/CreditCard";
-import CreateIcon from "material-ui-icons/Create";
 import Bookmark from "material-ui-icons/Bookmark";
 
 import NavLink from "./Routing/NavLink";
@@ -162,16 +161,23 @@ class MainDrawer extends React.Component {
 
                 <ListItem style={styles.listFiller} />
 
-                <ListItem
-                    button
-                    style={styles.listBottomItem}
-                    onClick={this.openOptions}
-                >
-                    <ListItemIcon>
-                        <SettingsIcon />
-                    </ListItemIcon>
-                    <Typography variant="subheading">Settings</Typography>
-                </ListItem>
+                {/*<ListItem*/}
+                    {/*button*/}
+                    {/*style={styles.listBottomItem}*/}
+                    {/*onClick={this.openOptions}*/}
+                {/*>*/}
+                    {/*<ListItemIcon>*/}
+                        {/*<SettingsIcon />*/}
+                    {/*</ListItemIcon>*/}
+                    {/*<Typography variant="subheading">Settings</Typography>*/}
+                {/*</ListItem>*/}
+
+                <ListItemWrapper
+                    to="/settings"
+                    icon={SettingsIcon}
+                    text="Settings"
+                    location={this.props.location}
+                />
             </List>
         );
 

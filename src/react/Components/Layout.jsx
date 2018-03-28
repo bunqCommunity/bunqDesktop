@@ -46,7 +46,6 @@ import {
     registrationNotLoading,
     registrationClearApiKey
 } from "../Actions/registration";
-import OptionsDrawer from "./OptionsDrawer";
 
 const styles = theme => ({
     contentContainer: {
@@ -342,6 +341,7 @@ class Layout extends React.Component {
             BunqJSClient: this.props.BunqJSClient,
             // modal and snackbar helpers
             openModal: this.props.openModal,
+            themeList: ThemeList,
             openSnackbar: this.props.openSnackbar,
             // helps all child components to prevent calls before the BunqJSClient is finished setting up
             initialBunqConnect: this.state.initialBunqConnect
@@ -362,11 +362,6 @@ class Layout extends React.Component {
                     <Header />
                     <MainDrawer
                         BunqJSClient={this.props.BunqJSClient}
-                        location={this.props.location}
-                    />
-                    <OptionsDrawer
-                        BunqJSClient={this.props.BunqJSClient}
-                        themeList={ThemeList}
                         location={this.props.location}
                     />
                     <Grid
