@@ -1,0 +1,12 @@
+name: bunqdesktop
+version: '${VERSION}'
+summary: A desktop implementation for the bunq API
+description: A desktop implementation for the bunq API
+
+grade: stable
+confinement: devmode # use 'strict' once you have the right plugs and slots
+
+parts:
+  my-part:
+    # See 'snapcraft plugins'
+    plugin: nil

@@ -64,11 +64,12 @@
         "postinstall": "install-app-deps",
         "build": "gulp build",
         "dist": "build",
-        "prerelease": "node tasks/update_release_files.js && gulp build --env=production && yarn run webpack",
+        "prerelease": "npm run update-release-files && gulp build --env=production && yarn run webpack",
         "release": "build",
         "start": "gulp start --env=development",
         "start:dev": "cross-env NODE_ENV=development gulp start --env=development",
-        "update-icons": "node tasks/generate_material_icons.js"
+        "update-icons": "node tasks/generate_material_icons.js",
+        "update-release-files": "node tasks/update_release_files.js"
     },
     "publish": null,
     "dependencies": {

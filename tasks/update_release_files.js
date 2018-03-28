@@ -10,6 +10,10 @@ const templates = [
     {
         templateName: "bunqdesktop.nuspec",
         targetLocation: "bunqdesktop.nuspec"
+    },
+    {
+        templateName: "snapcraft.yaml",
+        targetLocation: "snap/snapcraft.yaml"
     }
 ];
 
