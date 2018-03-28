@@ -1,12 +1,15 @@
 import store from "store";
+const settings = require("electron").remote.require("electron-settings");
 import { generateGUID } from "../Helpers/Utils";
 
 export const BUNQDESKTOP_CATEGORIES = "BUNQDESKTOP_CATEGORIES";
 export const BUNQDESKTOP_CATEGORY_CONNECTIONS =
     "BUNQDESKTOP_CATEGORY_CONNECTIONS";
 
-const categoriesStored = store.get(BUNQDESKTOP_CATEGORIES);
-const categoryConnectionsStored = store.get(BUNQDESKTOP_CATEGORY_CONNECTIONS);
+const categoriesStored = settings.get(BUNQDESKTOP_CATEGORIES);
+const categoryConnectionsStored = settings.get(
+    BUNQDESKTOP_CATEGORY_CONNECTIONS
+);
 
 // default values if no data is stored
 const categoriesStoredDefault =
@@ -27,7 +30,7 @@ export default function reducer(state = defaultState, action) {
 
     switch (action.type) {
         case "CATEGORIES_SET_CATEGORIES":
-            store.set(BUNQDESKTOP_CATEGORIES, action.payload.categories);
+            settings.set(BUNQDESKTOP_CATEGORIES, action.payload.categories);
             return {
                 ...state,
                 last_update: new Date().getTime(),
@@ -48,7 +51,7 @@ export default function reducer(state = defaultState, action) {
                 ...action.payload.options
             };
 
-            store.set(BUNQDESKTOP_CATEGORIES, categories);
+            settings.set(BUNQDESKTOP_CATEGORIES, categories);
             return {
                 ...state,
                 last_update: new Date().getTime(),
@@ -72,8 +75,8 @@ export default function reducer(state = defaultState, action) {
                 delete currentCategoryConnections[removeCategoryId];
             }
 
-            store.set(BUNQDESKTOP_CATEGORIES, currentCategories);
-            store.set(
+            settings.set(BUNQDESKTOP_CATEGORIES, currentCategories);
+            settings.set(
                 BUNQDESKTOP_CATEGORY_CONNECTIONS,
                 currentCategoryConnections
             );
@@ -114,7 +117,7 @@ export default function reducer(state = defaultState, action) {
                 }
             }
 
-            store.set(
+            settings.set(
                 BUNQDESKTOP_CATEGORY_CONNECTIONS,
                 currentCategoryConnections2
             );
@@ -125,7 +128,7 @@ export default function reducer(state = defaultState, action) {
             };
 
         case "CATEGORIES_SET_CATEGORY_CONNECTIONS":
-            store.set(
+            settings.set(
                 BUNQDESKTOP_CATEGORY_CONNECTIONS,
                 action.payload.category_connections
             );
@@ -155,11 +158,31 @@ export default function reducer(state = defaultState, action) {
                 category_connections[categoryId2][itemType].push(itemId);
             }
 
-            store.set(BUNQDESKTOP_CATEGORY_CONNECTIONS, category_connections);
+            settings.set(
+                BUNQDESKTOP_CATEGORY_CONNECTIONS,
+                category_connections
+            );
             return {
                 ...state,
                 last_update: new Date().getTime(),
                 category_connections: category_connections
+            };
+
+        // update categories in new settings location
+        case "OPTIONS_OVERWRITE_SETTINGS_LOCATION":
+            settings.set(BUNQDESKTOP_CATEGORIES, { ...state.categories });
+            settings.set(BUNQDESKTOP_CATEGORY_CONNECTIONS, {
+                ...state.category_connections
+            });
+        // load categories from new settings location
+        case "OPTIONS_LOAD_SETTINGS_LOCATION":
+            return {
+                ...state,
+                last_update: new Date().getTime(),
+                categories: settings.get(BUNQDESKTOP_CATEGORIES),
+                category_connections: settings.get(
+                    BUNQDESKTOP_CATEGORY_CONNECTIONS
+                )
             };
     }
     return state;

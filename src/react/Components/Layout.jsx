@@ -346,7 +346,9 @@ class Layout extends React.Component {
             // helps all child components to prevent calls before the BunqJSClient is finished setting up
             initialBunqConnect: this.state.initialBunqConnect
         };
-
+        const selectedTheme = ThemeList[this.props.theme]
+            ? ThemeList[this.props.theme]
+            : ThemeList[Object.keys(ThemeList)[0]];
         const strippedLocation = this.props.location.pathname.replace(
             /\W/g,
             ""
@@ -357,7 +359,7 @@ class Layout extends React.Component {
             : classes.contentContainer;
         const RouteComponent = this.props.routesComponent;
         return (
-            <MuiThemeProvider theme={ThemeList[this.props.theme]}>
+            <MuiThemeProvider theme={selectedTheme}>
                 <main className={classes.main}>
                     <Header />
                     <MainDrawer
@@ -371,8 +373,7 @@ class Layout extends React.Component {
                         className={`${contentContainerClass}  ${strippedLocation}-page`}
                         style={{
                             backgroundColor:
-                                ThemeList[this.props.theme].palette.background
-                                    .default,
+                                selectedTheme.palette.background.default,
                             padding: 16
                         }}
                     >

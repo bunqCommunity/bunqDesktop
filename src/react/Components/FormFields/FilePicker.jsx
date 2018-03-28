@@ -15,11 +15,12 @@ export default class FilePicker extends React.Component {
     }
 
     handleButtonClick = event => {
+        const { value, defaultPath, properties, extensions } = this.props;
         dialog.showOpenDialog(
             {
-                defaultPath: this.props.value,
-                properties: ["openFile", "promptToCreate"],
-                filters: [{ name: "Settings", extensions: ["json"] }]
+                defaultPath: defaultPath ? defaultPath : value,
+                properties: properties,
+                filters: [{ name: "Allowed files", extensions: extensions }]
             },
             this.handleFileChange
         );

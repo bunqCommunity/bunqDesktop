@@ -61,9 +61,18 @@ export function setInactivityCheckDuration(inactivityCheckDuration) {
     };
 }
 
-export function setSettingsLocation(location) {
+export function overwriteSettingsLocation(location) {
     return {
-        type: "OPTIONS_SET_SETTINGS_LOCATION",
+        type: "OPTIONS_OVERWRITE_SETTINGS_LOCATION",
+        payload: {
+            location: location
+        }
+    };
+}
+
+export function loadSettingsLocation(location) {
+    return {
+        type: "OPTIONS_LOAD_SETTINGS_LOCATION",
         payload: {
             location: location
         }

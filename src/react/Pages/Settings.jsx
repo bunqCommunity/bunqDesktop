@@ -10,11 +10,17 @@ import Select from "material-ui/Select";
 import Paper from "material-ui/Paper";
 import Switch from "material-ui/Switch";
 import Typography from "material-ui/Typography";
+import Dialog, {
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle
+} from "material-ui/Dialog";
 
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
 
 const remote = require("electron").remote;
-const settings = remote.require("electron-settings");
+const path = remote.require("path");
 
 import NavLink from "../Components/Routing/NavLink";
 import FilePicker from "../Components/FormFields/FilePicker";
@@ -27,8 +33,9 @@ import {
     setNativeFrame,
     setStickyMenu,
     setTheme,
-    setSettingsLocation,
-    toggleInactivityCheck
+    overwriteSettingsLocation,
+    toggleInactivityCheck,
+    loadSettingsLocation
 } from "../Actions/options";
 import { registrationClearApiKey } from "../Actions/registration";
 
@@ -60,7 +67,9 @@ class Settings extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            clearConfirmation: false
+            clearConfirmation: false,
+            openImportDialog: false,
+            importTargetLocation: ""
         };
     }
 
@@ -78,32 +87,43 @@ class Settings extends React.Component {
     handleStickyMenuCheckChange = event => {
         this.props.setStickyMenu(!this.props.stickyMenu);
     };
-
     handleMinimizeToTrayChange = event => {
         this.props.setMinimizeToTray(!this.props.minimizeToTray);
     };
-
     handleHideBalanceCheckChange = event => {
         this.props.setHideBalance(!this.props.hideBalance);
     };
-
     handleHideInactivityCheckChange = event => {
         this.props.toggleInactivityCheck(!this.props.checkInactivity);
     };
     handleHideInactivityDurationChange = event => {
         this.props.setInactivityCheckDuration(event.target.value);
     };
-
-    handleSettingsLocationChange = newPath => {
-        this.props.setSettingsLocation(newPath);
-    };
-
     handleResetBunqDesktop = event => {
         if (this.state.clearConfirmation === false) {
             this.setState({ clearConfirmation: true });
         } else {
             this.props.resetApplication();
         }
+    };
+
+    displayImportDialog = newPath => {
+        this.setState({
+            importTargetLocation: `${newPath}${path.sep}BunqDesktopSettings.json`,
+            openImportDialog: true
+        });
+    };
+    overwriteSettingsFile = () => {
+        this.props.overwriteSettingsLocation(this.state.importTargetLocation);
+        this.setState({
+            openImportDialog: false
+        });
+    };
+    importSettingsFile = () => {
+        this.props.loadSettingsLocation(this.state.importTargetLocation);
+        this.setState({
+            openImportDialog: false
+        });
     };
 
     render() {
@@ -281,9 +301,15 @@ class Settings extends React.Component {
 
                             <Grid item xs={12}>
                                 <FilePicker
-                                    buttonContent={"Settings file"}
+                                    buttonContent={"Change settings location"}
+                                    extensions={["json"]}
+                                    properties={[
+                                        "openDirectory",
+                                        "promptToCreate"
+                                    ]}
                                     value={this.props.settingsLocation}
-                                    onChange={this.handleSettingsLocationChange}
+                                    defaultPath={path.dirname(this.props.settingsLocation)}
+                                    onChange={this.displayImportDialog}
                                 />
                             </Grid>
 
@@ -296,7 +322,7 @@ class Settings extends React.Component {
                                     to={"/debug-page"}
                                     style={styles.button}
                                 >
-                                    Debug
+                                    Debug application
                                 </Button>
                             </Grid>
 
@@ -314,6 +340,49 @@ class Settings extends React.Component {
                             </Grid>
                         </Grid>
                     </Paper>
+
+                    <Dialog open={this.state.openImportDialog}>
+                        <DialogTitle>Change settings location</DialogTitle>
+
+                        <DialogContent>
+                            <DialogContentText>
+                                You are about to change the settings location
+                                to:
+                            </DialogContentText>
+                            <DialogContentText>
+                                {this.state.importTargetLocation}
+                            </DialogContentText>
+                            <DialogContentText>
+                                Would you like to import the settings file or
+                                overwrite the settings currently in BunqDesktop?
+                            </DialogContentText>
+                        </DialogContent>
+
+                        <DialogActions>
+                            <Button
+                                variant="raised"
+                                onClick={() =>
+                                    this.setState({ openImportDialog: false })}
+                                color="primary"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                variant="raised"
+                                onClick={this.overwriteSettingsFile}
+                                color="secondary"
+                            >
+                                Overwrite file
+                            </Button>
+                            <Button
+                                variant="raised"
+                                onClick={this.importSettingsFile}
+                                color="secondary"
+                            >
+                                Import file
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                 </Grid>
             </Grid>
         );
@@ -350,8 +419,10 @@ const mapDispatchToProps = dispatch => {
             dispatch(toggleInactivityCheck(inactivityCheck)),
         setInactivityCheckDuration: inactivityCheckDuration =>
             dispatch(setInactivityCheckDuration(inactivityCheckDuration)),
-        setSettingsLocation: location =>
-            dispatch(setSettingsLocation(location)),
+        overwriteSettingsLocation: location =>
+            dispatch(overwriteSettingsLocation(location)),
+        loadSettingsLocation: location =>
+            dispatch(loadSettingsLocation(location)),
 
         // clear api key from bunqjsclient and bunqdesktop
         clearApiKey: () => dispatch(registrationClearApiKey(BunqJSClient)),

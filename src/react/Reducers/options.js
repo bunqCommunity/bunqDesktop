@@ -31,36 +31,54 @@ export const CHECK_INACTIVITY_DURATION_LOCATION = "CHECK_INACTIVITY_DURATION";
 export const HIDE_BALANCE_LOCATION = "HIDE_BALANCE";
 
 // get stored values
-const nativeFrameStored = settings.get(USE_NATIVE_FRAME_LOCATION);
-const minimizeToTrayStored = settings.get(MINIMIZE_TO_TRAY_LOCATION);
-const stickyMenuStored = settings.get(USE_STICKY_MENU_LOCATION);
-const checkInactivityStored = settings.get(CHECK_INACTIVITY_ENABLED_LOCATION);
-const inactivityCheckDurationStored = settings.get(
-    CHECK_INACTIVITY_DURATION_LOCATION
-);
-const hideBalanceStored = settings.get(HIDE_BALANCE_LOCATION);
-const themeDefaultStored = settings.get(THEME_LOCATION);
+const loadData = () => {
+    const nativeFrameStored = settings.get(USE_NATIVE_FRAME_LOCATION);
+    const minimizeToTrayStored = settings.get(MINIMIZE_TO_TRAY_LOCATION);
+    const stickyMenuStored = settings.get(USE_STICKY_MENU_LOCATION);
+    const checkInactivityStored = settings.get(
+        CHECK_INACTIVITY_ENABLED_LOCATION
+    );
+    const inactivityCheckDurationStored = settings.get(
+        CHECK_INACTIVITY_DURATION_LOCATION
+    );
+    const hideBalanceStored = settings.get(HIDE_BALANCE_LOCATION);
+    const themeDefaultStored = settings.get(THEME_LOCATION);
 
-// default to false/null values
-const nativeFrameDefault =
-    nativeFrameStored !== undefined ? nativeFrameStored : false;
-const minimizeToTrayDefault =
-    minimizeToTrayStored !== undefined ? minimizeToTrayStored : false;
-const stickyMenuDefault =
-    stickyMenuStored !== undefined ? stickyMenuStored : false;
-const checkInactivityDefault =
-    checkInactivityStored !== undefined ? checkInactivityStored : false;
-const inactivityCheckDurationDefault =
-    inactivityCheckDurationStored !== undefined
-        ? inactivityCheckDurationStored
-        : 300;
-const hideBalanceDefault =
-    hideBalanceStored !== undefined ? hideBalanceStored : false;
-const settingsLocationDefault = fs
-    .readFileSync(getSettingsLockLocation())
-    .toString();
-const themeDefault =
-    themeDefaultStored !== undefined ? themeDefaultStored : "DefaultTheme";
+    return {
+        nativeFrameDefault:
+            nativeFrameStored !== undefined ? nativeFrameStored : false,
+        minimizeToTrayDefault:
+            minimizeToTrayStored !== undefined ? minimizeToTrayStored : false,
+        stickyMenuDefault:
+            stickyMenuStored !== undefined ? stickyMenuStored : false,
+        checkInactivityDefault:
+            checkInactivityStored !== undefined ? checkInactivityStored : false,
+        inactivityCheckDurationDefault:
+            inactivityCheckDurationStored !== undefined
+                ? inactivityCheckDurationStored
+                : 300,
+        hideBalanceDefault:
+            hideBalanceStored !== undefined ? hideBalanceStored : false,
+        settingsLocationDefault: fs
+            .readFileSync(getSettingsLockLocation())
+            .toString(),
+        themeDefault:
+            themeDefaultStored !== undefined
+                ? themeDefaultStored
+                : "DefaultTheme"
+    };
+};
+
+const {
+    nativeFrameDefault,
+    minimizeToTrayDefault,
+    stickyMenuDefault,
+    checkInactivityDefault,
+    inactivityCheckDurationDefault,
+    hideBalanceDefault,
+    settingsLocationDefault,
+    themeDefault
+} = loadData();
 
 export const defaultState = {
     theme: themeDefault,
@@ -137,7 +155,7 @@ export default function reducer(state = defaultState, action) {
                 hide_balance: action.payload.hide_balance
             };
 
-        case "OPTIONS_SET_SETTINGS_LOCATION":
+        case "OPTIONS_OVERWRITE_SETTINGS_LOCATION":
             let targetLocation = action.payload.location;
 
             try {
@@ -161,11 +179,43 @@ export default function reducer(state = defaultState, action) {
                 settings.set(HIDE_BALANCE_LOCATION, state.hide_balance);
             } catch (err) {
                 targetLocation = state.settings_location;
-                console.error(err);
             }
             return {
                 ...state,
                 settings_location: targetLocation
+            };
+
+        case "OPTIONS_LOAD_SETTINGS_LOCATION":
+            let targetLocation2 = action.payload.location;
+
+            try {
+                // check if file exists and is writeable
+                fs.writeFileSync(getSettingsLockLocation(), targetLocation2);
+                settings.setPath(targetLocation2);
+            } catch (err) {
+                targetLocation2 = state.settings_location;
+            }
+
+            const {
+                nativeFrameDefault: nativeFrameDefault2,
+                minimizeToTrayDefault: minimizeToTrayDefault2,
+                stickyMenuDefault: stickyMenuDefault2,
+                checkInactivityDefault: checkInactivityDefault2,
+                inactivityCheckDurationDefault: inactivityCheckDurationDefault2,
+                hideBalanceDefault: hideBalanceDefault2,
+                themeDefault: themeDefault2
+            } = loadData();
+
+            return {
+                ...state,
+                settings_location: targetLocation2,
+                sticky_menu: stickyMenuDefault2,
+                theme: themeDefault2,
+                minimize_to_tray: minimizeToTrayDefault2,
+                native_frame: nativeFrameDefault2,
+                check_inactivity: checkInactivityDefault2,
+                inactivity_check_duration: inactivityCheckDurationDefault2,
+                hide_balance: hideBalanceDefault2
             };
 
         case "OPTIONS_RESET_APPLICATION":

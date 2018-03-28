@@ -11,6 +11,7 @@ import createWindow from "./helpers/window";
 import registerShortcuts from "./helpers/shortcuts";
 import registerTouchBar from "./helpers/touchbar";
 import changePage from "./helpers/react_navigate";
+import defaultConfig from "./helpers/default_config";
 
 import env from "./env";
 
@@ -44,6 +45,9 @@ const getSettingsLocation = () => {
     }
 
     fs.writeFileSync(SETTINGS_LOCATION, DEFAULT_SETTINGS_LOCATION);
+
+    // file the settings file with our default config
+    fs.writeFileSync(DEFAULT_SETTINGS_LOCATION, JSON.stringify(defaultConfig()));
     return DEFAULT_SETTINGS_LOCATION;
 };
 
