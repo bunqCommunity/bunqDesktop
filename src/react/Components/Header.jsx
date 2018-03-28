@@ -86,6 +86,7 @@ class Header extends React.Component {
     };
 
     render() {
+        const displayButtons = !IsDarwin() && this.props.nativeFrame === false;
         // the actual menu button
         const menuButton = (
             <IconButton
@@ -115,7 +116,7 @@ class Header extends React.Component {
         } else if (!this.mainWindow.isMinimized()) {
             middleIcon = <MaximizeIcon />;
         }
-        const windowControls = !IsDarwin() ? (
+        const windowControls = displayButtons ? (
             <React.Fragment>
                 <IconButton
                     aria-label="Minimize application"
@@ -153,6 +154,7 @@ class Header extends React.Component {
 const mapStateToProps = store => {
     return {
         stickyMenu: store.options.sticky_menu,
+        nativeFrame: store.options.native_frame,
         minimizeToTray: store.options.minimize_to_tray
     };
 };
