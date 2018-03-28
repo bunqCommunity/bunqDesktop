@@ -48,7 +48,11 @@ class MasterCardActionInfo extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.initialBunqConnect) {
+        if (
+            this.props.initialBunqConnect &&
+            this.props.user &&
+            this.props.user.id
+        ) {
             const { masterCardActionId, accountId } = this.props.match.params;
             this.props.masterCardActionInfoUpdate(
                 this.props.user.id,

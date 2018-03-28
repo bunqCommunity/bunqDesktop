@@ -1,6 +1,6 @@
 export const defaultState = {
     from_date: null,
-    to_date: null
+    to_date: new Date()
 };
 
 export default function reducer(state = defaultState, action) {
