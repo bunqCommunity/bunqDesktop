@@ -1,3 +1,5 @@
+import Payment from "../Models/Payment";
+
 export type Amount = {
     value: string;
     currency: string | "EUR";
@@ -47,6 +49,30 @@ export type Balance = {
     value: string;
     currency: string | "EUR";
 };
+
+export type BunqMeTabStatus = "WAITING_FOR_PAYMENT" | "CANCELLED" | "EXPIRED";
+
+export type BunqMeTabMerchantAvailableTypes = "";
+
+export type BunqMeTabMerchantAvailable = {
+    merchant_type: string;
+    available: boolean;
+};
+
+export type BunqMeTabEntry = {
+    uuid: string;
+    amount_inquired: Amount;
+    alias: PaymentAlias;
+    description: string;
+    status: BunqMeTabStatus;
+    redirect_url: string;
+    merchant_available: BunqMeTabMerchantAvailable[];
+};
+
+export type BunqMeTabResultInquiry = {
+    payment: Payment;
+    bunq_me_tab_id: number;
+}
 
 export type ExtendedAlias = Alias & {
     public_nick_name: string;
