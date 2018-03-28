@@ -1,4 +1,5 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import RequestInquiry from "../Models/RequestInquiry";
 
 export const STORED_REQUEST_INQUIRIES = "BUNQDESKTOP_STORED_REQUEST_INQUIRIES";
 
@@ -27,8 +28,16 @@ export function loadStoredRequestInquiries(BunqJSClient) {
         BunqJSClient.Session
             .loadEncryptedData(STORED_REQUEST_INQUIRIES)
             .then(data => {
-                if(data && data.items) {
-                    dispatch(requestInquiriesSetInfo(data.items, data.account_id));
+                if (data && data.items) {
+                    const newRequestInquiries = data.items.map(
+                        item => new RequestInquiry(item)
+                    );
+                    dispatch(
+                        requestInquiriesSetInfo(
+                            newRequestInquiries,
+                            data.account_id
+                        )
+                    );
                 }
             })
             .catch(error => {});
@@ -50,9 +59,12 @@ export function requestInquiriesUpdate(
         BunqJSClient.api.requestInquiry
             .list(userId, accountId, options)
             .then(requestInquiries => {
+                const newRequestInquiries = requestInquiries.map(
+                    item => new RequestInquiry(item)
+                );
                 dispatch(
                     requestInquiriesSetInfo(
-                        requestInquiries,
+                        newRequestInquiries,
                         accountId,
                         false,
                         BunqJSClient

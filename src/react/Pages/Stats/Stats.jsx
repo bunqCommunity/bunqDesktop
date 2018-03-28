@@ -80,11 +80,11 @@ class Stats extends React.Component {
     triggerWorker = (props = this.props, state = this.state) => {
         this.worker.postMessage({
             // all endpoints
-            payments: props.payments,
-            masterCardActions: props.masterCardActions,
+            payments: props.payments.map(item => item.toJSON()),
+            masterCardActions: props.masterCardActions.map(item => item.toJSON()),
+            requestInquiries: props.requestInquiries.map(item => item.toJSON()),
+            requestResponses: props.requestResponses.map(item => item.toJSON()),
             bunqMeTabs: props.bunqMeTabs,
-            requestInquiries: props.requestInquiries,
-            requestResponses: props.requestResponses,
 
             // the accounts and selectedAccount so a balance can be calculated
             accounts: props.accounts.map(account => account.toJSON()),

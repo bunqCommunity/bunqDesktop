@@ -234,29 +234,29 @@ export default class Routes extends React.Component {
                         />
 
                         {/*<PrivateRoute*/}
-                            {/*path="/rules-dashboard"*/}
-                            {/*apiKey={this.props.apiKey}*/}
-                            {/*userType={this.props.userType}*/}
-                            {/*derivedPassword={this.props.derivedPassword}*/}
-                            {/*render={props => (*/}
-                                {/*<RuleDashboard*/}
-                                    {/*{...props}*/}
-                                    {/*{...this.props.childProps}*/}
-                                {/*/>*/}
-                            {/*)}*/}
+                        {/*path="/rules-dashboard"*/}
+                        {/*apiKey={this.props.apiKey}*/}
+                        {/*userType={this.props.userType}*/}
+                        {/*derivedPassword={this.props.derivedPassword}*/}
+                        {/*render={props => (*/}
+                        {/*<RuleDashboard*/}
+                        {/*{...props}*/}
+                        {/*{...this.props.childProps}*/}
+                        {/*/>*/}
+                        {/*)}*/}
                         {/*/>*/}
 
                         {/*<PrivateRoute*/}
-                            {/*path="/rule-page/:ruleId"*/}
-                            {/*apiKey={this.props.apiKey}*/}
-                            {/*userType={this.props.userType}*/}
-                            {/*derivedPassword={this.props.derivedPassword}*/}
-                            {/*render={props => (*/}
-                                {/*<RulePage*/}
-                                    {/*{...props}*/}
-                                    {/*{...this.props.childProps}*/}
-                                {/*/>*/}
-                            {/*)}*/}
+                        {/*path="/rule-page/:ruleId"*/}
+                        {/*apiKey={this.props.apiKey}*/}
+                        {/*userType={this.props.userType}*/}
+                        {/*derivedPassword={this.props.derivedPassword}*/}
+                        {/*render={props => (*/}
+                        {/*<RulePage*/}
+                        {/*{...props}*/}
+                        {/*{...this.props.childProps}*/}
+                        {/*/>*/}
+                        {/*)}*/}
                         {/*/>*/}
 
                         <Route
