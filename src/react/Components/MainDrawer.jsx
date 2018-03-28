@@ -21,7 +21,6 @@ import Bookmark from "material-ui-icons/Bookmark";
 import NavLink from "./Routing/NavLink";
 import ListItemWrapper from "./ListItemWrapper";
 import { closeMainDrawer } from "../Actions/main_drawer";
-import { openOptionsDrawer } from "../Actions/options_drawer";
 import IsDarwin from "../Helpers/IsDarwin";
 
 const styles = {
@@ -69,8 +68,15 @@ class MainDrawer extends React.Component {
     openOptions = () => {
         // open the options drawer and open the main drawer
         this.props.closeMainDrawer();
-        this.props.openOptionsDrawer();
     };
+
+    componentDidUpdate(oldProps) {
+        if (this.props.open) {
+            if (oldProps.location.pathname !== this.props.location.pathname) {
+                this.props.closeMainDrawer();
+            }
+        }
+    }
 
     render() {
         const {
@@ -133,12 +139,24 @@ class MainDrawer extends React.Component {
                       location={this.props.location}
                   />
               ];
-        {/*<ListItemWrapper*/}
-            {/*to="/rules-dashboard"*/}
-            {/*icon={CreateIcon}*/}
-            {/*text="Category rules"*/}
-            {/*location={this.props.location}*/}
-        {/*/>*/}
+        {
+            /*<ListItemWrapper*/
+        }
+        {
+            /*to="/rules-dashboard"*/
+        }
+        {
+            /*icon={CreateIcon}*/
+        }
+        {
+            /*text="Category rules"*/
+        }
+        {
+            /*location={this.props.location}*/
+        }
+        {
+            /*/>*/
+        }
 
         const drawerList = (
             <List style={styles.list}>
@@ -160,17 +178,6 @@ class MainDrawer extends React.Component {
                 {navigationItems}
 
                 <ListItem style={styles.listFiller} />
-
-                {/*<ListItem*/}
-                    {/*button*/}
-                    {/*style={styles.listBottomItem}*/}
-                    {/*onClick={this.openOptions}*/}
-                {/*>*/}
-                    {/*<ListItemIcon>*/}
-                        {/*<SettingsIcon />*/}
-                    {/*</ListItemIcon>*/}
-                    {/*<Typography variant="subheading">Settings</Typography>*/}
-                {/*</ListItem>*/}
 
                 <ListItemWrapper
                     to="/settings"
@@ -252,7 +259,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         closeDrawer: () => dispatch(closeMainDrawer()),
-        openOptionsDrawer: () => dispatch(openOptionsDrawer()),
         closeMainDrawer: () => dispatch(closeMainDrawer())
     };
 };

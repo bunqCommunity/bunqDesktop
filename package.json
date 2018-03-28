@@ -67,7 +67,7 @@
         "prerelease": "node tasks/update_release_files.js && gulp build --env=production && yarn run webpack",
         "release": "build",
         "start": "gulp start --env=development",
-        "start:dev": "cross-env NODE_ENV=development gulp start --env=development",
+        "start:dev": "cross-env NODE_ENV=DEVELOPMENT gulp start --env=development",
         "update-icons": "node tasks/generate_material_icons.js"
     },
     "publish": null,

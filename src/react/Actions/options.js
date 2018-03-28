@@ -61,6 +61,15 @@ export function setInactivityCheckDuration(inactivityCheckDuration) {
     };
 }
 
+export function setSettingsLocation(location) {
+    return {
+        type: "OPTIONS_SET_SETTINGS_LOCATION",
+        payload: {
+            location: location
+        }
+    };
+}
+
 
 export function resetApplication() {
     return {

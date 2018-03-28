@@ -1,6 +1,17 @@
 import store from "store";
 import localforage from "localforage";
-const settings = require("electron").remote.require("electron-settings");
+
+const remote = require("electron").remote;
+const settings = remote.require("electron-settings");
+const fs = remote.require("fs");
+const path = remote.require("path");
+const app = remote.app;
+
+const getSettingsLockLocation = () => {
+    return `${app.getPath(
+        "userData"
+    )}${path.sep}..${path.sep}BunqDesktop${path.sep}SETTINGS_LOCATION`;
+};
 
 // configure the localforage instance
 localforage.config({
@@ -8,7 +19,7 @@ localforage.config({
     name: "BunqDesktop",
     version: 1.0,
     storeName: "bunq_desktop_images",
-    description: "Image cache for bunq desktop in indexed db"
+    description: "Image cache for BunqDesktop in IndexedDB"
 });
 
 export const THEME_LOCATION = "BUNQDESKTOP_THEME";
@@ -45,6 +56,9 @@ const inactivityCheckDurationDefault =
         : 300;
 const hideBalanceDefault =
     hideBalanceStored !== undefined ? hideBalanceStored : false;
+const settingsLocationDefault = fs
+    .readFileSync(getSettingsLockLocation())
+    .toString();
 const themeDefault =
     themeDefaultStored !== undefined ? themeDefaultStored : "DefaultTheme";
 
@@ -55,6 +69,7 @@ export const defaultState = {
     sticky_menu: stickyMenuDefault,
     hide_balance: hideBalanceDefault,
     check_inactivity: checkInactivityDefault,
+    settings_location: settingsLocationDefault,
     inactivity_check_duration: inactivityCheckDurationDefault
 };
 
@@ -103,6 +118,7 @@ export default function reducer(state = defaultState, action) {
                 ...state,
                 check_inactivity: action.payload.check_inactivity
             };
+
         case "OPTIONS_SET_SET_INACTIVITY_DURATION":
             settings.set(
                 CHECK_INACTIVITY_DURATION_LOCATION,
@@ -120,6 +136,38 @@ export default function reducer(state = defaultState, action) {
                 ...state,
                 hide_balance: action.payload.hide_balance
             };
+
+        case "OPTIONS_SET_SETTINGS_LOCATION":
+            let targetLocation = action.payload.location;
+
+            try {
+                // check if file exists and is writeable
+                fs.writeFileSync(getSettingsLockLocation(), targetLocation);
+                settings.setPath(targetLocation);
+
+                // set our current settings in this file
+                settings.set(USE_STICKY_MENU_LOCATION, state.sticky_menu);
+                settings.set(THEME_LOCATION, state.theme);
+                settings.set(MINIMIZE_TO_TRAY_LOCATION, state.minimize_to_tray);
+                settings.set(USE_NATIVE_FRAME_LOCATION, state.native_frame);
+                settings.set(
+                    CHECK_INACTIVITY_ENABLED_LOCATION,
+                    state.check_inactivity
+                );
+                settings.set(
+                    CHECK_INACTIVITY_DURATION_LOCATION,
+                    state.inactivity_check_duration
+                );
+                settings.set(HIDE_BALANCE_LOCATION, state.hide_balance);
+            } catch (err) {
+                targetLocation = state.settings_location;
+                console.error(err);
+            }
+            return {
+                ...state,
+                settings_location: targetLocation
+            };
+
         case "OPTIONS_RESET_APPLICATION":
             // reset localstorage settings
             store.clearAll();

@@ -14,8 +14,10 @@ import Typography from "material-ui/Typography";
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
 
 const remote = require("electron").remote;
+const settings = remote.require("electron-settings");
 
 import NavLink from "../Components/Routing/NavLink";
+import FilePicker from "../Components/FormFields/FilePicker";
 import { openSnackbar } from "../Actions/snackbar";
 import {
     resetApplication,
@@ -25,6 +27,7 @@ import {
     setNativeFrame,
     setStickyMenu,
     setTheme,
+    setSettingsLocation,
     toggleInactivityCheck
 } from "../Actions/options";
 import { registrationClearApiKey } from "../Actions/registration";
@@ -91,6 +94,10 @@ class Settings extends React.Component {
         this.props.setInactivityCheckDuration(event.target.value);
     };
 
+    handleSettingsLocationChange = newPath => {
+        this.props.setSettingsLocation(newPath);
+    };
+
     handleResetBunqDesktop = event => {
         if (this.state.clearConfirmation === false) {
             this.setState({ clearConfirmation: true });
@@ -121,7 +128,7 @@ class Settings extends React.Component {
 
                 <Grid item xs={12} sm={8}>
                     <Paper style={styles.paper}>
-                        <Grid container spacing={24} justify={"center"}>
+                        <Grid container spacing={16}>
                             <Grid item xs={6} sm={8} md={9} lg={10}>
                                 <Typography variant={"headline"}>
                                     Settings
@@ -139,7 +146,7 @@ class Settings extends React.Component {
                                 </Button>
                             </Grid>
 
-                            <Grid item xs={6}>
+                            <Grid item xs={12} md={6}>
                                 <FormControl style={styles.formControl}>
                                     <InputLabel htmlFor="theme-selection">
                                         Theme
@@ -161,7 +168,7 @@ class Settings extends React.Component {
                                 </FormControl>
                             </Grid>
 
-                            <Grid item xs={6}>
+                            <Grid item xs={12} md={6}>
                                 <FormControlLabel
                                     control={
                                         <Switch
@@ -177,7 +184,7 @@ class Settings extends React.Component {
                                 />
                             </Grid>
 
-                            <Grid item xs={6}>
+                            <Grid item xs={12} md={6}>
                                 <FormControlLabel
                                     control={
                                         <Switch
@@ -192,7 +199,7 @@ class Settings extends React.Component {
                                 />
                             </Grid>
 
-                            <Grid item xs={6}>
+                            <Grid item xs={12} md={6}>
                                 <FormControlLabel
                                     control={
                                         <Switch
@@ -207,7 +214,7 @@ class Settings extends React.Component {
                                 />
                             </Grid>
 
-                            <Grid item xs={6}>
+                            <Grid item xs={12} md={6}>
                                 <FormControlLabel
                                     control={
                                         <Switch
@@ -223,7 +230,7 @@ class Settings extends React.Component {
                                 />
                             </Grid>
 
-                            <Grid item xs={6}>
+                            <Grid item xs={12} md={6}>
                                 <FormControlLabel
                                     control={
                                         <Switch
@@ -272,17 +279,16 @@ class Settings extends React.Component {
                                 ) : null}
                             </Grid>
 
-                            <Grid item xs={12} sm={4}>
-                                <Button
-                                    variant="raised"
-                                    color="primary"
-                                    component={NavLink}
-                                    to={"/"}
-                                    style={styles.button}
-                                >
-                                    Back
-                                </Button>
+                            <Grid item xs={12}>
+                                <FilePicker
+                                    buttonContent={"Settings file"}
+                                    value={this.props.settingsLocation}
+                                    onChange={this.handleSettingsLocationChange}
+                                />
                             </Grid>
+
+                            <Grid item xs={12} />
+
                             <Grid item xs={12} sm={4}>
                                 <Button
                                     variant="raised"
@@ -293,6 +299,9 @@ class Settings extends React.Component {
                                     Debug
                                 </Button>
                             </Grid>
+
+                            <Grid item xs={12} sm={4} />
+
                             <Grid item xs={12} sm={4}>
                                 <Button
                                     variant="raised"
@@ -319,6 +328,7 @@ const mapStateToProps = state => {
         nativeFrame: state.options.native_frame,
         stickyMenu: state.options.sticky_menu,
         checkInactivity: state.options.check_inactivity,
+        settingsLocation: state.options.settings_location,
         inactivityCheckDuration: state.options.inactivity_check_duration
     };
 };
@@ -340,6 +350,8 @@ const mapDispatchToProps = dispatch => {
             dispatch(toggleInactivityCheck(inactivityCheck)),
         setInactivityCheckDuration: inactivityCheckDuration =>
             dispatch(setInactivityCheckDuration(inactivityCheckDuration)),
+        setSettingsLocation: location =>
+            dispatch(setSettingsLocation(location)),
 
         // clear api key from bunqjsclient and bunqdesktop
         clearApiKey: () => dispatch(registrationClearApiKey(BunqJSClient)),
