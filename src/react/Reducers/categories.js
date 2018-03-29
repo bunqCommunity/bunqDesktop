@@ -12,7 +12,9 @@ const categoryConnectionsStored = settings.get(
 
 // default values if no data is stored
 const categoriesStoredDefault =
-    categoriesStored !== undefined ? categoriesStored : {};
+    categoriesStored !== undefined
+        ? JSON.parse(JSON.stringify(categoriesStored))
+        : {};
 const categoryConnectionsStoredDefault =
     categoryConnectionsStored !== undefined ? categoryConnectionsStored : {};
 
