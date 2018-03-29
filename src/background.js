@@ -16,7 +16,9 @@ import defaultConfig from "./helpers/default_config";
 import env from "./env";
 
 const userDataPath = app.getPath("userData");
-const SETTINGS_LOCATION = `${userDataPath}${path.sep}SETTINGS_LOCATION`;
+const SETTINGS_LOCATION_FILE = path.normalize(
+    `${userDataPath}${path.sep}..${path.sep}BunqDesktop${path.sep}${path.sep}SETTINGS_LOCATION`
+);
 const DEFAULT_SETTINGS_LOCATION = `${userDataPath}${path.sep}settings.json`;
 
 // hide/show different native menus based on env
@@ -40,14 +42,33 @@ const getWindowUrl = fileName => {
 
 // stores the file location of our settings file
 const getSettingsLocation = () => {
-    if (fs.exists(SETTINGS_LOCATION)) {
-        return fs.readFileSync(SETTINGS_LOCATION).toString();
+    console.log("getSettingsLocation");
+
+    let settingsFolder = path.dirname(SETTINGS_LOCATION_FILE);
+
+    // check if the parent folder exists
+    if (fs.existsSync(settingsFolder)) {
+        // check if the settings lock file exists
+        if (!fs.existsSync(SETTINGS_LOCATION_FILE)) {
+            // create a default file
+            fs.writeFileSync(SETTINGS_LOCATION_FILE, DEFAULT_SETTINGS_LOCATION);
+        }
+        // return the lock file contents
+        return fs.readFileSync(SETTINGS_LOCATION_FILE).toString();
     }
 
-    fs.writeFileSync(SETTINGS_LOCATION, DEFAULT_SETTINGS_LOCATION);
+    // create the settings lock file
+    fs.writeFileSync(SETTINGS_LOCATION_FILE, DEFAULT_SETTINGS_LOCATION);
 
-    // file the settings file with our default config
-    fs.writeFileSync(DEFAULT_SETTINGS_LOCATION, JSON.stringify(defaultConfig()));
+    // check if the default settings file exists
+    if (!fs.existsSync(DEFAULT_SETTINGS_LOCATION)) {
+        // fill the settings file with our default config
+        fs.writeFileSync(
+            DEFAULT_SETTINGS_LOCATION,
+            JSON.stringify(defaultConfig())
+        );
+    }
+
     return DEFAULT_SETTINGS_LOCATION;
 };
 
@@ -62,17 +83,18 @@ log.transports.file.level = env.name === "development" ? "debug" : "warn";
 log.transports.file.format = "{h}:{i}:{s}:{ms} {text}";
 log.transports.file.file = `${userDataPath}${path.sep}BunqDesktop.${env.name}.log.txt`;
 
+// hot reloading
 if (process.env.NODE_ENV === "DEVELOPMENT") {
     require("electron-reload")(
         path.join(__dirname, `..${path.sep}app${path.sep}**`)
     );
 }
 
+// set the correct path before the app loads
+settings.setPath(getSettingsLocation());
+
 app.on("ready", () => {
     setApplicationMenu();
-
-    // set the correct path
-    settings.setPath(getSettingsLocation());
 
     const USE_NATIVE_FRAME_STORED = settings.get("USE_NATIVE_FRAME");
     const USE_NATIVE_FRAME =
@@ -148,6 +170,10 @@ app.on("ready", () => {
             event.preventDefault();
             mainWindow.hide();
         }
+    });
+
+    mainWindow.on("close", function(event) {
+        app.quit();
     });
 
     // reload the window if the system goes into sleep mode

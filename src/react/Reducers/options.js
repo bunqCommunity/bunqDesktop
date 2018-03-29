@@ -8,9 +8,11 @@ const path = remote.require("path");
 const app = remote.app;
 
 const getSettingsLockLocation = () => {
-    return `${app.getPath(
-        "userData"
-    )}${path.sep}..${path.sep}BunqDesktop${path.sep}SETTINGS_LOCATION`;
+    return path.normalize(
+        `${app.getPath(
+            "userData"
+        )}${path.sep}..${path.sep}BunqDesktop${path.sep}SETTINGS_LOCATION`
+    );
 };
 
 // configure the localforage instance
@@ -44,6 +46,9 @@ const loadData = () => {
     const hideBalanceStored = settings.get(HIDE_BALANCE_LOCATION);
     const themeDefaultStored = settings.get(THEME_LOCATION);
 
+    // get settings file location
+    const settingsLocationStored = settings.file();
+
     return {
         nativeFrameDefault:
             nativeFrameStored !== undefined ? nativeFrameStored : false,
@@ -59,9 +64,7 @@ const loadData = () => {
                 : 300,
         hideBalanceDefault:
             hideBalanceStored !== undefined ? hideBalanceStored : false,
-        settingsLocationDefault: fs
-            .readFileSync(getSettingsLockLocation())
-            .toString(),
+        settingsLocationDefault: settingsLocationStored,
         themeDefault:
             themeDefaultStored !== undefined
                 ? themeDefaultStored
@@ -162,24 +165,25 @@ export default function reducer(state = defaultState, action) {
                 // check if file exists and is writeable
                 fs.writeFileSync(getSettingsLockLocation(), targetLocation);
                 settings.setPath(targetLocation);
-
-                // set our current settings in this file
-                settings.set(USE_STICKY_MENU_LOCATION, state.sticky_menu);
-                settings.set(THEME_LOCATION, state.theme);
-                settings.set(MINIMIZE_TO_TRAY_LOCATION, state.minimize_to_tray);
-                settings.set(USE_NATIVE_FRAME_LOCATION, state.native_frame);
-                settings.set(
-                    CHECK_INACTIVITY_ENABLED_LOCATION,
-                    state.check_inactivity
-                );
-                settings.set(
-                    CHECK_INACTIVITY_DURATION_LOCATION,
-                    state.inactivity_check_duration
-                );
-                settings.set(HIDE_BALANCE_LOCATION, state.hide_balance);
             } catch (err) {
                 targetLocation = state.settings_location;
             }
+
+            // set our current settings in this file
+            settings.set(USE_STICKY_MENU_LOCATION, state.sticky_menu);
+            settings.set(THEME_LOCATION, state.theme);
+            settings.set(MINIMIZE_TO_TRAY_LOCATION, state.minimize_to_tray);
+            settings.set(USE_NATIVE_FRAME_LOCATION, state.native_frame);
+            settings.set(
+                CHECK_INACTIVITY_ENABLED_LOCATION,
+                state.check_inactivity
+            );
+            settings.set(
+                CHECK_INACTIVITY_DURATION_LOCATION,
+                state.inactivity_check_duration
+            );
+            settings.set(HIDE_BALANCE_LOCATION, state.hide_balance);
+
             return {
                 ...state,
                 settings_location: targetLocation
