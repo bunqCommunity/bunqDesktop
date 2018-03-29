@@ -1,4 +1,3 @@
-import store from "store";
 const settings = require("electron").remote.require("electron-settings");
 import { generateGUID } from "../Helpers/Utils";
 
@@ -170,19 +169,26 @@ export default function reducer(state = defaultState, action) {
 
         // update categories in new settings location
         case "OPTIONS_OVERWRITE_SETTINGS_LOCATION":
-            settings.set(BUNQDESKTOP_CATEGORIES, { ...state.categories });
-            settings.set(BUNQDESKTOP_CATEGORY_CONNECTIONS, {
-                ...state.category_connections
-            });
+            settings.set(BUNQDESKTOP_CATEGORIES, state.categories);
+            settings.set(
+                BUNQDESKTOP_CATEGORY_CONNECTIONS,
+                state.category_connections
+            );
         // load categories from new settings location
         case "OPTIONS_LOAD_SETTINGS_LOCATION":
+            const storedCategories = settings.get(BUNQDESKTOP_CATEGORIES);
+            const storedConnections = settings.get(
+                BUNQDESKTOP_CATEGORY_CONNECTIONS
+            );
             return {
                 ...state,
                 last_update: new Date().getTime(),
-                categories: settings.get(BUNQDESKTOP_CATEGORIES),
-                category_connections: settings.get(
-                    BUNQDESKTOP_CATEGORY_CONNECTIONS
-                )
+                categories: storedCategories
+                    ? storedCategories
+                    : state.categories,
+                category_connections: storedConnections
+                    ? storedConnections
+                    : state.category_connections
             };
     }
     return state;

@@ -200,26 +200,52 @@ export default function reducer(state = defaultState, action) {
                 targetLocation2 = state.settings_location;
             }
 
-            const {
-                nativeFrameDefault: nativeFrameDefault2,
-                minimizeToTrayDefault: minimizeToTrayDefault2,
-                stickyMenuDefault: stickyMenuDefault2,
-                checkInactivityDefault: checkInactivityDefault2,
-                inactivityCheckDurationDefault: inactivityCheckDurationDefault2,
-                hideBalanceDefault: hideBalanceDefault2,
-                themeDefault: themeDefault2
-            } = loadData();
+            const nativeFrameStored = settings.get(USE_NATIVE_FRAME_LOCATION);
+            const minimizeToTrayStored = settings.get(
+                MINIMIZE_TO_TRAY_LOCATION
+            );
+            const stickyMenuStored = settings.get(USE_STICKY_MENU_LOCATION);
+            const checkInactivityStored = settings.get(
+                CHECK_INACTIVITY_ENABLED_LOCATION
+            );
+            const inactivityCheckDurationStored = settings.get(
+                CHECK_INACTIVITY_DURATION_LOCATION
+            );
+            const hideBalanceStored = settings.get(HIDE_BALANCE_LOCATION);
+            const themeDefaultStored = settings.get(THEME_LOCATION);
 
+            // only overwrite if the new settings file contains these settings
             return {
                 ...state,
                 settings_location: targetLocation2,
-                sticky_menu: stickyMenuDefault2,
-                theme: themeDefault2,
-                minimize_to_tray: minimizeToTrayDefault2,
-                native_frame: nativeFrameDefault2,
-                check_inactivity: checkInactivityDefault2,
-                inactivity_check_duration: inactivityCheckDurationDefault2,
-                hide_balance: hideBalanceDefault2
+                sticky_menu:
+                    typeof stickyMenuStored !== "undefined"
+                        ? stickyMenuStored
+                        : state.sticky_menu,
+                theme:
+                    typeof themeDefaultStored !== "undefined"
+                        ? themeDefaultStored
+                        : state.theme,
+                minimize_to_tray:
+                    typeof minimizeToTrayStored !== "undefined"
+                        ? minimizeToTrayStored
+                        : state.minimize_to_tray,
+                native_frame:
+                    typeof nativeFrameStored !== "undefined"
+                        ? nativeFrameStored
+                        : state.native_frame,
+                check_inactivity:
+                    typeof checkInactivityStored !== "undefined"
+                        ? checkInactivityStored
+                        : state.check_inactivity,
+                inactivity_check_duration:
+                    typeof inactivityCheckDurationStored !== "undefined"
+                        ? inactivityCheckDurationStored
+                        : state.inactivity_check_duration,
+                hide_balance:
+                    typeof hideBalanceStored !== "undefined"
+                        ? hideBalanceStored
+                        : state.hide_balance
             };
 
         case "OPTIONS_RESET_APPLICATION":

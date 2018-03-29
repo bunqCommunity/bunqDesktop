@@ -26,7 +26,11 @@ export default class FilePicker extends React.Component {
         );
     };
 
-    handleFileChange = filePaths => this.props.onChange(filePaths[0]);
+    handleFileChange = filePaths => {
+        if (filePaths && filePaths.length > 0) {
+            this.props.onChange(filePaths[0]);
+        }
+    };
 
     render() {
         const { value, style, buttonContent } = this.props;
