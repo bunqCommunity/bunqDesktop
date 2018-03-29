@@ -142,7 +142,7 @@ class RuleCreator extends React.Component<any, any> {
         this.setState({ rules: rules });
     };
     addRule = (ruleType: RuleTypes) => {
-        const rules = [...this.state.rules];
+        let rules = [...this.state.rules];
         let newRule: Rule;
 
         switch (ruleType) {
@@ -171,7 +171,29 @@ class RuleCreator extends React.Component<any, any> {
                 return false;
         }
 
+        // add the new rule to the list
         rules.push(newRule);
+
+        // put the item_type first becuase these are checked the fastest
+        rules = rules.sort((ruleA: Rule, ruleB: Rule) => {
+            if (
+                ruleA.ruleType === "ITEM_TYPE" &&
+                ruleB.ruleType === "ITEM_TYPE"
+            ) {
+                return 0;
+            } else if (
+                ruleA.ruleType !== "ITEM_TYPE" &&
+                ruleB.ruleType === "ITEM_TYPE"
+            ) {
+                return 1;
+            } else if (
+                ruleA.ruleType === "ITEM_TYPE" &&
+                ruleB.ruleType !== "ITEM_TYPE"
+            ) {
+                return -1;
+            }
+        });
+
         this.setState({ rules: rules }, this.updatePreview);
     };
 
@@ -181,9 +203,7 @@ class RuleCreator extends React.Component<any, any> {
     handleTitleChange = (event: any) => {
         const title = event.target.value;
         const titleError = title.length <= 0 || title.length > 32;
-        this.setState(
-            { title: title, titleError: titleError }
-        );
+        this.setState({ title: title, titleError: titleError });
     };
     handleEnabledToggle = (event: any) => {
         this.setState({ enabled: !this.state.enabled });
