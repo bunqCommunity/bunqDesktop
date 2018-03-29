@@ -52,6 +52,12 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
         this.props.updateRule(rule);
     };
 
+    handleCustomFieldChange = event => {
+        const rule: ValueRule = this.props.rule;
+        rule.customField = event.target.value;
+        this.props.updateRule(rule);
+    };
+
     handleValueChange = event => {
         const textFieldValue = event.target.value;
         const rule: ValueRule = this.props.rule;
@@ -112,6 +118,7 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
                                 <TextField
                                     name="custom-field"
                                     value={rule.customField}
+                                    onChange={this.handleCustomFieldChange}
                                 />
                             </FormControl>
                         ) : null}

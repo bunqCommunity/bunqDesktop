@@ -43,14 +43,14 @@ class RuleCollectionPreviewItem extends React.Component<any, any> {
                                 ? ruleValue.field
                                 : ruleValue.customField;
 
-                        primaryText = `Event does ${negativeText} ${ruleValue.matchType} in field ${fieldChecked}`;
+                        primaryText = `Field ${fieldChecked} does ${negativeText} ${ruleValue.matchType}`;
 
                         break;
                     case "TRANSACTION_AMOUNT":
                         let ruleTransactionAMount: TransactionAmountRule =
                             matchingRule.rule;
 
-                        primaryText = `Event transaction amount is ${negativeText} ${ruleTransactionAMount.matchType} than ${ruleTransactionAMount.amount}`;
+                        primaryText = `Transaction amount is ${negativeText} ${ruleTransactionAMount.matchType} than ${ruleTransactionAMount.amount}`;
 
                         break;
                 }
@@ -85,7 +85,7 @@ class RuleCollectionPreviewItem extends React.Component<any, any> {
                         {event.matches ? <CheckIcon /> : <CrossIcon />}
                     </Avatar>
                     <ListItemText
-                        primary={`Matches: ${event.matches ? "yes" : "no"}`}
+                        primary={`${event.item.description}`}
                         secondary={`Type: ${event.type}`}
                     />
                 </ListItem>

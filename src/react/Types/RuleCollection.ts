@@ -225,11 +225,35 @@ export default class RuleCollection {
                 dataToCheck = null;
                 break;
             case "COUNTERPARTY_NAME":
-                dataToCheck.push(event.item.counterparty_alias.display_name);
+                if (event.item.counterparty_alias) {
+                    dataToCheck.push(
+                        event.item.counterparty_alias.display_name
+                    );
+                }
                 break;
             case "CUSTOM":
                 // split the custom field on . character
                 const customFieldParts = rule.customField.split(".");
+
+                let tempObject = event.item;
+                let failedToFind = false;
+                for (let key in customFieldParts) {
+                    const customFieldPart = customFieldParts[key];
+                    // more field parts but the previous wasn't found
+                    if (failedToFind === true) break;
+
+                    if (tempObject[customFieldPart]) {
+                        tempObject = tempObject[customFieldPart];
+                    } else {
+                        failedToFind = true;
+                    }
+                }
+
+                // if we found the custom item, add it to the list
+                if (failedToFind === false) {
+                    dataToCheck.push(tempObject);
+                }
+
                 break;
             default:
                 return false;
@@ -243,32 +267,27 @@ export default class RuleCollection {
         for (var index in dataToCheck) {
             const dataItem = dataToCheck[index];
 
+            const valueToCheck = dataItem.toString().toLowerCase();
+            const ruleValue = rule.value.toLowerCase();
+
             switch (rule.matchType) {
                 case "REGEX":
                     // create a regexp so we can directly use the input value
                     const regex = new RegExp(rule.value);
                     // test the data with the regex pattern
-                    matchedItem = regex.test(dataItem.toLowerCase());
+                    matchedItem = regex.test(valueToCheck);
                     break;
                 case "EXACT":
-                    matchedItem =
-                        dataItem.toLowerCase().toLowerCase() ===
-                        rule.value.toLowerCase();
+                    matchedItem = valueToCheck === ruleValue;
                     break;
                 case "CONTAINS":
-                    matchedItem = dataItem
-                        .toLowerCase()
-                        .includes(rule.value.toLowerCase());
+                    matchedItem = valueToCheck.includes(ruleValue);
                     break;
                 case "ENDS_WITH":
-                    matchedItem = dataItem
-                        .toLowerCase()
-                        .endsWith(rule.value.toLowerCase());
+                    matchedItem = valueToCheck.endsWith(ruleValue);
                     break;
                 case "STARTS_WITH":
-                    matchedItem = dataItem
-                        .toLowerCase()
-                        .startsWith(rule.value.toLowerCase());
+                    matchedItem = valueToCheck.startsWith(ruleValue);
                     break;
             }
 

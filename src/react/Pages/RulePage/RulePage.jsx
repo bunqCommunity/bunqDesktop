@@ -55,6 +55,9 @@ class RulesPage extends React.Component {
         const masterCardActions = this.props.masterCardActions.map(item =>
             item.toJSON()
         );
+        const bunqMeTabs = this.props.bunqMeTabs.map(item =>
+            item.toJSON()
+        );
 
         return (
             <Grid container spacing={16}>
@@ -80,7 +83,7 @@ class RulesPage extends React.Component {
                         payments={payments}
                         requestInquiries={requestInquiries}
                         masterCardActions={masterCardActions}
-                        bunqMeTabs={this.props.bunqMeTabs}
+                        bunqMeTabs={bunqMeTabs}
                         requestResponses={requestResponses}
                     />
                 </Grid>
