@@ -99,14 +99,16 @@ class Layout extends React.Component {
             })
             .catch(Logger.error);
 
-        VersionChecker().then(versionInfo => {
-            if (versionInfo.newerLink !== false) {
-                this.props.openSnackbar(
-                    `A new version (v${versionInfo.latestVersion}) is available! You are currently using ${versionInfo.currentVersion}`,
-                    8000
-                );
-            }
-        });
+        if(process.env.NODE_ENV !== "DEVELOPMENT"){
+            VersionChecker().then(versionInfo => {
+                if (versionInfo.newerLink !== false) {
+                    this.props.openSnackbar(
+                        `A new version (v${versionInfo.latestVersion}) is available! You are currently using ${versionInfo.currentVersion}`,
+                        8000
+                    );
+                }
+            });
+        }
 
         // set initial timeout trigger
         this.setActivityTimeout();

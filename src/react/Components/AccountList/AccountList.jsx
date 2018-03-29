@@ -101,7 +101,7 @@ class AccountList extends React.Component {
             if (this.delayedUpdate) clearTimeout(this.delayedUpdate);
             this.delayedUpdate = setTimeout(() => {
                 this.updateExternal(user.id, accountsAccountId);
-            }, 1000);
+            }, 500);
         }
 
         // no accounts loaded
