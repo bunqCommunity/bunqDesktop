@@ -7,15 +7,33 @@
 ___   
 
 ## Download
+#### One click installers
 Download the latest version of BunqDesktop from the [GitHub releases page.](https://github.com/BunqCommunity/BunqDesktop/releases)
+
+#### [Snapcraft](https://snapcraft.io/bunqdesktop)
+`sudo snap install bunqdesktop`
+
+#### [Brew Cask](https://caskroom.github.io/)
+`brew cask install bunq`
 
 ## Features
 - View all your accounts and payments
 - Send new payments to other users
-- Create and view bunq.me requests
 - Accept and decline requests
+- Create and view bunq.me requests
+- Custom categories to group events
+- View and manage your cards
+- Statistics page
 - Encrypted storage on your device
 - Available on Windows, Linux and Mac
+
+## Keybinds
+ - CTRL/CMD + Q : Closes the application
+ - CTRL/CMD + H : Hides the application in the tray
+ - CTRL/CMD + D : Dashboard
+ - CTRL/CMD + P : Payment page
+ - CTRL/CMD + R : Request page
+ - ALT + C      : Cards page
 
 ## Development
 We use [yarn](https://yarnpkg.com/en/) for package management and the following global packages:
@@ -28,10 +46,10 @@ $ git clone git@github.com:BunqCommunity/BunqDesktop.git && cd BunqDesktop
 $ yarn 
 ```
 Run these commands in 2 seperate consoles. One compiles the react app and the second takes care of 
-running an electron instance.
+running an electron instance with hot reloading.
 ```bash
 $ yarn webpack:dev
-$ yarn start
+$ yarn start:dev 
 ```
 
 ## Contact

@@ -1,4 +1,11 @@
-import { ExtendedAlias, Alias, Avatar, Balance } from "../Types/Types";
+import {
+    AccountType,
+    MonetaryAccountSetting,
+    AllCoOwner,
+    Alias,
+    Avatar,
+    Balance
+} from "../Types/Types";
 
 export default class MonetaryAccount {
     // the original raw object
@@ -31,20 +38,13 @@ export default class MonetaryAccount {
         // get the direct object using the extracted account tpye
         const accountInfo: any = monetaryAccountObject[this.accountType];
 
-        this._id = accountInfo.id;
-        this._created = accountInfo.created;
-        this._updated = accountInfo.updated;
-        this._avatar = accountInfo.avatar;
-        this._description = accountInfo.description;
-        this._balance = accountInfo.balance;
-        this._alias = accountInfo.alias;
-        this._status = accountInfo.status;
-        this._sub_status = accountInfo.sub_status;
-        this._user_id = accountInfo.user_id;
-        this._setting = accountInfo.setting;
+        // go through all keys and set the data
+        Object.keys(accountInfo).forEach(key => {
+            this[`_${key}`] = accountInfo[key];
+        });
 
-        if (this._accountType === "MonetaryAccountJoint") {
-        }
+        this._updated = new Date(this._updated);
+        this._created = new Date(this._created);
     }
 
     /**
@@ -121,24 +121,3 @@ export default class MonetaryAccount {
         return this._all_co_owner;
     }
 }
-
-export type AccountType =
-    | "MonetaryAccountLight"
-    | "MonetaryAccountBank"
-    | "MonetaryAccountJoint";
-
-export type MonetaryAccountSetting = {
-    color: string;
-    default_avatar_status:
-        | "AVATAR_DEFAULT"
-        | "AVATAR_CUSTOM"
-        | "AVATAR_UNDETERMINED";
-    restriction_chat: "ALLOW_INCOMING" | "BLOCK_INCOMING";
-};
-
-export type AllCoOwnerItem = {
-    alias: ExtendedAlias[];
-    status: "ACCEPTED" | "REJECTED" | "PENDING" | "REVOKED";
-};
-
-export type AllCoOwner = AllCoOwnerItem[];

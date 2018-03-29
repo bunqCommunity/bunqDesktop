@@ -16,6 +16,7 @@ import CopyIcon from "material-ui-icons/ContentCopy";
 import Share from "material-ui-icons/Share";
 
 import PaymentListItem from "./PaymentListItem";
+import AccountQRFullscreen from "../QR/AccountQRFullscreen";
 import CategoryIcons from "../Categories/CategoryIcons";
 import { humanReadableDate, formatMoney } from "../../Helpers/Utils";
 
@@ -101,6 +102,7 @@ class BunqMeTabListItem extends React.Component {
                     secondary={bunqMeTab.bunqme_tab_entry.description}
                 />
                 <ListItemSecondaryAction style={{ marginTop: -40 }}>
+                    <AccountQRFullscreen mode="HIDDEN" text={shareUrl} />
                     <CopyToClipboard
                         text={shareUrl}
                         onCopy={this.props.copiedValue("the bunq.me tab url")}
@@ -183,6 +185,6 @@ class BunqMeTabListItem extends React.Component {
 
 BunqMeTabListItem.defaultProps = {
     minimalDisplay: false
-}
+};
 
 export default withTheme()(BunqMeTabListItem);

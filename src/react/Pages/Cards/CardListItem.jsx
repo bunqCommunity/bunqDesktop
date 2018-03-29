@@ -27,15 +27,8 @@ class CardListItem extends React.Component {
 
     render() {
         const card = this.props.card;
-        const accounts = this.props.accounts;
-        const currentAccount = accounts.accounts.find(
-            account =>
-                account.id == card.pin_code_assignment[0].monetary_account_id
-        );
-
         let cardImage = null;
         let cardType = null;
-        let connectedAccountName = currentAccount.description;
         switch (card.type) {
             case "MASTERCARD":
                 cardType = "MasterCard";

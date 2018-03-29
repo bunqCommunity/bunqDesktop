@@ -170,7 +170,7 @@ const masterCardActionMapper = (
 
             if (validTypes.includes(masterCardInfo.authorisation_status)) {
                 data.push({
-                    date: new Date(masterCardInfo.created),
+                    date: new Date(masterCardInfo.updated),
                     change: change,
                     type: "masterCardAction",
                     categories: []

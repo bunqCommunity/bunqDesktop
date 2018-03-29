@@ -58,7 +58,7 @@ class IconPicker extends React.Component {
                 searchTerm: searchTerm
             });
         } else {
-            this.setState({ searchTerm: searchTerm });
+            this.setState({ searchTerm: searchTerm, icons: Icons.icons });
         }
     };
 

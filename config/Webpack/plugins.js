@@ -28,23 +28,23 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
             minChunks: 2
         }),
         // webpack analyzer
-        new BundleAnalyzerPlugin({
-            // don't open the file automatically
-            openAnalyzer: false,
-            // default type to open (`stat`, `parsed` or `gzip`)
-            defaultSizes: "parse",
-            // create a server for the watcher or a static file for production enviroments
-            analyzerMode: "static",
-            // output outside of the public folder
-            reportFilename: "../../webpack.report.html",
-            /**
-             * stats file for analyzer - use with:
-             * @see https://alexkuz.github.io/stellar-webpack/
-             * @see https://alexkuz.github.io/webpack-chart/
-             */
-            generateStatsFile: true,
-            statsFilename: "../../webpack.stats.json"
-        })
+        // new BundleAnalyzerPlugin({
+        //     // don't open the file automatically
+        //     openAnalyzer: false,
+        //     // default type to open (`stat`, `parsed` or `gzip`)
+        //     defaultSizes: "parse",
+        //     // create a server for the watcher or a static file for production enviroments
+        //     analyzerMode: "static",
+        //     // output outside of the public folder
+        //     reportFilename: "../../webpack.report.html",
+        //     /**
+        //      * stats file for analyzer - use with:
+        //      * @see https://alexkuz.github.io/stellar-webpack/
+        //      * @see https://alexkuz.github.io/webpack-chart/
+        //      */
+        //     generateStatsFile: true,
+        //     statsFilename: "../../webpack.stats.json"
+        // })
     ];
 
     if (PRODUCTION) {

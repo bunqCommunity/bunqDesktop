@@ -36,6 +36,7 @@ class ImportDialog extends React.Component<any, any> {
             }
 
             this.props.importData(data);
+            this.props.closeModal();
         }
     };
     importDataNew = event => this.importData(true);
@@ -95,6 +96,7 @@ class ImportDialog extends React.Component<any, any> {
                     <Button
                         variant="raised"
                         onClick={this.importDataOverwrite}
+                        disabled={this.state.importContentError}
                         color="primary"
                     >
                         Import

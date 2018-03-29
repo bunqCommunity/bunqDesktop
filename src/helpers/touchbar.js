@@ -1,44 +1,43 @@
-import { TouchBar } from 'electron'
+import { TouchBar } from "electron";
+import changePage from "./react_navigate";
 
 const { TouchBarButton } = TouchBar;
 
-export default (window) => {
-
+export default window => {
     const dashboardButton = new TouchBarButton({
-        label: '🏠 Dashboard',
+        label: "🏠 Dashboard",
         click: () => {
-            window.webContents.send('change-path', '/')
+            changePage(window, "/");
         }
     });
 
     const payButton = new TouchBarButton({
-        label: '👆 Pay',
+        label: "👆 Pay",
         click: () => {
-            window.webContents.send('change-path', '/pay')
+            changePage(window, "/pay");
         }
     });
 
     const requestButton = new TouchBarButton({
-        label: '👇 Request',
+        label: "👇 Request",
         click: () => {
-            window.webContents.send('change-path', '/request')
+            changePage(window, "/request");
         }
     });
 
     const bunqMeButton = new TouchBarButton({
-        label: '💰 bunq.me',
+        label: "💰 bunq.me",
         click: () => {
-            window.webContents.send('change-path', '/bunqme-tab')
+            changePage(window, "/bunqme-tab");
         }
     });
 
     const cardsButton = new TouchBarButton({
-        label: '💳 Cards',
+        label: "💳 Cards",
         click: () => {
-            window.webContents.send('change-path', '/card')
+            changePage(window, "/card");
         }
     });
-
 
     const bar = new TouchBar([
         dashboardButton,
@@ -49,4 +48,4 @@ export default (window) => {
     ]);
 
     window.setTouchBar(bar);
-}
+};

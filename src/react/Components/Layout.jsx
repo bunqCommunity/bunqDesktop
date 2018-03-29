@@ -46,7 +46,6 @@ import {
     registrationNotLoading,
     registrationClearApiKey
 } from "../Actions/registration";
-import OptionsDrawer from "./OptionsDrawer";
 
 const styles = theme => ({
     contentContainer: {
@@ -342,11 +341,14 @@ class Layout extends React.Component {
             BunqJSClient: this.props.BunqJSClient,
             // modal and snackbar helpers
             openModal: this.props.openModal,
+            themeList: ThemeList,
             openSnackbar: this.props.openSnackbar,
             // helps all child components to prevent calls before the BunqJSClient is finished setting up
             initialBunqConnect: this.state.initialBunqConnect
         };
-
+        const selectedTheme = ThemeList[this.props.theme]
+            ? ThemeList[this.props.theme]
+            : ThemeList[Object.keys(ThemeList)[0]];
         const strippedLocation = this.props.location.pathname.replace(
             /\W/g,
             ""
@@ -357,16 +359,12 @@ class Layout extends React.Component {
             : classes.contentContainer;
         const RouteComponent = this.props.routesComponent;
         return (
-            <MuiThemeProvider theme={ThemeList[this.props.theme]}>
+            <MuiThemeProvider theme={selectedTheme}>
                 <main className={classes.main}>
                     <Header />
                     <MainDrawer
                         BunqJSClient={this.props.BunqJSClient}
                         location={this.props.location}
-                    />
-                    <OptionsDrawer
-                        BunqJSClient={this.props.BunqJSClient}
-                        themeList={ThemeList}
                     />
                     <Grid
                         container
@@ -375,8 +373,7 @@ class Layout extends React.Component {
                         className={`${contentContainerClass}  ${strippedLocation}-page`}
                         style={{
                             backgroundColor:
-                                ThemeList[this.props.theme].palette.background
-                                    .default,
+                                selectedTheme.palette.background.default,
                             padding: 16
                         }}
                     >

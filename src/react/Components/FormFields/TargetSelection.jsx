@@ -72,6 +72,7 @@ class TargetSelection extends React.Component {
                         </Typography>
                         <PhoneFormatInput
                             id="target"
+                            autoFocus
                             placeholder="+316123456789"
                             error={this.props.targetError}
                             value={this.props.target}
@@ -84,6 +85,7 @@ class TargetSelection extends React.Component {
             case "EMAIL":
                 targetContent = (
                     <TextField
+                        autoFocus
                         error={this.props.targetError}
                         fullWidth
                         required
@@ -100,6 +102,7 @@ class TargetSelection extends React.Component {
             case "IBAN":
                 targetContent = [
                     <TextField
+                        autoFocus
                         error={this.props.targetError}
                         fullWidth
                         required
@@ -173,23 +176,6 @@ class TargetSelection extends React.Component {
                 <Grid item xs={12}>
                     {chipList}
                 </Grid>
-                {this.props.disabledTypes.includes("IBAN") ? null : (
-                    <Grid item xs={6} sm={3}>
-                        <FormControlLabel
-                            control={
-                                <Radio
-                                    icon={<AccountBalanceIcon />}
-                                    checkedIcon={<AccountBalanceIcon />}
-                                    checked={this.props.targetType === "IBAN"}
-                                    onChange={this.props.setTargetType("IBAN")}
-                                    value="IBAN"
-                                    name="target-type-iban"
-                                />
-                            }
-                            label="IBAN"
-                        />
-                    </Grid>
-                )}
                 {this.props.disabledTypes.includes("EMAIL") ? null : (
                     <Grid item xs={6} sm={3}>
                         <FormControlLabel
@@ -223,6 +209,23 @@ class TargetSelection extends React.Component {
                                 />
                             }
                             label="PHONE"
+                        />
+                    </Grid>
+                )}
+                {this.props.disabledTypes.includes("IBAN") ? null : (
+                    <Grid item xs={6} sm={3}>
+                        <FormControlLabel
+                            control={
+                                <Radio
+                                    icon={<AccountBalanceIcon />}
+                                    checkedIcon={<AccountBalanceIcon />}
+                                    checked={this.props.targetType === "IBAN"}
+                                    onChange={this.props.setTargetType("IBAN")}
+                                    value="IBAN"
+                                    name="target-type-iban"
+                                />
+                            }
+                            label="IBAN"
                         />
                     </Grid>
                 )}

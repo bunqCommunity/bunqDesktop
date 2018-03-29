@@ -16,13 +16,12 @@ import SettingsIcon from "material-ui-icons/Settings";
 import ShareIcon from "material-ui-icons/Share";
 import TimeLineIcon from "material-ui-icons/Timeline";
 import CardIcon from "material-ui-icons/CreditCard";
-import CreateIcon from "material-ui-icons/Create";
 import Bookmark from "material-ui-icons/Bookmark";
 
 import NavLink from "./Routing/NavLink";
 import ListItemWrapper from "./ListItemWrapper";
 import { closeMainDrawer } from "../Actions/main_drawer";
-import { openOptionsDrawer } from "../Actions/options_drawer";
+import IsDarwin from "../Helpers/IsDarwin";
 
 const styles = {
     list: {
@@ -69,8 +68,15 @@ class MainDrawer extends React.Component {
     openOptions = () => {
         // open the options drawer and open the main drawer
         this.props.closeMainDrawer();
-        this.props.openOptionsDrawer();
     };
+
+    componentDidUpdate(oldProps) {
+        if (this.props.open) {
+            if (oldProps.location.pathname !== this.props.location.pathname) {
+                this.props.closeMainDrawer();
+            }
+        }
+    }
 
     render() {
         const {
@@ -129,7 +135,7 @@ class MainDrawer extends React.Component {
                   <ListItemWrapper
                       to="/category-dashboard"
                       icon={Bookmark}
-                      text="Category dashboard"
+                      text="Categories"
                       location={this.props.location}
                   />,
                   <ListItemWrapper
@@ -161,16 +167,12 @@ class MainDrawer extends React.Component {
 
                 <ListItem style={styles.listFiller} />
 
-                <ListItem
-                    button
-                    style={styles.listBottomItem}
-                    onClick={this.openOptions}
-                >
-                    <ListItemIcon>
-                        <SettingsIcon />
-                    </ListItemIcon>
-                    <Typography variant="subheading">Settings</Typography>
-                </ListItem>
+                <ListItemWrapper
+                    to="/settings"
+                    icon={SettingsIcon}
+                    text="Settings"
+                    location={this.props.location}
+                />
             </List>
         );
 
@@ -218,7 +220,7 @@ class MainDrawer extends React.Component {
                     open={open}
                     onClose={this.props.closeDrawer}
                     className="options-drawer"
-                    anchor={theme.direction === "rtl" ? "right" : "left"}
+                    anchor={IsDarwin() ? "right" : "left"}
                     SlideProps={{
                         style: { top: 50 }
                     }}
@@ -245,7 +247,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         closeDrawer: () => dispatch(closeMainDrawer()),
-        openOptionsDrawer: () => dispatch(openOptionsDrawer()),
         closeMainDrawer: () => dispatch(closeMainDrawer())
     };
 };

@@ -1,4 +1,5 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import Payment from "../Models/Payment";
 
 import { paymentsSetInfo } from "./payments";
 
@@ -18,7 +19,9 @@ export function paymentsUpdate(BunqJSClient, user_id, account_id, payment_id) {
         dispatch(paymentInfoLoading());
         BunqJSClient.api.payment
             .get(user_id, account_id, payment_id)
-            .then(paymentInfo => {
+            .then(payment => {
+                const paymentInfo = new Payment(payment);
+
                 // update this item in the list and the stored data
                 dispatch(
                     paymentsSetInfo(
@@ -29,9 +32,12 @@ export function paymentsUpdate(BunqJSClient, user_id, account_id, payment_id) {
                     )
                 );
 
-                // set the payment info page data
                 dispatch(
-                    paymentInfoSetInfo(paymentInfo,  parseInt(account_id),  parseInt(payment_id))
+                    paymentInfoSetInfo(
+                        paymentInfo,
+                        parseInt(account_id),
+                        parseInt(payment_id)
+                    )
                 );
                 dispatch(paymentInfoNotLoading());
             })

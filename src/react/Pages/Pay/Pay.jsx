@@ -83,7 +83,7 @@ class Pay extends React.Component {
             selectedTargetAccountError: false,
 
             // defines which type is used
-            targetType: "IBAN"
+            targetType: "EMAIL"
         };
     }
 

@@ -34,6 +34,15 @@ export function setHideBalance(hideBalance) {
     };
 }
 
+export function setMinimizeToTray(minimizeToTray) {
+    return {
+        type: "OPTIONS_SET_HIDE_MINIMIZE_TO_TRAY",
+        payload: {
+            minimize_to_tray: minimizeToTray
+        }
+    };
+}
+
 export function toggleInactivityCheck(checkInactivity) {
     return {
         type: "OPTIONS_SET_CHECK_INACTIVITY",
@@ -48,6 +57,24 @@ export function setInactivityCheckDuration(inactivityCheckDuration) {
         type: "OPTIONS_SET_SET_INACTIVITY_DURATION",
         payload: {
             inactivity_check_duration: parseInt(inactivityCheckDuration)
+        }
+    };
+}
+
+export function overwriteSettingsLocation(location) {
+    return {
+        type: "OPTIONS_OVERWRITE_SETTINGS_LOCATION",
+        payload: {
+            location: location
+        }
+    };
+}
+
+export function loadSettingsLocation(location) {
+    return {
+        type: "OPTIONS_LOAD_SETTINGS_LOCATION",
+        payload: {
+            location: location
         }
     };
 }

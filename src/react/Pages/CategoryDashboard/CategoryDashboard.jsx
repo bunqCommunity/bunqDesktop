@@ -1,14 +1,19 @@
 import React from "react";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
-import Paper from "material-ui/Paper";
 import Grid from "material-ui/Grid";
+import Paper from "material-ui/Paper";
+import Button from "material-ui/Button";
+import Typography from "material-ui/Typography";
 
 import CategoryEditor from "../../Components/Categories/CategoryEditor";
 import CategoryChip from "../../Components/Categories/CategoryChip";
+import ImportDialog from "../../Components/ImportDialog";
+import ExportDialog from "../../Components/ExportDialog";
 import {
     removeCategory,
-    removeCategoryConnection
+    removeCategoryConnection,
+    setCategory
 } from "../../Actions/categories";
 
 const styles = {
@@ -23,7 +28,9 @@ class CategoryDashboard extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            selectedCategoryId: false
+            selectedCategoryId: false,
+            openExportDialog: false,
+            openImportDialog: false
         };
     }
 
@@ -50,6 +57,32 @@ class CategoryDashboard extends React.Component {
         this.setState({ selectedCategoryId: false });
     };
 
+    importCategories = data => {
+        if (typeof data !== "object") return false;
+
+        Object.keys(data).forEach(categoryKey => {
+            const category = data[categoryKey];
+            if (typeof category !== "object") return false;
+
+            if (!category.id) {
+                category.id = null;
+            }
+            if (!category.label) return false;
+            if (!category.color) return false;
+            if (!category.icon) return false;
+            if (!category.priority) return false;
+
+            // add this category
+            this.props.setCategory(
+                category.id,
+                category.label,
+                category.color,
+                category.icon,
+                category.priority
+            );
+        });
+    };
+
     render() {
         const chips = Object.keys(this.props.categories).map(categoryId => {
             return (
@@ -67,6 +100,51 @@ class CategoryDashboard extends React.Component {
                 <Helmet>
                     <title>{`BunqDesktop - Category Editor`}</title>
                 </Helmet>
+
+                <Grid item xs={12} md={8}>
+                    <Typography variant="title" gutterBottom>
+                        Categories
+                    </Typography>
+                </Grid>
+
+                <ExportDialog
+                    title="Export categories"
+                    closeModal={() =>
+                        this.setState({ openExportDialog: false })}
+                    open={this.state.openExportDialog}
+                    object={this.props.categories}
+                />
+
+                <ImportDialog
+                    title="Import categories"
+                    closeModal={() =>
+                        this.setState({ openImportDialog: false })}
+                    importData={this.importCategories}
+                    open={this.state.openImportDialog}
+                />
+
+                <Grid item xs={6} md={2}>
+                    <Button
+                        variant="raised"
+                        color="primary"
+                        style={{ width: "100%" }}
+                        onClick={() =>
+                            this.setState({ openExportDialog: true })}
+                    >
+                        Export
+                    </Button>
+                </Grid>
+                <Grid item xs={6} md={2}>
+                    <Button
+                        variant="raised"
+                        color="primary"
+                        style={{ width: "100%" }}
+                        onClick={() =>
+                            this.setState({ openImportDialog: true })}
+                    >
+                        Import
+                    </Button>
+                </Grid>
 
                 <Grid item xs={12}>
                     <Grid container spacing={16}>
@@ -103,7 +181,8 @@ const mapDispatchToProps = dispatch => {
     return {
         removeCategory: (...params) => dispatch(removeCategory(...params)),
         removeCategoryConnection: (...params) =>
-            dispatch(removeCategoryConnection(...params))
+            dispatch(removeCategoryConnection(...params)),
+        setCategory: (...params) => dispatch(setCategory(...params))
     };
 };
 

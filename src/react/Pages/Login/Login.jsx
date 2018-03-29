@@ -7,6 +7,7 @@ import IconButton from "material-ui/IconButton";
 import Input from "material-ui/Input";
 import Button from "material-ui/Button";
 import Switch from "material-ui/Switch";
+import Collapse from "material-ui/transitions/Collapse";
 import { FormControlLabel } from "material-ui/Form";
 import Card, { CardContent } from "material-ui/Card";
 import { CircularProgress } from "material-ui/Progress";
@@ -42,6 +43,11 @@ const styles = {
     environmentToggle: {
         marginTop: 10
     },
+    wrapperContainer: {
+        height: "100%"
+    },
+    qrCode: { width: 200, height: 200 },
+    optionsButton: { marginTop: 12 },
     smallAvatar: {
         width: 50,
         height: 50
@@ -60,9 +66,13 @@ class Login extends React.Component {
             deviceNameValid: true,
             attemptingLogin: false,
 
+            openOptions: false,
+
+            loadingQrCode: false,
             requestQrCodeBase64: false,
             requestUuid: false
         };
+        this.displayQrCodeDelay = null;
         this.checkerInterval = null;
     }
 
@@ -82,10 +92,30 @@ class Login extends React.Component {
 
         this.checkForSingleUser();
         this.validateInputs(this.props.apiKey, this.props.deviceName);
+
+        this.displayQrCodeDelay = setTimeout(() => {
+            if (
+                // currently no qr code set/being loaded
+                this.state.loadingQrCode === false &&
+                this.state.requestQrCodeBase64 === false &&
+                //nothing is being loaded/set
+                this.props.apiKey === false &&
+                this.props.userLoading === false &&
+                this.props.derivedPassword !== false &&
+                this.props.registrationLoading === false
+            ) {
+                this.displayQrCode();
+            }
+        }, 500);
     }
 
     componentDidUpdate() {
         this.checkForSingleUser();
+    }
+
+    componentWillUnmount() {
+        if (this.checkerInterval) clearInterval(this.checkerInterval);
+        if (this.displayQrCodeDelay) clearTimeout(this.displayQrCodeDelay);
     }
 
     /**
@@ -135,19 +165,33 @@ class Login extends React.Component {
         }
     };
 
-    displayQrCode = () => {
-        this.props.BunqJSClient
-            .createCredentials()
-            .then(({ uuid, status, qr_base64 }) => {
-                this.setState({
-                    requestQrCodeBase64: qr_base64,
-                    requestUuid: uuid
-                });
+    toggleOptionVisibility = () => {
+        this.setState({ openOptions: !this.state.openOptions });
+    };
 
-                // start checking if the code was scanned
-                this.checkForScanEvent();
-            })
-            .catch(error => this.props.handleBunqError(error));
+    displayQrCode = () => {
+        if (this.state.loadingQrCode === false) {
+            this.setState({ loadingQrCode: true });
+
+            this.props.BunqJSClient
+                .createCredentials()
+                .then(({ uuid, status, qr_base64 }) => {
+                    this.setState({
+                        loadingQrCode: false,
+                        requestQrCodeBase64: qr_base64,
+                        requestUuid: uuid
+                    });
+
+                    // start checking if the code was scanned
+                    this.checkForScanEvent();
+                })
+                .catch(error => {
+                    this.setState({
+                        loadingQrCode: false
+                    });
+                    this.props.handleBunqError(error);
+                });
+        }
     };
 
     checkForScanEvent = () => {
@@ -163,10 +207,22 @@ class Login extends React.Component {
                                     requestQrCodeBase64: false,
                                     requestUuid: false
                                 },
+                                // validate the new data
                                 () =>
                                     this.validateInputs(
                                         this.state.apiKey,
-                                        this.state.deviceName
+                                        this.state.deviceName,
+                                        // trigger callback and check we can auto-login
+                                        () => {
+                                            // if options are open or sandbox mode is set we don't auto-login
+                                            if (
+                                                this.state.sandboxMode ===
+                                                    false &&
+                                                this.state.openOptions === false
+                                            ) {
+                                                this.setRegistration();
+                                            }
+                                        }
                                     )
                             );
 
@@ -207,14 +263,17 @@ class Login extends React.Component {
         this.setState({ sandboxMode: checked });
     };
 
-    validateInputs = (apiKey, deviceName) => {
-        this.setState({
-            apiKeyValid: apiKey !== false && apiKey.length === 64,
-            deviceNameValid:
-                deviceName !== false &&
-                deviceName.length >= 1 &&
-                deviceName.length <= 32
-        });
+    validateInputs = (apiKey, deviceName, cb = () => {}) => {
+        this.setState(
+            {
+                apiKeyValid: apiKey !== false && apiKey.length === 64,
+                deviceNameValid:
+                    deviceName !== false &&
+                    deviceName.length >= 1 &&
+                    deviceName.length <= 32
+            },
+            cb
+        );
     };
 
     render() {
@@ -262,7 +321,7 @@ class Login extends React.Component {
 
         const apiKeyContent =
             this.props.apiKey === false ? (
-                <CardContent>
+                <CardContent style={{ textAlign: "center" }}>
                     <div style={{ textAlign: "center" }}>
                         {this.state.requestQrCodeBase64 === false ? (
                             <IconButton onClick={this.displayQrCode}>
@@ -272,39 +331,20 @@ class Login extends React.Component {
                             <img
                                 src={`data:image/png;base64, ${this.state
                                     .requestQrCodeBase64}`}
-                                style={{ width: 200, height: 200, margin: 16 }}
+                                style={styles.qrCode}
                             />
                         )}
+                        <Typography variant="body2" style={{ margin: 0 }}>
+                            Scan the QR code with the bunq app to begin!
+                        </Typography>
                     </div>
 
                     <Input
-                        style={styles.apiInput}
-                        error={!this.state.apiKeyValid}
-                        placeholder="API Key"
-                        label="API Key"
-                        hint="Your personal API key"
-                        onChange={this.handleKeyChange}
-                        value={this.state.apiKey}
-                        disabled={
-                            // unchanged api key
-                            this.state.apiKey === this.props.apiKey
-                        }
-                        onKeyPress={ev => {
-                            if (
-                                ev.key === "Enter" &&
-                                buttonDisabled === false
-                            ) {
-                                this.setRegistration();
-                                ev.preventDefault();
-                            }
-                        }}
-                    />
-                    <Input
+                        autoFocus
                         style={styles.apiInput}
                         error={!this.state.deviceNameValid}
                         placeholder="Device Name"
                         label="Device Name"
-                        hint="Device name so you can recognize it later"
                         onChange={this.handleNameChange}
                         value={this.state.deviceName}
                         disabled={
@@ -321,37 +361,69 @@ class Login extends React.Component {
                             }
                         }}
                     />
-                    <FormControlLabel
-                        style={styles.environmentToggle}
-                        label="Enable sandbox mode?"
-                        control={
-                            <Switch
-                                checked={this.state.sandboxMode}
-                                onChange={this.handleCheckboxChange}
-                                aria-label="enable or disable sandbox mode"
-                            />
-                        }
-                    />
 
                     <Button
-                        variant="raised"
-                        disabled={buttonDisabled}
-                        color={"primary"}
-                        style={styles.loginButton}
-                        onClick={this.setRegistration}
+                        onClick={this.toggleOptionVisibility}
+                        style={styles.optionsButton}
                     >
-                        Set API Key
+                        {this.state.openOptions ? (
+                            "Less options"
+                        ) : (
+                            "More options"
+                        )}
                     </Button>
+
+                    <Collapse in={this.state.openOptions}>
+                        <Input
+                            style={styles.apiInput}
+                            error={!this.state.apiKeyValid}
+                            placeholder="API Key"
+                            label="API Key"
+                            hint="Your personal API key"
+                            onChange={this.handleKeyChange}
+                            value={this.state.apiKey}
+                            disabled={
+                                // unchanged api key
+                                this.state.apiKey === this.props.apiKey
+                            }
+                            onKeyPress={ev => {
+                                if (
+                                    ev.key === "Enter" &&
+                                    buttonDisabled === false
+                                ) {
+                                    this.setRegistration();
+                                    ev.preventDefault();
+                                }
+                            }}
+                        />
+                        <FormControlLabel
+                            style={styles.environmentToggle}
+                            label="Enable sandbox mode?"
+                            control={
+                                <Switch
+                                    checked={this.state.sandboxMode}
+                                    onChange={this.handleCheckboxChange}
+                                    aria-label="enable or disable sandbox mode"
+                                />
+                            }
+                        />
+
+                        <Button
+                            variant="raised"
+                            disabled={buttonDisabled}
+                            color={"primary"}
+                            style={styles.loginButton}
+                            onClick={this.setRegistration}
+                        >
+                            Set API Key
+                        </Button>
+                    </Collapse>
                 </CardContent>
             ) : (
                 <CardContent>
                     <Typography variant="headline" component="h2">
                         You're logged in!
                     </Typography>
-                    {/*<Typography variant="caption">*/}
-                    {/*Click one of the accounts in the list to get started or*/}
-                    {/*logout to change the key or environment.*/}
-                    {/*</Typography>*/}
                     <Button
                         variant="raised"
                         color={"secondary"}
@@ -377,13 +449,29 @@ class Login extends React.Component {
         );
 
         return (
-            <Grid container spacing={16} justify={"center"}>
+            <Grid
+                container
+                spacing={16}
+                justify={"center"}
+                alignItems={"center"}
+                style={styles.wrapperContainer}
+            >
                 <Helmet>
                     <title>{`BunqDesktop - Login`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={10} md={8} lg={6}>
-                    <Card>{cardContent}</Card>
+                <Grid
+                    item
+                    xs={12}
+                    sm={10}
+                    md={6}
+                    lg={4}
+                    style={{
+                        display: "flex",
+                        justifyContent: "center"
+                    }}
+                >
+                    <Card style={{ width: 250 }}>{cardContent}</Card>
                 </Grid>
                 <Grid item xs={12} />
 
