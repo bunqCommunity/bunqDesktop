@@ -42,19 +42,20 @@ const getWindowUrl = fileName => {
 
 // stores the file location of our settings file
 const getSettingsLocation = () => {
-    console.log("getSettingsLocation");
-
-    let settingsFolder = path.dirname(SETTINGS_LOCATION_FILE);
-
     // check if the parent folder exists
-    if (fs.existsSync(settingsFolder)) {
-        // check if the settings lock file exists
-        if (!fs.existsSync(SETTINGS_LOCATION_FILE)) {
-            // create a default file
-            fs.writeFileSync(SETTINGS_LOCATION_FILE, DEFAULT_SETTINGS_LOCATION);
-        }
-        // return the lock file contents
-        return fs.readFileSync(SETTINGS_LOCATION_FILE).toString();
+    if (fs.existsSync(path.dirname(SETTINGS_LOCATION_FILE))) {
+        try {
+            // check if the settings lock file exists
+            if (!fs.existsSync(SETTINGS_LOCATION_FILE)) {
+                // create a default file
+                fs.writeFileSync(
+                    SETTINGS_LOCATION_FILE,
+                    DEFAULT_SETTINGS_LOCATION
+                );
+            }
+            // return the lock file contents
+            return fs.readFileSync(SETTINGS_LOCATION_FILE).toString();
+        } catch (ex) {}
     }
 
     // create the settings lock file
