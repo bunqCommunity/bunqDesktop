@@ -188,6 +188,12 @@ export default class RuleCollection {
         return false;
     }
 
+    /**
+     * Check if a field or custom field matches the given value
+     * @param {ValueRule} rule
+     * @param {EventObject} event
+     * @returns {boolean}
+     */
     private checkValueRule(rule: ValueRule, event: EventObject): boolean {
         let dataToCheck = [];
         switch (rule.field) {
