@@ -72,7 +72,8 @@ class RulesPage extends React.Component {
                         removeCategoryCollection={this.props.removeCategoryRule}
                     />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={12} md={2} />
+                <Grid item xs={12} md={8}>
                     <RuleCollectionPreview
                         ruleCollection={this.state.previewRuleCollection}
                         ruleCollectionUpdated={this.state.previewUpdated}

@@ -1,17 +1,15 @@
 import * as React from "react";
 import Paper from "material-ui/Paper";
 import Button from "material-ui/Button";
-import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
-import RuleCollection, {
-    EventObject,
-    EventObjectResult
-} from "../../Types/RuleCollection";
+import Switch from "material-ui/Switch";
+import { FormControlLabel } from "material-ui/Form";
+import List from "material-ui/List";
+import RuleCollection, { EventObjectResult } from "../../Types/RuleCollection";
+
+import RuleCollectionPreviewItem from "./RuleCollectionPreviewItem";
 
 // import typed worker
 const RuleCollectionCheckWorker: any = require("worker-loader!../../WebWorkers/rule_collection_check.worker.ts");
-
-import CheckIcon from "material-ui-icons/Check";
-import CrossIcon from "material-ui-icons/Cancel";
 
 const styles = {
     toggleVisibilityButton: {
@@ -26,7 +24,8 @@ const styles = {
 class RuleCollectionPreview extends React.Component<any, any> {
     state = {
         visible: false,
-        eventResults: []
+        eventResults: [],
+        showAll: false
     };
     worker: any;
 
@@ -94,28 +93,32 @@ class RuleCollectionPreview extends React.Component<any, any> {
             if (ruleCollection !== null) {
                 const items: any[] = this.state.eventResults.map(
                     (event: EventObjectResult, index: any) => {
-                        return (
-                            <ListItem key={index}>
-                                <ListItemText
-                                    primary={`Matches: ${event.matches
-                                        ? "yes"
-                                        : "no"}`}
-                                    secondary={`Type: ${event.type}`}
+                        if (this.state.showAll || event.matches) {
+                            return (
+                                <RuleCollectionPreviewItem
+                                    event={event}
+                                    key={index}
                                 />
-                                <ListItemIcon>
-                                    {event.matches ? (
-                                        <CheckIcon />
-                                    ) : (
-                                        <CrossIcon />
-                                    )}
-                                </ListItemIcon>
-                            </ListItem>
-                        );
+                            );
+                        }
+                        return null;
                     }
                 );
 
                 previewContent = (
                     <Paper style={styles.paper}>
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={this.state.showAll}
+                                    onChange={() =>
+                                        this.setState({
+                                            showAll: !this.state.showAll
+                                        })}
+                                />
+                            }
+                            label="Show all events, not just the matching ones"
+                        />
                         <List>{items}</List>
                     </Paper>
                 );

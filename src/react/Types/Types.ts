@@ -72,12 +72,24 @@ export type BunqMeTabEntry = {
 export type BunqMeTabResultInquiry = {
     payment: Payment;
     bunq_me_tab_id: number;
-}
+};
 
 export type ExtendedAlias = Alias & {
     public_nick_name: string;
     display_name: string;
     country: string;
+};
+
+export type EventTypes =
+    | "Payment"
+    | "BunqMeTab"
+    | "RequestInquiry"
+    | "RequestResponse"
+    | "MasterCardAction";
+
+export type EventObject = {
+    type: EventTypes;
+    item: any;
 };
 
 export type Geolocation = {

@@ -3,6 +3,7 @@ import TransactionAmountRule from "./Rules/TransactionAmountRule";
 import ValueRule from "./Rules/ValueRule";
 import TypeRule from "./Rules/TypeRule";
 import { generateGUID } from "../Helpers/Utils";
+import { RuleTypes, EventObject, EventTypes } from "./Types";
 
 export type RuleCollectionMatchType = "OR" | "AND";
 
@@ -11,20 +12,19 @@ export type ValidationResult = {
     message: string;
 };
 
-export type EventTypes =
-    | "Payment"
-    | "BunqMeTab"
-    | "RequestInquiry"
-    | "RequestResponse"
-    | "MasterCardAction";
-export type EventObject = {
-    type: EventTypes;
-    item: any;
+export type EventObjectMatchingRule = {
+    rule: Rule;
+    matched: boolean;
 };
 export type EventObjectResult = {
+    item: any;
     type: EventTypes;
     matches: boolean;
-    item: any;
+    matchingRules: EventObjectMatchingRule[];
+};
+export type RuleCollectionCheckRulesResult = {
+    ruleResult: boolean;
+    matchedRules: EventObjectMatchingRule[];
 };
 
 export default class RuleCollection {
@@ -109,20 +109,26 @@ export default class RuleCollection {
 
         events.forEach((event: EventObject) => {
             let matches = false;
+            let matchingRules: EventObjectMatchingRule[] = [];
+
             if (ruleCount === 0) {
-                // if rule count is 0 it automatically matches
-                matches = true;
-            } else if (this.checkRules(event)) {
-                matches = true;
+                // if rule count is 0 it automatically matches nothing
+                matches = false;
+            } else {
+                const { ruleResult, matchedRules } = this.checkRules(event);
+                matches = ruleResult;
+                matchingRules = matchedRules;
             }
 
             // add this event to the resulting events list
             resultingEvents.push({
+                item: event.item,
                 type: event.type,
                 matches: matches,
-                item: event.item
+                matchingRules: matchingRules
             });
         });
+
         return resultingEvents;
     }
 
@@ -131,15 +137,36 @@ export default class RuleCollection {
      * @param {EventObject} event
      * @returns {boolean}
      */
-    public checkRules(event: EventObject): boolean {
+    public checkRules(event: EventObject): RuleCollectionCheckRulesResult {
+        const matchingRules: EventObjectMatchingRule[] = [];
+        let checkRuleResult = false;
+
         if (this.matchType === "AND") {
             // all rules should match so we return using "every" which returns true of all are true
-            return this.rules.every((rule: Rule) =>
-                this.checkRule(rule, event)
-            );
+            checkRuleResult = this.rules.every((rule: Rule) => {
+                const ruleResult = this.checkRule(rule, event);
+                matchingRules.push({
+                    rule: rule,
+                    matched: ruleResult
+                });
+                return ruleResult;
+            });
+        } else {
+            // only one has to match so we return using "some" which stops on the first match
+            checkRuleResult = this.rules.some((rule: Rule) => {
+                const ruleResult = this.checkRule(rule, event);
+                matchingRules.push({
+                    rule: rule,
+                    matched: ruleResult
+                });
+                return ruleResult;
+            });
         }
-        // only one has to match so we return using "some" which stops on the first match
-        return this.rules.some((rule: Rule) => this.checkRule(rule, event));
+
+        return {
+            ruleResult: checkRuleResult,
+            matchedRules: matchingRules
+        };
     }
 
     /**
@@ -162,11 +189,10 @@ export default class RuleCollection {
     }
 
     private checkValueRule(rule: ValueRule, event: EventObject): boolean {
-
         let dataToCheck = [];
         switch (rule.field) {
             case "DESCRIPTION":
-                if(event.item.description){
+                if (event.item.description) {
                     dataToCheck.push(event.item.description);
                 }
                 break;
@@ -182,8 +208,9 @@ export default class RuleCollection {
                         const ibanCounterparty = event.item.alias.iban;
 
                         // don't push invalid/missing iban values
-                        if(ibanAlias) dataToCheck.push(ibanAlias);
-                        if(ibanCounterparty) dataToCheck.push(ibanCounterparty);
+                        if (ibanAlias) dataToCheck.push(ibanAlias);
+                        if (ibanCounterparty)
+                            dataToCheck.push(ibanCounterparty);
                         break;
 
                     case "RequestResponse":
