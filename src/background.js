@@ -17,7 +17,7 @@ import env from "./env";
 
 const userDataPath = app.getPath("userData");
 const SETTINGS_LOCATION_FILE = path.normalize(
-    `${userDataPath}${path.sep}..${path.sep}BunqDesktop${path.sep}${path.sep}SETTINGS_LOCATION`
+    `${userDataPath}${path.sep}..${path.sep}BunqDesktop${path.sep}SETTINGS_LOCATION`
 );
 const DEFAULT_SETTINGS_LOCATION = `${userDataPath}${path.sep}settings.json`;
 
