@@ -159,7 +159,7 @@ class Exports extends React.Component {
             }
             const fileName = `bunq-export.${exportInfo.date_start}_${exportInfo.date_end}_${exportInfo.id}${fileExtension}`;
 
-            this.props.BunqJSClient.api.customStatementExportContent
+            this.props.BunqJSClient.api.customerStatementExportContent
                 .list(
                     this.props.user.id,
                     this.props.accountsAccountId,

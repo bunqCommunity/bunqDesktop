@@ -14,7 +14,7 @@ export function exportNew(
     return dispatch => {
         dispatch(exportNewLoading());
 
-        BunqJSClient.api.customStatementExport
+        BunqJSClient.api.customerStatementExport
             .post(
                 user_id,
                 account_id,
