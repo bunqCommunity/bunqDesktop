@@ -38,7 +38,7 @@ Download the latest version of BunqDesktop from the [GitHub releases page.](http
 ## Development
 We use [yarn](https://yarnpkg.com/en/) for package management and the following global packages:
 ```bash
-$ yarn global add cross-env webpack gulp
+$ yarn global add webpack gulp
 ```
 Clone this project and install its dependencies.
 ```bash
