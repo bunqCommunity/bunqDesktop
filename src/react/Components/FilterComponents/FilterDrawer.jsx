@@ -111,6 +111,8 @@ class FilterDrawer extends React.Component {
         this.props.clearPaymentFilterType();
         this.props.clearBunqMeTabFilterType();
         this.props.clearRequestFilterType();
+        this.props.clearFromDateFilter();
+        this.props.clearToDateFilter();
     };
 
     handlePaymentTypeChange = event => {

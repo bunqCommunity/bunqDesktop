@@ -53,13 +53,13 @@ const bunqMeTabMapper = (
                 date: new Date(bunqMeTab.BunqMeTab.created),
                 change: 0,
                 type: "bunqMeTab",
-                categories: []
-                // categories: CategoryHelper(
-                //     categories,
-                //     categoryConnections,
-                //     "BunqMeTab",
-                //     bunqMeTab.BunqMeTab.id
-                // )
+                // categories: []
+                categories: CategoryHelper(
+                    categories,
+                    categoryConnections,
+                    "BunqMeTab",
+                    bunqMeTab.BunqMeTab.id
+                )
             });
         });
     return data;
@@ -79,13 +79,13 @@ const requestInquiryMapper = (
                 date: new Date(requestInquiry.RequestInquiry.created),
                 change: 0,
                 type: "requestInquiry",
-                categories: []
-                // categories: CategoryHelper(
-                //     categories,
-                //     categoryConnections,
-                //     "RequestInquiry",
-                //     requestInquiry.RequestInquiry.id
-                // )
+                // categories: []
+                categories: CategoryHelper(
+                    categories,
+                    categoryConnections,
+                    "RequestInquiry",
+                    requestInquiry.RequestInquiry.id
+                )
             });
         });
     return data;
@@ -105,13 +105,13 @@ const requestResponseMapper = (
                 date: new Date(requestResponse.RequestResponse.created),
                 change: 0,
                 type: "requestResponse",
-                categories: []
-                // categories: CategoryHelper(
-                //     categories,
-                //     categoryConnections,
-                //     "RequestResponse",
-                //     requestResponse.RequestResponse.id
-                // )
+                // categories: []
+                categories: CategoryHelper(
+                    categories,
+                    categoryConnections,
+                    "RequestResponse",
+                    requestResponse.RequestResponse.id
+                )
             });
         });
     return data;
@@ -132,13 +132,13 @@ const paymentMapper = (
             date: new Date(paymentInfo.created),
             change: -change,
             type: "payment",
-            categories: []
-            // categories: CategoryHelper(
-            //     categories,
-            //     categoryConnections,
-            //     "Payment",
-            //     paymentInfo.id
-            // )
+            // categories: []
+            categories: CategoryHelper(
+                categories,
+                categoryConnections,
+                "Payment",
+                paymentInfo.id
+            )
         });
     });
     return data;
@@ -173,13 +173,13 @@ const masterCardActionMapper = (
                     date: new Date(masterCardInfo.updated),
                     change: change,
                     type: "masterCardAction",
-                    categories: []
-                    // categories: CategoryHelper(
-                    //     categories,
-                    //     categoryConnections,
-                    //     "MasterCardAction",
-                    //     masterCardInfo.id
-                    // )
+                    // categories: []
+                    categories: CategoryHelper(
+                        categories,
+                        categoryConnections,
+                        "MasterCardAction",
+                        masterCardInfo.id
+                    )
                 });
             }
         });
@@ -327,6 +327,8 @@ const getData = (
     let balanceHistoryData = [];
     // total events history
     let eventCountHistory = [];
+    // total category history
+    let categoryCountHistory = {};
     // individual count history
     let paymentCountHistory = [];
     let masterCardActionCountHistory = [];
@@ -351,9 +353,17 @@ const getData = (
         }
     });
 
+    // only create this object once
+    const categoryList = {};
+    Object.keys(categories).forEach(categoryKey => {
+        categoryList[categoryKey] = 0;
+        categoryCountHistory[categoryKey] = [];
+    });
+
     // loop through all the days
     Object.keys(dataCollection).map(label => {
         const dataItem = dataCollection[label];
+        const categoryInfo = Object.assign({}, categoryList);
 
         const timescaleData = dataItem.data;
         const timescaleDate = dataItem.date;
@@ -370,6 +380,10 @@ const getData = (
         timescaleData.map(item => {
             // increment this type to keep track of the different types
             timescaleInfo[item.type]++;
+
+            // increment the category count for this timescale
+            item.categories.forEach(category => categoryInfo[category.id]++);
+
             // calculate change
             timescaleChange = timescaleChange + item.change;
         });
@@ -409,6 +423,13 @@ const getData = (
             ) {
                 // only push this data and label if they are within the range
 
+                // update the category counts for each category
+                Object.keys(categoryInfo).forEach(categoryKey => {
+                    categoryCountHistory[categoryKey].push(
+                        categoryInfo[categoryKey]
+                    );
+                });
+
                 // update balance and push it to the list
                 balanceHistoryData.push(roundMoney(currentBalance));
                 // count the events for this timescale
@@ -431,6 +452,13 @@ const getData = (
         currentBalance = currentBalance + timescaleChange;
     });
 
+    // update the category counts for each category
+    Object.keys(categoryCountHistory).forEach(categoryKey => {
+        categoryCountHistory[categoryKey] = categoryCountHistory[
+            categoryKey
+        ].reverse();
+    });
+
     return {
         // x axis labels
         labels: labelData.reverse(),
@@ -438,6 +466,8 @@ const getData = (
         balanceHistoryData: balanceHistoryData.reverse(),
         // total event count
         eventCountHistory: eventCountHistory.reverse(),
+        // total category count
+        categoryCountHistory: categoryCountHistory,
         // individual history count
         masterCardActionHistory: masterCardActionCountHistory.reverse(),
         requestResponseHistory: requestResponseCountHistory.reverse(),

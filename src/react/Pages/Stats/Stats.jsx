@@ -14,7 +14,7 @@ import ClearBtn from "../../Components/FilterComponents/ClearFilter";
 import FilterDrawer from "../../Components/FilterComponents/FilterDrawer";
 import StatsWorker from "../../WebWorkers/stats.worker";
 import PieChart from "./PieChart";
-import BalanceHistoryChart from "./BalanceHistoryChart";
+import CategoryHistoryChart from "./CategoryHistoryChart";
 import EventTypeHistoryChart from "./EventTypeHistoryChart";
 
 class Stats extends React.Component {
@@ -81,7 +81,9 @@ class Stats extends React.Component {
         this.worker.postMessage({
             // all endpoints
             payments: props.payments.map(item => item.toJSON()),
-            masterCardActions: props.masterCardActions.map(item => item.toJSON()),
+            masterCardActions: props.masterCardActions.map(item =>
+                item.toJSON()
+            ),
             requestInquiries: props.requestInquiries.map(item => item.toJSON()),
             requestResponses: props.requestResponses.map(item => item.toJSON()),
             bunqMeTabs: props.bunqMeTabs,
@@ -197,6 +199,7 @@ class Stats extends React.Component {
                 : {
                       labels: [],
                       balanceHistoryData: [],
+                      categoryCountHistory: {},
                       eventCountHistory: [],
                       masterCardActionHistory: [],
                       requestInquiryHistory: [],
@@ -205,31 +208,37 @@ class Stats extends React.Component {
                       paymentHistory: []
                   };
 
-        let bigCharts = [
-            <Grid item xs={12} key={"balancechart"}>
-                <Paper>
-                    <BalanceHistoryChart
-                        height={500}
-                        labels={data.labels}
-                        balanceHistoryData={data.balanceHistoryData}
-                        eventCountHistory={data.eventCountHistory}
-                    />
-                </Paper>
-            </Grid>,
-            <Grid item xs={12} key={"eventschart"}>
-                <Paper>
-                    <EventTypeHistoryChart
-                        height={500}
-                        labels={data.labels}
-                        masterCardActionHistory={data.masterCardActionHistory}
-                        requestInquiryHistory={data.requestInquiryHistory}
-                        requestResponseHistory={data.requestResponseHistory}
-                        bunqMeTabHistory={data.bunqMeTabHistory}
-                        paymentHistory={data.paymentHistory}
-                    />
-                </Paper>
-            </Grid>
-        ];
+        console.log(data.categoryCountHistory);
+
+        let bigCharts = (
+            <React.Fragment>
+                <Grid item xs={12}>
+                    <Paper>
+                        <EventTypeHistoryChart
+                            height={500}
+                            labels={data.labels}
+                            masterCardActionHistory={
+                                data.masterCardActionHistory
+                            }
+                            requestInquiryHistory={data.requestInquiryHistory}
+                            requestResponseHistory={data.requestResponseHistory}
+                            bunqMeTabHistory={data.bunqMeTabHistory}
+                            paymentHistory={data.paymentHistory}
+                        />
+                    </Paper>
+                </Grid>
+                {/*<Grid item xs={12}>*/}
+                    {/*<Paper>*/}
+                        {/*<CategoryHistoryChart*/}
+                            {/*height={500}*/}
+                            {/*labels={data.labels}*/}
+                            {/*categories={this.props.categories}*/}
+                            {/*categoryCountHistory={data.categoryCountHistory}*/}
+                        {/*/>*/}
+                    {/*</Paper>*/}
+                {/*</Grid>*/}
+            </React.Fragment>
+        );
 
         return (
             <Grid container spacing={16}>
