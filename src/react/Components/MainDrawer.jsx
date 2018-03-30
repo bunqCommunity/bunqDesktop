@@ -4,7 +4,6 @@ import { withStyles } from "material-ui/styles";
 import PropTypes from "prop-types";
 import Drawer from "material-ui/Drawer";
 import Hidden from "material-ui/Hidden";
-import Typography from "material-ui/Typography";
 import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
 import List, { ListItem, ListItemText, ListItemIcon } from "material-ui/List";
@@ -17,6 +16,7 @@ import ShareIcon from "material-ui-icons/Share";
 import TimeLineIcon from "material-ui-icons/Timeline";
 import CardIcon from "material-ui-icons/CreditCard";
 import Bookmark from "material-ui-icons/Bookmark";
+import FileUpload from "material-ui-icons/FileUpload";
 
 import NavLink from "./Routing/NavLink";
 import ListItemWrapper from "./ListItemWrapper";
@@ -130,6 +130,12 @@ class MainDrawer extends React.Component {
                       to="/stats"
                       icon={TimeLineIcon}
                       text="Stats"
+                      location={this.props.location}
+                  />,
+                  <ListItemWrapper
+                      to="/exports"
+                      icon={FileUpload}
+                      text="Exports"
                       location={this.props.location}
                   />,
                   <ListItemWrapper

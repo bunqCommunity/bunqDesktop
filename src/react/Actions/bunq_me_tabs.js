@@ -36,7 +36,7 @@ export function loadStoredBunqMeTabs(BunqJSClient) {
                 }
             })
             .catch(error => {
-                console.log(error);});
+            });
     };
 }
 
