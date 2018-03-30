@@ -100,6 +100,7 @@
         "babel-preset-stage-0": "^6.24.1",
         "chart.js": "^2.7.1",
         "clean-webpack-plugin": "^0.1.17",
+        "cross-env": "^5.1.4",
         "css-loader": "^0.28.11",
         "date-fns": "^2.0.0-alpha.7",
         "electron": "^1.8.4",
