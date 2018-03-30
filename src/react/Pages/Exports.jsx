@@ -5,20 +5,36 @@ import Helmet from "react-helmet";
 import DatePicker from "material-ui-pickers/DatePicker/index.js";
 import Grid from "material-ui/Grid";
 import Button from "material-ui/Button";
+import Avatar from "material-ui/Avatar";
 import IconButton from "material-ui/IconButton";
-import Input, { InputLabel } from "material-ui/Input";
 import { MenuItem } from "material-ui/Menu";
 import { FormControl } from "material-ui/Form";
-import Select from "material-ui/Select";
-import Paper from "material-ui/Paper";
 import Icon from "material-ui/Icon";
+import Paper from "material-ui/Paper";
+import Select from "material-ui/Select";
+import { LinearProgress, CircularProgress } from "material-ui/Progress";
+import Input, { InputLabel } from "material-ui/Input";
+import List, { ListItem, ListItemText } from "material-ui/List";
 import InputAdornment from "material-ui/Input/InputAdornment";
 import Typography from "material-ui/Typography";
 
-import ArrowBackIcon from "material-ui-icons/ArrowBack";
+import FolderIcon from "material-ui-icons/Folder";
+import RefreshIcon from "material-ui-icons/Refresh";
+
+import { shell } from "electron";
+const remote = require("electron").remote;
+const app = remote.app;
+const fs = remote.require("fs");
+const path = remote.require("path");
+
+import AccountList from "../Components/AccountList/AccountList";
+import Logger from "../Helpers/Logger";
+import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import { humanReadableDate } from "../Helpers/Utils";
 
 import { openSnackbar } from "../Actions/snackbar";
-import { exportNew } from "../Actions/export";
+import { exportNew } from "../Actions/export_new";
+import { exportInfoUpdate } from "../Actions/exports";
 
 const styles = {
     selectField: {
@@ -34,7 +50,8 @@ const styles = {
         width: "100%"
     },
     paper: {
-        padding: 24
+        padding: 24,
+        marginBottom: 16
     }
 };
 
@@ -44,29 +61,59 @@ class Exports extends React.Component {
         this.state = {
             exportType: "CSV",
             regionalFormat: "EUROPEAN",
-            dateToFilter: new Date(),
-            dateFromFilter: subMonths(new Date(), 1)
+            dateTo: new Date(),
+            dateFrom: subMonths(new Date(), 1),
+
+            exportContentLoading: false
         };
     }
 
+    componentDidMount() {
+        this.updateExports(this.props.user.id, this.props.accountsAccountId);
+    }
+
+    componentDidUpdate(oldProps) {
+        // loading state from creating a new export changed to false
+        if (
+            this.props.exportNewLoading === false &&
+            this.props.exportNewLoading !== oldProps.exportNewLoading
+        ) {
+            this.updateExports(
+                this.props.user.id,
+                this.props.accountsAccountId
+            );
+        }
+    }
+
+    updateExports = (userId, accountId) => {
+        if (!this.props.initialBunqConnect) {
+            return;
+        }
+        this.props.exportInfoUpdate(userId, accountId);
+    };
+
+    refreshClick = event => {
+        this.updateExports(this.props.user.id, this.props.accountsAccountId);
+    };
+
     handleDateFromChange = date => {
         this.setState({
-            dateFromFilter: date
+            dateFrom: date
         });
     };
     handleDateToChange = date => {
         this.setState({
-            dateToFilter: date
+            dateTo: date
         });
     };
     clearDateFrom = event => {
         this.setState({
-            dateFromFilter: subMonths(new Date(), 1)
+            dateFrom: subMonths(new Date(), 1)
         });
     };
     clearDateTo = event => {
         this.setState({
-            dateToFilter: new Date()
+            dateTo: new Date()
         });
     };
 
@@ -82,31 +129,121 @@ class Exports extends React.Component {
     };
 
     createNew = event => {
-        this.props.exportNew();
+        this.props.exportNew(
+            this.props.user.id,
+            this.props.accountsAccountId,
+            this.state.exportType,
+            this.state.dateFrom,
+            this.state.dateTo,
+            {
+                regional_format: this.state.regionalFormat
+            }
+        );
+    };
+
+    loadExportContent = exportInfo => event => {
+        if (!this.state.exportContentLoading) {
+            this.setState({ exportContentLoading: true });
+
+            let fileExtension = "";
+            switch (exportInfo.statement_format) {
+                case "CSV":
+                    fileExtension = ".csv";
+                    break;
+                case "MT940":
+                    fileExtension = ".txt";
+                    break;
+                case "PDF":
+                    fileExtension = ".pdf";
+                    break;
+            }
+            const fileName = `bunq-export.${exportInfo.date_start}_${exportInfo.date_end}_${exportInfo.id}${fileExtension}`;
+
+            this.props.BunqJSClient.api.customStatementExportContent
+                .list(
+                    this.props.user.id,
+                    this.props.accountsAccountId,
+                    exportInfo.id
+                )
+                .then(exportContent => {
+                    // store the file in the downloads folder
+                    this.downloadFile(exportContent, fileName);
+                    this.setState({ exportContentLoading: false });
+                })
+                .catch(error => {
+                    this.setState({ exportContentLoading: false });
+                    BunqErrorHandler(
+                        dispatch,
+                        error,
+                        "We failed to load the export content for this monetary account"
+                    );
+                });
+        }
+    };
+
+    downloadFile = (content, fileName) => {
+        const downloadDir = app.getPath("downloads");
+        const targetFile = `${downloadDir}${path.sep}${fileName}`;
+
+        try {
+            fs.writeFileSync(targetFile, content);
+
+            this.props.openSnackbar(`Stored file at ${targetFile}`);
+        } catch (ex) {
+            Logger.error(ex);
+            this.props.openSnackbar(
+                `Failed to store the export file at ${targetFile}`
+            );
+        }
     };
 
     render() {
+        const exportItems = this.props.exports.map((exportItem, key) => {
+            const exportInfo = exportItem.CustomerStatement;
+            const primary = `Start ${exportInfo.date_start} - End ${exportInfo.date_end}`;
+            const secondary = `Created: ${humanReadableDate(
+                exportInfo.created
+            )}`;
+
+            const statementFormat =
+                exportInfo.statement_format === "MT940"
+                    ? "MT"
+                    : exportInfo.statement_format;
+
+            return (
+                <ListItem
+                    button
+                    key={key}
+                    onClick={this.loadExportContent(exportInfo)}
+                >
+                    <Avatar style={{ margin: 10 }}>{statementFormat}</Avatar>
+                    <ListItemText primary={primary} secondary={secondary} />
+                </ListItem>
+            );
+        });
+
         return (
             <Grid container spacing={24}>
                 <Helmet>
                     <title>{`BunqDesktop - Exports`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={2}>
-                    <Button
-                        onClick={this.props.history.goBack}
-                        style={styles.btn}
-                    >
-                        <ArrowBackIcon />
-                    </Button>
+                <Grid item xs={12} md={4}>
+                    <Paper>
+                        <AccountList
+                            updateExternal={this.updateExports}
+                            BunqJSClient={this.props.BunqJSClient}
+                            initialBunqConnect={this.props.initialBunqConnect}
+                        />
+                    </Paper>
                 </Grid>
 
-                <Grid item xs={12} sm={8}>
+                <Grid item xs={12} md={8}>
                     <Paper style={styles.paper}>
                         <Grid container spacing={16}>
                             <Grid item xs={12}>
                                 <Typography variant={"headline"}>
-                                    Exports
+                                    New export
                                 </Typography>
                             </Grid>
 
@@ -165,8 +302,8 @@ class Exports extends React.Component {
                                     format="MMMM DD, YYYY"
                                     disableFuture
                                     style={styles.dateInput}
-                                    maxDate={this.state.dateToFilter}
-                                    value={this.state.dateFromFilter}
+                                    maxDate={this.state.dateTo}
+                                    value={this.state.dateFrom}
                                     onChange={this.handleDateFromChange}
                                     clearable={true}
                                     InputProps={{
@@ -191,8 +328,8 @@ class Exports extends React.Component {
                                     format="MMMM DD, YYYY"
                                     disableFuture
                                     style={styles.dateInput}
-                                    minDate={this.state.dateFromFilter}
-                                    value={this.state.dateToFilter}
+                                    minDate={this.state.dateFrom}
+                                    value={this.state.dateTo}
                                     onChange={this.handleDateToChange}
                                     clearable={true}
                                     InputProps={{
@@ -210,9 +347,58 @@ class Exports extends React.Component {
                             </Grid>
 
                             <Grid item xs={12} md={6}>
-                                <Button variant="raised" color="primary">
+                                <Button
+                                    variant="raised"
+                                    color="primary"
+                                    onClick={this.createNew}
+                                    disabled={
+                                        this.props.exportNewLoading ||
+                                        this.props.exportsLoading ||
+                                        this.state.dateFrom === null ||
+                                        this.state.dateTo === null
+                                    }
+                                >
                                     Create export
                                 </Button>
+                            </Grid>
+                        </Grid>
+                    </Paper>
+
+                    <Paper style={styles.paper}>
+                        <Grid container spacing={16}>
+                            <Grid item xs={8} md={10}>
+                                <Typography variant={"headline"}>
+                                    Exports
+                                </Typography>
+                            </Grid>
+
+                            <Grid item xs={2} md={1}>
+                                {this.props.exportsLoading ? (
+                                    <CircularProgress />
+                                ) : (
+                                    <IconButton onClick={this.refreshClick}>
+                                        <RefreshIcon />
+                                    </IconButton>
+                                )}
+                            </Grid>
+                            <Grid item xs={2} md={1}>
+                                <IconButton
+                                    onClick={() =>
+                                        shell.openItem(
+                                            app.getPath("downloads")
+                                        )}
+                                >
+                                    <FolderIcon />
+                                </IconButton>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <List>
+                                    {this.props.exportsLoading ? (
+                                        <LinearProgress />
+                                    ) : null}
+                                    {exportItems}
+                                </List>
                             </Grid>
                         </Grid>
                     </Paper>
@@ -225,7 +411,12 @@ class Exports extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-        accountsAccountId: state.accounts.selectedAccount
+        accountsAccountId: state.accounts.selectedAccount,
+
+        exportNewLoading: state.export_new.loading,
+
+        exports: state.exports.exports,
+        exportsLoading: state.exports.loading
     };
 };
 
@@ -233,6 +424,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
+        exportInfoUpdate: (userId, accountId) =>
+            dispatch(exportInfoUpdate(BunqJSClient, userId, accountId)),
         exportNew: (...params) => dispatch(exportNew(BunqJSClient, ...params))
     };
 };

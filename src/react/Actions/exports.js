@@ -28,7 +28,7 @@ export function exportInfoUpdate(
     return dispatch => {
         dispatch(exportsLoading());
 
-        BunqJSClient.api.export
+        BunqJSClient.api.customStatementExport
             .list(user_id, account_id, options)
             .then(exports => {
 
