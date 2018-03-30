@@ -82,6 +82,10 @@ export default props => {
         }
     };
 
+    if(yAxes.length === 0){
+        return null;
+    }
+
     return (
         <Bar
             height={defaultOptions.height}

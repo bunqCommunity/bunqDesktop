@@ -128,6 +128,7 @@ class Stats extends React.Component {
     };
 
     render() {
+        console.log(this.props);
         const eventCountStats = (
             <Grid item xs={12}>
                 <Grid container spacing={16}>
@@ -208,8 +209,6 @@ class Stats extends React.Component {
                       paymentHistory: []
                   };
 
-        console.log(data.categoryCountHistory);
-
         let bigCharts = (
             <React.Fragment>
                 <Grid item xs={12}>
@@ -227,16 +226,16 @@ class Stats extends React.Component {
                         />
                     </Paper>
                 </Grid>
-                {/*<Grid item xs={12}>*/}
-                    {/*<Paper>*/}
-                        {/*<CategoryHistoryChart*/}
-                            {/*height={500}*/}
-                            {/*labels={data.labels}*/}
-                            {/*categories={this.props.categories}*/}
-                            {/*categoryCountHistory={data.categoryCountHistory}*/}
-                        {/*/>*/}
-                    {/*</Paper>*/}
-                {/*</Grid>*/}
+                <Grid item xs={12}>
+                    <Paper>
+                        <CategoryHistoryChart
+                            height={500}
+                            labels={data.labels}
+                            categories={this.props.categories}
+                            categoryCountHistory={data.categoryCountHistory}
+                        />
+                    </Paper>
+                </Grid>
             </React.Fragment>
         );
 

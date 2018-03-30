@@ -68,7 +68,7 @@ class MasterCardActionListItem extends React.Component {
                     primary={displayName}
                     secondary={masterCardActionParser(masterCardAction)}
                 />
-                <ListItemSecondaryAction style={{ marginTop: -40 }}>
+                <ListItemSecondaryAction style={{ marginTop: -16 }}>
                     <MoneyAmountLabel
                         style={styles.moneyAmountLabel}
                         info={masterCardAction}

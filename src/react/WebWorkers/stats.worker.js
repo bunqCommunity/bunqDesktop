@@ -201,8 +201,7 @@ const formatLabels = (events, type) => {
                 startDateYearly.getFullYear() - endDateYearly.getFullYear() + 1;
 
             for (let year = 0; year < yearDifference1; year++) {
-                const startDate = new Date();
-                startDate.setFullYear(startDate.getFullYear() - year);
+                const startDate = subYears(new Date(), year);
 
                 const label = labelFormat(startDate, type);
                 dataCollection[label] = {
@@ -229,8 +228,7 @@ const formatLabels = (events, type) => {
             monthDifference = monthDifference > 24 ? 24 : monthDifference;
 
             for (let month = 0; month < monthDifference; month++) {
-                const startDate = new Date();
-                startDate.setMonth(startDate.getMonth() - month);
+                const startDate = subMonths(new Date(), month);
 
                 const label = labelFormat(startDate, type);
                 dataCollection[label] = {
@@ -257,11 +255,7 @@ const formatLabels = (events, type) => {
             weekDifference = weekDifference > 53 ? 53 : weekDifference;
 
             for (let week = 0; week < weekDifference; week++) {
-                const dateOffset =
-                    week <= 0 ? 0 : 24 * 60 * 60 * 1000 * 7 * week;
-
-                const startDate = new Date();
-                startDate.setTime(startDate.getTime() - dateOffset);
+                const startDate = subWeeks(new Date(), week);
 
                 const label = labelFormat(startDate, type);
                 dataCollection[label] = {
@@ -287,10 +281,7 @@ const formatLabels = (events, type) => {
             dayDifference = dayDifference > 60 ? 60 : dayDifference;
 
             for (let day = 0; day < dayDifference; day++) {
-                const dateOffset = day <= 0 ? 0 : 24 * 60 * 60 * 1000 * day;
-
-                const startDate = new Date();
-                startDate.setTime(startDate.getTime() - dateOffset);
+                const startDate = subDays(new Date(), day);
 
                 const label = labelFormat(startDate, type);
                 dataCollection[label] = {

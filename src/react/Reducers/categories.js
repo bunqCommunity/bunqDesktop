@@ -16,7 +16,9 @@ const categoriesStoredDefault =
         ? JSON.parse(JSON.stringify(categoriesStored))
         : {};
 const categoryConnectionsStoredDefault =
-    categoryConnectionsStored !== undefined ? categoryConnectionsStored : {};
+    categoryConnectionsStored !== undefined
+        ? JSON.parse(JSON.stringify(categoryConnectionsStored))
+        : {};
 
 // construct the default state
 export const defaultState = {
