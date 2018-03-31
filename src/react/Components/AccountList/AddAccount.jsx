@@ -5,6 +5,7 @@ import Avatar from "material-ui/Avatar";
 import AddBoxIcon from "material-ui-icons/AddBox";
 
 import NavLink from "../../Components/Routing/NavLink";
+import { translate } from "react-i18next";
 
 const styles = {
     bigAvatar: {
@@ -25,10 +26,14 @@ class AddAccount extends React.Component {
                 <Avatar style={styles.bigAvatar}>
                     <AddBoxIcon />
                 </Avatar>
-                <ListItemText secondary="Open a new bank account for yourself or for a group" />
+                <ListItemText
+                    secondary={this.props.t(
+                        "Open a new bank account"
+                    )}
+                />
             </ListItem>
         );
     }
 }
 
-export default connect()(AddAccount);
+export default connect()(translate("translations")(AddAccount));

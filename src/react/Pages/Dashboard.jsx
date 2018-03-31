@@ -6,6 +6,9 @@ import Paper from "material-ui/Paper";
 import Button from "material-ui/Button";
 import Grid from "material-ui/Grid";
 import Typography from "material-ui/Typography";
+
+import { translate, Trans } from "react-i18next";
+
 import CombinedList from "../Components/CombinedList";
 import AccountList from "../Components/AccountList/AccountList";
 import LoadOlderButton from "../Components/LoadOlderButton";
@@ -36,6 +39,12 @@ class Dashboard extends React.Component {
     }
 
     render() {
+        const { t, i18n } = this.props;
+
+        const changeLanguage = lng => {
+            i18n.changeLanguage(lng);
+        };
+
         const userTypes = Object.keys(this.props.users);
 
         return (
@@ -46,7 +55,12 @@ class Dashboard extends React.Component {
 
                 <Grid item xs={8} sm={10}>
                     <Typography variant="title" gutterBottom>
-                        Welcome {this.props.user.first_name}
+                        {t("Welcome ")}
+                        {this.props.user.first_name ? (
+                            this.props.user.first_name
+                        ) : (
+                            this.props.user.name
+                        )}
                     </Typography>
                 </Grid>
 
@@ -57,7 +71,7 @@ class Dashboard extends React.Component {
                             style={styles.btn}
                             onClick={this.props.logoutUser}
                         >
-                            Switch User
+                            <Trans>Switch user</Trans>
                         </Button>
                     </Grid>
                 ) : null}
@@ -111,5 +125,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(userLogin(BunqJSClient, type, updated))
     };
 };
-
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(Dashboard)
+);

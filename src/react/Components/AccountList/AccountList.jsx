@@ -20,6 +20,7 @@ import { requestResponsesUpdate } from "../../Actions/request_responses";
 import { bunqMeTabsUpdate } from "../../Actions/bunq_me_tabs";
 import { masterCardActionsUpdate } from "../../Actions/master_card_actions";
 import { requestInquiriesUpdate } from "../../Actions/request_inquiries";
+import { translate } from "react-i18next";
 
 const styles = {
     list: {
@@ -116,6 +117,8 @@ class AccountList extends React.Component {
     };
 
     render() {
+        const { t } = this.props;
+
         let accounts = [];
         if (this.props.accounts !== false) {
             accounts = this.props.accounts
@@ -146,12 +149,12 @@ class AccountList extends React.Component {
             <List style={styles.list}>
                 <ListItem dense>
                     <ListItemText
-                        primary={`Accounts: ${accounts.length}`}
+                        primary={`${t("Accounts")}: ${accounts.length}`}
                         secondary={
                             this.props.hideBalance ? (
                                 ""
                             ) : (
-                                `Balance: ${formattedTotalBalance}`
+                                `${t("Balance")}: ${formattedTotalBalance}`
                             )
                         }
                     />
@@ -208,4 +211,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AccountList);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(AccountList)
+);
