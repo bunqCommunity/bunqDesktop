@@ -127,8 +127,9 @@ class AccountList extends React.Component {
                 })
                 .map(account => (
                     <AccountListItem
-                        BunqJSClient={this.props.BunqJSClient}
                         updateExternal={this.updateExternal}
+                        BunqJSClient={this.props.BunqJSClient}
+                        denseMode={this.props.denseMode}
                         account={account}
                     />
                 ));
@@ -143,7 +144,7 @@ class AccountList extends React.Component {
         const formattedTotalBalance = formatMoney(totalBalance);
 
         return (
-            <List style={styles.list}>
+            <List dense={this.props.denseMode} style={styles.list}>
                 <ListItem dense>
                     <ListItemText
                         primary={`Accounts: ${accounts.length}`}
@@ -167,11 +168,19 @@ class AccountList extends React.Component {
                 </ListItem>
                 {this.props.accountsLoading ? <LinearProgress /> : <Divider />}
                 {accounts}
-                <AddAccount displayAddAccount={this.props.displayAddAccount} />
+                {this.props.denseMode === false ? (
+                    <AddAccount
+                        displayAddAccount={this.props.displayAddAccount}
+                    />
+                ) : null}
             </List>
         );
     }
 }
+
+AccountList.defaultProps = {
+    denseMode: false
+};
 
 const mapStateToProps = state => {
     return {
