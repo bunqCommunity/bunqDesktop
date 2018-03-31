@@ -69,7 +69,9 @@ const getPrettyLanguage = key => {
         case "en":
             return "English";
         case "nl":
-            return "Dutch";
+            return "Nederlands";
+        case "de":
+            return "Deutsch";
     }
     return key;
 };

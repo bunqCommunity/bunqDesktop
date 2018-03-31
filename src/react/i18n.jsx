@@ -6,7 +6,7 @@ const remote = require("electron").remote;
 const path = remote.require("path");
 const fs = remote.require("fs");
 
-export const SUPPORTED_LANGUAGES = ["en", "nl"];
+export const SUPPORTED_LANGUAGES = ["en", "nl","de"];
 
 // custom xhr function
 const loadLocales = (url, options, callback, data) => {
@@ -35,10 +35,14 @@ const loadLocales = (url, options, callback, data) => {
                 // go through all the missing keys for this language
                 Object.keys(data).forEach(missingKey => {
                     const missingText = data[missingKey];
-                    localeData[missingKey] =
-                        languageKey === "en"
-                            ? missingText
-                            : "__MISSING_TRANSLATION__";
+
+                    // don't add existing keys
+                    if (!localeData[missingKey]) {
+                        localeData[missingKey] =
+                            languageKey === "en"
+                                ? missingText
+                                : "__MISSING_TRANSLATION__";
+                    }
                 });
 
                 // sort alphabetically
@@ -57,7 +61,7 @@ const loadLocales = (url, options, callback, data) => {
                             __dirname,
                             "../src/react/Locales/" + languageKey + ".json"
                         ),
-                        JSON.stringify(localeData, null, "\t")
+                        JSON.stringify(tempLocaleData, null, "\t")
                     );
                 } catch (ex) {}
             }

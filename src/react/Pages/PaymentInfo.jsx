@@ -22,6 +22,7 @@ import TransactionHeader from "../Components/TransactionHeader";
 import CategorySelector from "../Components/Categories/CategorySelector";
 
 import { paymentsUpdate } from "../Actions/payment_info";
+import { translate } from "react-i18next";
 
 const styles = {
     btn: {},
@@ -80,7 +81,8 @@ class PaymentInfo extends React.Component {
         const {
             accountsSelectedAccount,
             paymentInfo,
-            paymentLoading
+            paymentLoading,
+            t
         } = this.props;
         const paramAccountId = this.props.match.params.accountId;
 
@@ -107,7 +109,7 @@ class PaymentInfo extends React.Component {
             const paymentDate = humanReadableDate(payment.updated);
             const paymentAmount = payment.amount.value;
             const formattedPaymentAmount = formatMoney(paymentAmount);
-            const paymentLabel = paymentText(payment);
+            const paymentLabel = paymentText(payment, t);
             const counterPartyIban = payment.counterparty_alias.iban;
 
             content = (
@@ -159,15 +161,18 @@ class PaymentInfo extends React.Component {
                             <Divider />
                             <ListItem>
                                 <ListItemText
-                                    primary={"Date"}
+                                    primary={t("Date")}
                                     secondary={paymentDate}
                                 />
                             </ListItem>
                             <Divider />
                             <ListItem>
                                 <ListItemText
-                                    primary={"Payment Type"}
-                                    secondary={paymentTypeParser(payment.type)}
+                                    primary={t("Payment Type")}
+                                    secondary={paymentTypeParser(
+                                        payment.type,
+                                        t
+                                    )}
                                 />
                             </ListItem>
                             <Divider />
@@ -179,7 +184,10 @@ class PaymentInfo extends React.Component {
                             </ListItem>
                         </List>
 
-                        <CategorySelector type={"Payment"} item={paymentInfo} />
+                        <CategorySelector
+                            type={t("Payment")}
+                            item={paymentInfo}
+                        />
                     </Grid>
                 </Grid>
             );
@@ -188,7 +196,7 @@ class PaymentInfo extends React.Component {
         return (
             <Grid container spacing={24}>
                 <Helmet>
-                    <title>{`BunqDesktop - Payment Info`}</title>
+                    <title>{`BunqDesktop - ${t("Payment Info")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={2}>
@@ -208,7 +216,7 @@ class PaymentInfo extends React.Component {
                     <ExportDialog
                         closeModal={event =>
                             this.setState({ displayExport: false })}
-                        title="Export info"
+                        title={t("Export info")}
                         open={this.state.displayExport}
                         object={this.props.paymentInfo}
                     />
@@ -247,4 +255,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PaymentInfo);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(PaymentInfo)
+);

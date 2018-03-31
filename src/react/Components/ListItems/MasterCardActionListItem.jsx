@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { withTheme } from "material-ui/styles";
 import {
     ListItem,
@@ -39,7 +40,7 @@ class MasterCardActionListItem extends React.Component {
     // }
 
     render() {
-        const { masterCardAction, theme } = this.props;
+        const { masterCardAction, t } = this.props;
 
         let imageUUID = false;
         if (masterCardAction.counterparty_alias.avatar) {
@@ -50,6 +51,7 @@ class MasterCardActionListItem extends React.Component {
         const displayName = masterCardAction.counterparty_alias.display_name;
         const paymentAmount = masterCardAction.amount_billing.value;
         const formattedPaymentAmount = formatMoney(paymentAmount);
+        const secondaryText = masterCardActionParser(masterCardAction, t);
 
         return [
             <ListItem
@@ -64,10 +66,7 @@ class MasterCardActionListItem extends React.Component {
                         imageUUID={imageUUID}
                     />
                 </Avatar>
-                <ListItemText
-                    primary={displayName}
-                    secondary={masterCardActionParser(masterCardAction)}
-                />
+                <ListItemText primary={displayName} secondary={secondaryText} />
                 <ListItemSecondaryAction style={{ marginTop: -16 }}>
                     <MoneyAmountLabel
                         style={styles.moneyAmountLabel}
@@ -91,6 +90,6 @@ class MasterCardActionListItem extends React.Component {
 
 MasterCardActionListItem.defaultProps = {
     minimalDisplay: false
-}
+};
 
-export default withTheme()(MasterCardActionListItem);
+export default withTheme()(translate("translations")(MasterCardActionListItem));

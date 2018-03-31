@@ -59,8 +59,8 @@
 	"Description": "Description",
 	"IBAN": "IBAN",
 	"Accept request": "Accept request",
-	"Your request was accepted": "Your request was accepted",
-	"Request has expired": "Request has expired",
-	"You paid the request": "You paid the request",
-	"Received a request": "Received a request"
+	"Your request was accepted": "__MISSING_TRANSLATION__",
+	"Request has expired": "__MISSING_TRANSLATION__",
+	"You paid the request": "__MISSING_TRANSLATION__",
+	"Received a request": "__MISSING_TRANSLATION__"
 }

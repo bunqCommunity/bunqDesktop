@@ -104,9 +104,7 @@ export const requestResponseFilter = options => requestResponse => {
         return false;
     }
 
-    if (
-        !(options.requestType !== "sent" && options.requestType !== "default")
-    ) {
+    if (options.requestType !== "sent" && options.requestType !== "default") {
         return false;
     }
 
@@ -127,10 +125,8 @@ export const requestInquiryFilter = options => requestInquiry => {
     }
 
     if (
-        !(
-            options.requestType !== "received" &&
-            options.requestType !== "default"
-        )
+        options.requestType !== "received" &&
+        options.requestType !== "default"
     ) {
         return false;
     }
