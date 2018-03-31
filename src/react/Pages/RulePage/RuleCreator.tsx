@@ -1,4 +1,5 @@
 import * as React from "react";
+import { translate } from "react-i18next";
 import Redirect from "react-router-dom/Redirect";
 import Grid from "material-ui/Grid";
 import Paper from "material-ui/Paper";
@@ -150,7 +151,7 @@ class RuleCreator extends React.Component<any, any> {
                 newRule = {
                     ruleType: "VALUE",
                     field: "DESCRIPTION",
-                    matchType: "EXACT",
+                    matchType: "CONTAINS",
                     value: ""
                 };
                 break;
@@ -497,4 +498,4 @@ class RuleCreator extends React.Component<any, any> {
     }
 }
 
-export default RuleCreator;
+export default translate("translations")(RuleCreator);

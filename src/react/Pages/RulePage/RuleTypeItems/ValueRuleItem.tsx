@@ -133,11 +133,11 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
                                     <Input name="age" id="match-type-helper" />
                                 }
                             >
-                                <MenuItem value={"EXACT"}>
-                                    Matches exactly
-                                </MenuItem>
                                 <MenuItem value={"CONTAINS"}>
                                     Contains text
+                                </MenuItem>
+                                <MenuItem value={"EXACT"}>
+                                    Matches exactly
                                 </MenuItem>
                                 <MenuItem value={"STARTS_WITH"}>
                                     Starts with

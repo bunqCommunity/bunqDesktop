@@ -1,6 +1,4 @@
 import * as React from "react";
-import { translate } from "react-i18next";
-import Button from "material-ui/Button";
 import TextField from "material-ui/TextField";
 import Dialog, {
     DialogActions,
@@ -9,7 +7,8 @@ import Dialog, {
 } from "material-ui/Dialog";
 import Slide from "material-ui/transitions/Slide";
 
-import TranslateButton from "./TranslationHelpers/Button";
+import TranslateButton2 from "./TranslationHelpers/Button";
+const TranslateButton: any = TranslateButton2;
 
 const Transition = props => <Slide direction="left" {...props} />;
 
@@ -58,7 +57,7 @@ class ImportDialog extends React.Component<any, any> {
     };
 
     render() {
-        let { open, closeModal, title, showAsNewButton, t } = this.props;
+        let { open, closeModal, title, showAsNewButton } = this.props;
         if (!showAsNewButton) showAsNewButton = false;
 
         return (
@@ -110,4 +109,4 @@ class ImportDialog extends React.Component<any, any> {
     }
 }
 
-export default translate("translations")(ImportDialog);
+export default ImportDialog;

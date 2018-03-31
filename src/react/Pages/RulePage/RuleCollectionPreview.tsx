@@ -4,12 +4,12 @@ import Button from "material-ui/Button";
 import Switch from "material-ui/Switch";
 import { FormControlLabel } from "material-ui/Form";
 import List from "material-ui/List";
-import RuleCollection, { EventObjectResult } from "../../Types/RuleCollection";
 
+import RuleCollection, { EventObjectResult } from "../../Types/RuleCollection";
 import RuleCollectionPreviewItem from "./RuleCollectionPreviewItem";
 
 // import typed worker
-const RuleCollectionCheckWorker: any = require("worker-loader!../../WebWorkers/rule_collection_check.worker.js");
+const RuleCollectionCheckWorker: any = require("worker-loader!../../WebWorkers/rule_collection_check.worker.ts");
 
 const styles = {
     toggleVisibilityButton: {

@@ -93,6 +93,7 @@
         "@types/jest": "^22.1.3",
         "@types/moxios": "^0.4.8",
         "@types/node": "^9.4.6",
+        "@types/react-i18next": "^7.3.2",
         "all-contributors-cli": "^4.11.1",
         "awaiting": "^2.0.1",
         "axios": "^0.18.0",
