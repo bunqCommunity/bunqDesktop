@@ -3,5 +3,15 @@
 	"Switch user": "Switch user",
 	"Accounts": "Accounts",
 	"Balance": "Balance",
-	"Open a new bank account": "Open a new bank account"
+	"Open a new bank account": "Open a new bank account",
+	"Payments and requests": "Payments and requests",
+	"Version": "Version",
+	"Settings": "Settings",
+	"Pay": "Pay",
+	"Request": "Request",
+	"bunqme Requests": "bunq.me Requests",
+	"Cards": "Cards",
+	"Stats": "Stats",
+	"Exports": "Exports",
+	"Categories": "Categories"
 }

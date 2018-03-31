@@ -3,5 +3,15 @@
 	"Switch user": "Wissel van gebruiker",
 	"Accounts": "Accounts",
 	"Balance": "Balans",
-	"Open a new bank account": "Open een nieuw bank account"
+	"Open a new bank account": "Open een nieuw bank account",
+	"Payments and requests": "Betalingen en verzoeken",
+	"Version": "Versie",
+	"Settings": "Instellingen",
+	"Pay": "Betaal",
+	"Request": "Verzoek",
+	"Cards": "Kaarten",
+	"Stats": "Statestieken",
+	"Exports": "Exporteren",
+	"Categories": "Categoriën",
+	"bunqme Requests": "bunq.me Verzoeken"
 }
