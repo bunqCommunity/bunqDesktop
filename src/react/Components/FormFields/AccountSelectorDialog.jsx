@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { translate } from "react-i18next";
 import PropTypes from "prop-types";
 import Avatar from "material-ui/Avatar";
 import { FormControl } from "material-ui/Form";
@@ -68,7 +69,7 @@ class AccountSelectorDialog extends React.Component {
     };
 
     render() {
-        const { BunqJSClient, accounts, value, ...otherProps } = this.props;
+        const { BunqJSClient, accounts, value, t, ...otherProps } = this.props;
         const style = otherProps.style ? otherProps.style : {};
 
         const accountItems = accounts.map((account, accountKey) => {
@@ -98,7 +99,7 @@ class AccountSelectorDialog extends React.Component {
         } else {
             selectedAccountItem = (
                 <ListItem button onClick={this.displaySelectDialog}>
-                    <ListItemText primary={"Select an account"} />
+                    <ListItemText primary={t("Select an account")} />
                 </ListItem>
             );
         }
@@ -109,7 +110,7 @@ class AccountSelectorDialog extends React.Component {
                     open={this.state.open}
                     onClose={this.handleRequestClose}
                 >
-                    <DialogTitle>Select an account</DialogTitle>
+                    <DialogTitle>{t("Select an account")}</DialogTitle>
                     <DialogContent>
                         <List>{accountItems}</List>
                     </DialogContent>
@@ -136,4 +137,6 @@ const mapStateToProps = store => {
     };
 };
 
-export default connect(mapStateToProps)(AccountSelectorDialog);
+export default connect(mapStateToProps)(
+    translate("translations")(AccountSelectorDialog)
+);

@@ -6,9 +6,7 @@ import EmailValidator from "email-validator";
 
 import Grid from "material-ui/Grid";
 import TextField from "material-ui/TextField";
-import Button from "material-ui/Button";
 import Paper from "material-ui/Paper";
-import Typography from "material-ui/Typography";
 import Collapse from "material-ui/transitions/Collapse";
 import Switch from "material-ui/Switch";
 import { FormControl, FormControlLabel } from "material-ui/Form";
@@ -459,6 +457,7 @@ class RequestInquiry extends React.Component {
                             unmountOnExit
                         >
                             <MinimumAge
+                                t={t}
                                 targetType={this.state.targetType}
                                 minimumAge={this.state.minimumAge}
                                 setMinimumAge={this.state.setMinimumAge}
@@ -481,6 +480,7 @@ class RequestInquiry extends React.Component {
                             />
 
                             <AllowBunqMe
+                                t={t}
                                 targetType={this.state.targetType}
                                 allowBunqMe={this.state.allowBunqMe}
                                 handleToggle={this.handleToggle("allowBunqMe")}

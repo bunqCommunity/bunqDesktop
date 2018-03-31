@@ -8,6 +8,7 @@ import TextField from "material-ui/TextField";
 import Dialog, { DialogTitle } from "material-ui/Dialog";
 
 import Icons from "../../Helpers/Icons";
+import {translate} from "react-i18next";
 
 const styles = {
     iconContainer: {
@@ -94,7 +95,7 @@ class IconPicker extends React.Component {
                     open={this.state.open}
                     onClose={this.handleClose}
                 >
-                    <DialogTitle>Pick an icon</DialogTitle>
+                    <DialogTitle>{this.props.t("Pick an icon")}</DialogTitle>
                     <TextField
                         label={"Search for icons"}
                         style={styles.searchInput}
@@ -126,4 +127,4 @@ IconPicker.propTypes = {
     onClick: PropTypes.func.isRequired
 };
 
-export default IconPicker;
+export default translate("translations")(IconPicker);
