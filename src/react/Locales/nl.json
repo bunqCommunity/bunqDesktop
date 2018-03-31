@@ -54,7 +54,7 @@
 	"Don't show this again": "Verberg dit voortaan",
 	"Draft a new payment instead of directly sending it?": "Een nieuwe betaling opstellen in plaats van deze rechtstreeks verzenden?",
 	"Email": "E-mail",
-	"Enable or disable this rule set": "Schakel deze regelset in of uit",
+	"Enable or disable this ruleset": "Schakel deze regelset in of uit",
 	"Enable sandbox mode?": "Gebruik sandbox mode?",
 	"Enable sticky menu": "Activeer sticky menu",
 	"Ends with": "Eindigt met",
@@ -151,8 +151,8 @@
 	"Return to dashboard": "Terug naar het dashboard",
 	"Rule Dashboard": "Regel Dashboard",
 	"Rule Editor": "Regeleditor",
-	"Rule set title": "Regel ingestelde titel",
-	"Rules": "Reglement",
+	"Rules": "Regels",
+	"Ruleset title": "Regel ingestelde titel",
 	"Save": "Opslaan",
 	"Scan the QR code with the bunq app to begin!": "Scan de QR code met de bunq app om te beginnen!",
 	"Secondary card": "Secundaire kaart",
@@ -203,7 +203,7 @@
 	"Your personal API key": "Uw persoonlijke API key",
 	"Your request was accepted": "Uw verzoek is accepteerd",
 	"Your request was denied": "Uw verzoek is geweigerd",
-	"bunqme request": "bunq.me Aanvraag",
 	"bunqme Requests": "bunq.me Verzoeken",
+	"bunqme request": "bunq.me Aanvraag",
 	"rules": "reglement"
 }

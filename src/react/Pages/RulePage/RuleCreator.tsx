@@ -261,7 +261,7 @@ class RuleCreator extends React.Component<any, any> {
             return;
         }
 
-        // add the rule to the rule set
+        // add the rule to the ruleset
         const rules: Rule[] = [...this.state.rules];
         rules.push(rule);
         this.setState({ rules: rules }, this.updatePreview);
@@ -371,7 +371,7 @@ class RuleCreator extends React.Component<any, any> {
 
                         <Grid item xs={12} sm={6}>
                             <TextField
-                                label={t("Rule set title")}
+                                label={t("Ruleset title")}
                                 value={title}
                                 style={styles.inputField}
                                 onChange={this.handleTitleChange}
@@ -393,7 +393,7 @@ class RuleCreator extends React.Component<any, any> {
                                         onChange={this.handleEnabledToggle}
                                     />
                                 }
-                                label={t("Enable or disable this rule set")}
+                                label={t("Enable or disable this ruleset")}
                             />
                         </Grid>
 
@@ -447,7 +447,7 @@ class RuleCreator extends React.Component<any, any> {
                                         variant="title"
                                         style={styles.subTitle}
                                     >
-                                        Rules
+                                        {t("Rules")}
                                     </Typography>
                                 </TableCell>
                                 <TableCell>{null}</TableCell>

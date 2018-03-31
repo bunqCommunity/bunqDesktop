@@ -55,6 +55,7 @@
 	"Draft a new payment instead of directly sending it?": "Disegna un nuovo pagamento invece di inviarlo direttamente?",
 	"Email": "E-mail",
 	"Enable or disable this rule set": "Abilita o disabilita questo set di regole",
+	"Enable or disable this ruleset": "Abilita o disabilita questo set di regole",
 	"Enable sandbox mode?": "Abilita la modalità sandbox?",
 	"Enable sticky menu": "Abilita il menu appiccicoso",
 	"Ends with": "Finisce con",
@@ -153,6 +154,7 @@
 	"Rule Editor": "Editor di regole",
 	"Rule set title": "Regola il titolo impostato",
 	"Rules": "Regole",
+	"Ruleset title": "Regola il titolo impostato",
 	"Save": "Salvare",
 	"Scan the QR code with the bunq app to begin!": "Scansiona il codice QR con l'app bunq per iniziare!",
 	"Secondary card": "Carta secondaria",
@@ -203,7 +205,7 @@
 	"Your personal API key": "La tua chiave API personale",
 	"Your request was accepted": "La tua richiesta è stata accettata",
 	"Your request was denied": "La tua richiesta è stata respinta",
-	"bunqme request": "bunq.me richiesta",
 	"bunqme Requests": "bunq.me richieste",
+	"bunqme request": "bunq.me richiesta",
 	"rules": "regole"
 }
