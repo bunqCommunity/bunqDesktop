@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { translate } from "react-i18next";
 import Countdown from "react-countdown-now";
 
 import Grid from "material-ui/Grid";
@@ -12,6 +13,8 @@ import { CircularProgress } from "material-ui/Progress";
 
 import CardListItem from "./CardListItem";
 import AccountListItem from "../../Components/AccountList/AccountListItem";
+import TypographyTranslate from "../../Components/TranslationHelpers/Typography";
+import ButtonTranslate from "../../Components/TranslationHelpers/Button";
 
 import { cardUpdate } from "../../Actions/card";
 import {
@@ -95,8 +98,10 @@ class Card extends React.Component {
     };
 
     render() {
+        const t = this.props.t;
         let filteredCards = [];
         let cards = [];
+
         if (this.props.cards !== false) {
             // first filter the cards
             filteredCards = this.props.cards.filter(card => {
@@ -123,12 +128,12 @@ class Card extends React.Component {
                 >
                     <Grid item xs={12} style={{ textAlign: "center" }}>
                         <CircularProgress size={75} />
-                        <Typography
+                        <TypographyTranslate
                             variant="display1"
                             style={{ textAlign: "center" }}
                         >
-                            Loading cards...
-                        </Typography>
+                            Loading cards
+                        </TypographyTranslate>
                     </Grid>
                 </Grid>
             );
@@ -144,12 +149,12 @@ class Card extends React.Component {
                     alignItems="center"
                 >
                     <Grid item xs={12}>
-                        <Typography
+                        <TypographyTranslate
                             variant="display1"
                             style={{ textAlign: "center" }}
                         >
                             You don't have any cards
-                        </Typography>
+                        </TypographyTranslate>
                     </Grid>
                 </Grid>
             );
@@ -170,10 +175,10 @@ class Card extends React.Component {
                 let connectedText = "";
                 switch (assignment.type) {
                     case "PRIMARY":
-                        connectedText = "Primary card";
+                        connectedText = t("Primary card");
                         break;
                     case "SECONDARY":
-                        connectedText = "Secondary card";
+                        connectedText = t("Secondary card");
                         break;
                 }
 
@@ -186,8 +191,8 @@ class Card extends React.Component {
                         {!currentAccount ? (
                             <ListItem divider>
                                 <ListItemText
-                                    primary="No account found for this card"
-                                    secondary="This likely means this card is connected to a Joint account"
+                                    primary={t("No account found for this card")}
+                                    secondary={t("This likely means this card is connected to a Joint account")}
                                 />
                             </ListItem>
                         ) : (
@@ -239,12 +244,12 @@ class Card extends React.Component {
                             })}
                         </List>
                     ) : (
-                        <Typography
+                        <TypographyTranslate
                             variant="body2"
                             style={{ textAlign: "center" }}
                         >
                             No CVC codes available
-                        </Typography>
+                        </TypographyTranslate>
                     );
             }
 
@@ -257,9 +262,9 @@ class Card extends React.Component {
                         disabled={this.props.cvcLoading}
                     >
                         {cvc2CodeList !== null ? (
-                            "Update CVC Codes"
+                            t("Update CVC Codes")
                         ) : (
-                            "View CVC Codes"
+                            t("View CVC Codes")
                         )}
                     </Button>
                 </React.Fragment>
@@ -307,7 +312,7 @@ class Card extends React.Component {
                                             variant={"body2"}
                                             style={{ textAlign: "right" }}
                                         >
-                                            Expires: <br />
+                                            {t("Expires")}: <br />
                                             {cardInfo.expiry_date}
                                         </Typography>
                                     </Grid>
@@ -354,4 +359,6 @@ const mapDispatchToProps = (dispatch, props) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Card);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(Card)
+);

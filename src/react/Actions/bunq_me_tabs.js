@@ -69,7 +69,6 @@ export function bunqMeTabsUpdate(
                 dispatch(bunqMeTabsNotLoading());
             })
             .catch(error => {
-                console.log(error);
                 dispatch(bunqMeTabsNotLoading());
                 BunqErrorHandler(
                     dispatch,

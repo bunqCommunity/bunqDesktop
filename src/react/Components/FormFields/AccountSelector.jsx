@@ -55,7 +55,7 @@ class AccountSelector extends React.Component {
                 return null;
             }
             const formattedBalance = this.props.hideBalance
-                ? "HIDDEN"
+                ? ""
                 : formatMoney(account.balance ? account.balance.value : 0);
             selectedAccountItem = (
                 <ListItem button>

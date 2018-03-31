@@ -25,6 +25,7 @@ localforage.config({
 });
 
 export const THEME_LOCATION = "BUNQDESKTOP_THEME";
+export const LANGUAGE_LOCATION = "BUNQDESKTOP_LANGUAGE";
 export const USE_NATIVE_FRAME_LOCATION = "USE_NATIVE_FRAME";
 export const MINIMIZE_TO_TRAY_LOCATION = "MINIMIZE_TO_TRAY";
 export const USE_STICKY_MENU_LOCATION = "USE_STICKY_MENU";
@@ -45,6 +46,7 @@ const loadData = () => {
     );
     const hideBalanceStored = settings.get(HIDE_BALANCE_LOCATION);
     const themeDefaultStored = settings.get(THEME_LOCATION);
+    const languageDefaultStored = settings.get(LANGUAGE_LOCATION);
 
     // get settings file location
     const settingsLocationStored = settings.file();
@@ -68,7 +70,9 @@ const loadData = () => {
         themeDefault:
             themeDefaultStored !== undefined
                 ? themeDefaultStored
-                : "DefaultTheme"
+                : "DefaultTheme",
+        languageDefault:
+            languageDefaultStored !== undefined ? languageDefaultStored : "en"
     };
 };
 
@@ -80,11 +84,13 @@ const {
     inactivityCheckDurationDefault,
     hideBalanceDefault,
     settingsLocationDefault,
-    themeDefault
+    themeDefault,
+    languageDefault
 } = loadData();
 
 export const defaultState = {
     theme: themeDefault,
+    language: languageDefault,
     minimize_to_tray: minimizeToTrayDefault,
     native_frame: nativeFrameDefault,
     sticky_menu: stickyMenuDefault,
@@ -101,6 +107,13 @@ export default function reducer(state = defaultState, action) {
             return {
                 ...state,
                 theme: action.payload.theme
+            };
+
+        case "OPTIONS_SET_LANGUAGE":
+            settings.set(LANGUAGE_LOCATION, action.payload.language);
+            return {
+                ...state,
+                language: action.payload.language
             };
 
         case "OPTIONS_SET_HIDE_MINIMIZE_TO_TRAY":
@@ -172,6 +185,7 @@ export default function reducer(state = defaultState, action) {
             // set our current settings in this file
             settings.set(USE_STICKY_MENU_LOCATION, state.sticky_menu);
             settings.set(THEME_LOCATION, state.theme);
+            settings.set(LANGUAGE_LOCATION, state.language);
             settings.set(MINIMIZE_TO_TRAY_LOCATION, state.minimize_to_tray);
             settings.set(USE_NATIVE_FRAME_LOCATION, state.native_frame);
             settings.set(
@@ -213,6 +227,7 @@ export default function reducer(state = defaultState, action) {
             );
             const hideBalanceStored = settings.get(HIDE_BALANCE_LOCATION);
             const themeDefaultStored = settings.get(THEME_LOCATION);
+            const languageDefaultStored = settings.get(LANGUAGE_LOCATION);
 
             // only overwrite if the new settings file contains these settings
             return {
@@ -226,6 +241,10 @@ export default function reducer(state = defaultState, action) {
                     typeof themeDefaultStored !== "undefined"
                         ? themeDefaultStored
                         : state.theme,
+                language:
+                    typeof languageDefaultStored !== "undefined"
+                        ? languageDefaultStored
+                        : state.language,
                 minimize_to_tray:
                     typeof minimizeToTrayStored !== "undefined"
                         ? minimizeToTrayStored

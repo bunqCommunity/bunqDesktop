@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import StickyBox from "react-sticky-box";
@@ -6,6 +7,7 @@ import Paper from "material-ui/Paper";
 import Button from "material-ui/Button";
 import Grid from "material-ui/Grid";
 import Typography from "material-ui/Typography";
+
 import CombinedList from "../Components/CombinedList";
 import AccountList from "../Components/AccountList/AccountList";
 import LoadOlderButton from "../Components/LoadOlderButton";
@@ -36,17 +38,26 @@ class Dashboard extends React.Component {
     }
 
     render() {
+        const t = this.props.t;
+
         const userTypes = Object.keys(this.props.users);
+
+        const switchUserText = t("Switch user");
 
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - Dashboard`}</title>
+                    <title>{`BunqDesktop - ${t("Dashboard")}`}</title>
                 </Helmet>
 
                 <Grid item xs={8} sm={10}>
                     <Typography variant="title" gutterBottom>
-                        Welcome {this.props.user.first_name}
+                        {t("Welcome")}
+                        {this.props.user.first_name ? (
+                            this.props.user.first_name
+                        ) : (
+                            this.props.user.name
+                        )}
                     </Typography>
                 </Grid>
 
@@ -57,7 +68,7 @@ class Dashboard extends React.Component {
                             style={styles.btn}
                             onClick={this.props.logoutUser}
                         >
-                            Switch User
+                            {switchUserText}
                         </Button>
                     </Grid>
                 ) : null}
@@ -111,5 +122,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(userLogin(BunqJSClient, type, updated))
     };
 };
-
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(Dashboard)
+);

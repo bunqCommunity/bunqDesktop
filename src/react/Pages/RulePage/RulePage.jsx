@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
@@ -31,7 +32,7 @@ class RulesPage extends React.Component {
     };
 
     render() {
-        const { categoryRules, match } = this.props;
+        const { categoryRules, match, t } = this.props;
         const ruleCollectionId = match.params.ruleId;
 
         let ruleCollection;
@@ -62,11 +63,12 @@ class RulesPage extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - Rule Editor`}</title>
+                    <title>{`BunqDesktop - ${t("Rule Editor")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12}>
                     <RuleCreator
+                        t={t}
                         categories={this.props.categories}
                         ruleCollection={ruleCollection}
                         updatePreview={this.updatePreview}
@@ -78,6 +80,7 @@ class RulesPage extends React.Component {
                 <Grid item xs={12} md={2} />
                 <Grid item xs={12} md={8}>
                     <RuleCollectionPreview
+                        t={t}
                         ruleCollection={this.state.previewRuleCollection}
                         ruleCollectionUpdated={this.state.previewUpdated}
                         payments={payments}
@@ -121,4 +124,6 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(RulesPage);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(RulesPage)
+);

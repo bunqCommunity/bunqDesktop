@@ -1,14 +1,15 @@
 import React from "react";
-import TextField from "material-ui/TextField";
-import Button from "material-ui/Button";
 import Grid from "material-ui/Grid";
+import { translate } from "react-i18next";
+import TextField from "material-ui/TextField";
 
-import FileUpload from "material-ui-icons/FileUpload";
+import ButtonTranslate from "../TranslationHelpers/Button";
+import TypographyTranslate from "../TranslationHelpers/Typography";
 
 const remote = require("electron").remote;
 const dialog = remote.dialog;
 
-export default class FilePicker extends React.Component {
+class FilePicker extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {};
@@ -35,17 +36,21 @@ export default class FilePicker extends React.Component {
     render() {
         const { value, style, buttonContent } = this.props;
 
+        const defaultLabel = (
+            <TypographyTranslate>Pick location</TypographyTranslate>
+        );
+
         return (
             <Grid container spacing={16} style={style}>
                 <Grid item xs={4}>
-                    <Button
+                    <ButtonTranslate
                         variant="raised"
                         color="primary"
                         onClick={this.handleButtonClick}
                         style={{ width: "100%" }}
                     >
-                        {buttonContent ? buttonContent : <FileUpload />}
-                    </Button>
+                        {buttonContent ? buttonContent : defaultLabel}
+                    </ButtonTranslate>
                 </Grid>
                 <Grid item xs={8}>
                     <TextField value={value} style={{ width: "100%" }} />
@@ -54,3 +59,5 @@ export default class FilePicker extends React.Component {
         );
     }
 }
+
+export default translate("translations")(FilePicker);

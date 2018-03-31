@@ -1,10 +1,10 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { subMonths } from "date-fns";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import DatePicker from "material-ui-pickers/DatePicker/index.js";
 import Grid from "material-ui/Grid";
-import Button from "material-ui/Button";
 import Avatar from "material-ui/Avatar";
 import IconButton from "material-ui/IconButton";
 import { MenuItem } from "material-ui/Menu";
@@ -16,7 +16,6 @@ import { LinearProgress, CircularProgress } from "material-ui/Progress";
 import Input, { InputLabel } from "material-ui/Input";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import InputAdornment from "material-ui/Input/InputAdornment";
-import Typography from "material-ui/Typography";
 
 import FolderIcon from "material-ui-icons/Folder";
 import RefreshIcon from "material-ui-icons/Refresh";
@@ -28,6 +27,9 @@ const fs = remote.require("fs");
 const path = remote.require("path");
 
 import AccountList from "../Components/AccountList/AccountList";
+import TranslateTypography from "../Components/TranslationHelpers/Typography";
+import TranslateButton from "../Components/TranslationHelpers/Button";
+
 import Logger from "../Helpers/Logger";
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { humanReadableDate } from "../Helpers/Utils";
@@ -159,6 +161,10 @@ class Exports extends React.Component {
             }
             const fileName = `bunq-export.${exportInfo.date_start}_${exportInfo.date_end}_${exportInfo.id}${fileExtension}`;
 
+            const failedMessage = this.props.t(
+                "We failed to load the export content for this monetary account"
+            );
+
             this.props.BunqJSClient.api.customerStatementExportContent
                 .list(
                     this.props.user.id,
@@ -172,11 +178,7 @@ class Exports extends React.Component {
                 })
                 .catch(error => {
                     this.setState({ exportContentLoading: false });
-                    BunqErrorHandler(
-                        dispatch,
-                        error,
-                        "We failed to load the export content for this monetary account"
-                    );
+                    BunqErrorHandler(dispatch, error, failedMessage);
                 });
         }
     };
@@ -185,19 +187,24 @@ class Exports extends React.Component {
         const downloadDir = app.getPath("downloads");
         const targetFile = `${downloadDir}${path.sep}${fileName}`;
 
+        const successMessage = this.props.t("Stored file at ");
+        const failedMessage = this.props.t(
+            "Failed to store the export file at "
+        );
+
         try {
             fs.writeFileSync(targetFile, content);
 
-            this.props.openSnackbar(`Stored file at ${targetFile}`);
+            this.props.openSnackbar(`${successMessage}${targetFile}`);
         } catch (ex) {
             Logger.error(ex);
-            this.props.openSnackbar(
-                `Failed to store the export file at ${targetFile}`
-            );
+            this.props.openSnackbar(`${failedMessage}${targetFile}`);
         }
     };
 
     render() {
+        const t = this.props.t;
+
         const exportItems = this.props.exports.map((exportItem, key) => {
             const exportInfo = exportItem.CustomerStatement;
             const primary = `Start ${exportInfo.date_start} - End ${exportInfo.date_end}`;
@@ -225,7 +232,7 @@ class Exports extends React.Component {
         return (
             <Grid container spacing={24}>
                 <Helmet>
-                    <title>{`BunqDesktop - Exports`}</title>
+                    <title>{`BunqDesktop - ${t("Exports")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} md={4}>
@@ -242,15 +249,15 @@ class Exports extends React.Component {
                     <Paper style={styles.paper}>
                         <Grid container spacing={16}>
                             <Grid item xs={12}>
-                                <Typography variant={"headline"}>
+                                <TranslateTypography variant={"headline"}>
                                     New export
-                                </Typography>
+                                </TranslateTypography>
                             </Grid>
 
                             <Grid item xs={12} md={6}>
                                 <FormControl style={styles.formControl}>
                                     <InputLabel htmlFor="export-type-selection">
-                                        Export type
+                                        {t("Export type")}
                                     </InputLabel>
                                     <Select
                                         value={this.state.exportType}
@@ -272,7 +279,7 @@ class Exports extends React.Component {
                             <Grid item xs={12} md={6}>
                                 <FormControl style={styles.formControl}>
                                     <InputLabel htmlFor="regional-format-selection">
-                                        Regional format
+                                        {t("Regional format")}
                                     </InputLabel>
                                     <Select
                                         value={this.state.regionalFormat}
@@ -297,7 +304,7 @@ class Exports extends React.Component {
                             <Grid item xs={12} md={6}>
                                 <DatePicker
                                     id="from-date"
-                                    helperText="From date"
+                                    helperText={t("From date")}
                                     emptyLabel="No filter"
                                     format="MMMM DD, YYYY"
                                     disableFuture
@@ -323,7 +330,7 @@ class Exports extends React.Component {
                             <Grid item xs={12} md={6}>
                                 <DatePicker
                                     id="to-date"
-                                    helperText="To date"
+                                    helperText={t("To date")}
                                     emptyLabel="No filter"
                                     format="MMMM DD, YYYY"
                                     disableFuture
@@ -347,7 +354,7 @@ class Exports extends React.Component {
                             </Grid>
 
                             <Grid item xs={12} md={6}>
-                                <Button
+                                <TranslateButton
                                     variant="raised"
                                     color="primary"
                                     onClick={this.createNew}
@@ -359,7 +366,7 @@ class Exports extends React.Component {
                                     }
                                 >
                                     Create export
-                                </Button>
+                                </TranslateButton>
                             </Grid>
                         </Grid>
                     </Paper>
@@ -367,9 +374,9 @@ class Exports extends React.Component {
                     <Paper style={styles.paper}>
                         <Grid container spacing={16}>
                             <Grid item xs={8} md={10}>
-                                <Typography variant={"headline"}>
-                                    Exports
-                                </Typography>
+                                <TranslateTypography variant={"headline"}>
+                                    Existing Exports
+                                </TranslateTypography>
                             </Grid>
 
                             <Grid item xs={2} md={1}>
@@ -430,4 +437,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Exports);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(Exports)
+);

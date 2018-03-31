@@ -15,7 +15,7 @@ export function bunqMeTabSend(
         BunqJSClient.api.bunqMeTabs
             .post(userId, accountId, description, amount, options)
             .then(result => {
-                dispatch(openSnackbar("Bunq.me request created successfully!"));
+                dispatch(openSnackbar("bunq.me request created successfully!"));
                 dispatch(bunqMeTabsUpdate(BunqJSClient, userId,  parseInt(accountId)));
                 dispatch(bunqMeTabNotLoading());
             })
@@ -24,7 +24,7 @@ export function bunqMeTabSend(
                 BunqErrorHandler(
                     dispatch,
                     error,
-                    "We received the following error while creating your Bunq.me request"
+                    "We received the following error while creating your bunq.me request"
                 );
             });
     };
@@ -42,7 +42,7 @@ export function bunqMeTabPut(
         BunqJSClient.api.bunqMeTabs
             .put(userId, accountId, tabId, status)
             .then(result => {
-                dispatch(openSnackbar("Bunq.me request status has been updated successfully!"));
+                dispatch(openSnackbar("bunq.me request status has been updated successfully!"));
                 dispatch(bunqMeTabsUpdate(BunqJSClient, userId, accountId));
                 dispatch(bunqMeTabNotLoading());
             })
@@ -51,7 +51,7 @@ export function bunqMeTabPut(
                 BunqErrorHandler(
                     dispatch,
                     error,
-                    "We received the following error while updating your Bunq.me request"
+                    "We received the following error while updating your bunq.me request"
                 );
             });
     };

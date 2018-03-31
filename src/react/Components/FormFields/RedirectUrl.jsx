@@ -1,6 +1,6 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { withStyles } from "material-ui/styles";
-
 import { FormControl } from "material-ui/Form";
 import Input, { InputLabel, InputAdornment } from "material-ui/Input";
 import { IconButton } from "material-ui";
@@ -31,8 +31,9 @@ class RedirectUrl extends React.Component {
         return (
             <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="redirectUrl">
-                    Set a redirect url for the user after the payment is
-                    completed?
+                    {this.props.t(
+                        "Set a redirect url for the user after the payment is completed?"
+                    )}
                 </InputLabel>
                 <Input
                     className={classes.input}
@@ -57,4 +58,4 @@ class RedirectUrl extends React.Component {
     }
 }
 
-export default withStyles(styles)(RedirectUrl);
+export default withStyles(styles)(translate("translations")(RedirectUrl));

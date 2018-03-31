@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { translate } from "react-i18next";
 import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
 import Button from "material-ui/Button";
@@ -9,7 +10,6 @@ import { FormControl, FormControlLabel } from "material-ui/Form";
 import Select from "material-ui/Select";
 import Paper from "material-ui/Paper";
 import Switch from "material-ui/Switch";
-import Typography from "material-ui/Typography";
 import Dialog, {
     DialogActions,
     DialogContent,
@@ -21,9 +21,15 @@ import ArrowBackIcon from "material-ui-icons/ArrowBack";
 
 const remote = require("electron").remote;
 const path = remote.require("path");
+const packageInfo = require("../../../package.json");
+const SUPPORTED_LANGUAGES = packageInfo.supported_languages;
 
 import NavLink from "../Components/Routing/NavLink";
 import FilePicker from "../Components/FormFields/FilePicker";
+import ButtonTranslate from "../Components/TranslationHelpers/Button";
+import TypographyTranslate from "../Components/TranslationHelpers/Typography";
+import MenuItemTranslate from "../Components/TranslationHelpers/MenuItem";
+
 import { openSnackbar } from "../Actions/snackbar";
 import {
     resetApplication,
@@ -33,6 +39,7 @@ import {
     setNativeFrame,
     setStickyMenu,
     setTheme,
+    setLanguage,
     overwriteSettingsLocation,
     toggleInactivityCheck,
     loadSettingsLocation
@@ -51,11 +58,28 @@ const styles = {
         width: "100%"
     },
     button: {
-        width: "100%"
+        width: "100%",
+        textAlign: "center"
     },
     paper: {
         padding: 24
     }
+};
+
+const getPrettyLanguage = key => {
+    switch (key) {
+        case "en":
+            return "English";
+        case "nl":
+            return "Nederlands";
+        case "de":
+            return "Deutsch";
+        case "es":
+            return "Español";
+        case "it":
+            return "Italiano";
+    }
+    return key;
 };
 
 const humanReadableThemes = {
@@ -75,6 +99,10 @@ class Settings extends React.Component {
 
     handleThemeChange = event => {
         this.props.setTheme(event.target.value);
+    };
+
+    handleLanguageChange = event => {
+        this.props.setLanguage(event.target.value);
     };
 
     handleNativeFrameCheckChange = event => {
@@ -127,14 +155,18 @@ class Settings extends React.Component {
     };
 
     render() {
+        const t = this.props.t;
+
+        const clearBunqDesktopText1 = t("Are you absolutely sure");
+        const clearBunqDesktopTex2 = t("Reset BunqDesktop");
         const clearBunqDesktopText = this.state.clearConfirmation
-            ? "Are you absolutely sure?"
-            : "Reset BunqDesktop";
+            ? clearBunqDesktopText1
+            : clearBunqDesktopTex2;
 
         return (
             <Grid container spacing={24}>
                 <Helmet>
-                    <title>{`BunqDesktop - Settings`}</title>
+                    <title>{`BunqDesktop - ${t("Settings")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={2}>
@@ -150,26 +182,26 @@ class Settings extends React.Component {
                     <Paper style={styles.paper}>
                         <Grid container spacing={16}>
                             <Grid item xs={6} sm={8} md={9} lg={10}>
-                                <Typography variant={"headline"}>
+                                <TypographyTranslate variant={"headline"}>
                                     Settings
-                                </Typography>
+                                </TypographyTranslate>
                             </Grid>
 
                             <Grid item xs={6} sm={4} md={3} lg={2}>
-                                <Button
+                                <ButtonTranslate
                                     variant="raised"
                                     color="secondary"
                                     style={styles.button}
                                     onClick={this.props.clearApiKey}
                                 >
                                     Logout
-                                </Button>
+                                </ButtonTranslate>
                             </Grid>
 
                             <Grid item xs={12} md={6}>
                                 <FormControl style={styles.formControl}>
                                     <InputLabel htmlFor="theme-selection">
-                                        Theme
+                                        {t("Theme")}
                                     </InputLabel>
                                     <Select
                                         value={this.props.theme}
@@ -189,6 +221,28 @@ class Settings extends React.Component {
                             </Grid>
 
                             <Grid item xs={12} md={6}>
+                                <FormControl style={styles.formControl}>
+                                    <InputLabel htmlFor="theme-selection">
+                                        Language
+                                    </InputLabel>
+                                    <Select
+                                        value={this.props.language}
+                                        onChange={this.handleLanguageChange}
+                                        input={
+                                            <Input id="language-selection" />
+                                        }
+                                        style={styles.selectField}
+                                    >
+                                        {SUPPORTED_LANGUAGES.map(language => (
+                                            <MenuItem value={language}>
+                                                {getPrettyLanguage(language)}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+
+                            <Grid item xs={12} md={6}>
                                 <FormControlLabel
                                     control={
                                         <Switch
@@ -200,7 +254,7 @@ class Settings extends React.Component {
                                             }
                                         />
                                     }
-                                    label="Use the native frame"
+                                    label={t("Use the native frame")}
                                 />
                             </Grid>
 
@@ -215,7 +269,7 @@ class Settings extends React.Component {
                                             }
                                         />
                                     }
-                                    label="Minimize to tray"
+                                    label={t("Minimize to tray")}
                                 />
                             </Grid>
 
@@ -230,7 +284,7 @@ class Settings extends React.Component {
                                             }
                                         />
                                     }
-                                    label="Enable sticky menu"
+                                    label={t("Enable sticky menu")}
                                 />
                             </Grid>
 
@@ -246,7 +300,7 @@ class Settings extends React.Component {
                                             }
                                         />
                                     }
-                                    label="Hide account balances"
+                                    label={t("Hide account balances")}
                                 />
                             </Grid>
 
@@ -262,7 +316,7 @@ class Settings extends React.Component {
                                             }
                                         />
                                     }
-                                    label="Logout automatically"
+                                    label={t("Logout automatically")}
                                 />
                                 {this.props.checkInactivity ? (
                                     <Select
@@ -274,27 +328,45 @@ class Settings extends React.Component {
                                                 .handleHideInactivityDurationChange
                                         }
                                     >
-                                        <MenuItem key={60} value={60}>
+                                        <MenuItemTranslate key={60} value={60}>
                                             1 Minute
-                                        </MenuItem>
-                                        <MenuItem key={120} value={120}>
+                                        </MenuItemTranslate>
+                                        <MenuItemTranslate
+                                            key={120}
+                                            value={120}
+                                        >
                                             2 Minutes
-                                        </MenuItem>
-                                        <MenuItem key={300} value={300}>
+                                        </MenuItemTranslate>
+                                        <MenuItemTranslate
+                                            key={300}
+                                            value={300}
+                                        >
                                             5 Minutes
-                                        </MenuItem>
-                                        <MenuItem key={600} value={600}>
+                                        </MenuItemTranslate>
+                                        <MenuItemTranslate
+                                            key={600}
+                                            value={600}
+                                        >
                                             10 Minutes
-                                        </MenuItem>
-                                        <MenuItem key={1800} value={1800}>
+                                        </MenuItemTranslate>
+                                        <MenuItemTranslate
+                                            key={1800}
+                                            value={1800}
+                                        >
                                             30 Minutes
-                                        </MenuItem>
-                                        <MenuItem key={3600} value={3600}>
+                                        </MenuItemTranslate>
+                                        <MenuItemTranslate
+                                            key={3600}
+                                            value={3600}
+                                        >
                                             1 Hour
-                                        </MenuItem>
-                                        <MenuItem key={7200} value={7200}>
+                                        </MenuItemTranslate>
+                                        <MenuItemTranslate
+                                            key={7200}
+                                            value={7200}
+                                        >
                                             2 Hours
-                                        </MenuItem>
+                                        </MenuItemTranslate>
                                     </Select>
                                 ) : null}
                             </Grid>
@@ -318,14 +390,14 @@ class Settings extends React.Component {
                             <Grid item xs={12} />
 
                             <Grid item xs={12} sm={4}>
-                                <Button
+                                <ButtonTranslate
                                     variant="raised"
                                     component={NavLink}
                                     to={"/debug-page"}
                                     style={styles.button}
                                 >
                                     Debug application
-                                </Button>
+                                </ButtonTranslate>
                             </Grid>
 
                             <Grid item xs={12} sm={4} />
@@ -361,27 +433,27 @@ class Settings extends React.Component {
                         </DialogContent>
 
                         <DialogActions>
-                            <Button
+                            <ButtonTranslate
                                 variant="raised"
                                 onClick={() =>
                                     this.setState({ openImportDialog: false })}
                             >
                                 Cancel
-                            </Button>
-                            <Button
+                            </ButtonTranslate>
+                            <ButtonTranslate
                                 variant="raised"
                                 onClick={this.overwriteSettingsFile}
                                 color="secondary"
                             >
                                 Overwrite file
-                            </Button>
-                            <Button
+                            </ButtonTranslate>
+                            <ButtonTranslate
                                 variant="raised"
                                 onClick={this.importSettingsFile}
                                 color="primary"
                             >
                                 Import file
-                            </Button>
+                            </ButtonTranslate>
                         </DialogActions>
                     </Dialog>
                 </Grid>
@@ -393,6 +465,7 @@ class Settings extends React.Component {
 const mapStateToProps = state => {
     return {
         theme: state.options.theme,
+        language: state.options.language,
         hideBalance: state.options.hide_balance,
         minimizeToTray: state.options.minimize_to_tray,
         nativeFrame: state.options.native_frame,
@@ -411,6 +484,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // options and options_drawer handlers
         openSnackbar: message => dispatch(openSnackbar(message)),
         setTheme: theme => dispatch(setTheme(theme)),
+        setLanguage: language => dispatch(setLanguage(language)),
         setNativeFrame: useFrame => dispatch(setNativeFrame(useFrame)),
         setStickyMenu: userStickyMenu =>
             dispatch(setStickyMenu(userStickyMenu)),
@@ -433,4 +507,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Settings);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(Settings)
+);
