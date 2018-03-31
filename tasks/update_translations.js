@@ -123,9 +123,7 @@ const start = async () => {
                 );
 
                 console.log(
-                    `Translate to ${languageKey}: "${englishData[
-                        missingTranslationKey
-                    ]}"`
+                    `Translate to ${languageKey}: "${result.translated}"`
                 );
 
                 // set translated data in localeData for this language
