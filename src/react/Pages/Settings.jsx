@@ -21,10 +21,11 @@ import ArrowBackIcon from "material-ui-icons/ArrowBack";
 
 const remote = require("electron").remote;
 const path = remote.require("path");
+const packageInfo = require("../../../package.json");
+const SUPPORTED_LANGUAGES = packageInfo.supported_languages;
 
 import NavLink from "../Components/Routing/NavLink";
 import FilePicker from "../Components/FormFields/FilePicker";
-import { SUPPORTED_LANGUAGES } from "../i18n";
 import ButtonTranslate from "../Components/TranslationHelpers/Button";
 import TypographyTranslate from "../Components/TranslationHelpers/Typography";
 import MenuItemTranslate from "../Components/TranslationHelpers/MenuItem";
@@ -57,7 +58,8 @@ const styles = {
         width: "100%"
     },
     button: {
-        width: "100%"
+        width: "100%",
+        textAlign: "center"
     },
     paper: {
         padding: 24
