@@ -1,4 +1,5 @@
 import * as React from "react";
+import { translate } from "react-i18next";
 import Paper from "material-ui/Paper";
 import Button from "material-ui/Button";
 import Switch from "material-ui/Switch";
@@ -76,13 +77,14 @@ class RuleCollectionPreview extends React.Component<any, any> {
     };
 
     render() {
+        const t = this.props.t;
         const toggleDisplay = (
             <Button
                 variant="raised"
                 style={styles.toggleVisibilityButton}
                 onClick={this.handleVisibilityToggle}
             >
-                {this.state.visible ? "Hide preview" : "Show preview"}
+                {this.state.visible ? t("Hide preview") : t("Show preview")}
             </Button>
         );
 
@@ -117,7 +119,9 @@ class RuleCollectionPreview extends React.Component<any, any> {
                                         })}
                                 />
                             }
-                            label="Show all events, not just the matching ones"
+                            label={t(
+                                "Show all events, not just the matching ones"
+                            )}
                         />
                         <List>{items}</List>
                     </Paper>
@@ -135,4 +139,4 @@ class RuleCollectionPreview extends React.Component<any, any> {
     }
 }
 
-export default RuleCollectionPreview;
+export default translate("translations")(RuleCollectionPreview);
