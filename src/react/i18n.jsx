@@ -41,6 +41,15 @@ const loadLocales = (url, options, callback, data) => {
                             : "__MISSING_TRANSLATION__";
                 });
 
+                // sort alphabetically
+                const tempLocaleData = {};
+                Object.keys(localeData)
+                    .sort()
+                    .forEach(localeDataKey => {
+                        tempLocaleData[localeDataKey] =
+                            localeData[localeDataKey];
+                    });
+
                 try {
                     // write the updated file back to the locale files
                     fs.writeFileSync(
@@ -60,8 +69,11 @@ i18n
     .use(Backend)
     .use(reactI18nextModule)
     .init({
-        fallbackLng: "en",
-        saveMissing: true,
+        // don't fallback to english in dev mode to make missing keys easier to spot
+        fallbackLng: process.env.NODE_ENV === "development" ? null : "en",
+
+        // trigger save missing event only in dev mode
+        saveMissing: process.env.NODE_ENV === "development",
 
         // have a common namespace used around the full app
         ns: ["translations"],

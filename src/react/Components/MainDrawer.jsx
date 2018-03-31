@@ -106,44 +106,44 @@ class MainDrawer extends React.Component {
                   <ListItemWrapper
                       to="/pay"
                       icon={ArrowUpwardIcon}
-                      text={t("Pay")}
+                      text={"Pay"}
                       location={this.props.location}
                   />,
                   <ListItemWrapper
                       to="/request"
                       icon={ArrowDownwardIcon}
-                      text={t("Request")}
+                      text={"Request"}
                       location={this.props.location}
                   />,
                   <ListItemWrapper
                       to="/bunqme-tab"
                       icon={ShareIcon}
-                      text={t("bunqme Requests")}
+                      text={"bunqme Requests"}
                       location={this.props.location}
                   />,
                   <ListItemWrapper
                       to="/card"
                       icon={CardIcon}
-                      text={t("Cards")}
+                      text={"Cards"}
                       location={this.props.location}
                   />,
                   <Divider />,
                   <ListItemWrapper
                       to="/stats"
                       icon={TimeLineIcon}
-                      text={t("Stats")}
+                      text={"Stats"}
                       location={this.props.location}
                   />,
                   <ListItemWrapper
                       to="/exports"
                       icon={FileUpload}
-                      text={t("Exports")}
+                      text={"Exports"}
                       location={this.props.location}
                   />,
                   <ListItemWrapper
                       to="/category-dashboard"
                       icon={Bookmark}
-                      text={t("Categories")}
+                      text={"Categories"}
                       location={this.props.location}
                   />
               ];
@@ -191,7 +191,7 @@ class MainDrawer extends React.Component {
                 <ListItemWrapper
                     to="/settings"
                     icon={SettingsIcon}
-                    text={t("Settings")}
+                    text={"Settings"}
                     location={this.props.location}
                 />
             </List>

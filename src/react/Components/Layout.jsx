@@ -149,12 +149,10 @@ class Layout extends React.Component {
         return true;
     }
 
-    checkLanguageChange = (oldProps = false) => {
-        const { i18n, language } = this.props;
-        console.log("checking language change");
-        if (oldProps === false || oldProps.language !== this.props.language) {
-            console.log("changed language");
-            i18n.changeLanguage(language);
+    checkLanguageChange = (newProps = false) => {
+        const { i18n } = this.props;
+        if (newProps === false || newProps.language !== this.props.language) {
+            i18n.changeLanguage(newProps.language);
         }
     };
 

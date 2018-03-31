@@ -1,8 +1,8 @@
 import React from "react";
 import { matchPath } from "react-router";
-import Typography from "material-ui/Typography";
 import { ListItem, ListItemIcon } from "material-ui/List";
 
+import TranslateTypography from "./TranslationHelpers/Typography";
 import NavLink from "./Routing/NavLink";
 
 const styles = {
@@ -37,7 +37,9 @@ export default ({
             <ListItemIcon>
                 <PropIcon color={isActive ? "primary" : "inherit"} />
             </ListItemIcon>
-            <Typography variant="subheading">{text}</Typography>
+            <TranslateTypography variant="subheading">
+                {text}
+            </TranslateTypography>
         </ListItem>
     );
 };
