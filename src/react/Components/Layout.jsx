@@ -45,6 +45,7 @@ import {
     registrationNotLoading,
     registrationClearApiKey
 } from "../Actions/registration";
+import { setHideBalance } from "../Actions/options";
 
 const styles = theme => ({
     contentContainer: {
@@ -85,6 +86,9 @@ class Layout extends React.Component {
             if (currentPath !== path) {
                 this.props.history.push(path);
             }
+        });
+        ipcRenderer.on("toggle-balance", (event, path) => {
+            this.props.setHideBalance(!this.props.hideBalance);
         });
     }
 
@@ -149,6 +153,10 @@ class Layout extends React.Component {
         return true;
     }
 
+    /**
+     * Checks if the language chanaged and update i18n when required
+     * @param newProps
+     */
     checkLanguageChange = (newProps = false) => {
         const { i18n } = this.props;
         if (newProps === false || newProps.language !== this.props.language) {
@@ -421,6 +429,7 @@ const mapStateToProps = state => {
         theme: state.options.theme,
         language: state.options.language,
         stickyMenu: state.options.sticky_menu,
+        hideBalance: state.options.hide_balance,
         checkInactivity: state.options.check_inactivity,
         inactivityCheckDuration: state.options.inactivity_check_duration,
 
@@ -453,6 +462,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         registrationClearApiKey: () =>
             dispatch(registrationClearApiKey(BunqJSClient)),
 
+        setHideBalance: hideBalance => dispatch(setHideBalance(hideBalance)),
         // get latest user list from BunqJSClient
         usersUpdate: (updated = false) =>
             dispatch(usersUpdate(BunqJSClient, updated)),
