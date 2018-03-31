@@ -144,10 +144,10 @@ class Login extends React.Component {
             "The API key you entered does not look valid"
         );
         const deviceNameLengthMin = this.props.t(
-            "The device name has to be atleast 1 character."
+            "The device name has to be atleast 1 character"
         );
         const deviceNameLengthMax = this.props.t(
-            "The device name can't be longer than 32 characters."
+            "The device name can't be longer than 32 characters"
         );
 
         if (this.state.apiKey.length !== 64) {
