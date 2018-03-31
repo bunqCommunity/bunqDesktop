@@ -6,12 +6,12 @@ import Grid from "material-ui/Grid";
 
 import RuleCreator from "./RuleCreator.tsx";
 import RuleCollection from "../../Types/RuleCollection";
+import RuleCollectionPreview from "./RuleCollectionPreview";
 import {
     setCategoryRule,
     removeCategoryRule
 } from "../../Actions/category_rules";
 import { openSnackbar } from "../../Actions/snackbar";
-import RuleCollectionPreview from "./RuleCollectionPreview";
 
 const styles = {};
 

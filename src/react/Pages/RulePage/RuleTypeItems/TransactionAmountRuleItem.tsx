@@ -1,14 +1,17 @@
 import * as React from "react";
 import Select from "material-ui/Select";
 import Input from "material-ui/Input";
-import Typography from "material-ui/Typography";
-import { MenuItem } from "material-ui/Menu";
 import { FormControl } from "material-ui/Form";
 import { TableBody, TableCell, TableRow } from "material-ui/Table";
 
 import MoneyFormatInputDefault from "../../../Components/FormFields/MoneyFormatInputDefault";
-import { TransactionAmountRule } from "../../../Types/Rules/TransactionAmountRule";
+import TransactionAmountRule from "../../../Types/Rules/TransactionAmountRule";
 import RuleItemMenu from "../RuleItemMenu";
+
+import TranslateTypography2 from "../../../Components/TranslationHelpers/Typography";
+import TranslateMenuItem2 from "../../../Components/TranslationHelpers/MenuItem";
+const TranslateTypography: any = TranslateTypography2;
+const TranslateMenuItem: any = TranslateMenuItem2;
 
 interface IPropTypes {
     rule: TransactionAmountRule;
@@ -59,9 +62,9 @@ class TransactionAmountRuleItem extends React.Component<IPropTypes, any> {
             <TableBody key={"tableBody"}>
                 <TableRow>
                     <TableCell>
-                        <Typography variant="subheading">
+                        <TranslateTypography variant="subheading">
                             Transaction amount
-                        </Typography>
+                        </TranslateTypography>
                     </TableCell>
 
                     <TableCell style={styles.tableCell}>
@@ -76,14 +79,14 @@ class TransactionAmountRuleItem extends React.Component<IPropTypes, any> {
                                     />
                                 }
                             >
-                                <MenuItem value={"MORE"}>More than</MenuItem>
-                                <MenuItem value={"MORE_EQUALS"}>
+                                <TranslateMenuItem value={"MORE"}>More than</TranslateMenuItem>
+                                <TranslateMenuItem value={"MORE_EQUALS"}>
                                     Equals or more than
-                                </MenuItem>
-                                <MenuItem value={"LESS"}>Less than</MenuItem>
-                                <MenuItem value={"LESS_EQUALS"}>
+                                </TranslateMenuItem>
+                                <TranslateMenuItem value={"LESS"}>Less than</TranslateMenuItem>
+                                <TranslateMenuItem value={"LESS_EQUALS"}>
                                     Equals or less than
-                                </MenuItem>
+                                </TranslateMenuItem>
                             </Select>
                             {/*<FormHelperText>*/}
                             {/*How to check the amount*/}

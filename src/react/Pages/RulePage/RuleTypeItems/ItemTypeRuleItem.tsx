@@ -1,13 +1,17 @@
 import * as React from "react";
+import { translate } from "react-i18next";
 import Select from "material-ui/Select";
 import Input from "material-ui/Input";
-import Typography from "material-ui/Typography";
-import { MenuItem } from "material-ui/Menu";
 import { FormControl } from "material-ui/Form";
 import { TableBody, TableCell, TableRow } from "material-ui/Table";
 
 import RuleItemMenu from "../RuleItemMenu";
 import TypeRule from "../../../Types/Rules/TypeRule";
+
+import TranslateTypography2 from "../../../Components/TranslationHelpers/Typography";
+import TranslateMenuItem2 from "../../../Components/TranslationHelpers/MenuItem";
+const TranslateTypography: any = TranslateTypography2;
+const TranslateMenuItem: any = TranslateMenuItem2;
 
 interface IPropTypes {
     rule: TypeRule;
@@ -52,7 +56,9 @@ class ItemTypeRuleItem extends React.Component<IPropTypes, any> {
             <TableBody key={"tableBody"}>
                 <TableRow>
                     <TableCell>
-                        <Typography variant="subheading">Event type</Typography>
+                        <TranslateTypography variant="subheading">
+                            Event type
+                        </TranslateTypography>
                     </TableCell>
 
                     <TableCell style={styles.tableCell}>
@@ -67,33 +73,33 @@ class ItemTypeRuleItem extends React.Component<IPropTypes, any> {
                                     />
                                 }
                             >
-                                <MenuItem value={"PAYMENT"}>
+                                <TranslateMenuItem value={"PAYMENT"}>
                                     Payment or card payment
-                                </MenuItem>
-                                <MenuItem value={"REGULAR_PAYMENT"}>
+                                </TranslateMenuItem>
+                                <TranslateMenuItem value={"REGULAR_PAYMENT"}>
                                     Payment
-                                </MenuItem>
-                                <MenuItem value={"PAYMENT_RECEIVED"}>
+                                </TranslateMenuItem>
+                                <TranslateMenuItem value={"PAYMENT_RECEIVED"}>
                                     Received payment
-                                </MenuItem>
-                                <MenuItem value={"PAYMENT_SENT"}>
+                                </TranslateMenuItem>
+                                <TranslateMenuItem value={"PAYMENT_SENT"}>
                                     Sent payment
-                                </MenuItem>
-                                <MenuItem value={"BUNQ_ME_TAB"}>
+                                </TranslateMenuItem>
+                                <TranslateMenuItem value={"BUNQ_ME_TAB"}>
                                     bunq.me request
-                                </MenuItem>
-                                <MenuItem value={"MASTERCARD_PAYMENT"}>
+                                </TranslateMenuItem>
+                                <TranslateMenuItem value={"MASTERCARD_PAYMENT"}>
                                     Card payments (Maestro or Mastercard)
-                                </MenuItem>
-                                <MenuItem value={"REQUEST"}>
+                                </TranslateMenuItem>
+                                <TranslateMenuItem value={"REQUEST"}>
                                     Request (sent and received)
-                                </MenuItem>
-                                <MenuItem value={"REQUEST_INQUIRY"}>
+                                </TranslateMenuItem>
+                                <TranslateMenuItem value={"REQUEST_INQUIRY"}>
                                     Sent request
-                                </MenuItem>
-                                <MenuItem value={"REQUEST_RESPONSE"}>
+                                </TranslateMenuItem>
+                                <TranslateMenuItem value={"REQUEST_RESPONSE"}>
                                     Received request
-                                </MenuItem>
+                                </TranslateMenuItem>
                             </Select>
                         </FormControl>
                     </TableCell>
@@ -113,4 +119,4 @@ class ItemTypeRuleItem extends React.Component<IPropTypes, any> {
     }
 }
 
-export default ItemTypeRuleItem;
+export default translate("translations")(ItemTypeRuleItem);

@@ -2,12 +2,14 @@ import * as React from "react";
 import Select from "material-ui/Select";
 import TextField from "material-ui/TextField";
 import Input from "material-ui/Input";
-import { MenuItem } from "material-ui/Menu";
-import { FormControl, FormHelperText } from "material-ui/Form";
+import { FormControl } from "material-ui/Form";
 import { TableBody, TableCell, TableRow } from "material-ui/Table";
 
 import { ValueRule } from "../../../Types/Rules/ValueRule";
 import RuleItemMenu from "../RuleItemMenu";
+
+import TranslateMenuItem2 from "../../../Components/TranslationHelpers/MenuItem";
+const TranslateMenuItem: any = TranslateMenuItem2;
 
 interface IPropTypes {
     rule: ValueRule;
@@ -102,14 +104,14 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
                                 onChange={this.handleFieldChange}
                                 input={<Input name="field" id="field-helper" />}
                             >
-                                <MenuItem value={"IBAN"}>IBAN number</MenuItem>
-                                <MenuItem value={"DESCRIPTION"}>
+                                <TranslateMenuItem value={"IBAN"}>IBAN number</TranslateMenuItem>
+                                <TranslateMenuItem value={"DESCRIPTION"}>
                                     Description
-                                </MenuItem>
-                                <MenuItem value={"COUNTERPARTY_NAME"}>
+                                </TranslateMenuItem>
+                                <TranslateMenuItem value={"COUNTERPARTY_NAME"}>
                                     Display name
-                                </MenuItem>
-                                <MenuItem value={"CUSTOM"}>Other</MenuItem>
+                                </TranslateMenuItem>
+                                <TranslateMenuItem value={"CUSTOM"}>Other</TranslateMenuItem>
                             </Select>
                         </FormControl>
 
@@ -133,19 +135,19 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
                                     <Input name="age" id="match-type-helper" />
                                 }
                             >
-                                <MenuItem value={"CONTAINS"}>
+                                <TranslateMenuItem value={"CONTAINS"}>
                                     Contains text
-                                </MenuItem>
-                                <MenuItem value={"EXACT"}>
+                                </TranslateMenuItem>
+                                <TranslateMenuItem value={"EXACT"}>
                                     Matches exactly
-                                </MenuItem>
-                                <MenuItem value={"STARTS_WITH"}>
+                                </TranslateMenuItem>
+                                <TranslateMenuItem value={"STARTS_WITH"}>
                                     Starts with
-                                </MenuItem>
-                                <MenuItem value={"ENDS_WITH"}>
+                                </TranslateMenuItem>
+                                <TranslateMenuItem value={"ENDS_WITH"}>
                                     Ends with
-                                </MenuItem>
-                                <MenuItem value={"REGEX"}>Regex</MenuItem>
+                                </TranslateMenuItem>
+                                <TranslateMenuItem value={"REGEX"}>Regex</TranslateMenuItem>
                             </Select>
                             {/*<FormHelperText>*/}
                             {/*How to check the field*/}
