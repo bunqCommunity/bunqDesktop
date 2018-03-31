@@ -86,7 +86,7 @@ class ItemTypeRuleItem extends React.Component<IPropTypes, any> {
                                     Sent payment
                                 </TranslateMenuItem>
                                 <TranslateMenuItem value={"BUNQ_ME_TAB"}>
-                                    bunq.me request
+                                    bunqme request
                                 </TranslateMenuItem>
                                 <TranslateMenuItem value={"MASTERCARD_PAYMENT"}>
                                     Card payments (Maestro or Mastercard)
