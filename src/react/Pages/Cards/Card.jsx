@@ -45,12 +45,17 @@ class Card extends React.Component {
         super(props, context);
         this.state = {
             selectedCardIndex: 0,
+            scrollDistance: 0,
             carouselStyle: {
                 transform: "translateY(0px)"
             }
         };
 
+        // improve render smoothness by using requestanimation frames
+        this.ticking = false;
+
         window.onkeydown = this.handleKeyDown.bind(this);
+        window.addEventListener("mousewheel", this.handleScroll.bind(this));
     }
 
     componentDidMount() {
@@ -58,8 +63,30 @@ class Card extends React.Component {
     }
 
     componentWillUnmount() {
+        // remove event listeners
         window.onkeydown = null;
+        window.removeEventListener("mousewheel", this.handleScroll.bind(this));
     }
+
+    handleScroll = event => {
+        if (!this.ticking) {
+            window.requestAnimationFrame(() => {
+                this.ticking = false;
+                if (event.wheelDelta > 0) {
+                    this.goPreviousCard();
+                } else {
+                    const filteredCards = this.props.cards.filter(card => {
+                        return !(
+                            card.CardDebit && card.CardDebit.status !== "ACTIVE"
+                        );
+                    });
+
+                    this.goNextCard(filteredCards);
+                }
+            });
+            this.ticking = true;
+        }
+    };
 
     cardUpdateCvc2Codes = event => {
         const cardInfo = this.props.cards[this.state.selectedCardIndex];
@@ -74,15 +101,23 @@ class Card extends React.Component {
             return !(card.CardDebit && card.CardDebit.status !== "ACTIVE");
         });
 
-        if (
-            event.which === 40 &&
-            this.state.selectedCardIndex < filteredCards.length - 1
-        ) {
+        if (event.which === 40) {
+            this.goNextCard(filteredCards);
+        }
+        if (event.which === 38) {
+            this.goPreviousCard();
+        }
+    };
+
+    goNextCard = filteredCards => {
+        if (this.state.selectedCardIndex < filteredCards.length - 1) {
             this.setState({
                 selectedCardIndex: this.state.selectedCardIndex + 1
             });
         }
-        if (event.which === 38 && this.state.selectedCardIndex > 0) {
+    };
+    goPreviousCard = () => {
+        if (this.state.selectedCardIndex > 0) {
             this.setState({
                 selectedCardIndex: this.state.selectedCardIndex - 1
             });
@@ -191,8 +226,12 @@ class Card extends React.Component {
                         {!currentAccount ? (
                             <ListItem divider>
                                 <ListItemText
-                                    primary={t("No account found for this card")}
-                                    secondary={t("This likely means this card is connected to a Joint account")}
+                                    primary={t(
+                                        "No account found for this card"
+                                    )}
+                                    secondary={t(
+                                        "This likely means this card is connected to a Joint account"
+                                    )}
                                 />
                             </ListItem>
                         ) : (
@@ -267,6 +306,12 @@ class Card extends React.Component {
                             t("View CVC Codes")
                         )}
                     </Button>
+                    <TypographyTranslate
+                        variant="caption"
+                        style={{ textAlign: "center" }}
+                    >
+                        This does not create new codes yet!
+                    </TypographyTranslate>
                 </React.Fragment>
             );
         }
