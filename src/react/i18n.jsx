@@ -5,8 +5,6 @@ import { reactI18nextModule } from "react-i18next";
 const remote = require("electron").remote;
 const path = remote.require("path");
 const fs = remote.require("fs");
-const packageInfo = require("../../package.json");
-const SUPPORTED_LANGUAGES = packageInfo.supported_languages;
 
 /**
  * Adds a new key to the reference locale data
