@@ -140,22 +140,26 @@ class Login extends React.Component {
     };
 
     setRegistration = () => {
+        const apiKeyLength = this.props.t(
+            "The API key you entered does not look valid"
+        );
+        const deviceNameLengthMin = this.props.t(
+            "The device name has to be atleast 1 character."
+        );
+        const deviceNameLengthMax = this.props.t(
+            "The device name can't be longer than 32 characters."
+        );
+
         if (this.state.apiKey.length !== 64) {
-            this.props.openSnackbar(
-                "The API key you entered does not look valid"
-            );
+            this.props.openSnackbar(apiKeyLength);
             return;
         }
 
         if (this.state.deviceName.length <= 0) {
-            this.props.openSnackbar(
-                "The device name has to be atleast 1 character."
-            );
+            this.props.openSnackbar(deviceNameLengthMin);
             return;
         } else if (this.state.deviceName.length > 32) {
-            this.props.openSnackbar(
-                "The device name can't be longer than 32 characters."
-            );
+            this.props.openSnackbar(deviceNameLengthMax);
             return;
         }
 

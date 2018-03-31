@@ -15,14 +15,12 @@ import { FormControl, FormControlLabel } from "material-ui/Form";
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
 import TargetSelection from "../../Components/FormFields/TargetSelection";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
-import PhoneFormatInput from "../../Components/FormFields/PhoneFormatInput";
 import { openSnackbar } from "../../Actions/snackbar";
 import { requestInquirySend } from "../../Actions/request_inquiry";
 import MinimumAge from "./Options/MinimumAge";
 import RedirectUrl from "../../Components/FormFields/RedirectUrl";
 import ConfirmationDialog from "./ConfirmationDialog";
 import AllowBunqMe from "./Options/AllowBunqMe";
-import iban from "iban";
 
 const styles = {
     payButton: {

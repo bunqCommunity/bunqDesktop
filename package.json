@@ -76,6 +76,7 @@
         "start": "gulp start --env=development",
         "start:dev": "cross-env NODE_ENV=DEVELOPMENT gulp start --env=development",
         "update-icons": "node tasks/generate_material_icons.js",
+        "update-translations": "node tasks/update_translations.js",
         "add-contributer": "all-contributors add"
     },
     "publish": null,

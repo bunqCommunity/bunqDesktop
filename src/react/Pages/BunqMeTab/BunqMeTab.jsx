@@ -47,10 +47,11 @@ class BunqMeTab extends React.Component {
     toggleForm = () => this.setState({ showForm: !this.state.showForm });
 
     render() {
+        const t=this.props.t;
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - bunq.me requests`}</title>
+                    <title>{`BunqDesktop - ${t("bunqme Requests")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} md={4}>

@@ -134,7 +134,7 @@ class AccountInfo extends React.Component {
                     open={this.state.openDialog}
                     onClose={this.toggleDeactivateDialog}
                 >
-                    <DialogTitle>Cancel account</DialogTitle>
+                    <DialogTitle>{t("Cancel account")}</DialogTitle>
 
                     <DialogContent>
                         <DialogContentText>

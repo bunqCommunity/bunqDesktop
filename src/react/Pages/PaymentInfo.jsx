@@ -46,7 +46,11 @@ class PaymentInfo extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.initialBunqConnect) {
+        if (
+            this.props.user &&
+            this.props.user.id &&
+            this.props.initialBunqConnect
+        ) {
             const { paymentId, accountId } = this.props.match.params;
             this.props.updatePayment(
                 this.props.user.id,
