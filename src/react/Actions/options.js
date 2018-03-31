@@ -7,6 +7,15 @@ export function setTheme(theme) {
     };
 }
 
+export function setLanguage(language) {
+    return {
+        type: "OPTIONS_SET_LANGUAGE",
+        payload: {
+            language: language
+        }
+    };
+}
+
 export function setNativeFrame(useFrame) {
     return {
         type: "OPTIONS_SET_NATIVE_FRAME",

@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import Grid from "material-ui/Grid";
@@ -33,14 +34,12 @@ import { usersUpdate } from "../Actions/users";
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
 import { registrationClearUserInfo } from "../Actions/registration";
-
 import { loadStoredPayments } from "../Actions/payments";
 import { loadStoredAccounts } from "../Actions/accounts";
 import { loadStoredBunqMeTabs } from "../Actions/bunq_me_tabs";
 import { loadStoredMasterCardActions } from "../Actions/master_card_actions";
 import { loadStoredRequestInquiries } from "../Actions/request_inquiries";
 import { loadStoredRequestResponses } from "../Actions/request_responses";
-
 import {
     registrationLoading,
     registrationNotLoading,
@@ -89,6 +88,11 @@ class Layout extends React.Component {
         });
     }
 
+    componentWillMount() {
+        const { i18n, language } = this.props;
+        i18n.changeLanguage(language);
+    }
+
     componentDidMount() {
         this.checkBunqSetup()
             .then(_ => {
@@ -99,7 +103,7 @@ class Layout extends React.Component {
             })
             .catch(Logger.error);
 
-        if(process.env.NODE_ENV !== "DEVELOPMENT"){
+        if (process.env.NODE_ENV !== "DEVELOPMENT") {
             VersionChecker().then(versionInfo => {
                 if (versionInfo.newerLink !== false) {
                     this.props.openSnackbar(
@@ -115,6 +119,9 @@ class Layout extends React.Component {
     }
 
     componentWillUpdate(nextProps) {
+        // make sure language is up-to-date
+        this.checkLanguageChange(nextProps);
+
         if (
             nextProps.apiKey !== this.props.apiKey ||
             nextProps.environment !== this.props.environment
@@ -141,6 +148,15 @@ class Layout extends React.Component {
         }
         return true;
     }
+
+    checkLanguageChange = (oldProps = false) => {
+        const { i18n, language } = this.props;
+        console.log("checking language change");
+        if (oldProps === false || oldProps.language !== this.props.language) {
+            console.log("changed language");
+            i18n.changeLanguage(language);
+        }
+    };
 
     checkBunqSetup = async (nextProps = false) => {
         if (nextProps === false) {
@@ -405,6 +421,7 @@ class Layout extends React.Component {
 const mapStateToProps = state => {
     return {
         theme: state.options.theme,
+        language: state.options.language,
         stickyMenu: state.options.sticky_menu,
         checkInactivity: state.options.check_inactivity,
         inactivityCheckDuration: state.options.inactivity_check_duration,
@@ -462,5 +479,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 export default withStyles(styles, { withTheme: true })(
-    withRouter(connect(mapStateToProps, mapDispatchToProps)(Layout))
+    withRouter(
+        connect(mapStateToProps, mapDispatchToProps)(
+            translate("translations")(Layout)
+        )
+    )
 );

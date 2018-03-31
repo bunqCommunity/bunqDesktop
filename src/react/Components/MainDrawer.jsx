@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { withStyles } from "material-ui/styles";
 import PropTypes from "prop-types";
@@ -22,7 +23,6 @@ import NavLink from "./Routing/NavLink";
 import ListItemWrapper from "./ListItemWrapper";
 import { closeMainDrawer } from "../Actions/main_drawer";
 import IsDarwin from "../Helpers/IsDarwin";
-import { translate } from "react-i18next";
 
 const styles = {
     list: {

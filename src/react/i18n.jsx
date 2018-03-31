@@ -1,6 +1,5 @@
 import i18n from "i18next";
 import Backend from "i18next-xhr-backend";
-import LanguageDetector from "i18next-browser-languagedetector";
 import { reactI18nextModule } from "react-i18next";
 
 const remote = require("electron").remote;
@@ -59,24 +58,6 @@ const loadLocales = (url, options, callback, data) => {
 
 i18n
     .use(Backend)
-    .use({
-        type: "postProcessor",
-        name: "nameOfProcessor",
-        process: function(value, key, options, translator) {
-            console.log("custom processor 1");
-
-            /* return manipulated value */
-            return value;
-        }
-    })
-    .use({
-        type: "logger",
-
-        log: function(args) {},
-        warn: function(args) {},
-        error: function(args) {}
-    })
-    .use(LanguageDetector)
     .use(reactI18nextModule)
     .init({
         fallbackLng: "en",

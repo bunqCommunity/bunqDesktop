@@ -24,6 +24,8 @@ const path = remote.require("path");
 
 import NavLink from "../Components/Routing/NavLink";
 import FilePicker from "../Components/FormFields/FilePicker";
+import {SUPPORTED_LANGUAGES} from "../i18n";
+
 import { openSnackbar } from "../Actions/snackbar";
 import {
     resetApplication,
@@ -33,6 +35,7 @@ import {
     setNativeFrame,
     setStickyMenu,
     setTheme,
+    setLanguage,
     overwriteSettingsLocation,
     toggleInactivityCheck,
     loadSettingsLocation
@@ -58,6 +61,16 @@ const styles = {
     }
 };
 
+const getPrettyLanguage = key => {
+    switch(key){
+        case "en":
+            return "English";
+        case "nl":
+            return "Dutch";
+    }
+    return key;
+}
+
 const humanReadableThemes = {
     DefaultTheme: "Light theme",
     DarkTheme: "Dark theme"
@@ -75,6 +88,10 @@ class Settings extends React.Component {
 
     handleThemeChange = event => {
         this.props.setTheme(event.target.value);
+    };
+
+    handleLanguageChange = event => {
+        this.props.setLanguage(event.target.value);
     };
 
     handleNativeFrameCheckChange = event => {
@@ -182,6 +199,26 @@ class Settings extends React.Component {
                                         ).map(themeKey => (
                                             <MenuItem value={themeKey}>
                                                 {humanReadableThemes[themeKey]}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+
+                            <Grid item xs={12} md={6}>
+                                <FormControl style={styles.formControl}>
+                                    <InputLabel htmlFor="theme-selection">
+                                        Language
+                                    </InputLabel>
+                                    <Select
+                                        value={this.props.language}
+                                        onChange={this.handleLanguageChange}
+                                        input={<Input id="language-selection" />}
+                                        style={styles.selectField}
+                                    >
+                                        {SUPPORTED_LANGUAGES.map(language => (
+                                            <MenuItem value={language}>
+                                                {getPrettyLanguage(language)}
                                             </MenuItem>
                                         ))}
                                     </Select>
@@ -393,6 +430,7 @@ class Settings extends React.Component {
 const mapStateToProps = state => {
     return {
         theme: state.options.theme,
+        language: state.options.language,
         hideBalance: state.options.hide_balance,
         minimizeToTray: state.options.minimize_to_tray,
         nativeFrame: state.options.native_frame,
@@ -411,6 +449,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // options and options_drawer handlers
         openSnackbar: message => dispatch(openSnackbar(message)),
         setTheme: theme => dispatch(setTheme(theme)),
+        setLanguage: language => dispatch(setLanguage(language)),
         setNativeFrame: useFrame => dispatch(setNativeFrame(useFrame)),
         setStickyMenu: userStickyMenu =>
             dispatch(setStickyMenu(userStickyMenu)),

@@ -39,11 +39,7 @@ class Dashboard extends React.Component {
     }
 
     render() {
-        const { t, i18n } = this.props;
-
-        const changeLanguage = lng => {
-            i18n.changeLanguage(lng);
-        };
+        const { t } = this.props;
 
         const userTypes = Object.keys(this.props.users);
 

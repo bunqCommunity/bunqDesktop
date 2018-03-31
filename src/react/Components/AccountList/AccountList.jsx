@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Divider from "material-ui/Divider";
 import IconButton from "material-ui/IconButton";
@@ -20,7 +21,6 @@ import { requestResponsesUpdate } from "../../Actions/request_responses";
 import { bunqMeTabsUpdate } from "../../Actions/bunq_me_tabs";
 import { masterCardActionsUpdate } from "../../Actions/master_card_actions";
 import { requestInquiriesUpdate } from "../../Actions/request_inquiries";
-import { translate } from "react-i18next";
 
 const styles = {
     list: {
