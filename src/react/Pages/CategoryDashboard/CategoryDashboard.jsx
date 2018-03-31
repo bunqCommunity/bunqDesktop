@@ -3,8 +3,6 @@ import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
 import Paper from "material-ui/Paper";
-import Button from "material-ui/Button";
-import Typography from "material-ui/Typography";
 
 import CategoryEditor from "../../Components/Categories/CategoryEditor";
 import CategoryChip from "../../Components/Categories/CategoryChip";

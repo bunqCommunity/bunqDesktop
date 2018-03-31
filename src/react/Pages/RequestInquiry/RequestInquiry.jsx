@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
+import { translate } from "react-i18next";
 import EmailValidator from "email-validator";
 
 import Grid from "material-ui/Grid";
@@ -15,12 +16,15 @@ import { FormControl, FormControlLabel } from "material-ui/Form";
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
 import TargetSelection from "../../Components/FormFields/TargetSelection";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
+import RedirectUrl from "../../Components/FormFields/RedirectUrl";
+import TypographyTranslate from "../../Components/TranslationHelpers/Typography";
+import ButtonTranslate from "../../Components/TranslationHelpers/Button";
+import ConfirmationDialog from "./ConfirmationDialog";
+import MinimumAge from "./Options/MinimumAge";
+import AllowBunqMe from "./Options/AllowBunqMe";
+
 import { openSnackbar } from "../../Actions/snackbar";
 import { requestInquirySend } from "../../Actions/request_inquiry";
-import MinimumAge from "./Options/MinimumAge";
-import RedirectUrl from "../../Components/FormFields/RedirectUrl";
-import ConfirmationDialog from "./ConfirmationDialog";
-import AllowBunqMe from "./Options/AllowBunqMe";
 
 const styles = {
     payButton: {
@@ -168,6 +172,9 @@ class RequestInquiry extends React.Component {
 
     // add a target from the current text inputs to the target list
     addTarget = () => {
+        const duplicateTargetMessage = this.props.t(
+            "This target seems to be added already"
+        );
         this.validateTargetInput(valid => {
             // target is valid, add it to the list
             if (valid) {
@@ -192,9 +199,7 @@ class RequestInquiry extends React.Component {
                         name: ""
                     });
                 } else {
-                    this.props.openSnackbar(
-                        "This target seems to be added already"
-                    );
+                    this.props.openSnackbar(duplicateTargetMessage);
                 }
 
                 this.setState(
@@ -369,21 +374,23 @@ class RequestInquiry extends React.Component {
             target,
             targets
         } = this.state;
+        const t = this.props.t;
         if (!this.props.accounts[selectedAccount]) {
             return null;
         }
-        const account = this.props.accounts[selectedAccount]
-            ;
+        const account = this.props.accounts[selectedAccount];
 
         return (
             <Grid container spacing={24} align={"center"} justify={"center"}>
                 <Helmet>
-                    <title>{`BunqDesktop - Pay`}</title>
+                    <title>{`BunqDesktop - ${t("Pay")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={10} md={8} lg={6}>
                     <Paper style={styles.paper}>
-                        <Typography variant="headline">Request Payment</Typography>
+                        <TypographyTranslate variant="headline">
+                            Request Payment
+                        </TypographyTranslate>
 
                         <AccountSelectorDialog
                             value={this.state.selectedAccount}
@@ -410,7 +417,7 @@ class RequestInquiry extends React.Component {
                             fullWidth
                             error={this.state.descriptionError}
                             id="description"
-                            label="Description"
+                            label={t("Description")}
                             value={this.state.description}
                             onChange={this.handleChange("description")}
                         />
@@ -444,7 +451,7 @@ class RequestInquiry extends React.Component {
                                     onClick={this.toggleExpanded}
                                 />
                             }
-                            label="Advanced options"
+                            label={t("Advanced options")}
                         />
 
                         <Collapse
@@ -480,7 +487,7 @@ class RequestInquiry extends React.Component {
                             />
                         </Collapse>
 
-                        <Button
+                        <ButtonTranslate
                             variant="raised"
                             color="primary"
                             disabled={
@@ -491,10 +498,11 @@ class RequestInquiry extends React.Component {
                             onClick={this.openModal}
                         >
                             Send request
-                        </Button>
+                        </ButtonTranslate>
                     </Paper>
 
                     <ConfirmationDialog
+                        t={t}
                         closeModal={this.closeModal}
                         sendInquiry={this.sendInquiry}
                         confirmModalOpen={this.state.confirmModalOpen}
@@ -537,4 +545,6 @@ const mapDispatchToProps = (dispatch, props) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(RequestInquiry);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(RequestInquiry)
+);

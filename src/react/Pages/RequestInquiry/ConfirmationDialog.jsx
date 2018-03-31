@@ -15,8 +15,9 @@ export default class ConfirmationDialog extends React.Component {
             confirmModalOpen,
             description,
             account,
+            targets,
             amount,
-            targets
+            t
         } = this.props;
 
         if (!confirmModalOpen) {
@@ -30,10 +31,10 @@ export default class ConfirmationDialog extends React.Component {
 
             switch (targetItem.type) {
                 case "PHONE":
-                    primaryText = `Phone: ${targetItem.value}`;
+                    primaryText = `${t("Phone")}: ${targetItem.value}`;
                     break;
                 case "EMAIL":
-                    primaryText = `Email: ${targetItem.value}`;
+                    primaryText = `${t("Email")}: ${targetItem.value}`;
                     break;
                 default:
                     return null;
@@ -68,10 +69,10 @@ export default class ConfirmationDialog extends React.Component {
                         </ListItem>
                         <ListItem>
                             <ListItemText
-                                primary="Description"
+                                primary={t("Description")}
                                 secondary={
                                     description.length <= 0 ? (
-                                        "None"
+                                        t("None")
                                     ) : (
                                         description
                                     )
@@ -80,12 +81,12 @@ export default class ConfirmationDialog extends React.Component {
                         </ListItem>
                         <ListItem>
                             <ListItemText
-                                primary="Amount"
+                                primary={t("Amount")}
                                 secondary={`${formatMoney(amount)}`}
                             />
                         </ListItem>
                         <ListItem>
-                            <ListItemText primary="Targets: " />
+                            <ListItemText primary={t("Targets") + ": "} />
                         </ListItem>
                         <Divider />
                         {confirmationModelTargets}
@@ -97,14 +98,14 @@ export default class ConfirmationDialog extends React.Component {
                         onClick={this.props.closeModal}
                         color="secondary"
                     >
-                        Cancel
+                        {t("Cancel")}
                     </Button>
                     <Button
                         variant="raised"
                         onClick={this.props.sendInquiry}
                         color="primary"
                     >
-                        Confirm
+                        {t("Confirm")}
                     </Button>
                 </DialogActions>
             </Dialog>
