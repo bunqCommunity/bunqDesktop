@@ -60,6 +60,13 @@ after_script:
 before_cache:
   - rm -rf $HOME/.cache/electron-builder/wine
 
+# On linux create a tar gz file
+before_deploy:
+  - |
+    if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+      tar -czvf ./dist/linux-unpacked-$TRAVIS_OS_NAME.tar.gz ./dist/linux-unpacked/
+    fi
+
 deploy:
   - provider: releases
     overwrite: true
@@ -76,6 +83,7 @@ deploy:
       - dist/bunqdesktop_*_amd64.snap
       - dist/bunqdesktop-*-x86_64.AppImage
       - dist/bunqdesktop-*-i386.AppImage
+      - dist/linux-unpacked-*.tar.gz
     draft: true
     skip_cleanup: true
     on:
