@@ -110,7 +110,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 AccountListItem.defaultProps = {
-    clickable: true
+    clickable: true,
+    denseMode: false
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AccountListItem);

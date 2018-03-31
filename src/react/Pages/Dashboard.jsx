@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import StickyBox from "react-sticky-box";
@@ -6,8 +7,6 @@ import Paper from "material-ui/Paper";
 import Button from "material-ui/Button";
 import Grid from "material-ui/Grid";
 import Typography from "material-ui/Typography";
-
-import { translate, Trans } from "react-i18next";
 
 import CombinedList from "../Components/CombinedList";
 import AccountList from "../Components/AccountList/AccountList";
@@ -39,14 +38,16 @@ class Dashboard extends React.Component {
     }
 
     render() {
-        const { t } = this.props;
+        const t = this.props.t;
 
         const userTypes = Object.keys(this.props.users);
+
+        const switchUserText = t("Switch user");
 
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - Dashboard`}</title>
+                    <title>{`BunqDesktop - ${t("Dashboard")}`}</title>
                 </Helmet>
 
                 <Grid item xs={8} sm={10}>
@@ -67,7 +68,7 @@ class Dashboard extends React.Component {
                             style={styles.btn}
                             onClick={this.props.logoutUser}
                         >
-                            <Trans>Switch user</Trans>
+                            {switchUserText}
                         </Button>
                     </Grid>
                 ) : null}

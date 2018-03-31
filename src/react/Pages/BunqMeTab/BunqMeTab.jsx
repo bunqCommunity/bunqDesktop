@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
@@ -113,4 +114,6 @@ const mapDispatchToProps = (dispatch, props) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(BunqMeTab);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(BunqMeTab)
+);

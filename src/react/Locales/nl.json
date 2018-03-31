@@ -1,4 +1,5 @@
 {
+	" ": " ",
 	"API key": "API key",
 	"Accept request": "Accepteer verzoek",
 	"Account Info": "Account informatie",
@@ -103,7 +104,7 @@
 	"We failed to load the export content for this monetary account": "Het is niet gelukt om de content van deze export in te laden ",
 	"Weekly": "Weekelijks",
 	"Welcome ": "Welkom ",
-	"Why are you closing the account?": "Waarom wil je did account sluiten?",
+	"Why are you closing the account?": "Waarom wil je dit account deactiveren?",
 	"Yearly": "Jaarlijks",
 	"You cancelled the request": "U hebt het verzoek geannuleerd",
 	"You denied the request": "U hebt het verzoek geweigerd",
