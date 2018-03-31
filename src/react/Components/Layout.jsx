@@ -234,7 +234,7 @@ class Layout extends React.Component {
             return;
         }
 
-        this.props.applicationSetStatus("Registering our encryption keys...");
+        this.props.applicationSetStatus("Registering our encryption keys");
         try {
             await this.props.BunqJSClient.install();
         } catch (exception) {
@@ -245,7 +245,7 @@ class Layout extends React.Component {
             throw exception;
         }
 
-        this.props.applicationSetStatus("Installing this device...");
+        this.props.applicationSetStatus("Installing this device");
         try {
             await this.props.BunqJSClient.registerDevice(deviceName);
         } catch (exception) {
@@ -269,7 +269,7 @@ class Layout extends React.Component {
             throw exception;
         }
 
-        this.props.applicationSetStatus("Creating a new session...");
+        this.props.applicationSetStatus("Creating a new session");
         try {
             await this.props.BunqJSClient.registerSession();
         } catch (exception) {

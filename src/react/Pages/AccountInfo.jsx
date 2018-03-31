@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import Redirect from "react-router-dom/Redirect";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
@@ -17,6 +18,8 @@ import Dialog, {
 
 import CombinedList from "../Components/CombinedList";
 import AccountCard from "../Components/AccountCard";
+import ButtonTranslate from "../Components/TranslationHelpers/Button";
+import TypographyTranslate from "../Components/TranslationHelpers/Typography";
 
 import { openSnackbar } from "../Actions/snackbar";
 import { accountsUpdate, deactivateAccount } from "../Actions/accounts";
@@ -52,7 +55,7 @@ class AccountInfo extends React.Component {
         super(props, context);
         this.state = {
             openDialog: false,
-            deactivateReason: "",
+            deactivateReason: "I no longer need this account",
             deactivateActivated: false
         };
     }
@@ -112,7 +115,7 @@ class AccountInfo extends React.Component {
     };
 
     render() {
-        const { accounts } = this.props;
+        const { accounts, t } = this.props;
         const accountId = parseFloat(this.props.match.params.accountId);
 
         if (this.state.deactivateActivated) return <Redirect to="/" />;
@@ -135,35 +138,35 @@ class AccountInfo extends React.Component {
 
                     <DialogContent>
                         <DialogContentText>
-                            Are you sure you wish to cancel this account?
+                            {t("Are you sure you wish to cancel this account?")}
                         </DialogContentText>
                         <TextField
                             style={styles.deactivateReason}
                             value={this.state.deactivateReason}
                             onChange={this.handleReasonChange}
                             error={this.state.deactivateReason.length === 0}
-                            helperText="Why are you closing the account?"
-                            placeholder="Reason"
+                            helperText={t("Why are you closing the account?")}
+                            placeholder={t("Reason")}
                         />
                     </DialogContent>
 
                     <DialogActions>
-                        <Button
+                        <ButtonTranslate
                             variant="raised"
                             onClick={this.toggleDeactivateDialog}
                             color="primary"
                             autoFocus
                         >
                             Cancel
-                        </Button>
-                        <Button
+                        </ButtonTranslate>
+                        <ButtonTranslate
                             variant="raised"
                             onClick={this.deactivateAccount}
                             color="secondary"
                             disabled={this.state.deactivateReason.length === 0}
                         >
                             Agree
-                        </Button>
+                        </ButtonTranslate>
                     </DialogActions>
                 </Dialog>,
                 <AccountCard
@@ -197,7 +200,7 @@ class AccountInfo extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - Account Info`}</title>
+                    <title>{`BunqDesktop - ${t("Account Info")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={2}>
@@ -248,4 +251,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AccountInfo);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(AccountInfo)
+);

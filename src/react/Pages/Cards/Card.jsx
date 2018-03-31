@@ -127,7 +127,7 @@ class Card extends React.Component {
                             variant="display1"
                             style={{ textAlign: "center" }}
                         >
-                            Loading cards...
+                            Loading cards
                         </Typography>
                     </Grid>
                 </Grid>
