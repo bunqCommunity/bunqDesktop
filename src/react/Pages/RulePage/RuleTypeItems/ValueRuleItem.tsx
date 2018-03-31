@@ -6,7 +6,8 @@ import { FormControl } from "material-ui/Form";
 import { TableBody, TableCell, TableRow } from "material-ui/Table";
 
 import { ValueRule } from "../../../Types/Rules/ValueRule";
-import RuleItemMenu from "../RuleItemMenu";
+import RuleItemMenu2 from "../RuleItemMenu";
+const RuleItemMenu: any = RuleItemMenu2;
 
 import TranslateMenuItem2 from "../../../Components/TranslationHelpers/MenuItem";
 const TranslateMenuItem: any = TranslateMenuItem2;

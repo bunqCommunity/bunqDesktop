@@ -5,8 +5,9 @@ import Input from "material-ui/Input";
 import { FormControl } from "material-ui/Form";
 import { TableBody, TableCell, TableRow } from "material-ui/Table";
 
-import RuleItemMenu from "../RuleItemMenu";
 import TypeRule from "../../../Types/Rules/TypeRule";
+import RuleItemMenu2 from "../RuleItemMenu";
+const RuleItemMenu: any = RuleItemMenu2;
 
 import TranslateTypography2 from "../../../Components/TranslationHelpers/Typography";
 import TranslateMenuItem2 from "../../../Components/TranslationHelpers/MenuItem";
@@ -119,4 +120,4 @@ class ItemTypeRuleItem extends React.Component<IPropTypes, any> {
     }
 }
 
-export default translate("translations")(ItemTypeRuleItem);
+export default ItemTypeRuleItem;

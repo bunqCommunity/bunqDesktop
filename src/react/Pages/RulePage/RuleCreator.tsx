@@ -19,7 +19,8 @@ import CategoryChip from "../../Components/Categories/CategoryChip";
 import ExportDialog from "../../Components/ExportDialog";
 import ImportDialog from "../../Components/ImportDialog";
 import NewRuleItemMenu from "./NewRuleItemMenu";
-import RuleCollectionMenu from "./RuleCollectionMenu";
+import RuleCollectionMenu2 from "./RuleCollectionMenu";
+const RuleCollectionMenu: any = RuleCollectionMenu2;
 
 import ValueRuleItem from "./RuleTypeItems/ValueRuleItem";
 import TransactionAmountRuleItem from "./RuleTypeItems/TransactionAmountRuleItem";

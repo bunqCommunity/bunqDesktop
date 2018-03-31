@@ -6,7 +6,8 @@ import { TableBody, TableCell, TableRow } from "material-ui/Table";
 
 import MoneyFormatInputDefault from "../../../Components/FormFields/MoneyFormatInputDefault";
 import TransactionAmountRule from "../../../Types/Rules/TransactionAmountRule";
-import RuleItemMenu from "../RuleItemMenu";
+import RuleItemMenu2 from "../RuleItemMenu";
+const RuleItemMenu: any = RuleItemMenu2;
 
 import TranslateTypography2 from "../../../Components/TranslationHelpers/Typography";
 import TranslateMenuItem2 from "../../../Components/TranslationHelpers/MenuItem";
@@ -79,11 +80,15 @@ class TransactionAmountRuleItem extends React.Component<IPropTypes, any> {
                                     />
                                 }
                             >
-                                <TranslateMenuItem value={"MORE"}>More than</TranslateMenuItem>
+                                <TranslateMenuItem value={"MORE"}>
+                                    More than
+                                </TranslateMenuItem>
                                 <TranslateMenuItem value={"MORE_EQUALS"}>
                                     Equals or more than
                                 </TranslateMenuItem>
-                                <TranslateMenuItem value={"LESS"}>Less than</TranslateMenuItem>
+                                <TranslateMenuItem value={"LESS"}>
+                                    Less than
+                                </TranslateMenuItem>
                                 <TranslateMenuItem value={"LESS_EQUALS"}>
                                     Equals or less than
                                 </TranslateMenuItem>
