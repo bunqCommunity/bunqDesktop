@@ -1,5 +1,4 @@
 {
-	" ": " ",
 	"API key": "API key",
 	"Accept request": "Accept request",
 	"Account Info": "Account Info",
@@ -46,6 +45,7 @@
 	"From date": "From date",
 	"Hide account balances": "Hide account balances",
 	"IBAN": "IBAN",
+	"Import": "Import",
 	"Import file": "Import file",
 	"Installing this device": "Installing this device",
 	"Less options": "Less options",
@@ -103,7 +103,7 @@
 	"Version": "Version",
 	"We failed to load the export content for this monetary account": "We failed to load the export content for this monetary account",
 	"Weekly": "Weekly",
-	"Welcome ": "Welcome ",
+	"Welcome": "Welcome",
 	"Why are you closing the account?": "Why are you closing the account?",
 	"Yearly": "Yearly",
 	"You cancelled the request": "You cancelled the request",

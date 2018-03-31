@@ -52,7 +52,7 @@ class Dashboard extends React.Component {
 
                 <Grid item xs={8} sm={10}>
                     <Typography variant="title" gutterBottom>
-                        {t("Welcome ")}
+                        {t("Welcome")}
                         {this.props.user.first_name ? (
                             this.props.user.first_name
                         ) : (

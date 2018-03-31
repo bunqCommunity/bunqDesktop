@@ -72,6 +72,10 @@ const getPrettyLanguage = key => {
             return "Nederlands";
         case "de":
             return "Deutsch";
+        case "es":
+            return "Español";
+        case "it":
+            return "Italiano";
     }
     return key;
 };
@@ -325,22 +329,40 @@ class Settings extends React.Component {
                                         <MenuItemTranslate key={60} value={60}>
                                             1 Minute
                                         </MenuItemTranslate>
-                                        <MenuItemTranslate key={120} value={120}>
+                                        <MenuItemTranslate
+                                            key={120}
+                                            value={120}
+                                        >
                                             2 Minutes
                                         </MenuItemTranslate>
-                                        <MenuItemTranslate key={300} value={300}>
+                                        <MenuItemTranslate
+                                            key={300}
+                                            value={300}
+                                        >
                                             5 Minutes
                                         </MenuItemTranslate>
-                                        <MenuItemTranslate key={600} value={600}>
+                                        <MenuItemTranslate
+                                            key={600}
+                                            value={600}
+                                        >
                                             10 Minutes
                                         </MenuItemTranslate>
-                                        <MenuItemTranslate key={1800} value={1800}>
+                                        <MenuItemTranslate
+                                            key={1800}
+                                            value={1800}
+                                        >
                                             30 Minutes
                                         </MenuItemTranslate>
-                                        <MenuItemTranslate key={3600} value={3600}>
+                                        <MenuItemTranslate
+                                            key={3600}
+                                            value={3600}
+                                        >
                                             1 Hour
                                         </MenuItemTranslate>
-                                        <MenuItemTranslate key={7200} value={7200}>
+                                        <MenuItemTranslate
+                                            key={7200}
+                                            value={7200}
+                                        >
                                             2 Hours
                                         </MenuItemTranslate>
                                     </Select>

@@ -1,5 +1,4 @@
 {
-	" ": " ",
 	"API key": "API key",
 	"Accept request": "Accepteer verzoek",
 	"Account Info": "Account informatie",
@@ -46,6 +45,7 @@
 	"From date": "Van datum",
 	"Hide account balances": "Verberg account balans",
 	"IBAN": "IBAN",
+	"Import": "Importeren",
 	"Import file": "Importeer bestand",
 	"Installing this device": "Apparaat installeren",
 	"Less options": "Minder opties",
@@ -103,7 +103,7 @@
 	"Version": "Versie",
 	"We failed to load the export content for this monetary account": "Het is niet gelukt om de content van deze export in te laden ",
 	"Weekly": "Weekelijks",
-	"Welcome ": "Welkom ",
+	"Welcome": "Welkom ",
 	"Why are you closing the account?": "Waarom wil je dit account deactiveren?",
 	"Yearly": "Jaarlijks",
 	"You cancelled the request": "U hebt het verzoek geannuleerd",
