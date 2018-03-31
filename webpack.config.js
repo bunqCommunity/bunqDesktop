@@ -25,7 +25,20 @@ let config = {
         extensions: [".tsx", ".ts", ".js", ".jsx", ".json"],
         modules: ["node_modules", path.resolve(__dirname, "./src")]
     },
+    mode: DEVELOPMENT ? "development" : "production",
     devtool: DEVELOPMENT ? "source-map" : false,
+    optimization: {
+        splitChunks: {
+            cacheGroups: {
+                styles: {
+                    name: "styles",
+                    test: /\.css$/,
+                    chunks: "all",
+                    enforce: true
+                }
+            }
+        }
+    },
     plugins: plugins({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }),
     module: {
         rules: rules

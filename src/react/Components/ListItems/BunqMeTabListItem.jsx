@@ -101,7 +101,7 @@ class BunqMeTabListItem extends React.Component {
                     primary={primaryText}
                     secondary={bunqMeTab.bunqme_tab_entry.description}
                 />
-                <ListItemSecondaryAction style={{ marginTop: -40 }}>
+                <ListItemSecondaryAction style={{ marginTop: -16 }}>
                     <AccountQRFullscreen mode="HIDDEN" text={shareUrl} />
                     <CopyToClipboard
                         text={shareUrl}

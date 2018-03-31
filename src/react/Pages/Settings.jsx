@@ -308,7 +308,9 @@ class Settings extends React.Component {
                                         "promptToCreate"
                                     ]}
                                     value={this.props.settingsLocation}
-                                    defaultPath={path.dirname(this.props.settingsLocation)}
+                                    defaultPath={path.dirname(
+                                        this.props.settingsLocation
+                                    )}
                                     onChange={this.displayImportDialog}
                                 />
                             </Grid>
@@ -363,7 +365,6 @@ class Settings extends React.Component {
                                 variant="raised"
                                 onClick={() =>
                                     this.setState({ openImportDialog: false })}
-                                color="primary"
                             >
                                 Cancel
                             </Button>
@@ -377,7 +378,7 @@ class Settings extends React.Component {
                             <Button
                                 variant="raised"
                                 onClick={this.importSettingsFile}
-                                color="secondary"
+                                color="primary"
                             >
                                 Import file
                             </Button>
@@ -402,7 +403,8 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, ownProps) => {
+    const { BunqJSClient } = ownProps;
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
 

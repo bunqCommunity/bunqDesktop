@@ -101,7 +101,7 @@ class AccountList extends React.Component {
             if (this.delayedUpdate) clearTimeout(this.delayedUpdate);
             this.delayedUpdate = setTimeout(() => {
                 this.updateExternal(user.id, accountsAccountId);
-            }, 1000);
+            }, 500);
         }
 
         // no accounts loaded
@@ -120,10 +120,7 @@ class AccountList extends React.Component {
         if (this.props.accounts !== false) {
             accounts = this.props.accounts
                 .filter(account => {
-                    if (
-                        account &&
-                        account.status !== "ACTIVE"
-                    ) {
+                    if (account && account.status !== "ACTIVE") {
                         return false;
                     }
                     return true;
@@ -139,10 +136,7 @@ class AccountList extends React.Component {
 
         const totalBalance = this.props.accounts.reduce((total, account) => {
             if (account.balance) {
-                return (
-                    total +
-                    parseFloat(account.balance.value)
-                );
+                return total + parseFloat(account.balance.value);
             }
             return total;
         }, 0);
@@ -172,20 +166,12 @@ class AccountList extends React.Component {
                     </ListItemSecondaryAction>
                 </ListItem>
                 {this.props.accountsLoading ? <LinearProgress /> : <Divider />}
-                <List>
-                    {accounts}
-                    <AddAccount
-                        displayAddAccount={this.props.displayAddAccount}
-                    />
-                </List>
+                {accounts}
+                <AddAccount displayAddAccount={this.props.displayAddAccount} />
             </List>
         );
     }
 }
-
-AccountList.defaultProps = {
-    updateExternal: false
-};
 
 const mapStateToProps = state => {
     return {

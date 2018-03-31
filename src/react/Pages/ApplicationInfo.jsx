@@ -3,19 +3,22 @@ import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
 import Paper from "material-ui/Paper";
+import IconButton from "material-ui/IconButton";
 import Typography from "material-ui/Typography";
 import Avatar from "material-ui/Avatar";
 import Button from "material-ui/Button";
-import CopyToClipboard from "react-copy-to-clipboard";
 import List, { ListItem, ListItemText } from "material-ui/List";
 
-const { app } = require("electron").remote;
+import FolderIcon from "material-ui-icons/Folder";
+
+const remote = require("electron").remote;
+const shell = require("electron").shell;
+const app = remote.app;
 
 import NavLink from "../Components/Routing/NavLink";
 import { allReleases } from "../Helpers/VersionChecker";
 import { humanReadableDate } from "../Helpers/Utils";
 import Logger from "../Helpers/Logger";
-import { openSnackbar } from "../Actions/snackbar";
 
 const styles = {
     avatar: {
@@ -89,7 +92,7 @@ class ApplicationInfo extends React.Component {
                 <Grid item xs={12} sm={8}>
                     <Paper style={styles.paper}>
                         <Grid container spacing={24} justify={"center"}>
-                            <Grid item sm={3} md={2}>
+                            <Grid item xs={2} md={1}>
                                 <a
                                     className="js-external-link"
                                     rel="noopener"
@@ -102,7 +105,7 @@ class ApplicationInfo extends React.Component {
                                 </a>
                             </Grid>
 
-                            <Grid item sm={9} md={10}>
+                            <Grid item xs={8} md={10}>
                                 <Typography variant={"headline"}>
                                     BunqDesktop
                                 </Typography>
@@ -111,50 +114,35 @@ class ApplicationInfo extends React.Component {
                                 </Typography>
                             </Grid>
 
-                            <Grid item sm={12}>
-                                <CopyToClipboard
-                                    text={`${app.getPath(
-                                        "userData"
-                                    )}/settings.json`}
-                                    onCopy={this.copiedValue(
-                                        "settings location"
-                                    )}
+                            <Grid item xs={2} md={1}>
+                                <IconButton
+                                    onClick={() =>
+                                        shell.openItem(app.getPath("userData"))}
                                 >
-                                    <div>
-                                        <Typography variant={"body2"}>
-                                            Settings:
-                                        </Typography>
-                                        <Typography variant={"body2"}>
-                                            {app.getPath("userData")}/settings.json
-                                        </Typography>
-                                    </div>
-                                </CopyToClipboard>
-                                <br />
-                                <CopyToClipboard
-                                    text={`${app.getPath(
-                                        "userData"
-                                    )}/BunqDesktop.log.txt`}
-                                    onCopy={this.copiedValue("log location")}
-                                >
-                                    <div>
-                                        <Typography variant={"body2"}>
-                                            Log file:
-                                        </Typography>
-                                        <Typography variant={"body2"}>
-                                            {app.getPath("userData")}/BunqDesktop.log.txt
-                                        </Typography>
-                                    </div>
-                                </CopyToClipboard>
+                                    <FolderIcon />
+                                </IconButton>
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Button variant="raised" component={NavLink} to={"/"}>
+                                <Typography variant={"body2"}>
+                                    Application data: {app.getPath("userData")}
+                                </Typography>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <Button
+                                    variant="raised"
+                                    component={NavLink}
+                                    to={"/"}
+                                >
                                     Back
                                 </Button>
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Typography variant={"title"}>Releases</Typography>
+                                <Typography variant={"title"}>
+                                    Releases
+                                </Typography>
                                 <List>{releaseItems}</List>
                             </Grid>
                         </Grid>

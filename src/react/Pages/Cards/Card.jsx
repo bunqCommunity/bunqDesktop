@@ -293,7 +293,7 @@ class Card extends React.Component {
                     >
                         <Grid item xs={12}>
                             <Paper style={styles.cardInfoPaper}>
-                                <Grid container>
+                                <Grid container spacing={16}>
                                     <Grid item xs={12} sm={6}>
                                         <Typography variant={"title"}>
                                             {cardInfo.name_on_card}

@@ -67,7 +67,7 @@ class PaymentListItem extends React.Component {
                     primary={displayName}
                     secondary={paymentTypeLabel}
                 />
-                <ListItemSecondaryAction style={{ marginTop: -40 }}>
+                <ListItemSecondaryAction style={{ marginTop: -16 }}>
                     <MoneyAmountLabel
                         style={styles.moneyAmountLabel}
                         info={payment}

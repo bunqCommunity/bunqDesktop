@@ -65,7 +65,7 @@ class CategorySelector extends React.Component {
         }
 
         return (
-            <Grid container style={styles.newCategoryContainer}>
+            <Grid container spacing={16} style={styles.newCategoryContainer}>
                 <Grid item xs={12}>
                     <CategoryChips {...categoryChipProps} />
                 </Grid>

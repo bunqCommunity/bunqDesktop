@@ -13,8 +13,9 @@ import LoadOlderButton from "../../Components/LoadOlderButton";
 import ClearBtn from "../../Components/FilterComponents/ClearFilter";
 import FilterDrawer from "../../Components/FilterComponents/FilterDrawer";
 import StatsWorker from "../../WebWorkers/stats.worker";
-import PieChart from "./PieChart";
-import BalanceHistoryChart from "./BalanceHistoryChart";
+import EventCountPieChart from "./EventCountPieChart";
+import CategoryCountPieChart from "./CategoryCountPieChart";
+import CategoryHistoryChart from "./CategoryHistoryChart";
 import EventTypeHistoryChart from "./EventTypeHistoryChart";
 
 class Stats extends React.Component {
@@ -81,7 +82,9 @@ class Stats extends React.Component {
         this.worker.postMessage({
             // all endpoints
             payments: props.payments.map(item => item.toJSON()),
-            masterCardActions: props.masterCardActions.map(item => item.toJSON()),
+            masterCardActions: props.masterCardActions.map(item =>
+                item.toJSON()
+            ),
             requestInquiries: props.requestInquiries.map(item => item.toJSON()),
             requestResponses: props.requestResponses.map(item => item.toJSON()),
             bunqMeTabs: props.bunqMeTabs,
@@ -178,7 +181,7 @@ class Stats extends React.Component {
                                 padding: 12
                             }}
                         >
-                            <PieChart
+                            <EventCountPieChart
                                 payments={this.props.payments}
                                 masterCardActions={this.props.masterCardActions}
                                 requestInquiries={this.props.requestInquiries}
@@ -197,6 +200,7 @@ class Stats extends React.Component {
                 : {
                       labels: [],
                       balanceHistoryData: [],
+                      categoryCountHistory: {},
                       eventCountHistory: [],
                       masterCardActionHistory: [],
                       requestInquiryHistory: [],
@@ -204,32 +208,6 @@ class Stats extends React.Component {
                       bunqMeTabHistory: [],
                       paymentHistory: []
                   };
-
-        let bigCharts = [
-            <Grid item xs={12} key={"balancechart"}>
-                <Paper>
-                    <BalanceHistoryChart
-                        height={500}
-                        labels={data.labels}
-                        balanceHistoryData={data.balanceHistoryData}
-                        eventCountHistory={data.eventCountHistory}
-                    />
-                </Paper>
-            </Grid>,
-            <Grid item xs={12} key={"eventschart"}>
-                <Paper>
-                    <EventTypeHistoryChart
-                        height={500}
-                        labels={data.labels}
-                        masterCardActionHistory={data.masterCardActionHistory}
-                        requestInquiryHistory={data.requestInquiryHistory}
-                        requestResponseHistory={data.requestResponseHistory}
-                        bunqMeTabHistory={data.bunqMeTabHistory}
-                        paymentHistory={data.paymentHistory}
-                    />
-                </Paper>
-            </Grid>
-        ];
 
         return (
             <Grid container spacing={16}>
@@ -322,9 +300,51 @@ class Stats extends React.Component {
 
                 <Grid item xs={12} sm={8} md={9} lg={10}>
                     <Grid container spacing={16}>
-                        {bigCharts}
+                        <Grid item xs={12}>
+                            <Paper>
+                                <EventTypeHistoryChart
+                                    height={500}
+                                    labels={data.labels}
+                                    masterCardActionHistory={
+                                        data.masterCardActionHistory
+                                    }
+                                    requestInquiryHistory={
+                                        data.requestInquiryHistory
+                                    }
+                                    requestResponseHistory={
+                                        data.requestResponseHistory
+                                    }
+                                    bunqMeTabHistory={data.bunqMeTabHistory}
+                                    paymentHistory={data.paymentHistory}
+                                />
+                            </Paper>
+                        </Grid>
 
                         {eventCountStats}
+
+                        <Grid item xs={12}>
+                            <Paper>
+                                <CategoryHistoryChart
+                                    height={500}
+                                    labels={data.labels}
+                                    categories={this.props.categories}
+                                    categoryCountHistory={
+                                        data.categoryCountHistory
+                                    }
+                                />
+                            </Paper>
+                        </Grid>
+
+                        <Grid item xs={12} md={6}>
+                            <Paper>
+                                <CategoryCountPieChart
+                                    categories={this.props.categories}
+                                    categoryCountHistory={
+                                        data.categoryCountHistory
+                                    }
+                                />
+                            </Paper>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>
