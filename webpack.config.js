@@ -45,6 +45,7 @@ let config = {
     },
     node: {
         console: false,
+        __dirname: false,
         fs: "empty",
         net: "empty",
         tls: "empty"

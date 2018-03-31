@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Paper from "material-ui/Paper";
@@ -129,20 +130,22 @@ class Stats extends React.Component {
     };
 
     render() {
+        const t = this.props.t;
+
         const data =
             this.state.parsedData !== false
                 ? this.state.parsedData
                 : {
-                      labels: [],
-                      balanceHistoryData: [],
-                      categoryCountHistory: {},
-                      eventCountHistory: [],
-                      masterCardActionHistory: [],
-                      requestInquiryHistory: [],
-                      requestResponseHistory: [],
-                      bunqMeTabHistory: [],
-                      paymentHistory: []
-                  };
+                    labels: [],
+                    balanceHistoryData: [],
+                    categoryCountHistory: {},
+                    eventCountHistory: [],
+                    masterCardActionHistory: [],
+                    requestInquiryHistory: [],
+                    requestResponseHistory: [],
+                    bunqMeTabHistory: [],
+                    paymentHistory: []
+                };
 
         const eventCountStats = (
             <Grid item xs={12}>
@@ -150,16 +153,16 @@ class Stats extends React.Component {
                     <Grid item xs={12} sm={6} md={4}>
                         <Paper>
                             <List component="nav">
-                                <ListSubheader>Statistics</ListSubheader>
+                                <ListSubheader>{t("Statistics")}</ListSubheader>
                                 <ListItem>
                                     <ListItemText
-                                        primary="Payments"
+                                        primary={t("Payments")}
                                         secondary={this.props.payments.length}
                                     />
                                 </ListItem>
                                 <ListItem>
                                     <ListItemText
-                                        primary="Mastercard payments"
+                                        primary={t("Mastercard payments")}
                                         secondary={
                                             this.props.masterCardActions.length
                                         }
@@ -167,7 +170,7 @@ class Stats extends React.Component {
                                 </ListItem>
                                 <ListItem>
                                     <ListItemText
-                                        primary="Requests sent"
+                                        primary={t("Requests sent")}
                                         secondary={
                                             this.props.requestInquiries.length
                                         }
@@ -175,7 +178,7 @@ class Stats extends React.Component {
                                 </ListItem>
                                 <ListItem>
                                     <ListItemText
-                                        primary="Requests received"
+                                        primary={t("Requests received")}
                                         secondary={
                                             this.props.requestResponses.length
                                         }
@@ -183,7 +186,7 @@ class Stats extends React.Component {
                                 </ListItem>
                                 <ListItem>
                                     <ListItemText
-                                        primary="Bunq.me requests"
+                                        primary={t("bunqme Requests")}
                                         secondary={this.props.bunqMeTabs.length}
                                     />
                                 </ListItem>
@@ -222,7 +225,7 @@ class Stats extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - Stats`}</title>
+                    <title>{`BunqDesktop - ${t("Stats")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={4} md={3}>
@@ -249,35 +252,24 @@ class Stats extends React.Component {
                                     <FormControlLabel
                                         value="daily"
                                         control={<Radio />}
-                                        label="Daily"
+                                        label={t("Daily")}
                                     />
                                     <FormControlLabel
                                         value="weekly"
                                         control={<Radio />}
-                                        label="Weekly"
+                                        label={t("Weekly")}
                                     />
                                     <FormControlLabel
                                         value="monthly"
                                         control={<Radio />}
-                                        label="Monthly"
+                                        label={t("Monthly")}
                                     />
                                     <FormControlLabel
                                         value="yearly"
                                         control={<Radio />}
-                                        label="Yearly"
+                                        label={t("Yearly")}
                                     />
                                 </RadioGroup>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <LoadOlderButton
-                                    wrapperStyle={{ margin: 0 }}
-                                    buttonStyle={{ width: "100%" }}
-                                    BunqJSClient={this.props.BunqJSClient}
-                                    initialBunqConnect={
-                                        this.props.initialBunqConnect
-                                    }
-                                />
                             </Grid>
 
                             <Grid item xs={12}>
@@ -412,4 +404,6 @@ const mapDispatchToProps = dispatch => {
     return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Stats);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(Stats)
+);

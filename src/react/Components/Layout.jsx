@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import Grid from "material-ui/Grid";
@@ -33,19 +34,18 @@ import { usersUpdate } from "../Actions/users";
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
 import { registrationClearUserInfo } from "../Actions/registration";
-
 import { loadStoredPayments } from "../Actions/payments";
 import { loadStoredAccounts } from "../Actions/accounts";
 import { loadStoredBunqMeTabs } from "../Actions/bunq_me_tabs";
 import { loadStoredMasterCardActions } from "../Actions/master_card_actions";
 import { loadStoredRequestInquiries } from "../Actions/request_inquiries";
 import { loadStoredRequestResponses } from "../Actions/request_responses";
-
 import {
     registrationLoading,
     registrationNotLoading,
     registrationClearApiKey
 } from "../Actions/registration";
+import { setHideBalance } from "../Actions/options";
 
 const styles = theme => ({
     contentContainer: {
@@ -87,6 +87,14 @@ class Layout extends React.Component {
                 this.props.history.push(path);
             }
         });
+        ipcRenderer.on("toggle-balance", (event, path) => {
+            this.props.setHideBalance(!this.props.hideBalance);
+        });
+    }
+
+    componentWillMount() {
+        const { i18n, language } = this.props;
+        i18n.changeLanguage(language);
     }
 
     componentDidMount() {
@@ -99,7 +107,7 @@ class Layout extends React.Component {
             })
             .catch(Logger.error);
 
-        if(process.env.NODE_ENV !== "DEVELOPMENT"){
+        if (process.env.NODE_ENV !== "DEVELOPMENT") {
             VersionChecker().then(versionInfo => {
                 if (versionInfo.newerLink !== false) {
                     this.props.openSnackbar(
@@ -115,6 +123,9 @@ class Layout extends React.Component {
     }
 
     componentWillUpdate(nextProps) {
+        // make sure language is up-to-date
+        this.checkLanguageChange(nextProps);
+
         if (
             nextProps.apiKey !== this.props.apiKey ||
             nextProps.environment !== this.props.environment
@@ -141,6 +152,17 @@ class Layout extends React.Component {
         }
         return true;
     }
+
+    /**
+     * Checks if the language chanaged and update i18n when required
+     * @param newProps
+     */
+    checkLanguageChange = (newProps = false) => {
+        const { i18n } = this.props;
+        if (newProps === false || newProps.language !== this.props.language) {
+            i18n.changeLanguage(newProps.language);
+        }
+    };
 
     checkBunqSetup = async (nextProps = false) => {
         if (nextProps === false) {
@@ -220,7 +242,7 @@ class Layout extends React.Component {
             return;
         }
 
-        this.props.applicationSetStatus("Registering our encryption keys...");
+        this.props.applicationSetStatus("Registering our encryption keys");
         try {
             await this.props.BunqJSClient.install();
         } catch (exception) {
@@ -231,7 +253,7 @@ class Layout extends React.Component {
             throw exception;
         }
 
-        this.props.applicationSetStatus("Installing this device...");
+        this.props.applicationSetStatus("Installing this device");
         try {
             await this.props.BunqJSClient.registerDevice(deviceName);
         } catch (exception) {
@@ -255,7 +277,7 @@ class Layout extends React.Component {
             throw exception;
         }
 
-        this.props.applicationSetStatus("Creating a new session...");
+        this.props.applicationSetStatus("Creating a new session");
         try {
             await this.props.BunqJSClient.registerSession();
         } catch (exception) {
@@ -405,7 +427,9 @@ class Layout extends React.Component {
 const mapStateToProps = state => {
     return {
         theme: state.options.theme,
+        language: state.options.language,
         stickyMenu: state.options.sticky_menu,
+        hideBalance: state.options.hide_balance,
         checkInactivity: state.options.check_inactivity,
         inactivityCheckDuration: state.options.inactivity_check_duration,
 
@@ -438,6 +462,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         registrationClearApiKey: () =>
             dispatch(registrationClearApiKey(BunqJSClient)),
 
+        setHideBalance: hideBalance => dispatch(setHideBalance(hideBalance)),
         // get latest user list from BunqJSClient
         usersUpdate: (updated = false) =>
             dispatch(usersUpdate(BunqJSClient, updated)),
@@ -462,5 +487,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 export default withStyles(styles, { withTheme: true })(
-    withRouter(connect(mapStateToProps, mapDispatchToProps)(Layout))
+    withRouter(
+        connect(mapStateToProps, mapDispatchToProps)(
+            translate("translations")(Layout)
+        )
+    )
 );

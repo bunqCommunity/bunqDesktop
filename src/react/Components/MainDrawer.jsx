@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { withStyles } from "material-ui/styles";
 import PropTypes from "prop-types";
@@ -80,6 +81,7 @@ class MainDrawer extends React.Component {
 
     render() {
         const {
+            t,
             classes,
             theme,
             open,
@@ -104,44 +106,44 @@ class MainDrawer extends React.Component {
                   <ListItemWrapper
                       to="/pay"
                       icon={ArrowUpwardIcon}
-                      text="Pay"
+                      text={"Pay"}
                       location={this.props.location}
                   />,
                   <ListItemWrapper
                       to="/request"
                       icon={ArrowDownwardIcon}
-                      text="Request"
+                      text={"Request"}
                       location={this.props.location}
                   />,
                   <ListItemWrapper
                       to="/bunqme-tab"
                       icon={ShareIcon}
-                      text="bunq.me Requests"
+                      text={"bunqme Requests"}
                       location={this.props.location}
                   />,
                   <ListItemWrapper
                       to="/card"
                       icon={CardIcon}
-                      text="Cards"
+                      text={"Cards"}
                       location={this.props.location}
                   />,
                   <Divider />,
                   <ListItemWrapper
                       to="/stats"
                       icon={TimeLineIcon}
-                      text="Stats"
+                      text={"Stats"}
                       location={this.props.location}
                   />,
                   <ListItemWrapper
                       to="/exports"
                       icon={FileUpload}
-                      text="Exports"
+                      text={"Exports"}
                       location={this.props.location}
                   />,
                   <ListItemWrapper
                       to="/category-dashboard"
                       icon={Bookmark}
-                      text="Categories"
+                      text={"Categories"}
                       location={this.props.location}
                   />
               ];
@@ -176,7 +178,8 @@ class MainDrawer extends React.Component {
                         </ListItemIcon>
                         <ListItemText
                             primary="BunqDesktop"
-                            secondary={`Version ${process.env.CURRENT_VERSION}`}
+                            secondary={`${t("Version")} ${process.env
+                                .CURRENT_VERSION}`}
                         />
                     </ListItem>
                 </NavLink>
@@ -188,7 +191,7 @@ class MainDrawer extends React.Component {
                 <ListItemWrapper
                     to="/settings"
                     icon={SettingsIcon}
-                    text="Settings"
+                    text={"Settings"}
                     location={this.props.location}
                 />
             </List>
@@ -274,5 +277,7 @@ MainDrawer.propTypes = {
 };
 
 export default withStyles(styles, { withTheme: true })(
-    connect(mapStateToProps, mapDispatchToProps)(MainDrawer)
+    connect(mapStateToProps, mapDispatchToProps)(
+        translate("translations")(MainDrawer)
+    )
 );

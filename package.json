@@ -10,6 +10,13 @@
     },
     "license": "MIT",
     "main": "app/background.js",
+    "supported_languages": [
+        "en",
+        "nl",
+        "de",
+        "es",
+        "it"
+    ],
     "build": {
         "appId": "com.bunq.desktop",
         "files": [
@@ -69,6 +76,7 @@
         "start": "gulp start --env=development",
         "start:dev": "cross-env NODE_ENV=DEVELOPMENT gulp start --env=development",
         "update-icons": "node tasks/generate_material_icons.js",
+        "update-translations": "node tasks/update_translations.js",
         "add-contributer": "all-contributors add"
     },
     "publish": null,
@@ -80,6 +88,7 @@
     },
     "devDependencies": {
         "@bunq-community/bunq-js-client": "^0.15.0",
+        "@google-cloud/translate": "^1.1.0",
         "@types/axios": "^0.14.0",
         "@types/jest": "^22.1.3",
         "@types/moxios": "^0.4.8",
@@ -116,6 +125,9 @@
         "gulp-util": "^3.0.8",
         "gulp-watch": "^4.3.11",
         "html-webpack-plugin": "^2.26.0",
+        "i18next": "^10.6.0",
+        "i18next-browser-languagedetector": "^2.1.1",
+        "i18next-xhr-backend": "^1.5.1",
         "iban": "^0.0.8",
         "localforage": "^1.5.2",
         "loglevel": "^1.5.1",
@@ -136,6 +148,7 @@
         "react-countdown-now": "^1.3.0",
         "react-dom": "^16.3.0",
         "react-helmet": "^5.2.0",
+        "react-i18next": "^7.5.1",
         "react-json-view": "^1.16.1",
         "react-loadable": "^5.3.1",
         "react-number-format": "^v3.0.0-beta3",

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { translate } from "react-i18next";
 import Button from "material-ui/Button";
 import TextField from "material-ui/TextField";
 import Dialog, {
@@ -7,6 +8,8 @@ import Dialog, {
     DialogTitle
 } from "material-ui/Dialog";
 import Slide from "material-ui/transitions/Slide";
+
+import TranslateButton from "./TranslationHelpers/Button";
 
 const Transition = props => <Slide direction="left" {...props} />;
 
@@ -55,7 +58,7 @@ class ImportDialog extends React.Component<any, any> {
     };
 
     render() {
-        let { open, closeModal, title, showAsNewButton } = this.props;
+        let { open, closeModal, title, showAsNewButton, t } = this.props;
         if (!showAsNewButton) showAsNewButton = false;
 
         return (
@@ -79,32 +82,32 @@ class ImportDialog extends React.Component<any, any> {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button
+                    <TranslateButton
                         variant="raised"
                         onClick={closeModal}
                         color="secondary"
                     >
                         Cancel
-                    </Button>
+                    </TranslateButton>
 
                     {showAsNewButton ? (
-                        <Button variant="raised" onClick={this.importDataNew}>
+                        <TranslateButton variant="raised" onClick={this.importDataNew}>
                             Import as new
-                        </Button>
+                        </TranslateButton>
                     ) : null}
 
-                    <Button
+                    <TranslateButton
                         variant="raised"
                         onClick={this.importDataOverwrite}
                         disabled={this.state.importContentError}
                         color="primary"
                     >
                         Import
-                    </Button>
+                    </TranslateButton>
                 </DialogActions>
             </Dialog>
         );
     }
 }
 
-export default ImportDialog;
+export default translate("translations")(ImportDialog);

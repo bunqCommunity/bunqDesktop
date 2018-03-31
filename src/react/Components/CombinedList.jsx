@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Divider from "material-ui/Divider";
 import { LinearProgress } from "material-ui/Progress";
@@ -264,7 +265,7 @@ class CombinedList extends React.Component {
         return (
             <List style={styles.left}>
                 <ListSubheader>
-                    Payments and requests
+                    {this.props.t("Payments and requests")}
                     <ListItemSecondaryAction>
                         <ClearBtn />
                         <FilterDrawer />
@@ -320,4 +321,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CombinedList);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(CombinedList)
+);

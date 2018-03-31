@@ -20,7 +20,6 @@ export function cardUpdateCvc2Codes(BunqJSClient, user_id, card_id) {
                 // turn string dates into date objects
                 cardsCvc2Codes = cardsCvc2Codes.map(cardsCvc2Code => {
                     const cardCvc2Info = cardsCvc2Code.CardGeneratedCvc2;
-                    console.log(cardCvc2Info);
                     return {
                         ...cardCvc2Info,
                         created: new Date(cardCvc2Info.created),

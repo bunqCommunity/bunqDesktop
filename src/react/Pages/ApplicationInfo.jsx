@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
@@ -6,7 +7,6 @@ import Paper from "material-ui/Paper";
 import IconButton from "material-ui/IconButton";
 import Typography from "material-ui/Typography";
 import Avatar from "material-ui/Avatar";
-import Button from "material-ui/Button";
 import List, { ListItem, ListItemText } from "material-ui/List";
 
 import FolderIcon from "material-ui-icons/Folder";
@@ -16,6 +16,9 @@ const shell = require("electron").shell;
 const app = remote.app;
 
 import NavLink from "../Components/Routing/NavLink";
+import ButtonTranslate from "../Components/TranslationHelpers/Button";
+
+import { openSnackbar } from "../Actions/snackbar";
 import { allReleases } from "../Helpers/VersionChecker";
 import { humanReadableDate } from "../Helpers/Utils";
 import Logger from "../Helpers/Logger";
@@ -59,10 +62,12 @@ class ApplicationInfo extends React.Component {
     };
 
     copiedValue = type => callback => {
-        this.props.openSnackbar(`Copied ${type} to your clipboard`);
+        this.props.openSnackbar(this.props.t("Copied to your clipboard"));
     };
 
     render() {
+        const { t } = this.props;
+
         const releaseItems = this.state.releases.slice(0, 10).map(release => {
             const preRelease = release.prerelease ? " (Pre-Release)" : "";
             return (
@@ -75,7 +80,7 @@ class ApplicationInfo extends React.Component {
                 >
                     <ListItemText
                         primary={`v${release.tag_name} ${preRelease}`}
-                        secondary={`Released: ${humanReadableDate(
+                        secondary={`${t("Released")}: ${humanReadableDate(
                             release.published_at
                         )}`}
                     />
@@ -86,7 +91,9 @@ class ApplicationInfo extends React.Component {
         return (
             <Grid container spacing={24} justify={"center"}>
                 <Helmet>
-                    <title>{`BunqDesktop - Application Information`}</title>
+                    <title>{`BunqDesktop - ${t(
+                        "Application Information"
+                    )}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={8}>
@@ -110,7 +117,7 @@ class ApplicationInfo extends React.Component {
                                     BunqDesktop
                                 </Typography>
                                 <Typography variant={"body2"}>
-                                    Version: {process.env.CURRENT_VERSION}
+                                    {`${t("Version")}: ${process.env.CURRENT_VERSION}`}
                                 </Typography>
                             </Grid>
 
@@ -125,18 +132,18 @@ class ApplicationInfo extends React.Component {
 
                             <Grid item xs={12}>
                                 <Typography variant={"body2"}>
-                                    Application data: {app.getPath("userData")}
+                                    {t("Application data")}: {app.getPath("userData")}
                                 </Typography>
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Button
+                                <ButtonTranslate
                                     variant="raised"
                                     component={NavLink}
                                     to={"/"}
                                 >
                                     Back
-                                </Button>
+                                </ButtonTranslate>
                             </Grid>
 
                             <Grid item xs={12}>
@@ -164,4 +171,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ApplicationInfo);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(ApplicationInfo)
+);

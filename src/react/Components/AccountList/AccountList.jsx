@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Divider from "material-ui/Divider";
 import IconButton from "material-ui/IconButton";
@@ -116,6 +117,8 @@ class AccountList extends React.Component {
     };
 
     render() {
+        const { t } = this.props;
+
         let accounts = [];
         if (this.props.accounts !== false) {
             accounts = this.props.accounts
@@ -147,12 +150,12 @@ class AccountList extends React.Component {
             <List dense={this.props.denseMode} style={styles.list}>
                 <ListItem dense>
                     <ListItemText
-                        primary={`Accounts: ${accounts.length}`}
+                        primary={`${t("Accounts")}: ${accounts.length}`}
                         secondary={
                             this.props.hideBalance ? (
                                 ""
                             ) : (
-                                `Balance: ${formattedTotalBalance}`
+                                `${t("Balance")}: ${formattedTotalBalance}`
                             )
                         }
                     />
@@ -217,4 +220,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AccountList);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(AccountList)
+);

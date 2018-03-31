@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { Typography } from "material-ui";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
@@ -13,6 +14,8 @@ import Card, { CardContent } from "material-ui/Card";
 import { CircularProgress } from "material-ui/Progress";
 
 import QRSvg from "../../Components/QR/QRSvg";
+import TranslateTypography from "../../Components/TranslationHelpers/Typography";
+import TranslateButton from "../../Components/TranslationHelpers/Button";
 
 import { usersUpdate } from "../../Actions/users";
 import {
@@ -137,22 +140,26 @@ class Login extends React.Component {
     };
 
     setRegistration = () => {
+        const apiKeyLength = this.props.t(
+            "The API key you entered does not look valid"
+        );
+        const deviceNameLengthMin = this.props.t(
+            "The device name has to be atleast 1 character"
+        );
+        const deviceNameLengthMax = this.props.t(
+            "The device name can't be longer than 32 characters"
+        );
+
         if (this.state.apiKey.length !== 64) {
-            this.props.openSnackbar(
-                "The API key you entered does not look valid"
-            );
+            this.props.openSnackbar(apiKeyLength);
             return;
         }
 
         if (this.state.deviceName.length <= 0) {
-            this.props.openSnackbar(
-                "The device name has to be atleast 1 character."
-            );
+            this.props.openSnackbar(deviceNameLengthMin);
             return;
         } else if (this.state.deviceName.length > 32) {
-            this.props.openSnackbar(
-                "The device name can't be longer than 32 characters."
-            );
+            this.props.openSnackbar(deviceNameLengthMax);
             return;
         }
 
@@ -277,6 +284,8 @@ class Login extends React.Component {
     };
 
     render() {
+        const t = this.props.t;
+
         if (
             this.props.derivedPassword === false &&
             this.props.registrationLoading === false
@@ -334,17 +343,20 @@ class Login extends React.Component {
                                 style={styles.qrCode}
                             />
                         )}
-                        <Typography variant="body2" style={{ margin: 0 }}>
+                        <TranslateTypography
+                            variant="body2"
+                            style={{ margin: 0 }}
+                        >
                             Scan the QR code with the bunq app to begin!
-                        </Typography>
+                        </TranslateTypography>
                     </div>
 
                     <Input
                         autoFocus
                         style={styles.apiInput}
                         error={!this.state.deviceNameValid}
-                        placeholder="Device Name"
-                        label="Device Name"
+                        placeholder={t("Device Name")}
+                        label={t("Device Name")}
                         onChange={this.handleNameChange}
                         value={this.state.deviceName}
                         disabled={
@@ -367,9 +379,9 @@ class Login extends React.Component {
                         style={styles.optionsButton}
                     >
                         {this.state.openOptions ? (
-                            "Less options"
+                            t("Less options")
                         ) : (
-                            "More options"
+                            t("More options")
                         )}
                     </Button>
 
@@ -377,9 +389,9 @@ class Login extends React.Component {
                         <Input
                             style={styles.apiInput}
                             error={!this.state.apiKeyValid}
-                            placeholder="API Key"
-                            label="API Key"
-                            hint="Your personal API key"
+                            placeholder={t("API key")}
+                            label={t("API key")}
+                            hint={t("Your personal API key")}
                             onChange={this.handleKeyChange}
                             value={this.state.apiKey}
                             disabled={
@@ -398,7 +410,7 @@ class Login extends React.Component {
                         />
                         <FormControlLabel
                             style={styles.environmentToggle}
-                            label="Enable sandbox mode?"
+                            label={t("Enable sandbox mode?")}
                             control={
                                 <Switch
                                     checked={this.state.sandboxMode}
@@ -408,7 +420,7 @@ class Login extends React.Component {
                             }
                         />
 
-                        <Button
+                        <TranslateButton
                             variant="raised"
                             disabled={buttonDisabled}
                             color={"primary"}
@@ -416,15 +428,15 @@ class Login extends React.Component {
                             onClick={this.setRegistration}
                         >
                             Set API Key
-                        </Button>
+                        </TranslateButton>
                     </Collapse>
                 </CardContent>
             ) : (
                 <CardContent>
-                    <Typography variant="headline" component="h2">
+                    <TranslateTypography variant="headline" component="h2">
                         You're logged in!
-                    </Typography>
-                    <Button
+                    </TranslateTypography>
+                    <TranslateButton
                         variant="raised"
                         color={"secondary"}
                         style={styles.clearButton}
@@ -432,17 +444,19 @@ class Login extends React.Component {
                         disabled={this.props.userLoading}
                     >
                         Logout
-                    </Button>
+                    </TranslateButton>
                 </CardContent>
             );
 
         const cardContent = this.props.registrationLoading ? (
             <CardContent style={{ textAlign: "center" }}>
-                <Typography variant="headline" component="h2">
+                <TranslateTypography variant="headline" component="h2">
                     Loading
-                </Typography>
+                </TranslateTypography>
                 <CircularProgress size={50} />
-                <Typography variant="subheading">{status_message}</Typography>
+                <TranslateTypography variant="subheading">
+                    {status_message}
+                </TranslateTypography>
             </CardContent>
         ) : (
             apiKeyContent
@@ -527,4 +541,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(Login)
+);

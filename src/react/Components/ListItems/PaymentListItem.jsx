@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import {
     ListItem,
     ListItemText,
@@ -48,7 +49,7 @@ class PaymentListItem extends React.Component {
         const displayName = payment.counterparty_alias.display_name;
         const paymentAmount = payment.amount.value;
         const formattedPaymentAmount = formatMoney(paymentAmount);
-        const paymentTypeLabel = paymentText(payment);
+        const paymentTypeLabel = paymentText(payment, this.props.t);
 
         return [
             <ListItem
@@ -89,6 +90,6 @@ class PaymentListItem extends React.Component {
 
 PaymentListItem.defaultProps = {
     minimalDisplay: false
-}
+};
 
-export default PaymentListItem;
+export default translate("translations")(PaymentListItem);

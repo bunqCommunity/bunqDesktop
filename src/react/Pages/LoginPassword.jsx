@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { Typography } from "material-ui";
 import { connect } from "react-redux";
 import Redirect from "react-router-dom/Redirect";
@@ -12,7 +13,8 @@ import { CircularProgress } from "material-ui/Progress";
 
 import WarningIcon from "material-ui-icons/Warning";
 import LockIcon from "material-ui-icons/Lock";
-import BugReportIcon from "material-ui-icons/BugReport";
+
+import TranslateButton from "../Components/TranslationHelpers/Button";
 
 import {
     registrationClearApiKey,
@@ -114,7 +116,8 @@ class LoginPassword extends React.Component {
             registrationLoading,
             hasStoredApiKey,
             useNoPassword,
-            derivedPassword
+            derivedPassword,
+            t
         } = this.props;
 
         if (derivedPassword !== false) {
@@ -134,33 +137,26 @@ class LoginPassword extends React.Component {
                             <WarningIcon /> Caution!
                         </Typography>
                         <Typography variant="body2">
-                            This project is still in active development and we
-                            are not responsible if anything goes wrong.
+                            {t("ActiveDevelopmentWarning")}
                         </Typography>
                         <br />
                         <Typography variant="headline">
                             <LockIcon /> Password
                         </Typography>
                         <Typography variant="body2">
-                            In order to keep your data safe everything is
-                            encrypted using the password you enter. If you
-                            forget this password all personal data within
-                            BunqDesktop will be reset and you will have to log
-                            back in.
+                            {t("PasswordWarningPart1")}
                         </Typography>
                         <Typography variant="body2">
-                            If you decide to use an empty password, anyone with
-                            the required knowledge could view your data if they
-                            get access to your physical device!
+                            {t("PasswordWarningPart2")}
                         </Typography>
                         <div style={{ textAlign: "center" }}>
-                            <Button
+                            <TranslateButton
                                 variant={"raised"}
                                 style={{ marginTop: 12 }}
                                 onClick={this.ignoreWarning}
                             >
                                 Don't show this again
-                            </Button>
+                            </TranslateButton>
                         </div>
                     </CardContent>
                 </Card>
@@ -181,9 +177,9 @@ class LoginPassword extends React.Component {
                 <CardContent style={{ textAlign: "center" }}>
                     <Typography variant="headline" component="h2">
                         {hasStoredApiKey ? (
-                            "Enter your password"
+                            t("Enter your password")
                         ) : (
-                            "Enter a password"
+                            t("Enter a password")
                         )}
                     </Typography>
 
@@ -214,7 +210,7 @@ class LoginPassword extends React.Component {
                         style={{ marginTop: 16 }}
                     >
                         <Grid item xs={6}>
-                            <Button
+                            <TranslateButton
                                 variant="raised"
                                 disabled={buttonDisabled}
                                 color={"primary"}
@@ -222,33 +218,33 @@ class LoginPassword extends React.Component {
                                 onClick={this.setRegistration}
                             >
                                 Login
-                            </Button>
+                            </TranslateButton>
                         </Grid>
 
                         {hasStoredApiKey ? (
                             <Grid item xs={6}>
-                                <Button
+                                <TranslateButton
                                     variant="raised"
                                     color={"secondary"}
                                     style={styles.loginButton}
                                     onClick={this.clearApiKey}
                                 >
                                     Logout
-                                </Button>
+                                </TranslateButton>
                             </Grid>
                         ) : null}
 
                         {(hasStoredApiKey === true && useNoPassword === true) ||
                         hasStoredApiKey === false ? (
                             <Grid item xs={6}>
-                                <Button
+                                <TranslateButton
                                     variant="raised"
                                     color={"secondary"}
                                     style={styles.loginButton}
                                     onClick={this.props.useNoPasswordLogin}
                                 >
                                     Use no password
-                                </Button>
+                                </TranslateButton>
                             </Grid>
                         ) : null}
                     </Grid>
@@ -265,7 +261,7 @@ class LoginPassword extends React.Component {
                 style={styles.wrapperContainer}
             >
                 <Helmet>
-                    <title>{`BunqDesktop - Password Setup`}</title>
+                    <title>{`BunqDesktop - ${t("Password Setup")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={8} md={6} lg={4}>
@@ -312,4 +308,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginPassword);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(LoginPassword)
+);

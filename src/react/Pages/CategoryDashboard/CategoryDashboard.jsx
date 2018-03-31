@@ -3,18 +3,20 @@ import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
 import Paper from "material-ui/Paper";
-import Button from "material-ui/Button";
-import Typography from "material-ui/Typography";
 
 import CategoryEditor from "../../Components/Categories/CategoryEditor";
 import CategoryChip from "../../Components/Categories/CategoryChip";
 import ImportDialog from "../../Components/ImportDialog";
 import ExportDialog from "../../Components/ExportDialog";
+import TypographyTranslate from "../../Components/TranslationHelpers/Typography";
+import ButtonTranslate from "../../Components/TranslationHelpers/Button";
+
 import {
     removeCategory,
     removeCategoryConnection,
     setCategory
 } from "../../Actions/categories";
+import { translate } from "react-i18next";
 
 const styles = {
     chipWrapper: {
@@ -84,6 +86,7 @@ class CategoryDashboard extends React.Component {
     };
 
     render() {
+        const t = this.props.t;
         const chips = Object.keys(this.props.categories).map(categoryId => {
             return (
                 <CategoryChip
@@ -98,17 +101,17 @@ class CategoryDashboard extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - Category Editor`}</title>
+                    <title>{`BunqDesktop - ${t("Category Editor")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} md={8}>
-                    <Typography variant="title" gutterBottom>
+                    <TypographyTranslate variant="title" gutterBottom>
                         Categories
-                    </Typography>
+                    </TypographyTranslate>
                 </Grid>
 
                 <ExportDialog
-                    title="Export categories"
+                    title={t("Export categories")}
                     closeModal={() =>
                         this.setState({ openExportDialog: false })}
                     open={this.state.openExportDialog}
@@ -116,7 +119,7 @@ class CategoryDashboard extends React.Component {
                 />
 
                 <ImportDialog
-                    title="Import categories"
+                    title={t("Import categories")}
                     closeModal={() =>
                         this.setState({ openImportDialog: false })}
                     importData={this.importCategories}
@@ -124,7 +127,7 @@ class CategoryDashboard extends React.Component {
                 />
 
                 <Grid item xs={6} md={2}>
-                    <Button
+                    <ButtonTranslate
                         variant="raised"
                         color="primary"
                         style={{ width: "100%" }}
@@ -132,10 +135,10 @@ class CategoryDashboard extends React.Component {
                             this.setState({ openExportDialog: true })}
                     >
                         Export
-                    </Button>
+                    </ButtonTranslate>
                 </Grid>
                 <Grid item xs={6} md={2}>
-                    <Button
+                    <ButtonTranslate
                         variant="raised"
                         color="primary"
                         style={{ width: "100%" }}
@@ -143,7 +146,7 @@ class CategoryDashboard extends React.Component {
                             this.setState({ openImportDialog: true })}
                     >
                         Import
-                    </Button>
+                    </ButtonTranslate>
                 </Grid>
 
                 <Grid item xs={12}>
@@ -186,4 +189,6 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CategoryDashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(CategoryDashboard)
+);

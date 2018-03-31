@@ -33,7 +33,7 @@ Download the latest version of BunqDesktop from the [GitHub releases page.](http
 
 ## Keybinds
  - CTRL/CMD + Q : Closes the application
- - CTRL/CMD + H : Hides the application in the tray
+ - CTRL/CMD + H : Toggles the account balance visibility
  - CTRL/CMD + D : Dashboard
  - CTRL/CMD + P : Payment page
  - CTRL/CMD + R : Request page
