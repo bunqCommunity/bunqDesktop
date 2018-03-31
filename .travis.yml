@@ -64,7 +64,7 @@ before_cache:
 before_deploy:
   - |
     if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-      tar -czvf ./dist/linux-unpacked-$TRAVIS_OS_NAME.tar.gz ./dist/linux-unpacked/
+      sudo tar -cvzf ./dist/linux-unpacked-$TRAVIS_TAG.tar.gz ./dist/linux-unpacked/*
     fi
 
 deploy:

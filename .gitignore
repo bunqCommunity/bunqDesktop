@@ -13,7 +13,9 @@ Thumbs.db
 /app/env.json
 /app/**/*.map
 /app/react/
-/dist
+/dist/*
+!/dist/.gitkeep
+
 /bunqdesktop.0.8.1.nupkg
 /webpack.report.html
 /webpack.stats.json
