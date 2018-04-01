@@ -46,7 +46,7 @@ $ yarn global add cross-env webpack gulp
 ```
 Clone this project and install its dependencies.
 ```bash
-$ git clone git@github.com:BunqCommunity/BunqDesktop.git && cd BunqDesktop
+$ git clone https://github.com/BunqCommunity/BunqDesktop.git && cd BunqDesktop
 $ yarn 
 ```
 Run these commands in 2 seperate consoles. One compiles the react app and the second takes care of 
