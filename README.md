@@ -39,6 +39,9 @@ Download the latest version of BunqDesktop from the [GitHub releases page.](http
  - CTRL/CMD + R : Request page
  - ALT + C      : Cards page
 
+## Translations
+The app is developed in English but translations in Dutch, German, Spanish and Italian are available. Most of these are translated automatically so if you spot errors or have better translations let us know!
+
 ## Development
 We use [yarn](https://yarnpkg.com/en/) for package management and the following global packages:
 ```bash
