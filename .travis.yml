@@ -91,9 +91,7 @@ deploy:
     script: docker run -v $(pwd):$(pwd) -w $(pwd) snapcore/snapcraft sh -c "apt update && snapcraft push dist/bunqdesktop_*_amd64.snap --release edge"
     skip_cleanup: true
     on:
-      branch:
-        - master
-        - build/snap-craft
+      branch: master
       tags: true
 
 after_success:
