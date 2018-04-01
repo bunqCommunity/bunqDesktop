@@ -71,12 +71,13 @@
         "postinstall": "install-app-deps",
         "build": "gulp build",
         "dist": "build",
-        "prerelease": "node tasks/update_release_files.js && gulp build --env=production && yarn run webpack",
+        "prerelease": "npm run update-release-files && gulp build --env=production && yarn run webpack",
         "release": "build",
         "start": "gulp start --env=development",
         "start:dev": "cross-env NODE_ENV=DEVELOPMENT gulp start --env=development",
         "update-icons": "node tasks/generate_material_icons.js",
         "update-translations": "node tasks/update_translations.js",
+        "update-release-files": "node tasks/update_release_files.js",
         "add-contributer": "all-contributors add"
     },
     "publish": null,
@@ -87,7 +88,7 @@
         "fs-jetpack": "^1.0.0"
     },
     "devDependencies": {
-        "@bunq-community/bunq-js-client": "^0.15.0",
+        "@bunq-community/bunq-js-client": "^0.15.2",
         "@google-cloud/translate": "^1.1.0",
         "@types/axios": "^0.14.0",
         "@types/jest": "^22.1.3",

@@ -172,9 +172,21 @@ class Exports extends React.Component {
                     exportInfo.id
                 )
                 .then(exportContent => {
-                    // store the file in the downloads folder
-                    this.downloadFile(exportContent, fileName);
-                    this.setState({ exportContentLoading: false });
+                    // create a new file reader
+                    const fileReader = new FileReader();
+
+                    // set event handler
+                    fileReader.onload = result => {
+                        // store the resulting arraybuffer in the downloads folder
+                        this.downloadFile(
+                            Buffer.from(new Uint8Array(result.target.result)),
+                            fileName
+                        );
+                        this.setState({ exportContentLoading: false });
+                    };
+
+                    // read the blob result
+                    fileReader.readAsArrayBuffer(exportContent);
                 })
                 .catch(error => {
                     this.setState({ exportContentLoading: false });

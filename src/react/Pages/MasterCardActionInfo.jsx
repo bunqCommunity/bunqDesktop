@@ -132,6 +132,7 @@ class MasterCardActionInfo extends React.Component {
                         BunqJSClient={this.props.BunqJSClient}
                         to={masterCardAction.counterparty_alias}
                         from={masterCardAction.alias}
+                        accounts={this.props.accounts}
                         user={this.props.user}
                     />
 
@@ -158,7 +159,7 @@ class MasterCardActionInfo extends React.Component {
                                     <Divider />,
                                     <ListItem>
                                         <ListItemText
-                                            primary={"Description"}
+                                            primary={t("Description")}
                                             secondary={
                                                 masterCardAction.description
                                             }
@@ -170,14 +171,14 @@ class MasterCardActionInfo extends React.Component {
                             <Divider />
                             <ListItem>
                                 <ListItemText
-                                    primary={"Date"}
+                                    primary={t("Date")}
                                     secondary={paymentDate}
                                 />
                             </ListItem>
                             <Divider />
                             <ListItem>
                                 <ListItemText
-                                    primary={"Payment Type"}
+                                    primary={t("Payment Type")}
                                     secondary={masterCardActionParser(
                                         masterCardAction,
                                         t
@@ -187,7 +188,7 @@ class MasterCardActionInfo extends React.Component {
                             <Divider />
                             <ListItem>
                                 <ListItemText
-                                    primary={"Card"}
+                                    primary={t("Card")}
                                     secondary={
                                         masterCardAction.label_card.second_line
                                     }
@@ -196,7 +197,7 @@ class MasterCardActionInfo extends React.Component {
                             <Divider />
                             <ListItem>
                                 <ListItemText
-                                    primary={"Authorisation Type"}
+                                    primary={t("Authorisation Type")}
                                     secondary={
                                         masterCardAction.authorisation_type
                                     }
@@ -205,7 +206,7 @@ class MasterCardActionInfo extends React.Component {
                             <Divider />
                             <ListItem>
                                 <ListItemText
-                                    primary={"Authorisation Status"}
+                                    primary={t("Authorisation Status")}
                                     secondary={
                                         masterCardAction.authorisation_status
                                     }
@@ -226,7 +227,7 @@ class MasterCardActionInfo extends React.Component {
         return (
             <Grid container spacing={24}>
                 <Helmet>
-                    <title>{`BunqDesktop - Mastercard Info`}</title>
+                    <title>{`BunqDesktop - ${t("Mastercard Info")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={2}>
@@ -246,7 +247,7 @@ class MasterCardActionInfo extends React.Component {
                     <ExportDialog
                         closeModal={event =>
                             this.setState({ displayExport: false })}
-                        title="Export info"
+                        title={t("Export info")}
                         open={this.state.displayExport}
                         object={this.props.masterCardActionInfo}
                     />
@@ -270,6 +271,7 @@ const mapStateToProps = state => {
         masterCardActionInfo:
             state.master_card_action_info.master_card_action_info,
         masterCardActionLoading: state.master_card_action_info.loading,
+        accounts: state.accounts.accounts,
         accountsSelectedAccount: state.accounts.selectedAccount
     };
 };

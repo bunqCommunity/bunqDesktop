@@ -74,11 +74,11 @@ export const masterCardActionText = (masterCardAction, t) => {
             )}`;
         case "BLOCKED":
             return `${t(
-                "The payment was blocked due to: "
+                "The payment was blocked due to "
             )}${masterCardAction.decision_description}`;
         default:
             return `${t(
-                "The payment currently has the status: "
+                "The payment currently has the status "
             )}${masterCardAction.authorisation_status} - ${masterCardAction.authorisation_type}`;
     }
 };

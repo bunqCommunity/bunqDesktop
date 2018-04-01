@@ -71,6 +71,8 @@ class Login extends React.Component {
 
             openOptions: false,
 
+            loadingBunqUser: false,
+
             loadingQrCode: false,
             requestQrCodeBase64: false,
             requestUuid: false
@@ -80,6 +82,7 @@ class Login extends React.Component {
     }
 
     componentDidMount() {
+        const isSandboxMode = this.props.environment === "SANDBOX";
         if (this.props.derivedPassword !== false) {
             this.props.loadApiKey(this.props.derivedPassword);
         }
@@ -90,7 +93,9 @@ class Login extends React.Component {
             this.setState({ deviceName: this.props.deviceName });
         }
         this.setState({
-            sandboxMode: this.props.environment === "SANDBOX"
+            // check if sandbox mode is set and open options if this is the case
+            sandboxMode: isSandboxMode,
+            openOptions: isSandboxMode
         });
 
         this.checkForSingleUser();
@@ -199,6 +204,32 @@ class Login extends React.Component {
                     this.props.handleBunqError(error);
                 });
         }
+    };
+
+    createSandboxUser = () => {
+        this.setState({ loadingBunqUser: true });
+        this.props.BunqJSClient.api.sandboxUser
+            .post()
+            .then(apiKey => {
+                // set the api key and update state
+                this.setState(
+                    {
+                        apiKey: apiKey,
+                        sandboxMode: true,
+                        loadingBunqUser: false
+                    },
+                    // validate the new data
+                    () =>
+                        this.validateInputs(
+                            this.state.apiKey,
+                            this.state.deviceName
+                        )
+                );
+            })
+            .catch(error => {
+                this.setState({ loadingBunqUser: false });
+                this.props.handleBunqError(error);
+            });
     };
 
     checkForScanEvent = () => {
@@ -325,6 +356,16 @@ class Login extends React.Component {
             this.state.deviceNameValid === false ||
             // user info is already being loaded
             this.props.userLoading === true ||
+            // a bunq test user is being created
+            this.props.loadingBunqUser === true ||
+            // registration is loading
+            this.props.registrationLoading === true;
+
+        const sandboxButtonDisabled =
+            // user info is already being loaded
+            this.props.userLoading === true ||
+            // a bunq test user is being created
+            this.props.loadingBunqUser === true ||
             // registration is loading
             this.props.registrationLoading === true;
 
@@ -419,6 +460,16 @@ class Login extends React.Component {
                                 />
                             }
                         />
+
+                        <TranslateButton
+                            variant="raised"
+                            disabled={sandboxButtonDisabled}
+                            color={"secondary"}
+                            style={styles.loginButton}
+                            onClick={this.createSandboxUser}
+                        >
+                            Create a sandbox account
+                        </TranslateButton>
 
                         <TranslateButton
                             variant="raised"
