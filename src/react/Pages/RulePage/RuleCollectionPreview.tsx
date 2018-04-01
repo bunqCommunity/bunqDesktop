@@ -8,7 +8,7 @@ import RuleCollection, {
 } from "../../Types/RuleCollection";
 
 // import typed worker
-const RuleCollectionCheckWorker: any = require("worker-loader!../../WebWorkers/rule_collection_check.worker.ts");
+const RuleCollectionCheckWorker: any = require("worker-loader!../../WebWorkers/rule_collection_check.worker.js");
 
 import CheckIcon from "material-ui-icons/Check";
 import CrossIcon from "material-ui-icons/Cancel";

@@ -14,9 +14,12 @@ import AddIcon from "material-ui-icons/Add";
 import RuleItem from "./RuleItem";
 import NavLink from "../../Components/Routing/NavLink";
 import ImportDialog from "../../Components/ImportDialog";
+import TranslateButton from "../../Components/TranslationHelpers/Button";
+import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import RuleCollection from "../../Types/RuleCollection";
 import { setCategoryRule } from "../../Actions/category_rules";
 import { openSnackbar } from "../../Actions/snackbar";
+import { translate } from "react-i18next";
 
 const styles = {
     paper: {
@@ -73,22 +76,22 @@ class RuleDashboard extends React.Component {
     };
 
     render() {
-        const { categoryRules } = this.props;
+        const { categoryRules, t } = this.props;
 
         const categoryRulesList = Object.keys(
             categoryRules
         ).map(categoryRuleId => (
-            <RuleItem rule={categoryRules[categoryRuleId]} />
+            <RuleItem rule={categoryRules[categoryRuleId]} t={t} />
         ));
 
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - Rule Dashboard`}</title>
+                    <title>{`BunqDesktop - ${t("Rule Dashboard")}`}</title>
                 </Helmet>
 
                 <ImportDialog
-                    title="Import rule collection"
+                    title={t("Import rule collection")}
                     showAsNewButton={true}
                     closeModal={this.closeImportDialog}
                     importData={this.importData}
@@ -99,9 +102,9 @@ class RuleDashboard extends React.Component {
                     <Paper style={styles.paper}>
                         <Grid container spacing={16}>
                             <Grid item xs={6} sm={6} md={8}>
-                                <Typography variant={"headline"}>
+                                <TranslateTypography variant={"headline"}>
                                     Rules
-                                </Typography>
+                                </TranslateTypography>
                             </Grid>
 
                             <Grid item xs={12} sm={3} md={2}>
@@ -111,7 +114,7 @@ class RuleDashboard extends React.Component {
                                     style={styles.newRuleButton}
                                     onClick={this.openImportDialog}
                                 >
-                                    Import
+                                    {t("Import")}
                                     <FileDownloadIcon
                                         style={styles.buttonIcons}
                                     />
@@ -126,7 +129,7 @@ class RuleDashboard extends React.Component {
                                     to={`/rule-page/null`}
                                     style={styles.newRuleButton}
                                 >
-                                    New
+                                    {t("New")}
                                     <AddIcon style={styles.buttonIcons} />
                                 </Button>
                             </Grid>
@@ -159,4 +162,6 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(RuleDashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(RuleDashboard)
+);

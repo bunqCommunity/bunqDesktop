@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { withTheme } from "material-ui/styles";
 import Helmet from "react-helmet";
@@ -48,7 +49,11 @@ class MasterCardActionInfo extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.initialBunqConnect) {
+        if (
+            this.props.initialBunqConnect &&
+            this.props.user &&
+            this.props.user.id
+        ) {
             const { masterCardActionId, accountId } = this.props.match.params;
             this.props.masterCardActionInfoUpdate(
                 this.props.user.id,
@@ -84,7 +89,8 @@ class MasterCardActionInfo extends React.Component {
             accountsSelectedAccount,
             masterCardActionInfo,
             masterCardActionLoading,
-            theme
+            theme,
+            t
         } = this.props;
         const paramAccountId = this.props.match.params.accountId;
 
@@ -113,7 +119,7 @@ class MasterCardActionInfo extends React.Component {
             const paymentAmount = masterCardAction.amount_local.value;
             const paymentDate = humanReadableDate(masterCardAction.created);
             const formattedPaymentAmount = formatMoney(paymentAmount);
-            const paymentLabel = masterCardActionText(masterCardAction);
+            const paymentLabel = masterCardActionText(masterCardAction, t);
 
             content = (
                 <Grid
@@ -173,7 +179,8 @@ class MasterCardActionInfo extends React.Component {
                                 <ListItemText
                                     primary={"Payment Type"}
                                     secondary={masterCardActionParser(
-                                        masterCardAction
+                                        masterCardAction,
+                                        t
                                     )}
                                 />
                             </ListItem>
@@ -287,5 +294,5 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-    withTheme()(MasterCardActionInfo)
+    withTheme()(translate("translations")(MasterCardActionInfo))
 );

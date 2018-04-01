@@ -1,5 +1,6 @@
 import React from "react";
 import iban from "iban";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import EmailValidator from "email-validator";
@@ -178,6 +179,9 @@ class Pay extends React.Component {
 
     // add a target from the current text inputs to the target list
     addTarget = () => {
+        const duplicateTarget = this.props.t(
+            "This target seems to be added already"
+        );
         this.validateTargetInput(valid => {
             // target is valid, add it to the list
             if (valid) {
@@ -205,7 +209,7 @@ class Pay extends React.Component {
                         name: this.state.ibanName
                     });
                 } else {
-                    this.props.openSnackbar("This target seems to be added already");
+                    this.props.openSnackbar(duplicateTarget);
                 }
 
                 this.setState(
@@ -279,8 +283,7 @@ class Pay extends React.Component {
             targets
         } = this.state;
 
-        const account = this.props.accounts[selectedAccount]
-            ;
+        const account = this.props.accounts[selectedAccount];
 
         const noTargetsCondition = targets.length < 0;
         const insufficientFundsCondition =
@@ -348,8 +351,7 @@ class Pay extends React.Component {
                     };
                     break;
                 case "TRANSFER":
-                    const otherAccount =
-                        accounts[target.value];
+                    const otherAccount = accounts[target.value];
 
                     otherAccount.alias.map(alias => {
                         if (alias.type === "IBAN") {
@@ -393,6 +395,7 @@ class Pay extends React.Component {
     };
 
     render() {
+        const t = this.props.t;
         const {
             selectedTargetAccount,
             selectedAccount,
@@ -403,45 +406,47 @@ class Pay extends React.Component {
 
         let confirmationModal = null;
         if (this.state.confirmModalOpen) {
-            const account = this.props.accounts[selectedAccount]
-                ;
+            const account = this.props.accounts[selectedAccount];
 
             // create a list of ListItems with our targets
-            const confirmationModelTargets = targets.map(
-                targetItem => {
-                    let primaryText = "";
-                    let secondaryText = "";
+            const confirmationModelTargets = targets.map(targetItem => {
+                let primaryText = "";
+                let secondaryText = "";
 
-                    switch (targetItem.type) {
-                        case "PHONE":
-                            primaryText = `Phone: ${targetItem.value}`;
-                            break;
-                        case "EMAIL":
-                            primaryText = `Email: ${targetItem.value}`;
-                            break;
-                        case "IBAN":
-                            primaryText = `IBAN: ${targetItem.value.replace(/ /g, "")}`;
-                            secondaryText = `Name: ${targetItem.name}`;
-                            break;
-                        case "TRANSFER":
-                            const account = this.props.accounts[
-                                selectedTargetAccount
-                            ];
-                            primaryText = `Transfer: ${account.description}`;
-                            break;
-                    }
-
-                    return [
-                        <ListItem>
-                            <ListItemText
-                                primary={primaryText}
-                                secondary={secondaryText}
-                            />
-                        </ListItem>,
-                        <Divider />
-                    ];
+                switch (targetItem.type) {
+                    case "PHONE":
+                        primaryText = `${t("Phone")}: ${targetItem.value}`;
+                        break;
+                    case "EMAIL":
+                        primaryText = `${t("Email")}: ${targetItem.value}`;
+                        break;
+                    case "IBAN":
+                        primaryText = `${t("IBAN")}: ${targetItem.value.replace(
+                            / /g,
+                            ""
+                        )}`;
+                        secondaryText = `${t("Name")}: ${targetItem.name}`;
+                        break;
+                    case "TRANSFER":
+                        const account = this.props.accounts[
+                            selectedTargetAccount
+                        ];
+                        primaryText = `${t(
+                            "Transfer"
+                        )}: ${account.description}`;
+                        break;
                 }
-            );
+
+                return [
+                    <ListItem>
+                        <ListItemText
+                            primary={primaryText}
+                            secondary={secondaryText}
+                        />
+                    </ListItem>,
+                    <Divider />
+                ];
+            });
 
             confirmationModal = (
                 <Dialog
@@ -449,19 +454,19 @@ class Pay extends React.Component {
                     keepMounted
                     onClose={this.closeModal}
                 >
-                    <DialogTitle>Confirm the payment</DialogTitle>
+                    <DialogTitle>{t("Confirm the payment")}</DialogTitle>
                     <DialogContent>
                         <List>
                             <ListItem>
                                 <ListItemText
-                                    primary="From"
+                                    primary={t("From")}
                                     secondary={`${account.description} ${account
                                         .balance.value}`}
                                 />
                             </ListItem>
                             <ListItem>
                                 <ListItemText
-                                    primary="Description"
+                                    primary={t("Description")}
                                     secondary={
                                         description.length <= 0 ? (
                                             "None"
@@ -473,7 +478,7 @@ class Pay extends React.Component {
                             </ListItem>
                             <ListItem>
                                 <ListItemText
-                                    primary="Amount"
+                                    primary={t("Amount")}
                                     secondary={`${amount.toFixed(2)} ${account
                                         .balance.currency}`}
                                 />
@@ -491,14 +496,14 @@ class Pay extends React.Component {
                             onClick={this.closeModal}
                             color="secondary"
                         >
-                            Cancel
+                            {t("Cancel")}
                         </Button>
                         <Button
                             variant="raised"
                             onClick={this.sendPayment}
                             color="primary"
                         >
-                            Confirm
+                            {t("Confirm")}
                         </Button>
                     </DialogActions>
                 </Dialog>
@@ -513,7 +518,9 @@ class Pay extends React.Component {
 
                 <Grid item xs={12} sm={10} md={8} lg={6}>
                     <Paper style={styles.paper}>
-                        <Typography variant="headline">New Payment</Typography>
+                        <Typography variant="headline">
+                            {t("New Payment")}
+                        </Typography>
 
                         <AccountSelectorDialog
                             value={this.state.selectedAccount}
@@ -525,8 +532,9 @@ class Pay extends React.Component {
                         />
                         {this.state.insufficientFundsCondition !== false ? (
                             <InputLabel error={true}>
-                                Your source account does not have sufficient
-                                funds!
+                                {t(
+                                    "Your source account does not have sufficient funds!"
+                                )}
                             </InputLabel>
                         ) : null}
 
@@ -553,7 +561,7 @@ class Pay extends React.Component {
                             fullWidth
                             error={this.state.descriptionError}
                             id="description"
-                            label="Description"
+                            label={t("Description")}
                             value={this.state.description}
                             onChange={this.handleChange("description")}
                             margin="normal"
@@ -571,7 +579,9 @@ class Pay extends React.Component {
                                         })}
                                 />
                             }
-                            label="Draft a new payment instead of directly sending it?"
+                            label={t(
+                                "Draft a new payment instead of directly sending it?"
+                            )}
                         />
 
                         <FormControl
@@ -604,7 +614,7 @@ class Pay extends React.Component {
                             style={styles.payButton}
                             onClick={this.openModal}
                         >
-                            Pay
+                            {t("Pay")}
                         </Button>
                     </Paper>
 
@@ -650,4 +660,6 @@ const mapDispatchToProps = (dispatch, props) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Pay);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(Pay)
+);

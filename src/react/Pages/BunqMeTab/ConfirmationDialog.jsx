@@ -1,20 +1,19 @@
 import React from "react";
-import Button from "material-ui/Button";
+import { translate } from "react-i18next";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Dialog, {
     DialogActions,
     DialogContent,
     DialogTitle
 } from "material-ui/Dialog";
+
 import { formatMoney } from "../../Helpers/Utils";
 
-export default class ConfirmationDialog extends React.Component {
+import ButtonTranslate from "../../Components/TranslationHelpers/Button";
+
+class ConfirmationDialog extends React.Component {
     render() {
-        const {
-            confirmModalOpen,
-            description,
-            amount
-        } = this.props;
+        const { confirmModalOpen, description, amount, t } = this.props;
 
         if (!confirmModalOpen) {
             return null;
@@ -26,40 +25,42 @@ export default class ConfirmationDialog extends React.Component {
                 keepMounted
                 onClose={this.props.closeModal}
             >
-                <DialogTitle>Confirm the request</DialogTitle>
+                <DialogTitle>{t("Confirm the request")}</DialogTitle>
                 <DialogContent>
                     <List>
                         <ListItem>
                             <ListItemText
-                                primary="Description"
+                                primary={t("Description")}
                                 secondary={description}
                             />
                         </ListItem>
                         <ListItem>
                             <ListItemText
-                                primary="Amount"
+                                primary={t("Amount")}
                                 secondary={formatMoney(amount)}
                             />
                         </ListItem>
                     </List>
                 </DialogContent>
                 <DialogActions>
-                    <Button
+                    <ButtonTranslate
                         variant="raised"
                         onClick={this.props.closeModal}
                         color="secondary"
                     >
                         Cancel
-                    </Button>
-                    <Button
+                    </ButtonTranslate>
+                    <ButtonTranslate
                         variant="raised"
                         onClick={this.props.sendInquiry}
                         color="primary"
                     >
                         Confirm
-                    </Button>
+                    </ButtonTranslate>
                 </DialogActions>
             </Dialog>
         );
     }
 }
+
+export default translate("translations")(ConfirmationDialog);

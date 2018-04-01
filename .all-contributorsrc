@@ -1,0 +1,137 @@
+{
+  "projectName": "BunqDesktop",
+  "projectOwner": "BunqCommunity",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 80,
+  "commit": true,
+  "contributors": [
+    {
+      "login": "Crecket",
+      "name": "Gregory Goijaerts",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/7481136?v=4",
+      "profile": "https://www.masterypoints.com",
+      "contributions": [
+        "code",
+        "design",
+        "doc",
+        "infra",
+        "review",
+        "platform"
+      ]
+    },
+    {
+      "login": "nduijvelshoff",
+      "name": "Nick D.",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/3780207?v=4",
+      "profile": "https://github.com/nduijvelshoff",
+      "contributions": [
+        "bug",
+        "code",
+        "ideas",
+        "infra"
+      ]
+    },
+    {
+      "login": "basst85",
+      "name": "basst85",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/6396615?v=4",
+      "profile": "https://github.com/basst85",
+      "contributions": [
+        "bug",
+        "code",
+        "ideas"
+      ]
+    },
+    {
+      "login": "janxb",
+      "name": "Jan Brodda",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/1172106?v=4",
+      "profile": "http://janbrodda.de",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "SpaceK33z",
+      "name": "Kees Kluskens",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/533616?v=4",
+      "profile": "https://webduck.nl",
+      "contributions": [
+        "bug",
+        "ideas"
+      ]
+    },
+    {
+      "login": "remcomldr",
+      "name": "remcomldr",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/34551774?v=4",
+      "profile": "https://github.com/remcomldr",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "DennisSnijder",
+      "name": "Dennis Snijder",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/6953846?v=4",
+      "profile": "http://snijder.io",
+      "contributions": [
+        "bug",
+        "code",
+        "design",
+        "ideas",
+        "doc"
+      ]
+    },
+    {
+      "login": "nimpie",
+      "name": "nimpie",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/10500054?v=4",
+      "profile": "https://github.com/nimpie",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "TimZ99",
+      "name": "Tim",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/15219858?v=4",
+      "profile": "https://github.com/TimZ99",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "EmileBons",
+      "name": "Emile Bons",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/3186640?v=4",
+      "profile": "http://www.emilebons.nl",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "petervdv",
+      "name": "Peter van der Veeken",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1083400?v=4",
+      "profile": "http://petervdveeken.nl",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "cascer1",
+      "name": "Cas Eliëns",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/7243299?v=4",
+      "profile": "https://github.com/cascer1",
+      "contributions": [
+        "bug"
+      ]
+    }
+  ]
+}

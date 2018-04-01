@@ -1,6 +1,5 @@
 import React from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
-import Button from "material-ui/Button";
 import TextField from "material-ui/TextField";
 import Dialog, {
     DialogActions,
@@ -8,6 +7,8 @@ import Dialog, {
     DialogTitle
 } from "material-ui/Dialog";
 import Slide from "material-ui/transitions/Slide";
+
+import TranslateButton from "./TranslationHelpers/Button";
 
 const Transition = props => <Slide direction="right" {...props} />;
 
@@ -35,18 +36,19 @@ export default props => {
                 />
             </DialogContent>
             <DialogActions>
-                <CopyToClipboard
-                    text={jsonPretty}
-                    // onCopy={this.copiedValue(alias.type)}
-                >
-                    <Button variant="raised" onClick={closeModal}>
+                <CopyToClipboard text={jsonPretty}>
+                    <TranslateButton variant="raised" onClick={closeModal}>
                         Copy
-                    </Button>
+                    </TranslateButton>
                 </CopyToClipboard>
 
-                <Button variant="raised" onClick={closeModal} color="primary">
+                <TranslateButton
+                    variant="raised"
+                    onClick={closeModal}
+                    color="primary"
+                >
                     Ok
-                </Button>
+                </TranslateButton>
             </DialogActions>
         </Dialog>
     );

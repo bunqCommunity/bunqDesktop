@@ -1,4 +1,6 @@
 import MergeApiObjects from "../Helpers/MergeApiObjects";
+import store from "store";
+
 import { STORED_BUNQ_ME_TABS } from "../Actions/bunq_me_tabs";
 
 export const defaultState = {
@@ -63,6 +65,7 @@ export default (state = defaultState, action) => {
         case "BUNQ_ME_TABS_CLEAR":
         case "REGISTRATION_CLEAR_API_KEY":
         case "REGISTRATION_CLEAR_USER_INFO":
+            store.remove(STORED_BUNQ_ME_TABS);
             return {
                 bunq_me_tabs: [],
                 account_id: false,

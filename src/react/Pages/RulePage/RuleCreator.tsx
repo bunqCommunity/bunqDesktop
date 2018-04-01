@@ -181,9 +181,7 @@ class RuleCreator extends React.Component<any, any> {
     handleTitleChange = (event: any) => {
         const title = event.target.value;
         const titleError = title.length <= 0 || title.length > 32;
-        this.setState(
-            { title: title, titleError: titleError }
-        );
+        this.setState({ title: title, titleError: titleError });
     };
     handleEnabledToggle = (event: any) => {
         this.setState({ enabled: !this.state.enabled });
@@ -254,6 +252,7 @@ class RuleCreator extends React.Component<any, any> {
             titleError,
             goToDashboard
         } = this.state;
+        const t = this.props.t;
 
         if (goToDashboard) {
             return <Redirect to="/rules-dashboard" />;
@@ -336,7 +335,7 @@ class RuleCreator extends React.Component<any, any> {
                     <Grid container spacing={16}>
                         <Grid item xs={11}>
                             <Typography variant="title" style={styles.subTitle}>
-                                Settings
+                                {t("Settings")}
                             </Typography>
                         </Grid>
                         <Grid item xs={1}>
@@ -349,7 +348,7 @@ class RuleCreator extends React.Component<any, any> {
 
                         <Grid item xs={12} sm={6}>
                             <TextField
-                                label={"Rule set title"}
+                                label={t("Rule set title")}
                                 value={title}
                                 style={styles.inputField}
                                 onChange={this.handleTitleChange}
@@ -371,13 +370,15 @@ class RuleCreator extends React.Component<any, any> {
                                         onChange={this.handleEnabledToggle}
                                     />
                                 }
-                                label="Enable or disable this rule set"
+                                label={t("Enable or disable this rule set")}
                             />
                         </Grid>
 
                         <Grid item xs={12} sm={6}>
                             <FormControl style={styles.inputField}>
-                                <InputLabel>Match requirements</InputLabel>
+                                <InputLabel>
+                                    {t("Match requirements")}
+                                </InputLabel>
                                 <Select
                                     value={this.state.matchType}
                                     onChange={this.handleMatchTypeChange}
@@ -386,10 +387,10 @@ class RuleCreator extends React.Component<any, any> {
                                     }
                                 >
                                     <MenuItem value={"AND"}>
-                                        Require all rules to match
+                                        {t("Require all rules to match")}
                                     </MenuItem>
                                     <MenuItem value={"OR"}>
-                                        Only require 1 rule to match
+                                        {t("Only require 1 rule to match")}
                                     </MenuItem>
                                 </Select>
                             </FormControl>
@@ -408,7 +409,7 @@ class RuleCreator extends React.Component<any, any> {
                                 onClick={this.saveRuleCollection}
                                 disabled={titleError}
                             >
-                                Save
+                                {t("Save")}
                             </Button>
                         </Grid>
                     </Grid>
@@ -442,14 +443,14 @@ class RuleCreator extends React.Component<any, any> {
 
                 <Paper style={styles.wrapper} key={"categoryChipsWrapper"}>
                     <Typography variant="title" style={styles.subTitle}>
-                        Categories
+                        {t("Categories")}
                     </Typography>
                     <div>
                         <Typography
                             variant="subheading"
                             style={styles.subTitle}
                         >
-                            Categories that will be added
+                            {t("Categories that will be added")}
                         </Typography>
                         {includedChips}
                     </div>
@@ -459,14 +460,14 @@ class RuleCreator extends React.Component<any, any> {
 
                 <ExportDialog
                     closeModal={this.closeExportDialog}
-                    title="Export data"
+                    title={t("Export data")}
                     open={this.state.openExportDialog}
                     object={this.state.exportData}
                 />
                 <ImportDialog
                     closeModal={this.closeImportDialog}
                     importData={this.importRule}
-                    title="Import rule"
+                    title={t("Import rule")}
                     open={this.state.openImportDialog}
                 />
             </React.Fragment>

@@ -7,6 +7,15 @@ export function setTheme(theme) {
     };
 }
 
+export function setLanguage(language) {
+    return {
+        type: "OPTIONS_SET_LANGUAGE",
+        payload: {
+            language: language
+        }
+    };
+}
+
 export function setNativeFrame(useFrame) {
     return {
         type: "OPTIONS_SET_NATIVE_FRAME",
@@ -57,6 +66,24 @@ export function setInactivityCheckDuration(inactivityCheckDuration) {
         type: "OPTIONS_SET_SET_INACTIVITY_DURATION",
         payload: {
             inactivity_check_duration: parseInt(inactivityCheckDuration)
+        }
+    };
+}
+
+export function overwriteSettingsLocation(location) {
+    return {
+        type: "OPTIONS_OVERWRITE_SETTINGS_LOCATION",
+        payload: {
+            location: location
+        }
+    };
+}
+
+export function loadSettingsLocation(location) {
+    return {
+        type: "OPTIONS_LOAD_SETTINGS_LOCATION",
+        payload: {
+            location: location
         }
     };
 }

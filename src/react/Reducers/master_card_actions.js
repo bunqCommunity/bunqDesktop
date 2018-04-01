@@ -1,4 +1,6 @@
 import MergeApiObjects from "../Helpers/MergeApiObjects";
+import store from "store";
+
 import { STORED_MASTER_CARD_ACTIONS } from "../Actions/master_card_actions";
 
 export const defaultState = {
@@ -63,6 +65,7 @@ export default (state = defaultState, action) => {
         case "MASTER_CARD_ACTIONS_CLEAR":
         case "REGISTRATION_CLEAR_API_KEY":
         case "REGISTRATION_CLEAR_USER_INFO":
+            store.remove(STORED_MASTER_CARD_ACTIONS);
             return {
                 master_card_actions: [],
                 account_id: false,
