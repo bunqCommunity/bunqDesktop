@@ -44,10 +44,6 @@ class Dashboard extends React.Component {
 
         const switchUserText = t("Switch user");
 
-        const displayName = this.props.user.first_name
-            ? this.props.user.first_name
-            : this.props.user.name;
-
         return (
             <Grid container spacing={16}>
                 <Helmet>
@@ -56,7 +52,7 @@ class Dashboard extends React.Component {
 
                 <Grid item xs={8} sm={10}>
                     <Typography variant="title" gutterBottom>
-                        {`${t("Welcome")} ${displayName}`}
+                        {`${t("Welcome")} ${this.props.user.display_name}`}
                     </Typography>
                 </Grid>
 
