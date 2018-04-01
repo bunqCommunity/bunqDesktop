@@ -33,9 +33,6 @@ class RuleCollectionPreview extends React.Component<any, any> {
     componentWillMount() {
         this.worker = new RuleCollectionCheckWorker();
         this.worker.onmessage = this.handleWorkerEvent;
-
-        const a: any = window;
-        a.triggerWorkerEvent = () => this.triggerWorkerEvent(this.props);
     }
 
     componentWillUnmount() {
@@ -54,7 +51,7 @@ class RuleCollectionPreview extends React.Component<any, any> {
     }
 
     handleWorkerEvent = (eventResults: any) => {
-        this.setState({ eventResults: eventResults.data });
+        this.setState({ eventResults: eventResults.data.result });
     };
     handleVisibilityToggle = event => {
         this.setState({ visible: !this.state.visible }, () => {
@@ -65,7 +62,7 @@ class RuleCollectionPreview extends React.Component<any, any> {
         });
     };
     triggerWorkerEvent = props => {
-        const ruleCollection: RuleCollection | null = this.props.ruleCollection;
+        const ruleCollection: RuleCollection | null = props.ruleCollection;
         this.worker.postMessage({
             ruleCollection: ruleCollection,
             payments: props.payments,

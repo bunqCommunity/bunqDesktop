@@ -171,6 +171,40 @@ export default function reducer(state = defaultState, action) {
                 category_connections: category_connections
             };
 
+        case "CATEGORIES_SET_CATEGORY_CONNECTION_MULTIPLE":
+            const categoryConnectionMultiple =
+                action.payload.category_connections;
+
+            categoryConnectionMultiple.forEach(categoryConnectionItem => {
+                const catId = categoryConnectionItem.category_id;
+                const catType = categoryConnectionItem.event_type;
+                const eventId = categoryConnectionItem.event_id;
+
+                if (!category_connections[catId]) {
+                    category_connections[catId] = {};
+                }
+                if (!category_connections[catId][catType]) {
+                    category_connections[catId][catType] = [];
+                }
+
+                // prevent duplicates
+                if (category_connections[catId][catType].includes(eventId) === false) {
+                    category_connections[catId][catType].push(eventId);
+                }
+            });
+
+            // update settings
+            settings.set(
+                BUNQDESKTOP_CATEGORY_CONNECTIONS,
+                category_connections
+            );
+            // return new state
+            return {
+                ...state,
+                last_update: new Date().getTime(),
+                category_connections: category_connections
+            };
+
         // update categories in new settings location
         case "OPTIONS_OVERWRITE_SETTINGS_LOCATION":
             settings.set(BUNQDESKTOP_CATEGORIES, state.categories);
