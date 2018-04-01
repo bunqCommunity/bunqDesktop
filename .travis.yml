@@ -3,7 +3,7 @@ matrix:
   - os: osx
     osx_image: xcode9.2
     language: node_js
-    node_js: "9"
+    node_js: '9'
     env:
     - ELECTRON_CACHE=$HOME/.cache/electron
     - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
@@ -49,14 +49,12 @@ script:
 
 after_script:
   - ls dist
-  # Display sha256 hashes
   - |
     if [ "$TRAVIS_OS_NAME" == "osx" ]; then
       find dist -type f -maxdepth 1 -print0  | xargs -0 shasum -a 256
     else
       sha256sum dist/*
     fi
-
 before_cache:
   - rm -rf $HOME/.cache/electron-builder/wine
 
@@ -88,3 +86,13 @@ deploy:
     skip_cleanup: true
     on:
       tags: true
+  - provider: script
+    condition: $TRAVIS_OS_NAME == "linux"
+    script: docker run -v $(pwd):$(pwd) -w $(pwd) snapcore/snapcraft sh -c "apt update && snapcraft push dist/bunqdesktop_*_amd64.snap --release edge"
+    skip_cleanup: true
+    on:
+      branch: master
+      tags: true
+
+after_success:
+  - openssl aes-256-cbc -K $encrypted_6a955bf10c5f_key -iv $encrypted_6a955bf10c5f_iv -in .snapcraft/travis_snapcraft.cfg -out .snapcraft/snapcraft.cfg -d
