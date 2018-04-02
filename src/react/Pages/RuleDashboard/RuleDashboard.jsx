@@ -168,27 +168,6 @@ class RuleDashboard extends React.Component {
                     open={this.state.openImportDialog}
                 />
 
-                <Grid item xs={12} sm={3} />
-
-                <Grid item xs={12} sm={6}>
-                    <Paper style={styles.paper}>
-                        <Grid container spacing={16}>
-                            <Grid item xs={12} sm={3} md={6}>
-                                <TranslateTypography variant={"headline"}>
-                                    Rules
-                                </TranslateTypography>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <List>
-                                    <Divider />
-                                    {categoryRulesList}
-                                </List>
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                </Grid>
-
                 <Grid item xs={12} sm={3}>
                     <Paper style={styles.paper}>
                         <Grid container spacing={16}>
@@ -232,6 +211,26 @@ class RuleDashboard extends React.Component {
                         </Grid>
                     </Paper>
                 </Grid>
+
+                <Grid item xs={12} sm={6}>
+                    <Paper style={styles.paper}>
+                        <Grid container spacing={16}>
+                            <Grid item xs={12} sm={3} md={6}>
+                                <TranslateTypography variant={"headline"}>
+                                    Rules
+                                </TranslateTypography>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <List>
+                                    <Divider />
+                                    {categoryRulesList}
+                                </List>
+                            </Grid>
+                        </Grid>
+                    </Paper>
+                </Grid>
+
             </Grid>
         );
     }

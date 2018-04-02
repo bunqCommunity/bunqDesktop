@@ -5,9 +5,9 @@ import {
     ListItemSecondaryAction
 } from "material-ui/List";
 import Divider from "material-ui/Divider";
-import Icon from "material-ui/Icon";
 
 import NavLink from "../../Components/Routing/NavLink";
+import CategoryIcon from "../../Components/Categories/CategoryIcon";
 
 class RuleCollectionItem extends React.Component {
     constructor(props, context) {
@@ -25,11 +25,13 @@ class RuleCollectionItem extends React.Component {
             if (!categoryInfo) return null;
 
             return (
-                <Icon style={{ color: categoryInfo.color }}>
-                    {categoryInfo.icon}
-                </Icon>
+                <CategoryIcon category={categoryInfo}/>
             );
         });
+
+        const enabledText = ruleCollection.isEnabled() ? "Enabled" : "Disabled";
+        const secondaryText = `${t(enabledText)} - ${ruleCollection.getRules()
+            .length} ${t("rules")}`;
 
         return [
             <ListItem
@@ -39,9 +41,7 @@ class RuleCollectionItem extends React.Component {
             >
                 <ListItemText
                     primary={ruleCollection.getTitle()}
-                    secondary={`${ruleCollection.getRules().length} ${t(
-                        "rules"
-                    )}`}
+                    secondary={secondaryText}
                 />
                 <ListItemSecondaryAction>
                     {categoryIcons}

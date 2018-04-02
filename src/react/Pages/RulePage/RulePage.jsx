@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
 import Button from "material-ui/Button";
+import Typography from "material-ui/Typography";
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
 
 import RuleCreator from "./RuleCreator.tsx";
@@ -81,7 +82,9 @@ class RulesPage extends React.Component {
                         removeCategoryCollection={this.props.removeCategoryRule}
                     />
                 </Grid>
+
                 <Grid item xs={12} md={2} />
+
                 <Grid item xs={12} md={8}>
                     <RuleCollectionPreview
                         t={t}
