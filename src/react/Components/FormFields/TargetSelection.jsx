@@ -20,6 +20,7 @@ import CompareArrowsIcon from "material-ui-icons/CompareArrows";
 import PhoneFormatInput from "./PhoneFormatInput";
 import AccountSelectorDialog from "./AccountSelectorDialog";
 import { openSnackbar } from "../../Actions/snackbar";
+import { translate } from "react-i18next";
 
 const styles = {
     payButton: {
@@ -44,10 +45,11 @@ class TargetSelection extends React.Component {
     };
 
     copiedValue = type => callback => {
-        this.props.openSnackbar(`Copied ${type} to your clipboard`);
+        this.props.openSnackbar(this.props.t(`Copied to your clipboard`));
     };
 
     render() {
+        const t = this.props.t;
         let targetContent = null;
         switch (this.props.targetType) {
             case "TRANSFER":
@@ -67,8 +69,9 @@ class TargetSelection extends React.Component {
                 targetContent = (
                     <FormControl fullWidth error={this.props.targetError}>
                         <Typography variant="body1">
-                            Phone numbers should contain no spaces and include
-                            the land code. For example: +316123456789
+                            {t(
+                                "Phone numbers should contain no spaces and include the land code For example 316123456789"
+                            )}
                         </Typography>
                         <PhoneFormatInput
                             id="target"
@@ -91,7 +94,7 @@ class TargetSelection extends React.Component {
                         required
                         id="target"
                         type="email"
-                        label="Email"
+                        label={t("Email")}
                         value={this.props.target}
                         onChange={this.props.handleChange("target")}
                         onKeyPress={this.enterKeySubmit}
@@ -107,7 +110,7 @@ class TargetSelection extends React.Component {
                         fullWidth
                         required
                         id="target"
-                        label="IBAN number"
+                        label={t("IBAN number")}
                         value={this.props.target}
                         onChange={this.props.handleChange("target")}
                     />,
@@ -116,7 +119,7 @@ class TargetSelection extends React.Component {
                         required
                         error={this.props.ibanNameError}
                         id="ibanName"
-                        label="IBAN name"
+                        label={t("IBAN name")}
                         value={this.props.ibanName}
                         onChange={this.props.handleChange("ibanName")}
                         margin="normal"
@@ -271,7 +274,7 @@ class TargetSelection extends React.Component {
                         style={styles.payButton}
                         onClick={this.props.addTarget}
                     >
-                        Add target
+                        {t("Add")}
                     </Button>
                 </Grid>
             </Grid>
@@ -296,4 +299,6 @@ TargetSelection.defaultProps = {
     disabledTypes: []
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TargetSelection);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(TargetSelection)
+);

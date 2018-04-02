@@ -1,4 +1,5 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import RequestInquiry from "../Models/RequestInquiry";
 
 import { requestInquiriesSetInfo } from "./request_inquiries";
 
@@ -27,7 +28,8 @@ export function requestInquiryUpdate(
         dispatch(requestInquiryLoading());
         BunqJSClient.api.requestInquiry
             .get(user_id, account_id, request_inquiry_id)
-            .then(requestInquiryInfo => {
+            .then(requestInquiry => {
+                const requestInquiryInfo = new RequestInquiry(requestInquiry);
                 // update this item in the list and the stored data
                 dispatch(
                     requestInquiriesSetInfo(

@@ -12,6 +12,7 @@ const Transition = props => <Slide direction={"up"} {...props} />;
 import AccountQRCode from "./AccountQRCode";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 import QRSvg from "./QRSvg";
+import QRCode from "./QRCode";
 
 const styles = theme => ({
     btnIcon: {
@@ -54,38 +55,29 @@ class AccountQRFullscreen extends React.PureComponent {
     render() {
         const { accounts, theme, classes } = this.props;
 
-        const accountId =
-            this.props.accountId !== false
-                ? this.props.accountId
-                : this.props.selectedAccount;
+        let dialogContent = null;
+        switch (this.props.mode) {
+            case "ACCOUNT":
+                const accountId =
+                    this.props.accountId !== false
+                        ? this.props.accountId
+                        : this.props.selectedAccount;
 
-        let accountInfo = false;
-        let IBAN = "";
-        accounts.map(account => {
-            if (account.id === accountId) {
-                accountInfo = account;
-            }
-        });
-        accountInfo.alias.map(alias => {
-            if (alias.type === "IBAN") {
-                IBAN = alias.value;
-            }
-        });
+                let accountInfo = false;
+                let IBAN = "";
+                accounts.map(account => {
+                    if (account.id === accountId) {
+                        accountInfo = account;
+                    }
+                });
+                accountInfo.alias.map(alias => {
+                    if (alias.type === "IBAN") {
+                        IBAN = alias.value;
+                    }
+                });
 
-        return [
-            <IconButton onClick={this.handleClickOpen}>
-                <QRSvg />
-            </IconButton>,
-            <Dialog
-                fullScreen
-                className={classes.dialog}
-                open={this.state.open}
-                onClose={this.handleRequestClose}
-                onClick={this.handleRequestClose}
-                transition={Transition}
-            >
-                <div className={classes.content}>
-                    <div style={{ width: 195 }}>
+                dialogContent = (
+                    <React.Fragment>
                         <AccountQRCode accountId={this.props.accountId} />
                         <ListItem className={classes.listItem}>
                             <Avatar className={classes.bigAvatar}>
@@ -103,15 +95,53 @@ class AccountQRFullscreen extends React.PureComponent {
                                 secondary={IBAN}
                             />
                         </ListItem>
+                    </React.Fragment>
+                );
+                break;
+            case "TEXT":
+                dialogContent = (
+                    <React.Fragment>
+                        <QRCode value={this.props.text} size={195} />
+                        <ListItem className={classes.listItem} dense>
+                            <ListItemText primary={this.props.text} />
+                        </ListItem>
+                    </React.Fragment>
+                );
+                break;
+            case "HIDDEN":
+                dialogContent = (
+                    <React.Fragment>
+                        <QRCode value={this.props.text} size={195} />
+                    </React.Fragment>
+                );
+                break;
+        }
+
+        return (
+            <React.Fragment>
+                <IconButton onClick={this.handleClickOpen}>
+                    <QRSvg />
+                </IconButton>
+                <Dialog
+                    fullScreen
+                    className={classes.dialog}
+                    open={this.state.open}
+                    onClose={this.handleRequestClose}
+                    onClick={this.handleRequestClose}
+                    transition={Transition}
+                >
+                    <div className={classes.content}>
+                        <div style={{ width: 195 }}>{dialogContent}</div>
                     </div>
-                </div>
-            </Dialog>
-        ];
+                </Dialog>
+            </React.Fragment>
+        );
     }
 }
 
 AccountQRFullscreen.defaultProps = {
-    accountId: false
+    accountId: false,
+    mode: "ACCOUNT"
 };
 
 const mapStateToProps = state => {

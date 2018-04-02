@@ -41,30 +41,25 @@ const TransactionHeader = props => {
     let toLabelName = toAlias.label_user.public_nick_name;
     let fromLabelName = fromAlias.label_user.public_nick_name;
 
-    // transaction between the user's own accounts
-    if (
-        props.user.public_uuid === fromAlias.label_user.uuid &&
-        props.user.public_uuid === toAlias.label_user.uuid
-    ) {
-        // accounts list is available
-        if (props.accounts) {
-            // loop through accounts
-            props.accounts.forEach(account => {
-                const accountInfo = account;
-                // loop through alias to find the iban and check if it matches
-                accountInfo.alias.forEach(alias => {
-                    // if IBAN check if it matches the from or to alias
-                    if (alias.type === "IBAN") {
-                        if (alias.value === fromAlias.iban) {
-                            fromLabelName = accountInfo.description;
-                        }
-                        if (alias.value === toAlias.iban) {
-                            toLabelName = accountInfo.description;
-                        }
+    // accounts list is available
+    if (props.accounts) {
+        // loop through accounts
+        props.accounts.forEach(account => {
+            const accountInfo = account;
+            
+            // loop through alias to find the iban and check if it matches
+            accountInfo.alias.forEach(alias => {
+                // if IBAN check if it matches the from or to alias
+                if (alias.type === "IBAN") {
+                    if (alias.value === fromAlias.iban) {
+                        fromLabelName = accountInfo.description;
                     }
-                });
+                    if (alias.value === toAlias.iban) {
+                        toLabelName = accountInfo.description;
+                    }
+                }
             });
-        }
+        });
     }
 
     const components = [

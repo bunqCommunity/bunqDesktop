@@ -51,6 +51,12 @@ const Card = CL(() =>
 const DebugPage = CL(() =>
     import(/* webpackChunkName: "debug" */ "./Pages/DebugPage")
 );
+const Settings = CL(() =>
+    import(/* webpackChunkName: "debug" */ "./Pages/Settings")
+);
+const Exports = CL(() =>
+    import(/* webpackChunkName: "exports" */ "./Pages/Exports")
+);
 // const RuleDashboard = CL(() =>
 //     import(/* webpackChunkName: "rules_dashboard" */ "./Pages/RuleDashboard/RuleDashboard")
 // );
@@ -233,30 +239,40 @@ export default class Routes extends React.Component {
                             )}
                         />
 
+                        <PrivateRoute
+                            path="/exports"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <Exports {...props} {...this.props.childProps} />
+                            )}
+                        />
+
                         {/*<PrivateRoute*/}
-                            {/*path="/rules-dashboard"*/}
-                            {/*apiKey={this.props.apiKey}*/}
-                            {/*userType={this.props.userType}*/}
-                            {/*derivedPassword={this.props.derivedPassword}*/}
-                            {/*render={props => (*/}
-                                {/*<RuleDashboard*/}
-                                    {/*{...props}*/}
-                                    {/*{...this.props.childProps}*/}
-                                {/*/>*/}
-                            {/*)}*/}
+                        {/*path="/rules-dashboard"*/}
+                        {/*apiKey={this.props.apiKey}*/}
+                        {/*userType={this.props.userType}*/}
+                        {/*derivedPassword={this.props.derivedPassword}*/}
+                        {/*render={props => (*/}
+                        {/*<RuleDashboard*/}
+                        {/*{...props}*/}
+                        {/*{...this.props.childProps}*/}
+                        {/*/>*/}
+                        {/*)}*/}
                         {/*/>*/}
 
                         {/*<PrivateRoute*/}
-                            {/*path="/rule-page/:ruleId"*/}
-                            {/*apiKey={this.props.apiKey}*/}
-                            {/*userType={this.props.userType}*/}
-                            {/*derivedPassword={this.props.derivedPassword}*/}
-                            {/*render={props => (*/}
-                                {/*<RulePage*/}
-                                    {/*{...props}*/}
-                                    {/*{...this.props.childProps}*/}
-                                {/*/>*/}
-                            {/*)}*/}
+                        {/*path="/rule-page/:ruleId"*/}
+                        {/*apiKey={this.props.apiKey}*/}
+                        {/*userType={this.props.userType}*/}
+                        {/*derivedPassword={this.props.derivedPassword}*/}
+                        {/*render={props => (*/}
+                        {/*<RulePage*/}
+                        {/*{...props}*/}
+                        {/*{...this.props.childProps}*/}
+                        {/*/>*/}
+                        {/*)}*/}
                         {/*/>*/}
 
                         <Route
@@ -280,6 +296,16 @@ export default class Routes extends React.Component {
                             path="/debug-page"
                             render={props => (
                                 <DebugPage
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
+                            )}
+                        />
+
+                        <Route
+                            path="/settings"
+                            render={props => (
+                                <Settings
                                     {...props}
                                     {...this.props.childProps}
                                 />

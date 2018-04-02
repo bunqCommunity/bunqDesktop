@@ -1,4 +1,4 @@
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = [
     {
@@ -10,21 +10,15 @@ module.exports = [
     {
         test: /\.tsx?$/,
         include: /(src)|(\.ts$)/,
-        use: "ts-loader"
+        use: ["babel-loader", "ts-loader"]
     },
     {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-            fallback: "style-loader!css-loader",
-            use: "css-loader"
-        })
+        use: [MiniCssExtractPlugin.loader, "css-loader"]
     },
     {
         test: /\.scss$/,
-        use: ExtractTextPlugin.extract({
-            fallback: "style-loader!css-loader!sass-loader",
-            use: "css-loader!sass-loader"
-        })
+        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"]
     },
     {
         test: /\.worker\.js$/,

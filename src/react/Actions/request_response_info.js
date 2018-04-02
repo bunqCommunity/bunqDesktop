@@ -1,4 +1,5 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import RequestResponse from "../Models/RequestResponse";
 
 import { requestResponsesSetInfo } from "./request_responses";
 
@@ -27,7 +28,10 @@ export function requestResponseUpdate(
         dispatch(requestResponseLoading());
         BunqJSClient.api.requestResponse
             .get(user_id, account_id, request_response_id)
-            .then(requestResponseInfo => {
+            .then(requestResponse => {
+                const requestResponseInfo = new RequestResponse(
+                    requestResponse
+                );
                 // update this item in the list and the stored data
                 dispatch(
                     requestResponsesSetInfo(

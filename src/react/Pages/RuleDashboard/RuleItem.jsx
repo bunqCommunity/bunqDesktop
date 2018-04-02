@@ -15,14 +15,13 @@ class RuleCollectionItem extends React.Component {
     }
 
     render() {
-        const { rule } = this.props;
+        const { rule, t } = this.props;
         return [
             <ListItem button component={NavLink} to={`/rule-page/${rule.id}`}>
                 <ListItemText
                     primary={rule.getTitle()}
-                    secondary={`${rule.getRules().length} rules`}
+                    secondary={`${rule.getRules().length} ${t("rules")}`}
                 />
-                {/*<ListItemSecondaryAction>other text</ListItemSecondaryAction>*/}
             </ListItem>,
             <Divider />
         ];

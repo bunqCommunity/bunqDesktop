@@ -4,7 +4,7 @@ import Switch from "material-ui/Switch";
 
 class AllowBunqMe extends React.Component {
     render() {
-        const { targetType, allowBunqMe, handleToggle } = this.props;
+        const { targetType, allowBunqMe, handleToggle, t } = this.props;
 
         if (targetType === "BUNQME") {
             return null;
@@ -19,7 +19,7 @@ class AllowBunqMe extends React.Component {
                         onChange={handleToggle}
                     />
                 }
-                label="Allow bunq.me? If the user doesn't own a bunq account a bunq.me request will be sent instead"
+                label={t("Allow bunq.me? If the user doesn't own a bunq account a bunq.me request will be sent instead")}
             />
         );
     }

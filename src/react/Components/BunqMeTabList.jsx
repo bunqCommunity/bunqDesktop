@@ -63,7 +63,7 @@ class BunqMeTabList extends React.Component {
         return (
             <List style={styles.left}>
                 <ListSubheader>
-                    Bunq.me requests - {bunqMeTabs.length}
+                    bunq.me requests - {bunqMeTabs.length}
                     <ListItemSecondaryAction>
                         <IconButton
                             aria-label="Display or hide expired and cancelled bunq.me requests"

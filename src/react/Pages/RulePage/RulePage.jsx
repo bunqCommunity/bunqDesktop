@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
@@ -31,7 +32,7 @@ class RulesPage extends React.Component {
     };
 
     render() {
-        const { categoryRules, match } = this.props;
+        const { categoryRules, match, t } = this.props;
         const ruleCollectionId = match.params.ruleId;
 
         let ruleCollection;
@@ -45,14 +46,26 @@ class RulesPage extends React.Component {
             ruleCollection = new RuleCollection();
         }
 
+        const payments = this.props.payments.map(item => item.toJSON());
+        const requestInquiries = this.props.requestInquiries.map(item =>
+            item.toJSON()
+        );
+        const requestResponses = this.props.requestResponses.map(item =>
+            item.toJSON()
+        );
+        const masterCardActions = this.props.masterCardActions.map(item =>
+            item.toJSON()
+        );
+
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - Rule Editor`}</title>
+                    <title>{`BunqDesktop - ${t("Rule Editor")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12}>
                     <RuleCreator
+                        t={t}
                         categories={this.props.categories}
                         ruleCollection={ruleCollection}
                         updatePreview={this.updatePreview}
@@ -63,13 +76,14 @@ class RulesPage extends React.Component {
                 </Grid>
                 <Grid item xs={12}>
                     <RuleCollectionPreview
+                        t={t}
                         ruleCollection={this.state.previewRuleCollection}
                         ruleCollectionUpdated={this.state.previewUpdated}
-                        payments={this.props.payments}
+                        payments={payments}
+                        requestInquiries={requestInquiries}
+                        masterCardActions={masterCardActions}
                         bunqMeTabs={this.props.bunqMeTabs}
-                        masterCardActions={this.props.masterCardActions}
-                        requestInquiries={this.props.requestInquiries}
-                        requestResponses={this.props.requestResponses}
+                        requestResponses={requestResponses}
                     />
                 </Grid>
             </Grid>
@@ -106,4 +120,6 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(RulesPage);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(RulesPage)
+);

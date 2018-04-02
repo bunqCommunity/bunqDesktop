@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { translate } from "react-i18next";
 import DatePicker from "material-ui-pickers/DatePicker/index.js";
 import { withTheme } from "material-ui/styles";
 import IconButton from "material-ui/IconButton";
@@ -111,6 +112,8 @@ class FilterDrawer extends React.Component {
         this.props.clearPaymentFilterType();
         this.props.clearBunqMeTabFilterType();
         this.props.clearRequestFilterType();
+        this.props.clearFromDateFilter();
+        this.props.clearToDateFilter();
     };
 
     handlePaymentTypeChange = event => {
@@ -155,7 +158,8 @@ class FilterDrawer extends React.Component {
             requestType,
             requestVisibility,
             bunqMeTabType,
-            bunqMeTabVisibility
+            bunqMeTabVisibility,
+            t
         } = this.props;
         const { sentPayment, receivedPayment } = theme.palette.common;
 
@@ -163,7 +167,7 @@ class FilterDrawer extends React.Component {
             <List style={styles.list}>
                 {/* filters for both normal payments and master card actions */}
                 <ListSubheader style={styles.subheaderTitle}>
-                    Payments
+                    {t("Payments")}
                     <ListItemSecondaryAction>
                         <IconButton
                             aria-label="Display or hide all payments"
@@ -215,7 +219,7 @@ class FilterDrawer extends React.Component {
 
                 {/* filters for both request-responses and request-requests*/}
                 <ListSubheader style={styles.subheaderTitle}>
-                    Requests
+                    {t("Requests")}
                     <ListItemSecondaryAction>
                         <IconButton
                             aria-label="Display or hide all requests"
@@ -267,7 +271,7 @@ class FilterDrawer extends React.Component {
 
                 {/* filters bunq.me tabs */}
                 <ListSubheader style={styles.subheaderTitle}>
-                    bunq.me requests
+                    {t("bunqme Requests")}
                     <ListItemSecondaryAction>
                         <IconButton
                             aria-label="Display or hide all bunq.me requests"
@@ -338,13 +342,13 @@ class FilterDrawer extends React.Component {
                 </ListItem>
 
                 <ListSubheader style={styles.subheaderTitle}>
-                    Date range filter
+                    {t("Date range filter")}
                 </ListSubheader>
                 <ListItem style={styles.listItem}>
                     <DatePicker
                         id="from-date"
-                        helperText="From date"
-                        emptyLabel="No filter"
+                        helperText={t("From date")}
+                        emptyLabel={t("No filter")}
                         format="MMMM DD, YYYY"
                         disableFuture
                         style={styles.dateInput}
@@ -366,8 +370,8 @@ class FilterDrawer extends React.Component {
                 <ListItem style={styles.listItem}>
                     <DatePicker
                         id="to-date"
-                        helperText="To date"
-                        emptyLabel="No filter"
+                        helperText={t("To date")}
+                        emptyLabel={t("No filter")}
                         format="MMMM DD, YYYY"
                         disableFuture
                         style={styles.dateInput}
@@ -394,7 +398,9 @@ class FilterDrawer extends React.Component {
                     <ListItemIcon>
                         <ClearIcon />
                     </ListItemIcon>
-                    <Typography variant="subheading">Clear filters</Typography>
+                    <Typography variant="subheading">
+                        {t("Clear filters")}
+                    </Typography>
                 </ListItem>
             </List>
         );
@@ -406,7 +412,7 @@ class FilterDrawer extends React.Component {
                 onClick={this.openDrawer}
                 {...this.props.buttonProps}
             >
-                Filter <FilterListIcon />
+                {t("Filter")} <FilterListIcon />
             </Button>
         ) : (
             <IconButton
@@ -483,5 +489,5 @@ const mapDispatchToProps = dispatch => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-    withTheme()(FilterDrawer)
+    withTheme()(translate("translations")(FilterDrawer))
 );

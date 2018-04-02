@@ -42,6 +42,7 @@ const styles = {
         right: 85
     },
     header: {
+        backgroundImage: "url('images/svg/bunq_Colors.svg')",
         WebkitAppRegion: "drag",
         WebkitUserSelect: "none",
         position: "fixed",
@@ -85,6 +86,7 @@ class Header extends React.Component {
     };
 
     render() {
+        const displayButtons = !IsDarwin() && this.props.nativeFrame === false;
         // the actual menu button
         const menuButton = (
             <IconButton
@@ -114,7 +116,7 @@ class Header extends React.Component {
         } else if (!this.mainWindow.isMinimized()) {
             middleIcon = <MaximizeIcon />;
         }
-        const windowControls = !IsDarwin() ? (
+        const windowControls = displayButtons ? (
             <React.Fragment>
                 <IconButton
                     aria-label="Minimize application"
@@ -141,7 +143,7 @@ class Header extends React.Component {
         ) : null;
 
         return (
-            <header style={styles.header} className={"rainbow-background"}>
+            <header style={styles.header}>
                 {wrappedButton}
                 {windowControls}
             </header>
@@ -152,6 +154,7 @@ class Header extends React.Component {
 const mapStateToProps = store => {
     return {
         stickyMenu: store.options.sticky_menu,
+        nativeFrame: store.options.native_frame,
         minimizeToTray: store.options.minimize_to_tray
     };
 };

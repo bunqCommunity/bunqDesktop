@@ -1,5 +1,6 @@
-import path from "path";
+import fs from "fs";
 import url from "url";
+import path from "path";
 import log from "electron-log";
 import electron from "electron";
 import settings from "electron-settings";
@@ -10,10 +11,15 @@ import createWindow from "./helpers/window";
 import registerShortcuts from "./helpers/shortcuts";
 import registerTouchBar from "./helpers/touchbar";
 import changePage from "./helpers/react_navigate";
+import defaultConfig from "./helpers/default_config";
 
-// Special module holding environment variables which you declared
-// in config/env_xxx.json file.
 import env from "./env";
+
+const userDataPath = app.getPath("userData");
+const SETTINGS_LOCATION_FILE = path.normalize(
+    `${userDataPath}${path.sep}..${path.sep}BunqDesktop${path.sep}${path.sep}SETTINGS_LOCATION`
+);
+const DEFAULT_SETTINGS_LOCATION = `${userDataPath}${path.sep}settings.json`;
 
 // hide/show different native menus based on env
 const setApplicationMenu = () => {
@@ -34,9 +40,41 @@ const getWindowUrl = fileName => {
     });
 };
 
+// stores the file location of our settings file
+const getSettingsLocation = () => {
+    // check if the parent folder exists
+    if (fs.existsSync(path.dirname(SETTINGS_LOCATION_FILE))) {
+        try {
+            // check if the settings lock file exists
+            if (!fs.existsSync(SETTINGS_LOCATION_FILE)) {
+                // create a default file
+                fs.writeFileSync(
+                    SETTINGS_LOCATION_FILE,
+                    DEFAULT_SETTINGS_LOCATION
+                );
+            }
+            // return the lock file contents
+            return fs.readFileSync(SETTINGS_LOCATION_FILE).toString();
+        } catch (ex) {}
+    }
+
+    // create the settings lock file
+    fs.writeFileSync(SETTINGS_LOCATION_FILE, DEFAULT_SETTINGS_LOCATION);
+
+    // check if the default settings file exists
+    if (!fs.existsSync(DEFAULT_SETTINGS_LOCATION)) {
+        // fill the settings file with our default config
+        fs.writeFileSync(
+            DEFAULT_SETTINGS_LOCATION,
+            JSON.stringify(defaultConfig())
+        );
+    }
+
+    return DEFAULT_SETTINGS_LOCATION;
+};
+
 // Save userData in separate folders for each environment
 if (env.name !== "production") {
-    const userDataPath = app.getPath("userData");
     app.setPath("userData", `${userDataPath} (${env.name})`);
 }
 
@@ -44,13 +82,20 @@ if (env.name !== "production") {
 log.transports.file.appName = "BunqDesktop";
 log.transports.file.level = env.name === "development" ? "debug" : "warn";
 log.transports.file.format = "{h}:{i}:{s}:{ms} {text}";
-log.transports.file.file = `${app.getPath("userData")}/BunqDesktop.log.txt`;
+log.transports.file.file = `${userDataPath}${path.sep}BunqDesktop.${env.name}.log.txt`;
+
+// hot reloading
+if (process.env.NODE_ENV === "DEVELOPMENT") {
+    require("electron-reload")(
+        path.join(__dirname, `..${path.sep}app${path.sep}**`)
+    );
+}
+
+// set the correct path before the app loads
+settings.setPath(getSettingsLocation());
 
 app.on("ready", () => {
     setApplicationMenu();
-
-    // set the correct path
-    settings.setPath(`${app.getPath("userData")}/settings.json`);
 
     const USE_NATIVE_FRAME_STORED = settings.get("USE_NATIVE_FRAME");
     const USE_NATIVE_FRAME =
@@ -76,7 +121,10 @@ app.on("ready", () => {
     }
 
     const trayIcon = nativeImage.createFromPath(
-        path.join(__dirname, "../app/images/32x32.png")
+        path.join(
+            __dirname,
+            `..${path.sep}app${path.sep}images${path.sep}32x32.png`
+        )
     );
 
     const createTrayIcon = () => {
@@ -114,7 +162,7 @@ app.on("ready", () => {
             if (!mainWindow.isVisible()) mainWindow.show();
             tray.destroy();
         });
-    }
+    };
 
     mainWindow.on("minimize", function(event) {
         const minimizeToTray = !!settings.get("MINIMIZE_TO_TRAY");
@@ -123,6 +171,10 @@ app.on("ready", () => {
             event.preventDefault();
             mainWindow.hide();
         }
+    });
+
+    mainWindow.on("close", function(event) {
+        app.quit();
     });
 
     // reload the window if the system goes into sleep mode

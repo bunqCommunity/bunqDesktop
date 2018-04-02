@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import CopyToClipboard from "react-copy-to-clipboard";
 import {
     ListItem,
@@ -8,7 +9,6 @@ import {
 import withTheme from "material-ui/styles/withTheme";
 import Collapse from "material-ui/transitions/Collapse";
 import IconButton from "material-ui/IconButton";
-import Button from "material-ui/Button";
 import Divider from "material-ui/Divider";
 import Avatar from "material-ui/Avatar";
 
@@ -16,13 +16,16 @@ import CopyIcon from "material-ui-icons/ContentCopy";
 import Share from "material-ui-icons/Share";
 
 import PaymentListItem from "./PaymentListItem";
+import AccountQRFullscreen from "../QR/AccountQRFullscreen";
+import TranslateButton from "../TranslationHelpers/Button";
 import CategoryIcons from "../Categories/CategoryIcons";
 import { humanReadableDate, formatMoney } from "../../Helpers/Utils";
 
 const styles = {
     actionListItem: {
         padding: 16,
-        marginTop: 16
+        marginTop: 16,
+        marginBottom: 8
     },
     smallAvatar: {
         width: 50,
@@ -57,7 +60,7 @@ class BunqMeTabListItem extends React.Component {
     };
 
     render() {
-        const { bunqMeTab, theme } = this.props;
+        const { bunqMeTab, theme, t } = this.props;
 
         let iconColor = null;
         let canBeCanceled = false;
@@ -100,7 +103,8 @@ class BunqMeTabListItem extends React.Component {
                     primary={primaryText}
                     secondary={bunqMeTab.bunqme_tab_entry.description}
                 />
-                <ListItemSecondaryAction style={{ marginTop: -40 }}>
+                <ListItemSecondaryAction style={{ marginTop: -16 }}>
+                    <AccountQRFullscreen mode="HIDDEN" text={shareUrl} />
                     <CopyToClipboard
                         text={shareUrl}
                         onCopy={this.props.copiedValue("the bunq.me tab url")}
@@ -118,32 +122,38 @@ class BunqMeTabListItem extends React.Component {
             </ListItem>,
             <Collapse in={this.state.extraInfoOpen} unmountOnExit>
                 <ListItem dense>
-                    <ListItemText primary={`Created`} secondary={createdDate} />
+                    <ListItemText
+                        primary={t("Created")}
+                        secondary={createdDate}
+                    />
                 </ListItem>
 
                 {updatedDate !== createdDate ? (
                     <ListItem dense>
                         <ListItemText
-                            primary={`Updated`}
+                            primary={t("Updated")}
                             secondary={updatedDate}
                         />
                     </ListItem>
                 ) : null}
 
                 <ListItem dense>
-                    <ListItemText primary={`Expires`} secondary={expiryDate} />
+                    <ListItemText
+                        primary={t("Expires")}
+                        secondary={expiryDate}
+                    />
                 </ListItem>
 
                 <ListItem dense>
                     <ListItemText
-                        primary="Available merchants"
+                        primary={t("Available merchants")}
                         secondary={merchantList}
                     />
                 </ListItem>
 
                 <ListItem button dense onClick={this.togglePayments}>
                     <ListItemText
-                        primary="Number of payments"
+                        primary={t("Number of payments")}
                         secondary={"" + numberOfPayments}
                     />
                 </ListItem>
@@ -161,7 +171,7 @@ class BunqMeTabListItem extends React.Component {
                 <ListItem style={styles.actionListItem}>
                     <ListItemSecondaryAction>
                         {canBeCanceled ? (
-                            <Button
+                            <TranslateButton
                                 variant="raised"
                                 disabled={
                                     this.props.bunqMeTabLoading ||
@@ -171,7 +181,7 @@ class BunqMeTabListItem extends React.Component {
                                 onClick={this.cancelTab}
                             >
                                 Cancel request
-                            </Button>
+                            </TranslateButton>
                         ) : null}
                     </ListItemSecondaryAction>
                 </ListItem>
@@ -183,6 +193,6 @@ class BunqMeTabListItem extends React.Component {
 
 BunqMeTabListItem.defaultProps = {
     minimalDisplay: false
-}
+};
 
-export default withTheme()(BunqMeTabListItem);
+export default withTheme()(translate("translations")(BunqMeTabListItem));
