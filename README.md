@@ -1,4 +1,4 @@
-![Screenshot of the app](https://i.gyazo.com/aacd73b20ef1a2b0ea4e94c8569a6ffd.gif)
+![Screenshot of the app](https://i.gyazo.com/b33c7e40e431814be4bd0d901fca0bc2.gif)
 
 # BunqDesktop ![build status for master branch](https://api.travis-ci.org/BunqCommunity/BunqJSClient.svg?branch=master)
 
