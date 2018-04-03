@@ -5,7 +5,6 @@ import Grid from "material-ui/Grid";
 import Divider from "material-ui/Divider";
 import IconButton from "material-ui/IconButton";
 import TextField from "material-ui/TextField";
-import Typography from "material-ui/Typography";
 import MenuItem from "material-ui/Menu/MenuItem";
 import { LinearProgress } from "material-ui/Progress";
 import List, { ListItemSecondaryAction, ListSubheader } from "material-ui/List";
@@ -47,7 +46,7 @@ const styles = {
         width: "100%"
     },
     pageField: {
-        width: 36
+        width: 60
     },
     list: {
         textAlign: "left"
@@ -348,6 +347,7 @@ class CombinedList extends React.Component {
                                 <SkipPreviousIcon />
                             </IconButton>
                         </Grid>
+
                         <Grid item xs={1}>
                             <IconButton
                                 style={styles.button}
@@ -360,7 +360,6 @@ class CombinedList extends React.Component {
 
                         <Grid item xs={4} style={styles.centerPaginationDiv}>
                             <TextField
-                                label="Page"
                                 style={styles.pageField}
                                 value={page + 1}
                                 type={"number"}
@@ -371,19 +370,12 @@ class CombinedList extends React.Component {
                                 }}
                                 onChange={this.setPage(pageCount)}
                             />
-
-                            <Typography
-                                variant={"body2"}
-                                style={{ fontSize: 14, marginTop: 16 }}
-                            >
-                                / {pageCount}
-                            </Typography>
                         </Grid>
 
                         <Grid item xs={4} style={styles.centerPaginationDiv}>
                             <TextField
                                 select
-                                label="Pagesize"
+                                style={styles.pageField}
                                 value={pageSize}
                                 onChange={this.setPageSize}
                             >
@@ -401,16 +393,17 @@ class CombinedList extends React.Component {
                             <IconButton
                                 style={styles.button}
                                 onClick={this.props.nextPage}
-                                disabled={slicedEvents.length < usedPageSize}
+                                disabled={page + 1 >= pageCount}
                             >
                                 <KeyboardArrowRightIcon />
                             </IconButton>
                         </Grid>
+
                         <Grid item xs={1}>
                             <IconButton
                                 style={styles.button}
                                 onClick={this.lastPage(pageCount - 1)}
-                                disabled={slicedEvents.length < usedPageSize}
+                                disabled={page + 1 >= pageCount}
                             >
                                 <SkipNextIcon />
                             </IconButton>
