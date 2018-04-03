@@ -5,6 +5,8 @@ import Grid from "material-ui/Grid";
 import Divider from "material-ui/Divider";
 import IconButton from "material-ui/IconButton";
 import TextField from "material-ui/TextField";
+import Typography from "material-ui/Typography";
+import MenuItem from "material-ui/Menu/MenuItem";
 import { LinearProgress } from "material-ui/Progress";
 import List, { ListItemSecondaryAction, ListSubheader } from "material-ui/List";
 
@@ -45,10 +47,22 @@ const styles = {
         width: "100%"
     },
     pageField: {
-        width: 40
+        width: 36
     },
     list: {
         textAlign: "left"
+    },
+    leftPaginationDiv: {
+        marginRight: 4
+    },
+    centerPaginationDiv: {
+        textAlign: "center",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    rightPaginationDiv: {
+        marginLeft: 4
     }
 };
 
@@ -219,6 +233,10 @@ class CombinedList extends React.Component {
 
         this.props.setPage(page);
     };
+    setPageSize = event => {
+        this.props.setPage(0);
+        this.props.setPageSize(event.target.value);
+    };
 
     render() {
         const { page, pageSize, t } = this.props;
@@ -253,10 +271,17 @@ class CombinedList extends React.Component {
             return new Date(b.filterDate) - new Date(a.filterDate);
         });
 
-        const pageCount = Math.ceil(events.length / pageSize);
+        // check if all pages is set (pageSize = 0)
+        const usedPageSize = pageSize === 0 ? events.length : pageSize;
+        // calculate last page
+        const unRoundedPageCount = events.length / usedPageSize;
+        const pageCount = unRoundedPageCount
+            ? Math.ceil(unRoundedPageCount)
+            : 1;
+        // create a smaller list based on the page and pageSize
         const slicedEvents = events.slice(
-            page * pageSize,
-            (page + 1) * pageSize
+            page * usedPageSize,
+            (page + 1) * usedPageSize
         );
 
         slicedEvents.map(item => {
@@ -305,7 +330,7 @@ class CombinedList extends React.Component {
         return (
             <List style={styles.left}>
                 <ListSubheader>
-                    {t("Payments and requests")}
+                    {t("Payments and requests")}: {events.length}
                     <ListItemSecondaryAction>
                         <ClearBtn />
                         <FilterDrawer />
@@ -314,7 +339,7 @@ class CombinedList extends React.Component {
 
                 <ListSubheader>
                     <Grid container>
-                        <Grid item xs={2} sm={1}>
+                        <Grid item xs={1}>
                             <IconButton
                                 style={styles.button}
                                 onClick={this.props.firstPage}
@@ -323,7 +348,7 @@ class CombinedList extends React.Component {
                                 <SkipPreviousIcon />
                             </IconButton>
                         </Grid>
-                        <Grid item xs={2} sm={1}>
+                        <Grid item xs={1}>
                             <IconButton
                                 style={styles.button}
                                 onClick={this.props.previousPage}
@@ -333,14 +358,9 @@ class CombinedList extends React.Component {
                             </IconButton>
                         </Grid>
 
-                        <Grid
-                            item
-                            xs={4}
-                            sm={8}
-                            style={{ textAlign: "center" }}
-                        >
-                            {t("Page")}{" "}
+                        <Grid item xs={4} style={styles.centerPaginationDiv}>
                             <TextField
+                                label="Page"
                                 style={styles.pageField}
                                 value={page + 1}
                                 type={"number"}
@@ -351,23 +371,46 @@ class CombinedList extends React.Component {
                                 }}
                                 onChange={this.setPage(pageCount)}
                             />
-                            / {pageCount}
+
+                            <Typography
+                                variant={"body2"}
+                                style={{ fontSize: 14, marginTop: 16 }}
+                            >
+                                / {pageCount}
+                            </Typography>
                         </Grid>
 
-                        <Grid item xs={2} sm={1}>
+                        <Grid item xs={4} style={styles.centerPaginationDiv}>
+                            <TextField
+                                select
+                                label="Pagesize"
+                                value={pageSize}
+                                onChange={this.setPageSize}
+                            >
+                                <MenuItem value={5}>5</MenuItem>
+                                <MenuItem value={10}>10</MenuItem>
+                                <MenuItem value={20}>20</MenuItem>
+                                <MenuItem value={30}>30</MenuItem>
+                                <MenuItem value={50}>50</MenuItem>
+                                <MenuItem value={100}>100</MenuItem>
+                                <MenuItem value={0}>All</MenuItem>
+                            </TextField>
+                        </Grid>
+
+                        <Grid item xs={1}>
                             <IconButton
                                 style={styles.button}
                                 onClick={this.props.nextPage}
-                                disabled={slicedEvents.length < pageSize}
+                                disabled={slicedEvents.length < usedPageSize}
                             >
                                 <KeyboardArrowRightIcon />
                             </IconButton>
                         </Grid>
-                        <Grid item xs={2} sm={1}>
+                        <Grid item xs={1}>
                             <IconButton
                                 style={styles.button}
                                 onClick={this.lastPage(pageCount - 1)}
-                                disabled={slicedEvents.length < pageSize}
+                                disabled={slicedEvents.length < usedPageSize}
                             >
                                 <SkipNextIcon />
                             </IconButton>
