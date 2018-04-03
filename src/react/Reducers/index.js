@@ -24,6 +24,7 @@ import main_drawer from "./main_drawer";
 import master_card_actions from "./master_card_actions";
 import master_card_action_info from "./master_card_action_info";
 import options from "./options";
+import pagination from "./pagination";
 import pay from "./pay";
 import payments from "./payments";
 import payment_info from "./payment_info";
@@ -60,6 +61,7 @@ export default combineReducers({
     master_card_actions,
     master_card_action_info,
     options,
+    pagination,
     pay,
     payment_info,
     payment_filter,
