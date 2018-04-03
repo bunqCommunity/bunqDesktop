@@ -1,21 +1,36 @@
 import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
+import Grid from "material-ui/Grid";
 import Divider from "material-ui/Divider";
+import IconButton from "material-ui/IconButton";
+import TextField from "material-ui/TextField";
+import MenuItem from "material-ui/Menu/MenuItem";
 import { LinearProgress } from "material-ui/Progress";
 import List, { ListItemSecondaryAction, ListSubheader } from "material-ui/List";
+
+import KeyboardArrowRightIcon from "material-ui-icons/KeyboardArrowRight";
+import KeyboardArrowLeftIcon from "material-ui-icons/KeyboardArrowLeft";
+import SkipNextIcon from "material-ui-icons/SkipNext";
+import SkipPreviousIcon from "material-ui-icons/SkipPrevious";
 
 import BunqMeTabListItem from "./ListItems/BunqMeTabListItem";
 import PaymentListItem from "./ListItems/PaymentListItem";
 import MasterCardActionListItem from "./ListItems/MasterCardActionListItem";
 import RequestResponseListItem from "./ListItems/RequestResponseListItem";
 import RequestInquiryListItem from "./ListItems/RequestInquiryListItem";
-
 import ClearBtn from "../Components/FilterComponents/ClearFilter";
 import FilterDrawer from "../Components/FilterComponents/FilterDrawer";
 
 import { openSnackbar } from "../Actions/snackbar";
 import { bunqMeTabPut } from "../Actions/bunq_me_tab";
+import {
+    nextPage,
+    previousPage,
+    setPage,
+    setPageSize,
+    firstPage
+} from "../Actions/pagination";
 
 import { humanReadableDate } from "../Helpers/Utils";
 import {
@@ -27,8 +42,26 @@ import {
 } from "../Helpers/DataFilters";
 
 const styles = {
+    button: {
+        width: "100%"
+    },
+    pageField: {
+        width: 60
+    },
     list: {
         textAlign: "left"
+    },
+    leftPaginationDiv: {
+        marginRight: 4
+    },
+    centerPaginationDiv: {
+        textAlign: "center",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    rightPaginationDiv: {
+        marginLeft: 4
     }
 };
 
@@ -187,7 +220,25 @@ class CombinedList extends React.Component {
             });
     };
 
+    lastPage = page => () => {
+        this.props.setPage(page);
+    };
+    setPage = pageCount => event => {
+        let page = event.target.value - 1;
+        pageCount = pageCount - 1;
+
+        if (page < 0) page = 0;
+        if (page > pageCount) page = pageCount;
+
+        this.props.setPage(page);
+    };
+    setPageSize = event => {
+        this.props.setPage(0);
+        this.props.setPageSize(event.target.value);
+    };
+
     render() {
+        const { page, pageSize, t } = this.props;
         let loadingContent =
             this.props.bunqMeTabsLoading ||
             this.props.paymentsLoading ||
@@ -209,36 +260,49 @@ class CombinedList extends React.Component {
         let groupedItems = {};
 
         // combine the list, order by date and group by day
-        [
+        const events = [
             ...bunqMeTabs,
             ...requestResponses,
             ...masterCardActions,
             ...requestInquiries,
             ...payments
-        ]
-            .sort(function(a, b) {
-                return new Date(b.filterDate) - new Date(a.filterDate);
-            })
-            .map(item => {
-                const dateFull = new Date(item.filterDate);
-                const date = new Date(
-                    dateFull.getFullYear(),
-                    dateFull.getMonth(),
-                    dateFull.getDate(),
-                    0,
-                    0,
-                    0
-                );
-                if (!groupedItems[date.getTime()]) {
-                    groupedItems[date.getTime()] = {
-                        date: dateFull,
-                        components: []
-                    };
-                }
+        ].sort(function(a, b) {
+            return new Date(b.filterDate) - new Date(a.filterDate);
+        });
 
-                // add item to this date group
-                groupedItems[date.getTime()].components.push(item.component);
-            });
+        // check if all pages is set (pageSize = 0)
+        const usedPageSize = pageSize === 0 ? events.length : pageSize;
+        // calculate last page
+        const unRoundedPageCount = events.length / usedPageSize;
+        const pageCount = unRoundedPageCount
+            ? Math.ceil(unRoundedPageCount)
+            : 1;
+        // create a smaller list based on the page and pageSize
+        const slicedEvents = events.slice(
+            page * usedPageSize,
+            (page + 1) * usedPageSize
+        );
+
+        slicedEvents.map(item => {
+            const dateFull = new Date(item.filterDate);
+            const date = new Date(
+                dateFull.getFullYear(),
+                dateFull.getMonth(),
+                dateFull.getDate(),
+                0,
+                0,
+                0
+            );
+            if (!groupedItems[date.getTime()]) {
+                groupedItems[date.getTime()] = {
+                    date: dateFull,
+                    components: []
+                };
+            }
+
+            // add item to this date group
+            groupedItems[date.getTime()].components.push(item.component);
+        });
 
         const combinedComponentList = [];
         Object.keys(groupedItems).map(dateLabel => {
@@ -265,12 +329,88 @@ class CombinedList extends React.Component {
         return (
             <List style={styles.left}>
                 <ListSubheader>
-                    {this.props.t("Payments and requests")}
+                    {t("Payments and requests")}: {events.length}
                     <ListItemSecondaryAction>
                         <ClearBtn />
                         <FilterDrawer />
                     </ListItemSecondaryAction>
                 </ListSubheader>
+
+                <ListSubheader>
+                    <Grid container>
+                        <Grid item xs={1}>
+                            <IconButton
+                                style={styles.button}
+                                onClick={this.props.firstPage}
+                                disabled={page === 0}
+                            >
+                                <SkipPreviousIcon />
+                            </IconButton>
+                        </Grid>
+
+                        <Grid item xs={1}>
+                            <IconButton
+                                style={styles.button}
+                                onClick={this.props.previousPage}
+                                disabled={page === 0}
+                            >
+                                <KeyboardArrowLeftIcon />
+                            </IconButton>
+                        </Grid>
+
+                        <Grid item xs={4} style={styles.centerPaginationDiv}>
+                            <TextField
+                                style={styles.pageField}
+                                value={page + 1}
+                                type={"number"}
+                                inputProps={{
+                                    min: 1,
+                                    max: pageCount,
+                                    step: 1
+                                }}
+                                onChange={this.setPage(pageCount)}
+                            />
+                        </Grid>
+
+                        <Grid item xs={4} style={styles.centerPaginationDiv}>
+                            <TextField
+                                select
+                                style={styles.pageField}
+                                value={pageSize}
+                                onChange={this.setPageSize}
+                            >
+                                <MenuItem value={5}>5</MenuItem>
+                                <MenuItem value={10}>10</MenuItem>
+                                <MenuItem value={20}>20</MenuItem>
+                                <MenuItem value={30}>30</MenuItem>
+                                <MenuItem value={50}>50</MenuItem>
+                                <MenuItem value={100}>100</MenuItem>
+                                <MenuItem value={0}>All</MenuItem>
+                            </TextField>
+                        </Grid>
+
+                        <Grid item xs={1}>
+                            <IconButton
+                                style={styles.button}
+                                onClick={this.props.nextPage}
+                                disabled={page + 1 >= pageCount}
+                            >
+                                <KeyboardArrowRightIcon />
+                            </IconButton>
+                        </Grid>
+
+                        <Grid item xs={1}>
+                            <IconButton
+                                style={styles.button}
+                                onClick={this.lastPage(pageCount - 1)}
+                                disabled={page + 1 >= pageCount}
+                            >
+                                <SkipNextIcon />
+                            </IconButton>
+                        </Grid>
+                    </Grid>
+                </ListSubheader>
+
                 {loadingContent}
                 {combinedComponentList}
             </List>
@@ -282,6 +422,9 @@ const mapStateToProps = state => {
     return {
         user: state.user.user,
         accountsAccountId: state.accounts.selectedAccount,
+
+        page: state.pagination.page,
+        pageSize: state.pagination.page_size,
 
         paymentType: state.payment_filter.type,
         paymentVisibility: state.payment_filter.visible,
@@ -317,7 +460,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         bunqMeTabPut: (userId, accountId, tabId, status) =>
             dispatch(
                 bunqMeTabPut(BunqJSClient, userId, accountId, tabId, status)
-            )
+            ),
+        firstPage: () => dispatch(firstPage()),
+        nextPage: () => dispatch(nextPage()),
+        previousPage: () => dispatch(previousPage()),
+        setPageSize: size => dispatch(setPageSize(size)),
+        setPage: page => dispatch(setPage(page))
     };
 };
 

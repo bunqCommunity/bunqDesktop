@@ -13,9 +13,7 @@
     "supported_languages": [
         "en",
         "nl",
-        "de",
-        "es",
-        "it"
+        "de"
     ],
     "build": {
         "appId": "com.bunq.desktop",
