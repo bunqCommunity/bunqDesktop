@@ -179,7 +179,7 @@ class BunqMeTabForm extends React.Component {
         return [
             <div style={styles.paper}>
                 <TypographyTranslate variant="headline">
-                    Create new bunq.me request
+                    Create new bunqme request
                 </TypographyTranslate>
 
                 <AccountSelectorDialog

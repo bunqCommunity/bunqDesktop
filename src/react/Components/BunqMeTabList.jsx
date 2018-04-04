@@ -66,7 +66,7 @@ class BunqMeTabList extends React.Component {
                     bunq.me requests - {bunqMeTabs.length}
                     <ListItemSecondaryAction>
                         <IconButton
-                            aria-label="Display or hide expired and cancelled bunq.me requests"
+                            aria-label="Display or hide expired and cancelled bunqme requests"
                             onClick={this.toggleTabVisibility}
                         >
                             {this.state.showInactiveTabs ? (

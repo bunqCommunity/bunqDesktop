@@ -45,6 +45,10 @@ export function registrationSetApiKey(api_key, derivedPassword) {
  * @returns {function(*)}
  */
 export function registrationLoadApiKey(derivedPassword) {
+    const failedMessage2 = window.t(
+        "We failed to load the stored API key Try again or re-enter the key"
+    );
+
     return dispatch => {
         dispatch(registrationLoading());
         dispatch(applicationSetStatus("Attempting to load your API key"));
@@ -62,22 +66,11 @@ export function registrationLoadApiKey(derivedPassword) {
             .then(decryptedString => {
                 dispatch(registrationNotLoading());
 
-                const hexPattern = /[0-9A-Fa-f]*/g;
-                if (!hexPattern.test(decryptedString)) {
-                    Logger.error(
-                        "Non-hex values found in decrypted api key"
-                    );
-                }
-
                 // validate decrypted result
                 if (decryptedString.length !== 64) {
                     // clear the password so the user can try again
                     dispatch(registrationClearPassword());
-                    dispatch(
-                        openSnackbar(
-                            "We failed to load the stored API key. Try again or re-enter the key."
-                        )
-                    );
+                    dispatch(openSnackbar(failedMessage2));
                     Logger.error(
                         `Failed to load API key: ${decryptedString} with length: ${decryptedString.length}`
                     );
@@ -95,11 +88,7 @@ export function registrationLoadApiKey(derivedPassword) {
                 dispatch(registrationNotLoading());
                 // clear the password so the user can try again
                 dispatch(registrationClearPassword());
-                dispatch(
-                    openSnackbar(
-                        "We failed to load the stored API key. Try again or re-enter the key."
-                    )
-                );
+                dispatch(openSnackbar(failedMessage2));
             });
     };
 }

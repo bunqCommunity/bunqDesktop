@@ -54,6 +54,10 @@ export function requestResponsesUpdate(
         older_id: false
     }
 ) {
+    const failedMessage = window.t(
+        "We received the following error while loading your request responses"
+    );
+
     return dispatch => {
         dispatch(requestResponsesLoading());
         BunqJSClient.api.requestResponse
@@ -74,11 +78,7 @@ export function requestResponsesUpdate(
             })
             .catch(error => {
                 dispatch(requestResponsesNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We received the following error while loading your request responses"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

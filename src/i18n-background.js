@@ -1,10 +1,7 @@
 import i18n from "i18next";
 import Backend from "i18next-xhr-backend";
-import { reactI18nextModule } from "react-i18next";
-
-const remote = require("electron").remote;
-const path = remote.require("path");
-const fs = remote.require("fs");
+const path = require("path");
+const fs = require("fs");
 
 /**
  * Adds a new key to the reference locale data
@@ -13,7 +10,7 @@ const fs = remote.require("fs");
  */
 const addLocaleKey = async data => {
     // get the current localeData
-    const localeData = require("./Locales/en.json");
+    const localeData = require("../src/react/Locales/en.json");
 
     // go through all the missing keys for this language
     Object.keys(data).forEach(missingKey => {
@@ -56,7 +53,7 @@ const loadLocales = (url, options, callback, data) => {
 
     if (action === "LOAD") {
         try {
-            const locale = require("./Locales/" + language + ".json");
+            const locale = require("../src/react/Locales/" + language + ".json");
             callback(locale, { status: "200" });
         } catch (e) {
             console.error(e);
@@ -74,7 +71,6 @@ const loadLocales = (url, options, callback, data) => {
 
 i18n
     .use(Backend)
-    .use(reactI18nextModule)
     .init({
         // fallback to english
         fallbackLng: "en",

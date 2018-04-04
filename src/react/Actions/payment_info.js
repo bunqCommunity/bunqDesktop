@@ -15,6 +15,8 @@ export function paymentInfoSetInfo(payment, account_id, payment_id) {
 }
 
 export function paymentsUpdate(BunqJSClient, user_id, account_id, payment_id) {
+    const failedMessage = window.t("We failed to load the payment info");
+
     return dispatch => {
         dispatch(paymentInfoLoading());
         BunqJSClient.api.payment
@@ -46,7 +48,7 @@ export function paymentsUpdate(BunqJSClient, user_id, account_id, payment_id) {
                 BunqErrorHandler(
                     dispatch,
                     error,
-                    "We failed to load the payment info"
+                    failedMessage
                 );
             });
     };

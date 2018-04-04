@@ -19,7 +19,7 @@ class AllowBunqMe extends React.Component {
                         onChange={handleToggle}
                     />
                 }
-                label={t("Allow bunq.me? If the user doesn't own a bunq account a bunq.me request will be sent instead")}
+                label={t("Allow bunqme? If the user doesn't own a bunq account a bunqme request will be sent instead")}
             />
         );
     }
