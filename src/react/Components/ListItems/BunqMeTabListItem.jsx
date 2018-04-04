@@ -107,7 +107,7 @@ class BunqMeTabListItem extends React.Component {
                     <AccountQRFullscreen mode="HIDDEN" text={shareUrl} />
                     <CopyToClipboard
                         text={shareUrl}
-                        onCopy={this.props.copiedValue("the bunq.me tab url")}
+                        onCopy={this.props.copiedValue("the bunq tab url")}
                     >
                         <IconButton aria-label="Copy the share url">
                             <CopyIcon />

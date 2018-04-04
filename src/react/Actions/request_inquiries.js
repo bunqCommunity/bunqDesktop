@@ -54,6 +54,10 @@ export function requestInquiriesUpdate(
         older_id: false
     }
 ) {
+    const failedMessage = window.t(
+        "We received the following error while sending your request inquiry"
+    );
+
     return dispatch => {
         dispatch(requestInquiriesLoading());
         BunqJSClient.api.requestInquiry
@@ -74,11 +78,7 @@ export function requestInquiriesUpdate(
             })
             .catch(error => {
                 dispatch(requestInquiriesNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We received the following error while sending your request inquiry"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

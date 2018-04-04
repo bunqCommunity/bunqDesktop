@@ -10,6 +10,8 @@ export function usersSetInfo(users) {
 }
 
 export function usersUpdate(BunqJSClient, updated = false) {
+    const failedMessage = window.t("We failed to load your users");
+
     return dispatch => {
         dispatch(usersLoading());
         BunqJSClient.getUsers(updated)
@@ -20,11 +22,7 @@ export function usersUpdate(BunqJSClient, updated = false) {
             })
             .catch(error => {
                 dispatch(usersNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We failed to load your users"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

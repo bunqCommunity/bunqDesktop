@@ -119,12 +119,12 @@ class AddAccount extends React.Component {
         let button = "";
         if (this.state.color === color) {
             button = (
-                <RadioButtonChecked style={AccountInfo.getColorStyle(color)} />
+                <RadioButtonChecked style={AddAccount.getColorStyle(color)} />
             );
         } else {
             button = (
                 <RadioButtonUnchecked
-                    style={AccountInfo.getColorStyle(color)}
+                    style={AddAccount.getColorStyle(color)}
                 />
             );
         }

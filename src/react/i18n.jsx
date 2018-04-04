@@ -76,8 +76,8 @@ i18n
     .use(Backend)
     .use(reactI18nextModule)
     .init({
-        // don't fallback to english in dev mode to make missing keys easier to spot
-        fallbackLng: process.env.NODE_ENV === "development" ? null : "en",
+        // fallback to english
+        fallbackLng: "en",
 
         // trigger save missing event only in dev mode
         saveMissing: process.env.NODE_ENV === "development",

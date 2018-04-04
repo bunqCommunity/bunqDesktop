@@ -19,7 +19,6 @@ import Dialog, {
 import CombinedList from "../Components/CombinedList";
 import AccountCard from "../Components/AccountCard";
 import ButtonTranslate from "../Components/TranslationHelpers/Button";
-import TypographyTranslate from "../Components/TranslationHelpers/Typography";
 
 import { openSnackbar } from "../Actions/snackbar";
 import { accountsUpdate, deactivateAccount } from "../Actions/accounts";

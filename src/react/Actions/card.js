@@ -11,6 +11,8 @@ export function cardSetInfo(cards, user_id) {
 }
 
 export function cardUpdate(BunqJSClient, user_id) {
+    const failedMessage = window.t("We failed to load the cards overview");
+
     return dispatch => {
         dispatch(cardLoading());
         BunqJSClient.api.card
@@ -24,7 +26,7 @@ export function cardUpdate(BunqJSClient, user_id) {
                 BunqErrorHandler(
                     dispatch,
                     error,
-                    "We failed to load the cards overview"
+                    failedMessage
                 );
             });
     };

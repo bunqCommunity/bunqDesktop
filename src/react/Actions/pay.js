@@ -12,6 +12,13 @@ export function paySend(
     targets,
     draft = false
 ) {
+    const failedMessage = window.t(
+        "We received the following error while sending your payment"
+    );
+    const successMessage1 = window.t("Draft payment successfully created!");
+    const successMessage2 = window.t("Payments sent successfully!");
+    const successMessage3 = window.t("Payment sent successfully!");
+
     return dispatch => {
         dispatch(payLoading());
 
@@ -31,10 +38,8 @@ export function paySend(
             .post(userId, accountId, description, amount, targetData)
             .then(result => {
                 const notification = draft
-                    ? "Draft payment successfully created!"
-                    : isMultiple
-                      ? "Payments sent successfully!"
-                      : "Payment sent successfully!";
+                    ? successMessage1
+                    : isMultiple ? successMessage2 : successMessage3;
 
                 dispatch(openSnackbar(notification));
                 dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId));
@@ -43,11 +48,7 @@ export function paySend(
             })
             .catch(error => {
                 dispatch(payNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We received the following error while sending your payment"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

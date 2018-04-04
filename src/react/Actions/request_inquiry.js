@@ -8,21 +8,22 @@ export function requestInquirySend(
     accountId,
     requestInquiries
 ) {
+    const failedMessage = window.t(
+        "We received the following error while sending your request"
+    );
+    const successMessage = window.t("Request was sent successfully!");
+
     return dispatch => {
         dispatch(requestInquiryLoading());
         BunqJSClient.api.requestInquiryBatch
             .post(userId, accountId, requestInquiries, false, {})
             .then(result => {
-                dispatch(openSnackbar("Request was sent successfully!"));
+                dispatch(openSnackbar(successMessage));
                 dispatch(requestInquiryNotLoading());
             })
             .catch(error => {
                 dispatch(requestInquiryNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We received the following error while sending your request"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }
@@ -33,12 +34,17 @@ export function requestInquiryCancel(
     accountId,
     requestInquiryId
 ) {
+    const failedMessage = window.t(
+        "We received the following error while trying to cancel your request inquiry"
+    );
+    const successMessage = window.t("Request was cancelled successfully!");
+
     return dispatch => {
         dispatch(requestInquiryLoading());
         BunqJSClient.api.requestInquiry
             .put(userId, accountId, requestInquiryId, "REVOKED")
             .then(result => {
-                dispatch(openSnackbar("Request was cancelled successfully!"));
+                dispatch(openSnackbar(successMessage));
                 dispatch(requestInquiryNotLoading());
 
                 // update the information page
@@ -53,11 +59,7 @@ export function requestInquiryCancel(
             })
             .catch(error => {
                 dispatch(requestInquiryNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We received the following error while trying to cancel your request inquiry"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

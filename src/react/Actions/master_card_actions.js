@@ -56,6 +56,10 @@ export function masterCardActionsUpdate(
         older_id: false
     }
 ) {
+    const failedMessage = window.t(
+        "We received the following error while loading your master card payments"
+    );
+
     return dispatch => {
         dispatch(masterCardActionsLoading());
         BunqJSClient.api.masterCardAction
@@ -78,11 +82,7 @@ export function masterCardActionsUpdate(
             })
             .catch(error => {
                 dispatch(masterCardActionsNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We received the following error while loading your master card payments"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }
