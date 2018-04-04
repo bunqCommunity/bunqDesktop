@@ -81,6 +81,7 @@
 	"Import file": "Import file",
 	"Installing this device": "Installing this device",
 	"Less options": "Less options",
+	"Less than": "Less than",
 	"Load more events": "Load more events",
 	"Loading": "Loading",
 	"Loading cards": "Loading cards",
@@ -111,6 +112,7 @@
 	"Payment": "Payment",
 	"Payment Info": "Payment Info",
 	"Payment Type": "Payment Type",
+	"Payment or card payment": "Payment or card payment",
 	"Payment sent successfully!": "Payment sent successfully!",
 	"Payments": "Payments",
 	"Payments and requests": "Payments and requests",
@@ -163,6 +165,7 @@
 	"This does not generate new codes yet!": "This does not generate new codes yet!",
 	"This target seems to be added already": "This target seems to be added already",
 	"To date": "To date",
+	"Transaction amount": "Transaction amount",
 	"Transfer": "Transfer",
 	"Update CVC Codes": "Update CVC Codes",
 	"Update category": "Update category",
@@ -203,5 +206,8 @@
 	"Your personal API key": "Your personal API key",
 	"Your request was accepted": "Your request was accepted",
 	"Your request was denied": "Your request was denied",
-	"bunqme Requests": "bunq.me Requests"
+	"bunqme Requests": "bunq.me Requests",
+	"bunqme request": "bunq.me request",
+	"bunqme": "bunq.me",
+	"rules": "rules"
 }

@@ -166,6 +166,10 @@ class Layout extends React.Component {
             newProps.language !== this.props.language ||
             newProps.i18n.language !== this.props.language
         ) {
+            // update back-end language
+            ipcRenderer.send("change-language", newProps.language);
+
+            // change client-side langauge
             i18n.changeLanguage(newProps.language);
         }
     };
