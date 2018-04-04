@@ -12,14 +12,13 @@ import FileDownloadIcon from "material-ui-icons/FileDownload";
 import AddIcon from "material-ui-icons/Add";
 import PlayArrowIcon from "material-ui-icons/PlayArrow";
 
-// import typed worker
-const RuleCollectionCheckWorker = require("worker-loader!../../WebWorkers/rule_collection_check.worker.ts");
-
 import RuleCollectionItem from "./RuleCollectionItem";
 import NavLink from "../../Components/Routing/NavLink";
 import ImportDialog from "../../Components/ImportDialog";
+import RuleCollectionChecker from "../../Components/RuleCollectionChecker";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import RuleCollection from "../../Types/RuleCollection";
+
 import { setCategoryRule } from "../../Actions/category_rules";
 import { openSnackbar } from "../../Actions/snackbar";
 import { setCategoryConnectionMultiple } from "../../Actions/categories";
@@ -42,70 +41,7 @@ class RuleDashboard extends React.Component {
         this.state = {
             openImportDialog: false
         };
-
-        this.worker = new RuleCollectionCheckWorker();
-        this.worker.onmessage = this.handleWorkerEvent;
     }
-
-    componentWillUnmount() {
-        this.worker.terminate();
-    }
-
-    handleWorkerEvent = eventResults => {
-        const events = eventResults.data.result;
-        const ruleCollectionId = eventResults.data.ruleCollectionId;
-        const ruleCollection = this.props.categoryRules[ruleCollectionId];
-
-        // go through all events
-        const newCategoryConnections = [];
-        events.map(event => {
-            // check if this event matched
-            if (event.matches) {
-                ruleCollection.getCategories().forEach(categoryId => {
-                    newCategoryConnections.push({
-                        category_id: categoryId,
-                        event_type: event.type,
-                        event_id: event.item.id
-                    });
-                });
-            }
-        });
-
-        if (newCategoryConnections.length > 0) {
-            this.props.setCategoryConnectionMultiple(newCategoryConnections);
-        }
-    };
-    triggerWorkerEvent = props => {
-        if (!props) props = this.props;
-
-        // use json format
-        const payments = props.payments.map(item => item.toJSON());
-        const requestInquiries = props.requestInquiries.map(item =>
-            item.toJSON()
-        );
-        const requestResponses = props.requestResponses.map(item =>
-            item.toJSON()
-        );
-        const masterCardActions = props.masterCardActions.map(item =>
-            item.toJSON()
-        );
-        const bunqMeTabs = props.bunqMeTabs.map(item => item.toJSON());
-
-        // get results for all our rule collections
-        Object.keys(props.categoryRules).forEach(categoryRuleId => {
-            const ruleCollection = props.categoryRules[categoryRuleId];
-            if (ruleCollection.isEnabled()) {
-                this.worker.postMessage({
-                    ruleCollection: ruleCollection,
-                    payments: payments,
-                    masterCardActions: masterCardActions,
-                    bunqMeTabs: bunqMeTabs,
-                    requestInquiries: requestInquiries,
-                    requestResponses: requestResponses
-                });
-            }
-        });
-    };
 
     openImportDialog = event => {
         this.setState({ openImportDialog: true });
@@ -239,19 +175,7 @@ class RuleDashboard extends React.Component {
 const mapStateToProps = state => {
     return {
         categories: state.categories.categories,
-        categoryRules: state.category_rules.category_rules,
-
-        paymentsLoading: state.payments.loading,
-        bunqMeTabsLoading: state.bunq_me_tabs.loading,
-        masterCardActionsLoading: state.master_card_actions.loading,
-        requestInquiriesLoading: state.request_inquiries.loading,
-        requestResponsesLoading: state.request_responses.loading,
-
-        requestResponses: state.request_responses.request_responses,
-        payments: state.payments.payments,
-        bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
-        masterCardActions: state.master_card_actions.master_card_actions,
-        requestInquiries: state.request_inquiries.request_inquiries
+        categoryRules: state.category_rules.category_rules
     };
 };
 

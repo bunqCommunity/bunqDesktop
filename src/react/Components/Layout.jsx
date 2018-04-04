@@ -11,6 +11,7 @@ import { ipcRenderer } from "electron";
 // custom components
 import Logger from "../Helpers/Logger";
 import VersionChecker from "../Helpers/VersionChecker";
+import RuleCollectionChecker from "./RuleCollectionChecker";
 import MainDialog from "./MainDialog";
 import MainSnackbar from "./MainSnackbar";
 import MainDrawer from "./MainDrawer";
@@ -392,6 +393,12 @@ class Layout extends React.Component {
             ""
         );
 
+        const isLoading = this.props.paymentsLoading ||
+            this.props.bunqMeTabsLoading ||
+            this.props.masterCardActionsLoading ||
+            this.props.requestInquiriesLoading ||
+            this.props.requestResponsesLoading;
+
         const contentContainerClass = this.props.stickyMenu
             ? classes.contentContainerSticky
             : classes.contentContainer;
@@ -399,6 +406,10 @@ class Layout extends React.Component {
         return (
             <MuiThemeProvider theme={selectedTheme}>
                 <main className={classes.main}>
+                    <RuleCollectionChecker
+                        updateToggle={isLoading}
+                    />
+
                     <Header />
                     <MainDrawer
                         BunqJSClient={this.props.BunqJSClient}
@@ -408,7 +419,7 @@ class Layout extends React.Component {
                         container
                         spacing={16}
                         justify={"center"}
-                        className={`${contentContainerClass}  ${strippedLocation}-page`}
+                        className={`${contentContainerClass} ${strippedLocation}-page`}
                         style={{
                             backgroundColor:
                                 selectedTheme.palette.background.default,
@@ -456,7 +467,13 @@ const mapStateToProps = state => {
         user: state.user.user,
         userType: state.user.user_type,
         userInitialCheck: state.user.initialCheck,
-        userLoading: state.user.loading
+        userLoading: state.user.loading,
+
+        paymentsLoading: state.payments.loading,
+        bunqMeTabsLoading: state.bunq_me_tabs.loading,
+        masterCardActionsLoading: state.master_card_actions.loading,
+        requestInquiriesLoading: state.request_inquiries.loading,
+        requestResponsesLoading: state.request_responses.loading
     };
 };
 
