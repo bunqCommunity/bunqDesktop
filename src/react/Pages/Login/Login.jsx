@@ -365,7 +365,7 @@ class Login extends React.Component {
             // user info is already being loaded
             this.props.userLoading === true ||
             // a bunq test user is being created
-            this.props.loadingBunqUser === true ||
+            this.state.loadingBunqUser === true ||
             // registration is loading
             this.props.registrationLoading === true;
 
