@@ -183,9 +183,12 @@ class AccountList extends React.Component {
                 {this.props.accountsLoading ? <LinearProgress /> : <Divider />}
                 {accounts}
                 {this.props.denseMode === false ? (
-                    <AddAccount
-                        displayAddAccount={this.props.displayAddAccount}
-                    />
+                    <React.Fragment>
+                        <AddAccount
+                            displayAddAccount={this.props.displayAddAccount}
+                        />
+                        <Divider />
+                    </React.Fragment>
                 ) : null}
             </List>
         );

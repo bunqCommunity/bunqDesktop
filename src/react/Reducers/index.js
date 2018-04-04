@@ -35,6 +35,7 @@ import request_inquiry_info from "./request_inquiry_info";
 import request_responses from "./request_responses";
 import request_response from "./request_response";
 import request_response_info from "./request_response_info";
+import search_filter from "./search_filter";
 
 export default combineReducers({
     accounts,
@@ -71,5 +72,6 @@ export default combineReducers({
     request_inquiry_info,
     request_responses,
     request_response,
-    request_response_info
+    request_response_info,
+    search_filter
 });

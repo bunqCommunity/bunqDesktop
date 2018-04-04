@@ -45,6 +45,15 @@ export const paymentFilter = options => payment => {
         }
     }
 
+    if (options.searchTerm && options.searchTerm.length > 0) {
+        return [
+            payment.description.toLowerCase(),
+            payment.alias.iban.toLowerCase(),
+            payment.alias.display_name.toLowerCase(),
+            payment.counterparty_alias.display_name.toLowerCase()
+        ].some(text => text.includes(options.searchTerm));
+    }
+
     return checkDateRange(
         options.dateFromFilter,
         options.dateToFilter,
@@ -64,6 +73,12 @@ export const bunqMeTabsFilter = options => bunqMeTab => {
     );
     if (!dateCheck) {
         return false;
+    }
+
+    if (options.searchTerm && options.searchTerm.length > 0) {
+        return [
+            bunqMeTab.bunqme_tab_entry.description.toLowerCase()
+        ].some(text => text.includes(options.searchTerm));
     }
 
     switch (options.bunqMeTabType) {
@@ -87,6 +102,14 @@ export const masterCardActionFilter = options => masterCardAction => {
         return false;
     }
 
+    if (options.searchTerm && options.searchTerm.length > 0) {
+        return [
+            masterCardAction.description.toLowerCase(),
+            masterCardAction.alias.display_name.toLowerCase(),
+            masterCardAction.counterparty_alias.display_name.toLowerCase()
+        ].some(text => text.includes(options.searchTerm));
+    }
+
     return checkDateRange(
         options.dateFromFilter,
         options.dateToFilter,
@@ -106,6 +129,14 @@ export const requestResponseFilter = options => requestResponse => {
 
     if (options.requestType !== "sent" && options.requestType !== "default") {
         return false;
+    }
+
+    if (options.searchTerm && options.searchTerm.length > 0) {
+        return [
+            requestResponse.description.toLowerCase(),
+            requestResponse.alias.display_name.toLowerCase(),
+            requestResponse.counterparty_alias.display_name.toLowerCase()
+        ].some(text => text.includes(options.searchTerm));
     }
 
     return checkDateRange(
@@ -129,6 +160,13 @@ export const requestInquiryFilter = options => requestInquiry => {
         options.requestType !== "default"
     ) {
         return false;
+    }
+
+    if (options.searchTerm && options.searchTerm.length > 0) {
+        return [
+            requestInquiry.description.toLowerCase(),
+            requestInquiry.counterparty_alias.display_name.toLowerCase()
+        ].some(text => text.includes(options.searchTerm));
     }
 
     return checkDateRange(

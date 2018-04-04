@@ -28,15 +28,16 @@ const ThemeList = {
 };
 
 // redux actions
-import { applicationSetStatus } from "../Actions/application.js";
 import { userLogin } from "../Actions/user.js";
 import { usersUpdate } from "../Actions/users";
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
-import { registrationClearUserInfo } from "../Actions/registration";
+import { setHideBalance } from "../Actions/options";
 import { loadStoredPayments } from "../Actions/payments";
 import { loadStoredAccounts } from "../Actions/accounts";
 import { loadStoredBunqMeTabs } from "../Actions/bunq_me_tabs";
+import { applicationSetStatus } from "../Actions/application.js";
+import { registrationClearUserInfo } from "../Actions/registration";
 import { loadStoredMasterCardActions } from "../Actions/master_card_actions";
 import { loadStoredRequestInquiries } from "../Actions/request_inquiries";
 import { loadStoredRequestResponses } from "../Actions/request_responses";
@@ -45,7 +46,6 @@ import {
     registrationNotLoading,
     registrationClearApiKey
 } from "../Actions/registration";
-import { setHideBalance } from "../Actions/options";
 
 const styles = theme => ({
     contentContainer: {
@@ -77,8 +77,6 @@ class Layout extends React.Component {
         };
 
         this.activityTimer = null;
-        window.onmousemove = this.onActivityEvent.bind(this);
-        window.onkeypress = this.onActivityEvent.bind(this);
 
         ipcRenderer.on("change-path", (event, path) => {
             const currentPath = this.props.history.location.pathname;
@@ -93,7 +91,8 @@ class Layout extends React.Component {
 
         // access the translations globally
         window.t = this.props.t;
-        window.i18n = this.props.i18n;
+        window.onmousemove = this.onActivityEvent.bind(this);
+        window.onkeypress = this.onActivityEvent.bind(this);
     }
 
     componentWillMount() {
