@@ -53,7 +53,7 @@ class AccountListItem extends React.Component {
 
         const formattedBalance = this.props.hideBalance
             ? ""
-            : formatMoney(account.balance ? account.balance.value : 0);
+            : formatMoney(account.balance ? account.balance.value : 0, true);
 
         const listItemProps = {};
         if (this.props.clickable) {
