@@ -9,6 +9,9 @@ export default (window, app) => {
     localShortcuts.register(window, "CmdOrCtrl+H", () => {
         window.webContents.send("toggle-balance");
     });
+    localShortcuts.register(window, "CmdOrCtrl+T", () => {
+        window.webContents.send("toggle-theme");
+    });
 
     localShortcuts.register(window, "CmdOrCtrl+D", () => {
         changePage(window, "/");
