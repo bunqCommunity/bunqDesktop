@@ -111,7 +111,7 @@ class Settings extends React.Component {
         // minor delay to ensure it happens after the state updates
         setTimeout(() => {
             this.props.history.push("/");
-        }, 100);
+        }, 500);
     };
 
     handleNativeFrameCheckChange = event => {

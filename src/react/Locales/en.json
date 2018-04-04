@@ -123,6 +123,7 @@
 	"Pick an icon": "Pick an icon",
 	"Previous": "Previous",
 	"Primary card": "Primary card",
+	"Psst, want some money?": "Psst, want some money?",
 	"Reason": "Reason",
 	"Received a request": "Received a request",
 	"Received payment with ": "Received payment with ",
@@ -198,6 +199,7 @@
 	"Welcome": "Welcome",
 	"Why are you closing the account?": "Why are you closing the account?",
 	"Yearly": "Yearly",
+	"Yes": "Yes",
 	"You cancelled the request": "You cancelled the request",
 	"You denied the request": "You denied the request",
 	"You don't have any cards": "You don't have any cards",
@@ -206,8 +208,8 @@
 	"Your personal API key": "Your personal API key",
 	"Your request was accepted": "Your request was accepted",
 	"Your request was denied": "Your request was denied",
+	"bunqme": "bunq.me",
 	"bunqme Requests": "bunq.me Requests",
 	"bunqme request": "bunq.me request",
-	"bunqme": "bunq.me",
 	"rules": "rules"
 }
