@@ -99,6 +99,7 @@ class CombinedList extends React.Component {
         return this.props.payments
             .filter(
                 paymentFilter({
+                    searchTerm: this.props.searchTerm,
                     paymentVisibility: this.props.paymentVisibility,
                     paymentType: this.props.paymentType,
                     dateFromFilter: this.props.dateFromFilter,
@@ -123,6 +124,7 @@ class CombinedList extends React.Component {
         return this.props.bunqMeTabs
             .filter(
                 bunqMeTabsFilter({
+                    searchTerm: this.props.searchTerm,
                     bunqMeTabVisibility: this.props.bunqMeTabVisibility,
                     bunqMeTabType: this.props.bunqMeTabType,
                     dateFromFilter: this.props.dateFromFilter,
@@ -152,6 +154,7 @@ class CombinedList extends React.Component {
         return this.props.masterCardActions
             .filter(
                 masterCardActionFilter({
+                    searchTerm: this.props.searchTerm,
                     paymentVisibility: this.props.paymentVisibility,
                     paymentType: this.props.paymentType,
                     dateFromFilter: this.props.dateFromFilter,
@@ -176,6 +179,7 @@ class CombinedList extends React.Component {
         return this.props.requestResponses
             .filter(
                 requestResponseFilter({
+                    searchTerm: this.props.searchTerm,
                     requestVisibility: this.props.requestVisibility,
                     requestType: this.props.requestType,
                     dateFromFilter: this.props.dateFromFilter,
@@ -200,6 +204,7 @@ class CombinedList extends React.Component {
         return this.props.requestInquiries
             .filter(
                 requestInquiryFilter({
+                    searchTerm: this.props.searchTerm,
                     requestVisibility: this.props.requestVisibility,
                     requestType: this.props.requestType,
                     dateFromFilter: this.props.dateFromFilter,
@@ -425,6 +430,8 @@ const mapStateToProps = state => {
 
         page: state.pagination.page,
         pageSize: state.pagination.page_size,
+
+        searchTerm: state.search_filter.search_term,
 
         paymentType: state.payment_filter.type,
         paymentVisibility: state.payment_filter.visible,

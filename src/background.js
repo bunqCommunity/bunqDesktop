@@ -4,7 +4,7 @@ import path from "path";
 import log from "electron-log";
 import electron from "electron";
 import settings from "electron-settings";
-import { app, Menu, Tray, nativeImage } from "electron";
+import { app, Menu, Tray, nativeImage, ipcMain } from "electron";
 import { devMenuTemplate } from "./menu/dev_menu_template";
 import { editMenuTemplate } from "./menu/edit_menu_template";
 import createWindow from "./helpers/window";
@@ -13,7 +13,16 @@ import registerTouchBar from "./helpers/touchbar";
 import changePage from "./helpers/react_navigate";
 import defaultConfig from "./helpers/default_config";
 
+import i18n from "./i18n-background";
 import env from "./env";
+
+// use english by default
+i18n.changeLanguage("en");
+
+// listen for changes in language in the client
+ipcMain.on("change-language", (event, arg) => {
+    i18n.changeLanguage(arg);
+});
 
 const userDataPath = app.getPath("userData");
 const SETTINGS_LOCATION_FILE = path.normalize(
@@ -114,7 +123,7 @@ app.on("ready", () => {
     mainWindow.loadURL(getWindowUrl("app.html"));
 
     registerShortcuts(mainWindow, app);
-    registerTouchBar(mainWindow);
+    registerTouchBar(mainWindow, i18n);
 
     if (env.name === "development") {
         mainWindow.openDevTools();
@@ -132,24 +141,24 @@ app.on("ready", () => {
         const tray = new Tray(trayIcon);
         const contextMenu = Menu.buildFromTemplate([
             {
-                label: "Dashboard",
+                label: i18n.t("Dashboard"),
                 click: () => changePage(mainWindow, "/")
             },
             {
-                label: "Pay",
+                label: i18n.t("Pay"),
                 click: () => changePage(mainWindow, "/pay")
             },
             {
-                label: "Request",
+                label: i18n.t("Request"),
                 click: () => changePage(mainWindow, "/request")
             },
             {
-                label: "Cards",
+                label: i18n.t("Cards"),
                 click: () => changePage(mainWindow, "/card")
             },
             { type: "separator" },
             {
-                label: "Quit",
+                label: i18n.t("Quit"),
                 click: () => app.quit()
             }
         ]);

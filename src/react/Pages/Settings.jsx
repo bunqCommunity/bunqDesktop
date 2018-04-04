@@ -105,6 +105,15 @@ class Settings extends React.Component {
         this.props.setLanguage(event.target.value);
     };
 
+    clearApiKey = event => {
+        this.props.clearApiKey();
+
+        // minor delay to ensure it happens after the state updates
+        setTimeout(() => {
+            this.props.history.push("/");
+        }, 500);
+    };
+
     handleNativeFrameCheckChange = event => {
         this.props.openSnackbar(
             "Restart the application to view these changes!"
@@ -192,7 +201,7 @@ class Settings extends React.Component {
                                     variant="raised"
                                     color="secondary"
                                     style={styles.button}
-                                    onClick={this.props.clearApiKey}
+                                    onClick={this.clearApiKey}
                                 >
                                     Logout
                                 </ButtonTranslate>

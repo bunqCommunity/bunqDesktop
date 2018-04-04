@@ -76,6 +76,7 @@ class AccountList extends React.Component {
 
     checkUpdateRequirement = (props = this.props) => {
         const {
+            accounts,
             accountsAccountId,
             paymentsAccountId,
             paymentsLoading,
@@ -85,6 +86,16 @@ class AccountList extends React.Component {
 
         if (!initialBunqConnect) {
             return;
+        }
+
+        if (accountsAccountId === false && accounts.length > 0) {
+            // get the first active account in the accounts list
+            const firstAccount = accounts.find(account => {
+                return account && account.status === "ACTIVE";
+            });
+
+            if (firstAccount && firstAccount.id)
+                this.props.selectAccount(firstAccount.id);
         }
 
         // check if the stored selected account isn't already loaded
@@ -172,9 +183,12 @@ class AccountList extends React.Component {
                 {this.props.accountsLoading ? <LinearProgress /> : <Divider />}
                 {accounts}
                 {this.props.denseMode === false ? (
-                    <AddAccount
-                        displayAddAccount={this.props.displayAddAccount}
-                    />
+                    <React.Fragment>
+                        <AddAccount
+                            displayAddAccount={this.props.displayAddAccount}
+                        />
+                        <Divider />
+                    </React.Fragment>
                 ) : null}
             </List>
         );

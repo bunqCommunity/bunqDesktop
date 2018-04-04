@@ -34,6 +34,20 @@ export function setPaymentFilterType(type = false) {
     };
 }
 
+export function setSearchFilter(searchTerm = "") {
+    return {
+        type: "SEARCH_SET_SEARCH_TERM",
+        payload: {
+            search_term: searchTerm
+        }
+    };
+}
+export function clearSearchFilter() {
+    return {
+        type: "CLEAR_SET_SEARCH_TERM"
+    };
+}
+
 export function togglePaymentFilterVisibility() {
     return {
         type: "PAYMENT_FILTER_TOGGLE_VISIBILITY"

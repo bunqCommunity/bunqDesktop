@@ -14,6 +14,7 @@ class ClearFilter extends React.Component {
 
     render() {
         if (
+            this.props.searchTerm.length <= 0 &&
             this.props.paymentType === "default" &&
             this.props.bunqMeTabType === "active" &&
             this.props.requestType === "default" &&
@@ -52,6 +53,8 @@ ClearFilter.defaultProps = {
 
 const mapStateToProps = state => {
     return {
+        searchTerm: state.search_filter.search_term,
+
         paymentType: state.payment_filter.type,
         paymentVisibility: state.payment_filter.visible,
 
