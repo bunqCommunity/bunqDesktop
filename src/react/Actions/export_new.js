@@ -11,6 +11,10 @@ export function exportNew(
         regional_format: "EUROPEAN"
     }
 ) {
+    const failedMessage = window.t(
+        "We failed to create the export for this monetary account"
+    );
+
     return dispatch => {
         dispatch(exportNewLoading());
 
@@ -28,11 +32,7 @@ export function exportNew(
             })
             .catch(error => {
                 dispatch(exportNewNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We failed to create the export for this monetary account"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

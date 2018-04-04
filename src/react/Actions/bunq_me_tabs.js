@@ -50,6 +50,8 @@ export function bunqMeTabsUpdate(
         older_id: false
     }
 ) {
+    const failedMessage = window.t("We failed to load the bunqme requests for this monetary account");
+
     return dispatch => {
         dispatch(bunqMeTabsLoading());
         BunqJSClient.api.bunqMeTabs
@@ -73,7 +75,7 @@ export function bunqMeTabsUpdate(
                 BunqErrorHandler(
                     dispatch,
                     error,
-                    "We failed to load the bunq.me requests for this monetary account"
+                    failedMessage
                 );
             });
     };

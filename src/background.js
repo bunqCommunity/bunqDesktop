@@ -85,7 +85,7 @@ log.transports.file.format = "{h}:{i}:{s}:{ms} {text}";
 log.transports.file.file = `${userDataPath}${path.sep}BunqDesktop.${env.name}.log.txt`;
 
 // hot reloading
-if (process.env.NODE_ENV === "DEVELOPMENT") {
+if (process.env.NODE_ENV === "development") {
     require("electron-reload")(
         path.join(__dirname, `..${path.sep}app${path.sep}**`)
     );

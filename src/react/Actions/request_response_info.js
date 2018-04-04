@@ -24,6 +24,8 @@ export function requestResponseUpdate(
     account_id,
     request_response_id
 ) {
+    const failedMessage = window.t("We failed to load the request information");
+
     return dispatch => {
         dispatch(requestResponseLoading());
         BunqJSClient.api.requestResponse
@@ -53,11 +55,7 @@ export function requestResponseUpdate(
             })
             .catch(error => {
                 dispatch(requestResponseNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We failed to load the request information"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

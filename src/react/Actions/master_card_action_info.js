@@ -24,6 +24,10 @@ export function masterCardActionInfoUpdate(
     account_id,
     master_card_action_id
 ) {
+    const failedMessage = window.t(
+        "We failed to load the master card payment information"
+    );
+
     return dispatch => {
         dispatch(masterCardActionInfoLoading());
         BunqJSClient.api.masterCardAction
@@ -54,11 +58,7 @@ export function masterCardActionInfoUpdate(
             })
             .catch(error => {
                 dispatch(masterCardActionInfoNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We failed to load the master card payment information"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

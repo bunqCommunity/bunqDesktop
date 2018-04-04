@@ -90,11 +90,14 @@ class Layout extends React.Component {
         ipcRenderer.on("toggle-balance", (event, path) => {
             this.props.setHideBalance(!this.props.hideBalance);
         });
+
+        // access the translations globally
+        window.t = this.props.t;
+        window.i18n = this.props.i18n;
     }
 
     componentWillMount() {
-        const { i18n, language } = this.props;
-        i18n.changeLanguage(language);
+        this.checkLanguageChange(this.props);
     }
 
     componentDidMount() {
@@ -107,7 +110,7 @@ class Layout extends React.Component {
             })
             .catch(Logger.error);
 
-        if (process.env.NODE_ENV !== "DEVELOPMENT") {
+        if (process.env.NODE_ENV !== "development") {
             VersionChecker().then(versionInfo => {
                 if (versionInfo.newerLink !== false) {
                     this.props.openSnackbar(
@@ -157,13 +160,21 @@ class Layout extends React.Component {
      * Checks if the language chanaged and update i18n when required
      * @param newProps
      */
-    checkLanguageChange = (newProps = false) => {
+    checkLanguageChange = newProps => {
         const { i18n } = this.props;
-        if (newProps === false || newProps.language !== this.props.language) {
+        if (
+            newProps.language !== this.props.language ||
+            newProps.i18n.language !== this.props.language
+        ) {
             i18n.changeLanguage(newProps.language);
         }
     };
 
+    /**
+     * Checks if the bunqjsclient needs to setup
+     * @param nextProps
+     * @returns {Promise<void>}
+     */
     checkBunqSetup = async (nextProps = false) => {
         if (nextProps === false) {
             nextProps = this.props;

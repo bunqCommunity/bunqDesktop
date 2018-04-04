@@ -77,6 +77,16 @@ class Dashboard extends React.Component {
                                     this.props.initialBunqConnect
                                 }
                             />
+
+                            <LoadOlderButton
+                                wrapperStyle={{ padding: 8 }}
+                                buttonStyle={{ width: "100%" }}
+                                buttonContent={t("Load more events")}
+                                BunqJSClient={this.props.BunqJSClient}
+                                initialBunqConnect={
+                                    this.props.initialBunqConnect
+                                }
+                            />
                         </Paper>
                     </StickyBox>
                 </Grid>
@@ -88,11 +98,6 @@ class Dashboard extends React.Component {
                             initialBunqConnect={this.props.initialBunqConnect}
                         />
                     </Paper>
-
-                    <LoadOlderButton
-                        BunqJSClient={this.props.BunqJSClient}
-                        initialBunqConnect={this.props.initialBunqConnect}
-                    />
                 </Grid>
             </Grid>
         );

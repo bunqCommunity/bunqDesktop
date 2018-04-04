@@ -24,6 +24,19 @@
       ]
     },
     {
+      "login": "DennisSnijder",
+      "name": "Dennis Snijder",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/6953846?v=4",
+      "profile": "http://snijder.io",
+      "contributions": [
+        "bug",
+        "code",
+        "design",
+        "ideas",
+        "doc"
+      ]
+    },
+    {
       "login": "nduijvelshoff",
       "name": "Nick D.",
       "avatar_url": "https://avatars2.githubusercontent.com/u/3780207?v=4",
@@ -47,15 +60,6 @@
       ]
     },
     {
-      "login": "janxb",
-      "name": "Jan Brodda",
-      "avatar_url": "https://avatars1.githubusercontent.com/u/1172106?v=4",
-      "profile": "http://janbrodda.de",
-      "contributions": [
-        "bug"
-      ]
-    },
-    {
       "login": "SpaceK33z",
       "name": "Kees Kluskens",
       "avatar_url": "https://avatars2.githubusercontent.com/u/533616?v=4",
@@ -63,6 +67,25 @@
       "contributions": [
         "bug",
         "ideas"
+      ]
+    },
+    {
+      "login": "TimZ99",
+      "name": "Tim",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/15219858?v=4",
+      "profile": "https://github.com/TimZ99",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "janxb",
+      "name": "Jan Brodda",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/1172106?v=4",
+      "profile": "http://janbrodda.de",
+      "contributions": [
+        "bug"
       ]
     },
     {
@@ -75,35 +98,12 @@
       ]
     },
     {
-      "login": "DennisSnijder",
-      "name": "Dennis Snijder",
-      "avatar_url": "https://avatars3.githubusercontent.com/u/6953846?v=4",
-      "profile": "http://snijder.io",
-      "contributions": [
-        "bug",
-        "code",
-        "design",
-        "ideas",
-        "doc"
-      ]
-    },
-    {
       "login": "nimpie",
       "name": "nimpie",
       "avatar_url": "https://avatars0.githubusercontent.com/u/10500054?v=4",
       "profile": "https://github.com/nimpie",
       "contributions": [
         "bug"
-      ]
-    },
-    {
-      "login": "TimZ99",
-      "name": "Tim",
-      "avatar_url": "https://avatars1.githubusercontent.com/u/15219858?v=4",
-      "profile": "https://github.com/TimZ99",
-      "contributions": [
-        "bug",
-        "code"
       ]
     },
     {
@@ -131,6 +131,15 @@
       "profile": "https://github.com/cascer1",
       "contributions": [
         "bug"
+      ]
+    },
+    {
+      "login": "ntimo",
+      "name": "Timo N.",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/6145026?v=4",
+      "profile": "https://github.com/ntimo",
+      "contributions": [
+        "translation"
       ]
     }
   ]

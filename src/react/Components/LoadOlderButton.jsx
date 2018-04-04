@@ -100,7 +100,11 @@ class LoadOlderButton extends React.Component {
                         onClick={this.update}
                         disabled={loadingState}
                     >
-                        <RefreshIcon />
+                        {this.props.buttonContent ? (
+                            this.props.buttonContent
+                        ) : (
+                            <RefreshIcon />
+                        )}
                     </Button>
                 )}
             </div>
@@ -110,6 +114,7 @@ class LoadOlderButton extends React.Component {
 
 LoadOlderButton.defaultProps = {
     updateExternal: false,
+    buttonContent: false,
     wrapperStyle: {},
     loaderStyle: {},
     buttonStyle: {}

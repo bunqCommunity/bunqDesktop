@@ -10,22 +10,25 @@ export function bunqMeTabSend(
     amount,
     options = {}
 ) {
+    const failedMessage = window.t(
+        "We received the following error while creating your bunqme request"
+    );
+    const successMessage = window.t("bunqme request created successfully!");
+
     return dispatch => {
         dispatch(bunqMeTabLoading());
         BunqJSClient.api.bunqMeTabs
             .post(userId, accountId, description, amount, options)
             .then(result => {
-                dispatch(openSnackbar("bunq.me request created successfully!"));
-                dispatch(bunqMeTabsUpdate(BunqJSClient, userId,  parseInt(accountId)));
+                dispatch(openSnackbar(successMessage));
+                dispatch(
+                    bunqMeTabsUpdate(BunqJSClient, userId, parseInt(accountId))
+                );
                 dispatch(bunqMeTabNotLoading());
             })
             .catch(error => {
                 dispatch(bunqMeTabNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We received the following error while creating your bunq.me request"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }
@@ -37,22 +40,25 @@ export function bunqMeTabPut(
     tabId,
     status = "CANCELLED"
 ) {
+    const failedMessage = window.t(
+        "We received the following error while updating your bunqme request"
+    );
+    const successMessage = window.t(
+        "bunqme request status has been updated successfully!"
+    );
+
     return dispatch => {
         dispatch(bunqMeTabLoading());
         BunqJSClient.api.bunqMeTabs
             .put(userId, accountId, tabId, status)
             .then(result => {
-                dispatch(openSnackbar("bunq.me request status has been updated successfully!"));
+                dispatch(openSnackbar(successMessage));
                 dispatch(bunqMeTabsUpdate(BunqJSClient, userId, accountId));
                 dispatch(bunqMeTabNotLoading());
             })
             .catch(error => {
                 dispatch(bunqMeTabNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We received the following error while updating your bunq.me request"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

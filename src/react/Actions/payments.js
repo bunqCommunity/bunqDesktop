@@ -49,6 +49,10 @@ export function paymentInfoUpdate(
         older_id: false
     }
 ) {
+    const failedMessage = window.t(
+        "We failed to load the payments for this monetary account"
+    );
+
     return dispatch => {
         dispatch(paymentsLoading());
 
@@ -70,11 +74,7 @@ export function paymentInfoUpdate(
             })
             .catch(error => {
                 dispatch(paymentsNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We failed to load the payments for this monetary account"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

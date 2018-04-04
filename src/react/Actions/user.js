@@ -17,6 +17,10 @@ export function userSetInfo(user, type) {
 }
 
 export function userLogin(BunqJSClient, type, updated = false) {
+    const failedMessage = window.t(
+        "We failed to load the information for this user"
+    );
+
     return dispatch => {
         dispatch(userLoading());
         BunqJSClient.getUser(type, updated)
@@ -29,11 +33,7 @@ export function userLogin(BunqJSClient, type, updated = false) {
             })
             .catch(error => {
                 dispatch(userNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We failed to load the information for a user"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }
