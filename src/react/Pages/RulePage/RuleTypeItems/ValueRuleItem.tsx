@@ -86,10 +86,8 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
 
         // update field error state
         this.setState({ textFieldError: hasError });
-        if (hasError === false) {
-            rule.value = textFieldValue;
-            this.props.updateRule(rule);
-        }
+        rule.value = textFieldValue;
+        this.props.updateRule(rule);
     };
 
     render() {
@@ -105,14 +103,18 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
                                 onChange={this.handleFieldChange}
                                 input={<Input name="field" id="field-helper" />}
                             >
-                                <TranslateMenuItem value={"IBAN"}>IBAN number</TranslateMenuItem>
+                                <TranslateMenuItem value={"IBAN"}>
+                                    IBAN number
+                                </TranslateMenuItem>
                                 <TranslateMenuItem value={"DESCRIPTION"}>
                                     Description
                                 </TranslateMenuItem>
                                 <TranslateMenuItem value={"COUNTERPARTY_NAME"}>
                                     Display name
                                 </TranslateMenuItem>
-                                <TranslateMenuItem value={"CUSTOM"}>Other</TranslateMenuItem>
+                                <TranslateMenuItem value={"CUSTOM"}>
+                                    Other
+                                </TranslateMenuItem>
                             </Select>
                         </FormControl>
 
@@ -148,7 +150,9 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
                                 <TranslateMenuItem value={"ENDS_WITH"}>
                                     Ends with
                                 </TranslateMenuItem>
-                                <TranslateMenuItem value={"REGEX"}>Regex</TranslateMenuItem>
+                                <TranslateMenuItem value={"REGEX"}>
+                                    Regex
+                                </TranslateMenuItem>
                             </Select>
                             {/*<FormHelperText>*/}
                             {/*How to check the field*/}
