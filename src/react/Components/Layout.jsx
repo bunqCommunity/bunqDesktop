@@ -32,7 +32,7 @@ import { userLogin } from "../Actions/user.js";
 import { usersUpdate } from "../Actions/users";
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
-import { setHideBalance } from "../Actions/options";
+import { setHideBalance, setTheme } from "../Actions/options";
 import { loadStoredPayments } from "../Actions/payments";
 import { loadStoredAccounts } from "../Actions/accounts";
 import { loadStoredBunqMeTabs } from "../Actions/bunq_me_tabs";
@@ -85,8 +85,15 @@ class Layout extends React.Component {
                 this.props.history.push(path);
             }
         });
-        ipcRenderer.on("toggle-balance", (event, path) => {
+        ipcRenderer.on("toggle-balance", event => {
             this.props.setHideBalance(!this.props.hideBalance);
+        });
+        ipcRenderer.on("toggle-theme", event => {
+            this.props.setTheme(
+                this.props.theme === "DefaultTheme"
+                    ? "DarkTheme"
+                    : "DefaultTheme"
+            );
         });
 
         // access the translations globally
@@ -467,6 +474,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(openSnackbar(message, duration)),
         openModal: (message, title) => dispatch(openModal(message, title)),
 
+        setHideBalance: hideBalance => dispatch(setHideBalance(hideBalance)),
+        setTheme: theme => dispatch(setTheme(theme)),
+
         // set the current application status
         applicationSetStatus: status_message =>
             dispatch(applicationSetStatus(status_message)),
@@ -476,7 +486,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         registrationClearApiKey: () =>
             dispatch(registrationClearApiKey(BunqJSClient)),
 
-        setHideBalance: hideBalance => dispatch(setHideBalance(hideBalance)),
         // get latest user list from BunqJSClient
         usersUpdate: (updated = false) =>
             dispatch(usersUpdate(BunqJSClient, updated)),

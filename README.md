@@ -34,6 +34,7 @@ Download the latest version of BunqDesktop from the [GitHub releases page.](http
 ## Keybinds
  - CTRL/CMD + Q : Closes the application
  - CTRL/CMD + H : Toggles the account balance visibility
+ - CTRL/CMD + T : Toggles between the light and dark theme
  - CTRL/CMD + D : Dashboard
  - CTRL/CMD + P : Payment page
  - CTRL/CMD + R : Request page
