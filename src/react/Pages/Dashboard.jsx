@@ -23,6 +23,10 @@ import { registrationLogOut } from "../Actions/registration";
 const styles = {
     btn: {
         width: "100%"
+    },
+    iconButton: {
+        width: "100%",
+        height: 25
     }
 };
 
@@ -100,14 +104,14 @@ class Dashboard extends React.Component {
                 {hasOtherKeys ? (
                     <Grid item xs={3} sm={2} md={1}>
                         <IconButton
-                            style={styles.btn}
+                            style={styles.iconButton}
                             onClick={this.props.registrationLogOut}
                         >
                             <ExitToAppIcon />
                         </IconButton>
                     </Grid>
                 ) : null}
-                
+
                 <Grid item xs={12} md={4}>
                     <StickyBox className={"sticky-container"}>
                         <Paper>
