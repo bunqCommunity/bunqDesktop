@@ -31,67 +31,53 @@ export const MINIMIZE_TO_TRAY_LOCATION = "MINIMIZE_TO_TRAY";
 export const USE_STICKY_MENU_LOCATION = "USE_STICKY_MENU";
 export const CHECK_INACTIVITY_ENABLED_LOCATION = "CHECK_INACTIVITY_ENABLED";
 export const CHECK_INACTIVITY_DURATION_LOCATION = "CHECK_INACTIVITY_DURATION";
+export const AUTOMATIC_THEME_CHANGE_LOCATION = "AUTOMATIC_THEME_CHANGE";
 export const HIDE_BALANCE_LOCATION = "HIDE_BALANCE";
 
 // get stored values
-const loadData = () => {
-    const nativeFrameStored = settings.get(USE_NATIVE_FRAME_LOCATION);
-    const minimizeToTrayStored = settings.get(MINIMIZE_TO_TRAY_LOCATION);
-    const stickyMenuStored = settings.get(USE_STICKY_MENU_LOCATION);
-    const checkInactivityStored = settings.get(
-        CHECK_INACTIVITY_ENABLED_LOCATION
-    );
-    const inactivityCheckDurationStored = settings.get(
-        CHECK_INACTIVITY_DURATION_LOCATION
-    );
-    const hideBalanceStored = settings.get(HIDE_BALANCE_LOCATION);
-    const themeDefaultStored = settings.get(THEME_LOCATION);
-    const languageDefaultStored = settings.get(LANGUAGE_LOCATION);
+const nativeFrameStored = settings.get(USE_NATIVE_FRAME_LOCATION);
+const minimizeToTrayStored = settings.get(MINIMIZE_TO_TRAY_LOCATION);
+const stickyMenuStored = settings.get(USE_STICKY_MENU_LOCATION);
+const checkInactivityStored = settings.get(CHECK_INACTIVITY_ENABLED_LOCATION);
+const inactivityCheckDurationStored = settings.get(
+    CHECK_INACTIVITY_DURATION_LOCATION
+);
+const automaticThemeChangeStored = settings.get(
+    AUTOMATIC_THEME_CHANGE_LOCATION
+);
+const hideBalanceStored = settings.get(HIDE_BALANCE_LOCATION);
+const themeDefaultStored = settings.get(THEME_LOCATION);
+const languageDefaultStored = settings.get(LANGUAGE_LOCATION);
 
-    // get settings file location
-    const settingsLocationStored = settings.file();
-
-    return {
-        nativeFrameDefault:
-            nativeFrameStored !== undefined ? nativeFrameStored : false,
-        minimizeToTrayDefault:
-            minimizeToTrayStored !== undefined ? minimizeToTrayStored : false,
-        stickyMenuDefault:
-            stickyMenuStored !== undefined ? stickyMenuStored : false,
-        checkInactivityDefault:
-            checkInactivityStored !== undefined ? checkInactivityStored : false,
-        inactivityCheckDurationDefault:
-            inactivityCheckDurationStored !== undefined
-                ? inactivityCheckDurationStored
-                : 300,
-        hideBalanceDefault:
-            hideBalanceStored !== undefined ? hideBalanceStored : false,
-        settingsLocationDefault: settingsLocationStored,
-        themeDefault:
-            themeDefaultStored !== undefined
-                ? themeDefaultStored
-                : "DefaultTheme",
-        languageDefault:
-            languageDefaultStored !== undefined ? languageDefaultStored : "en"
-    };
-};
-
-const {
-    nativeFrameDefault,
-    minimizeToTrayDefault,
-    stickyMenuDefault,
-    checkInactivityDefault,
-    inactivityCheckDurationDefault,
-    hideBalanceDefault,
-    settingsLocationDefault,
-    themeDefault,
-    languageDefault
-} = loadData();
+const nativeFrameDefault =
+    nativeFrameStored !== undefined ? nativeFrameStored : false;
+const minimizeToTrayDefault =
+    minimizeToTrayStored !== undefined ? minimizeToTrayStored : false;
+const stickyMenuDefault =
+    stickyMenuStored !== undefined ? stickyMenuStored : false;
+const checkInactivityDefault =
+    checkInactivityStored !== undefined ? checkInactivityStored : false;
+const inactivityCheckDurationDefault =
+    inactivityCheckDurationStored !== undefined
+        ? inactivityCheckDurationStored
+        : 300;
+const hideBalanceDefault =
+    hideBalanceStored !== undefined ? hideBalanceStored : false;
+const automaticThemeChangeDefault =
+    automaticThemeChangeStored !== undefined
+        ? automaticThemeChangeStored
+        : false;
+const settingsLocationDefault = settings.file();
+const themeDefault =
+    themeDefaultStored !== undefined ? themeDefaultStored : "DefaultTheme";
+const languageDefault =
+    languageDefaultStored !== undefined ? languageDefaultStored : "en";
 
 export const defaultState = {
     theme: themeDefault,
     language: languageDefault,
     minimize_to_tray: minimizeToTrayDefault,
+    automatic_theme_change: automaticThemeChangeDefault,
     native_frame: nativeFrameDefault,
     sticky_menu: stickyMenuDefault,
     hide_balance: hideBalanceDefault,
@@ -124,6 +110,16 @@ export default function reducer(state = defaultState, action) {
             return {
                 ...state,
                 minimize_to_tray: action.payload.minimize_to_tray
+            };
+
+        case "OPTIONS_SET_AUTOMATIC_THEME_CHANGE":
+            settings.set(
+                AUTOMATIC_THEME_CHANGE_LOCATION,
+                action.payload.automatic_theme_change
+            );
+            return {
+                ...state,
+                automatic_theme_change: action.payload.automatic_theme_change
             };
 
         case "OPTIONS_SET_NATIVE_FRAME":
@@ -189,6 +185,10 @@ export default function reducer(state = defaultState, action) {
             settings.set(MINIMIZE_TO_TRAY_LOCATION, state.minimize_to_tray);
             settings.set(USE_NATIVE_FRAME_LOCATION, state.native_frame);
             settings.set(
+                AUTOMATIC_THEME_CHANGE_LOCATION,
+                state.automatic_theme_change
+            );
+            settings.set(
                 CHECK_INACTIVITY_ENABLED_LOCATION,
                 state.check_inactivity
             );
@@ -222,6 +222,9 @@ export default function reducer(state = defaultState, action) {
             const checkInactivityStored = settings.get(
                 CHECK_INACTIVITY_ENABLED_LOCATION
             );
+            const automaticThemeChangeStored = settings.get(
+                AUTOMATIC_THEME_CHANGE_LOCATION
+            );
             const inactivityCheckDurationStored = settings.get(
                 CHECK_INACTIVITY_DURATION_LOCATION
             );
@@ -245,6 +248,10 @@ export default function reducer(state = defaultState, action) {
                     typeof languageDefaultStored !== "undefined"
                         ? languageDefaultStored
                         : state.language,
+                automatic_theme_change:
+                    typeof automaticThemeChangeStored !== "undefined"
+                        ? automaticThemeChangeStored
+                        : state.automatic_theme_change,
                 minimize_to_tray:
                     typeof minimizeToTrayStored !== "undefined"
                         ? minimizeToTrayStored

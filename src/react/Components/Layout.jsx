@@ -33,7 +33,6 @@ import { userLogin } from "../Actions/user.js";
 import { usersUpdate } from "../Actions/users";
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
-import { setHideBalance, setTheme } from "../Actions/options";
 import { loadStoredPayments } from "../Actions/payments";
 import { loadStoredAccounts } from "../Actions/accounts";
 import { loadStoredBunqMeTabs } from "../Actions/bunq_me_tabs";
@@ -47,6 +46,11 @@ import {
     registrationNotLoading,
     registrationClearApiKey
 } from "../Actions/registration";
+import {
+    setHideBalance,
+    setTheme,
+    setAutomaticThemeChange
+} from "../Actions/options";
 
 const styles = theme => ({
     contentContainer: {
@@ -78,6 +82,7 @@ class Layout extends React.Component {
         };
 
         this.activityTimer = null;
+        this.minuteTimer = null;
 
         ipcRenderer.on("change-path", (event, path) => {
             const currentPath = this.props.history.location.pathname;
@@ -103,10 +108,6 @@ class Layout extends React.Component {
         window.onkeypress = this.onActivityEvent.bind(this);
     }
 
-    componentWillMount() {
-        this.checkLanguageChange(this.props);
-    }
-
     componentDidMount() {
         this.checkBunqSetup()
             .then(_ => {
@@ -130,6 +131,42 @@ class Layout extends React.Component {
 
         // set initial timeout trigger
         this.setActivityTimeout();
+
+        // setup minute timer
+        this.testTime();
+        this.minuteTimer = setInterval(this.testTime, 60000);
+    }
+
+    testTime = () => {
+        const currentTime = new Date().getTime();
+
+        const morningDate = new Date();
+        morningDate.setMinutes(0);
+        morningDate.setHours(9);
+        morningDate.setSeconds(0);
+        morningDate.setMilliseconds(0);
+        const morningTime = morningDate.getTime();
+
+        const nightDate = new Date();
+        nightDate.setMinutes(30);
+        nightDate.setHours(19);
+        nightDate.setSeconds(0);
+        nightDate.setMilliseconds(0);
+        const nightTime = nightDate.getTime();
+
+        if (currentTime > morningTime && currentTime < nightTime) {
+            this.props.setTheme("DefaultTheme");
+        } else {
+            this.props.setTheme("DarkTheme");
+        }
+    };
+
+    componentWillMount() {
+        this.checkLanguageChange(this.props);
+
+        // unset the minuteTimer when set
+        if (this.minuteTimer) clearInterval(this.minuteTimer);
+        this.minuteTimer = null;
     }
 
     componentWillUpdate(nextProps) {
@@ -400,7 +437,8 @@ class Layout extends React.Component {
             ""
         );
 
-        const isLoading = this.props.paymentsLoading ||
+        const isLoading =
+            this.props.paymentsLoading ||
             this.props.bunqMeTabsLoading ||
             this.props.masterCardActionsLoading ||
             this.props.requestInquiriesLoading ||
@@ -413,9 +451,7 @@ class Layout extends React.Component {
         return (
             <MuiThemeProvider theme={selectedTheme}>
                 <main className={classes.main}>
-                    <RuleCollectionChecker
-                        updateToggle={isLoading}
-                    />
+                    <RuleCollectionChecker updateToggle={isLoading} />
 
                     <Header />
                     <MainDrawer
@@ -491,6 +527,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(openSnackbar(message, duration)),
         openModal: (message, title) => dispatch(openModal(message, title)),
 
+        // options
+        setAutomaticThemeChange: automaticThemeChange =>
+            dispatch(setAutomaticThemeChange(automaticThemeChange)),
         setHideBalance: hideBalance => dispatch(setHideBalance(hideBalance)),
         setTheme: theme => dispatch(setTheme(theme)),
 

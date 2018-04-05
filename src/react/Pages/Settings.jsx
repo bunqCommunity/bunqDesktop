@@ -42,7 +42,8 @@ import {
     setLanguage,
     overwriteSettingsLocation,
     toggleInactivityCheck,
-    loadSettingsLocation
+    loadSettingsLocation,
+    setAutomaticThemeChange
 } from "../Actions/options";
 import { registrationClearApiKey } from "../Actions/registration";
 
@@ -132,6 +133,9 @@ class Settings extends React.Component {
     };
     handleHideInactivityCheckChange = event => {
         this.props.toggleInactivityCheck(!this.props.checkInactivity);
+    };
+    handleAutomaticThemeChange = event => {
+        this.props.setAutomaticThemeChange(!this.props.automaticThemeChange);
     };
     handleHideInactivityDurationChange = event => {
         this.props.setInactivityCheckDuration(event.target.value);
@@ -294,6 +298,23 @@ class Settings extends React.Component {
                                         />
                                     }
                                     label={t("Enable sticky menu")}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={6}>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            id="automatic-change-selection"
+                                            checked={this.props.automaticThemeChange}
+                                            onChange={
+                                                this.handleAutomaticThemeChange
+                                            }
+                                        />
+                                    }
+                                    label={t(
+                                        "Automatically switch theme based on the time"
+                                    )}
                                 />
                             </Grid>
 
@@ -481,6 +502,7 @@ const mapStateToProps = state => {
         stickyMenu: state.options.sticky_menu,
         checkInactivity: state.options.check_inactivity,
         settingsLocation: state.options.settings_location,
+        automaticThemeChange: state.options.automatic_theme_change,
         inactivityCheckDuration: state.options.inactivity_check_duration
     };
 };
@@ -492,6 +514,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
         // options and options_drawer handlers
         openSnackbar: message => dispatch(openSnackbar(message)),
+        setAutomaticThemeChange: automaticThemeChange =>
+            dispatch(setAutomaticThemeChange(automaticThemeChange)),
         setTheme: theme => dispatch(setTheme(theme)),
         setLanguage: language => dispatch(setLanguage(language)),
         setNativeFrame: useFrame => dispatch(setNativeFrame(useFrame)),

@@ -34,6 +34,15 @@ export function setStickyMenu(stickyMenu) {
     };
 }
 
+export function setAutomaticThemeChange(automaticThemeChange) {
+    return {
+        type: "OPTIONS_SET_AUTOMATIC_THEME_CHANGE",
+        payload: {
+            automatic_theme_change: automaticThemeChange
+        }
+    };
+}
+
 export function setHideBalance(hideBalance) {
     return {
         type: "OPTIONS_SET_HIDE_BALANCE",
