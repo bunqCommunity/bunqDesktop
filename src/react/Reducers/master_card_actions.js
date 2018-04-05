@@ -63,6 +63,7 @@ export default (state = defaultState, action) => {
             };
 
         case "MASTER_CARD_ACTIONS_CLEAR":
+        case "REGISTRATION_LOG_OUT":
         case "REGISTRATION_CLEAR_API_KEY":
         case "REGISTRATION_CLEAR_USER_INFO":
             store.remove(STORED_MASTER_CARD_ACTIONS);

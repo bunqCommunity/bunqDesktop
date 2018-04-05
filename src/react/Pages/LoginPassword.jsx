@@ -7,7 +7,6 @@ import Helmet from "react-helmet";
 import store from "store";
 import Grid from "material-ui/Grid";
 import Input from "material-ui/Input";
-import Button from "material-ui/Button";
 import Card, { CardContent } from "material-ui/Card";
 import { CircularProgress } from "material-ui/Progress";
 
@@ -17,8 +16,7 @@ import LockIcon from "material-ui-icons/Lock";
 import TranslateButton from "../Components/TranslationHelpers/Button";
 
 import {
-    registrationClearApiKey,
-    registrationSetApiKey,
+    registrationLogOut,
     registrationSetDeviceName,
     registrationSetEnvironment,
     registrationUseNoPassword,
@@ -101,8 +99,8 @@ class LoginPassword extends React.Component {
         });
     };
 
-    clearApiKey = () => {
-        this.props.clearApiKey();
+    logOut = () => {
+        this.props.logOut();
     };
 
     ignoreWarning = event => {
@@ -227,7 +225,7 @@ class LoginPassword extends React.Component {
                                     variant="raised"
                                     color={"secondary"}
                                     style={styles.loginButton}
-                                    onClick={this.clearApiKey}
+                                    onClick={this.logOut}
                                 >
                                     Logout
                                 </TranslateButton>
@@ -291,15 +289,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         // use no password
-        useNoPasswordLogin: password => dispatch(registrationUseNoPassword()),
+        useNoPasswordLogin: () => dispatch(registrationUseNoPassword()),
         // use password
         usePasswordLogin: password =>
             dispatch(registrationUsePassword(password)),
 
         // clear api key from bunqjsclient and bunqdesktop
-        clearApiKey: () => dispatch(registrationClearApiKey(BunqJSClient)),
-        // set the api key and stores the encrypted version
-        setApiKey: api_key => dispatch(registrationSetApiKey(api_key)),
+        logOut: () => dispatch(registrationLogOut(BunqJSClient)),
 
         setEnvironment: environment =>
             dispatch(registrationSetEnvironment(environment)),

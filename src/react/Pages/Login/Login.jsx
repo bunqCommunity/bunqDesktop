@@ -1,6 +1,6 @@
 import React from "react";
 import { translate } from "react-i18next";
-import { Typography } from "material-ui";
+import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
@@ -16,18 +16,17 @@ import { CircularProgress } from "material-ui/Progress";
 import QRSvg from "../../Components/QR/QRSvg";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
+import NavLink from "../../Components/Routing/NavLink";
+import UserItem from "./UserItem";
 
-import { usersUpdate } from "../../Actions/users";
 import {
-    registrationClearApiKey,
-    registrationLoadApiKey,
+    registrationLogOut,
     registrationSetApiKey,
+    registrationLoadApiKey,
     registrationSetDeviceName,
     registrationSetEnvironment
 } from "../../Actions/registration";
 import { userLogin } from "../../Actions/user";
-import UserItem from "./UserItem";
-import { Redirect } from "react-router-dom";
 import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
 
 const styles = {
@@ -276,8 +275,8 @@ class Login extends React.Component {
         }, 5000);
     };
 
-    clearApiKey = () => {
-        this.props.clearApiKey();
+    logOut = () => {
+        this.props.logOut();
         this.setState({ apiKey: "", apiKeyValid: false });
     };
 
@@ -286,7 +285,7 @@ class Login extends React.Component {
             {
                 apiKey: event.target.value
             },
-            _ => this.validateInputs(this.state.apiKey, this.state.deviceName)
+            () => this.validateInputs(this.state.apiKey, this.state.deviceName)
         );
     };
     handleNameChange = event => {
@@ -294,7 +293,7 @@ class Login extends React.Component {
             {
                 deviceName: event.target.value
             },
-            _ => this.validateInputs(this.state.apiKey, this.state.deviceName)
+            () => this.validateInputs(this.state.apiKey, this.state.deviceName)
         );
     };
     handleCheckboxChange = (event, checked) => {
@@ -349,6 +348,8 @@ class Login extends React.Component {
             this.state.apiKey === this.props.apiKey &&
             currentSelectedEnvironmnent === this.props.environment;
 
+        const hasNoApiKey = this.props.apiKey === false;
+
         const buttonDisabled =
             unchangedApiKeyEnvironment ||
             // invalid inputs
@@ -369,14 +370,16 @@ class Login extends React.Component {
             // registration is loading
             this.props.registrationLoading === true;
 
-        const apiKeyContent =
-            this.props.apiKey === false ? (
+        const apiKeyContent = hasNoApiKey ? (
+            <React.Fragment>
                 <CardContent style={{ textAlign: "center" }}>
                     <div style={{ textAlign: "center" }}>
                         {this.state.requestQrCodeBase64 === false ? (
-                            <IconButton onClick={this.displayQrCode}>
-                                <QRSvg />
-                            </IconButton>
+                            <div style={styles.qrCode}>
+                                <IconButton onClick={this.displayQrCode}>
+                                    <QRSvg />
+                                </IconButton>
+                            </div>
                         ) : (
                             <img
                                 src={`data:image/png;base64, ${this.state
@@ -482,22 +485,32 @@ class Login extends React.Component {
                         </TranslateButton>
                     </Collapse>
                 </CardContent>
-            ) : (
-                <CardContent>
-                    <TranslateTypography variant="headline" component="h2">
-                        You're logged in!
-                    </TranslateTypography>
-                    <TranslateButton
-                        variant="raised"
-                        color={"secondary"}
-                        style={styles.clearButton}
-                        onClick={this.clearApiKey}
-                        disabled={this.props.userLoading}
+                {this.props.storedApiKeys.length > 0 ? (
+                    <Button
+                        style={styles.loginButton}
+                        to={"/switch-api-keys"}
+                        component={NavLink}
                     >
-                        Logout
-                    </TranslateButton>
-                </CardContent>
-            );
+                        {t("Use a stored API key")}
+                    </Button>
+                ) : null}
+            </React.Fragment>
+        ) : (
+            <CardContent>
+                <TranslateTypography variant="headline" component="h2">
+                    You're logged in!
+                </TranslateTypography>
+                <TranslateButton
+                    variant="raised"
+                    color={"secondary"}
+                    style={styles.clearButton}
+                    onClick={this.logout}
+                    disabled={this.props.userLoading}
+                >
+                    Logout
+                </TranslateButton>
+            </CardContent>
+        );
 
         const cardContent = this.props.registrationLoading ? (
             <CardContent style={{ textAlign: "center" }}>
@@ -518,7 +531,7 @@ class Login extends React.Component {
                 container
                 spacing={16}
                 justify={"center"}
-                alignItems={"center"}
+                alignItems={hasNoApiKey ? "center" : "baseline"}
                 style={styles.wrapperContainer}
             >
                 <Helmet>
@@ -539,7 +552,6 @@ class Login extends React.Component {
                     <Card style={{ width: 250 }}>{cardContent}</Card>
                 </Grid>
                 <Grid item xs={12} />
-
                 {userItems}
             </Grid>
         );
@@ -555,6 +567,7 @@ const mapStateToProps = state => {
         environment: state.registration.environment,
         deviceName: state.registration.device_name,
         apiKey: state.registration.api_key,
+        storedApiKeys: state.registration.stored_api_keys,
 
         users: state.users.users,
         user: state.user.user,
@@ -567,7 +580,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         // clear api key from bunqjsclient and bunqdesktop
-        clearApiKey: () => dispatch(registrationClearApiKey(BunqJSClient)),
+        logOut: () => dispatch(registrationLogOut(BunqJSClient)),
         // set the api key and stores the encrypted version
         setApiKey: (api_key, derivedPassword) =>
             dispatch(registrationSetApiKey(api_key, derivedPassword)),
@@ -583,10 +596,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // login a given usertype
         loginUser: (type, updated = false) =>
             dispatch(userLogin(BunqJSClient, type, updated)),
-
-        // get latest user list from BunqJSClient
-        usersUpdate: (updated = false) =>
-            dispatch(usersUpdate(BunqJSClient, updated)),
 
         handleBunqError: error => BunqErrorHandler(dispatch, error)
     };

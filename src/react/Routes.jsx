@@ -63,6 +63,9 @@ const RuleDashboard = CL(() =>
 const RulePage = CL(() =>
     import(/* webpackChunkName: "rules_page" */ "./Pages/RulePage/RulePage")
 );
+const SwitchApiKeys = CL(() =>
+    import(/* webpackChunkName: "switch_api_keys" */ "./Pages/SwitchApiKeys")
+);
 
 // router react component
 export default class Routes extends React.Component {
@@ -245,7 +248,10 @@ export default class Routes extends React.Component {
                             userType={this.props.userType}
                             derivedPassword={this.props.derivedPassword}
                             render={props => (
-                                <Exports {...props} {...this.props.childProps} />
+                                <Exports
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
                             )}
                         />
 
@@ -269,6 +275,21 @@ export default class Routes extends React.Component {
                             derivedPassword={this.props.derivedPassword}
                             render={props => (
                                 <RulePage
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
+                            )}
+                        />
+
+                        <PrivateRoute
+                            path="/switch-api-keys"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            ignoreApiKey={true}
+                            ignoreUserType={true}
+                            render={props => (
+                                <SwitchApiKeys
                                     {...props}
                                     {...this.props.childProps}
                                 />

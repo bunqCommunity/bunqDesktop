@@ -161,8 +161,6 @@ class RequestResponseInfo extends React.Component {
                 t
             );
 
-            console.log(requestResponseLabel);
-
             content = [
                 <Paper style={styles.paper}>
                     <Grid

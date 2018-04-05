@@ -10,6 +10,7 @@ import { FormControl, FormControlLabel } from "material-ui/Form";
 import Select from "material-ui/Select";
 import Paper from "material-ui/Paper";
 import Switch from "material-ui/Switch";
+import Popover from "material-ui/Popover";
 import Dialog, {
     DialogActions,
     DialogContent,
@@ -18,6 +19,8 @@ import Dialog, {
 } from "material-ui/Dialog";
 
 import ArrowBackIcon from "material-ui-icons/ArrowBack";
+import LogoutIcon from "material-ui-icons/ExitToApp";
+import RemoveIcon from "material-ui-icons/Delete";
 
 const remote = require("electron").remote;
 const path = remote.require("path");
@@ -45,7 +48,10 @@ import {
     loadSettingsLocation,
     setAutomaticThemeChange
 } from "../Actions/options";
-import { registrationClearApiKey } from "../Actions/registration";
+import {
+    registrationClearApiKey,
+    registrationLogOut
+} from "../Actions/registration";
 
 const styles = {
     avatar: {
@@ -107,7 +113,16 @@ class Settings extends React.Component {
     };
 
     clearApiKey = event => {
-        this.props.clearApiKey();
+        this.props.logOut();
+
+        // minor delay to ensure it happens after the state updates
+        setTimeout(() => {
+            this.props.history.push("/");
+        }, 500);
+    };
+
+    logout = event => {
+        this.props.logOut();
 
         // minor delay to ensure it happens after the state updates
         setTimeout(() => {
@@ -194,21 +209,32 @@ class Settings extends React.Component {
                 <Grid item xs={12} sm={8}>
                     <Paper style={styles.paper}>
                         <Grid container spacing={16}>
-                            <Grid item xs={6} sm={8} md={9} lg={10}>
+                            <Grid item xs={12} md={6} lg={8}>
                                 <TypographyTranslate variant={"headline"}>
                                     Settings
                                 </TypographyTranslate>
                             </Grid>
 
-                            <Grid item xs={6} sm={4} md={3} lg={2}>
-                                <ButtonTranslate
+                            <Grid item xs={6} md={3} lg={2}>
+                                <Button
                                     variant="raised"
                                     color="secondary"
                                     style={styles.button}
                                     onClick={this.clearApiKey}
                                 >
-                                    Logout
-                                </ButtonTranslate>
+                                    {t("Remove keys")} <RemoveIcon />
+                                </Button>
+                            </Grid>
+
+                            <Grid item xs={6} md={3} lg={2}>
+                                <Button
+                                    variant="raised"
+                                    color="primary"
+                                    style={styles.button}
+                                    onClick={this.logout}
+                                >
+                                    {t("Logout")} <LogoutIcon />
+                                </Button>
                             </Grid>
 
                             <Grid item xs={12} md={6}>
@@ -306,7 +332,9 @@ class Settings extends React.Component {
                                     control={
                                         <Switch
                                             id="automatic-change-selection"
-                                            checked={this.props.automaticThemeChange}
+                                            checked={
+                                                this.props.automaticThemeChange
+                                            }
                                             onChange={
                                                 this.handleAutomaticThemeChange
                                             }
@@ -535,6 +563,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
         // clear api key from bunqjsclient and bunqdesktop
         clearApiKey: () => dispatch(registrationClearApiKey(BunqJSClient)),
+        // logout of current session without destroying stored keys
+        logOut: () => dispatch(registrationLogOut(BunqJSClient)),
         // full hard reset off all storage
         resetApplication: () => dispatch(resetApplication())
     };
