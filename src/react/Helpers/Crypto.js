@@ -109,29 +109,3 @@ export const decryptString = async (encryptedString, key, iv) => {
     // return the result as an utf8-encoded string
     return nodeBuffer.toString("utf8");
 };
-
-/**
- * Test function
- * @deprecated
- * @returns {Promise.<void>}
- */
-export const test = async () => {
-    const dataToEncrypt = { key: "value" };
-    const stringToEncrypt = JSON.stringify(dataToEncrypt);
-
-    const derivedKey = await derivePasswordKey("testpassword123");
-    console.log("derivedKey", derivedKey);
-
-    const encryptedResult = await encryptString(
-        stringToEncrypt,
-        derivedKey.key
-    );
-    console.log("encryptedResult", encryptedResult);
-
-    const decryptedResult = await decryptString(
-        encryptedResult.encryptedString,
-        derivedKey.key,
-        encryptedResult.iv
-    );
-    console.log("decryptedResult", decryptedResult);
-};

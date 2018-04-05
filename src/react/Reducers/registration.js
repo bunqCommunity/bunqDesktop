@@ -2,7 +2,8 @@ import store from "store";
 import {
     SALT_LOCATION,
     API_KEY_IV_LOCATION,
-    API_KEY_LOCATION
+    API_KEY_LOCATION,
+    API_KEYS_LOCATION,
 } from "../Actions/registration";
 
 export const USE_NO_PASSWORD_LOCATION = "USE_NO_PASSWORD_LOCATION";
@@ -21,6 +22,10 @@ const environmentDefault =
     store.get(ENVIRONMENT_LOCATION) !== undefined
         ? store.get(ENVIRONMENT_LOCATION)
         : "PRODUCTION";
+const storedApiKeysDefault =
+    store.get(API_KEYS_LOCATION) !== undefined
+        ? store.get(API_KEYS_LOCATION)
+        : [];
 
 export const defaultState = {
     // unencrypted api key, this should NEVER be stored elsewhere
@@ -28,6 +33,9 @@ export const defaultState = {
 
     // if true there is a stored api key
     has_stored_api_key: store.get(API_KEY_LOCATION) !== undefined,
+
+    // list of encrypted api keys
+    stored_api_keys: storedApiKeysDefault,
 
     // if true, the application will try to load the encryption keys using a default password
     use_no_password: useNoPasswordDefault,
@@ -44,6 +52,51 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 api_key: action.payload.api_key
+            };
+
+        case "REGISTRATION_UPDATE_STORED_API_KEYS":
+            const currentApiKeys = [...state.stored_api_keys];
+            const encryptedKey = action.payload.api_key;
+            const encryptedKeyIv = action.payload.api_key_iv;
+
+            const index = currentApiKeys.findIndex(storedApiKey => {
+                // this is the same stored api key
+                return storedApiKey.api_key === encryptedKey;
+            });
+
+            const storedApiKeyInfo = {
+                api_key: encryptedKey,
+                api_key_iv: encryptedKeyIv,
+                device_name: state.device_name,
+                environment: state.environment
+            };
+
+            if (index > -1) {
+                // existing was found
+                currentApiKeys[index] = storedApiKeyInfo;
+            } else {
+                // add now
+                currentApiKeys.push(storedApiKeyInfo);
+            }
+
+            // update stored api keys aswell
+            store.set(API_KEYS_LOCATION, currentApiKeys);
+            return {
+                ...state,
+                stored_api_keys: currentApiKeys
+            };
+
+        case "REGISTRATION_REMOVE_STORED_API_KEY":
+            const currentApiKeys2 = [...state.stored_api_keys];
+
+            // remove this key
+            currentApiKeys2.splice(action.payload.index, 1);
+
+            // update stored api keys aswell
+            store.set(API_KEYS_LOCATION, currentApiKeys2);
+            return {
+                ...state,
+                stored_api_keys: currentApiKeys2
             };
 
         case "REGISTRATION_SET_DEVICE_NAME":
@@ -64,6 +117,7 @@ export default (state = defaultState, action) => {
             // remove the stored key data
             store.remove(SALT_LOCATION);
             store.remove(API_KEY_LOCATION);
+            store.remove(API_KEYS_LOCATION);
             store.remove(API_KEY_IV_LOCATION);
             // reset use-no-password setting back to default
             store.set(USE_NO_PASSWORD_LOCATION, false);
@@ -72,6 +126,25 @@ export default (state = defaultState, action) => {
                 api_key: false,
                 has_stored_api_key: false,
                 derivedPassword: false
+            };
+
+        case "REGISTRATION_LOG_OUT":
+            store.remove(API_KEY_LOCATION);
+            store.remove(API_KEY_IV_LOCATION);
+            return {
+                ...state,
+                api_key: false,
+                has_stored_api_key: false,
+                derivedPassword: false
+            };
+
+        case "REGISTRATION_RESET_TO_API_SCREEN":
+            store.remove(API_KEY_LOCATION);
+            store.remove(API_KEY_IV_LOCATION);
+            return {
+                ...state,
+                api_key: false,
+                has_stored_api_key: false
             };
 
         case "REGISTRATION_SET_PASSWORD":

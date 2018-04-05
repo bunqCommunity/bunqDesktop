@@ -10,6 +10,7 @@ import Typography from "material-ui/Typography";
 
 import MoneyIcon from "material-ui-icons/AttachMoney";
 
+import NavLink from "../Components/Routing/NavLink";
 import CombinedList from "../Components/CombinedList";
 import AccountList from "../Components/AccountList/AccountList";
 import LoadOlderButton from "../Components/LoadOlderButton";
@@ -66,8 +67,7 @@ class Dashboard extends React.Component {
         const t = this.props.t;
 
         const userTypes = Object.keys(this.props.users);
-
-        const switchUserText = t("Switch user");
+        const hasOtherKeys = this.props.storedApiKeys.length > 0;
 
         return (
             <Grid container spacing={16}>
@@ -75,20 +75,34 @@ class Dashboard extends React.Component {
                     <title>{`BunqDesktop - ${t("Dashboard")}`}</title>
                 </Helmet>
 
-                <Grid item xs={8} sm={10}>
+                <Grid item xs={6} sm={8}>
                     <Typography variant="title" gutterBottom>
                         {`${t("Welcome")} ${this.props.user.display_name}`}
                     </Typography>
                 </Grid>
 
-                {/* hide the switch button if only one user is set */}
-                {userTypes.length > 1 ? (
-                    <Grid item xs={4} sm={2}>
+                {hasOtherKeys ? null : <Grid item xs={3} sm={2} />}
+
+                <Grid item xs={3} sm={2}>
+                    {/* hide the switch button if only one user is set */}
+                    {userTypes.length > 1 ? (
                         <Button
                             style={styles.btn}
                             onClick={this.props.logoutUser}
                         >
-                            {switchUserText}
+                            {t("Switch user")}
+                        </Button>
+                    ) : null}
+                </Grid>
+
+                {hasOtherKeys ? (
+                    <Grid item xs={3} sm={2}>
+                        <Button
+                            style={styles.btn}
+                            to={"/switch-api-keys"}
+                            component={NavLink}
+                        >
+                            {t("Switch API keys")}
                         </Button>
                     </Grid>
                 ) : null}
@@ -159,6 +173,7 @@ const mapStateToProps = state => {
         requestInquiryLoading: state.request_inquiry.loading,
         selectedAccount: state.accounts.selectedAccount,
 
+        storedApiKeys: state.registration.stored_api_keys,
         environment: state.registration.environment
     };
 };

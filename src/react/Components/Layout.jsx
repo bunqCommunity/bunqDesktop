@@ -155,9 +155,13 @@ class Layout extends React.Component {
         const nightTime = nightDate.getTime();
 
         if (currentTime > morningTime && currentTime < nightTime) {
-            this.props.setTheme("DefaultTheme");
+            if (this.props.theme === "DarkTheme") {
+                this.props.setTheme("DefaultTheme");
+            }
         } else {
-            this.props.setTheme("DarkTheme");
+            if (this.props.theme === "DefaultTheme") {
+                this.props.setTheme("DarkTheme");
+            }
         }
     };
 
@@ -281,6 +285,22 @@ class Layout extends React.Component {
         encryptionKey = false,
         allowReRun = false
     ) => {
+        const t = this.props.t;
+        const errorTitle = t("Something went wrong");
+        const error1 = t("We failed to setup BunqDesktop properly");
+        const error2 = t("We failed to install a new application");
+        const error3 = t(
+            "The API key or IP you are currently on is not valid for the selected bunq environment"
+        );
+        const error4 = t(
+            "We failed to register this device on the bunq servers Are you sure you entered a valid API key? And are you sure that this key is meant for the selected bunq environment?"
+        );
+        const error5 = t("We failed to create a new session");
+
+        const statusMessage1 = t("Registering our encryption keys");
+        const statusMessage2 = t("Installing this device");
+        const statusMessage3 = t("Creating a new session");
+
         try {
             await this.props.BunqJSClient.run(
                 apiKey,
@@ -289,10 +309,7 @@ class Layout extends React.Component {
                 encryptionKey
             );
         } catch (exception) {
-            this.props.openModal(
-                "We failed to setup BunqDesktop properly",
-                "Something went wrong"
-            );
+            this.props.openModal(error1, errorTitle);
             throw exception;
         }
 
@@ -301,18 +318,15 @@ class Layout extends React.Component {
             return;
         }
 
-        this.props.applicationSetStatus("Registering our encryption keys");
+        this.props.applicationSetStatus(statusMessage1);
         try {
             await this.props.BunqJSClient.install();
         } catch (exception) {
-            this.props.openModal(
-                "We failed to install a new application",
-                "Something went wrong"
-            );
+            this.props.openModal(error2, errorTitle);
             throw exception;
         }
 
-        this.props.applicationSetStatus("Installing this device");
+        this.props.applicationSetStatus(statusMessage2);
         try {
             await this.props.BunqJSClient.registerDevice(deviceName);
         } catch (exception) {
@@ -322,28 +336,19 @@ class Layout extends React.Component {
                     responseError.error_description ===
                     "User credentials are incorrect. Incorrect API key or IP address."
                 ) {
-                    this.props.openModal(
-                        `The API key or IP you are currently on is not valid for the ${environment} bunq environment.`,
-                        "Something went wrong"
-                    );
+                    this.props.openModal(error3, errorTitle);
                     throw exception;
                 }
             }
-            this.props.openModal(
-                `We failed to register this device on the bunq servers. Are you sure you entered a valid API key? And are you sure that this key is meant for the ${environment} bunq environment?`,
-                "Something went wrong"
-            );
+            this.props.openModal(error4, errorTitle);
             throw exception;
         }
 
-        this.props.applicationSetStatus("Creating a new session");
+        this.props.applicationSetStatus(statusMessage3);
         try {
             await this.props.BunqJSClient.registerSession();
         } catch (exception) {
-            this.props.openModal(
-                "We failed to create a new session",
-                "Something went wrong"
-            );
+            this.props.openModal(error5, errorTitle);
 
             // custom error handling to prevent
             if (exception.errorCode) {
@@ -364,7 +369,6 @@ class Layout extends React.Component {
                                 encryptionKey,
                                 false
                             );
-
                             return;
                         }
 
