@@ -210,12 +210,7 @@ export function registrationLoadStoredApiKey(
                     dispatch(applicationSetStatus(statusMessage2));
 
                     // destroy the session associated with the previous
-                    dispatch(
-                        registrationApiKeyOverwrite(
-                            BunqJSClient,
-                            decryptedString
-                        )
-                    );
+                    dispatch(registrationSetApiKeyBasic(decryptedString));
                     dispatch(registrationNotLoading());
                 } else {
                     // nothing changes, just set the api key but do nothing else

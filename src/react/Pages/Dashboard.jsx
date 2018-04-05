@@ -6,17 +6,19 @@ import StickyBox from "react-sticky-box";
 import Paper from "material-ui/Paper";
 import Button from "material-ui/Button";
 import Grid from "material-ui/Grid";
+import IconButton from "material-ui/IconButton";
 import Typography from "material-ui/Typography";
 
 import MoneyIcon from "material-ui-icons/AttachMoney";
+import ExitToAppIcon from "material-ui-icons/ExitToApp";
 
-import NavLink from "../Components/Routing/NavLink";
 import CombinedList from "../Components/CombinedList";
 import AccountList from "../Components/AccountList/AccountList";
 import LoadOlderButton from "../Components/LoadOlderButton";
 
 import { userLogin, userLogout } from "../Actions/user";
 import { requestInquirySend } from "../Actions/request_inquiry";
+import { registrationLogOut } from "../Actions/registration";
 
 const styles = {
     btn: {
@@ -67,7 +69,7 @@ class Dashboard extends React.Component {
         const t = this.props.t;
 
         const userTypes = Object.keys(this.props.users);
-        const hasOtherKeys = this.props.storedApiKeys.length > 0;
+        const hasOtherKeys = this.props.storedApiKeys.length > 1;
 
         return (
             <Grid container spacing={16}>
@@ -75,7 +77,7 @@ class Dashboard extends React.Component {
                     <title>{`BunqDesktop - ${t("Dashboard")}`}</title>
                 </Helmet>
 
-                <Grid item xs={6} sm={8}>
+                <Grid item xs={6} sm={8} md={9}>
                     <Typography variant="title" gutterBottom>
                         {`${t("Welcome")} ${this.props.user.display_name}`}
                     </Typography>
@@ -83,7 +85,7 @@ class Dashboard extends React.Component {
 
                 {hasOtherKeys ? null : <Grid item xs={3} sm={2} />}
 
-                <Grid item xs={3} sm={2}>
+                <Grid item xs={3} sm={2} md={2}>
                     {/* hide the switch button if only one user is set */}
                     {userTypes.length > 1 ? (
                         <Button
@@ -96,17 +98,16 @@ class Dashboard extends React.Component {
                 </Grid>
 
                 {hasOtherKeys ? (
-                    <Grid item xs={3} sm={2}>
-                        <Button
+                    <Grid item xs={3} sm={2} md={1}>
+                        <IconButton
                             style={styles.btn}
-                            to={"/switch-api-keys"}
-                            component={NavLink}
+                            onClick={this.props.registrationLogOut}
                         >
-                            {t("Switch API keys")}
-                        </Button>
+                            <ExitToAppIcon />
+                        </IconButton>
                     </Grid>
                 ) : null}
-
+                
                 <Grid item xs={12} md={4}>
                     <StickyBox className={"sticky-container"}>
                         <Paper>
@@ -181,7 +182,13 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
+        // only resets user type
         logoutUser: () => dispatch(userLogout()),
+
+        // hard-logout
+        registrationLogOut: () => dispatch(registrationLogOut(BunqJSClient)),
+
+        // send a request, used for sandbox button
         requestInquirySend: (userId, accountId, requestInquiries) =>
             dispatch(
                 requestInquirySend(

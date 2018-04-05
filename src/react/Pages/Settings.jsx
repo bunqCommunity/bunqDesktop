@@ -564,7 +564,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // clear api key from bunqjsclient and bunqdesktop
         clearApiKey: () => dispatch(registrationClearApiKey(BunqJSClient)),
         // logout of current session without destroying stored keys
-        logout: () => dispatch(registrationLogOut(BunqJSClient)),
+        logOut: () => dispatch(registrationLogOut(BunqJSClient)),
         // full hard reset off all storage
         resetApplication: () => dispatch(resetApplication())
     };

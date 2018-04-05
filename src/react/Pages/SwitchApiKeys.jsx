@@ -20,7 +20,8 @@ import RemoveIcon from "material-ui-icons/Delete";
 import {
     registrationRemoveStoredApiKey,
     registrationLoadStoredApiKey,
-    registrationResetToApiScreen
+    registrationResetToApiScreen,
+    registrationLogOut
 } from "../Actions/registration";
 
 const styles = {
@@ -47,10 +48,7 @@ class SwitchApiKeys extends React.Component {
 
     componentWillMount() {
         if (this.props.apiKey) {
-            // reset to api screen
-            console.log("logout and sent to login screen");
-            this.props.history.push("/login");
-            this.props.resetToApiScreen();
+            this.props.history.push("/");
         }
     }
 
@@ -161,9 +159,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                     derivedPassword
                 )
             ),
-        // resets all data to go back ot api screen
+
         resetToApiScreen: () =>
             dispatch(registrationResetToApiScreen(BunqJSClient)),
+
+        logOut: () =>
+            dispatch(registrationLogOut(BunqJSClient)),
 
         removeStoredApiKey: index =>
             dispatch(registrationRemoveStoredApiKey(index))
