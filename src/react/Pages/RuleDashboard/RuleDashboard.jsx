@@ -10,12 +10,10 @@ import List from "material-ui/List";
 
 import FileDownloadIcon from "material-ui-icons/FileDownload";
 import AddIcon from "material-ui-icons/Add";
-import PlayArrowIcon from "material-ui-icons/PlayArrow";
 
 import RuleCollectionItem from "./RuleCollectionItem";
 import NavLink from "../../Components/Routing/NavLink";
 import ImportDialog from "../../Components/ImportDialog";
-import RuleCollectionChecker from "../../Components/RuleCollectionChecker";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import RuleCollection from "../../Types/RuleCollection";
 
@@ -117,18 +115,6 @@ class RuleDashboard extends React.Component {
                                 >
                                     {t("New")}
                                     <AddIcon style={styles.buttonIcons} />
-                                </Button>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <Button
-                                    variant="raised"
-                                    style={styles.newRuleButton}
-                                    onClick={() =>
-                                        this.triggerWorkerEvent(this.props)}
-                                >
-                                    {t("Apply rules")}
-                                    <PlayArrowIcon style={styles.buttonIcons} />
                                 </Button>
                             </Grid>
 
