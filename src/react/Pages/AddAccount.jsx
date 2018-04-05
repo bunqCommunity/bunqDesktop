@@ -67,9 +67,9 @@ class AddAccount extends React.Component {
         };
     }
 
-    static getColorStyle(colorString) {
+    getColorStyle = colorString => {
         return { color: colorString };
-    }
+    };
 
     createAccount = () => {
         if (!this.state.validForm) {
@@ -118,13 +118,11 @@ class AddAccount extends React.Component {
     getRadioButton(color) {
         let button = "";
         if (this.state.color === color) {
-            button = (
-                <RadioButtonChecked style={AddAccount.getColorStyle(color)} />
-            );
+            button = <RadioButtonChecked style={this.getColorStyle(color)} />;
         } else {
             button = (
                 <RadioButtonUnchecked
-                    style={AddAccount.getColorStyle(color)}
+                    style={this.getColorStyle(color)}
                 />
             );
         }

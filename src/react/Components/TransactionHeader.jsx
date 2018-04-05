@@ -38,15 +38,15 @@ const TransactionHeader = props => {
     // color the arrows
     const arrowColor = props.theme.palette.text.primary;
 
-    let toLabelName = toAlias.label_user.public_nick_name;
-    let fromLabelName = fromAlias.label_user.public_nick_name;
+    let toLabelName = toAlias.label_user.display_name;
+    let fromLabelName = fromAlias.label_user.display_name;
 
     // accounts list is available
     if (props.accounts) {
         // loop through accounts
         props.accounts.forEach(account => {
             const accountInfo = account;
-            
+
             // loop through alias to find the iban and check if it matches
             accountInfo.alias.forEach(alias => {
                 // if IBAN check if it matches the from or to alias

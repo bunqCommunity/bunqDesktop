@@ -1,12 +1,5 @@
 import React from "react";
 import { Pie } from "react-chartjs-2";
-import {
-    bunqMeTabColor,
-    masterCardActionColor,
-    paymentColor,
-    requestInquiryColor,
-    requestResponseColor
-} from "./Colors";
 
 export default props => {
     const defaultOptions = {
@@ -27,7 +20,8 @@ export default props => {
         // add the total count of this category to the data set
         data.push(
             categoryCount.reduce(
-                (accumulator, currentValue) => accumulator + currentValue
+                (accumulator, currentValue) => accumulator + currentValue,
+                0
             )
         );
         // add the category color

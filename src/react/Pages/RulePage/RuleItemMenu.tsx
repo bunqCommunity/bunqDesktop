@@ -1,4 +1,5 @@
 import * as React from "react";
+import { translate } from "react-i18next";
 import IconButton from "material-ui/IconButton";
 import Divider from "material-ui/Divider";
 import Menu, { MenuItem } from "material-ui/Menu";
@@ -31,6 +32,7 @@ class RuleItemMenu extends React.Component<any, any> {
     };
 
     render() {
+        const t = this.props.t;
         const { anchorEl } = this.state;
 
         return (
@@ -53,7 +55,7 @@ class RuleItemMenu extends React.Component<any, any> {
                         <ListItemIcon>
                             <FileUploadIcon />
                         </ListItemIcon>
-                        <ListItemText inset primary="Export" />
+                        <ListItemText inset primary={t("Export")} />
                     </MenuItem>
                     <Divider />
 
@@ -61,7 +63,7 @@ class RuleItemMenu extends React.Component<any, any> {
                         <ListItemIcon>
                             <DeleteIcon />
                         </ListItemIcon>
-                        <ListItemText inset primary="Remove" />
+                        <ListItemText inset primary={t("Remove")} />
                     </MenuItem>
                 </Menu>
             </div>
@@ -69,4 +71,4 @@ class RuleItemMenu extends React.Component<any, any> {
     }
 }
 
-export default RuleItemMenu;
+export default translate("translations")(RuleItemMenu);

@@ -1,25 +1,25 @@
 import React from "react";
 import { connect } from "react-redux";
+import { translate } from "react-i18next";
 import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
 import Divider from "material-ui/Divider";
 import Paper from "material-ui/Paper";
 import Button from "material-ui/Button";
-import Typography from "material-ui/Typography";
 import List from "material-ui/List";
 
 import FileDownloadIcon from "material-ui-icons/FileDownload";
 import AddIcon from "material-ui-icons/Add";
 
-import RuleItem from "./RuleItem";
+import RuleCollectionItem from "./RuleCollectionItem";
 import NavLink from "../../Components/Routing/NavLink";
 import ImportDialog from "../../Components/ImportDialog";
-import TranslateButton from "../../Components/TranslationHelpers/Button";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import RuleCollection from "../../Types/RuleCollection";
+
 import { setCategoryRule } from "../../Actions/category_rules";
 import { openSnackbar } from "../../Actions/snackbar";
-import { translate } from "react-i18next";
+import { setCategoryConnectionMultiple } from "../../Actions/categories";
 
 const styles = {
     paper: {
@@ -76,12 +76,16 @@ class RuleDashboard extends React.Component {
     };
 
     render() {
-        const { categoryRules, t } = this.props;
+        const { categoryRules, categories, t } = this.props;
 
         const categoryRulesList = Object.keys(
             categoryRules
         ).map(categoryRuleId => (
-            <RuleItem rule={categoryRules[categoryRuleId]} t={t} />
+            <RuleCollectionItem
+                ruleCollection={categoryRules[categoryRuleId]}
+                categories={categories}
+                t={t}
+            />
         ));
 
         return (
@@ -98,30 +102,10 @@ class RuleDashboard extends React.Component {
                     open={this.state.openImportDialog}
                 />
 
-                <Grid item xs={12}>
+                <Grid item xs={12} sm={3}>
                     <Paper style={styles.paper}>
                         <Grid container spacing={16}>
-                            <Grid item xs={6} sm={6} md={8}>
-                                <TranslateTypography variant={"headline"}>
-                                    Rules
-                                </TranslateTypography>
-                            </Grid>
-
-                            <Grid item xs={12} sm={3} md={2}>
-                                <Button
-                                    variant="raised"
-                                    color="primary"
-                                    style={styles.newRuleButton}
-                                    onClick={this.openImportDialog}
-                                >
-                                    {t("Import")}
-                                    <FileDownloadIcon
-                                        style={styles.buttonIcons}
-                                    />
-                                </Button>
-                            </Grid>
-
-                            <Grid item xs={12} sm={3} md={2}>
+                            <Grid item xs={12}>
                                 <Button
                                     variant="raised"
                                     color="primary"
@@ -135,6 +119,31 @@ class RuleDashboard extends React.Component {
                             </Grid>
 
                             <Grid item xs={12}>
+                                <Button
+                                    variant="raised"
+                                    style={styles.newRuleButton}
+                                    onClick={this.openImportDialog}
+                                >
+                                    {t("Import")}
+                                    <FileDownloadIcon
+                                        style={styles.buttonIcons}
+                                    />
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Paper>
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                    <Paper style={styles.paper}>
+                        <Grid container spacing={16}>
+                            <Grid item xs={12} sm={3} md={6}>
+                                <TranslateTypography variant={"headline"}>
+                                    Rules
+                                </TranslateTypography>
+                            </Grid>
+
+                            <Grid item xs={12}>
                                 <List>
                                     <Divider />
                                     {categoryRulesList}
@@ -143,6 +152,7 @@ class RuleDashboard extends React.Component {
                         </Grid>
                     </Paper>
                 </Grid>
+
             </Grid>
         );
     }
@@ -150,6 +160,7 @@ class RuleDashboard extends React.Component {
 
 const mapStateToProps = state => {
     return {
+        categories: state.categories.categories,
         categoryRules: state.category_rules.category_rules
     };
 };
@@ -157,6 +168,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
+        setCategoryConnectionMultiple: (...params) =>
+            dispatch(setCategoryConnectionMultiple(...params)),
         setCategoryRule: rule_collection =>
             dispatch(setCategoryRule(rule_collection))
     };

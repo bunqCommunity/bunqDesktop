@@ -78,6 +78,10 @@
   dependencies:
     axios "*"
 
+"@types/i18next@*":
+  version "8.4.3"
+  resolved "https://registry.yarnpkg.com/@types/i18next/-/i18next-8.4.3.tgz#9136a9551bf5bf7169aa9f3125c1743f1f8dd6de"
+
 "@types/jest@^22.1.3":
   version "22.1.3"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-22.1.3.tgz#25da391935e6fac537551456f077ce03144ec168"
@@ -99,6 +103,13 @@
 "@types/node@^9.4.6":
   version "9.4.6"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.4.6.tgz#d8176d864ee48753d053783e4e463aec86b8d82e"
+
+"@types/react-i18next@^7.3.2":
+  version "7.3.2"
+  resolved "https://registry.yarnpkg.com/@types/react-i18next/-/react-i18next-7.3.2.tgz#e1ae0de801e2ce5aff82191cf74949f2735920bc"
+  dependencies:
+    "@types/i18next" "*"
+    "@types/react" "*"
 
 "@types/react-transition-group@^2.0.6":
   version "2.0.6"

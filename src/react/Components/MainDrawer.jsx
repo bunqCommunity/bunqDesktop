@@ -17,6 +17,7 @@ import ShareIcon from "material-ui-icons/Share";
 import TimeLineIcon from "material-ui-icons/Timeline";
 import CardIcon from "material-ui-icons/CreditCard";
 import Bookmark from "material-ui-icons/Bookmark";
+import CreateIcon from "material-ui-icons/Create";
 import FileUpload from "material-ui-icons/FileUpload";
 
 import NavLink from "./Routing/NavLink";
@@ -145,26 +146,14 @@ class MainDrawer extends React.Component {
                       icon={Bookmark}
                       text={"Categories"}
                       location={this.props.location}
+                  />,
+                  <ListItemWrapper
+                      to="/rules-dashboard"
+                      icon={CreateIcon}
+                      text="Category rules"
+                      location={this.props.location}
                   />
               ];
-        {
-            /*<ListItemWrapper*/
-        }
-        {
-            /*to="/rules-dashboard"*/
-        }
-        {
-            /*icon={CreateIcon}*/
-        }
-        {
-            /*text="Category rules"*/
-        }
-        {
-            /*location={this.props.location}*/
-        }
-        {
-            /*/>*/
-        }
 
         const drawerList = (
             <List style={styles.list}>

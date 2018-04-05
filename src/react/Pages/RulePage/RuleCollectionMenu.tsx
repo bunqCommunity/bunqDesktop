@@ -7,6 +7,7 @@ import { ListItemIcon, ListItemText } from "material-ui/List";
 import MoreVertIcon from "material-ui-icons/MoreVert";
 import DeleteIcon from "material-ui-icons/Delete";
 import FileUploadIcon from "material-ui-icons/FileUpload";
+import { translate } from "react-i18next";
 
 class RuleCollectionMenu extends React.Component<any, any> {
     state = {
@@ -27,6 +28,7 @@ class RuleCollectionMenu extends React.Component<any, any> {
     };
 
     render() {
+        const t = this.props.t;
         const { anchorEl } = this.state;
 
         return (
@@ -49,7 +51,7 @@ class RuleCollectionMenu extends React.Component<any, any> {
                         <ListItemIcon>
                             <FileUploadIcon />
                         </ListItemIcon>
-                        <ListItemText inset primary="Export" />
+                        <ListItemText inset primary={t("Export")} />
                     </MenuItem>
 
                     {this.props.canBeDeleted ? (
@@ -59,7 +61,7 @@ class RuleCollectionMenu extends React.Component<any, any> {
                                 <ListItemIcon>
                                     <DeleteIcon />
                                 </ListItemIcon>
-                                <ListItemText inset primary="Delete" />
+                                <ListItemText inset primary={t("Delete")} />
                             </MenuItem>
                         </React.Fragment>
                     ) : null}
@@ -69,4 +71,4 @@ class RuleCollectionMenu extends React.Component<any, any> {
     }
 }
 
-export default RuleCollectionMenu;
+export default translate("translations")(RuleCollectionMenu);

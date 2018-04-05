@@ -1,17 +1,16 @@
 import * as React from "react";
+import { translate } from "react-i18next";
 import Paper from "material-ui/Paper";
 import Button from "material-ui/Button";
-import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
-import RuleCollection, {
-    EventObject,
-    EventObjectResult
-} from "../../Types/RuleCollection";
+import Switch from "material-ui/Switch";
+import { FormControlLabel } from "material-ui/Form";
+import List from "material-ui/List";
+
+import RuleCollection, { EventObjectResult } from "../../Types/RuleCollection";
+import RuleCollectionPreviewItem from "./RuleCollectionPreviewItem";
 
 // import typed worker
-const RuleCollectionCheckWorker: any = require("worker-loader!../../WebWorkers/rule_collection_check.worker.js");
-
-import CheckIcon from "material-ui-icons/Check";
-import CrossIcon from "material-ui-icons/Cancel";
+const RuleCollectionCheckWorker: any = require("worker-loader!../../WebWorkers/rule_collection_check.worker.ts");
 
 const styles = {
     toggleVisibilityButton: {
@@ -26,16 +25,14 @@ const styles = {
 class RuleCollectionPreview extends React.Component<any, any> {
     state = {
         visible: false,
-        eventResults: []
+        eventResults: [],
+        showAll: false
     };
     worker: any;
 
     componentWillMount() {
         this.worker = new RuleCollectionCheckWorker();
         this.worker.onmessage = this.handleWorkerEvent;
-
-        const a: any = window;
-        a.triggerWorkerEvent = () => this.triggerWorkerEvent(this.props);
     }
 
     componentWillUnmount() {
@@ -54,7 +51,7 @@ class RuleCollectionPreview extends React.Component<any, any> {
     }
 
     handleWorkerEvent = (eventResults: any) => {
-        this.setState({ eventResults: eventResults.data });
+        this.setState({ eventResults: eventResults.data.result });
     };
     handleVisibilityToggle = event => {
         this.setState({ visible: !this.state.visible }, () => {
@@ -65,7 +62,7 @@ class RuleCollectionPreview extends React.Component<any, any> {
         });
     };
     triggerWorkerEvent = props => {
-        const ruleCollection: RuleCollection | null = this.props.ruleCollection;
+        const ruleCollection: RuleCollection | null = props.ruleCollection;
         this.worker.postMessage({
             ruleCollection: ruleCollection,
             payments: props.payments,
@@ -77,13 +74,14 @@ class RuleCollectionPreview extends React.Component<any, any> {
     };
 
     render() {
+        const t = this.props.t;
         const toggleDisplay = (
             <Button
                 variant="raised"
                 style={styles.toggleVisibilityButton}
                 onClick={this.handleVisibilityToggle}
             >
-                {this.state.visible ? "Hide preview" : "Show preview"}
+                {this.state.visible ? t("Hide preview") : t("Show preview")}
             </Button>
         );
 
@@ -94,28 +92,34 @@ class RuleCollectionPreview extends React.Component<any, any> {
             if (ruleCollection !== null) {
                 const items: any[] = this.state.eventResults.map(
                     (event: EventObjectResult, index: any) => {
-                        return (
-                            <ListItem key={index}>
-                                <ListItemText
-                                    primary={`Matches: ${event.matches
-                                        ? "yes"
-                                        : "no"}`}
-                                    secondary={`Type: ${event.type}`}
+                        if (this.state.showAll || event.matches) {
+                            return (
+                                <RuleCollectionPreviewItem
+                                    event={event}
+                                    key={index}
                                 />
-                                <ListItemIcon>
-                                    {event.matches ? (
-                                        <CheckIcon />
-                                    ) : (
-                                        <CrossIcon />
-                                    )}
-                                </ListItemIcon>
-                            </ListItem>
-                        );
+                            );
+                        }
+                        return null;
                     }
                 );
 
                 previewContent = (
                     <Paper style={styles.paper}>
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={this.state.showAll}
+                                    onChange={() =>
+                                        this.setState({
+                                            showAll: !this.state.showAll
+                                        })}
+                                />
+                            }
+                            label={t(
+                                "Show all events, not just the matching ones"
+                            )}
+                        />
                         <List>{items}</List>
                     </Paper>
                 );
@@ -132,4 +136,4 @@ class RuleCollectionPreview extends React.Component<any, any> {
     }
 }
 
-export default RuleCollectionPreview;
+export default translate("translations")(RuleCollectionPreview);
