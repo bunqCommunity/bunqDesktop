@@ -464,15 +464,17 @@ class Login extends React.Component {
                             }
                         />
 
-                        <TranslateButton
-                            variant="raised"
-                            disabled={sandboxButtonDisabled}
-                            color={"secondary"}
-                            style={styles.loginButton}
-                            onClick={this.createSandboxUser}
-                        >
-                            Create a sandbox account
-                        </TranslateButton>
+                        {this.state.sandboxMode ? (
+                            <TranslateButton
+                                variant="raised"
+                                disabled={sandboxButtonDisabled}
+                                color={"secondary"}
+                                style={styles.loginButton}
+                                onClick={this.createSandboxUser}
+                            >
+                                Create a sandbox account
+                            </TranslateButton>
+                        ) : null}
 
                         <TranslateButton
                             variant="raised"
@@ -483,17 +485,18 @@ class Login extends React.Component {
                         >
                             Set API Key
                         </TranslateButton>
+
+                        {this.props.storedApiKeys.length > 0 ? (
+                            <Button
+                                style={styles.loginButton}
+                                to={"/switch-api-keys"}
+                                component={NavLink}
+                            >
+                                {t("Use a stored API key")}
+                            </Button>
+                        ) : null}
                     </Collapse>
                 </CardContent>
-                {this.props.storedApiKeys.length > 0 ? (
-                    <Button
-                        style={styles.loginButton}
-                        to={"/switch-api-keys"}
-                        component={NavLink}
-                    >
-                        {t("Use a stored API key")}
-                    </Button>
-                ) : null}
             </React.Fragment>
         ) : (
             <CardContent>
