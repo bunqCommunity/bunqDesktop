@@ -6,6 +6,7 @@ import bunq_me_tabs from "./bunq_me_tabs";
 import bunq_me_tab_filter from "./bunq_me_tab_filter";
 import bunq_me_tab from "./bunq_me_tab";
 import categories from "./categories";
+import category_filter from "./category_filter";
 import cards from "./cards";
 import card_cvc2 from "./card_cvc2";
 import category_rules from "./category_rules.ts";
@@ -44,6 +45,7 @@ export default combineReducers({
     bunq_me_tab_filter,
     bunq_me_tabs,
     categories,
+    category_filter,
     cards,
     card_cvc2,
     category_rules,

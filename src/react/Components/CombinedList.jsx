@@ -99,6 +99,10 @@ class CombinedList extends React.Component {
         return this.props.payments
             .filter(
                 paymentFilter({
+                    categories: this.props.categories,
+                    categoryConnections: this.props.categoryConnections,
+                    selectedCategories: this.props.selectedCategories,
+
                     searchTerm: this.props.searchTerm,
                     paymentVisibility: this.props.paymentVisibility,
                     paymentType: this.props.paymentType,
@@ -124,6 +128,10 @@ class CombinedList extends React.Component {
         return this.props.bunqMeTabs
             .filter(
                 bunqMeTabsFilter({
+                    categories: this.props.categories,
+                    categoryConnections: this.props.categoryConnections,
+                    selectedCategories: this.props.selectedCategories,
+
                     searchTerm: this.props.searchTerm,
                     bunqMeTabVisibility: this.props.bunqMeTabVisibility,
                     bunqMeTabType: this.props.bunqMeTabType,
@@ -154,6 +162,10 @@ class CombinedList extends React.Component {
         return this.props.masterCardActions
             .filter(
                 masterCardActionFilter({
+                    categories: this.props.categories,
+                    categoryConnections: this.props.categoryConnections,
+                    selectedCategories: this.props.selectedCategories,
+
                     searchTerm: this.props.searchTerm,
                     paymentVisibility: this.props.paymentVisibility,
                     paymentType: this.props.paymentType,
@@ -179,6 +191,10 @@ class CombinedList extends React.Component {
         return this.props.requestResponses
             .filter(
                 requestResponseFilter({
+                    categories: this.props.categories,
+                    categoryConnections: this.props.categoryConnections,
+                    selectedCategories: this.props.selectedCategories,
+
                     searchTerm: this.props.searchTerm,
                     requestVisibility: this.props.requestVisibility,
                     requestType: this.props.requestType,
@@ -204,6 +220,10 @@ class CombinedList extends React.Component {
         return this.props.requestInquiries
             .filter(
                 requestInquiryFilter({
+                    categories: this.props.categories,
+                    categoryConnections: this.props.categoryConnections,
+                    selectedCategories: this.props.selectedCategories,
+
                     searchTerm: this.props.searchTerm,
                     requestVisibility: this.props.requestVisibility,
                     requestType: this.props.requestType,
@@ -441,6 +461,10 @@ const mapStateToProps = state => {
         requestVisibility: state.request_filter.visible,
         dateFromFilter: state.date_filter.from_date,
         dateToFilter: state.date_filter.to_date,
+        selectedCategories: state.category_filter.selected_categories,
+
+        categories: state.categories.categories,
+        categoryConnections: state.categories.category_connections,
 
         bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
         bunqMeTabsLoading: state.bunq_me_tabs.loading,

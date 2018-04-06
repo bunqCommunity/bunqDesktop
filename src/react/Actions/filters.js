@@ -99,6 +99,24 @@ export function setToDateFilter(date = null) {
     };
 }
 
+export function addCategoryIdFilter(categoryId) {
+    return {
+        type: "CATEGORY_FILTER_ADD_CATEGORY_ID",
+        payload: {
+            category_id: categoryId
+        }
+    };
+}
+
+export function removeCategoryIdFilter(index) {
+    return {
+        type: "CATEGORY_FILTER_REMOVE_CATEGORY_ID",
+        payload: {
+            index: index
+        }
+    };
+}
+
 export function clearFromDateFilter() {
     return {
         type: "DATE_FILTER_FROM_CLEAR"

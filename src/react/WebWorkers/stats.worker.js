@@ -20,6 +20,7 @@ import {
     requestInquiryFilter,
     requestResponseFilter
 } from "../Helpers/DataFilters";
+import MonetaryAccount from "../Models/MonetaryAccount";
 
 const labelFormat = (date, type = "daily") => {
     switch (type) {
@@ -305,11 +306,12 @@ const getData = (
 ) => {
     let accountInfo = false;
     accounts.map(account => {
+        const accountObject = new MonetaryAccount(account);
         if (
-            account.MonetaryAccountBank.id === selectedAccount ||
+            accountObject.id === selectedAccount ||
             selectedAccount === false
         ) {
-            accountInfo = account.MonetaryAccountBank;
+            accountInfo = accountObject;
         }
     });
     let currentBalance = parseFloat(accountInfo.balance.value);

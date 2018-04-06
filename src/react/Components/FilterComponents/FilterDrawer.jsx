@@ -47,6 +47,7 @@ import {
 } from "../../Actions/filters";
 
 import SearchFilter from "./SearchFilter";
+import CategorySelection from "./CategorySelection";
 
 const styles = {
     list: {
@@ -395,6 +396,8 @@ class FilterDrawer extends React.Component {
                         }}
                     />
                 </ListItem>
+
+                <CategorySelection t={t} />
 
                 <ListItem style={styles.listFiller} />
 
