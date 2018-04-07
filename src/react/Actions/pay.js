@@ -10,7 +10,8 @@ export function paySend(
     description,
     amount,
     targets,
-    draft = false
+    draft = false,
+    schedule = false
 ) {
     const failedMessage = window.t(
         "We received the following error while sending your payment"
@@ -24,13 +25,23 @@ export function paySend(
 
         const isMultiple = targets.length <= 1;
 
-        // use payment handler based on options
+        // for both use single or multiple payment handler
+        const scheduleTypeHandler = isMultiple
+            ? BunqJSClient.api.schedulePayment
+            : BunqJSClient.api.schedulePaymentBatch;
+        const paymentTypeHandler = isMultiple
+            ? BunqJSClient.api.payment
+            : BunqJSClient.api.paymentBatch;
+
+        // check between schedule or regular payment mode
+        const secondaryTypeHandler =
+            schedule !== false ? scheduleTypeHandler : paymentTypeHandler;
+
         const paymentHandler = draft
-            ? BunqJSClient.api.draftPayment
-            : isMultiple
-              ? // use default payment endpoint or batch payment
-                BunqJSClient.api.payment
-              : BunqJSClient.api.paymentBatch;
+            ? // draft mode
+              BunqJSClient.api.draftPayment
+            : // schedule or regular mode
+              secondaryTypeHandler;
 
         const targetData = isMultiple ? targets.pop() : targets;
 

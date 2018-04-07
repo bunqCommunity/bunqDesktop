@@ -460,10 +460,12 @@ class Pay extends React.Component {
                 "From"
             )}: ${humanReadableDate(this.state.scheduleStartDate)} ${this.state
                 .scheduleEndDate
-                ? `Until: ${humanReadableDate(this.state.scheduleEndDate)}`
+                ? ` - ${t("Until")}: ${humanReadableDate(
+                      this.state.scheduleEndDate
+                  )}`
                 : ""}`;
 
-            const paymentDone = t("Payment will be done ");
+            const paymentDone = t("Payment will be done");
             const recurrenceMore = this.state.recurrenceSize > 1;
 
             switch (this.state.recurrenceUnit) {
@@ -888,7 +890,8 @@ const mapDispatchToProps = (dispatch, props) => {
             description,
             amount,
             targets,
-            draft = false
+            draft = false,
+            schedule = false
         ) =>
             dispatch(
                 paySend(
@@ -898,7 +901,8 @@ const mapDispatchToProps = (dispatch, props) => {
                     description,
                     amount,
                     targets,
-                    draft
+                    draft,
+                    schedule
                 )
             ),
         openSnackbar: message => dispatch(openSnackbar(message))
