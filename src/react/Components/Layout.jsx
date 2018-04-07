@@ -133,37 +133,9 @@ class Layout extends React.Component {
         this.setActivityTimeout();
 
         // setup minute timer
-        this.testTime();
-        this.minuteTimer = setInterval(this.testTime, 60000);
+        this.checkTime();
+        this.minuteTimer = setInterval(this.checkTime, 60000);
     }
-
-    testTime = () => {
-        const currentTime = new Date().getTime();
-
-        const morningDate = new Date();
-        morningDate.setMinutes(0);
-        morningDate.setHours(9);
-        morningDate.setSeconds(0);
-        morningDate.setMilliseconds(0);
-        const morningTime = morningDate.getTime();
-
-        const nightDate = new Date();
-        nightDate.setMinutes(30);
-        nightDate.setHours(19);
-        nightDate.setSeconds(0);
-        nightDate.setMilliseconds(0);
-        const nightTime = nightDate.getTime();
-
-        if (currentTime > morningTime && currentTime < nightTime) {
-            if (this.props.theme === "DarkTheme") {
-                this.props.setTheme("DefaultTheme");
-            }
-        } else {
-            if (this.props.theme === "DefaultTheme") {
-                this.props.setTheme("DarkTheme");
-            }
-        }
-    };
 
     componentWillMount() {
         this.checkLanguageChange(this.props);
@@ -191,6 +163,7 @@ class Layout extends React.Component {
                 .catch(Logger.error);
         }
 
+        // check for page changes
         if (process.env.NODE_ENV !== "development") {
             // compare pathnames and trigger a
             const nextUrl = nextProps.location.pathname;
@@ -219,6 +192,34 @@ class Layout extends React.Component {
 
             // change client-side langauge
             i18n.changeLanguage(newProps.language);
+        }
+    };
+
+    checkTime = () => {
+        const currentTime = new Date().getTime();
+
+        const morningDate = new Date();
+        morningDate.setMinutes(0);
+        morningDate.setHours(9);
+        morningDate.setSeconds(0);
+        morningDate.setMilliseconds(0);
+        const morningTime = morningDate.getTime();
+
+        const nightDate = new Date();
+        nightDate.setMinutes(30);
+        nightDate.setHours(19);
+        nightDate.setSeconds(0);
+        nightDate.setMilliseconds(0);
+        const nightTime = nightDate.getTime();
+
+        if (currentTime > morningTime && currentTime < nightTime) {
+            if (this.props.theme === "DarkTheme") {
+                this.props.setTheme("DefaultTheme");
+            }
+        } else {
+            if (this.props.theme === "DefaultTheme") {
+                this.props.setTheme("DarkTheme");
+            }
         }
     };
 

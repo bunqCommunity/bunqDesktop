@@ -25,7 +25,6 @@ const styles = {
         width: "100%"
     },
     iconButton: {
-        width: "100%",
         height: 25
     }
 };
@@ -81,7 +80,7 @@ class Dashboard extends React.Component {
                     <title>{`BunqDesktop - ${t("Dashboard")}`}</title>
                 </Helmet>
 
-                <Grid item xs={6} sm={8} md={9}>
+                <Grid item xs={7} sm={8} md={9}>
                     <Typography variant="title" gutterBottom>
                         {`${t("Welcome")} ${this.props.user.display_name}`}
                     </Typography>
@@ -101,16 +100,22 @@ class Dashboard extends React.Component {
                     ) : null}
                 </Grid>
 
-                {hasOtherKeys ? (
-                    <Grid item xs={3} sm={2} md={1}>
-                        <IconButton
-                            style={styles.iconButton}
-                            onClick={this.props.registrationLogOut}
-                        >
-                            <ExitToAppIcon />
-                        </IconButton>
-                    </Grid>
-                ) : null}
+                <Grid item xs={2} sm={2} md={1} style={{ textAlign: "right" }}>
+                    <IconButton
+                        style={styles.iconButton}
+                        onClick={this.props.registrationLogOut}
+                    >
+                        <ExitToAppIcon />
+                    </IconButton>
+                    {/*{hasOtherKeys ? (*/}
+                        {/*<IconButton*/}
+                            {/*style={styles.iconButton}*/}
+                            {/*onClick={this.props.registrationLogOut}*/}
+                        {/*>*/}
+                            {/*<ExitToAppIcon />*/}
+                        {/*</IconButton>*/}
+                    {/*) : null}*/}
+                </Grid>
 
                 <Grid item xs={12} md={4}>
                     <StickyBox className={"sticky-container"}>
