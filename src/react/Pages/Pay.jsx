@@ -4,34 +4,46 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import EmailValidator from "email-validator";
+import DatePicker from "material-ui-pickers/DatePicker/index.js";
 
+import Select from "material-ui/Select";
 import Grid from "material-ui/Grid";
-import TextField from "material-ui/TextField";
-import { InputLabel } from "material-ui/Input";
-import List, { ListItem, ListItemText } from "material-ui/List";
+import Input from "material-ui/Input";
 import Button from "material-ui/Button";
 import Paper from "material-ui/Paper";
-import Typography from "material-ui/Typography";
-import { FormControl, FormControlLabel } from "material-ui/Form";
 import Switch from "material-ui/Switch";
 import Divider from "material-ui/Divider";
+import TextField from "material-ui/TextField";
+import { InputLabel } from "material-ui/Input";
+import Typography from "material-ui/Typography";
+import Collapse from "material-ui/transitions/Collapse";
+import List, { ListItem, ListItemText } from "material-ui/List";
+import {
+    FormControl,
+    FormControlLabel,
+    FormHelperText
+} from "material-ui/Form";
 import Dialog, {
     DialogActions,
     DialogContent,
     DialogTitle
 } from "material-ui/Dialog";
 
-import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
-import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
-import TargetSelection from "../../Components/FormFields/TargetSelection";
+import TranslateMenuItem from "../Components/TranslationHelpers/MenuItem";
+import AccountSelectorDialog from "../Components/FormFields/AccountSelectorDialog";
+import MoneyFormatInput from "../Components/FormFields/MoneyFormatInput";
+import TargetSelection from "../Components/FormFields/TargetSelection";
 
-import { openSnackbar } from "../../Actions/snackbar";
-import { paySend } from "../../Actions/pay";
+import { openSnackbar } from "../Actions/snackbar";
+import { paySend } from "../Actions/pay";
 
 const styles = {
     payButton: {
         width: "100%",
         marginTop: 10
+    },
+    formControl: {
+        width: "100%"
     },
     formControlAlt: {
         marginBottom: 10
@@ -39,6 +51,9 @@ const styles = {
     paper: {
         padding: 24,
         textAlign: "left"
+    },
+    textField: {
+        width: "100%"
     }
 };
 
@@ -51,13 +66,20 @@ class Pay extends React.Component {
             // if true, a draft-payment will be sent instead of a default payment
             sendDraftPayment: false,
 
+            // if true the schedule payment form is shown
+            schedulePayment: false,
+            scheduleStartDate: new Date(),
+            scheduleEndDate: null,
+            recurrenceSize: 1,
+            recurrenceUnit: "ONCE",
+
             // when false, don't allow payment request
             validForm: false,
 
             // source wallet has insuffient funds
             insufficientFundsCondition: false,
 
-            // top account selection picker
+            // the "from" account selection picker
             selectedAccount: 0,
 
             // amount input field
@@ -510,13 +532,103 @@ class Pay extends React.Component {
             );
         }
 
+        const scheduleForm = (
+            <Grid item xs={12}>
+                <Collapse in={this.state.schedulePayment}>
+                    <Grid container spacing={8}>
+                        <Grid item xs={6}>
+                            <DatePicker
+                                helperText={t("Start date")}
+                                format="MMMM DD, YYYY"
+                                disablePast
+                                style={styles.textField}
+                                value={this.state.scheduleStartDate}
+                                onChange={this.handleChangeDirect(
+                                    "scheduleStartDate"
+                                )}
+                                clearable={true}
+                            />
+                        </Grid>
+
+                        <Grid item xs={6}>
+                            <DatePicker
+                                clearable={true}
+                                helperText={t("End date")}
+                                emptyLabel={t("No end date")}
+                                format="MMMM DD, YYYY"
+                                style={styles.textField}
+                                // minDate={this.state.scheduleStartDate}
+                                value={this.state.scheduleEndDate}
+                                onChange={this.handleChangeDirect(
+                                    "scheduleEndDate"
+                                )}
+                                clearable={true}
+                            />
+                        </Grid>
+
+                        <Grid item xs={6}>
+                            <TextField
+                                style={styles.textField}
+                                value={this.state.recurrenceSize}
+                                disabled={this.state.recurrenceUnit === "ONCE"}
+                                onChange={this.handleChange("recurrenceSize")}
+                                helperText={"Repeat every"}
+                                type={"number"}
+                                inputProps={{
+                                    min: 0,
+                                    step: 1
+                                }}
+                            />
+                        </Grid>
+
+                        <Grid item xs={6}>
+                            <FormControl style={styles.formControl}>
+                                <Select
+                                    style={styles.textField}
+                                    value={this.state.recurrenceUnit}
+                                    input={
+                                        <Input name="field" id="field-helper" />
+                                    }
+                                    onChange={this.handleChange(
+                                        "recurrenceUnit"
+                                    )}
+                                >
+                                    <TranslateMenuItem value={"ONCE"}>
+                                        Once
+                                    </TranslateMenuItem>
+                                    <TranslateMenuItem value={"HOURLY"}>
+                                        Hours
+                                    </TranslateMenuItem>
+                                    <TranslateMenuItem value={"DAILY"}>
+                                        Days
+                                    </TranslateMenuItem>
+                                    <TranslateMenuItem value={"WEEKLY"}>
+                                        Weeks
+                                    </TranslateMenuItem>
+                                    <TranslateMenuItem value={"MONTHLY"}>
+                                        Months
+                                    </TranslateMenuItem>
+                                    <TranslateMenuItem value={"YEARLY"}>
+                                        Years
+                                    </TranslateMenuItem>
+                                </Select>
+                                {/*<FormHelperText htmlFor="age-simple">*/}
+                                    {/*Repeat every*/}
+                                {/*</FormHelperText>*/}
+                            </FormControl>
+                        </Grid>
+                    </Grid>
+                </Collapse>
+            </Grid>
+        );
+
         return (
             <Grid container spacing={24} align={"center"} justify={"center"}>
                 <Helmet>
                     <title>{`BunqDesktop - Pay`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={10} md={8} lg={6}>
+                <Grid item xs={12} sm={10} md={6} lg={4}>
                     <Paper style={styles.paper}>
                         <Typography variant="headline">
                             {t("New Payment")}
@@ -567,22 +679,45 @@ class Pay extends React.Component {
                             margin="normal"
                         />
 
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    color="primary"
-                                    checked={this.state.sendDraftPayment}
-                                    onChange={() =>
-                                        this.setState({
-                                            sendDraftPayment: !this.state
-                                                .sendDraftPayment
-                                        })}
+                        <Grid container justify={"center"}>
+                            <Grid item xs={6}>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            color="primary"
+                                            checked={
+                                                this.state.sendDraftPayment
+                                            }
+                                            onChange={() =>
+                                                this.setState({
+                                                    sendDraftPayment: !this
+                                                        .state.sendDraftPayment
+                                                })}
+                                        />
+                                    }
+                                    label={t("Draft this payment")}
                                 />
-                            }
-                            label={t(
-                                "Draft a new payment instead of directly sending it?"
-                            )}
-                        />
+                            </Grid>
+
+                            <Grid item xs={6}>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            color="primary"
+                                            checked={this.state.schedulePayment}
+                                            onChange={() =>
+                                                this.setState({
+                                                    schedulePayment: !this.state
+                                                        .schedulePayment
+                                                })}
+                                        />
+                                    }
+                                    label={t("Schedule payment")}
+                                />
+                            </Grid>
+
+                            {scheduleForm}
+                        </Grid>
 
                         <FormControl
                             style={styles.formControlAlt}
