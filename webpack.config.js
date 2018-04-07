@@ -2,6 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 const plugins = require("./config/Webpack/plugins");
 const rules = require("./config/Webpack/rules");
+const optimizations = require("./config/Webpack/optimizations");
 
 const PRODUCTION = process.env.NODE_ENV === "production";
 const DEVELOPMENT = !PRODUCTION;
@@ -12,7 +13,14 @@ const OUTPUT_DIR = "./";
 
 let config = {
     entry: {
-        BunqDesktop: `${SRC_DIR}/react-app.jsx`
+        BunqDesktop: `${SRC_DIR}/react-app.jsx`,
+        vendor_all: [
+            "react",
+            "react-dom",
+            "node-forge",
+            "material-ui",
+            "moment"
+        ]
     },
     target: "electron-renderer",
     output: {
@@ -26,20 +34,14 @@ let config = {
         modules: ["node_modules", path.resolve(__dirname, "./src")]
     },
     mode: DEVELOPMENT ? "development" : "production",
-    devtool: DEVELOPMENT ? false : false,
-    optimization: {
-        splitChunks: {
-            cacheGroups: {
-                styles: {
-                    name: "styles",
-                    test: /\.css$/,
-                    chunks: "all",
-                    enforce: true
-                }
-            }
-        }
-    },
+    devtool: DEVELOPMENT ? "source-map" : false,
     plugins: plugins({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }),
+    optimization: optimizations({
+        BUILD_DIR,
+        OUTPUT_DIR,
+        PRODUCTION,
+        DEVELOPMENT
+    }),
     module: {
         rules: rules
     },

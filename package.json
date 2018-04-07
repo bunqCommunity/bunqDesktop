@@ -172,9 +172,10 @@
         "ts-jest": "^22.0.3",
         "ts-loader": "^4.1.0",
         "typescript": "^2.8.1",
-        "uglifyjs-webpack-plugin": "^1.0.1",
+        "uglifyjs-webpack-plugin": "^1.2.4",
         "universal-analytics": "^0.4.15",
-        "webpack": "^4.4.1",
+        "webpack": "^4.5.0",
+        "webpack-bundle-analyzer": "^2.11.1",
         "webpack-cli": "^2.0.13",
         "worker-loader": "^1.1.1"
     }
