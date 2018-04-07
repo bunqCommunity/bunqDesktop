@@ -193,7 +193,7 @@ class TargetSelection extends React.Component {
                                     name="target-type-email"
                                 />
                             }
-                            label="EMAIL"
+                            label={t("EMAIL")}
                         />
                     </Grid>
                 )}
@@ -211,7 +211,7 @@ class TargetSelection extends React.Component {
                                     name="target-type-phone"
                                 />
                             }
-                            label="PHONE"
+                            label={t("PHONE")}
                         />
                     </Grid>
                 )}
@@ -250,7 +250,7 @@ class TargetSelection extends React.Component {
                                     name="target-type-transfer"
                                 />
                             }
-                            label="Transfer"
+                            label={t("TRANSFER")}
                         />
                     </Grid>
                 )}

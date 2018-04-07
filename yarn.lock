@@ -4540,6 +4540,12 @@ in-publish@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/in-publish/-/in-publish-2.0.0.tgz#e20ff5e3a2afc2690320b6dc552682a9c7fadf51"
 
+increase-memory-limit@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/increase-memory-limit/-/increase-memory-limit-1.0.6.tgz#0bac263c248ba8242939976142e8a706a81b0cfc"
+  dependencies:
+    glob "^7.1.1"
+
 indent-string@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/indent-string/-/indent-string-2.1.0.tgz#8e2d48348742121b4a8218b7a137e9a52049dc80"
@@ -5986,9 +5992,9 @@ material-ui-icons@^1.0.0-beta.17:
   dependencies:
     recompose "^0.26.0"
 
-material-ui-pickers@^1.0.0-rc.2:
-  version "1.0.0-rc.2"
-  resolved "https://registry.yarnpkg.com/material-ui-pickers/-/material-ui-pickers-1.0.0-rc.2.tgz#36ebe3f1811f159177cdd5bea6315a76a1a88216"
+material-ui-pickers@^1.0.0-rc.5:
+  version "1.0.0-rc.5"
+  resolved "https://registry.yarnpkg.com/material-ui-pickers/-/material-ui-pickers-1.0.0-rc.5.tgz#36dc60ce7001d469f5db4c45f41efa9930f4913e"
   dependencies:
     babel-runtime "^6.26.0"
     react-text-mask "^5.1.0"

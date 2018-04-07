@@ -76,7 +76,8 @@
         "update-icons": "node tasks/generate_material_icons.js",
         "update-translations": "node tasks/update_translations.js",
         "update-release-files": "node tasks/update_release_files.js",
-        "add-contributer": "all-contributors add"
+        "add-contributer": "all-contributors add",
+        "fix-memory": "cross-env LIMIT=8192 increase-memory-limit"
     },
     "publish": null,
     "dependencies": {
@@ -128,11 +129,12 @@
         "gulp-watch": "^4.3.11",
         "html-webpack-plugin": "^2.26.0",
         "iban": "^0.0.8",
+        "increase-memory-limit": "^1.0.6",
         "localforage": "^1.5.2",
         "loglevel": "^1.5.1",
         "material-ui": "^1.0.0-beta.39",
         "material-ui-icons": "^1.0.0-beta.17",
-        "material-ui-pickers": "^1.0.0-rc.2",
+        "material-ui-pickers": "^1.0.0-rc.5",
         "mini-css-extract-plugin": "^0.4.0",
         "minimist": "^1.2.0",
         "mocha": "^3.4.2",

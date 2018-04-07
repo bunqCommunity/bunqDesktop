@@ -26,7 +26,7 @@ let config = {
         modules: ["node_modules", path.resolve(__dirname, "./src")]
     },
     mode: DEVELOPMENT ? "development" : "production",
-    devtool: DEVELOPMENT ? "source-map" : false,
+    devtool: DEVELOPMENT ? false : false,
     optimization: {
         splitChunks: {
             cacheGroups: {
