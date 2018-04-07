@@ -25,7 +25,6 @@ const styles = {
         width: "100%"
     },
     iconButton: {
-        width: "100%",
         height: 25
     }
 };
@@ -81,7 +80,7 @@ class Dashboard extends React.Component {
                     <title>{`BunqDesktop - ${t("Dashboard")}`}</title>
                 </Helmet>
 
-                <Grid item xs={6} sm={8} md={9}>
+                <Grid item xs={5} sm={6} md={8}>
                     <Typography variant="title" gutterBottom>
                         {`${t("Welcome")} ${this.props.user.display_name}`}
                     </Typography>
@@ -101,8 +100,16 @@ class Dashboard extends React.Component {
                     ) : null}
                 </Grid>
 
+                <Grid item xs={2} sm={2} md={1} style={{ textAlign: "right" }}>
+                    <IconButton
+                        style={styles.iconButton}
+                        onClick={this.props.registrationLogOut}
+                    >
+                        <ExitToAppIcon />
+                    </IconButton>
+                </Grid>
                 {hasOtherKeys ? (
-                    <Grid item xs={3} sm={2} md={1}>
+                    <Grid item xs={2} sm={2} md={1} style={{ textAlign: "right" }}>
                         <IconButton
                             style={styles.iconButton}
                             onClick={this.props.registrationLogOut}

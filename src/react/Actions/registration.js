@@ -118,17 +118,13 @@ export function registrationLoadApiKey(derivedPassword) {
                     dispatch(registrationClearPassword());
                     dispatch(openSnackbar(failedMessage));
                     Logger.error(
-                        `Failed to load API key: ${decryptedString} with length: ${decryptedString.length}`
+                        `Failed to load API key: with length: ${decryptedString.length}`
                     );
 
                     return;
                 }
-                dispatch({
-                    type: "REGISTRATION_SET_API_KEY",
-                    payload: {
-                        api_key: decryptedString
-                    }
-                });
+
+                dispatch(registrationSetApiKeyBasic(decryptedString));
             })
             .catch(_ => {
                 dispatch(registrationNotLoading());
@@ -189,7 +185,7 @@ export function registrationLoadStoredApiKey(
                     dispatch(registrationClearPassword());
                     dispatch(openSnackbar(failedMessage));
                     Logger.error(
-                        `Failed to load API key: ${decryptedString} with length: ${decryptedString.length}`
+                        `Failed to load API key: with length: ${decryptedString.length}`
                     );
 
                     return;
@@ -205,8 +201,6 @@ export function registrationLoadStoredApiKey(
                     BunqJSClient.apiKey !== decryptedString
                 ) {
                     // remove the old api key
-                    dispatch(registrationSetApiKeyBasic(false));
-
                     dispatch(applicationSetStatus(statusMessage2));
 
                     // destroy the session associated with the previous
@@ -259,36 +253,6 @@ export function registrationDerivePassword(password) {
 }
 
 /**
- * Set the device name
- * @param device_name
- * @returns {{type: string, payload: {device_name: *}}}
- */
-export function registrationSetDeviceName(device_name) {
-    return {
-        type: "REGISTRATION_SET_DEVICE_NAME",
-        payload: {
-            device_name: device_name
-        }
-    };
-}
-
-/**
- * Set the environment
- * @param environment
- * @returns {{type: string, payload: {environment: *}}}
- */
-export function registrationSetEnvironment(environment) {
-    if (environment !== "PRODUCTION" && environment !== "SANDBOX")
-        environment = "SANDBOX";
-    return {
-        type: "REGISTRATION_SET_ENVIRONMENT",
-        payload: {
-            environment: environment
-        }
-    };
-}
-
-/**
  * Log out without removing the stored apikey and password
  * @param BunqJSClient
  * @returns {function(*)}
@@ -319,6 +283,36 @@ export function registrationLogOut(BunqJSClient, resetPassword = false) {
                 }
             });
         });
+    };
+}
+
+/**
+ * Set the device name
+ * @param device_name
+ * @returns {{type: string, payload: {device_name: *}}}
+ */
+export function registrationSetDeviceName(device_name) {
+    return {
+        type: "REGISTRATION_SET_DEVICE_NAME",
+        payload: {
+            device_name: device_name
+        }
+    };
+}
+
+/**
+ * Set the environment
+ * @param environment
+ * @returns {{type: string, payload: {environment: *}}}
+ */
+export function registrationSetEnvironment(environment) {
+    if (environment !== "PRODUCTION" && environment !== "SANDBOX")
+        environment = "SANDBOX";
+    return {
+        type: "REGISTRATION_SET_ENVIRONMENT",
+        payload: {
+            environment: environment
+        }
     };
 }
 
