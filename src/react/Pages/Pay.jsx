@@ -4,11 +4,11 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import EmailValidator from "email-validator";
-
 import DateTimePicker from "material-ui-pickers/DateTimePicker/index.js";
 import DateFnsUtils from "material-ui-pickers/utils/date-fns-utils";
 import MuiPickersUtilsProvider from "material-ui-pickers/utils/MuiPickersUtilsProvider";
 
+import format from "date-fns/format";
 import enLocale from "date-fns/locale/en-US";
 import deLocale from "date-fns/locale/de";
 import nlLocale from "date-fns/locale/nl";
@@ -38,7 +38,7 @@ import MoneyFormatInput from "../Components/FormFields/MoneyFormatInput";
 import TargetSelection from "../Components/FormFields/TargetSelection";
 
 import { openSnackbar } from "../Actions/snackbar";
-import { paySend } from "../Actions/pay";
+import { paySchedule, paySend } from "../Actions/pay";
 import { humanReadableDate } from "../Helpers/Utils";
 
 const styles = {
@@ -374,7 +374,12 @@ class Pay extends React.Component {
             selectedAccount,
             description,
             amount,
-            targets
+            targets,
+            schedulePayment,
+            scheduleStartDate,
+            scheduleEndDate,
+            recurrenceSize,
+            recurrenceUnit
         } = this.state;
 
         // account the payment is made from
@@ -432,15 +437,46 @@ class Pay extends React.Component {
             value: amount + "", // sigh, number has to be sent as a string
             currency: "EUR"
         };
+        paySchedule;
 
-        this.props.paySend(
-            userId,
-            account.id,
-            description,
-            amountInfo,
-            targetInfoList,
-            sendDraftPayment
-        );
+        if (schedulePayment) {
+            const schedule = {
+                time_start: format(scheduleStartDate, "YYYY-MM-DD HH:mm:ss"),
+                recurrence_unit: recurrenceUnit,
+                // on once size has to be 1
+                recurrence_size: parseInt(
+                    recurrenceUnit !== "ONCE" ? recurrenceSize : 1
+                )
+            };
+
+            if (scheduleEndDate) {
+                schedule.time_end = format(
+                    scheduleEndDate,
+                    "YYYY-MM-DD HH:mm:ss"
+                );
+            }
+
+            console.log(schedule);
+
+            this.props.paySchedule(
+                userId,
+                account.id,
+                description,
+                amountInfo,
+                targetInfoList,
+                schedule
+            );
+        } else {
+            // regular payment/draft
+            this.props.paySend(
+                userId,
+                account.id,
+                description,
+                amountInfo,
+                targetInfoList,
+                sendDraftPayment
+            );
+        }
     };
 
     render() {
@@ -638,7 +674,7 @@ class Pay extends React.Component {
                         <Grid item xs={6}>
                             <DateTimePicker
                                 helperText={t("Start date")}
-                                format="MMMM DD, YYYY"
+                                format="MMMM DD, YYYY HH:mm"
                                 disablePast
                                 style={styles.textField}
                                 value={this.state.scheduleStartDate}
@@ -657,7 +693,7 @@ class Pay extends React.Component {
                             <DateTimePicker
                                 helperText={t("End date")}
                                 emptyLabel={t("No end date")}
-                                format="MMMM DD, YYYY"
+                                format="MMMM DD, YYYY HH:mm"
                                 style={styles.textField}
                                 value={this.state.scheduleEndDate}
                                 onChange={this.handleChangeDirect(
@@ -902,6 +938,25 @@ const mapDispatchToProps = (dispatch, props) => {
                     amount,
                     targets,
                     draft,
+                    schedule
+                )
+            ),
+        paySchedule: (
+            userId,
+            accountId,
+            description,
+            amount,
+            targets,
+            schedule
+        ) =>
+            dispatch(
+                paySchedule(
+                    BunqJSClient,
+                    userId,
+                    accountId,
+                    description,
+                    amount,
+                    targets,
                     schedule
                 )
             ),

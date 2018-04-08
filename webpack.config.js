@@ -34,7 +34,9 @@ let config = {
         modules: ["node_modules", path.resolve(__dirname, "./src")]
     },
     mode: DEVELOPMENT ? "development" : "production",
-    devtool: DEVELOPMENT ? "source-map" : false,
+    devtool: DEVELOPMENT ? "eval" : false,
+    cache: DEVELOPMENT,
+    performance: PRODUCTION,
     plugins: plugins({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }),
     optimization: optimizations({
         BUILD_DIR,
@@ -43,7 +45,8 @@ let config = {
         DEVELOPMENT
     }),
     module: {
-        rules: rules
+        rules: rules,
+        unsafeCache: DEVELOPMENT
     },
     node: {
         console: false,

@@ -30,9 +30,9 @@
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
-"@bunq-community/bunq-js-client@^0.15.2":
-  version "0.15.2"
-  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.15.2.tgz#e3e518269ed4ea456228759d91a6ebaf74bf6b40"
+"@bunq-community/bunq-js-client@^0.15.3":
+  version "0.15.3"
+  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.15.3.tgz#6250567213c1df657fca4663f0b10c617db29f76"
 
 "@google-cloud/common@^0.13.0":
   version "0.13.6"

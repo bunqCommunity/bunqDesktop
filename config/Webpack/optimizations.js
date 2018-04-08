@@ -1,8 +1,13 @@
 const packageInfo = require("../../package.json");
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 
 module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
     const optimizations = {
+        removeEmptyChunks: true,
+        mergeDuplicateChunks: true,
+        sideEffects: PRODUCTION,
+        removeAvailableModules: PRODUCTION,
+        flagIncludedChunks: PRODUCTION,
         splitChunks: {
             cacheGroups: {
                 default: false,
@@ -21,9 +26,10 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
                 }
             }
         }
-    }
+    };
 
     if (PRODUCTION) {
+        optimizations.minimize = true;
         optimizations.minimizer = [
             new UglifyJSPlugin({
                 sourceMap: true,
@@ -35,7 +41,6 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
             })
         ];
     } else {
-
     }
 
     return optimizations;
