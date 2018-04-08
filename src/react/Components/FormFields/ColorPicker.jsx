@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { translate } from "react-i18next";
-import { ChromePicker } from "react-color";
+import ChromePicker  from "react-color/lib/Chrome";
 import Button from "material-ui/Button";
 import Dialog from "material-ui/Dialog";
 

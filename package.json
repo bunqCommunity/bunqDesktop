@@ -76,7 +76,8 @@
         "update-icons": "node tasks/generate_material_icons.js",
         "update-translations": "node tasks/update_translations.js",
         "update-release-files": "node tasks/update_release_files.js",
-        "add-contributer": "all-contributors add"
+        "add-contributer": "all-contributors add",
+        "fix-memory": "cross-env LIMIT=8192 increase-memory-limit"
     },
     "publish": null,
     "dependencies": {
@@ -88,7 +89,7 @@
         "i18next-xhr-backend": "^1.5.1"
     },
     "devDependencies": {
-        "@bunq-community/bunq-js-client": "^0.15.2",
+        "@bunq-community/bunq-js-client": "^0.15.3",
         "@google-cloud/translate": "^1.1.0",
         "@types/axios": "^0.14.0",
         "@types/jest": "^22.1.3",
@@ -128,11 +129,12 @@
         "gulp-watch": "^4.3.11",
         "html-webpack-plugin": "^2.26.0",
         "iban": "^0.0.8",
+        "increase-memory-limit": "^1.0.6",
         "localforage": "^1.5.2",
         "loglevel": "^1.5.1",
         "material-ui": "^1.0.0-beta.39",
         "material-ui-icons": "^1.0.0-beta.17",
-        "material-ui-pickers": "^1.0.0-rc.2",
+        "material-ui-pickers": "^1.0.0-rc.5",
         "mini-css-extract-plugin": "^0.4.0",
         "minimist": "^1.2.0",
         "mocha": "^3.4.2",
@@ -170,9 +172,10 @@
         "ts-jest": "^22.0.3",
         "ts-loader": "^4.1.0",
         "typescript": "^2.8.1",
-        "uglifyjs-webpack-plugin": "^1.0.1",
+        "uglifyjs-webpack-plugin": "^1.2.4",
         "universal-analytics": "^0.4.15",
-        "webpack": "^4.4.1",
+        "webpack": "^4.5.0",
+        "webpack-bundle-analyzer": "^2.11.1",
         "webpack-cli": "^2.0.13",
         "worker-loader": "^1.1.1"
     }

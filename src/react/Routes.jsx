@@ -11,7 +11,8 @@ import Login from "./Pages/Login/Login";
 const NotFound = CL(() =>
     import(/* webpackChunkName: "notfound" */ "./Pages/NotFound")
 );
-const Pay = CL(() => import(/* webpackChunkName: "pay" */ "./Pages/Pay/Pay"));
+const Pay = CL(() => import(/* webpackChunkName: "pay" */ "./Pages/Pay"));
+const ScheduledPayments = CL(() => import(/* webpackChunkName: "pay" */ "./Pages/ScheduledPayments"));
 const BunqMeTab = CL(() =>
     import(/* webpackChunkName: "bunqmetab" */ "./Pages/BunqMeTab/BunqMeTab")
 );
@@ -107,6 +108,16 @@ export default class Routes extends React.Component {
                         />
 
                         <PrivateRoute
+                            path="/scheduled-payments"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <ScheduledPayments {...props} {...this.props.childProps} />
+                            )}
+                        />
+
+                        <PrivateRoute
                             path="/request"
                             apiKey={this.props.apiKey}
                             userType={this.props.userType}
@@ -196,6 +207,7 @@ export default class Routes extends React.Component {
                                 />
                             )}
                         />
+
                         <PrivateRoute
                             path="/add-account"
                             apiKey={this.props.apiKey}
@@ -203,29 +215,6 @@ export default class Routes extends React.Component {
                             derivedPassword={this.props.derivedPassword}
                             render={props => (
                                 <AddAccount
-                                    {...props}
-                                    {...this.props.childProps}
-                                />
-                            )}
-                        />
-
-                        <PrivateRoute
-                            path="/stats"
-                            apiKey={this.props.apiKey}
-                            userType={this.props.userType}
-                            derivedPassword={this.props.derivedPassword}
-                            render={props => (
-                                <Stats {...props} {...this.props.childProps} />
-                            )}
-                        />
-
-                        <PrivateRoute
-                            path="/category-dashboard"
-                            apiKey={this.props.apiKey}
-                            userType={this.props.userType}
-                            derivedPassword={this.props.derivedPassword}
-                            render={props => (
-                                <CategoryDashboard
                                     {...props}
                                     {...this.props.childProps}
                                 />
@@ -249,6 +238,29 @@ export default class Routes extends React.Component {
                             derivedPassword={this.props.derivedPassword}
                             render={props => (
                                 <Exports
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
+                            )}
+                        />
+
+                        <PrivateRoute
+                            path="/stats"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <Stats {...props} {...this.props.childProps} />
+                            )}
+                        />
+
+                        <PrivateRoute
+                            path="/category-dashboard"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <CategoryDashboard
                                     {...props}
                                     {...this.props.childProps}
                                 />

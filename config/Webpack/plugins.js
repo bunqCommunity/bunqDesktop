@@ -2,6 +2,7 @@ const webpack = require("webpack");
 const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const packageInfo = require("../../package.json");
 
@@ -18,7 +19,17 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
         new MiniCssExtractPlugin({
             filename: "[name].css",
             chunkFilename: "[id].css"
-        })
+        }),
+        new BundleAnalyzerPlugin({
+            // don't open the file automatically
+            openAnalyzer: false,
+            // default type to open (`stat`, `parsed` or `gzip`)
+            defaultSizes: "parse",
+            // create a server for the watcher or a static file for production enviroments
+            analyzerMode: "static",
+            // output outside of the public folder
+            reportFilename: "../../webpack.report.html"
+        }),
     ];
 
     if (PRODUCTION) {
