@@ -36,7 +36,11 @@ let config = {
     mode: DEVELOPMENT ? "development" : "production",
     devtool: DEVELOPMENT ? "eval" : false,
     cache: DEVELOPMENT,
-    performance: PRODUCTION,
+    performance: PRODUCTION
+        ? {
+              hints: "warning"
+          }
+        : false,
     plugins: plugins({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }),
     optimization: optimizations({
         BUILD_DIR,
