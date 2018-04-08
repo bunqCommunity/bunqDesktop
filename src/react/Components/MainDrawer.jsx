@@ -19,6 +19,7 @@ import CardIcon from "material-ui-icons/CreditCard";
 import Bookmark from "material-ui-icons/Bookmark";
 import CreateIcon from "material-ui-icons/Create";
 import FileUpload from "material-ui-icons/FileUpload";
+import EventIcon from "material-ui-icons/Event";
 
 import NavLink from "./Routing/NavLink";
 import ListItemWrapper from "./ListItemWrapper";
@@ -126,6 +127,12 @@ class MainDrawer extends React.Component {
                       to="/card"
                       icon={CardIcon}
                       text={"Cards"}
+                      location={this.props.location}
+                  />,
+                  <ListItemWrapper
+                      to="/scheduled-payments"
+                      icon={EventIcon}
+                      text={"Scheduled payments"}
                       location={this.props.location}
                   />,
                   <Divider />,

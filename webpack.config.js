@@ -52,6 +52,9 @@ let config = {
         rules: rules,
         unsafeCache: DEVELOPMENT
     },
+    watchOptions:{
+        aggregateTimeout: 300
+    },
     node: {
         console: false,
         __dirname: false,

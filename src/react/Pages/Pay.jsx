@@ -40,6 +40,7 @@ import TargetSelection from "../Components/FormFields/TargetSelection";
 import { openSnackbar } from "../Actions/snackbar";
 import { paySchedule, paySend } from "../Actions/pay";
 import { humanReadableDate } from "../Helpers/Utils";
+import scheduleTexts from "../Helpers/ScheduleTexts";
 
 const styles = {
     payButton: {
@@ -456,8 +457,6 @@ class Pay extends React.Component {
                 );
             }
 
-            console.log(schedule);
-
             this.props.paySchedule(
                 userId,
                 account.id,
@@ -490,56 +489,21 @@ class Pay extends React.Component {
         } = this.state;
 
         let scheduledPaymentText = null;
+
         if (this.state.schedulePayment) {
-            let scheduledPaymentPrimary;
-            const scheduledPaymentSecondary = `${t(
-                "From"
-            )}: ${humanReadableDate(this.state.scheduleStartDate)} ${this.state
-                .scheduleEndDate
-                ? ` - ${t("Until")}: ${humanReadableDate(
-                      this.state.scheduleEndDate
-                  )}`
-                : ""}`;
-
-            const paymentDone = t("Payment will be done");
-            const recurrenceMore = this.state.recurrenceSize > 1;
-
-            switch (this.state.recurrenceUnit) {
-                case "ONCE":
-                    scheduledPaymentPrimary = `${paymentDone} once`;
-                    break;
-                case "HOURLY":
-                    scheduledPaymentPrimary = `${paymentDone} every ${recurrenceMore
-                        ? `${this.state.recurrenceSize} ${t("hours")}`
-                        : t("hour")}`;
-                    break;
-                case "DAILY":
-                    scheduledPaymentPrimary = `${paymentDone} every ${recurrenceMore
-                        ? `${this.state.recurrenceSize} ${t("days")}`
-                        : t("day")}`;
-                    break;
-                case "WEEKLY":
-                    scheduledPaymentPrimary = `${paymentDone} every ${recurrenceMore
-                        ? `${this.state.recurrenceSize} ${t("weeks")}`
-                        : t("week")}`;
-                    break;
-                case "MONTHLY":
-                    scheduledPaymentPrimary = `${paymentDone} every ${recurrenceMore
-                        ? `${this.state.recurrenceSize} ${t("months")}`
-                        : t("month")}`;
-                    break;
-                case "YEARLY":
-                    scheduledPaymentPrimary = `${paymentDone} every ${recurrenceMore
-                        ? `${this.state.recurrenceSize} ${t("years")}`
-                        : t("year")}`;
-                    break;
-            }
+            const scheduleTextResult = scheduleTexts(
+                t,
+                this.state.scheduleStartDate,
+                this.state.scheduleEndDate,
+                this.state.recurrenceSize,
+                this.state.recurrenceUnit
+            );
 
             scheduledPaymentText = (
                 <ListItem>
                     <ListItemText
-                        primary={scheduledPaymentPrimary}
-                        secondary={scheduledPaymentSecondary}
+                        primary={scheduleTextResult.primary}
+                        secondary={scheduleTextResult.secondary}
                     />
                 </ListItem>
             );
