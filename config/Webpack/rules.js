@@ -19,9 +19,5 @@ module.exports = [
     {
         test: /\.scss$/,
         use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"]
-    },
-    {
-        test: /\.worker\.js$/,
-        use: { loader: "worker-loader" }
     }
 ];

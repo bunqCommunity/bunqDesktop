@@ -13,14 +13,7 @@ const OUTPUT_DIR = "./";
 
 let config = {
     entry: {
-        BunqDesktop: `${SRC_DIR}/react-app.jsx`,
-        vendor_all: [
-            "react",
-            "react-dom",
-            "node-forge",
-            "material-ui",
-            "moment"
-        ]
+        BunqDesktop: `${SRC_DIR}/react-app.jsx`
     },
     target: "electron-renderer",
     output: {
@@ -34,7 +27,7 @@ let config = {
         modules: ["node_modules", path.resolve(__dirname, "./src")]
     },
     mode: DEVELOPMENT ? "development" : "production",
-    devtool: DEVELOPMENT ? "eval" : false,
+    devtool: DEVELOPMENT ? "source-map" : false,
     cache: DEVELOPMENT,
     performance: PRODUCTION
         ? {
@@ -52,7 +45,7 @@ let config = {
         rules: rules,
         unsafeCache: DEVELOPMENT
     },
-    watchOptions:{
+    watchOptions: {
         aggregateTimeout: 300
     },
     node: {

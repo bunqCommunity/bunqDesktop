@@ -2,7 +2,8 @@ const webpack = require("webpack");
 const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+    .BundleAnalyzerPlugin;
 
 const packageInfo = require("../../package.json");
 
@@ -16,6 +17,12 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
             "process.env.PRODUCTION": JSON.stringify(PRODUCTION),
             "process.env.WEBPACK_MODE": JSON.stringify(true)
         }),
+        // ignore all except en/fr/de
+        new webpack.ContextReplacementPlugin(
+            /moment[\/\\]locale$/,
+            /(en|de|fr)$/
+        ),
+        // extract css to file
         new MiniCssExtractPlugin({
             filename: "[name].css",
             chunkFilename: "[id].css"
@@ -29,7 +36,7 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
             analyzerMode: "static",
             // output outside of the public folder
             reportFilename: "../../webpack.report.html"
-        }),
+        })
     ];
 
     if (PRODUCTION) {

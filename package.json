@@ -127,7 +127,7 @@
         "gulp-plumber": "^1.1.0",
         "gulp-util": "^3.0.8",
         "gulp-watch": "^4.3.11",
-        "html-webpack-plugin": "^2.26.0",
+        "html-webpack-plugin": "^3.2.0",
         "iban": "^0.0.8",
         "increase-memory-limit": "^1.0.6",
         "localforage": "^1.5.2",
