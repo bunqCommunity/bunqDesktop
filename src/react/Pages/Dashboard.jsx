@@ -86,8 +86,6 @@ class Dashboard extends React.Component {
                     </Typography>
                 </Grid>
 
-                {hasOtherKeys ? null : <Grid item xs={3} sm={2} />}
-
                 <Grid item xs={3} sm={2} md={2}>
                     {/* hide the switch button if only one user is set */}
                     {userTypes.length > 1 ? (
@@ -107,14 +105,6 @@ class Dashboard extends React.Component {
                     >
                         <ExitToAppIcon />
                     </IconButton>
-                    {/*{hasOtherKeys ? (*/}
-                        {/*<IconButton*/}
-                            {/*style={styles.iconButton}*/}
-                            {/*onClick={this.props.registrationLogOut}*/}
-                        {/*>*/}
-                            {/*<ExitToAppIcon />*/}
-                        {/*</IconButton>*/}
-                    {/*) : null}*/}
                 </Grid>
 
                 <Grid item xs={12} md={4}>

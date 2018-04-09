@@ -44,7 +44,7 @@ import { loadStoredRequestResponses } from "../Actions/request_responses";
 import {
     registrationLoading,
     registrationNotLoading,
-    registrationClearApiKey
+    registrationResetToApiScreen
 } from "../Actions/registration";
 import {
     setHideBalance,
@@ -264,7 +264,7 @@ class Layout extends React.Component {
                 .catch(setupError => {
                     Logger.error(setupError);
                     // installation failed so we reset the api key
-                    nextProps.registrationClearApiKey();
+                    nextProps.registrationResetToApiScreen();
                     nextProps.registrationNotLoading();
                 });
         }
@@ -544,8 +544,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
         registrationLoading: () => dispatch(registrationLoading()),
         registrationNotLoading: () => dispatch(registrationNotLoading()),
-        registrationClearApiKey: () =>
-            dispatch(registrationClearApiKey(BunqJSClient)),
+        registrationResetToApiScreen: () =>
+            dispatch(registrationResetToApiScreen(BunqJSClient)),
 
         // get latest user list from BunqJSClient
         usersUpdate: (updated = false) =>

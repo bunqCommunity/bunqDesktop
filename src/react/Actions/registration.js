@@ -174,6 +174,7 @@ export function registrationLoadStoredApiKey(
         const encryptedApiKeyInfo = encryptedApiKeys[storedKeyIndex];
         const encryptedApiKey = encryptedApiKeyInfo.api_key;
         const encryptedApiKeyIV = encryptedApiKeyInfo.api_key_iv;
+        const encryptedEnvironment = encryptedApiKeyInfo.environment;
 
         decryptString(encryptedApiKey, derivedPassword.key, encryptedApiKeyIV)
             .then(decryptedString => {
@@ -194,6 +195,9 @@ export function registrationLoadStoredApiKey(
                 // overwrite currently stored api key with this one
                 store.set(API_KEY_LOCATION, encryptedApiKey);
                 store.set(API_KEY_IV_LOCATION, encryptedApiKeyIV);
+
+                // set the correct environment
+                dispatch(registrationSetEnvironment(encryptedEnvironment));
 
                 // check if api key is different
                 if (

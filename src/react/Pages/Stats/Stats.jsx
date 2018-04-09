@@ -13,11 +13,12 @@ import AccountList from "../../Components/AccountList/AccountList";
 import LoadOlderButton from "../../Components/LoadOlderButton";
 import ClearBtn from "../../Components/FilterComponents/ClearFilter";
 import FilterDrawer from "../../Components/FilterComponents/FilterDrawer";
-import StatsWorker from "../../WebWorkers/stats.worker";
 import EventCountPieChart from "./EventCountPieChart";
 import CategoryCountPieChart from "./CategoryCountPieChart";
 import CategoryHistoryChart from "./CategoryHistoryChart";
 import EventTypeHistoryChart from "./EventTypeHistoryChart";
+
+const StatsWorker = require("worker-loader!../../WebWorkers/stats.worker.js");
 
 class Stats extends React.Component {
     constructor(props, context) {
