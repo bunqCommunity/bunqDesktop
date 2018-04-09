@@ -89,7 +89,7 @@
         "i18next-xhr-backend": "^1.5.1"
     },
     "devDependencies": {
-        "@bunq-community/bunq-js-client": "^0.15.3",
+        "@bunq-community/bunq-js-client": "^0.15.4",
         "@google-cloud/translate": "^1.1.0",
         "@types/axios": "^0.14.0",
         "@types/jest": "^22.1.3",
