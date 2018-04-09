@@ -12,7 +12,7 @@ const NotFound = CL(() =>
     import(/* webpackChunkName: "notfound" */ "./Pages/NotFound")
 );
 const Pay = CL(() => import(/* webpackChunkName: "pay" */ "./Pages/Pay"));
-const ScheduledPayments = CL(() => import(/* webpackChunkName: "pay" */ "./Pages/ScheduledPayments"));
+const ScheduledPayments = CL(() => import(/* webpackChunkName: "pay" */ "./Pages/ScheduledPayments/ScheduledPayments"));
 const BunqMeTab = CL(() =>
     import(/* webpackChunkName: "bunqmetab" */ "./Pages/BunqMeTab/BunqMeTab")
 );

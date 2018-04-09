@@ -3,27 +3,20 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
-import Avatar from "material-ui/Avatar";
-import IconButton from "material-ui/IconButton";
+import List from "material-ui/List";
 import Paper from "material-ui/Paper";
+import Typography from "material-ui/Typography";
+import IconButton from "material-ui/IconButton";
 import { LinearProgress, CircularProgress } from "material-ui/Progress";
-import List, {
-    ListItem,
-    ListItemText,
-    ListItemSecondaryAction
-} from "material-ui/List";
 
 import RefreshIcon from "material-ui-icons/Refresh";
 
-import LazyAttachmentImage from "../Components/AttachmentImage/LazyAttachmentImage";
-import AccountList from "../Components/AccountList/AccountList";
-import TranslateTypography from "../Components/TranslationHelpers/Typography";
-import MoneyAmountLabel from "../Components/MoneyAmountLabel";
+import AccountList from "../../Components/AccountList/AccountList";
+import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 
-import { openSnackbar } from "../Actions/snackbar";
-import { scheduledPaymentsInfoUpdate } from "../Actions/scheduled_payments";
-import scheduleTexts from "../Helpers/ScheduleTexts";
-import { formatMoney } from "../Helpers/Utils";
+import { openSnackbar } from "../../Actions/snackbar";
+import { scheduledPaymentsInfoUpdate } from "../../Actions/scheduled_payments";
+import ScheduledPaymentItem from "./ScheduledPaymentItem";
 
 const styles = {
     paper: {
@@ -42,7 +35,10 @@ const styles = {
 class ScheduledPayments extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+        this.state = {
+            showInactive: false,
+            deleteLoading: false
+        };
     }
 
     componentDidMount() {
@@ -62,57 +58,64 @@ class ScheduledPayments extends React.Component {
         );
     };
 
+    deleteScheduledPayment = scheduledPaymentInfo => event => {
+        if (this.state.deleteLoading === false) {
+            this.setState({ deleteLoading: true });
+            this.props.BunqJSClient.api.schedulePayment
+                .delete(
+                    this.props.user.id,
+                    this.props.accountsAccountId,
+                    scheduledPaymentInfo.id
+                )
+                .then(result => {
+                    this.updateScheduledPayments();
+                    this.setState({ deleteLoading: false });
+                })
+                .catch(err => {
+                    if (err.response && err.response.status === 404) {
+                        // likely a batch payment
+                        this.props.BunqJSClient.api.schedulePaymentBatch
+                            .delete(
+                                this.props.user.id,
+                                this.props.accountsAccountId,
+                                scheduledPaymentInfo.id
+                            )
+                            .then(result => {
+                                this.updateScheduledPayments();
+                                this.setState({ deleteLoading: false });
+                            })
+                            .catch(err => {
+                                this.setState({ deleteLoading: false });
+                            });
+                    } else {
+                        // different error
+                        this.setState({ deleteLoading: false });
+                    }
+                });
+        }
+    };
+
+    toggleInactive = event =>
+        this.setState({ showInactive: !this.state.showInactive });
+
     render() {
         const t = this.props.t;
 
         const scheduledPayments = this.props.scheduledPayments.map(
             (scheduledPayment, key) => {
-                const scheduledPaymentInfo = scheduledPayment.ScheduledPayment;
-                const schedule = scheduledPaymentInfo.schedule;
-
-                const scheduleTextResult = scheduleTexts(
-                    t,
-                    schedule.time_start,
-                    schedule.time_end,
-                    schedule.recurrence_size,
-                    schedule.recurrence_unit
-                );
-
-                const formattedPaymentAmount = formatMoney(
-                    scheduledPaymentInfo.payment.amount.value
-                );
-
-                let imageUUID = false;
-                if (scheduledPaymentInfo.payment.counterparty_alias.avatar) {
-                    imageUUID =
-                        scheduledPaymentInfo.payment.counterparty_alias.avatar
-                            .image[0].attachment_public_uuid;
-                }
-
                 return (
-                    <ListItem key={key}>
-                        <Avatar style={styles.smallAvatar}>
-                            <LazyAttachmentImage
-                                width={50}
-                                BunqJSClient={this.props.BunqJSClient}
-                                imageUUID={imageUUID}
-                            />
-                        </Avatar>
-                        <ListItemText
-                            primary={scheduleTextResult.primary}
-                            secondary={scheduleTextResult.secondary}
-                        />
-
-                        <ListItemSecondaryAction>
-                            <MoneyAmountLabel
-                                style={styles.moneyAmountLabel}
-                                info={scheduledPaymentInfo.payment}
-                                type="payment"
-                            >
-                                {formattedPaymentAmount}
-                            </MoneyAmountLabel>
-                        </ListItemSecondaryAction>
-                    </ListItem>
+                    <ScheduledPaymentItem
+                        t={t}
+                        key={key}
+                        scheduledPayment={scheduledPayment}
+                        showInactive={this.state.showInactive}
+                        deleteLoading={
+                            this.state.deleteLoading ||
+                            this.props.scheduledPaymentsLoading
+                        }
+                        BunqJSClient={this.props.BunqJSClient}
+                        deleteScheduledPayment={this.deleteScheduledPayment}
+                    />
                 );
             }
         );
@@ -159,7 +162,16 @@ class ScheduledPayments extends React.Component {
                                     {this.props.scheduledPaymentsLoading ? (
                                         <LinearProgress />
                                     ) : null}
-                                    {scheduledPayments}
+                                    {scheduledPayments.length > 0 ? (
+                                        scheduledPayments
+                                    ) : (
+                                        <Typography
+                                            variant={"body2"}
+                                            style={{ textAlign: "center" }}
+                                        >
+                                            {t("No scheduled payments")}
+                                        </Typography>
+                                    )}
                                 </List>
                             </Grid>
                         </Grid>
