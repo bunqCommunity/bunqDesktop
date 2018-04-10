@@ -17,8 +17,8 @@ import Input, { InputLabel } from "material-ui/Input";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import InputAdornment from "material-ui/Input/InputAdornment";
 
-import FolderIcon from "material-ui-icons/Folder";
-import RefreshIcon from "material-ui-icons/Refresh";
+import FolderIcon from "@material-ui/icons/Folder";
+import RefreshIcon from "@material-ui/icons/Refresh";
 
 import { shell } from "electron";
 const remote = require("electron").remote;

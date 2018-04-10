@@ -12,10 +12,10 @@ import Typography from "material-ui/Typography";
 import { FormControl, FormControlLabel } from "material-ui/Form";
 import CopyToClipboard from "react-copy-to-clipboard";
 
-import AccountBalanceIcon from "material-ui-icons/AccountBalance";
-import EmailIcon from "material-ui-icons/Email";
-import PhoneIcon from "material-ui-icons/Phone";
-import CompareArrowsIcon from "material-ui-icons/CompareArrows";
+import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
+import EmailIcon from "@material-ui/icons/Email";
+import PhoneIcon from "@material-ui/icons/Phone";
+import CompareArrowsIcon from "@material-ui/icons/CompareArrows";
 
 import PhoneFormatInput from "./PhoneFormatInput";
 import AccountSelectorDialog from "./AccountSelectorDialog";

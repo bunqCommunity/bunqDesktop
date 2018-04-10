@@ -10,8 +10,8 @@ import Input from "material-ui/Input";
 import Card, { CardContent } from "material-ui/Card";
 import { CircularProgress } from "material-ui/Progress";
 
-import WarningIcon from "material-ui-icons/Warning";
-import LockIcon from "material-ui-icons/Lock";
+import WarningIcon from "@material-ui/icons/Warning";
+import LockIcon from "@material-ui/icons/Lock";
 
 import TranslateButton from "../Components/TranslationHelpers/Button";
 

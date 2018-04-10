@@ -5,7 +5,7 @@ import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
 import Button from "material-ui/Button";
 import Typography from "material-ui/Typography";
-import ArrowBackIcon from "material-ui-icons/ArrowBack";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 import RuleCreator from "./RuleCreator.tsx";
 import RuleCollection from "../../Types/RuleCollection";

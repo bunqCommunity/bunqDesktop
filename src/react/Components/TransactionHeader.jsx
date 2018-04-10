@@ -1,8 +1,8 @@
 import React from "react";
 import withTheme from "material-ui/styles/withTheme";
 import Grid from "material-ui/Grid";
-import ArrowForwardIcon from "material-ui-icons/ArrowForward";
-import ArrowDownIcon from "material-ui-icons/ArrowDownward";
+import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
+import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 import Typography from "material-ui/Typography";
 
 import LazyAttachmentImage from "./AttachmentImage/LazyAttachmentImage";

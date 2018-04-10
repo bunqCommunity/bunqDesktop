@@ -5,13 +5,13 @@ import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
 import Button from "material-ui/Button";
 import IconButton from "material-ui/IconButton";
-import ArrowBackIcon from "material-ui-icons/ArrowBack";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Paper from "material-ui/es/Paper/Paper";
 import TextField from "material-ui/TextField";
 import { FormControl } from "material-ui/Form";
 
-import RadioButtonUnchecked from "material-ui-icons/RadioButtonUnchecked";
-import RadioButtonChecked from "material-ui-icons/RadioButtonChecked";
+import RadioButtonUnchecked from "@material-ui/icons/RadioButtonUnchecked";
+import RadioButtonChecked from "@material-ui/icons/RadioButtonChecked";
 
 import { openSnackbar } from "../Actions/snackbar";
 import { createAccount } from "../Actions/accounts";

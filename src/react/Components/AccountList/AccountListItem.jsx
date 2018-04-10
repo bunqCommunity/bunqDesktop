@@ -7,8 +7,8 @@ import {
 } from "material-ui/List";
 import Avatar from "material-ui/Avatar";
 import IconButton from "material-ui/IconButton";
-import KeyboardArrowRightIcon from "material-ui-icons/KeyboardArrowRight";
-import InfoIcon from "material-ui-icons/InfoOutline";
+import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
+import InfoIcon from "@material-ui/icons/InfoOutline";
 
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 import NavLink from "../../Components/Routing/NavLink";

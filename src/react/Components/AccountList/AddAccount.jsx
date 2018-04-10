@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { ListItem, ListItemText } from "material-ui/List";
 import Avatar from "material-ui/Avatar";
-import AddBoxIcon from "material-ui-icons/AddBox";
+import AddBoxIcon from "@material-ui/icons/AddBox";
 
 import NavLink from "../../Components/Routing/NavLink";
 import { translate } from "react-i18next";

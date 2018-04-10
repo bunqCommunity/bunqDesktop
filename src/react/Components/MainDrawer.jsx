@@ -9,17 +9,17 @@ import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
 import List, { ListItem, ListItemText, ListItemIcon } from "material-ui/List";
 
-import ArrowUpwardIcon from "material-ui-icons/ArrowUpward";
-import ArrowDownwardIcon from "material-ui-icons/ArrowDownward";
-import HomeIcon from "material-ui-icons/Home";
-import SettingsIcon from "material-ui-icons/Settings";
-import ShareIcon from "material-ui-icons/Share";
-import TimeLineIcon from "material-ui-icons/Timeline";
-import CardIcon from "material-ui-icons/CreditCard";
-import Bookmark from "material-ui-icons/Bookmark";
-import CreateIcon from "material-ui-icons/Create";
-import FileUpload from "material-ui-icons/FileUpload";
-import EventIcon from "material-ui-icons/Event";
+import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
+import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
+import HomeIcon from "@material-ui/icons/Home";
+import SettingsIcon from "@material-ui/icons/Settings";
+import ShareIcon from "@material-ui/icons/Share";
+import TimeLineIcon from "@material-ui/icons/Timeline";
+import CardIcon from "@material-ui/icons/CreditCard";
+import Bookmark from "@material-ui/icons/Bookmark";
+import CreateIcon from "@material-ui/icons/Create";
+import FileUpload from "@material-ui/icons/FileUpload";
+import EventIcon from "@material-ui/icons/Event";
 
 import NavLink from "./Routing/NavLink";
 import ListItemWrapper from "./ListItemWrapper";

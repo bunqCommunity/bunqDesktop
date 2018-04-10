@@ -14,8 +14,8 @@ import List, {
     ListItemSecondaryAction
 } from "material-ui/List";
 
-import ArrowBackIcon from "material-ui-icons/ArrowBack";
-import RemoveIcon from "material-ui-icons/Delete";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import RemoveIcon from "@material-ui/icons/Delete";
 
 import {
     registrationRemoveStoredApiKey,
