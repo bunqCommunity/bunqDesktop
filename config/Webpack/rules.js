@@ -30,17 +30,6 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
                     options: { inline: true, fallback: false }
                 }
             ]
-        },
-        {
-            test: /\.worker\.tsx?$/,
-            use: [
-                "babel-loader",
-                "ts-loader",
-                {
-                    loader: "worker-loader",
-                    options: { inline: true, fallback: false }
-                }
-            ]
         }
     ];
 };
