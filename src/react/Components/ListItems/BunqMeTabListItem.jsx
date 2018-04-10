@@ -12,8 +12,8 @@ import IconButton from "material-ui/IconButton";
 import Divider from "material-ui/Divider";
 import Avatar from "material-ui/Avatar";
 
-import CopyIcon from "material-ui-icons/ContentCopy";
-import Share from "material-ui-icons/Share";
+import CopyIcon from "@material-ui/icons/ContentCopy";
+import Share from "@material-ui/icons/Share";
 
 import PaymentListItem from "./PaymentListItem";
 import AccountQRFullscreen from "../QR/AccountQRFullscreen";

@@ -3,8 +3,8 @@ import Avatar from "material-ui/Avatar";
 import Collapse from "material-ui/transitions/Collapse";
 import { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
 
-import CheckIcon from "material-ui-icons/Check";
-import CrossIcon from "material-ui-icons/Cancel";
+import CheckIcon from "@material-ui/icons/Check";
+import CrossIcon from "@material-ui/icons/Cancel";
 import {
     EventObjectMatchingRule,
     EventObjectResult

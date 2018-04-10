@@ -18,9 +18,9 @@ import Dialog, {
     DialogTitle
 } from "material-ui/Dialog";
 
-import ArrowBackIcon from "material-ui-icons/ArrowBack";
-import LogoutIcon from "material-ui-icons/ExitToApp";
-import RemoveIcon from "material-ui-icons/Delete";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import LogoutIcon from "@material-ui/icons/ExitToApp";
+import RemoveIcon from "@material-ui/icons/Delete";
 
 const remote = require("electron").remote;
 const path = remote.require("path");

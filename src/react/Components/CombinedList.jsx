@@ -9,10 +9,10 @@ import MenuItem from "material-ui/Menu/MenuItem";
 import { LinearProgress } from "material-ui/Progress";
 import List, { ListItemSecondaryAction, ListSubheader } from "material-ui/List";
 
-import KeyboardArrowRightIcon from "material-ui-icons/KeyboardArrowRight";
-import KeyboardArrowLeftIcon from "material-ui-icons/KeyboardArrowLeft";
-import SkipNextIcon from "material-ui-icons/SkipNext";
-import SkipPreviousIcon from "material-ui-icons/SkipPrevious";
+import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
+import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
+import SkipNextIcon from "@material-ui/icons/SkipNext";
+import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
 
 import BunqMeTabListItem from "./ListItems/BunqMeTabListItem";
 import PaymentListItem from "./ListItems/PaymentListItem";

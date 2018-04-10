@@ -4,8 +4,8 @@ import { withStyles } from "material-ui/styles";
 import { FormControl } from "material-ui/Form";
 import Input, { InputLabel, InputAdornment } from "material-ui/Input";
 import { IconButton } from "material-ui";
-import Check from "material-ui-icons/Check";
-import NotInterested from "material-ui-icons/NotInterested";
+import Check from "@material-ui/icons/Check";
+import NotInterested from "@material-ui/icons/NotInterested";
 
 const styles = theme => ({
     formControl: {

@@ -9,14 +9,14 @@ import Typography from "material-ui/Typography";
 import IconButton from "material-ui/IconButton";
 import { LinearProgress, CircularProgress } from "material-ui/Progress";
 
-import RefreshIcon from "material-ui-icons/Refresh";
+import RefreshIcon from "@material-ui/icons/Refresh";
 
+import ScheduledPaymentItem from "./ScheduledPaymentItem";
 import AccountList from "../../Components/AccountList/AccountList";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { scheduledPaymentsInfoUpdate } from "../../Actions/scheduled_payments";
-import ScheduledPaymentItem from "./ScheduledPaymentItem";
 
 const styles = {
     paper: {

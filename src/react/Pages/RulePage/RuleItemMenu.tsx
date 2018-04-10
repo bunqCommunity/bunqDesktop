@@ -5,9 +5,9 @@ import Divider from "material-ui/Divider";
 import Menu, { MenuItem } from "material-ui/Menu";
 import { ListItemIcon, ListItemText } from "material-ui/List";
 
-import FileUploadIcon from "material-ui-icons/FileUpload";
-import DeleteIcon from "material-ui-icons/Delete";
-import MoreVertIcon from "material-ui-icons/MoreVert";
+import FileUploadIcon from "@material-ui/icons/FileUpload";
+import DeleteIcon from "@material-ui/icons/Delete";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 class RuleItemMenu extends React.Component<any, any> {
     state = {

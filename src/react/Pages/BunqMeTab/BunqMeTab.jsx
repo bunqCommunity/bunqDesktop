@@ -6,8 +6,8 @@ import Grid from "material-ui/Grid";
 import Paper from "material-ui/Paper";
 import Collapse from "material-ui/transitions/Collapse";
 import IconButton from "material-ui/IconButton";
-import CloseIcon from "material-ui-icons/Close";
-import AddIcon from "material-ui-icons/Add";
+import CloseIcon from "@material-ui/icons/Close";
+import AddIcon from "@material-ui/icons/Add";
 
 import AccountList from "../../Components/AccountList/AccountList";
 import BunqMeTabList from "../../Components/BunqMeTabList";

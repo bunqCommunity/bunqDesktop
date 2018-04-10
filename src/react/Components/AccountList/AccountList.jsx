@@ -9,7 +9,7 @@ import List, {
     ListItemSecondaryAction
 } from "material-ui/List";
 import { CircularProgress, LinearProgress } from "material-ui/Progress";
-import RefreshIcon from "material-ui-icons/Refresh";
+import RefreshIcon from "@material-ui/icons/Refresh";
 
 import AccountListItem from "./AccountListItem";
 import AddAccount from "./AddAccount";

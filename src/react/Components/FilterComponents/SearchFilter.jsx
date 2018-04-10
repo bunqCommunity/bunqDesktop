@@ -4,7 +4,7 @@ import TextField from "material-ui/TextField";
 import IconButton from "material-ui/IconButton";
 import { InputAdornment } from "material-ui/Input";
 
-import ClearIcon from "material-ui-icons/Clear";
+import ClearIcon from "@material-ui/icons/Clear";
 
 import { setSearchFilter, clearSearchFilter } from "../../Actions/filters";
 

@@ -8,7 +8,7 @@ import {
     ListItemSecondaryAction
 } from "material-ui/List";
 
-import DeleteIcon from "material-ui-icons/Delete";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 import MoneyAmountLabel from "../../Components/MoneyAmountLabel";

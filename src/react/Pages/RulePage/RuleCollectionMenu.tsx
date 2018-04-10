@@ -4,9 +4,9 @@ import IconButton from "material-ui/IconButton";
 import Menu, { MenuItem } from "material-ui/Menu";
 import { ListItemIcon, ListItemText } from "material-ui/List";
 
-import MoreVertIcon from "material-ui-icons/MoreVert";
-import DeleteIcon from "material-ui-icons/Delete";
-import FileUploadIcon from "material-ui-icons/FileUpload";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+import DeleteIcon from "@material-ui/icons/Delete";
+import FileUploadIcon from "@material-ui/icons/FileUpload";
 import { translate } from "react-i18next";
 
 class RuleCollectionMenu extends React.Component<any, any> {

@@ -8,8 +8,8 @@ import Paper from "material-ui/Paper";
 import Button from "material-ui/Button";
 import List from "material-ui/List";
 
-import FileDownloadIcon from "material-ui-icons/FileDownload";
-import AddIcon from "material-ui-icons/Add";
+import FileDownloadIcon from "@material-ui/icons/FileDownload";
+import AddIcon from "@material-ui/icons/Add";
 
 import RuleCollectionItem from "./RuleCollectionItem";
 import NavLink from "../../Components/Routing/NavLink";

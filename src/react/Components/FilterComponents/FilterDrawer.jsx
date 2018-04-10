@@ -18,16 +18,16 @@ import List, {
     ListItemSecondaryAction
 } from "material-ui/List";
 
-import FilterListIcon from "material-ui-icons/FilterList";
-import CompareArrowsIcon from "material-ui-icons/CompareArrows";
-import ArrowUpward from "material-ui-icons/ArrowUpward";
-import ArrowDownward from "material-ui-icons/ArrowDownward";
-import Visible from "material-ui-icons/Visibility";
-import VisibleOff from "material-ui-icons/VisibilityOff";
-import ClearIcon from "material-ui-icons/Clear";
-import CheckCircle from "material-ui-icons/CheckCircle";
-import TimerOff from "material-ui-icons/TimerOff";
-import Cancel from "material-ui-icons/Cancel";
+import FilterListIcon from "@material-ui/icons/FilterList";
+import CompareArrowsIcon from "@material-ui/icons/CompareArrows";
+import ArrowUpward from "@material-ui/icons/ArrowUpward";
+import ArrowDownward from "@material-ui/icons/ArrowDownward";
+import Visible from "@material-ui/icons/Visibility";
+import VisibleOff from "@material-ui/icons/VisibilityOff";
+import ClearIcon from "@material-ui/icons/Clear";
+import CheckCircle from "@material-ui/icons/CheckCircle";
+import TimerOff from "@material-ui/icons/TimerOff";
+import Cancel from "@material-ui/icons/Cancel";
 
 import {
     clearPaymentFilterType,

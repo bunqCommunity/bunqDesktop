@@ -10,7 +10,7 @@ import {
 } from "material-ui/List";
 import Menu, { MenuItem } from "material-ui/Menu";
 
-import AddIcon from "material-ui-icons/Add";
+import AddIcon from "@material-ui/icons/Add";
 
 import CategoryIcon from "../Categories/CategoryIcon";
 import CategoryChip from "../Categories/CategoryChip";

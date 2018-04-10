@@ -115,6 +115,33 @@ export function deactivateAccount(BunqJSClient, userId, accountId, reason) {
     };
 }
 
+export function deactivateAccount(BunqJSClient, userId, accountId, monetaryAccountSettings) {
+    const failedMessage = window.t(
+        "We received the following error updating the settings for your account"
+    );
+    const successMessage = window.t("Account settings updated successfully!");
+
+    return dispatch => {
+        dispatch(updateAccountStatusLoading());
+
+        BunqJSClient.api.monetaryAccountBank
+            .put(
+                userId,
+                accountId,
+                monetaryAccountSettings
+            )
+            .then(result => {
+                dispatch(openSnackbar(successMessage));
+                dispatch(accountsUpdate(BunqJSClient, userId));
+                dispatch(updateAccountStatusNotLoading());
+            })
+            .catch(error => {
+                dispatch(updateAccountStatusNotLoading());
+                BunqErrorHandler(dispatch, error, failedMessage);
+            });
+    };
+}
+
 export function accountsLoading() {
     return { type: "ACCOUNTS_IS_LOADING" };
 }
