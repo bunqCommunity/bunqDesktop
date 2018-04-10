@@ -86,7 +86,7 @@ export function createAccount(
     };
 }
 
-export function deactivateAccount(BunqJSClient, userId, accountId, reason) {
+export function accountsDeactivate(BunqJSClient, userId, accountId, reason) {
     const failedMessage = window.t(
         "We received the following error while deactivating your account"
     );
@@ -115,7 +115,7 @@ export function deactivateAccount(BunqJSClient, userId, accountId, reason) {
     };
 }
 
-export function deactivateAccount(BunqJSClient, userId, accountId, monetaryAccountSettings) {
+export function accountsUpdateSettings(BunqJSClient, userId, accountId, monetaryAccountSettings) {
     const failedMessage = window.t(
         "We received the following error updating the settings for your account"
     );
