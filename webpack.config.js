@@ -11,6 +11,8 @@ const SRC_DIR = path.resolve(__dirname, "src/react");
 const BUILD_DIR = path.resolve(__dirname, "app/react");
 const OUTPUT_DIR = "./";
 
+const moduleOptions = { BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT };
+
 let config = {
     entry: {
         BunqDesktop: `${SRC_DIR}/react-app.jsx`
@@ -34,15 +36,10 @@ let config = {
               hints: "warning"
           }
         : false,
-    plugins: plugins({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }),
-    optimization: optimizations({
-        BUILD_DIR,
-        OUTPUT_DIR,
-        PRODUCTION,
-        DEVELOPMENT
-    }),
+    plugins: plugins(moduleOptions),
+    optimization: optimizations(moduleOptions),
     module: {
-        rules: rules,
+        rules: rules(moduleOptions),
         unsafeCache: DEVELOPMENT
     },
     watchOptions: {
