@@ -27,7 +27,7 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
                 "babel-loader",
                 {
                     loader: "worker-loader",
-                    options: { inline: DEVELOPMENT, fallback: false }
+                    options: { inline: false, fallback: false }
                 }
             ]
         },
@@ -38,7 +38,7 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
                 "ts-loader",
                 {
                     loader: "worker-loader",
-                    options: { inline: DEVELOPMENT, fallback: false }
+                    options: { inline: false, fallback: false }
                 }
             ]
         }
