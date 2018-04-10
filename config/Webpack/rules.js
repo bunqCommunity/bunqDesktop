@@ -21,22 +21,22 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
             test: /\.scss$/,
             use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"]
         },
-        // {
-        //     test: /\.worker\.jsx?$/,
-        //     use: {
-        //         loader: "worker-loader",
-        //         options: { inline: DEVELOPMENT, fallback: false }
-        //     }
-        // },
-        // {
-        //     test: /\.worker\.tsx?$/,
-        //     use: [
-        //         "ts-loader",
-        //         {
-        //             loader: "worker-loader",
-        //             options: { inline: DEVELOPMENT, fallback: false }
-        //         }
-        //     ]
-        // }
+        {
+            test: /\.worker\.jsx?$/,
+            use: {
+                loader: "worker-loader",
+                options: { inline: DEVELOPMENT, fallback: false }
+            }
+        },
+        {
+            test: /\.worker\.tsx?$/,
+            use: [
+                "ts-loader",
+                {
+                    loader: "worker-loader",
+                    options: { inline: DEVELOPMENT, fallback: false }
+                }
+            ]
+        }
     ];
 };

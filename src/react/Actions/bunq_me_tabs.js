@@ -1,5 +1,5 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import BunqMeTab from "../Models/BunqMeTab";
+import BunqMeTab from "../Models/BunqMeTab.ts";
 
 export const STORED_BUNQ_ME_TABS = "BUNQDESKTOP_STORED_BUNQ_ME_TABS";
 

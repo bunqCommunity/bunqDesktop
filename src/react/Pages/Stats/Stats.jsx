@@ -18,7 +18,7 @@ import CategoryCountPieChart from "./CategoryCountPieChart";
 import CategoryHistoryChart from "./CategoryHistoryChart";
 import EventTypeHistoryChart from "./EventTypeHistoryChart";
 
-const StatsWorker = require("worker-loader!../../WebWorkers/stats.worker.js");
+const StatsWorker = require("../../WebWorkers/stats.worker.js");
 
 class Stats extends React.Component {
     constructor(props, context) {

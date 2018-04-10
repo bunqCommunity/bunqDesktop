@@ -1,4 +1,7 @@
-const settings = require("electron").remote.require("electron-settings");
+const remote = require("electron").remote;
+const settings = remote
+    ? remote.require("electron-settings")
+    : require("electron-settings");
 import { generateGUID } from "../Helpers/Utils";
 
 export const BUNQDESKTOP_CATEGORIES = "BUNQDESKTOP_CATEGORIES";
@@ -188,7 +191,10 @@ export default function reducer(state = defaultState, action) {
                 }
 
                 // prevent duplicates
-                if (category_connections[catId][catType].includes(eventId) === false) {
+                if (
+                    category_connections[catId][catType].includes(eventId) ===
+                    false
+                ) {
                     category_connections[catId][catType].push(eventId);
                 }
             });
