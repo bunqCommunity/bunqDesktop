@@ -23,14 +23,18 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
         },
         {
             test: /\.worker\.jsx?$/,
-            use: {
-                loader: "worker-loader",
-                options: { inline: DEVELOPMENT, fallback: false }
-            }
+            use: [
+                "babel-loader",
+                {
+                    loader: "worker-loader",
+                    options: { inline: DEVELOPMENT, fallback: false }
+                }
+            ]
         },
         {
             test: /\.worker\.tsx?$/,
             use: [
+                "babel-loader",
                 "ts-loader",
                 {
                     loader: "worker-loader",
