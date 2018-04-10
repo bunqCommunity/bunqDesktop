@@ -27,5 +27,12 @@
         "transform-react-inline-elements",
         "transform-react-constant-elements",
         "syntax-dynamic-import"
-    ]
+    ],
+    "env": {
+        "test": {
+            "plugins": [
+                "babel-plugin-dynamic-import-node"
+            ]
+        }
+    }
 }

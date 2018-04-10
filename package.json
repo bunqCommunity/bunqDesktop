@@ -66,13 +66,15 @@
     "scripts": {
         "webpack": "cross-env NODE_ENV=production webpack --progress --colors",
         "webpack:dev": "cross-env NODE_ENV=development webpack --debug --watch --progress --colors",
-        "postinstall": "install-app-deps",
-        "build": "gulp build",
-        "dist": "build",
         "prerelease": "npm run update-release-files && gulp build --env=production && yarn run webpack",
         "release": "build",
         "start": "gulp start --env=development",
         "start:dev": "cross-env NODE_ENV=development gulp start --env=development",
+        "test": "jest --coverage --verbose",
+        "test:dev": "jest --watch --coverage",
+        "postinstall": "install-app-deps",
+        "build": "gulp build",
+        "dist": "build",
         "update-icons": "node tasks/generate_material_icons.js",
         "update-translations": "node tasks/update_translations.js",
         "update-release-files": "node tasks/update_release_files.js",
@@ -80,6 +82,36 @@
         "fix-memory": "cross-env LIMIT=8192 increase-memory-limit"
     },
     "publish": null,
+    "jest": {
+        "globals": {
+            "ts-jest": {
+                "useBabelrc": true
+            }
+        },
+        "modulePathIgnorePatterns": [
+            "/app",
+            "/dist"
+        ],
+        "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+        "testPathIgnorePatterns": [
+            "/node_modules/",
+            "/public/",
+            "/dist/",
+            ".html"
+        ],
+        "transform": {
+            "^.+\\.jsx?$": "<rootDir>/node_modules/babel-jest",
+            "^.+\\.tsx?$": "ts-jest"
+        },
+        "moduleFileExtensions": [
+            "ts",
+            "tsx",
+            "js",
+            "jsx",
+            "json",
+            "node"
+        ]
+    },
     "dependencies": {
         "electron-localshortcut": "^2.0.2",
         "electron-log": "^2.2.9",
@@ -104,6 +136,7 @@
         "babel-cli": "^6.26.0",
         "babel-core": "^6.26.0",
         "babel-loader": "^7.1.4",
+        "babel-plugin-dynamic-import-node": "^1.2.0",
         "babel-plugin-react-html-attrs": "^2.0.0",
         "babel-plugin-syntax-dynamic-import": "^6.18.0",
         "babel-plugin-system-import-transformer": "^3.1.0",
@@ -122,6 +155,7 @@
         "electron-builder": "^20.2.0",
         "electron-reload": "^1.2.2",
         "email-validator": "^1.1.1",
+        "enzyme": "^3.3.0",
         "gulp": "^3.9.1",
         "gulp-batch": "^1.0.5",
         "gulp-less": "^3.3.2",
@@ -131,6 +165,7 @@
         "html-webpack-plugin": "^3.2.0",
         "iban": "^0.0.8",
         "increase-memory-limit": "^1.0.6",
+        "jest": "^22.4.3",
         "localforage": "^1.5.2",
         "loglevel": "^1.5.1",
         "material-ui": "^1.0.0-beta.41",
@@ -157,6 +192,7 @@
         "react-router": "^4.2.0",
         "react-router-dom": "^4.2.0",
         "react-sticky-box": "^0.6.1",
+        "react-test-renderer": "^16.3.1",
         "react-visibility-sensor": "^3.11.0",
         "react-windowed-list": "^2.0.0",
         "redux": "^3.7.2",
@@ -169,7 +205,7 @@
         "source-map-support": "^0.4.15",
         "spectron": "^3.7.2",
         "store": "^2.0.4",
-        "ts-jest": "^22.0.3",
+        "ts-jest": "^22.4.2",
         "ts-loader": "^4.1.0",
         "typescript": "^2.8.1",
         "uglifyjs-webpack-plugin": "^1.2.4",
