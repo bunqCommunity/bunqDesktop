@@ -41,21 +41,17 @@ class ScheduledPayments extends React.Component {
         };
     }
 
-    componentDidMount() {
-        this.updateScheduledPayments();
-    }
-
-    updateScheduledPayments = () => {
+    updateScheduledPayments = (userId, accountId) => {
         if (
             !this.props.initialBunqConnect ||
             this.props.scheduledPaymentsLoading
         ) {
             return;
         }
-        this.props.scheduledPaymentsInfoUpdate(
-            this.props.user.id,
-            this.props.accountsAccountId
-        );
+        if (!userId) userId = this.props.user.id;
+        if (!accountId) accountId = this.props.accountsAccountId;
+
+        this.props.scheduledPaymentsInfoUpdate(userId, accountId);
     };
 
     deleteScheduledPayment = scheduledPaymentInfo => event => {
@@ -150,7 +146,8 @@ class ScheduledPayments extends React.Component {
                                     <CircularProgress />
                                 ) : (
                                     <IconButton
-                                        onClick={this.updateScheduledPayments}
+                                        onClick={() =>
+                                            this.updateScheduledPayments()}
                                     >
                                         <RefreshIcon />
                                     </IconButton>
