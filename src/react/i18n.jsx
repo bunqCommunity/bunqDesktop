@@ -3,8 +3,8 @@ import Backend from "i18next-xhr-backend";
 import { reactI18nextModule } from "react-i18next";
 
 const remote = require("electron").remote;
-const path = remote.require("path");
-const fs = remote.require("fs");
+const path = remote ? remote.require("path") : require("path");
+const fs = remote ? remote.require("fs") : require("fs");
 
 /**
  * Adds a new key to the reference locale data

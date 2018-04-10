@@ -2,10 +2,12 @@ import store from "store";
 import localforage from "localforage";
 
 const remote = require("electron").remote;
-const settings = remote.require("electron-settings");
-const fs = remote.require("fs");
-const path = remote.require("path");
-const app = remote.app;
+const path = remote ? remote.require("path") : require("path");
+const fs = remote ? remote.require("fs") : require("fs");
+const settings = remote
+    ? remote.require("electron-settings")
+    : require("electron-settings");
+const app = remote ? remote.app : {};
 
 const getSettingsLockLocation = () => {
     return path.normalize(

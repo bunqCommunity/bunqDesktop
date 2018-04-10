@@ -6,7 +6,7 @@ import { setCategoryConnectionMultiple } from "../Actions/categories";
 import { setCategoryRule } from "../Actions/category_rules";
 
 // import typed worker
-const RuleCollectionCheckWorker = require("worker-loader!../WebWorkers/rule_collection_check.worker.ts");
+const RuleCollectionCheckWorker = require("../WebWorkers/rule_collection_check.worker.ts");
 
 class RuleCollectionChecker extends React.Component {
     constructor(props, context) {

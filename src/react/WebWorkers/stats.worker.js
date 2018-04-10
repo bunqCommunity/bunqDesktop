@@ -1,16 +1,15 @@
-import {
-    addDays,
-    addWeeks,
-    addMonths,
-    addYears,
-    subDays,
-    subWeeks,
-    subMonths,
-    subYears,
-    getISOWeek as getWeek,
-    getDayOfYear,
-    format as DateFNSformat
-} from "date-fns";
+import addDays from "date-fns/addDays";
+import addWeeks from "date-fns/addWeeks";
+import addMonths from "date-fns/addMonths";
+import addYears from "date-fns/addYears";
+import subDays from "date-fns/subDays";
+import subWeeks from "date-fns/subWeeks";
+import subMonths from "date-fns/subMonths";
+import subYears from "date-fns/subYears";
+import getWeek from "date-fns/getISOWeek";
+import getDayOfYear from "date-fns/getDayOfYear";
+import format from "date-fns/format";
+
 import CategoryHelper from "../Helpers/CategoryHelper";
 
 import {
@@ -25,14 +24,14 @@ import MonetaryAccount from "../Models/MonetaryAccount";
 const labelFormat = (date, type = "daily") => {
     switch (type) {
         case "yearly":
-            return DateFNSformat(date, "_YYYY");
+            return format(date, "_YYYY");
         case "monthly":
-            return DateFNSformat(date, "MMM YYYY");
+            return format(date, "MMM YYYY");
         case "weekly":
-            return DateFNSformat(date, "WW/YYYY");
+            return format(date, "WW/YYYY");
         case "daily":
         default:
-            return DateFNSformat(date, "D MMM");
+            return format(date, "D MMM");
     }
 };
 
