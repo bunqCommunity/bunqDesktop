@@ -25,7 +25,7 @@ let config = {
         chunkFilename: OUTPUT_DIR + "[name].bundle.js"
     },
     resolve: {
-        extensions: [".tsx", ".ts", ".js", ".jsx", ".json"],
+        extensions: [".jsx", ".js", ".tsx", ".ts", ".json"],
         modules: ["node_modules", path.resolve(__dirname, "./src")]
     },
     mode: DEVELOPMENT ? "development" : "production",
