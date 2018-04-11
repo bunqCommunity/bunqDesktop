@@ -2,7 +2,6 @@ const path = require("path");
 const webpack = require("webpack");
 const plugins = require("./config/Webpack/plugins");
 const rules = require("./config/Webpack/rules");
-const optimizations = require("./config/Webpack/optimizations");
 
 const PRODUCTION = process.env.NODE_ENV === "production";
 const DEVELOPMENT = !PRODUCTION;
@@ -28,7 +27,6 @@ let config = {
         extensions: [".jsx", ".js", ".tsx", ".ts", ".json"],
         modules: ["node_modules", path.resolve(__dirname, "./src")]
     },
-    mode: DEVELOPMENT ? "development" : "production",
     devtool: DEVELOPMENT ? "eval" : "source-map",
     cache: DEVELOPMENT,
     performance: PRODUCTION
@@ -37,7 +35,6 @@ let config = {
           }
         : false,
     plugins: plugins(moduleOptions),
-    optimization: optimizations(moduleOptions),
     module: {
         rules: rules(moduleOptions),
         unsafeCache: DEVELOPMENT
