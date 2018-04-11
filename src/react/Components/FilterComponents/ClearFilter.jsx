@@ -14,6 +14,7 @@ class ClearFilter extends React.Component {
 
     render() {
         if (
+            this.props.selectedCategories.length <= 0 &&
             this.props.searchTerm.length <= 0 &&
             this.props.paymentType === "default" &&
             this.props.bunqMeTabType === "active" &&
@@ -62,7 +63,9 @@ const mapStateToProps = state => {
         bunqMeTabVisibility: state.bunq_me_tab_filter.visible,
 
         requestType: state.request_filter.type,
-        requestVisibility: state.request_filter.visible
+        requestVisibility: state.request_filter.visible,
+
+        selectedCategories: state.category_filter.selected_categories
     };
 };
 
