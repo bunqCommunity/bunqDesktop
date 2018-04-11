@@ -446,7 +446,11 @@ class CombinedList extends React.Component {
                     </Grid>
                 </ListSubheader>
 
-                <EventData events={events} open={this.state.displayEventData} />
+                <EventData
+                    t={t}
+                    events={events}
+                    open={this.state.displayEventData}
+                />
 
                 {loadingContent}
                 {combinedComponentList}
