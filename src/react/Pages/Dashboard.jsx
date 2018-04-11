@@ -70,9 +70,7 @@ class Dashboard extends React.Component {
 
     render() {
         const t = this.props.t;
-
         const userTypes = Object.keys(this.props.users);
-        const hasOtherKeys = this.props.storedApiKeys.length > 1;
 
         return (
             <Grid container spacing={16}>

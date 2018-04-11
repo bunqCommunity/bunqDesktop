@@ -2,6 +2,7 @@ import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
+import CirclePicker from "react-color/lib/Circle";
 import Grid from "material-ui/Grid";
 import Button from "material-ui/Button";
 import IconButton from "material-ui/IconButton";
@@ -51,6 +52,10 @@ const styles = {
     },
     textCenter: {
         textAlign: "center"
+    },
+    colorPickerWrapper: {
+        display: "flex",
+        justifyContent: "center"
     }
 };
 
@@ -58,7 +63,7 @@ class AddAccount extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            color: "FEC704",
+            color: "#2196f3",
             description: "",
             descriptionError: false,
             limit: 1000,
@@ -82,7 +87,7 @@ class AddAccount extends React.Component {
             "EUR",
             this.state.description,
             this.state.limit + "",
-            "#" + this.state.color
+            this.state.color
         );
     };
 
@@ -111,23 +116,9 @@ class AddAccount extends React.Component {
         );
     };
 
-    handleColorClick(color) {
-        this.setState({ color: color });
-    }
-
-    getRadioButton(color) {
-        let button = "";
-        if (this.state.color === color) {
-            button = <RadioButtonChecked style={this.getColorStyle(color)} />;
-        } else {
-            button = (
-                <RadioButtonUnchecked
-                    style={this.getColorStyle(color)}
-                />
-            );
-        }
-        return button;
-    }
+    handleColorClick = color => {
+        this.setState({ color: color.hex });
+    };
 
     validateForm = () => {
         const { color, description, limit } = this.state;
@@ -147,12 +138,12 @@ class AddAccount extends React.Component {
         const t = this.props.t;
 
         return (
-            <Grid container spacing={8}>
+            <Grid container spacing={16}>
                 <Helmet>
                     <title>{`BunqDesktop - ${t("Add an account")}`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={2} md={3}>
+                <Grid item xs={12} sm={3} md={4}>
                     <Button
                         onClick={this.props.history.goBack}
                         style={styles.btn}
@@ -161,7 +152,7 @@ class AddAccount extends React.Component {
                     </Button>
                 </Grid>
 
-                <Grid item xs={12} sm={8} md={6}>
+                <Grid item xs={12} sm={6} md={4}>
                     <Paper style={styles.paper}>
                         <TypographyTranslate
                             type="headline"
@@ -169,16 +160,15 @@ class AddAccount extends React.Component {
                         >
                             Add an account
                         </TypographyTranslate>
-                        {colors.map(color => (
-                            <IconButton
-                                onClick={this.handleColorClick.bind(
-                                    this,
-                                    color
-                                )}
-                            >
-                                {this.getRadioButton(color)}
-                            </IconButton>
-                        ))}
+
+                        <div style={styles.colorPickerWrapper}>
+                            <CirclePicker
+                                onChange={this.handleColorClick}
+                                color={this.state.color}
+                                style={styles.circlePicker}
+                            />
+                        </div>
+
                         <TextField
                             fullWidth
                             error={this.state.descriptionError}
