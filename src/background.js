@@ -1,4 +1,3 @@
-import fs from "fs";
 import url from "url";
 import path from "path";
 import log from "electron-log";
@@ -11,7 +10,7 @@ import createWindow from "./helpers/window";
 import registerShortcuts from "./helpers/shortcuts";
 import registerTouchBar from "./helpers/touchbar";
 import changePage from "./helpers/react_navigate";
-import defaultConfig from "./helpers/default_config";
+import settingsHelper from "./helpers/settings";
 
 import i18n from "./i18n-background";
 import env from "./env";
@@ -24,11 +23,12 @@ ipcMain.on("change-language", (event, arg) => {
     i18n.changeLanguage(arg);
 });
 
+// listen for changes in settings path
+ipcMain.on("change-settings-path", (event, newPath) => {
+    settingsHelper.savePath(newPath);
+});
+
 const userDataPath = app.getPath("userData");
-const SETTINGS_LOCATION_FILE = path.normalize(
-    `${userDataPath}${path.sep}..${path.sep}BunqDesktop${path.sep}SETTINGS_LOCATION`
-);
-const DEFAULT_SETTINGS_LOCATION = `${userDataPath}${path.sep}settings.json`;
 
 // hide/show different native menus based on env
 const setApplicationMenu = () => {
@@ -47,39 +47,6 @@ const getWindowUrl = fileName => {
         protocol: "file:",
         slashes: true
     });
-};
-
-// stores the file location of our settings file
-const getSettingsLocation = () => {
-    // check if the parent folder exists
-    if (fs.existsSync(path.dirname(SETTINGS_LOCATION_FILE))) {
-        try {
-            // check if the settings lock file exists
-            if (!fs.existsSync(SETTINGS_LOCATION_FILE)) {
-                // create a default file
-                fs.writeFileSync(
-                    SETTINGS_LOCATION_FILE,
-                    DEFAULT_SETTINGS_LOCATION
-                );
-            }
-            // return the lock file contents
-            return fs.readFileSync(SETTINGS_LOCATION_FILE).toString();
-        } catch (ex) {}
-    }
-
-    // create the settings lock file
-    fs.writeFileSync(SETTINGS_LOCATION_FILE, DEFAULT_SETTINGS_LOCATION);
-
-    // check if the default settings file exists
-    if (!fs.existsSync(DEFAULT_SETTINGS_LOCATION)) {
-        // fill the settings file with our default config
-        fs.writeFileSync(
-            DEFAULT_SETTINGS_LOCATION,
-            JSON.stringify(defaultConfig())
-        );
-    }
-
-    return DEFAULT_SETTINGS_LOCATION;
 };
 
 // Save userData in separate folders for each environment
@@ -101,7 +68,7 @@ if (process.env.NODE_ENV === "development") {
 }
 
 // set the correct path before the app loads
-settings.setPath(getSettingsLocation());
+settings.setPath(settingsHelper.loadPath());
 
 app.on("ready", () => {
     setApplicationMenu();

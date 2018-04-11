@@ -73,7 +73,7 @@ class RuleCollectionChecker extends React.Component {
         // get results for all our rule collections
         Object.keys(this.props.categoryRules).forEach(categoryRuleId => {
             const ruleCollection = this.props.categoryRules[categoryRuleId];
-            if (ruleCollection.isEnabled()) {
+            if (ruleCollection && ruleCollection.isEnabled()) {
                 this.worker.postMessage({
                     ruleCollection: ruleCollection,
                     payments: payments,
