@@ -16,6 +16,7 @@ import EmailIcon from "@material-ui/icons/Email";
 import PersonIcon from "@material-ui/icons/Person";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
+import UrlIcon from "@material-ui/icons/Link";
 
 import LazyAttachmentImage from "./AttachmentImage/LazyAttachmentImage";
 import AccountQRFullscreen from "./QR/AccountQRFullscreen";
@@ -97,6 +98,9 @@ class AccountCard extends React.Component {
                                 break;
                             case "IBAN":
                                 icon = <AccountBalanceIcon />;
+                                break;
+                            case "URL":
+                                icon = <UrlIcon />;
                                 break;
                         }
 
