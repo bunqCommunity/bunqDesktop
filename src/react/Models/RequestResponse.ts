@@ -88,7 +88,7 @@ export default class RequestResponse implements Event {
      * @returns {number}
      */
     public getDelta(): number {
-        const noDeltaStatusList = ["PENDING", "REJECTED", "REVOKED"];
+        const noDeltaStatusList = ["PENDING", "REJECTED", "REVOKED", "EXPIRED"];
         if (noDeltaStatusList.includes(this.status)) {
             return 0;
         }

@@ -45,7 +45,8 @@ class EventData extends React.Component {
                 change += delta;
                 if (delta > 0) {
                     incoming += delta;
-                } else if (delta < 0) {
+                }
+                if (delta < 0) {
                     outGoing += delta;
                 }
             });
@@ -59,7 +60,11 @@ class EventData extends React.Component {
                             <ChangeIcon
                                 style={{
                                     ...styles.icon,
-                                    color: theme.palette.primary.contrastText
+                                    color:
+                                        change > 0
+                                            ? theme.palette.common
+                                                  .receivedPayment
+                                            : theme.palette.common.sentPayment
                                 }}
                             />
                             <Typography variant={"body1"}>
