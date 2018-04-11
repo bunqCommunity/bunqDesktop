@@ -18,7 +18,7 @@ import Dialog, {
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
-import CombinedList from "../Components/CombinedList";
+import CombinedList from "../Components/CombinedList/CombinedList";
 import AccountCard from "../Components/AccountCard";
 import ButtonTranslate from "../Components/TranslationHelpers/Button";
 

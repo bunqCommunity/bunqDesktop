@@ -12,7 +12,7 @@ import Typography from "material-ui/Typography";
 import MoneyIcon from "@material-ui/icons/AttachMoney";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
-import CombinedList from "../Components/CombinedList";
+import CombinedList from "../Components/CombinedList/CombinedList";
 import AccountList from "../Components/AccountList/AccountList";
 import LoadOlderButton from "../Components/LoadOlderButton";
 

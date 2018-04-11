@@ -77,6 +77,14 @@ export default class MasterCardAction implements Event {
         return parseFloat(this.amount_local.value);
     }
 
+    /**
+     * Returns the change in account balance if any based on this object's data
+     * @returns {number}
+     */
+    public getDelta(): number {
+        return 0;
+    }
+
     get id(): number {
         return this._id;
     }

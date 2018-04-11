@@ -78,6 +78,19 @@ export default class RequestInquiry implements Event {
         return parseFloat(this.amount_inquired.value);
     }
 
+    /**
+     * Returns the change in account balance if any based on this object's data
+     * @returns {number}
+     */
+    public getDelta(): number {
+        const noDeltaStatusList = ["PENDING", "REJECTED", "REVOKED"];
+        if (noDeltaStatusList.includes(this.status)) {
+            return 0;
+        }
+
+        return this.getAmount();
+    }
+
     get id(): number {
         return this._id;
     }
