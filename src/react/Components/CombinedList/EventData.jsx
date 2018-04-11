@@ -68,7 +68,7 @@ class EventData extends React.Component {
                                 }}
                             />
                             <Typography variant={"body1"}>
-                                Total change: {formatMoney(change, true)}
+                                {t("Total change")}: {formatMoney(change, true)}
                             </Typography>
                         </Grid>
                         <Grid item xs={6} sm={4} style={styles.text}>
@@ -79,7 +79,7 @@ class EventData extends React.Component {
                                 }}
                             />
                             <Typography variant={"body1"}>
-                                Incoming: {formatMoney(incoming, true)}
+                                {t("Received")}: {formatMoney(incoming, true)}
                             </Typography>
                         </Grid>
                         <Grid item xs={6} sm={4} style={styles.text}>
@@ -90,7 +90,7 @@ class EventData extends React.Component {
                                 }}
                             />
                             <Typography variant={"body1"}>
-                                Outgoing: {formatMoney(outGoing, true)}
+                                {t("Sent")}: {formatMoney(outGoing, true)}
                             </Typography>
                         </Grid>
                     </Grid>
