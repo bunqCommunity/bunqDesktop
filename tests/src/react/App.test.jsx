@@ -3,10 +3,6 @@ import React from "react";
 import enzyme from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 
-// mock the service worker files
-jest.mock("electron");
-jest.mock("electron-settings");
-
 import App from "../../../src/react/App";
 
 describe("<App />", () => {
