@@ -3,7 +3,7 @@
     "description": "A desktop implementation for the bunq API",
     "productName": "BunqDesktop",
     "homepage": "https://bunqdesktop.com/",
-    "version": "0.8.2",
+    "version": "0.8.3",
     "author": {
         "name": "BunqCommunity",
         "email": "bunqcommunity@gmail.com"
