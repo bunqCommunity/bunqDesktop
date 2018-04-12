@@ -1,8 +1,5 @@
-const remote = require("electron").remote;
-const platform = remote
-    ? remote.require("os").platform()
-    : require("os").platform();
+import os from "../ImportWrappers/os";
 
 export default () => {
-    return platform === "darwin";
+    return os.platform() === "darwin";
 };

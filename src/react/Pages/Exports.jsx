@@ -23,8 +23,8 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import { shell } from "electron";
 const remote = require("electron").remote;
 const app = remote ? remote.app : {};
-const fs = remote ? remote.require("fs") : require("fs");
-const path = remote ? remote.require("path") : require("path");
+import fs from "../ImportWrappers/fs";
+import path from "../ImportWrappers/path";
 
 import AccountList from "../Components/AccountList/AccountList";
 import TranslateTypography from "../Components/TranslationHelpers/Typography";
