@@ -73,8 +73,4 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
-    return {};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(DebugPage);
+export default connect(mapStateToProps)(DebugPage);
