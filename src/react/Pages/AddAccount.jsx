@@ -2,17 +2,14 @@ import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
-import CirclePicker from "react-color/lib/Circle";
 import Grid from "material-ui/Grid";
+import CirclePicker from "react-color/lib/Circle";
 import Button from "material-ui/Button";
-import IconButton from "material-ui/IconButton";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import Paper from "material-ui/es/Paper/Paper";
+import Paper from "material-ui/Paper";
 import TextField from "material-ui/TextField";
 import { FormControl } from "material-ui/Form";
 
-import RadioButtonUnchecked from "@material-ui/icons/RadioButtonUnchecked";
-import RadioButtonChecked from "@material-ui/icons/RadioButtonChecked";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 import { openSnackbar } from "../Actions/snackbar";
 import { createAccount } from "../Actions/accounts";
@@ -21,28 +18,14 @@ import MoneyFormatInput from "../Components/FormFields/MoneyFormatInput";
 import ButtonTranslate from "../Components/TranslationHelpers/Button";
 import TypographyTranslate from "../Components/TranslationHelpers/Typography";
 
-const colors = [
-    "FEC704",
-    "FD8B03",
-    "FD2248",
-    "4C4CD1",
-    "BC3DFE",
-    "006BFF",
-    "49C1FD",
-    "00C6B8",
-    "80FD26",
-    "3CD753",
-    "B4B5B6",
-    "83838A",
-    "000001"
-];
-
 const styles = {
     bigAvatar: {
         width: 60,
         height: 60
     },
-    btn: {},
+    btn: {
+        width: "100%"
+    },
     paper: {
         padding: 24,
         marginBottom: 16
@@ -71,10 +54,6 @@ class AddAccount extends React.Component {
             validForm: false
         };
     }
-
-    getColorStyle = colorString => {
-        return { color: colorString };
-    };
 
     createAccount = () => {
         if (!this.state.validForm) {
@@ -121,7 +100,7 @@ class AddAccount extends React.Component {
     };
 
     validateForm = () => {
-        const { color, description, limit } = this.state;
+        const { description, limit } = this.state;
 
         const limitErrorCondition = limit < 0.01 || limit > 10000;
         const descriptionErrorCondition =
@@ -178,11 +157,8 @@ class AddAccount extends React.Component {
                             value={this.state.description}
                             margin="normal"
                         />
-                        <FormControl
-                            style={styles.formControlAlt}
-                            error={this.state.limitError}
-                            fullWidth
-                        >
+
+                        <FormControl error={this.state.limitError}>
                             <TypographyTranslate type="body2">
                                 Daily limit
                             </TypographyTranslate>
@@ -192,11 +168,13 @@ class AddAccount extends React.Component {
                                 value={this.state.limit}
                             />
                         </FormControl>
+
                         <ButtonTranslate
                             variant="raised"
                             color="primary"
                             disabled={!this.state.validForm}
                             onClick={this.createAccount}
+                            style={styles.btn}
                         >
                             Create account
                         </ButtonTranslate>

@@ -22,14 +22,12 @@ class AddAccount extends React.Component {
 
     render() {
         return (
-            <ListItem button to={`/add-account`} component={NavLink}>
+            <ListItem button to={`/new-account`} component={NavLink}>
                 <Avatar style={styles.bigAvatar}>
                     <AddBoxIcon />
                 </Avatar>
                 <ListItemText
-                    secondary={this.props.t(
-                        "Open a new bank account"
-                    )}
+                    secondary={this.props.t("Open a new bank account")}
                 />
             </ListItem>
         );

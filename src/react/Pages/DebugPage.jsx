@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import ReactJson from "react-json-view";
 import Grid from "material-ui/Grid";
+import Button from "material-ui/Button";
 
 const styles = {
     paper: {
@@ -36,6 +37,12 @@ class DebugPage extends React.Component {
                 <Helmet>
                     <title>{`BunqDesktop - Debug page`}</title>
                 </Helmet>
+
+                <Grid item xs={12}>
+                    <Button onClick={() => this.props.history.push("/")}>
+                        Home
+                    </Button>
+                </Grid>
 
                 <Grid item xs={12}>
                     <ReactJson
