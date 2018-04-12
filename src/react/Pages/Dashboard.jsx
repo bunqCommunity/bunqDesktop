@@ -12,7 +12,7 @@ import Typography from "material-ui/Typography";
 import MoneyIcon from "@material-ui/icons/AttachMoney";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
-import CombinedList from "../Components/CombinedList";
+import CombinedList from "../Components/CombinedList/CombinedList";
 import AccountList from "../Components/AccountList/AccountList";
 import LoadOlderButton from "../Components/LoadOlderButton";
 
@@ -70,9 +70,7 @@ class Dashboard extends React.Component {
 
     render() {
         const t = this.props.t;
-
         const userTypes = Object.keys(this.props.users);
-        const hasOtherKeys = this.props.storedApiKeys.length > 1;
 
         return (
             <Grid container spacing={16}>

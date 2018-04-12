@@ -291,6 +291,22 @@ export function registrationLogOut(BunqJSClient, resetPassword = false) {
 }
 
 /**
+ * Remove all api keys, passwords and other private data
+ * @param BunqJSClient
+ * @param resetPassword
+ * @returns {function(*)}
+ */
+export function registrationClearPrivateData(BunqJSClient) {
+    return dispatch => {
+        BunqJSClient.destroySession().then(_ => {
+            dispatch({
+                type: "REGISTRATION_CLEAR_PRIVATE_DATA"
+            });
+        });
+    };
+}
+
+/**
  * Set the device name
  * @param device_name
  * @returns {{type: string, payload: {device_name: *}}}

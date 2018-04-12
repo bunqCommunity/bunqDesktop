@@ -113,7 +113,7 @@ export default (state = defaultState, action) => {
                 environment: action.payload.environment
             };
 
-        case "REGISTRATION_CLEAR_API_KEY":
+        case "REGISTRATION_CLEAR_PRIVATE_DATA":
             // remove the stored key data
             store.remove(SALT_LOCATION);
             store.remove(API_KEY_LOCATION);
@@ -124,6 +124,7 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 api_key: false,
+                stored_api_keys: [],
                 has_stored_api_key: false,
                 derivedPassword: false
             };

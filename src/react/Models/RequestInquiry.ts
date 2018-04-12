@@ -78,6 +78,27 @@ export default class RequestInquiry implements Event {
         return parseFloat(this.amount_inquired.value);
     }
 
+    /**
+     * @returns {number}
+     */
+    public getAmountResponded(): number {
+        return parseFloat(this.amount_responded.value);
+    }
+
+    /**
+     * Returns the change in account balance if any based on this object's data
+     * @returns {number}
+     */
+    public getDelta(): number {
+        const noDeltaStatusList = ["PENDING", "REJECTED", "REVOKED", "EXPIRED"];
+        if (noDeltaStatusList.includes(this.status)) {
+            return 0;
+        }
+
+        // inquiry means we sent money so amount negative
+        return this.getAmount() * -1;
+    }
+
     get id(): number {
         return this._id;
     }

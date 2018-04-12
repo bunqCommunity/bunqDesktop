@@ -10,7 +10,6 @@ import { FormControl, FormControlLabel } from "material-ui/Form";
 import Select from "material-ui/Select";
 import Paper from "material-ui/Paper";
 import Switch from "material-ui/Switch";
-import Popover from "material-ui/Popover";
 import Dialog, {
     DialogActions,
     DialogContent,
@@ -21,6 +20,7 @@ import Dialog, {
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import RemoveIcon from "@material-ui/icons/Delete";
+import HomeIcon from "@material-ui/icons/Home";
 
 const remote = require("electron").remote;
 const path = remote ? remote.require("path") : require("path");
@@ -49,11 +49,14 @@ import {
     setAutomaticThemeChange
 } from "../Actions/options";
 import {
-    registrationClearApiKey,
+    registrationClearPrivateData,
     registrationLogOut
 } from "../Actions/registration";
 
 const styles = {
+    sideButton: {
+      marginBottom: 16
+    },
     avatar: {
         width: 55,
         height: 55
@@ -112,8 +115,8 @@ class Settings extends React.Component {
         this.props.setLanguage(event.target.value);
     };
 
-    clearApiKey = event => {
-        this.props.logOut();
+    clearPrivateData = event => {
+        this.props.clearPrivateData();
 
         // minor delay to ensure it happens after the state updates
         setTimeout(() => {
@@ -200,9 +203,15 @@ class Settings extends React.Component {
                 <Grid item xs={12} sm={2}>
                     <Button
                         onClick={this.props.history.goBack}
-                        style={styles.btn}
+                        style={styles.sideButton}
                     >
                         <ArrowBackIcon />
+                    </Button>
+                    <Button
+                        onClick={() => this.props.history.push("/")}
+                        style={styles.sideButton}
+                    >
+                        <HomeIcon />
                     </Button>
                 </Grid>
 
@@ -220,7 +229,7 @@ class Settings extends React.Component {
                                     variant="raised"
                                     color="secondary"
                                     style={styles.button}
-                                    onClick={this.clearApiKey}
+                                    onClick={this.clearPrivateData}
                                 >
                                     {t("Remove keys")} <RemoveIcon />
                                 </Button>
@@ -562,7 +571,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(loadSettingsLocation(location)),
 
         // clear api key from bunqjsclient and bunqdesktop
-        clearApiKey: () => dispatch(registrationClearApiKey(BunqJSClient)),
+        clearPrivateData: () => dispatch(registrationClearPrivateData(BunqJSClient)),
         // logout of current session without destroying stored keys
         logOut: () => dispatch(registrationLogOut(BunqJSClient)),
         // full hard reset off all storage

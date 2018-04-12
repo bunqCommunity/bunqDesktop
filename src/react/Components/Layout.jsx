@@ -195,30 +195,35 @@ class Layout extends React.Component {
         }
     };
 
+    /**
+     * Checks if automaticThemeChange is enabled and switches theme based on time
+     */
     checkTime = () => {
-        const currentTime = new Date().getTime();
+        if (this.props.automaticThemeChange) {
+            const currentTime = new Date().getTime();
 
-        const morningDate = new Date();
-        morningDate.setMinutes(0);
-        morningDate.setHours(9);
-        morningDate.setSeconds(0);
-        morningDate.setMilliseconds(0);
-        const morningTime = morningDate.getTime();
+            const morningDate = new Date();
+            morningDate.setHours(8);
+            morningDate.setMinutes(30);
+            morningDate.setSeconds(0);
+            morningDate.setMilliseconds(0);
+            const morningTime = morningDate.getTime();
 
-        const nightDate = new Date();
-        nightDate.setMinutes(30);
-        nightDate.setHours(19);
-        nightDate.setSeconds(0);
-        nightDate.setMilliseconds(0);
-        const nightTime = nightDate.getTime();
+            const nightDate = new Date();
+            nightDate.setHours(19);
+            nightDate.setMinutes(30);
+            nightDate.setSeconds(0);
+            nightDate.setMilliseconds(0);
+            const nightTime = nightDate.getTime();
 
-        if (currentTime > morningTime && currentTime < nightTime) {
-            if (this.props.theme === "DarkTheme") {
-                this.props.setTheme("DefaultTheme");
-            }
-        } else {
-            if (this.props.theme === "DefaultTheme") {
-                this.props.setTheme("DarkTheme");
+            if (currentTime > morningTime && currentTime < nightTime) {
+                if (this.props.theme === "DarkTheme") {
+                    this.props.setTheme("DefaultTheme");
+                }
+            } else {
+                if (this.props.theme === "DefaultTheme") {
+                    this.props.setTheme("DarkTheme");
+                }
             }
         }
     };
@@ -504,6 +509,7 @@ const mapStateToProps = state => {
         stickyMenu: state.options.sticky_menu,
         hideBalance: state.options.hide_balance,
         checkInactivity: state.options.check_inactivity,
+        automaticThemeChange: state.options.automatic_theme_change,
         inactivityCheckDuration: state.options.inactivity_check_duration,
 
         derivedPassword: state.registration.derivedPassword,

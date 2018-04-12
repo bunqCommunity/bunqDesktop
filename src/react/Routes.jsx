@@ -209,7 +209,7 @@ export default class Routes extends React.Component {
                         />
 
                         <PrivateRoute
-                            path="/add-account"
+                            path="/new-account"
                             apiKey={this.props.apiKey}
                             userType={this.props.userType}
                             derivedPassword={this.props.derivedPassword}

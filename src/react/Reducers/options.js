@@ -1,5 +1,6 @@
 import store from "store";
 import localforage from "localforage";
+import {ipcRenderer} from "electron";
 
 const remote = require("electron").remote;
 const path = remote ? remote.require("path") : require("path");
@@ -173,8 +174,10 @@ export default function reducer(state = defaultState, action) {
             let targetLocation = action.payload.location;
 
             try {
-                // check if file exists and is writeable
-                fs.writeFileSync(getSettingsLockLocation(), targetLocation);
+                // update main process
+                ipcRenderer.send("change-settings-path", targetLocation);
+
+                // set the settinsg path
                 settings.setPath(targetLocation);
             } catch (err) {
                 targetLocation = state.settings_location;
@@ -209,8 +212,10 @@ export default function reducer(state = defaultState, action) {
             let targetLocation2 = action.payload.location;
 
             try {
-                // check if file exists and is writeable
-                fs.writeFileSync(getSettingsLockLocation(), targetLocation2);
+                // update main process
+                ipcRenderer.send("change-settings-path", targetLocation2);
+
+                // set the settinsg path
                 settings.setPath(targetLocation2);
             } catch (err) {
                 targetLocation2 = state.settings_location;

@@ -83,6 +83,19 @@ export default class RequestResponse implements Event {
         return parseFloat(this.amount_inquired.value);
     }
 
+    /**
+     * Returns the change in account balance if any based on this object's data
+     * @returns {number}
+     */
+    public getDelta(): number {
+        const noDeltaStatusList = ["PENDING", "REJECTED", "REVOKED", "EXPIRED"];
+        if (noDeltaStatusList.includes(this.status)) {
+            return 0;
+        }
+
+        return this.getAmount();
+    }
+
     get id(): number {
         return this._id;
     }

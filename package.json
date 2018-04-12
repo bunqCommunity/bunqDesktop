@@ -3,7 +3,7 @@
     "description": "A desktop implementation for the bunq API",
     "productName": "BunqDesktop",
     "homepage": "https://bunqdesktop.com/",
-    "version": "0.8.2",
+    "version": "0.8.4",
     "author": {
         "name": "BunqCommunity",
         "email": "bunqcommunity@gmail.com"
@@ -121,7 +121,7 @@
         "i18next-xhr-backend": "^1.5.1"
     },
     "devDependencies": {
-        "@bunq-community/bunq-js-client": "^0.15.5",
+        "@bunq-community/bunq-js-client": "^0.15.6",
         "@google-cloud/translate": "^1.1.0",
         "@material-ui/icons": "^1.0.0-beta.42",
         "@types/axios": "^0.14.0",
@@ -155,6 +155,7 @@
         "electron-builder": "^20.2.0",
         "electron-reload": "^1.2.2",
         "email-validator": "^1.1.1",
+        "extract-text-webpack-plugin": "^3.0.2",
         "enzyme": "^3.3.0",
         "gulp": "^3.9.1",
         "gulp-batch": "^1.0.5",
@@ -205,12 +206,13 @@
         "source-map-support": "^0.4.15",
         "spectron": "^3.7.2",
         "store": "^2.0.4",
-        "ts-jest": "^22.4.2",
-        "ts-loader": "^4.1.0",
+        "style-loader": "^0.20.3",
+        "ts-jest": "^22.0.3",
+        "ts-loader": "^2.3.7",
         "typescript": "^2.8.1",
         "uglifyjs-webpack-plugin": "^1.2.4",
         "universal-analytics": "^0.4.15",
-        "webpack": "^4.5.0",
+        "webpack": "^3.0.0",
         "webpack-bundle-analyzer": "^2.11.1",
         "webpack-cli": "^2.0.13",
         "worker-loader": "^1.1.1"

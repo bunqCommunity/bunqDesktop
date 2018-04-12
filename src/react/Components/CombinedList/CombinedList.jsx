@@ -13,33 +13,35 @@ import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
 import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
+import InfoIcon from "@material-ui/icons/Info";
 
-import BunqMeTabListItem from "./ListItems/BunqMeTabListItem";
-import PaymentListItem from "./ListItems/PaymentListItem";
-import MasterCardActionListItem from "./ListItems/MasterCardActionListItem";
-import RequestResponseListItem from "./ListItems/RequestResponseListItem";
-import RequestInquiryListItem from "./ListItems/RequestInquiryListItem";
-import ClearBtn from "../Components/FilterComponents/ClearFilter";
-import FilterDrawer from "../Components/FilterComponents/FilterDrawer";
+import BunqMeTabListItem from "../ListItems/BunqMeTabListItem";
+import PaymentListItem from "../ListItems/PaymentListItem";
+import MasterCardActionListItem from "../ListItems/MasterCardActionListItem";
+import RequestResponseListItem from "../ListItems/RequestResponseListItem";
+import RequestInquiryListItem from "../ListItems/RequestInquiryListItem";
+import ClearBtn from "../FilterComponents/ClearFilter";
+import FilterDrawer from "../FilterComponents/FilterDrawer";
+import EventData from "./EventData";
 
-import { openSnackbar } from "../Actions/snackbar";
-import { bunqMeTabPut } from "../Actions/bunq_me_tab";
+import { openSnackbar } from "../../Actions/snackbar";
+import { bunqMeTabPut } from "../../Actions/bunq_me_tab";
 import {
     nextPage,
     previousPage,
     setPage,
     setPageSize,
     firstPage
-} from "../Actions/pagination";
+} from "../../Actions/pagination";
 
-import { humanReadableDate } from "../Helpers/Utils";
+import { humanReadableDate } from "../../Helpers/Utils";
 import {
     paymentFilter,
     bunqMeTabsFilter,
     masterCardActionFilter,
     requestInquiryFilter,
     requestResponseFilter
-} from "../Helpers/DataFilters";
+} from "../../Helpers/DataFilters";
 
 const styles = {
     button: {
@@ -68,7 +70,9 @@ const styles = {
 class CombinedList extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+        this.state = {
+            displayEventData: false
+        };
     }
 
     shouldComponentUpdate(nextProps) {
@@ -95,6 +99,9 @@ class CombinedList extends React.Component {
         this.props.openSnackbar(`Copied ${type} to your clipboard`);
     };
 
+    toggleEventData = event =>
+        this.setState({ displayEventData: !this.state.displayEventData });
+
     paymentMapper = () => {
         return this.props.payments
             .filter(
@@ -114,12 +121,12 @@ class CombinedList extends React.Component {
                 return {
                     component: (
                         <PaymentListItem
-                            payment={payment.Payment}
+                            payment={payment}
                             BunqJSClient={this.props.BunqJSClient}
                         />
                     ),
-                    filterDate: payment.Payment.created,
-                    info: payment.Payment
+                    filterDate: payment.created,
+                    info: payment
                 };
             });
     };
@@ -143,7 +150,7 @@ class CombinedList extends React.Component {
                 return {
                     component: (
                         <BunqMeTabListItem
-                            bunqMeTab={bunqMeTab.BunqMeTab}
+                            bunqMeTab={bunqMeTab}
                             BunqJSClient={this.props.BunqJSClient}
                             copiedValue={this.copiedValue}
                             bunqMeTabLoading={this.props.bunqMeTabLoading}
@@ -152,8 +159,8 @@ class CombinedList extends React.Component {
                             user={this.props.user}
                         />
                     ),
-                    filterDate: bunqMeTab.BunqMeTab.updated,
-                    info: bunqMeTab.BunqMeTab
+                    filterDate: bunqMeTab.updated,
+                    info: bunqMeTab
                 };
             });
     };
@@ -177,12 +184,12 @@ class CombinedList extends React.Component {
                 return {
                     component: (
                         <MasterCardActionListItem
-                            masterCardAction={masterCardAction.MasterCardAction}
+                            masterCardAction={masterCardAction}
                             BunqJSClient={this.props.BunqJSClient}
                         />
                     ),
-                    filterDate: masterCardAction.MasterCardAction.updated,
-                    info: masterCardAction.MasterCardAction
+                    filterDate: masterCardAction.updated,
+                    info: masterCardAction
                 };
             });
     };
@@ -206,12 +213,12 @@ class CombinedList extends React.Component {
                 return {
                     component: (
                         <RequestResponseListItem
-                            requestResponse={requestResponse.RequestResponse}
+                            requestResponse={requestResponse}
                             BunqJSClient={this.props.BunqJSClient}
                         />
                     ),
-                    filterDate: requestResponse.RequestResponse.created,
-                    info: requestResponse.RequestResponse
+                    filterDate: requestResponse.created,
+                    info: requestResponse
                 };
             });
     };
@@ -235,12 +242,12 @@ class CombinedList extends React.Component {
                 return {
                     component: (
                         <RequestInquiryListItem
-                            requestInquiry={requestInquiry.RequestInquiry}
+                            requestInquiry={requestInquiry}
                             BunqJSClient={this.props.BunqJSClient}
                         />
                     ),
-                    filterDate: requestInquiry.RequestInquiry.created,
-                    info: requestInquiry.RequestInquiry
+                    filterDate: requestInquiry.created,
+                    info: requestInquiry
                 };
             });
     };
@@ -357,6 +364,9 @@ class CombinedList extends React.Component {
                     {t("Payments and requests")}: {events.length}
                     <ListItemSecondaryAction>
                         <ClearBtn />
+                        <IconButton onClick={this.toggleEventData}>
+                            <InfoIcon />
+                        </IconButton>
                         <FilterDrawer />
                     </ListItemSecondaryAction>
                 </ListSubheader>
@@ -435,6 +445,12 @@ class CombinedList extends React.Component {
                         </Grid>
                     </Grid>
                 </ListSubheader>
+
+                <EventData
+                    t={t}
+                    events={events}
+                    open={this.state.displayEventData}
+                />
 
                 {loadingContent}
                 {combinedComponentList}

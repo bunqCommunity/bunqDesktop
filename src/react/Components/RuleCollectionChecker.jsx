@@ -6,7 +6,7 @@ import { setCategoryConnectionMultiple } from "../Actions/categories";
 import { setCategoryRule } from "../Actions/category_rules";
 
 // import typed worker
-const RuleCollectionCheckWorker = require("../WebWorkers/rule_collection_check.worker.ts");
+const RuleCollectionCheckWorker = require("../WebWorkers/rule_collection_check.worker.js");
 
 class RuleCollectionChecker extends React.Component {
     constructor(props, context) {
@@ -73,7 +73,7 @@ class RuleCollectionChecker extends React.Component {
         // get results for all our rule collections
         Object.keys(this.props.categoryRules).forEach(categoryRuleId => {
             const ruleCollection = this.props.categoryRules[categoryRuleId];
-            if (ruleCollection.isEnabled()) {
+            if (ruleCollection && ruleCollection.isEnabled()) {
                 this.worker.postMessage({
                     ruleCollection: ruleCollection,
                     payments: payments,

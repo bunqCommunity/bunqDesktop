@@ -77,6 +77,31 @@ export default class MasterCardAction implements Event {
         return parseFloat(this.amount_local.value);
     }
 
+    /**
+     * Returns the change in account balance if any based on this object's data
+     * @returns {number}
+     */
+    public getDelta(): number {
+        const validTypes = [
+            "ACQUIRER_AUTHORISED",
+            "AUTHORISED",
+            "AUTHORISED_PARTIAL",
+            "CLEARING_REFUND",
+            "PRE_AUTHORISATION_FINALISED",
+            "PRE_AUTHORISED",
+            "STAND_IN_AUTHORISED",
+            "UNAUTHORISED_CLEARING"
+        ];
+
+        // check if auth status means the payment completed
+        if (!validTypes.includes(this.authorisation_status)) {
+            return 0;
+        }
+
+        // mastercard payments means we sent money
+        return this.getAmount() * -1;
+    }
+
     get id(): number {
         return this._id;
     }
