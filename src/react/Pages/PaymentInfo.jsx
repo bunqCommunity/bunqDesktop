@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
@@ -23,10 +24,9 @@ import SpeedDial from "../Components/SpeedDial";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import TransactionHeader from "../Components/TransactionHeader";
 import CategorySelectorDialog from "../Components/Categories/CategorySelectorDialog";
+import CategoryChips from "../Components/Categories/CategoryChips";
 
 import { paymentsUpdate } from "../Actions/payment_info";
-import { translate } from "react-i18next";
-import CategoryChips from "../Components/Categories/CategoryChips";
 
 const styles = {
     btn: {},
@@ -199,7 +199,6 @@ class PaymentInfo extends React.Component {
                         <CategoryChips
                             type={"Payment"}
                             id={payment.id}
-                            reverseChips={true}
                         />
 
                         <CategorySelectorDialog
