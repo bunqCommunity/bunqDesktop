@@ -41,6 +41,9 @@ const TransactionHeader = props => {
     let toLabelName = toAlias.label_user.display_name;
     let fromLabelName = fromAlias.label_user.display_name;
 
+    let displayFromPayButton = false;
+    let displayToPayButton = false;
+
     // accounts list is available
     if (props.accounts) {
         // loop through accounts
@@ -53,9 +56,13 @@ const TransactionHeader = props => {
                 if (alias.type === "IBAN") {
                     if (alias.value === fromAlias.iban) {
                         fromLabelName = accountInfo.description;
+                        // the "from" side is this user so we show a "to" button
+                        displayToPayButton = true;
                     }
                     if (alias.value === toAlias.iban) {
                         toLabelName = accountInfo.description;
+                        // the "to" side is this user so we show a "from" button
+                        displayFromPayButton = true;
                     }
                 }
             });

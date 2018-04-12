@@ -74,6 +74,10 @@
   dependencies:
     recompose "^0.26.0"
 
+"@material-ui/lab@^1.0.0-alpha.1":
+  version "1.0.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/@material-ui/lab/-/lab-1.0.0-alpha.1.tgz#25bdd4e6a22330254a9609840a8d1a06063b5c0c"
+
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"

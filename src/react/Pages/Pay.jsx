@@ -116,6 +116,8 @@ class Pay extends React.Component {
     }
 
     componentDidMount() {
+        console.log(this.props);
+
         // set the current account selected on the dashboard as the active one
         this.props.accounts.map((account, accountKey) => {
             if (this.props.selectedAccount === account.id) {

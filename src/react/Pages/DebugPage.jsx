@@ -5,6 +5,8 @@ import ReactJson from "react-json-view";
 import Grid from "material-ui/Grid";
 import Button from "material-ui/Button";
 
+import ReactJsonWrapper from "../Components/ReactJsonWrapper"
+
 const styles = {
     paper: {
         padding: 24
@@ -45,21 +47,10 @@ class DebugPage extends React.Component {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <ReactJson
+                    <ReactJsonWrapper
                         style={styles.paper}
-                        src={modifiedState}
+                        data={modifiedState}
                         name="BunqDesktopState"
-                        theme="monokai"
-                        iconStyle="square"
-                        enableEdit={false}
-                        enableAdd={false}
-                        enabledDelete={false}
-                        enableClipboard={true}
-                        displayDataTypes={true}
-                        displayObjectSize={true}
-                        indentWidth={2}
-                        collapsed={1}
-                        collapseStringsAfterLength={30}
                     />
                 </Grid>
             </Grid>

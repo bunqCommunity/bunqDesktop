@@ -10,19 +10,23 @@ import Divider from "material-ui/Divider";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
+import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import HelpIcon from "@material-ui/icons/Help";
+import BookmarkIcon from "@material-ui/icons/Bookmark";
 
 import ExportDialog from "../Components/ExportDialog";
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import { paymentText, paymentTypeParser } from "../Helpers/StatusTexts";
 
+import SpeedDial from "../Components/SpeedDial";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import TransactionHeader from "../Components/TransactionHeader";
-import CategorySelector from "../Components/Categories/CategorySelector";
+import CategorySelectorDialog from "../Components/Categories/CategorySelectorDialog";
 
 import { paymentsUpdate } from "../Actions/payment_info";
 import { translate } from "react-i18next";
+import CategoryChips from "../Components/Categories/CategoryChips";
 
 const styles = {
     btn: {},
@@ -41,7 +45,8 @@ class PaymentInfo extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            displayExport: false
+            displayExport: false,
+            displayCategories: false
         };
     }
 
@@ -80,6 +85,9 @@ class PaymentInfo extends React.Component {
             );
         }
     }
+
+    toggleCategoryDialog = event =>
+        this.setState({ displayCategories: !this.state.displayCategories });
 
     render() {
         const {
@@ -188,9 +196,41 @@ class PaymentInfo extends React.Component {
                             </ListItem>
                         </List>
 
-                        <CategorySelector
-                            type={t("Payment")}
+                        <CategoryChips
+                            type={"Payment"}
+                            id={payment.id}
+                            reverseChips={true}
+                        />
+
+                        <CategorySelectorDialog
+                            type={"Payment"}
                             item={paymentInfo}
+                            onClose={this.toggleCategoryDialog}
+                            open={this.state.displayCategories}
+                        />
+
+                        <SpeedDial
+                            hidden={false}
+                            actions={[
+                                {
+                                    name: "Create new payment to counterparty",
+                                    icon: ArrowUpIcon,
+                                    color: "primary"
+                                },
+                                {
+                                    name: t("Manage categories"),
+                                    icon: BookmarkIcon,
+                                    color: "primary",
+                                    onClick: this.toggleCategoryDialog
+                                },
+                                {
+                                    name: t("View debug information"),
+                                    icon: HelpIcon,
+                                    color: "primary",
+                                    onClick: event =>
+                                        this.setState({ displayExport: true })
+                                }
+                            ]}
                         />
                     </Grid>
                 </Grid>
@@ -203,6 +243,14 @@ class PaymentInfo extends React.Component {
                     <title>{`BunqDesktop - ${t("Payment Info")}`}</title>
                 </Helmet>
 
+                <ExportDialog
+                    closeModal={event =>
+                        this.setState({ displayExport: false })}
+                    title={t("Export info")}
+                    open={this.state.displayExport}
+                    object={this.props.paymentInfo}
+                />
+
                 <Grid item xs={12} sm={2}>
                     <Button
                         onClick={this.props.history.goBack}
@@ -214,24 +262,6 @@ class PaymentInfo extends React.Component {
 
                 <Grid item xs={12} sm={8}>
                     <Paper style={styles.paper}>{content}</Paper>
-                </Grid>
-
-                <Grid item xs={12} sm={2} style={{ textAlign: "right" }}>
-                    <ExportDialog
-                        closeModal={event =>
-                            this.setState({ displayExport: false })}
-                        title={t("Export info")}
-                        open={this.state.displayExport}
-                        object={this.props.paymentInfo}
-                    />
-
-                    <Button
-                        style={styles.button}
-                        onClick={event =>
-                            this.setState({ displayExport: true })}
-                    >
-                        <HelpIcon />
-                    </Button>
                 </Grid>
             </Grid>
         );

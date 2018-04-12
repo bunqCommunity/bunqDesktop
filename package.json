@@ -92,6 +92,7 @@
         "@bunq-community/bunq-js-client": "^0.15.6",
         "@google-cloud/translate": "^1.1.0",
         "@material-ui/icons": "^1.0.0-beta.42",
+        "@material-ui/lab": "^1.0.0-alpha.1",
         "@types/axios": "^0.14.0",
         "@types/jest": "^22.1.3",
         "@types/moxios": "^0.4.8",
