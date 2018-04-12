@@ -4,15 +4,22 @@ import jetpack from "fs-jetpack";
 
 const userDataPath = app.getPath("userData");
 const userDataDir = jetpack.cwd(app.getPath("userData"));
-const defaultSettingsPath = `${userDataPath}${path.sep}settings.json`;
+const defaultSettingsPath = path.join(userDataPath, "settings.json");
 const settingsStoreFile = `SETTINGS_LOCATION`;
 
 // ensure bunqdesktop directory exists
-userDataDir.dir("./");
+try {
+    userDataDir.dir("./");
+} catch (err) {
+}
 
 const loadPath = () => {
     try {
-        return userDataDir.read(settingsStoreFile, "utf8");
+        const settingsPath = userDataDir.read(settingsStoreFile, "utf8");
+
+        if (settingsPath) {
+            return settingsPath;
+        }
     } catch (err) {
         // For some reason json can't be read
     }
