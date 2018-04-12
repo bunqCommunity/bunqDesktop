@@ -1,5 +1,6 @@
 import React from "react";
 import { translate } from "react-i18next";
+import { withTheme } from "material-ui/styles";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
@@ -12,6 +13,7 @@ import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
 import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
+import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import HelpIcon from "@material-ui/icons/Help";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
@@ -89,11 +91,21 @@ class PaymentInfo extends React.Component {
     toggleCategoryDialog = event =>
         this.setState({ displayCategories: !this.state.displayCategories });
 
+    startPayment = event => {
+        const paymentInfo = this.props.paymentInfo;
+        this.props.history.push(`/pay?amount=${paymentInfo.getAmount()}`);
+    }
+    startRequest = event => {
+        const paymentInfo = this.props.paymentInfo;
+        this.props.history.push(`/request?amount=${paymentInfo.getAmount()}`);
+    }
+
     render() {
         const {
             accountsSelectedAccount,
             paymentInfo,
             paymentLoading,
+            theme,
             t
         } = this.props;
         const paramAccountId = this.props.match.params.accountId;
@@ -212,20 +224,27 @@ class PaymentInfo extends React.Component {
                             hidden={false}
                             actions={[
                                 {
-                                    name: "Create new payment to counterparty",
+                                    name: "Send payment",
                                     icon: ArrowUpIcon,
-                                    color: "primary"
+                                    color: "action",
+                                    onClick: this.startPayment
+                                },
+                                {
+                                    name: "Send request",
+                                    icon: ArrowDownIcon,
+                                    color: "action",
+                                    onClick: this.startRequest
                                 },
                                 {
                                     name: t("Manage categories"),
                                     icon: BookmarkIcon,
-                                    color: "primary",
+                                    color: "action",
                                     onClick: this.toggleCategoryDialog
                                 },
                                 {
                                     name: t("View debug information"),
                                     icon: HelpIcon,
-                                    color: "primary",
+                                    color: "action",
                                     onClick: event =>
                                         this.setState({ displayExport: true })
                                 }

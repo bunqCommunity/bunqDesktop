@@ -84,6 +84,11 @@ class RequestInquiry extends React.Component {
     }
 
     componentDidMount() {
+        const searchParams = new URLSearchParams(this.props.location.search);
+        if (searchParams.has("amount")) {
+            this.setState({ amount: searchParams.get("amount") });
+        }
+
         // set the current account selected on the dashboard as the active one
         this.props.accounts.map((account, accountKey) => {
             if (this.props.selectedAccount === account.id) {
@@ -384,7 +389,7 @@ class RequestInquiry extends React.Component {
                     <title>{`BunqDesktop - ${t("Pay")}`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={10} md={8} lg={6}>
+                <Grid item xs={12} sm={10} md={6} lg={4}>
                     <Paper style={styles.paper}>
                         <TypographyTranslate variant="headline">
                             Request Payment

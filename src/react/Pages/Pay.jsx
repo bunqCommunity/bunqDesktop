@@ -116,7 +116,10 @@ class Pay extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props);
+        const searchParams = new URLSearchParams(this.props.location.search);
+        if (searchParams.has("amount")) {
+            this.setState({ amount: searchParams.get("amount") });
+        }
 
         // set the current account selected on the dashboard as the active one
         this.props.accounts.map((account, accountKey) => {

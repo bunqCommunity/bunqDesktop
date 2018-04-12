@@ -40,7 +40,7 @@ class SpeedDialCustom extends React.Component {
 
     render() {
         const { open } = this.state;
-        const { hidden, actions, ariaLabel } = this.props;
+        const { hidden, actions, ariaLabel, buttonColor } = this.props;
 
         return (
             <SpeedDial
@@ -62,6 +62,10 @@ class SpeedDialCustom extends React.Component {
 
                     return (
                         <SpeedDialAction
+                            ButtonProps={{
+                                color: buttonColor
+                            }}
+                            className={"nooooooo"}
                             key={action.name}
                             icon={<Icon color={iconColor} />}
                             tooltipTitle={action.name}
@@ -77,7 +81,8 @@ SpeedDialCustom.defaultProps = {
     style: {},
     actions: [],
     ariaLabel: "More options",
-    hidden: true
+    hidden: true,
+    buttonColor: "primary"
 };
 
 export default SpeedDialCustom;

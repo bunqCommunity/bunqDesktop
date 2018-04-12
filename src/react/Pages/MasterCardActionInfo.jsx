@@ -29,6 +29,8 @@ import {
     masterCardActionParser
 } from "../Helpers/StatusTexts";
 import { masterCardActionInfoUpdate } from "../Actions/master_card_action_info";
+import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
+import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 
 const styles = {
     btn: {},
@@ -238,15 +240,25 @@ class MasterCardActionInfo extends React.Component {
                             hidden={false}
                             actions={[
                                 {
+                                    name: "Send payment",
+                                    icon: ArrowUpIcon,
+                                    color: "action",
+                                    onClick: this.startPayment
+                                },
+                                {
+                                    name: "Send request",
+                                    icon: ArrowDownIcon,
+                                    color: "action",
+                                    onClick: this.startRequest
+                                },
+                                {
                                     name: t("Manage categories"),
                                     icon: BookmarkIcon,
-                                    color: "primary",
                                     onClick: this.toggleCategoryDialog
                                 },
                                 {
                                     name: t("View debug information"),
                                     icon: HelpIcon,
-                                    color: "primary",
                                     onClick: event =>
                                         this.setState({ displayExport: true })
                                 }
