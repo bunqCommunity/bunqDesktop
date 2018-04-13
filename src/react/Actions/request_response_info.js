@@ -1,4 +1,5 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import RequestResponse from "../Models/RequestResponse";
 
 import { requestResponsesSetInfo } from "./request_responses";
 
@@ -23,11 +24,16 @@ export function requestResponseUpdate(
     account_id,
     request_response_id
 ) {
+    const failedMessage = window.t("We failed to load the request information");
+
     return dispatch => {
         dispatch(requestResponseLoading());
         BunqJSClient.api.requestResponse
             .get(user_id, account_id, request_response_id)
-            .then(requestResponseInfo => {
+            .then(requestResponse => {
+                const requestResponseInfo = new RequestResponse(
+                    requestResponse
+                );
                 // update this item in the list and the stored data
                 dispatch(
                     requestResponsesSetInfo(
@@ -49,11 +55,7 @@ export function requestResponseUpdate(
             })
             .catch(error => {
                 dispatch(requestResponseNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We failed to load the request information"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

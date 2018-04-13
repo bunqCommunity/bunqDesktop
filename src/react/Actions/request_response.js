@@ -14,6 +14,13 @@ export function requestResponseAccept(
         address_billing: false
     }
 ) {
+    const failedMessage = window.t(
+        "We received the following error while trying to accept your request response"
+    );
+    const successMessage = window.t(
+        "Request response was successfully accepted!"
+    );
+
     return dispatch => {
         dispatch(requestResponseLoading());
         BunqJSClient.api.requestResponse
@@ -23,7 +30,7 @@ export function requestResponseAccept(
                 amount_responded: amountResponded
             })
             .then(result => {
-                dispatch(openSnackbar("Request response was successfully accepted!"));
+                dispatch(openSnackbar(successMessage));
                 dispatch(requestResponseNotLoading());
 
                 // update the information page
@@ -38,11 +45,7 @@ export function requestResponseAccept(
             })
             .catch(error => {
                 dispatch(requestResponseNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We received the following error while trying to accept your request response"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }
@@ -53,12 +56,17 @@ export function requestResponseReject(
     accountId,
     requestResponseId
 ) {
+    const failedMessage = window.t(
+        "We received the following error while trying to cancel the request"
+    );
+    const successMessage = window.t("Request was rejected successfully!");
+
     return dispatch => {
         dispatch(requestResponseLoading());
         BunqJSClient.api.requestResponse
             .put(userId, accountId, requestResponseId, "REJECTED", {})
             .then(result => {
-                dispatch(openSnackbar("Request was rejected successfully!"));
+                dispatch(openSnackbar(successMessage));
                 dispatch(requestResponseNotLoading());
 
                 // update the information page
@@ -73,11 +81,7 @@ export function requestResponseReject(
             })
             .catch(error => {
                 dispatch(requestResponseNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We received the following error while trying to cancel the request"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

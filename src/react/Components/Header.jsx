@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import IconButton from "material-ui/IconButton";
 import Hidden from "material-ui/Hidden";
 const remote = require("electron").remote;
-import MenuIcon from "material-ui-icons/Menu";
-import CloseIcon from "material-ui-icons/Close";
+import MenuIcon from "@material-ui/icons/Menu";
+import CloseIcon from "@material-ui/icons/Close";
 import RestoreIcon from "./CustomSVG/Restore";
 import MaximizeIcon from "./CustomSVG/Maximize";
 import MinimizeIcon from "./CustomSVG/Minimize";
@@ -46,8 +46,9 @@ const styles = {
         WebkitAppRegion: "drag",
         WebkitUserSelect: "none",
         position: "fixed",
-        width: "100%",
+        width: "101%",
         top: 0,
+        left: -2,
         zIndex: 10000,
         height: 50,
         zIndex: 1000,
@@ -86,6 +87,7 @@ class Header extends React.Component {
     };
 
     render() {
+        const displayButtons = !IsDarwin() && this.props.nativeFrame === false;
         // the actual menu button
         const menuButton = (
             <IconButton
@@ -115,7 +117,7 @@ class Header extends React.Component {
         } else if (!this.mainWindow.isMinimized()) {
             middleIcon = <MaximizeIcon />;
         }
-        const windowControls = !IsDarwin() ? (
+        const windowControls = displayButtons ? (
             <React.Fragment>
                 <IconButton
                     aria-label="Minimize application"
@@ -153,6 +155,7 @@ class Header extends React.Component {
 const mapStateToProps = store => {
     return {
         stickyMenu: store.options.sticky_menu,
+        nativeFrame: store.options.native_frame,
         minimizeToTray: store.options.minimize_to_tray
     };
 };

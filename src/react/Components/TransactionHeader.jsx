@@ -1,8 +1,8 @@
 import React from "react";
 import withTheme from "material-ui/styles/withTheme";
 import Grid from "material-ui/Grid";
-import ArrowForwardIcon from "material-ui-icons/ArrowForward";
-import ArrowDownIcon from "material-ui-icons/ArrowDownward";
+import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
+import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 import Typography from "material-ui/Typography";
 
 import LazyAttachmentImage from "./AttachmentImage/LazyAttachmentImage";
@@ -38,33 +38,35 @@ const TransactionHeader = props => {
     // color the arrows
     const arrowColor = props.theme.palette.text.primary;
 
-    let toLabelName = toAlias.label_user.public_nick_name;
-    let fromLabelName = fromAlias.label_user.public_nick_name;
+    let toLabelName = toAlias.label_user.display_name;
+    let fromLabelName = fromAlias.label_user.display_name;
 
-    // transaction between the user's own accounts
-    if (
-        props.user.public_uuid === fromAlias.label_user.uuid &&
-        props.user.public_uuid === toAlias.label_user.uuid
-    ) {
-        // accounts list is available
-        if (props.accounts) {
-            // loop through accounts
-            props.accounts.forEach(account => {
-                const accountInfo = account;
-                // loop through alias to find the iban and check if it matches
-                accountInfo.alias.forEach(alias => {
-                    // if IBAN check if it matches the from or to alias
-                    if (alias.type === "IBAN") {
-                        if (alias.value === fromAlias.iban) {
-                            fromLabelName = accountInfo.description;
-                        }
-                        if (alias.value === toAlias.iban) {
-                            toLabelName = accountInfo.description;
-                        }
+    let displayFromPayButton = false;
+    let displayToPayButton = false;
+
+    // accounts list is available
+    if (props.accounts) {
+        // loop through accounts
+        props.accounts.forEach(account => {
+            const accountInfo = account;
+
+            // loop through alias to find the iban and check if it matches
+            accountInfo.alias.forEach(alias => {
+                // if IBAN check if it matches the from or to alias
+                if (alias.type === "IBAN") {
+                    if (alias.value === fromAlias.iban) {
+                        fromLabelName = accountInfo.description;
+                        // the "from" side is this user so we show a "to" button
+                        displayToPayButton = true;
                     }
-                });
+                    if (alias.value === toAlias.iban) {
+                        toLabelName = accountInfo.description;
+                        // the "to" side is this user so we show a "from" button
+                        displayFromPayButton = true;
+                    }
+                }
             });
-        }
+        });
     }
 
     const components = [

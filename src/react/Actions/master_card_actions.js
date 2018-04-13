@@ -1,6 +1,8 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import MasterCardAction from "../Models/MasterCardAction";
 
-export const STORED_MASTER_CARD_ACTIONS = "BUNQDESKTOP_STORED_MASTER_CARD_ACTIONS";
+export const STORED_MASTER_CARD_ACTIONS =
+    "BUNQDESKTOP_STORED_MASTER_CARD_ACTIONS";
 
 export function masterCardActionsSetInfo(
     masterCardActions,
@@ -27,8 +29,17 @@ export function loadStoredMasterCardActions(BunqJSClient) {
         BunqJSClient.Session
             .loadEncryptedData(STORED_MASTER_CARD_ACTIONS)
             .then(data => {
-                if(data && data.items) {
-                    dispatch(masterCardActionsSetInfo(data.items, data.account_id));
+                if (data && data.items) {
+                    // turn plain objects into Model objects
+                    const masterCardActionsNew = data.items.map(
+                        item => new MasterCardAction(item)
+                    );
+                    dispatch(
+                        masterCardActionsSetInfo(
+                            masterCardActionsNew,
+                            data.account_id
+                        )
+                    );
                 }
             })
             .catch(error => {});
@@ -45,14 +56,23 @@ export function masterCardActionsUpdate(
         older_id: false
     }
 ) {
+    const failedMessage = window.t(
+        "We received the following error while loading your master card payments"
+    );
+
     return dispatch => {
         dispatch(masterCardActionsLoading());
         BunqJSClient.api.masterCardAction
             .list(userId, accountId, options)
             .then(masterCardActions => {
+                // turn plain objects into Model objects
+                const masterCardActionsNew = masterCardActions.map(
+                    item => new MasterCardAction(item)
+                );
+
                 dispatch(
                     masterCardActionsSetInfo(
-                        masterCardActions,
+                        masterCardActionsNew,
                         accountId,
                         false,
                         BunqJSClient
@@ -61,13 +81,8 @@ export function masterCardActionsUpdate(
                 dispatch(masterCardActionsNotLoading());
             })
             .catch(error => {
-                console.error(error);
                 dispatch(masterCardActionsNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We received the following error while loading your master card payments"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

@@ -32,6 +32,8 @@ export function loadStoredAccounts(BunqJSClient) {
 }
 
 export function accountsUpdate(BunqJSClient, userId) {
+    const failedMessage = window.t("We failed to load your monetary accounts");
+
     return dispatch => {
         dispatch(accountsLoading());
         BunqJSClient.api.monetaryAccount
@@ -47,11 +49,7 @@ export function accountsUpdate(BunqJSClient, userId) {
             })
             .catch(error => {
                 dispatch(accountsNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We failed to load your monetary accounts"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }
@@ -64,6 +62,11 @@ export function createAccount(
     dailyLimit,
     color
 ) {
+    const failedMessage = window.t(
+        "We received the following error while creating your account"
+    );
+    const successMessage = window.t("Account created successfully!");
+
     return dispatch => {
         dispatch(createAccountLoading());
 
@@ -72,22 +75,23 @@ export function createAccount(
         monetaryAccountBankApi
             .post(userId, currency, description, dailyLimit, color)
             .then(result => {
-                dispatch(openSnackbar("Account created successfully!"));
+                dispatch(openSnackbar(successMessage));
                 dispatch(accountsUpdate(BunqJSClient, userId));
                 dispatch(createAccountNotLoading());
             })
             .catch(error => {
                 dispatch(createAccountNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We received the following error while creating your account"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }
 
-export function deactivateAccount(BunqJSClient, userId, accountId, reason) {
+export function accountsDeactivate(BunqJSClient, userId, accountId, reason) {
+    const failedMessage = window.t(
+        "We received the following error while deactivating your account"
+    );
+    const successMessage = window.t("Account deactivated successfully!");
+
     return dispatch => {
         dispatch(updateAccountStatusLoading());
 
@@ -100,17 +104,40 @@ export function deactivateAccount(BunqJSClient, userId, accountId, reason) {
                 reason
             )
             .then(result => {
-                dispatch(openSnackbar("Account de-activated successfully!"));
+                dispatch(openSnackbar(successMessage));
                 dispatch(accountsUpdate(BunqJSClient, userId));
                 dispatch(updateAccountStatusNotLoading());
             })
             .catch(error => {
                 dispatch(updateAccountStatusNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We received the following error while creating your account"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
+            });
+    };
+}
+
+export function accountsUpdateSettings(BunqJSClient, userId, accountId, monetaryAccountSettings) {
+    const failedMessage = window.t(
+        "We received the following error updating the settings for your account"
+    );
+    const successMessage = window.t("Account settings updated successfully!");
+
+    return dispatch => {
+        dispatch(updateAccountStatusLoading());
+
+        BunqJSClient.api.monetaryAccountBank
+            .put(
+                userId,
+                accountId,
+                monetaryAccountSettings
+            )
+            .then(result => {
+                dispatch(openSnackbar(successMessage));
+                dispatch(accountsUpdate(BunqJSClient, userId));
+                dispatch(updateAccountStatusNotLoading());
+            })
+            .catch(error => {
+                dispatch(updateAccountStatusNotLoading());
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

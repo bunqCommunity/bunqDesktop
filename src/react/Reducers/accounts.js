@@ -1,4 +1,4 @@
-const store = require("store");
+import store from "store";
 
 import { STORED_ACCOUNTS } from "../Actions/accounts";
 
@@ -60,9 +60,11 @@ export default (state = defaultState, action) => {
             };
 
         case "ACCOUNTS_CLEAR":
-        case "REGISTRATION_CLEAR_API_KEY":
+        case "REGISTRATION_CLEAR_PRIVATE_DATA":
+        case "REGISTRATION_LOG_OUT":
         case "REGISTRATION_CLEAR_USER_INFO":
             store.remove(SELECTED_ACCOUNT_LOCAION);
+            store.remove(STORED_ACCOUNTS);
             return {
                 accounts: [],
                 selectedAccount: false,

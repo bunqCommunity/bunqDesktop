@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { translate } from "react-i18next";
 import DatePicker from "material-ui-pickers/DatePicker/index.js";
 import { withTheme } from "material-ui/styles";
 import IconButton from "material-ui/IconButton";
@@ -17,16 +18,16 @@ import List, {
     ListItemSecondaryAction
 } from "material-ui/List";
 
-import FilterListIcon from "material-ui-icons/FilterList";
-import CompareArrowsIcon from "material-ui-icons/CompareArrows";
-import ArrowUpward from "material-ui-icons/ArrowUpward";
-import ArrowDownward from "material-ui-icons/ArrowDownward";
-import Visible from "material-ui-icons/Visibility";
-import VisibleOff from "material-ui-icons/VisibilityOff";
-import ClearIcon from "material-ui-icons/Clear";
-import CheckCircle from "material-ui-icons/CheckCircle";
-import TimerOff from "material-ui-icons/TimerOff";
-import Cancel from "material-ui-icons/Cancel";
+import FilterListIcon from "@material-ui/icons/FilterList";
+import CompareArrowsIcon from "@material-ui/icons/CompareArrows";
+import ArrowUpward from "@material-ui/icons/ArrowUpward";
+import ArrowDownward from "@material-ui/icons/ArrowDownward";
+import Visible from "@material-ui/icons/Visibility";
+import VisibleOff from "@material-ui/icons/VisibilityOff";
+import ClearIcon from "@material-ui/icons/Clear";
+import CheckCircle from "@material-ui/icons/CheckCircle";
+import TimerOff from "@material-ui/icons/TimerOff";
+import Cancel from "@material-ui/icons/Cancel";
 
 import {
     clearPaymentFilterType,
@@ -41,8 +42,12 @@ import {
     setFromDateFilter,
     setToDateFilter,
     clearFromDateFilter,
-    clearToDateFilter
+    clearToDateFilter,
+    resetFilters
 } from "../../Actions/filters";
+
+import SearchFilter from "./SearchFilter";
+import CategorySelection from "./CategorySelection";
 
 const styles = {
     list: {
@@ -62,6 +67,12 @@ const styles = {
         paddingTop: 0,
         paddingBottom: 0,
         height: 38
+    },
+    textFieldListItem: {
+        width: "100%"
+    },
+    textField: {
+        width: "100%"
     },
     subheaderTitle: {
         height: 40
@@ -107,12 +118,6 @@ class FilterDrawer extends React.Component {
         this.setState({ open: false });
     };
 
-    clearAll = () => {
-        this.props.clearPaymentFilterType();
-        this.props.clearBunqMeTabFilterType();
-        this.props.clearRequestFilterType();
-    };
-
     handlePaymentTypeChange = event => {
         this.props.setPaymentFilterType(event.target.value);
     };
@@ -155,15 +160,20 @@ class FilterDrawer extends React.Component {
             requestType,
             requestVisibility,
             bunqMeTabType,
-            bunqMeTabVisibility
+            bunqMeTabVisibility,
+            t
         } = this.props;
         const { sentPayment, receivedPayment } = theme.palette.common;
 
         const drawerList = (
             <List style={styles.list}>
+                <ListItem style={styles.textFieldListItem}>
+                    <SearchFilter style={styles.textField} t={t} />
+                </ListItem>
+
                 {/* filters for both normal payments and master card actions */}
                 <ListSubheader style={styles.subheaderTitle}>
-                    Payments
+                    {t("Payments")}
                     <ListItemSecondaryAction>
                         <IconButton
                             aria-label="Display or hide all payments"
@@ -215,7 +225,7 @@ class FilterDrawer extends React.Component {
 
                 {/* filters for both request-responses and request-requests*/}
                 <ListSubheader style={styles.subheaderTitle}>
-                    Requests
+                    {t("Requests")}
                     <ListItemSecondaryAction>
                         <IconButton
                             aria-label="Display or hide all requests"
@@ -267,7 +277,7 @@ class FilterDrawer extends React.Component {
 
                 {/* filters bunq.me tabs */}
                 <ListSubheader style={styles.subheaderTitle}>
-                    bunq.me requests
+                    {t("bunqme Requests")}
                     <ListItemSecondaryAction>
                         <IconButton
                             aria-label="Display or hide all bunq.me requests"
@@ -338,13 +348,13 @@ class FilterDrawer extends React.Component {
                 </ListItem>
 
                 <ListSubheader style={styles.subheaderTitle}>
-                    Date range filter
+                    {t("Date range filter")}
                 </ListSubheader>
                 <ListItem style={styles.listItem}>
                     <DatePicker
                         id="from-date"
-                        helperText="From date"
-                        emptyLabel="No filter"
+                        helperText={t("From date")}
+                        emptyLabel={t("No filter")}
                         format="MMMM DD, YYYY"
                         disableFuture
                         style={styles.dateInput}
@@ -366,8 +376,8 @@ class FilterDrawer extends React.Component {
                 <ListItem style={styles.listItem}>
                     <DatePicker
                         id="to-date"
-                        helperText="To date"
-                        emptyLabel="No filter"
+                        helperText={t("To date")}
+                        emptyLabel={t("No filter")}
                         format="MMMM DD, YYYY"
                         disableFuture
                         style={styles.dateInput}
@@ -387,14 +397,18 @@ class FilterDrawer extends React.Component {
                     />
                 </ListItem>
 
+                <CategorySelection t={t} />
+
                 <ListItem style={styles.listFiller} />
 
                 <Divider />
-                <ListItem button onClick={this.clearAll}>
+                <ListItem button onClick={this.props.resetFilters}>
                     <ListItemIcon>
                         <ClearIcon />
                     </ListItemIcon>
-                    <Typography variant="subheading">Clear filters</Typography>
+                    <Typography variant="subheading">
+                        {t("Clear filters")}
+                    </Typography>
                 </ListItem>
             </List>
         );
@@ -406,7 +420,7 @@ class FilterDrawer extends React.Component {
                 onClick={this.openDrawer}
                 {...this.props.buttonProps}
             >
-                Filter <FilterListIcon />
+                {t("Filter")} <FilterListIcon />
             </Button>
         ) : (
             <IconButton
@@ -460,6 +474,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        resetFilters: () => dispatch(resetFilters()),
+
         clearPaymentFilterType: () => dispatch(clearPaymentFilterType()),
         setPaymentFilterType: type => dispatch(setPaymentFilterType(type)),
         togglePaymentFilterVisibility: () =>
@@ -483,5 +499,5 @@ const mapDispatchToProps = dispatch => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-    withTheme()(FilterDrawer)
+    withTheme()(translate("translations")(FilterDrawer))
 );

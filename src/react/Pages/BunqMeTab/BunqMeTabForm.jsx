@@ -1,14 +1,15 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 
 import TextField from "material-ui/TextField";
-import { InputLabel } from "material-ui/Input";
-import Button from "material-ui/Button";
-import Typography from "material-ui/Typography";
 import { FormControl } from "material-ui/Form";
 
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
+import TypographyTranslate from "../../Components/TranslationHelpers/Typography";
+import ButtonTranslate from "../../Components/TranslationHelpers/Button";
+
 import { openSnackbar } from "../../Actions/snackbar";
 import { bunqMeTabSend } from "../../Actions/bunq_me_tab";
 import ConfirmationDialog from "./ConfirmationDialog";
@@ -26,7 +27,7 @@ const styles = {
     }
 };
 
-class BunqMeTab extends React.Component {
+class BunqMeTabForm extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -172,11 +173,14 @@ class BunqMeTab extends React.Component {
 
     render() {
         const { selectedAccount, description, amount } = this.state;
+        const t = this.props.t;
         const account = this.props.accounts[selectedAccount];
 
         return [
             <div style={styles.paper}>
-                <Typography variant="headline">Create new Bunq.me request</Typography>
+                <TypographyTranslate variant="headline">
+                    Create new bunqme request
+                </TypographyTranslate>
 
                 <AccountSelectorDialog
                     value={this.state.selectedAccount}
@@ -189,7 +193,7 @@ class BunqMeTab extends React.Component {
                     fullWidth
                     error={this.state.descriptionError}
                     id="description"
-                    label="Description"
+                    label={t("Description")}
                     value={this.state.description}
                     onChange={this.handleChange("description")}
                     margin="normal"
@@ -213,18 +217,17 @@ class BunqMeTab extends React.Component {
                     />
                 </FormControl>
 
-                <Button
+                <ButtonTranslate
                     variant="raised"
                     color="primary"
                     disabled={
-                        !this.state.validForm ||
-                        this.props.bunqMeTabLoading
+                        !this.state.validForm || this.props.bunqMeTabLoading
                     }
                     style={styles.payButton}
                     onClick={this.openModal}
                 >
                     Create request
-                </Button>
+                </ButtonTranslate>
             </div>,
             <ConfirmationDialog
                 closeModal={this.closeModal}
@@ -264,4 +267,6 @@ const mapDispatchToProps = (dispatch, props) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(BunqMeTab);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(BunqMeTabForm)
+);

@@ -1,5 +1,6 @@
 import React from "react";
-import { Typography } from "material-ui";
+import { translate } from "react-i18next";
+import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
@@ -13,18 +14,19 @@ import Card, { CardContent } from "material-ui/Card";
 import { CircularProgress } from "material-ui/Progress";
 
 import QRSvg from "../../Components/QR/QRSvg";
+import TranslateTypography from "../../Components/TranslationHelpers/Typography";
+import TranslateButton from "../../Components/TranslationHelpers/Button";
+import NavLink from "../../Components/Routing/NavLink";
+import UserItem from "./UserItem";
 
-import { usersUpdate } from "../../Actions/users";
 import {
-    registrationClearApiKey,
-    registrationLoadApiKey,
+    registrationLogOut,
     registrationSetApiKey,
+    registrationLoadApiKey,
     registrationSetDeviceName,
     registrationSetEnvironment
 } from "../../Actions/registration";
 import { userLogin } from "../../Actions/user";
-import UserItem from "./UserItem";
-import { Redirect } from "react-router-dom";
 import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
 
 const styles = {
@@ -76,6 +78,8 @@ class Login extends React.Component {
 
             openOptions: false,
 
+            loadingBunqUser: false,
+
             loadingQrCode: false,
             requestQrCodeBase64: false,
             requestUuid: false
@@ -85,6 +89,7 @@ class Login extends React.Component {
     }
 
     componentDidMount() {
+        const isSandboxMode = this.props.environment === "SANDBOX";
         if (this.props.derivedPassword !== false) {
             this.props.loadApiKey(this.props.derivedPassword);
         }
@@ -95,7 +100,9 @@ class Login extends React.Component {
             this.setState({ deviceName: this.props.deviceName });
         }
         this.setState({
-            sandboxMode: this.props.environment === "SANDBOX"
+            // check if sandbox mode is set and open options if this is the case
+            sandboxMode: isSandboxMode,
+            openOptions: isSandboxMode
         });
 
         this.checkForSingleUser();
@@ -145,22 +152,26 @@ class Login extends React.Component {
     };
 
     setRegistration = () => {
+        const apiKeyLength = this.props.t(
+            "The API key you entered does not look valid"
+        );
+        const deviceNameLengthMin = this.props.t(
+            "The device name has to be atleast 1 character"
+        );
+        const deviceNameLengthMax = this.props.t(
+            "The device name can't be longer than 32 characters"
+        );
+
         if (this.state.apiKey.length !== 64) {
-            this.props.openSnackbar(
-                "The API key you entered does not look valid"
-            );
+            this.props.openSnackbar(apiKeyLength);
             return;
         }
 
         if (this.state.deviceName.length <= 0) {
-            this.props.openSnackbar(
-                "The device name has to be atleast 1 character."
-            );
+            this.props.openSnackbar(deviceNameLengthMin);
             return;
         } else if (this.state.deviceName.length > 32) {
-            this.props.openSnackbar(
-                "The device name can't be longer than 32 characters."
-            );
+            this.props.openSnackbar(deviceNameLengthMax);
             return;
         }
 
@@ -200,6 +211,32 @@ class Login extends React.Component {
                     this.props.handleBunqError(error);
                 });
         }
+    };
+
+    createSandboxUser = () => {
+        this.setState({ loadingBunqUser: true });
+        this.props.BunqJSClient.api.sandboxUser
+            .post()
+            .then(apiKey => {
+                // set the api key and update state
+                this.setState(
+                    {
+                        apiKey: apiKey,
+                        sandboxMode: true,
+                        loadingBunqUser: false
+                    },
+                    // validate the new data
+                    () =>
+                        this.validateInputs(
+                            this.state.apiKey,
+                            this.state.deviceName
+                        )
+                );
+            })
+            .catch(error => {
+                this.setState({ loadingBunqUser: false });
+                this.props.handleBunqError(error);
+            });
     };
 
     checkForScanEvent = () => {
@@ -246,8 +283,8 @@ class Login extends React.Component {
         }, 5000);
     };
 
-    clearApiKey = () => {
-        this.props.clearApiKey();
+    logOut = () => {
+        this.props.logOut();
         this.setState({ apiKey: "", apiKeyValid: false });
     };
 
@@ -256,7 +293,7 @@ class Login extends React.Component {
             {
                 apiKey: event.target.value
             },
-            _ => this.validateInputs(this.state.apiKey, this.state.deviceName)
+            () => this.validateInputs(this.state.apiKey, this.state.deviceName)
         );
     };
     handleNameChange = event => {
@@ -264,7 +301,7 @@ class Login extends React.Component {
             {
                 deviceName: event.target.value
             },
-            _ => this.validateInputs(this.state.apiKey, this.state.deviceName)
+            () => this.validateInputs(this.state.apiKey, this.state.deviceName)
         );
     };
     handleCheckboxChange = (event, checked) => {
@@ -285,6 +322,8 @@ class Login extends React.Component {
     };
 
     render() {
+        const t = this.props.t;
+
         if (
             this.props.derivedPassword === false &&
             this.props.registrationLoading === false
@@ -317,6 +356,8 @@ class Login extends React.Component {
             this.state.apiKey === this.props.apiKey &&
             currentSelectedEnvironmnent === this.props.environment;
 
+        const hasNoApiKey = this.props.apiKey === false;
+
         const buttonDisabled =
             unchangedApiKeyEnvironment ||
             // invalid inputs
@@ -324,17 +365,29 @@ class Login extends React.Component {
             this.state.deviceNameValid === false ||
             // user info is already being loaded
             this.props.userLoading === true ||
+            // a bunq test user is being created
+            this.props.loadingBunqUser === true ||
             // registration is loading
             this.props.registrationLoading === true;
 
-        const apiKeyContent =
-            this.props.apiKey === false ? (
+        const sandboxButtonDisabled =
+            // user info is already being loaded
+            this.props.userLoading === true ||
+            // a bunq test user is being created
+            this.state.loadingBunqUser === true ||
+            // registration is loading
+            this.props.registrationLoading === true;
+
+        const apiKeyContent = hasNoApiKey ? (
+            <React.Fragment>
                 <CardContent style={{ textAlign: "center" }}>
                     <div style={{ textAlign: "center" }}>
                         {this.state.requestQrCodeBase64 === false ? (
-                            <IconButton onClick={this.displayQrCode}>
-                                <QRSvg />
-                            </IconButton>
+                            <div style={styles.qrCode}>
+                                <IconButton onClick={this.displayQrCode}>
+                                    <QRSvg />
+                                </IconButton>
+                            </div>
                         ) : (
                             <img
                                 className="animated fadeIn"
@@ -343,17 +396,20 @@ class Login extends React.Component {
                                 style={styles.qrCode}
                             />
                         )}
-                        <Typography variant="body2" style={{ margin: 0 }}>
+                        <TranslateTypography
+                            variant="body2"
+                            style={{ margin: 0 }}
+                        >
                             Scan the QR code with the bunq app to begin!
-                        </Typography>
+                        </TranslateTypography>
                     </div>
 
                     <Input
                         autoFocus
                         style={styles.apiInput}
                         error={!this.state.deviceNameValid}
-                        placeholder="Device Name"
-                        label="Device Name"
+                        placeholder={t("Device Name")}
+                        label={t("Device Name")}
                         onChange={this.handleNameChange}
                         value={this.state.deviceName}
                         disabled={
@@ -376,9 +432,9 @@ class Login extends React.Component {
                         style={styles.optionsButton}
                     >
                         {this.state.openOptions ? (
-                            "Less options"
+                            t("Less options")
                         ) : (
-                            "More options"
+                            t("More options")
                         )}
                     </Button>
 
@@ -386,9 +442,9 @@ class Login extends React.Component {
                         <Input
                             style={styles.apiInput}
                             error={!this.state.apiKeyValid}
-                            placeholder="API Key"
-                            label="API Key"
-                            hint="Your personal API key"
+                            placeholder={t("API key")}
+                            label={t("API key")}
+                            hint={t("Your personal API key")}
                             onChange={this.handleKeyChange}
                             value={this.state.apiKey}
                             disabled={
@@ -407,7 +463,7 @@ class Login extends React.Component {
                         />
                         <FormControlLabel
                             style={styles.environmentToggle}
-                            label="Enable sandbox mode?"
+                            label={t("Enable sandbox mode?")}
                             control={
                                 <Switch
                                     checked={this.state.sandboxMode}
@@ -417,7 +473,19 @@ class Login extends React.Component {
                             }
                         />
 
-                        <Button
+                        {this.state.sandboxMode ? (
+                            <TranslateButton
+                                variant="raised"
+                                disabled={sandboxButtonDisabled}
+                                color={"secondary"}
+                                style={styles.loginButton}
+                                onClick={this.createSandboxUser}
+                            >
+                                Create a sandbox account
+                            </TranslateButton>
+                        ) : null}
+
+                        <TranslateButton
                             variant="raised"
                             disabled={buttonDisabled}
                             color={"primary"}
@@ -425,33 +493,46 @@ class Login extends React.Component {
                             onClick={this.setRegistration}
                         >
                             Set API Key
-                        </Button>
+                        </TranslateButton>
+
+                        {this.props.storedApiKeys.length > 0 ? (
+                            <Button
+                                style={styles.loginButton}
+                                to={"/switch-api-keys"}
+                                component={NavLink}
+                            >
+                                {t("Use a stored API key")}
+                            </Button>
+                        ) : null}
                     </Collapse>
                 </CardContent>
-            ) : (
-                <CardContent>
-                    <Typography variant="headline" component="h2">
-                        You're logged in!
-                    </Typography>
-                    <Button
-                        variant="raised"
-                        color={"secondary"}
-                        style={styles.clearButton}
-                        onClick={this.clearApiKey}
-                        disabled={this.props.userLoading}
-                    >
-                        Logout
-                    </Button>
-                </CardContent>
-            );
+            </React.Fragment>
+        ) : (
+            <CardContent>
+                <TranslateTypography variant="headline" component="h2">
+                    You're logged in!
+                </TranslateTypography>
+                <TranslateButton
+                    variant="raised"
+                    color={"secondary"}
+                    style={styles.clearButton}
+                    onClick={this.logout}
+                    disabled={this.props.userLoading}
+                >
+                    Logout
+                </TranslateButton>
+            </CardContent>
+        );
 
         const cardContent = this.props.registrationLoading ? (
             <CardContent style={{ textAlign: "center" }}>
-                <Typography variant="headline" component="h2">
+                <TranslateTypography variant="headline" component="h2">
                     Loading
-                </Typography>
+                </TranslateTypography>
                 <CircularProgress size={50} />
-                <Typography variant="subheading">{status_message}</Typography>
+                <TranslateTypography variant="subheading">
+                    {status_message}
+                </TranslateTypography>
             </CardContent>
         ) : (
             apiKeyContent
@@ -462,7 +543,7 @@ class Login extends React.Component {
                 container
                 spacing={16}
                 justify={"center"}
-                alignItems={"center"}
+                alignItems={hasNoApiKey ? "center" : "baseline"}
                 style={styles.wrapperContainer}
             >
                 <Helmet>
@@ -483,7 +564,6 @@ class Login extends React.Component {
                     <Card style={{ width: 250 }}>{cardContent}</Card>
                 </Grid>
                 <Grid item xs={12} />
-
                 {userItems}
 
                 <img
@@ -505,6 +585,7 @@ const mapStateToProps = state => {
         environment: state.registration.environment,
         deviceName: state.registration.device_name,
         apiKey: state.registration.api_key,
+        storedApiKeys: state.registration.stored_api_keys,
 
         users: state.users.users,
         user: state.user.user,
@@ -517,7 +598,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         // clear api key from bunqjsclient and bunqdesktop
-        clearApiKey: () => dispatch(registrationClearApiKey(BunqJSClient)),
+        logOut: () => dispatch(registrationLogOut(BunqJSClient)),
         // set the api key and stores the encrypted version
         setApiKey: (api_key, derivedPassword) =>
             dispatch(registrationSetApiKey(api_key, derivedPassword)),
@@ -534,12 +615,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         loginUser: (type, updated = false) =>
             dispatch(userLogin(BunqJSClient, type, updated)),
 
-        // get latest user list from BunqJSClient
-        usersUpdate: (updated = false) =>
-            dispatch(usersUpdate(BunqJSClient, updated)),
-
         handleBunqError: error => BunqErrorHandler(dispatch, error)
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(Login)
+);

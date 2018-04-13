@@ -1,5 +1,6 @@
 import React from "react";
 import Grid from "material-ui/Grid";
+import { translate } from "react-i18next";
 import TextField from "material-ui/TextField";
 import Typography from "material-ui/Typography";
 import Collapse from "material-ui/transitions/Collapse";
@@ -108,6 +109,7 @@ class AddressForm extends React.Component {
     };
 
     render() {
+        const t = this.props.t;
         if (this.props.visible === false) return null;
 
         const requiredStatus = this.props.required
@@ -125,7 +127,7 @@ class AddressForm extends React.Component {
                         <TextField
                             fullWidth
                             id="street"
-                            label="Street"
+                            label={t("Street")}
                             error={this.state.streetError}
                             value={this.state.street}
                             onChange={this.handleChange("street")}
@@ -136,7 +138,7 @@ class AddressForm extends React.Component {
                         <TextField
                             fullWidth
                             id="house_number"
-                            label="House number"
+                            label={t("House number")}
                             error={this.state.house_numberError}
                             value={this.state.house_number}
                             onChange={this.handleChange("house_number")}
@@ -147,7 +149,7 @@ class AddressForm extends React.Component {
                         <TextField
                             fullWidth
                             id="postal_code"
-                            label="Postal Code"
+                            label={t("Postal Code")}
                             error={this.state.postal_codeError}
                             value={this.state.postal_code}
                             onChange={this.handleChange("postal_code")}
@@ -158,7 +160,7 @@ class AddressForm extends React.Component {
                         <TextField
                             fullWidth
                             id="city"
-                            label="City"
+                            label={t("City")}
                             error={this.state.cityError}
                             value={this.state.city}
                             onChange={this.handleChange("city")}
@@ -169,7 +171,7 @@ class AddressForm extends React.Component {
                         <TextField
                             fullWidth
                             id="country"
-                            label="Country"
+                            label={t("Country")}
                             error={this.state.countryError}
                             value={this.state.country}
                             onChange={this.handleChange("country")}
@@ -180,7 +182,7 @@ class AddressForm extends React.Component {
                         <TextField
                             fullWidth
                             id="po_box"
-                            label="PO Box (optional)"
+                            label={t("PO Box (optional)")}
                             error={this.state.po_boxError}
                             value={this.state.po_box}
                             onChange={this.handleChange("po_box")}
@@ -193,4 +195,4 @@ class AddressForm extends React.Component {
     }
 }
 
-export default AddressForm;
+export default translate("translations")(AddressForm);

@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import Button from "material-ui/Button";
-import RefreshIcon from "material-ui-icons/Refresh";
+import RefreshIcon from "@material-ui/icons/Refresh";
 import { CircularProgress } from "material-ui/Progress";
 
 import { paymentInfoUpdate } from "../Actions/payments";
@@ -100,7 +100,11 @@ class LoadOlderButton extends React.Component {
                         onClick={this.update}
                         disabled={loadingState}
                     >
-                        <RefreshIcon />
+                        {this.props.buttonContent ? (
+                            this.props.buttonContent
+                        ) : (
+                            <RefreshIcon />
+                        )}
                     </Button>
                 )}
             </div>
@@ -110,6 +114,7 @@ class LoadOlderButton extends React.Component {
 
 LoadOlderButton.defaultProps = {
     updateExternal: false,
+    buttonContent: false,
     wrapperStyle: {},
     loaderStyle: {},
     buttonStyle: {}
@@ -145,31 +150,36 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         paymentsUpdate: (userId, accountId, older_id) =>
             dispatch(
                 paymentInfoUpdate(BunqJSClient, userId, accountId, {
-                    older_id: older_id
+                    older_id: older_id,
+                    count: 50
                 })
             ),
         requestInquiriesUpdate: (userId, accountId, older_id) =>
             dispatch(
                 requestInquiriesUpdate(BunqJSClient, userId, accountId, {
-                    older_id: older_id
+                    older_id: older_id,
+                    count: 50
                 })
             ),
         requestResponsesUpdate: (userId, accountId, older_id) =>
             dispatch(
                 requestResponsesUpdate(BunqJSClient, userId, accountId, {
-                    older_id: older_id
+                    older_id: older_id,
+                    count: 50
                 })
             ),
         masterCardActionsUpdate: (userId, accountId, older_id) =>
             dispatch(
                 masterCardActionsUpdate(BunqJSClient, userId, accountId, {
-                    older_id: older_id
+                    older_id: older_id,
+                    count: 50
                 })
             ),
         bunqMeTabsUpdate: (userId, accountId, older_id) =>
             dispatch(
                 bunqMeTabsUpdate(BunqJSClient, userId, accountId, {
-                    older_id: older_id
+                    older_id: older_id,
+                    count: 50
                 })
             )
     };

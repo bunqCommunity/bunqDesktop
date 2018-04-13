@@ -1,6 +1,8 @@
 const remote = require("electron").remote;
-const isDarwinPlatform = remote.require("os").platform() === "darwin";
+const platform = remote
+    ? remote.require("os").platform()
+    : require("os").platform();
 
 export default () => {
-    return isDarwinPlatform;
+    return platform === "darwin";
 };

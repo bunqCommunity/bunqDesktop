@@ -1,6 +1,6 @@
-import RuleCollection, { EventObjectResult } from "../Types/RuleCollection";
+import RuleCollection from "../Types/RuleCollection";
 
-onmessage = (e: MessageEventInit) => {
+onmessage = e => {
     const ruleCollection = new RuleCollection();
     ruleCollection.fromObject(e.data.ruleCollection);
 
@@ -39,6 +39,9 @@ onmessage = (e: MessageEventInit) => {
     ];
 
     // filter the results
-    const result: EventObjectResult[] = ruleCollection.filterItems(events);
-    postMessage(result);
+    const result = ruleCollection.filterItems(events);
+    postMessage({
+        result: result,
+        ruleCollectionId: ruleCollection.getId()
+    });
 };

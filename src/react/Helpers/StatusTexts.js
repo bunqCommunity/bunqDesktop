@@ -1,41 +1,57 @@
-export const requestResponseText = requestResponse => {
+export const requestResponseText = (requestResponse, t) => {
+    const ACCEPTED = t("You paid the request");
+    const PENDING = t("Received a request");
+    const REJECTED = t("You denied the request");
+    const REVOKED = t("Request was cancelled");
+    const EXPIRED = t("Request has expired");
     switch (requestResponse.status) {
         case "ACCEPTED":
-            return "You paid the request";
+            return ACCEPTED;
         case "PENDING":
-            return "Received a request";
+            return PENDING;
         case "REJECTED":
-            return "You denied the request";
+            return REJECTED;
         case "REVOKED":
-            return "Request was cancelled";
+            return REVOKED;
+        case "EXPIRED":
+            return EXPIRED;
+        default:
+            return requestResponse.status;
     }
 };
 
-export const requestInquiryText = requestInquiry => {
+export const requestInquiryText = (requestInquiry, t) => {
+    const ACCEPTED = t("Your request was accepted");
+    const PENDING = t("Request sent and pending");
+    const REJECTED = t("Your request was denied");
+    const REVOKED = t("You cancelled the request");
+    const EXPIRED = t("Request has expired");
     switch (requestInquiry.status) {
         case "ACCEPTED":
-            return "Your request was accepted";
+            return ACCEPTED;
         case "PENDING":
-            return "Request sent and pending";
+            return PENDING;
         case "REJECTED":
-            return "Your request was denied";
+            return REJECTED;
         case "REVOKED":
-            return "You cancelled the request";
+            return REVOKED;
         case "EXPIRED":
-            return "Request is expired";
+            return EXPIRED;
+        default:
+            return requestInquiry.status;
     }
 };
 
-export const paymentText = payment => {
+export const paymentText = (payment, t) => {
+    const sentPaymentLabel = t("Sent payment with ");
+    const receivedPaymentLabel = t("Received payment with ");
     const label =
-        payment.amount.value < 0
-            ? "Sent payment with "
-            : "Received payment with ";
+        payment.amount.value < 0 ? sentPaymentLabel : receivedPaymentLabel;
 
-    return `${label}${paymentTypeParser(payment.type)}`;
+    return `${label}${paymentTypeParser(payment.type, t)}`;
 };
 
-export const paymentTypeParser = paymentType => {
+export const paymentTypeParser = (paymentType, t) => {
     switch (paymentType) {
         case "BUNQ":
             return "bunq";
@@ -49,28 +65,34 @@ export const paymentTypeParser = paymentType => {
     return paymentType;
 };
 
-export const masterCardActionText = masterCardAction => {
+export const masterCardActionText = (masterCardAction, t) => {
     switch (masterCardAction.authorisation_status) {
         case "AUTHORISED":
-            return `Sent payment with ${masterCardActionParser(
-                masterCardAction.pan_entry_mode_user
+            return `${t("Sent payment with ")}${masterCardActionParser(
+                masterCardAction.pan_entry_mode_user,
+                t
             )}`;
         case "BLOCKED":
-            return `The payment was blocked due to: ${masterCardAction.decision_description}`;
+            return `${t(
+                "The payment was blocked due to "
+            )}${masterCardAction.decision_description}`;
         default:
-            return `The payment (${masterCardAction.authorisation_type}) currently has the status: ${masterCardAction.authorisation_status}`;
+            return `${t(
+                "The payment currently has the status "
+            )}${masterCardAction.authorisation_status} - ${masterCardAction.authorisation_type}`;
     }
 };
 
-export const masterCardActionParser = masterCardAction => {
+export const masterCardActionParser = (masterCardAction, t) => {
     if (masterCardAction.label_card) {
+        const paymentText = t("Payment");
         switch (masterCardAction.label_card.type) {
             case "MAESTRO_MOBILE_NFC":
-                return "Mobile NFC Payment";
+                return "Mobile NFC " + paymentText;
             case "MASTERCARD":
-                return "Mastercard Payment";
+                return "Mastercard " + paymentText;
             case "MAESTRO":
-                return "Maestro payment";
+                return "Maestro " + paymentText;
         }
     }
     return "Card payment";

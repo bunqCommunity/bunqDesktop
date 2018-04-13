@@ -6,8 +6,8 @@ import { ListItemIcon, ListItemText } from "material-ui/List";
 
 import { RuleTypes } from "../../Types/Types";
 
-import FileDownloadIcon from "material-ui-icons/FileDownload";
-import AddIcon from "material-ui-icons/Add";
+import FileDownloadIcon from "@material-ui/icons/FileDownload";
+import AddIcon from "@material-ui/icons/Add";
 
 class NewRuleItemMenu extends React.Component<any, any> {
     state = {

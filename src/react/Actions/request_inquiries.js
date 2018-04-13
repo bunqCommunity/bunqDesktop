@@ -1,4 +1,5 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import RequestInquiry from "../Models/RequestInquiry";
 
 export const STORED_REQUEST_INQUIRIES = "BUNQDESKTOP_STORED_REQUEST_INQUIRIES";
 
@@ -27,8 +28,16 @@ export function loadStoredRequestInquiries(BunqJSClient) {
         BunqJSClient.Session
             .loadEncryptedData(STORED_REQUEST_INQUIRIES)
             .then(data => {
-                if(data && data.items) {
-                    dispatch(requestInquiriesSetInfo(data.items, data.account_id));
+                if (data && data.items) {
+                    const newRequestInquiries = data.items.map(
+                        item => new RequestInquiry(item)
+                    );
+                    dispatch(
+                        requestInquiriesSetInfo(
+                            newRequestInquiries,
+                            data.account_id
+                        )
+                    );
                 }
             })
             .catch(error => {});
@@ -45,14 +54,21 @@ export function requestInquiriesUpdate(
         older_id: false
     }
 ) {
+    const failedMessage = window.t(
+        "We received the following error while sending your request inquiry"
+    );
+
     return dispatch => {
         dispatch(requestInquiriesLoading());
         BunqJSClient.api.requestInquiry
             .list(userId, accountId, options)
             .then(requestInquiries => {
+                const newRequestInquiries = requestInquiries.map(
+                    item => new RequestInquiry(item)
+                );
                 dispatch(
                     requestInquiriesSetInfo(
-                        requestInquiries,
+                        newRequestInquiries,
                         accountId,
                         false,
                         BunqJSClient
@@ -62,11 +78,7 @@ export function requestInquiriesUpdate(
             })
             .catch(error => {
                 dispatch(requestInquiriesNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We received the following error while sending your request inquiry"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

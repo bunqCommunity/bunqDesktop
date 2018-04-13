@@ -1,13 +1,14 @@
 import React from "react";
+import { translate } from "react-i18next";
 import Redirect from "react-router-dom/Redirect";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
+import CirclePicker from "react-color/lib/Circle";
 import Grid from "material-ui/Grid";
 import Paper from "material-ui/Paper";
 import Button from "material-ui/Button";
 import TextField from "material-ui/TextField";
 import { CircularProgress } from "material-ui/Progress";
-import ArrowBackIcon from "material-ui-icons/ArrowBack";
 import Dialog, {
     DialogActions,
     DialogContent,
@@ -15,11 +16,18 @@ import Dialog, {
     DialogTitle
 } from "material-ui/Dialog";
 
-import CombinedList from "../Components/CombinedList";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+
+import CombinedList from "../Components/CombinedList/CombinedList";
 import AccountCard from "../Components/AccountCard";
+import ButtonTranslate from "../Components/TranslationHelpers/Button";
 
 import { openSnackbar } from "../Actions/snackbar";
-import { accountsUpdate, deactivateAccount } from "../Actions/accounts";
+import {
+    accountsUpdate,
+    accountsUpdateSettings,
+    accountsDeactivate
+} from "../Actions/accounts";
 import { paymentInfoUpdate } from "../Actions/payments";
 import { requestResponsesUpdate } from "../Actions/request_responses";
 import { bunqMeTabsUpdate } from "../Actions/bunq_me_tabs";
@@ -27,8 +35,7 @@ import { masterCardActionsUpdate } from "../Actions/master_card_actions";
 import { requestInquiriesUpdate } from "../Actions/request_inquiries";
 
 const styles = {
-    btn: {},
-    deactivateReason: {
+    textField: {
         width: "100%",
         marginTop: 16
     },
@@ -44,6 +51,9 @@ const styles = {
     },
     textCenter: {
         textAlign: "center"
+    },
+    circlePicker: {
+        padding: 8
     }
 };
 
@@ -52,8 +62,13 @@ class AccountInfo extends React.Component {
         super(props, context);
         this.state = {
             openDialog: false,
-            deactivateReason: "",
-            deactivateActivated: false
+            deactivateReason: "I no longer need this account",
+            deactivateActivated: false,
+
+            openSettingsDialog: false,
+            settingsColor: "#ffffff",
+            settingsDescription: "",
+            settingsDailyLimit: 1000
         };
     }
 
@@ -69,6 +84,20 @@ class AccountInfo extends React.Component {
             this.props.requestResponsesUpdate(userId, accountId);
             this.props.requestInquiriesUpdate(userId, accountId);
             this.props.masterCardActionsUpdate(userId, accountId);
+
+            const accountInfo = this.props.accounts.find(
+                account => account.id === accountId
+            );
+            if (accountInfo) {
+                // found account info, set settings
+                this.setState({
+                    settingsColor: accountInfo.color,
+                    settingsDescription: accountInfo.description,
+                    settingsDailyLimit: parseFloat(
+                        accountInfo.daily_limit.value
+                    )
+                });
+            }
         }
     }
 
@@ -88,10 +117,11 @@ class AccountInfo extends React.Component {
         }
     }
 
+    toggleDeactivateDialog = () =>
+        this.setState({ openDialog: !this.state.openDialog });
     handleReasonChange = event => {
         this.setState({ deactivateReason: event.target.value });
     };
-
     deactivateAccount = event => {
         // hide dialog
         this.toggleDeactivateDialog();
@@ -107,79 +137,178 @@ class AccountInfo extends React.Component {
         this.setState({ deactivateActivated: true });
     };
 
-    toggleDeactivateDialog = event => {
-        this.setState({ openDialog: !this.state.openDialog });
+    toggleSettingsDialog = () =>
+        this.setState({ openSettingsDialog: !this.state.openSettingsDialog });
+    handleColorChange = (color, event) =>
+        this.setState({ settingsColor: color.hex });
+    handleDescriptionChange = event =>
+        this.setState({ settingsDescription: event.target.value });
+    handleDailyLimitChange = event => {
+        let inputLimit = event.target.value;
+        if (inputLimit > 10000) inputLimit = 10000;
+        if (inputLimit < 1) inputLimit = 1;
+
+        this.setState({ settingsDailyLimit: inputLimit });
+    };
+
+    editAccount = event => {
+        if (this.state.settingsDescription.length <= 0) return null;
+
+        // hide dialog
+        this.toggleSettingsDialog();
+        // get the account id
+        const accountId = parseFloat(this.props.match.params.accountId);
+        // get the current account settings
+        const accountInfo = this.props.accounts.find(
+            account => account.id === accountId
+        );
+
+        // update settings
+        this.props.updateSettings(this.props.user.id, accountInfo.id, {
+            description: this.state.settingsDescription,
+            daily_limit: {
+                value: "" + this.state.settingsDailyLimit.toFixed(2),
+                currency: "EUR"
+            },
+            setting: {
+                color: this.state.settingsColor
+            }
+        });
     };
 
     render() {
-        const { accounts } = this.props;
+        const { accounts, t } = this.props;
         const accountId = parseFloat(this.props.match.params.accountId);
 
         if (this.state.deactivateActivated) return <Redirect to="/" />;
 
-        let accountInfo = false;
-        accounts.map(account => {
-            if (account.id === accountId) {
-                accountInfo = account;
-            }
-        });
+        const accountInfo = accounts.find(account => account.id === accountId);
 
         let content = null;
         if (accountInfo !== false) {
-            content = [
-                <Dialog
-                    open={this.state.openDialog}
-                    onClose={this.toggleDeactivateDialog}
-                >
-                    <DialogTitle>Cancel account</DialogTitle>
+            content = (
+                <React.Fragment>
+                    <Dialog
+                        open={this.state.openDialog}
+                        onClose={this.toggleDeactivateDialog}
+                    >
+                        <DialogTitle>{t("Cancel account")}</DialogTitle>
 
-                    <DialogContent>
-                        <DialogContentText>
-                            Are you sure you wish to cancel this account?
-                        </DialogContentText>
-                        <TextField
-                            style={styles.deactivateReason}
-                            value={this.state.deactivateReason}
-                            onChange={this.handleReasonChange}
-                            error={this.state.deactivateReason.length === 0}
-                            helperText="Why are you closing the account?"
-                            placeholder="Reason"
-                        />
-                    </DialogContent>
+                        <DialogContent>
+                            <DialogContentText>
+                                {t(
+                                    "Are you sure you wish to cancel this account?"
+                                )}
+                            </DialogContentText>
+                            <TextField
+                                style={styles.textField}
+                                value={this.state.deactivateReason}
+                                onChange={this.handleReasonChange}
+                                error={this.state.deactivateReason.length === 0}
+                                helperText={t(
+                                    "Why are you closing the account?"
+                                )}
+                                placeholder={t("Reason")}
+                            />
+                        </DialogContent>
 
-                    <DialogActions>
-                        <Button
-                            variant="raised"
-                            onClick={this.toggleDeactivateDialog}
-                            color="primary"
-                            autoFocus
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            variant="raised"
-                            onClick={this.deactivateAccount}
-                            color="secondary"
-                            disabled={this.state.deactivateReason.length === 0}
-                        >
-                            Agree
-                        </Button>
-                    </DialogActions>
-                </Dialog>,
-                <AccountCard
-                    BunqJSClient={this.props.BunqJSClient}
-                    openSnackbar={this.props.openSnackbar}
-                    hideBalance={this.props.hideBalance}
-                    toggleDeactivateDialog={this.toggleDeactivateDialog}
-                    account={accountInfo}
-                />,
-                <Paper style={styles.paperList}>
-                    <CombinedList
+                        <DialogActions>
+                            <ButtonTranslate
+                                variant="raised"
+                                onClick={this.toggleDeactivateDialog}
+                                color="primary"
+                                autoFocus
+                            >
+                                Cancel
+                            </ButtonTranslate>
+                            <ButtonTranslate
+                                variant="raised"
+                                onClick={this.deactivateAccount}
+                                color="secondary"
+                                disabled={
+                                    this.props.accountsLoading ||
+                                    this.state.deactivateReason.length === 0
+                                }
+                            >
+                                Agree
+                            </ButtonTranslate>
+                        </DialogActions>
+                    </Dialog>
+
+                    <Dialog
+                        open={this.state.openSettingsDialog}
+                        onClose={this.toggleSettingsDialog}
+                    >
+                        <DialogTitle>{t("Edit account settings")}</DialogTitle>
+
+                        <DialogContent>
+                            <CirclePicker
+                                onChange={this.handleColorChange}
+                                color={this.state.settingsColor}
+                                style={styles.circlePicker}
+                            />
+                            <TextField
+                                style={styles.textField}
+                                value={this.state.settingsDescription}
+                                onChange={this.handleDescriptionChange}
+                                error={
+                                    this.state.settingsDescription.length === 0
+                                }
+                                placeholder={t("Account description")}
+                            />
+                            <TextField
+                                style={styles.textField}
+                                value={this.state.settingsDailyLimit}
+                                onChange={this.handleDailyLimitChange}
+                                type={"number"}
+                                placeholder={t("Daily limit")}
+                                inputProps={{
+                                    min: 0,
+                                    max: 10000
+                                }}
+                            />
+                        </DialogContent>
+
+                        <DialogActions>
+                            <ButtonTranslate
+                                variant="raised"
+                                onClick={this.toggleSettingsDialog}
+                                color="secondary"
+                                autoFocus
+                            >
+                                Cancel
+                            </ButtonTranslate>
+                            <ButtonTranslate
+                                variant="raised"
+                                onClick={this.editAccount}
+                                disabled={
+                                    this.props.accountsLoading ||
+                                    this.state.settingsDescription.length === 0
+                                }
+                                color="primary"
+                            >
+                                Update
+                            </ButtonTranslate>
+                        </DialogActions>
+                    </Dialog>
+
+                    <AccountCard
                         BunqJSClient={this.props.BunqJSClient}
-                        initialBunqConnect={this.props.initialBunqConnect}
+                        openSnackbar={this.props.openSnackbar}
+                        hideBalance={this.props.hideBalance}
+                        toggleSettingsDialog={this.toggleSettingsDialog}
+                        toggleDeactivateDialog={this.toggleDeactivateDialog}
+                        account={accountInfo}
                     />
-                </Paper>
-            ];
+
+                    <Paper style={styles.paperList}>
+                        <CombinedList
+                            BunqJSClient={this.props.BunqJSClient}
+                            initialBunqConnect={this.props.initialBunqConnect}
+                        />
+                    </Paper>
+                </React.Fragment>
+            );
         } else {
             content = (
                 <Paper style={styles.paper}>
@@ -197,14 +326,11 @@ class AccountInfo extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - Account Info`}</title>
+                    <title>{`BunqDesktop - ${t("Account Info")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={2}>
-                    <Button
-                        onClick={this.props.history.goBack}
-                        style={styles.btn}
-                    >
+                    <Button onClick={this.props.history.goBack}>
                         <ArrowBackIcon />
                     </Button>
                 </Grid>
@@ -231,6 +357,23 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
+
+        accountsUpdate: userId =>
+            dispatch(accountsUpdate(BunqJSClient, userId)),
+        deactivateAccount: (userId, accountId, reason) =>
+            dispatch(
+                accountsDeactivate(BunqJSClient, userId, accountId, reason)
+            ),
+        updateSettings: (userId, accountId, settings) =>
+            dispatch(
+                accountsUpdateSettings(
+                    BunqJSClient,
+                    userId,
+                    accountId,
+                    settings
+                )
+            ),
+
         paymentsUpdate: (userId, accountId) =>
             dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId)),
         requestInquiriesUpdate: (userId, accountId) =>
@@ -240,12 +383,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         masterCardActionsUpdate: (userId, accountId) =>
             dispatch(masterCardActionsUpdate(BunqJSClient, userId, accountId)),
         bunqMeTabsUpdate: (userId, accountId) =>
-            dispatch(bunqMeTabsUpdate(BunqJSClient, userId, accountId)),
-        accountsUpdate: userId =>
-            dispatch(accountsUpdate(BunqJSClient, userId)),
-        deactivateAccount: (userId, accountId, reason) =>
-            dispatch(deactivateAccount(BunqJSClient, userId, accountId, reason))
+            dispatch(bunqMeTabsUpdate(BunqJSClient, userId, accountId))
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AccountInfo);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(AccountInfo)
+);

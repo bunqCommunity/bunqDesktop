@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Divider from "material-ui/Divider";
 import IconButton from "material-ui/IconButton";
@@ -8,7 +9,7 @@ import List, {
     ListItemSecondaryAction
 } from "material-ui/List";
 import { CircularProgress, LinearProgress } from "material-ui/Progress";
-import RefreshIcon from "material-ui-icons/Refresh";
+import RefreshIcon from "@material-ui/icons/Refresh";
 
 import AccountListItem from "./AccountListItem";
 import AddAccount from "./AddAccount";
@@ -75,6 +76,7 @@ class AccountList extends React.Component {
 
     checkUpdateRequirement = (props = this.props) => {
         const {
+            accounts,
             accountsAccountId,
             paymentsAccountId,
             paymentsLoading,
@@ -84,6 +86,16 @@ class AccountList extends React.Component {
 
         if (!initialBunqConnect) {
             return;
+        }
+
+        if (accountsAccountId === false && accounts.length > 0) {
+            // get the first active account in the accounts list
+            const firstAccount = accounts.find(account => {
+                return account && account.status === "ACTIVE";
+            });
+
+            if (firstAccount && firstAccount.id)
+                this.props.selectAccount(firstAccount.id);
         }
 
         // check if the stored selected account isn't already loaded
@@ -101,7 +113,7 @@ class AccountList extends React.Component {
             if (this.delayedUpdate) clearTimeout(this.delayedUpdate);
             this.delayedUpdate = setTimeout(() => {
                 this.updateExternal(user.id, accountsAccountId);
-            }, 1000);
+            }, 500);
         }
 
         // no accounts loaded
@@ -116,22 +128,22 @@ class AccountList extends React.Component {
     };
 
     render() {
+        const { t } = this.props;
+
         let accounts = [];
         if (this.props.accounts !== false) {
             accounts = this.props.accounts
                 .filter(account => {
-                    if (
-                        account &&
-                        account.status !== "ACTIVE"
-                    ) {
+                    if (account && account.status !== "ACTIVE") {
                         return false;
                     }
                     return true;
                 })
                 .map(account => (
                     <AccountListItem
-                        BunqJSClient={this.props.BunqJSClient}
                         updateExternal={this.updateExternal}
+                        BunqJSClient={this.props.BunqJSClient}
+                        denseMode={this.props.denseMode}
                         account={account}
                     />
                 ));
@@ -139,25 +151,22 @@ class AccountList extends React.Component {
 
         const totalBalance = this.props.accounts.reduce((total, account) => {
             if (account.balance) {
-                return (
-                    total +
-                    parseFloat(account.balance.value)
-                );
+                return total + parseFloat(account.balance.value);
             }
             return total;
         }, 0);
         const formattedTotalBalance = formatMoney(totalBalance);
 
         return (
-            <List style={styles.list}>
+            <List dense={this.props.denseMode} style={styles.list}>
                 <ListItem dense>
                     <ListItemText
-                        primary={`Accounts: ${accounts.length}`}
+                        primary={`${t("Accounts")}: ${accounts.length}`}
                         secondary={
                             this.props.hideBalance ? (
                                 ""
                             ) : (
-                                `Balance: ${formattedTotalBalance}`
+                                `${t("Balance")}: ${formattedTotalBalance}`
                             )
                         }
                     />
@@ -172,19 +181,22 @@ class AccountList extends React.Component {
                     </ListItemSecondaryAction>
                 </ListItem>
                 {this.props.accountsLoading ? <LinearProgress /> : <Divider />}
-                <List>
-                    {accounts}
-                    <AddAccount
-                        displayAddAccount={this.props.displayAddAccount}
-                    />
-                </List>
+                {accounts}
+                {this.props.denseMode === false ? (
+                    <React.Fragment>
+                        <AddAccount
+                            displayAddAccount={this.props.displayAddAccount}
+                        />
+                        <Divider />
+                    </React.Fragment>
+                ) : null}
             </List>
         );
     }
 }
 
 AccountList.defaultProps = {
-    updateExternal: false
+    denseMode: false
 };
 
 const mapStateToProps = state => {
@@ -222,4 +234,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AccountList);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(AccountList)
+);

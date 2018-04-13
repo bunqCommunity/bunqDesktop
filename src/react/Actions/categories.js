@@ -23,6 +23,15 @@ export const setCategoryConnection = (categoryId, itemType, itemId) => {
     };
 };
 
+export const setCategoryConnectionMultiple = (categoryConnections) => {
+    return {
+        type: "CATEGORIES_SET_CATEGORY_CONNECTION_MULTIPLE",
+        payload: {
+            category_connections: categoryConnections
+        }
+    };
+};
+
 export const removeCategory = categoryId => {
     return {
         type: "CATEGORIES_REMOVE_CATEGORY",

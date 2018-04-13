@@ -1,28 +1,29 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { withStyles } from "material-ui/styles";
 import PropTypes from "prop-types";
 import Drawer from "material-ui/Drawer";
 import Hidden from "material-ui/Hidden";
-import Typography from "material-ui/Typography";
 import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
 import List, { ListItem, ListItemText, ListItemIcon } from "material-ui/List";
 
-import ArrowUpwardIcon from "material-ui-icons/ArrowUpward";
-import ArrowDownwardIcon from "material-ui-icons/ArrowDownward";
-import HomeIcon from "material-ui-icons/Home";
-import SettingsIcon from "material-ui-icons/Settings";
-import ShareIcon from "material-ui-icons/Share";
-import TimeLineIcon from "material-ui-icons/Timeline";
-import CardIcon from "material-ui-icons/CreditCard";
-import CreateIcon from "material-ui-icons/Create";
-import Bookmark from "material-ui-icons/Bookmark";
+import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
+import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
+import HomeIcon from "@material-ui/icons/Home";
+import SettingsIcon from "@material-ui/icons/Settings";
+import ShareIcon from "@material-ui/icons/Share";
+import TimeLineIcon from "@material-ui/icons/Timeline";
+import CardIcon from "@material-ui/icons/CreditCard";
+import Bookmark from "@material-ui/icons/Bookmark";
+import CreateIcon from "@material-ui/icons/Create";
+import FileUpload from "@material-ui/icons/FileUpload";
+import EventIcon from "@material-ui/icons/Event";
 
 import NavLink from "./Routing/NavLink";
 import ListItemWrapper from "./ListItemWrapper";
 import { closeMainDrawer } from "../Actions/main_drawer";
-import { openOptionsDrawer } from "../Actions/options_drawer";
 import IsDarwin from "../Helpers/IsDarwin";
 
 const styles = {
@@ -70,11 +71,19 @@ class MainDrawer extends React.Component {
     openOptions = () => {
         // open the options drawer and open the main drawer
         this.props.closeMainDrawer();
-        this.props.openOptionsDrawer();
     };
+
+    componentDidUpdate(oldProps) {
+        if (this.props.open) {
+            if (oldProps.location.pathname !== this.props.location.pathname) {
+                this.props.closeMainDrawer();
+            }
+        }
+    }
 
     render() {
         const {
+            t,
             classes,
             theme,
             open,
@@ -99,47 +108,59 @@ class MainDrawer extends React.Component {
                   <ListItemWrapper
                       to="/pay"
                       icon={ArrowUpwardIcon}
-                      text="Pay"
+                      text={"Pay"}
                       location={this.props.location}
                   />,
                   <ListItemWrapper
                       to="/request"
                       icon={ArrowDownwardIcon}
-                      text="Request"
+                      text={"Request"}
                       location={this.props.location}
                   />,
                   <ListItemWrapper
                       to="/bunqme-tab"
                       icon={ShareIcon}
-                      text="bunq.me Requests"
+                      text={"bunqme Requests"}
                       location={this.props.location}
                   />,
                   <ListItemWrapper
                       to="/card"
                       icon={CardIcon}
-                      text="Cards"
+                      text={"Cards"}
+                      location={this.props.location}
+                  />,
+                  <ListItemWrapper
+                      to="/scheduled-payments"
+                      icon={EventIcon}
+                      text={"Scheduled payments"}
                       location={this.props.location}
                   />,
                   <Divider />,
                   <ListItemWrapper
                       to="/stats"
                       icon={TimeLineIcon}
-                      text="Stats"
+                      text={"Stats"}
+                      location={this.props.location}
+                  />,
+                  <ListItemWrapper
+                      to="/exports"
+                      icon={FileUpload}
+                      text={"Exports"}
                       location={this.props.location}
                   />,
                   <ListItemWrapper
                       to="/category-dashboard"
                       icon={Bookmark}
-                      text="Categories"
+                      text={"Categories"}
+                      location={this.props.location}
+                  />,
+                  <ListItemWrapper
+                      to="/rules-dashboard"
+                      icon={CreateIcon}
+                      text="Category rules"
                       location={this.props.location}
                   />
               ];
-        {/*<ListItemWrapper*/}
-            {/*to="/rules-dashboard"*/}
-            {/*icon={CreateIcon}*/}
-            {/*text="Category rules"*/}
-            {/*location={this.props.location}*/}
-        {/*/>*/}
 
         const drawerList = (
             <List style={styles.list}>
@@ -153,7 +174,8 @@ class MainDrawer extends React.Component {
                         </ListItemIcon>
                         <ListItemText
                             primary="BunqDesktop"
-                            secondary={`Version ${process.env.CURRENT_VERSION}`}
+                            secondary={`${t("Version")} ${process.env
+                                .CURRENT_VERSION}`}
                         />
                     </ListItem>
                 </NavLink>
@@ -162,16 +184,12 @@ class MainDrawer extends React.Component {
 
                 <ListItem style={styles.listFiller} />
 
-                <ListItem
-                    button
-                    style={styles.listBottomItem}
-                    onClick={this.openOptions}
-                >
-                    <ListItemIcon>
-                        <SettingsIcon />
-                    </ListItemIcon>
-                    <Typography variant="subheading">Settings</Typography>
-                </ListItem>
+                <ListItemWrapper
+                    to="/settings"
+                    icon={SettingsIcon}
+                    text={"Settings"}
+                    location={this.props.location}
+                />
             </List>
         );
 
@@ -246,7 +264,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         closeDrawer: () => dispatch(closeMainDrawer()),
-        openOptionsDrawer: () => dispatch(openOptionsDrawer()),
         closeMainDrawer: () => dispatch(closeMainDrawer())
     };
 };
@@ -256,5 +273,7 @@ MainDrawer.propTypes = {
 };
 
 export default withStyles(styles, { withTheme: true })(
-    connect(mapStateToProps, mapDispatchToProps)(MainDrawer)
+    connect(mapStateToProps, mapDispatchToProps)(
+        translate("translations")(MainDrawer)
+    )
 );

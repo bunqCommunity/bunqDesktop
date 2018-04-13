@@ -4,8 +4,8 @@ import List, { ListSubheader, ListItemSecondaryAction } from "material-ui/List";
 import { LinearProgress } from "material-ui/Progress";
 import Divider from "material-ui/Divider";
 import IconButton from "material-ui/IconButton";
-import Visible from "material-ui-icons/Visibility";
-import VisibleOff from "material-ui-icons/VisibilityOff";
+import Visible from "@material-ui/icons/Visibility";
+import VisibleOff from "@material-ui/icons/VisibilityOff";
 
 import BunqMeTabListItem from "./ListItems/BunqMeTabListItem";
 import { openSnackbar } from "../Actions/snackbar";
@@ -63,10 +63,10 @@ class BunqMeTabList extends React.Component {
         return (
             <List style={styles.left}>
                 <ListSubheader>
-                    Bunq.me requests - {bunqMeTabs.length}
+                    bunq.me requests - {bunqMeTabs.length}
                     <ListItemSecondaryAction>
                         <IconButton
-                            aria-label="Display or hide expired and cancelled bunq.me requests"
+                            aria-label="Display or hide expired and cancelled bunqme requests"
                             onClick={this.toggleTabVisibility}
                         >
                             {this.state.showInactiveTabs ? (

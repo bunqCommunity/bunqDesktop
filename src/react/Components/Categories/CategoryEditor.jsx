@@ -1,17 +1,18 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { translate } from "react-i18next";
 
 import Chip from "material-ui/Chip";
 import Icon from "material-ui/Icon";
 import Grid from "material-ui/Grid";
 import Avatar from "material-ui/Avatar";
-import Button from "material-ui/Button";
 import TextField from "material-ui/TextField";
-import Typography from "material-ui/Typography";
 
 import IconPicker from "../FormFields/IconPicker";
 import ColorPicker from "../FormFields/ColorPicker";
+import TranslateButton from "../TranslationHelpers/Button";
+import TranslateTypography from "../TranslationHelpers/Typography";
 
 import { setCategory } from "../../Actions/categories";
 
@@ -120,12 +121,13 @@ class CategoryEditor extends React.Component {
     };
 
     render() {
+        const t= this.props.t;
         return (
-            <Grid container style={styles.newCategoryContainer}>
+            <Grid container spacing={16} style={styles.newCategoryContainer}>
                 <Grid item xs={12}>
-                    <Typography type={"title"} style={styles.titles}>
+                    <TranslateTypography type={"title"} style={styles.titles}>
                         Add a new category
-                    </Typography>
+                    </TranslateTypography>
                 </Grid>
 
                 <Grid item xs={12} style={{ textAlign: "center" }}>
@@ -158,7 +160,7 @@ class CategoryEditor extends React.Component {
 
                 <Grid item xs={12}>
                     <TextField
-                        label="Category label"
+                        label={t("Category label")}
                         error={this.state.labelError}
                         value={this.state.label}
                         onChange={this.labelChange}
@@ -169,7 +171,7 @@ class CategoryEditor extends React.Component {
                     <TextField
                         type="number"
                         margin="normal"
-                        label="Category priority"
+                        label={t("Category priority")}
                         value={this.state.priority}
                         onChange={this.priorityChange}
                         style={styles.categoryLabelInput}
@@ -194,17 +196,17 @@ class CategoryEditor extends React.Component {
                     />
 
                     {this.props.selectedCategoryId ? (
-                        <Button
+                        <TranslateButton
                             variant="raised"
                             color="secondary"
                             style={styles.button}
                             onClick={this.props.deselectChip}
                         >
                             Cancel editing
-                        </Button>
+                        </TranslateButton>
                     ) : null}
 
-                    <Button
+                    <TranslateButton
                         variant="raised"
                         disabled={
                             this.state.labelError ||
@@ -215,11 +217,11 @@ class CategoryEditor extends React.Component {
                         onClick={this.saveCategory}
                     >
                         {this.props.selectedCategoryId ? (
-                            "Update category"
+                            t("Update category")
                         ) : (
-                            "Add new category"
+                            t("Add new category")
                         )}
-                    </Button>
+                    </TranslateButton>
                 </Grid>
             </Grid>
         );
@@ -250,4 +252,6 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CategoryEditor);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(CategoryEditor)
+);

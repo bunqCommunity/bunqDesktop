@@ -12,18 +12,27 @@ export function paySend(
     targets,
     draft = false
 ) {
+    const failedMessage = window.t(
+        "We received the following error while sending your payment"
+    );
+    const successMessage1 = window.t("Draft payment successfully created!");
+    const successMessage2 = window.t("Payments sent successfully!");
+    const successMessage3 = window.t("Payment sent successfully!");
+
     return dispatch => {
         dispatch(payLoading());
 
         const isMultiple = targets.length <= 1;
 
-        // use payment handler based on options
+        const paymentTypeHandler = isMultiple
+            ? BunqJSClient.api.payment
+            : BunqJSClient.api.paymentBatch;
+
         const paymentHandler = draft
-            ? BunqJSClient.api.draftPayment
-            : isMultiple
-              ? // use default payment endpoint or batch payment
-                BunqJSClient.api.payment
-              : BunqJSClient.api.paymentBatch;
+            ? // draft mode
+              BunqJSClient.api.draftPayment
+            : // regular payment
+              paymentTypeHandler;
 
         const targetData = isMultiple ? targets.pop() : targets;
 
@@ -31,10 +40,8 @@ export function paySend(
             .post(userId, accountId, description, amount, targetData)
             .then(result => {
                 const notification = draft
-                    ? "Draft payment successfully created!"
-                    : isMultiple
-                      ? "Payments sent successfully!"
-                      : "Payment sent successfully!";
+                    ? successMessage1
+                    : isMultiple ? successMessage2 : successMessage3;
 
                 dispatch(openSnackbar(notification));
                 dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId));
@@ -43,11 +50,59 @@ export function paySend(
             })
             .catch(error => {
                 dispatch(payNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We received the following error while sending your payment"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
+            });
+    };
+}
+
+export function paySchedule(
+    BunqJSClient,
+    userId,
+    accountId,
+    description,
+    amount,
+    targets,
+    schedule
+) {
+    const failedMessage = window.t(
+        "We received the following error while sending your payment"
+    );
+    const successMessage1 = window.t("Payment was successfully scheduled!");
+    const successMessage2 = window.t("Payments were successfully scheduled!");
+
+    return dispatch => {
+        dispatch(payLoading());
+
+        const isMultiple = targets.length <= 1;
+
+        // for both use single or multiple payment handler
+        const scheduleTypeHandler = isMultiple
+            ? BunqJSClient.api.schedulePayment
+            : BunqJSClient.api.schedulePaymentBatch;
+
+        const payments = targets.map(target => {
+            return {
+                description: description,
+                amount: amount,
+                counterparty_alias: target
+            }
+        })
+
+        const paymentData = isMultiple ? payments.pop() : payments;
+
+        scheduleTypeHandler
+            .post(userId, accountId, paymentData, schedule)
+            .then(result => {
+                const notification =  isMultiple ? successMessage1 : successMessage2;
+                dispatch(openSnackbar(notification));
+
+                dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId));
+                dispatch(accountsUpdate(BunqJSClient, userId));
+                dispatch(payNotLoading());
+            })
+            .catch(error => {
+                dispatch(payNotLoading());
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

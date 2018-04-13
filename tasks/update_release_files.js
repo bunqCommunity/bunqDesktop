@@ -28,7 +28,7 @@ templates.forEach(template => {
     // buffer to string and replace the VERSION tag
     const stringContents = fileContents.toString();
     const updatedContents = stringContents.replace(
-        "${VERSION}",
+        /\$\{VERSION\}/g,
         packageInfo.version
     );
 

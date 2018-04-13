@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { Typography } from "material-ui";
 import { connect } from "react-redux";
 import Redirect from "react-router-dom/Redirect";
@@ -6,16 +7,20 @@ import Helmet from "react-helmet";
 import store from "store";
 import Grid from "material-ui/Grid";
 import Input from "material-ui/Input";
+import Card, { CardContent } from "material-ui/Card";
 import Button from "material-ui/Button";
 import { CardContent } from "material-ui/Card";
 import { CircularProgress } from "material-ui/Progress";
 
+import WarningIcon from "@material-ui/icons/Warning";
+import LockIcon from "@material-ui/icons/Lock";
 import WarningIcon from "material-ui-icons/Warning";
 import LockIcon from "material-ui-icons/Lock";
 
+import TranslateButton from "../Components/TranslationHelpers/Button";
+
 import {
-    registrationClearApiKey,
-    registrationSetApiKey,
+    registrationLogOut,
     registrationSetDeviceName,
     registrationSetEnvironment,
     registrationUseNoPassword,
@@ -115,8 +120,8 @@ class LoginPassword extends React.Component {
         });
     };
 
-    clearApiKey = () => {
-        this.props.clearApiKey();
+    logOut = () => {
+        this.props.logOut();
     };
 
     ignoreWarning = event => {
@@ -130,7 +135,8 @@ class LoginPassword extends React.Component {
             registrationLoading,
             hasStoredApiKey,
             useNoPassword,
-            derivedPassword
+            derivedPassword,
+            t
         } = this.props;
         const { hasReadWarning, passwordValid } = this.props;
 
@@ -145,39 +151,35 @@ class LoginPassword extends React.Component {
 
         if (hasReadWarning === false && registrationLoading === false) {
             cardContent = (
-                <CardContent style={styles.warningCard}>
-                    <Typography variant="headline">
-                        <WarningIcon /> Caution!
-                    </Typography>
-                    <Typography variant="body2">
-                        This project is still in active development and we are
-                        not responsible if anything goes wrong.
-                    </Typography>
-                    <br />
-                    <Typography variant="headline">
-                        <LockIcon /> Password
-                    </Typography>
-                    <Typography variant="body2">
-                        In order to keep your data safe everything is encrypted
-                        using the password you enter. If you forget this
-                        password all personal data within BunqDesktop will be
-                        reset and you will have to log back in.
-                    </Typography>
-                    <Typography variant="body2">
-                        If you decide to use an empty password, anyone with the
-                        required knowledge could view your data if they get
-                        access to your physical device!
-                    </Typography>
-                    <div style={{ textAlign: "center" }}>
-                        <Button
-                            variant={"raised"}
-                            style={{ marginTop: 12 }}
-                            onClick={this.ignoreWarning}
-                        >
-                            Don't show this again
-                        </Button>
-                    </div>
-                </CardContent>
+                <Card style={styles.warningCard}>
+                    <CardContent>
+                        <Typography variant="headline">
+                            <WarningIcon /> Caution!
+                        </Typography>
+                        <Typography variant="body2">
+                            {t("ActiveDevelopmentWarning")}
+                        </Typography>
+                        <br />
+                        <Typography variant="headline">
+                            <LockIcon /> Password
+                        </Typography>
+                        <Typography variant="body2">
+                            {t("PasswordWarningPart1")}
+                        </Typography>
+                        <Typography variant="body2">
+                            {t("PasswordWarningPart2")}
+                        </Typography>
+                        <div style={{ textAlign: "center" }}>
+                            <TranslateButton
+                                variant={"raised"}
+                                style={{ marginTop: 12 }}
+                                onClick={this.ignoreWarning}
+                            >
+                                Don't show this again
+                            </TranslateButton>
+                        </div>
+                    </CardContent>
+                </Card>
             );
         } else {
             const passwordInputError =
@@ -200,13 +202,13 @@ class LoginPassword extends React.Component {
                 </CardContent>
             ) : (
                 <CardContent style={{ textAlign: "center" }}>
-                    {/*<Typography*/}
-                    {/*variant="headline"*/}
-                    {/*component="h2"*/}
-                    {/*style={styles.text}*/}
-                    {/*>*/}
-                    {/**/}
-                    {/*</Typography>*/}
+                    <Typography variant="headline" component="h2">
+                        {hasStoredApiKey ? (
+                            t("Enter your password")
+                        ) : (
+                            t("Enter a password")
+                        )}
+                    </Typography>
 
                     <Input
                         autoFocus
@@ -248,8 +250,8 @@ class LoginPassword extends React.Component {
                         justify="center"
                         style={{ marginTop: 16 }}
                     >
-                        <Grid item xs={12}>
-                            <Button
+                        <Grid item xs={6}>
+                            <TranslateButton
                                 variant="raised"
                                 disabled={buttonDisabled}
                                 color={"primary"}
@@ -257,19 +259,19 @@ class LoginPassword extends React.Component {
                                 onClick={this.setRegistration}
                             >
                                 Login
-                            </Button>
+                            </TranslateButton>
                         </Grid>
 
                         {hasStoredApiKey ? (
-                            <Grid item xs={12}>
-                                <Button
+                            <Grid item xs={6}>
+                                <TranslateButton
                                     variant="raised"
                                     color={"secondary"}
-                                    style={styles.secondaryButtons}
-                                    onClick={this.clearApiKey}
+                                    style={styles.loginButton}
+                                    onClick={this.logOut}
                                 >
                                     Logout
-                                </Button>
+                                </TranslateButton>
                             </Grid>
                         ) : null}
 
@@ -278,13 +280,13 @@ class LoginPassword extends React.Component {
                             <React.Fragment>
                                 <Grid item xs={6} />
                                 <Grid item xs={6}>
-                                    <Button
+                                    <TranslateButton
                                         color={"secondary"}
                                         style={styles.secondaryButtons}
                                         onClick={this.props.useNoPasswordLogin}
                                     >
-                                        Use no password
-                                    </Button>
+                                        Skip
+                                    </TranslateButton>
                                 </Grid>
                             </React.Fragment>
                         ) : null}
@@ -302,7 +304,7 @@ class LoginPassword extends React.Component {
                 style={styles.wrapperContainer}
             >
                 <Helmet>
-                    <title>{`BunqDesktop - Password Setup`}</title>
+                    <title>{`BunqDesktop - ${t("Password Setup")}`}</title>
                 </Helmet>
 
                 <Grid
@@ -352,9 +354,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(registrationUsePassword(password)),
 
         // clear api key from bunqjsclient and bunqdesktop
-        clearApiKey: () => dispatch(registrationClearApiKey(BunqJSClient)),
-        // set the api key and stores the encrypted version
-        setApiKey: api_key => dispatch(registrationSetApiKey(api_key)),
+        logOut: () => dispatch(registrationLogOut(BunqJSClient)),
 
         setEnvironment: environment =>
             dispatch(registrationSetEnvironment(environment)),
@@ -363,4 +363,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginPassword);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(LoginPassword)
+);

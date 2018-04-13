@@ -1,5 +1,4 @@
 import * as React from "react";
-import Button from "material-ui/Button";
 import TextField from "material-ui/TextField";
 import Dialog, {
     DialogActions,
@@ -7,6 +6,9 @@ import Dialog, {
     DialogTitle
 } from "material-ui/Dialog";
 import Slide from "material-ui/transitions/Slide";
+
+import TranslateButton2 from "./TranslationHelpers/Button";
+const TranslateButton: any = TranslateButton2;
 
 const Transition = props => <Slide direction="left" {...props} />;
 
@@ -36,6 +38,7 @@ class ImportDialog extends React.Component<any, any> {
             }
 
             this.props.importData(data);
+            this.props.closeModal();
         }
     };
     importDataNew = event => this.importData(true);
@@ -78,27 +81,28 @@ class ImportDialog extends React.Component<any, any> {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button
+                    <TranslateButton
                         variant="raised"
                         onClick={closeModal}
                         color="secondary"
                     >
                         Cancel
-                    </Button>
+                    </TranslateButton>
 
                     {showAsNewButton ? (
-                        <Button variant="raised" onClick={this.importDataNew}>
+                        <TranslateButton variant="raised" onClick={this.importDataNew}>
                             Import as new
-                        </Button>
+                        </TranslateButton>
                     ) : null}
 
-                    <Button
+                    <TranslateButton
                         variant="raised"
                         onClick={this.importDataOverwrite}
+                        disabled={this.state.importContentError}
                         color="primary"
                     >
                         Import
-                    </Button>
+                    </TranslateButton>
                 </DialogActions>
             </Dialog>
         );

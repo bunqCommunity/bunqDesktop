@@ -12,6 +12,8 @@ export function cardCvc2SetInfo(cvc2_codes, user_id, card_id) {
 }
 
 export function cardUpdateCvc2Codes(BunqJSClient, user_id, card_id) {
+    const failedMessage = window.t( "We failed to load the CVC codes");
+
     return dispatch => {
         dispatch(cardCvc2Loading());
         BunqJSClient.api.cardCvc2
@@ -20,7 +22,6 @@ export function cardUpdateCvc2Codes(BunqJSClient, user_id, card_id) {
                 // turn string dates into date objects
                 cardsCvc2Codes = cardsCvc2Codes.map(cardsCvc2Code => {
                     const cardCvc2Info = cardsCvc2Code.CardGeneratedCvc2;
-                    console.log(cardCvc2Info);
                     return {
                         ...cardCvc2Info,
                         created: new Date(cardCvc2Info.created),
@@ -37,7 +38,7 @@ export function cardUpdateCvc2Codes(BunqJSClient, user_id, card_id) {
                 BunqErrorHandler(
                     dispatch,
                     error,
-                    "We failed to load the CVC codes"
+                    failedMessage
                 );
             });
     };

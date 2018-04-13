@@ -1,12 +1,13 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
 import Paper from "material-ui/Paper";
 import Collapse from "material-ui/transitions/Collapse";
 import IconButton from "material-ui/IconButton";
-import CloseIcon from "material-ui-icons/Close";
-import AddIcon from "material-ui-icons/Add";
+import CloseIcon from "@material-ui/icons/Close";
+import AddIcon from "@material-ui/icons/Add";
 
 import AccountList from "../../Components/AccountList/AccountList";
 import BunqMeTabList from "../../Components/BunqMeTabList";
@@ -46,10 +47,11 @@ class BunqMeTab extends React.Component {
     toggleForm = () => this.setState({ showForm: !this.state.showForm });
 
     render() {
+        const t=this.props.t;
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - bunq.me requests`}</title>
+                    <title>{`BunqDesktop - ${t("bunqme Requests")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} md={4}>
@@ -113,4 +115,6 @@ const mapDispatchToProps = (dispatch, props) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(BunqMeTab);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(BunqMeTab)
+);

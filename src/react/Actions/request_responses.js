@@ -1,4 +1,5 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import RequestResponse from "../Models/RequestResponse";
 
 export const STORED_REQUEST_RESPONSES = "BUNQDESKTOP_STORED_REQUEST_RESPONSES";
 
@@ -27,8 +28,16 @@ export function loadStoredRequestResponses(BunqJSClient) {
         BunqJSClient.Session
             .loadEncryptedData(STORED_REQUEST_RESPONSES)
             .then(data => {
-                if(data && data.items) {
-                    dispatch(requestResponsesSetInfo(data.items, data.account_id));
+                if (data && data.items) {
+                    const newRequestResponses = data.items.map(
+                        item => new RequestResponse(item)
+                    );
+                    dispatch(
+                        requestResponsesSetInfo(
+                            newRequestResponses,
+                            data.account_id
+                        )
+                    );
                 }
             })
             .catch(error => {});
@@ -45,14 +54,21 @@ export function requestResponsesUpdate(
         older_id: false
     }
 ) {
+    const failedMessage = window.t(
+        "We received the following error while loading your request responses"
+    );
+
     return dispatch => {
         dispatch(requestResponsesLoading());
         BunqJSClient.api.requestResponse
             .list(userId, accountId, options)
             .then(requestResponses => {
+                const newRequestResponses = requestResponses.map(
+                    item => new RequestResponse(item)
+                );
                 dispatch(
                     requestResponsesSetInfo(
-                        requestResponses,
+                        newRequestResponses,
                         accountId,
                         false,
                         BunqJSClient
@@ -62,11 +78,7 @@ export function requestResponsesUpdate(
             })
             .catch(error => {
                 dispatch(requestResponsesNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We received the following error while loading your request responses"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

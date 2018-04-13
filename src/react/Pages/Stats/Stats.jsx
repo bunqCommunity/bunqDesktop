@@ -1,6 +1,6 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
-import StickyBox from "react-sticky-box";
 import Helmet from "react-helmet";
 import Paper from "material-ui/Paper";
 import Grid from "material-ui/Grid";
@@ -9,13 +9,16 @@ import List, { ListItem, ListItemText } from "material-ui/List";
 import Radio, { RadioGroup } from "material-ui/Radio";
 import { FormControlLabel } from "material-ui/Form";
 
+import AccountList from "../../Components/AccountList/AccountList";
 import LoadOlderButton from "../../Components/LoadOlderButton";
 import ClearBtn from "../../Components/FilterComponents/ClearFilter";
 import FilterDrawer from "../../Components/FilterComponents/FilterDrawer";
-import StatsWorker from "../../WebWorkers/stats.worker";
-import PieChart from "./PieChart";
-import BalanceHistoryChart from "./BalanceHistoryChart";
+import EventCountPieChart from "./EventCountPieChart";
+import CategoryCountPieChart from "./CategoryCountPieChart";
+import CategoryHistoryChart from "./CategoryHistoryChart";
 import EventTypeHistoryChart from "./EventTypeHistoryChart";
+
+const StatsWorker = require("../../WebWorkers/stats.worker.js");
 
 class Stats extends React.Component {
     constructor(props, context) {
@@ -80,11 +83,13 @@ class Stats extends React.Component {
     triggerWorker = (props = this.props, state = this.state) => {
         this.worker.postMessage({
             // all endpoints
-            payments: props.payments,
-            masterCardActions: props.masterCardActions,
+            payments: props.payments.map(item => item.toJSON()),
+            masterCardActions: props.masterCardActions.map(item =>
+                item.toJSON()
+            ),
+            requestInquiries: props.requestInquiries.map(item => item.toJSON()),
+            requestResponses: props.requestResponses.map(item => item.toJSON()),
             bunqMeTabs: props.bunqMeTabs,
-            requestInquiries: props.requestInquiries,
-            requestResponses: props.requestResponses,
 
             // the accounts and selectedAccount so a balance can be calculated
             accounts: props.accounts.map(account => account.toJSON()),
@@ -126,22 +131,39 @@ class Stats extends React.Component {
     };
 
     render() {
+        const t = this.props.t;
+
+        const data =
+            this.state.parsedData !== false
+                ? this.state.parsedData
+                : {
+                    labels: [],
+                    balanceHistoryData: [],
+                    categoryCountHistory: {},
+                    eventCountHistory: [],
+                    masterCardActionHistory: [],
+                    requestInquiryHistory: [],
+                    requestResponseHistory: [],
+                    bunqMeTabHistory: [],
+                    paymentHistory: []
+                };
+
         const eventCountStats = (
             <Grid item xs={12}>
                 <Grid container spacing={16}>
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12} sm={6} md={4}>
                         <Paper>
                             <List component="nav">
-                                <ListSubheader>Statistics</ListSubheader>
+                                <ListSubheader>{t("Statistics")}</ListSubheader>
                                 <ListItem>
                                     <ListItemText
-                                        primary="Payments"
+                                        primary={t("Payments")}
                                         secondary={this.props.payments.length}
                                     />
                                 </ListItem>
                                 <ListItem>
                                     <ListItemText
-                                        primary="Mastercard payments"
+                                        primary={t("Mastercard payments")}
                                         secondary={
                                             this.props.masterCardActions.length
                                         }
@@ -149,7 +171,7 @@ class Stats extends React.Component {
                                 </ListItem>
                                 <ListItem>
                                     <ListItemText
-                                        primary="Requests sent"
+                                        primary={t("Requests sent")}
                                         secondary={
                                             this.props.requestInquiries.length
                                         }
@@ -157,7 +179,7 @@ class Stats extends React.Component {
                                 </ListItem>
                                 <ListItem>
                                     <ListItemText
-                                        primary="Requests received"
+                                        primary={t("Requests received")}
                                         secondary={
                                             this.props.requestResponses.length
                                         }
@@ -165,20 +187,21 @@ class Stats extends React.Component {
                                 </ListItem>
                                 <ListItem>
                                     <ListItemText
-                                        primary="Bunq.me requests"
+                                        primary={t("bunqme Requests")}
                                         secondary={this.props.bunqMeTabs.length}
                                     />
                                 </ListItem>
                             </List>
                         </Paper>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12} sm={6} md={4}>
                         <Paper
                             style={{
                                 padding: 12
                             }}
                         >
-                            <PieChart
+                            <EventCountPieChart
+                                height={500}
                                 payments={this.props.payments}
                                 masterCardActions={this.props.masterCardActions}
                                 requestInquiries={this.props.requestInquiries}
@@ -187,144 +210,155 @@ class Stats extends React.Component {
                             />
                         </Paper>
                     </Grid>
+                    <Grid item xs={12} sm={6} md={4}>
+                        <Paper>
+                            <CategoryCountPieChart
+                                height={500}
+                                categories={this.props.categories}
+                                categoryCountHistory={data.categoryCountHistory}
+                            />
+                        </Paper>
+                    </Grid>
                 </Grid>
             </Grid>
         );
 
-        const data =
-            this.state.parsedData !== false
-                ? this.state.parsedData
-                : {
-                      labels: [],
-                      balanceHistoryData: [],
-                      eventCountHistory: [],
-                      masterCardActionHistory: [],
-                      requestInquiryHistory: [],
-                      requestResponseHistory: [],
-                      bunqMeTabHistory: [],
-                      paymentHistory: []
-                  };
-
-        let bigCharts = [
-            <Grid item xs={12} key={"balancechart"}>
-                <Paper>
-                    <BalanceHistoryChart
-                        height={500}
-                        labels={data.labels}
-                        balanceHistoryData={data.balanceHistoryData}
-                        eventCountHistory={data.eventCountHistory}
-                    />
-                </Paper>
-            </Grid>,
-            <Grid item xs={12} key={"eventschart"}>
-                <Paper>
-                    <EventTypeHistoryChart
-                        height={500}
-                        labels={data.labels}
-                        masterCardActionHistory={data.masterCardActionHistory}
-                        requestInquiryHistory={data.requestInquiryHistory}
-                        requestResponseHistory={data.requestResponseHistory}
-                        bunqMeTabHistory={data.bunqMeTabHistory}
-                        paymentHistory={data.paymentHistory}
-                    />
-                </Paper>
-            </Grid>
-        ];
-
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - Stats`}</title>
+                    <title>{`BunqDesktop - ${t("Stats")}`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={4} md={3} lg={2}>
-                    <StickyBox className={"sticky-container"}>
-                        <Paper
-                            style={{
-                                padding: 16
-                            }}
-                        >
-                            <Grid container spacing={16}>
-                                <Grid
-                                    item
-                                    xs={12}
-                                    style={{
-                                        display: "flex"
-                                    }}
+                <Grid item xs={12} sm={4} md={3}>
+                    <Paper
+                        style={{
+                            padding: 16,
+                            marginBottom: 16
+                        }}
+                    >
+                        <Grid container spacing={16}>
+                            <Grid
+                                item
+                                xs={12}
+                                style={{
+                                    display: "flex"
+                                }}
+                            >
+                                <RadioGroup
+                                    aria-label="timescale"
+                                    name="timescale"
+                                    value={this.state.timescale}
+                                    onChange={this.handleChange}
                                 >
-                                    <RadioGroup
-                                        aria-label="timescale"
-                                        name="timescale"
-                                        value={this.state.timescale}
-                                        onChange={this.handleChange}
-                                    >
-                                        <FormControlLabel
-                                            value="daily"
-                                            control={<Radio />}
-                                            label="Daily"
-                                        />
-                                        <FormControlLabel
-                                            value="weekly"
-                                            control={<Radio />}
-                                            label="Weekly"
-                                        />
-                                        <FormControlLabel
-                                            value="monthly"
-                                            control={<Radio />}
-                                            label="Monthly"
-                                        />
-                                        <FormControlLabel
-                                            value="yearly"
-                                            control={<Radio />}
-                                            label="Yearly"
-                                        />
-                                    </RadioGroup>
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <LoadOlderButton
-                                        wrapperStyle={{ margin: 0 }}
-                                        buttonStyle={{ width: "100%" }}
-                                        BunqJSClient={this.props.BunqJSClient}
-                                        initialBunqConnect={
-                                            this.props.initialBunqConnect
-                                        }
+                                    <FormControlLabel
+                                        value="daily"
+                                        control={<Radio />}
+                                        label={t("Daily")}
                                     />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <FilterDrawer
-                                        bigButton={true}
-                                        buttonProps={{
-                                            style: {
-                                                width: "100%"
-                                            },
-                                            color: "primary"
-                                        }}
+                                    <FormControlLabel
+                                        value="weekly"
+                                        control={<Radio />}
+                                        label={t("Weekly")}
                                     />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <ClearBtn
-                                        bigButton={true}
-                                        buttonProps={{
-                                            style: {
-                                                width: "100%"
-                                            },
-                                            color: "secondary"
-                                        }}
+                                    <FormControlLabel
+                                        value="monthly"
+                                        control={<Radio />}
+                                        label={t("Monthly")}
                                     />
-                                </Grid>
+                                    <FormControlLabel
+                                        value="yearly"
+                                        control={<Radio />}
+                                        label={t("Yearly")}
+                                    />
+                                </RadioGroup>
                             </Grid>
-                        </Paper>
-                    </StickyBox>
+
+                            <Grid item xs={12}>
+                                <LoadOlderButton
+                                    wrapperStyle={{ margin: 0 }}
+                                    buttonStyle={{ width: "100%" }}
+                                    BunqJSClient={this.props.BunqJSClient}
+                                    initialBunqConnect={
+                                        this.props.initialBunqConnect
+                                    }
+                                />
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <FilterDrawer
+                                    bigButton={true}
+                                    buttonProps={{
+                                        style: {
+                                            width: "100%"
+                                        },
+                                        color: "primary"
+                                    }}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <ClearBtn
+                                    bigButton={true}
+                                    buttonProps={{
+                                        style: {
+                                            width: "100%"
+                                        },
+                                        color: "secondary"
+                                    }}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Paper>
+
+                    <Paper
+                        style={{
+                            padding: 16
+                        }}
+                    >
+                        <AccountList
+                            BunqJSClient={this.props.BunqJSClient}
+                            initialBunqConnect={this.props.initialBunqConnect}
+                            denseMode={true}
+                        />
+                    </Paper>
                 </Grid>
 
-                <Grid item xs={12} sm={8} md={9} lg={10}>
+                <Grid item xs={12} sm={8} md={9}>
                     <Grid container spacing={16}>
-                        {bigCharts}
+                        <Grid item xs={12}>
+                            <Paper>
+                                <EventTypeHistoryChart
+                                    height={500}
+                                    labels={data.labels}
+                                    masterCardActionHistory={
+                                        data.masterCardActionHistory
+                                    }
+                                    requestInquiryHistory={
+                                        data.requestInquiryHistory
+                                    }
+                                    requestResponseHistory={
+                                        data.requestResponseHistory
+                                    }
+                                    bunqMeTabHistory={data.bunqMeTabHistory}
+                                    paymentHistory={data.paymentHistory}
+                                />
+                            </Paper>
+                        </Grid>
 
                         {eventCountStats}
+
+                        <Grid item xs={12}>
+                            <Paper>
+                                <CategoryHistoryChart
+                                    height={500}
+                                    labels={data.labels}
+                                    categories={this.props.categories}
+                                    categoryCountHistory={
+                                        data.categoryCountHistory
+                                    }
+                                />
+                            </Paper>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>
@@ -371,4 +405,6 @@ const mapDispatchToProps = dispatch => {
     return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Stats);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(Stats)
+);

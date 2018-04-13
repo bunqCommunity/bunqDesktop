@@ -1,16 +1,15 @@
-import {
-    addDays,
-    addWeeks,
-    addMonths,
-    addYears,
-    subDays,
-    subWeeks,
-    subMonths,
-    subYears,
-    getISOWeek as getWeek,
-    getDayOfYear,
-    format as DateFNSformat
-} from "date-fns";
+import addDays from "date-fns/addDays";
+import addWeeks from "date-fns/addWeeks";
+import addMonths from "date-fns/addMonths";
+import addYears from "date-fns/addYears";
+import subDays from "date-fns/subDays";
+import subWeeks from "date-fns/subWeeks";
+import subMonths from "date-fns/subMonths";
+import subYears from "date-fns/subYears";
+import getWeek from "date-fns/getISOWeek";
+import getDayOfYear from "date-fns/getDayOfYear";
+import format from "date-fns/format";
+
 import CategoryHelper from "../Helpers/CategoryHelper";
 
 import {
@@ -20,18 +19,19 @@ import {
     requestInquiryFilter,
     requestResponseFilter
 } from "../Helpers/DataFilters";
+import MonetaryAccount from "../Models/MonetaryAccount";
 
 const labelFormat = (date, type = "daily") => {
     switch (type) {
         case "yearly":
-            return DateFNSformat(date, "_YYYY");
+            return format(date, "_YYYY");
         case "monthly":
-            return DateFNSformat(date, "MMM YYYY");
+            return format(date, "MMM YYYY");
         case "weekly":
-            return DateFNSformat(date, "WW/YYYY");
+            return format(date, "WW/YYYY");
         case "daily":
         default:
-            return DateFNSformat(date, "D MMM");
+            return format(date, "D MMM");
     }
 };
 
@@ -53,13 +53,13 @@ const bunqMeTabMapper = (
                 date: new Date(bunqMeTab.BunqMeTab.created),
                 change: 0,
                 type: "bunqMeTab",
-                categories: []
-                // categories: CategoryHelper(
-                //     categories,
-                //     categoryConnections,
-                //     "BunqMeTab",
-                //     bunqMeTab.BunqMeTab.id
-                // )
+                // categories: []
+                categories: CategoryHelper(
+                    categories,
+                    categoryConnections,
+                    "BunqMeTab",
+                    bunqMeTab.BunqMeTab.id
+                )
             });
         });
     return data;
@@ -79,13 +79,13 @@ const requestInquiryMapper = (
                 date: new Date(requestInquiry.RequestInquiry.created),
                 change: 0,
                 type: "requestInquiry",
-                categories: []
-                // categories: CategoryHelper(
-                //     categories,
-                //     categoryConnections,
-                //     "RequestInquiry",
-                //     requestInquiry.RequestInquiry.id
-                // )
+                // categories: []
+                categories: CategoryHelper(
+                    categories,
+                    categoryConnections,
+                    "RequestInquiry",
+                    requestInquiry.RequestInquiry.id
+                )
             });
         });
     return data;
@@ -105,13 +105,13 @@ const requestResponseMapper = (
                 date: new Date(requestResponse.RequestResponse.created),
                 change: 0,
                 type: "requestResponse",
-                categories: []
-                // categories: CategoryHelper(
-                //     categories,
-                //     categoryConnections,
-                //     "RequestResponse",
-                //     requestResponse.RequestResponse.id
-                // )
+                // categories: []
+                categories: CategoryHelper(
+                    categories,
+                    categoryConnections,
+                    "RequestResponse",
+                    requestResponse.RequestResponse.id
+                )
             });
         });
     return data;
@@ -132,13 +132,13 @@ const paymentMapper = (
             date: new Date(paymentInfo.created),
             change: -change,
             type: "payment",
-            categories: []
-            // categories: CategoryHelper(
-            //     categories,
-            //     categoryConnections,
-            //     "Payment",
-            //     paymentInfo.id
-            // )
+            // categories: []
+            categories: CategoryHelper(
+                categories,
+                categoryConnections,
+                "Payment",
+                paymentInfo.id
+            )
         });
     });
     return data;
@@ -170,16 +170,16 @@ const masterCardActionMapper = (
 
             if (validTypes.includes(masterCardInfo.authorisation_status)) {
                 data.push({
-                    date: new Date(masterCardInfo.created),
+                    date: new Date(masterCardInfo.updated),
                     change: change,
                     type: "masterCardAction",
-                    categories: []
-                    // categories: CategoryHelper(
-                    //     categories,
-                    //     categoryConnections,
-                    //     "MasterCardAction",
-                    //     masterCardInfo.id
-                    // )
+                    // categories: []
+                    categories: CategoryHelper(
+                        categories,
+                        categoryConnections,
+                        "MasterCardAction",
+                        masterCardInfo.id
+                    )
                 });
             }
         });
@@ -201,8 +201,7 @@ const formatLabels = (events, type) => {
                 startDateYearly.getFullYear() - endDateYearly.getFullYear() + 1;
 
             for (let year = 0; year < yearDifference1; year++) {
-                const startDate = new Date();
-                startDate.setFullYear(startDate.getFullYear() - year);
+                const startDate = subYears(new Date(), year);
 
                 const label = labelFormat(startDate, type);
                 dataCollection[label] = {
@@ -229,8 +228,7 @@ const formatLabels = (events, type) => {
             monthDifference = monthDifference > 24 ? 24 : monthDifference;
 
             for (let month = 0; month < monthDifference; month++) {
-                const startDate = new Date();
-                startDate.setMonth(startDate.getMonth() - month);
+                const startDate = subMonths(new Date(), month);
 
                 const label = labelFormat(startDate, type);
                 dataCollection[label] = {
@@ -257,11 +255,7 @@ const formatLabels = (events, type) => {
             weekDifference = weekDifference > 53 ? 53 : weekDifference;
 
             for (let week = 0; week < weekDifference; week++) {
-                const dateOffset =
-                    week <= 0 ? 0 : 24 * 60 * 60 * 1000 * 7 * week;
-
-                const startDate = new Date();
-                startDate.setTime(startDate.getTime() - dateOffset);
+                const startDate = subWeeks(new Date(), week);
 
                 const label = labelFormat(startDate, type);
                 dataCollection[label] = {
@@ -287,10 +281,7 @@ const formatLabels = (events, type) => {
             dayDifference = dayDifference > 60 ? 60 : dayDifference;
 
             for (let day = 0; day < dayDifference; day++) {
-                const dateOffset = day <= 0 ? 0 : 24 * 60 * 60 * 1000 * day;
-
-                const startDate = new Date();
-                startDate.setTime(startDate.getTime() - dateOffset);
+                const startDate = subDays(new Date(), day);
 
                 const label = labelFormat(startDate, type);
                 dataCollection[label] = {
@@ -314,11 +305,12 @@ const getData = (
 ) => {
     let accountInfo = false;
     accounts.map(account => {
+        const accountObject = new MonetaryAccount(account);
         if (
-            account.MonetaryAccountBank.id === selectedAccount ||
+            accountObject.id === selectedAccount ||
             selectedAccount === false
         ) {
-            accountInfo = account.MonetaryAccountBank;
+            accountInfo = accountObject;
         }
     });
     let currentBalance = parseFloat(accountInfo.balance.value);
@@ -327,6 +319,8 @@ const getData = (
     let balanceHistoryData = [];
     // total events history
     let eventCountHistory = [];
+    // total category history
+    let categoryCountHistory = {};
     // individual count history
     let paymentCountHistory = [];
     let masterCardActionCountHistory = [];
@@ -351,9 +345,17 @@ const getData = (
         }
     });
 
+    // only create this object once
+    const categoryList = {};
+    Object.keys(categories).forEach(categoryKey => {
+        categoryList[categoryKey] = 0;
+        categoryCountHistory[categoryKey] = [];
+    });
+
     // loop through all the days
     Object.keys(dataCollection).map(label => {
         const dataItem = dataCollection[label];
+        const categoryInfo = Object.assign({}, categoryList);
 
         const timescaleData = dataItem.data;
         const timescaleDate = dataItem.date;
@@ -370,6 +372,10 @@ const getData = (
         timescaleData.map(item => {
             // increment this type to keep track of the different types
             timescaleInfo[item.type]++;
+
+            // increment the category count for this timescale
+            item.categories.forEach(category => categoryInfo[category.id]++);
+
             // calculate change
             timescaleChange = timescaleChange + item.change;
         });
@@ -409,6 +415,13 @@ const getData = (
             ) {
                 // only push this data and label if they are within the range
 
+                // update the category counts for each category
+                Object.keys(categoryInfo).forEach(categoryKey => {
+                    categoryCountHistory[categoryKey].push(
+                        categoryInfo[categoryKey]
+                    );
+                });
+
                 // update balance and push it to the list
                 balanceHistoryData.push(roundMoney(currentBalance));
                 // count the events for this timescale
@@ -431,6 +444,13 @@ const getData = (
         currentBalance = currentBalance + timescaleChange;
     });
 
+    // update the category counts for each category
+    Object.keys(categoryCountHistory).forEach(categoryKey => {
+        categoryCountHistory[categoryKey] = categoryCountHistory[
+            categoryKey
+        ].reverse();
+    });
+
     return {
         // x axis labels
         labels: labelData.reverse(),
@@ -438,6 +458,8 @@ const getData = (
         balanceHistoryData: balanceHistoryData.reverse(),
         // total event count
         eventCountHistory: eventCountHistory.reverse(),
+        // total category count
+        categoryCountHistory: categoryCountHistory,
         // individual history count
         masterCardActionHistory: masterCardActionCountHistory.reverse(),
         requestResponseHistory: requestResponseCountHistory.reverse(),

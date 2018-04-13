@@ -1,21 +1,27 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
 import Paper from "material-ui/Paper";
+import IconButton from "material-ui/IconButton";
 import Typography from "material-ui/Typography";
 import Avatar from "material-ui/Avatar";
-import Button from "material-ui/Button";
-import CopyToClipboard from "react-copy-to-clipboard";
 import List, { ListItem, ListItemText } from "material-ui/List";
 
-const { app } = require("electron").remote;
+import FolderIcon from "@material-ui/icons/Folder";
+
+const remote = require("electron").remote;
+const shell = require("electron").shell;
+const app = remote.app;
 
 import NavLink from "../Components/Routing/NavLink";
+import ButtonTranslate from "../Components/TranslationHelpers/Button";
+
+import { openSnackbar } from "../Actions/snackbar";
 import { allReleases } from "../Helpers/VersionChecker";
 import { humanReadableDate } from "../Helpers/Utils";
 import Logger from "../Helpers/Logger";
-import { openSnackbar } from "../Actions/snackbar";
 
 const styles = {
     avatar: {
@@ -56,10 +62,12 @@ class ApplicationInfo extends React.Component {
     };
 
     copiedValue = type => callback => {
-        this.props.openSnackbar(`Copied ${type} to your clipboard`);
+        this.props.openSnackbar(this.props.t("Copied to your clipboard"));
     };
 
     render() {
+        const { t } = this.props;
+
         const releaseItems = this.state.releases.slice(0, 10).map(release => {
             const preRelease = release.prerelease ? " (Pre-Release)" : "";
             return (
@@ -72,7 +80,7 @@ class ApplicationInfo extends React.Component {
                 >
                     <ListItemText
                         primary={`v${release.tag_name} ${preRelease}`}
-                        secondary={`Released: ${humanReadableDate(
+                        secondary={`${t("Released")}: ${humanReadableDate(
                             release.published_at
                         )}`}
                     />
@@ -83,13 +91,15 @@ class ApplicationInfo extends React.Component {
         return (
             <Grid container spacing={24} justify={"center"}>
                 <Helmet>
-                    <title>{`BunqDesktop - Application Information`}</title>
+                    <title>{`BunqDesktop - ${t(
+                        "Application Information"
+                    )}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={8}>
                     <Paper style={styles.paper}>
                         <Grid container spacing={24} justify={"center"}>
-                            <Grid item sm={3} md={2}>
+                            <Grid item xs={2} md={1}>
                                 <a
                                     className="js-external-link"
                                     rel="noopener"
@@ -102,59 +112,44 @@ class ApplicationInfo extends React.Component {
                                 </a>
                             </Grid>
 
-                            <Grid item sm={9} md={10}>
+                            <Grid item xs={8} md={10}>
                                 <Typography variant={"headline"}>
                                     BunqDesktop
                                 </Typography>
                                 <Typography variant={"body2"}>
-                                    Version: {process.env.CURRENT_VERSION}
+                                    {`${t("Version")}: ${process.env.CURRENT_VERSION}`}
                                 </Typography>
                             </Grid>
 
-                            <Grid item sm={12}>
-                                <CopyToClipboard
-                                    text={`${app.getPath(
-                                        "userData"
-                                    )}/settings.json`}
-                                    onCopy={this.copiedValue(
-                                        "settings location"
-                                    )}
+                            <Grid item xs={2} md={1}>
+                                <IconButton
+                                    onClick={() =>
+                                        shell.openItem(app.getPath("userData"))}
                                 >
-                                    <div>
-                                        <Typography variant={"body2"}>
-                                            Settings:
-                                        </Typography>
-                                        <Typography variant={"body2"}>
-                                            {app.getPath("userData")}/settings.json
-                                        </Typography>
-                                    </div>
-                                </CopyToClipboard>
-                                <br />
-                                <CopyToClipboard
-                                    text={`${app.getPath(
-                                        "userData"
-                                    )}/BunqDesktop.log.txt`}
-                                    onCopy={this.copiedValue("log location")}
-                                >
-                                    <div>
-                                        <Typography variant={"body2"}>
-                                            Log file:
-                                        </Typography>
-                                        <Typography variant={"body2"}>
-                                            {app.getPath("userData")}/BunqDesktop.log.txt
-                                        </Typography>
-                                    </div>
-                                </CopyToClipboard>
+                                    <FolderIcon />
+                                </IconButton>
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Button variant="raised" component={NavLink} to={"/"}>
+                                <Typography variant={"body2"}>
+                                    {t("Application data")}: {app.getPath("userData")}
+                                </Typography>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <ButtonTranslate
+                                    variant="raised"
+                                    component={NavLink}
+                                    to={"/"}
+                                >
                                     Back
-                                </Button>
+                                </ButtonTranslate>
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Typography variant={"title"}>Releases</Typography>
+                                <Typography variant={"title"}>
+                                    Releases
+                                </Typography>
                                 <List>{releaseItems}</List>
                             </Grid>
                         </Grid>
@@ -176,4 +171,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ApplicationInfo);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(ApplicationInfo)
+);

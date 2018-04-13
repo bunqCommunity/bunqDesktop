@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { withTheme } from "material-ui/styles";
 import Helmet from "react-helmet";
@@ -11,13 +12,16 @@ import Divider from "material-ui/Divider";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
-import ArrowBackIcon from "material-ui-icons/ArrowBack";
-import HelpIcon from "material-ui-icons/Help";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import HelpIcon from "@material-ui/icons/Help";
+import BookmarkIcon from "@material-ui/icons/Bookmark";
 
 import ExportDialog from "../Components/ExportDialog";
+import SpeedDial from "../Components/SpeedDial";
 import TransactionHeader from "../Components/TransactionHeader";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
-import CategorySelector from "../Components/Categories/CategorySelector";
+import CategorySelectorDialog from "../Components/Categories/CategorySelectorDialog";
+import CategoryChips from "../Components/Categories/CategoryChips";
 
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import {
@@ -25,6 +29,8 @@ import {
     masterCardActionParser
 } from "../Helpers/StatusTexts";
 import { masterCardActionInfoUpdate } from "../Actions/master_card_action_info";
+import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
+import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 
 const styles = {
     btn: {},
@@ -43,12 +49,17 @@ class MasterCardActionInfo extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            displayExport: false
+            displayExport: false,
+            displayCategories: false
         };
     }
 
     componentDidMount() {
-        if (this.props.initialBunqConnect) {
+        if (
+            this.props.initialBunqConnect &&
+            this.props.user &&
+            this.props.user.id
+        ) {
             const { masterCardActionId, accountId } = this.props.match.params;
             this.props.masterCardActionInfoUpdate(
                 this.props.user.id,
@@ -79,12 +90,16 @@ class MasterCardActionInfo extends React.Component {
         }
     }
 
+    toggleCategoryDialog = event =>
+        this.setState({ displayCategories: !this.state.displayCategories });
+
     render() {
         const {
             accountsSelectedAccount,
             masterCardActionInfo,
             masterCardActionLoading,
-            theme
+            theme,
+            t
         } = this.props;
         const paramAccountId = this.props.match.params.accountId;
 
@@ -113,7 +128,7 @@ class MasterCardActionInfo extends React.Component {
             const paymentAmount = masterCardAction.amount_local.value;
             const paymentDate = humanReadableDate(masterCardAction.created);
             const formattedPaymentAmount = formatMoney(paymentAmount);
-            const paymentLabel = masterCardActionText(masterCardAction);
+            const paymentLabel = masterCardActionText(masterCardAction, t);
 
             content = (
                 <Grid
@@ -126,6 +141,7 @@ class MasterCardActionInfo extends React.Component {
                         BunqJSClient={this.props.BunqJSClient}
                         to={masterCardAction.counterparty_alias}
                         from={masterCardAction.alias}
+                        accounts={this.props.accounts}
                         user={this.props.user}
                     />
 
@@ -152,7 +168,7 @@ class MasterCardActionInfo extends React.Component {
                                     <Divider />,
                                     <ListItem>
                                         <ListItemText
-                                            primary={"Description"}
+                                            primary={t("Description")}
                                             secondary={
                                                 masterCardAction.description
                                             }
@@ -164,23 +180,24 @@ class MasterCardActionInfo extends React.Component {
                             <Divider />
                             <ListItem>
                                 <ListItemText
-                                    primary={"Date"}
+                                    primary={t("Date")}
                                     secondary={paymentDate}
                                 />
                             </ListItem>
                             <Divider />
                             <ListItem>
                                 <ListItemText
-                                    primary={"Payment Type"}
+                                    primary={t("Payment Type")}
                                     secondary={masterCardActionParser(
-                                        masterCardAction
+                                        masterCardAction,
+                                        t
                                     )}
                                 />
                             </ListItem>
                             <Divider />
                             <ListItem>
                                 <ListItemText
-                                    primary={"Card"}
+                                    primary={t("Card")}
                                     secondary={
                                         masterCardAction.label_card.second_line
                                     }
@@ -189,7 +206,7 @@ class MasterCardActionInfo extends React.Component {
                             <Divider />
                             <ListItem>
                                 <ListItemText
-                                    primary={"Authorisation Type"}
+                                    primary={t("Authorisation Type")}
                                     secondary={
                                         masterCardAction.authorisation_type
                                     }
@@ -198,7 +215,7 @@ class MasterCardActionInfo extends React.Component {
                             <Divider />
                             <ListItem>
                                 <ListItemText
-                                    primary={"Authorisation Status"}
+                                    primary={t("Authorisation Status")}
                                     secondary={
                                         masterCardAction.authorisation_status
                                     }
@@ -207,9 +224,45 @@ class MasterCardActionInfo extends React.Component {
                             <Divider />
                         </List>
 
-                        <CategorySelector
+                        <CategoryChips
+                            type={"MasterCardAction"}
+                            id={masterCardActionInfo.id}
+                        />
+
+                        <CategorySelectorDialog
                             type={"MasterCardAction"}
                             item={masterCardActionInfo}
+                            onClose={this.toggleCategoryDialog}
+                            open={this.state.displayCategories}
+                        />
+
+                        <SpeedDial
+                            hidden={false}
+                            actions={[
+                                {
+                                    name: "Send payment",
+                                    icon: ArrowUpIcon,
+                                    color: "action",
+                                    onClick: this.startPayment
+                                },
+                                {
+                                    name: "Send request",
+                                    icon: ArrowDownIcon,
+                                    color: "action",
+                                    onClick: this.startRequest
+                                },
+                                {
+                                    name: t("Manage categories"),
+                                    icon: BookmarkIcon,
+                                    onClick: this.toggleCategoryDialog
+                                },
+                                {
+                                    name: t("View debug information"),
+                                    icon: HelpIcon,
+                                    onClick: event =>
+                                        this.setState({ displayExport: true })
+                                }
+                            ]}
                         />
                     </Grid>
                 </Grid>
@@ -219,8 +272,16 @@ class MasterCardActionInfo extends React.Component {
         return (
             <Grid container spacing={24}>
                 <Helmet>
-                    <title>{`BunqDesktop - Mastercard Info`}</title>
+                    <title>{`BunqDesktop - ${t("Mastercard Info")}`}</title>
                 </Helmet>
+
+                <ExportDialog
+                    closeModal={event =>
+                        this.setState({ displayExport: false })}
+                    title={t("Export info")}
+                    open={this.state.displayExport}
+                    object={this.props.masterCardActionInfo}
+                />
 
                 <Grid item xs={12} sm={2}>
                     <Button
@@ -234,24 +295,6 @@ class MasterCardActionInfo extends React.Component {
                 <Grid item xs={12} sm={8}>
                     <Paper style={styles.paper}>{content}</Paper>
                 </Grid>
-
-                <Grid item xs={12} sm={2} style={{ textAlign: "right" }}>
-                    <ExportDialog
-                        closeModal={event =>
-                            this.setState({ displayExport: false })}
-                        title="Export info"
-                        open={this.state.displayExport}
-                        object={this.props.masterCardActionInfo}
-                    />
-
-                    <Button
-                        style={styles.button}
-                        onClick={event =>
-                            this.setState({ displayExport: true })}
-                    >
-                        <HelpIcon />
-                    </Button>
-                </Grid>
             </Grid>
         );
     }
@@ -263,6 +306,7 @@ const mapStateToProps = state => {
         masterCardActionInfo:
             state.master_card_action_info.master_card_action_info,
         masterCardActionLoading: state.master_card_action_info.loading,
+        accounts: state.accounts.accounts,
         accountsSelectedAccount: state.accounts.selectedAccount
     };
 };
@@ -287,5 +331,5 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-    withTheme()(MasterCardActionInfo)
+    withTheme()(translate("translations")(MasterCardActionInfo))
 );

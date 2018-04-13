@@ -1,4 +1,14 @@
-import { ExtendedAlias, Alias, Avatar, Balance } from "../Types/Types";
+import {
+    AccountType,
+    MonetaryAccountSetting,
+    AllCoOwner,
+    Alias,
+    Avatar,
+    Balance,
+    Amount
+} from "../Types/Types";
+
+import NotificationFilter from "@bunq-community/bunq-js-client/src/Types/NotificationFilter";
 
 export default class MonetaryAccount {
     // the original raw object
@@ -12,12 +22,19 @@ export default class MonetaryAccount {
     private _created: Date;
     private _updated: Date;
     private _avatar: Avatar;
+    private _currency: "EUR";
     private _description: string;
+    private _daily_limit: Amount;
+    private _daily_spent: Amount;
+    private _overdraft_limit: Amount;
     private _balance: Balance;
     private _alias: Alias[];
-    private _status: string;
+    private _public_uuid: string;
+    private _status: "ACTIVE" | "BLOCKED" | "CANCELLED" | "PENDING_REOPEN";
     private _sub_status: string;
     private _user_id: number;
+    private _monetary_account_profile: any;
+    private _notification_filters: NotificationFilter[];
     private _setting: MonetaryAccountSetting;
 
     // only available on MonetaryAccountJoint objects
@@ -31,20 +48,13 @@ export default class MonetaryAccount {
         // get the direct object using the extracted account tpye
         const accountInfo: any = monetaryAccountObject[this.accountType];
 
-        this._id = accountInfo.id;
-        this._created = accountInfo.created;
-        this._updated = accountInfo.updated;
-        this._avatar = accountInfo.avatar;
-        this._description = accountInfo.description;
-        this._balance = accountInfo.balance;
-        this._alias = accountInfo.alias;
-        this._status = accountInfo.status;
-        this._sub_status = accountInfo.sub_status;
-        this._user_id = accountInfo.user_id;
-        this._setting = accountInfo.setting;
+        // go through all keys and set the data
+        Object.keys(accountInfo).forEach(
+            key => (this[`_${key}`] = accountInfo[key])
+        );
 
-        if (this._accountType === "MonetaryAccountJoint") {
-        }
+        this._updated = new Date(this._updated);
+        this._created = new Date(this._created);
     }
 
     /**
@@ -87,58 +97,76 @@ export default class MonetaryAccount {
     get id(): number {
         return this._id;
     }
+
     get created(): Date {
         return this._created;
     }
+
     get updated(): Date {
         return this._updated;
     }
+
     get avatar(): Avatar {
         return this._avatar;
     }
+
+    get currency() {
+        return this._currency;
+    }
+
     get description(): string {
         return this._description;
     }
+
+    get daily_limit(): Amount {
+        return this._daily_limit;
+    }
+
+    get daily_spent(): Amount {
+        return this._daily_spent;
+    }
+
+    get overdraft_limit(): Amount {
+        return this._overdraft_limit;
+    }
+
     get balance(): Balance {
         return this._balance;
     }
+
     get alias(): Alias[] {
         return this._alias;
     }
-    get status(): string {
+
+    get public_uuid(): string {
+        return this._public_uuid;
+    }
+
+    get status() {
         return this._status;
     }
+
     get sub_status(): string {
         return this._sub_status;
     }
+
     get user_id(): number {
         return this._user_id;
     }
+
+    get monetary_account_profile(): any {
+        return this._monetary_account_profile;
+    }
+
+    get notification_filters(): NotificationFilter[] {
+        return this._notification_filters;
+    }
+
     get setting(): MonetaryAccountSetting {
         return this._setting;
     }
+
     get all_co_owner(): AllCoOwner | undefined {
         return this._all_co_owner;
     }
 }
-
-export type AccountType =
-    | "MonetaryAccountLight"
-    | "MonetaryAccountBank"
-    | "MonetaryAccountJoint";
-
-export type MonetaryAccountSetting = {
-    color: string;
-    default_avatar_status:
-        | "AVATAR_DEFAULT"
-        | "AVATAR_CUSTOM"
-        | "AVATAR_UNDETERMINED";
-    restriction_chat: "ALLOW_INCOMING" | "BLOCK_INCOMING";
-};
-
-export type AllCoOwnerItem = {
-    alias: ExtendedAlias[];
-    status: "ACCEPTED" | "REJECTED" | "PENDING" | "REVOKED";
-};
-
-export type AllCoOwner = AllCoOwnerItem[];

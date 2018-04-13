@@ -1,4 +1,5 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import BunqMeTab from "../Models/BunqMeTab.ts";
 
 export const STORED_BUNQ_ME_TABS = "BUNQDESKTOP_STORED_BUNQ_ME_TABS";
 
@@ -27,11 +28,15 @@ export function loadStoredBunqMeTabs(BunqJSClient) {
         BunqJSClient.Session
             .loadEncryptedData(STORED_BUNQ_ME_TABS)
             .then(data => {
-                if(data && data.items) {
-                    dispatch(bunqMeTabsSetInfo(data.items, data.account_id));
+                if (data && data.items) {
+                    const bunqMeTabsNew = data.items.map(
+                        item => new BunqMeTab(item)
+                    );
+                    dispatch(bunqMeTabsSetInfo(bunqMeTabsNew, data.account_id));
                 }
             })
-            .catch(error => {});
+            .catch(error => {
+            });
     };
 }
 
@@ -45,14 +50,19 @@ export function bunqMeTabsUpdate(
         older_id: false
     }
 ) {
+    const failedMessage = window.t("We failed to load the bunqme requests for this monetary account");
+
     return dispatch => {
         dispatch(bunqMeTabsLoading());
         BunqJSClient.api.bunqMeTabs
             .list(user_id, accountId, options)
             .then(bunqMeTabs => {
+                const bunqMeTabsNew = bunqMeTabs.map(
+                    item => new BunqMeTab(item)
+                );
                 dispatch(
                     bunqMeTabsSetInfo(
-                        bunqMeTabs,
+                        bunqMeTabsNew,
                         accountId,
                         false,
                         BunqJSClient
@@ -65,7 +75,7 @@ export function bunqMeTabsUpdate(
                 BunqErrorHandler(
                     dispatch,
                     error,
-                    "We failed to load the bunq.me requests for this monetary account"
+                    failedMessage
                 );
             });
     };

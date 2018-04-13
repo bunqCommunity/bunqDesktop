@@ -10,6 +10,8 @@ const SRC_DIR = path.resolve(__dirname, "src/react");
 const BUILD_DIR = path.resolve(__dirname, "app/react");
 const OUTPUT_DIR = "./";
 
+const moduleOptions = { BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT };
+
 let config = {
     entry: {
         BunqDesktop: `${SRC_DIR}/react-app.jsx`
@@ -22,16 +24,27 @@ let config = {
         chunkFilename: OUTPUT_DIR + "[name].bundle.js"
     },
     resolve: {
-        extensions: [".tsx", ".ts", ".js", ".jsx", ".json"],
+        extensions: [".jsx", ".js", ".tsx", ".ts", ".json"],
         modules: ["node_modules", path.resolve(__dirname, "./src")]
     },
-    devtool: DEVELOPMENT ? "source-map" : false,
-    plugins: plugins({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }),
+    devtool: DEVELOPMENT ? "eval" : "source-map",
+    cache: DEVELOPMENT,
+    performance: PRODUCTION
+        ? {
+              hints: "warning"
+          }
+        : false,
+    plugins: plugins(moduleOptions),
     module: {
-        rules: rules
+        rules: rules(moduleOptions),
+        unsafeCache: DEVELOPMENT
+    },
+    watchOptions: {
+        aggregateTimeout: 300
     },
     node: {
         console: false,
+        __dirname: false,
         fs: "empty",
         net: "empty",
         tls: "empty"

@@ -1,19 +1,34 @@
-import path from "path";
 import url from "url";
+import path from "path";
 import log from "electron-log";
 import electron from "electron";
 import settings from "electron-settings";
-import { app, Menu, Tray, nativeImage } from "electron";
+import { app, Menu, Tray, nativeImage, ipcMain } from "electron";
 import { devMenuTemplate } from "./menu/dev_menu_template";
 import { editMenuTemplate } from "./menu/edit_menu_template";
 import createWindow from "./helpers/window";
 import registerShortcuts from "./helpers/shortcuts";
 import registerTouchBar from "./helpers/touchbar";
 import changePage from "./helpers/react_navigate";
+import settingsHelper from "./helpers/settings";
 
-// Special module holding environment variables which you declared
-// in config/env_xxx.json file.
+import i18n from "./i18n-background";
 import env from "./env";
+
+// use english by default
+i18n.changeLanguage("en");
+
+// listen for changes in language in the client
+ipcMain.on("change-language", (event, arg) => {
+    i18n.changeLanguage(arg);
+});
+
+// listen for changes in settings path
+ipcMain.on("change-settings-path", (event, newPath) => {
+    settingsHelper.savePath(newPath);
+});
+
+const userDataPath = app.getPath("userData");
 
 // hide/show different native menus based on env
 const setApplicationMenu = () => {
@@ -36,7 +51,6 @@ const getWindowUrl = fileName => {
 
 // Save userData in separate folders for each environment
 if (env.name !== "production") {
-    const userDataPath = app.getPath("userData");
     app.setPath("userData", `${userDataPath} (${env.name})`);
 }
 
@@ -44,13 +58,20 @@ if (env.name !== "production") {
 log.transports.file.appName = "BunqDesktop";
 log.transports.file.level = env.name === "development" ? "debug" : "warn";
 log.transports.file.format = "{h}:{i}:{s}:{ms} {text}";
-log.transports.file.file = `${app.getPath("userData")}/BunqDesktop.log.txt`;
+log.transports.file.file = `${userDataPath}${path.sep}BunqDesktop.${env.name}.log.txt`;
+
+// hot reloading
+if (process.env.NODE_ENV === "development") {
+    require("electron-reload")(
+        path.join(__dirname, `..${path.sep}app${path.sep}**`)
+    );
+}
+
+// set the correct path before the app loads
+settings.setPath(settingsHelper.loadPath());
 
 app.on("ready", () => {
     setApplicationMenu();
-
-    // set the correct path
-    settings.setPath(`${app.getPath("userData")}/settings.json`);
 
     const USE_NATIVE_FRAME_STORED = settings.get("USE_NATIVE_FRAME");
     const USE_NATIVE_FRAME =
@@ -69,14 +90,17 @@ app.on("ready", () => {
     mainWindow.loadURL(getWindowUrl("app.html"));
 
     registerShortcuts(mainWindow, app);
-    registerTouchBar(mainWindow);
+    registerTouchBar(mainWindow, i18n);
 
     if (env.name === "development") {
         mainWindow.openDevTools();
     }
 
     const trayIcon = nativeImage.createFromPath(
-        path.join(__dirname, "../app/images/32x32.png")
+        path.join(
+            __dirname,
+            `..${path.sep}app${path.sep}images${path.sep}32x32.png`
+        )
     );
 
     const createTrayIcon = () => {
@@ -84,24 +108,24 @@ app.on("ready", () => {
         const tray = new Tray(trayIcon);
         const contextMenu = Menu.buildFromTemplate([
             {
-                label: "Dashboard",
+                label: i18n.t("Dashboard"),
                 click: () => changePage(mainWindow, "/")
             },
             {
-                label: "Pay",
+                label: i18n.t("Pay"),
                 click: () => changePage(mainWindow, "/pay")
             },
             {
-                label: "Request",
+                label: i18n.t("Request"),
                 click: () => changePage(mainWindow, "/request")
             },
             {
-                label: "Cards",
+                label: i18n.t("Cards"),
                 click: () => changePage(mainWindow, "/card")
             },
             { type: "separator" },
             {
-                label: "Quit",
+                label: i18n.t("Quit"),
                 click: () => app.quit()
             }
         ]);
@@ -114,7 +138,7 @@ app.on("ready", () => {
             if (!mainWindow.isVisible()) mainWindow.show();
             tray.destroy();
         });
-    }
+    };
 
     mainWindow.on("minimize", function(event) {
         const minimizeToTray = !!settings.get("MINIMIZE_TO_TRAY");
@@ -123,6 +147,22 @@ app.on("ready", () => {
             event.preventDefault();
             mainWindow.hide();
         }
+    });
+
+    // handle app command events like mouse-back/mouse-forward
+    mainWindow.on("app-command", function(e, cmd) {
+        switch(cmd){
+            case "browser-backward":
+                mainWindow.webContents.send("history-backward");
+                break;
+            case "browser-forward":
+                mainWindow.webContents.send("history-forward");
+                break;
+        }
+    });
+
+    mainWindow.on("close", function(event) {
+        app.quit();
     });
 
     // reload the window if the system goes into sleep mode

@@ -4,6 +4,7 @@ import {
     ListItemText,
     ListItemSecondaryAction
 } from "material-ui/List";
+import { translate } from "react-i18next";
 import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
 
@@ -37,7 +38,7 @@ class RequestInquiryListItem extends React.Component {
     // }
 
     render() {
-        const { requestInquiry } = this.props;
+        const { requestInquiry, t } = this.props;
         if (requestInquiry.status === "ACCEPTED") {
             if (this.props.displayAcceptedRequests === false) {
                 // hide the request-response becuase a payment item exists
@@ -54,7 +55,7 @@ class RequestInquiryListItem extends React.Component {
         const displayName = requestInquiry.counterparty_alias.display_name;
         const paymentAmount = requestInquiry.amount_inquired.value;
         const formattedPaymentAmount = formatMoney(paymentAmount);
-        let paymentLabel = requestInquiryText(requestInquiry);
+        let paymentLabel = requestInquiryText(requestInquiry, t);
 
         return [
             <ListItem
@@ -70,7 +71,7 @@ class RequestInquiryListItem extends React.Component {
                     />
                 </Avatar>
                 <ListItemText primary={displayName} secondary={paymentLabel} />
-                <ListItemSecondaryAction style={{ marginTop: -40 }}>
+                <ListItemSecondaryAction style={{ marginTop: -16 }}>
                     <MoneyAmountLabel
                         style={styles.moneyAmountLabel}
                         info={requestInquiry}
@@ -95,4 +96,4 @@ RequestInquiryListItem.defaultProps = {
     minimalDisplay: false
 };
 
-export default RequestInquiryListItem;
+export default translate("translations")(RequestInquiryListItem);

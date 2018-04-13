@@ -1,3 +1,5 @@
+import CategoryHelper from "./CategoryHelper";
+
 const checkDateRange = (fromDate, toDate, date) => {
     // nothing to check so always valid
     if (fromDate === null && toDate === null) return true;
@@ -45,6 +47,42 @@ export const paymentFilter = options => payment => {
         }
     }
 
+    if (options.searchTerm && options.searchTerm.length > 0) {
+        const searchMatches = [
+            payment.description.toLowerCase(),
+            payment.alias.iban.toLowerCase(),
+            payment.alias.display_name.toLowerCase(),
+            payment.counterparty_alias.display_name.toLowerCase()
+        ].some(text => text.includes(options.searchTerm));
+        if (!searchMatches) return false;
+    }
+
+    if (
+        options.selectedCategories &&
+        options.categories &&
+        options.categoryConnections
+    ) {
+        if (options.selectedCategories.length > 0) {
+            const categories = CategoryHelper(
+                options.categories,
+                options.categoryConnections,
+                "Payment",
+                payment.id
+            );
+
+            // no categories linked so always unmatched
+            if (categories.length === 0) return false;
+
+            // go through the connected categories and selected categories to see if one matches
+            const categoryMatches = categories.some(category => {
+                return options.selectedCategories.some(selectedCategory => {
+                    return category.id === selectedCategory;
+                });
+            });
+            if (!categoryMatches) return false;
+        }
+    }
+
     return checkDateRange(
         options.dateFromFilter,
         options.dateToFilter,
@@ -62,8 +100,39 @@ export const bunqMeTabsFilter = options => bunqMeTab => {
         options.dateToFilter,
         bunqMeTab.BunqMeTab.created
     );
-    if (!dateCheck) {
-        return false;
+    if (!dateCheck) return false;
+
+    if (options.searchTerm && options.searchTerm.length > 0) {
+        const searchMatches = [
+            bunqMeTab.bunqme_tab_entry.description.toLowerCase()
+        ].some(text => text.includes(options.searchTerm));
+        if (!searchMatches) return false;
+    }
+
+    if (
+        options.selectedCategories &&
+        options.categories &&
+        options.categoryConnections
+    ) {
+        if (options.selectedCategories.length > 0) {
+            const categories = CategoryHelper(
+                options.categories,
+                options.categoryConnections,
+                "BunqMeTab",
+                bunqMeTab.id
+            );
+
+            // no categories linked so always unmatched
+            if (categories.length === 0) return false;
+
+            // go through the connected categories and selected categories to see if one matches
+            const categoryMatches = categories.some(category => {
+                return options.selectedCategories.some(selectedCategory => {
+                    return category.id === selectedCategory;
+                });
+            });
+            if (!categoryMatches) return false;
+        }
     }
 
     switch (options.bunqMeTabType) {
@@ -87,6 +156,41 @@ export const masterCardActionFilter = options => masterCardAction => {
         return false;
     }
 
+    if (options.searchTerm && options.searchTerm.length > 0) {
+        const searchMatches = [
+            masterCardAction.description.toLowerCase(),
+            masterCardAction.alias.display_name.toLowerCase(),
+            masterCardAction.counterparty_alias.display_name.toLowerCase()
+        ].some(text => text.includes(options.searchTerm));
+        if (!searchMatches) return false;
+    }
+
+    if (
+        options.selectedCategories &&
+        options.categories &&
+        options.categoryConnections
+    ) {
+        if (options.selectedCategories.length > 0) {
+            const categories = CategoryHelper(
+                options.categories,
+                options.categoryConnections,
+                "MasterCardAction",
+                masterCardAction.id
+            );
+
+            // no categories linked so always unmatched
+            if (categories.length === 0) return false;
+
+            // go through the connected categories and selected categories to see if one matches
+            const categoryMatches = categories.some(category => {
+                return options.selectedCategories.some(selectedCategory => {
+                    return category.id === selectedCategory;
+                });
+            });
+            if (!categoryMatches) return false;
+        }
+    }
+
     return checkDateRange(
         options.dateFromFilter,
         options.dateToFilter,
@@ -104,10 +208,43 @@ export const requestResponseFilter = options => requestResponse => {
         return false;
     }
 
-    if (
-        !(options.requestType !== "sent" && options.requestType !== "default")
-    ) {
+    if (options.requestType !== "sent" && options.requestType !== "default") {
         return false;
+    }
+
+    if (options.searchTerm && options.searchTerm.length > 0) {
+        const searchMatches = [
+            requestResponse.description.toLowerCase(),
+            requestResponse.alias.display_name.toLowerCase(),
+            requestResponse.counterparty_alias.display_name.toLowerCase()
+        ].some(text => text.includes(options.searchTerm));
+        if (!searchMatches) return false;
+    }
+
+    if (
+        options.selectedCategories &&
+        options.categories &&
+        options.categoryConnections
+    ) {
+        if (options.selectedCategories.length > 0) {
+            const categories = CategoryHelper(
+                options.categories,
+                options.categoryConnections,
+                "RequestResponse",
+                requestResponse.id
+            );
+
+            // no categories linked so always unmatched
+            if (categories.length === 0) return false;
+
+            // go through the connected categories and selected categories to see if one matches
+            const categoryMatches = categories.some(category => {
+                return options.selectedCategories.some(selectedCategory => {
+                    return category.id === selectedCategory;
+                });
+            });
+            if (!categoryMatches) return false;
+        }
     }
 
     return checkDateRange(
@@ -127,12 +264,44 @@ export const requestInquiryFilter = options => requestInquiry => {
     }
 
     if (
-        !(
-            options.requestType !== "received" &&
-            options.requestType !== "default"
-        )
+        options.requestType !== "received" &&
+        options.requestType !== "default"
     ) {
         return false;
+    }
+
+    if (options.searchTerm && options.searchTerm.length > 0) {
+        const searchMatches = [
+            requestInquiry.description.toLowerCase(),
+            requestInquiry.counterparty_alias.display_name.toLowerCase()
+        ].some(text => text.includes(options.searchTerm));
+        if (!searchMatches) return false;
+    }
+
+    if (
+        options.selectedCategories &&
+        options.categories &&
+        options.categoryConnections
+    ) {
+        if (options.selectedCategories.length > 0) {
+            const categories = CategoryHelper(
+                options.categories,
+                options.categoryConnections,
+                "RequestInquiry",
+                requestInquiry.id
+            );
+
+            // no categories linked so always unmatched
+            if (categories.length === 0) return false;
+
+            // go through the connected categories and selected categories to see if one matches
+            const categoryMatches = categories.some(category => {
+                return options.selectedCategories.some(selectedCategory => {
+                    return category.id === selectedCategory;
+                });
+            });
+            if (!categoryMatches) return false;
+        }
     }
 
     return checkDateRange(

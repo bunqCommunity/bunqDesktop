@@ -5,6 +5,6 @@ import Loading from "./Loading";
 export default (importCallback) =>
     Loadable({
         loader: importCallback,
-        LoadingComponent: Loading,
+        loading: Loading,
         delay: 300
     });

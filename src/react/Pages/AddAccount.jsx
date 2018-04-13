@@ -1,28 +1,31 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
+import CirclePicker from "react-color/lib/Circle";
 import Button from "material-ui/Button";
-import ArrowBackIcon from "material-ui-icons/ArrowBack";
-import Paper from "material-ui/es/Paper/Paper";
-import RadioButtonUnchecked from "material-ui-icons/RadioButtonUnchecked";
-import RadioButtonChecked from "material-ui-icons/RadioButtonChecked";
+import Paper from "material-ui/Paper";
+import TextField from "material-ui/TextField";
+import { FormControl } from "material-ui/Form";
+
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 import { openSnackbar } from "../Actions/snackbar";
-import Typography from "material-ui/es/Typography/Typography";
-import TextField from "material-ui/TextField/TextField";
-import FormControl from "material-ui/es/Form/FormControl";
-import MoneyFormatInput from "../Components/FormFields/MoneyFormatInput";
-import IconButton from "material-ui/es/IconButton/IconButton";
-import {createAccount} from "../Actions/accounts";
+import { createAccount } from "../Actions/accounts";
 
+import MoneyFormatInput from "../Components/FormFields/MoneyFormatInput";
+import ButtonTranslate from "../Components/TranslationHelpers/Button";
+import TypographyTranslate from "../Components/TranslationHelpers/Typography";
 
 const styles = {
     bigAvatar: {
         width: 60,
         height: 60
     },
-    btn: {},
+    btn: {
+        width: "100%"
+    },
     paper: {
         padding: 24,
         marginBottom: 16
@@ -32,15 +35,19 @@ const styles = {
     },
     textCenter: {
         textAlign: "center"
+    },
+    colorPickerWrapper: {
+        display: "flex",
+        justifyContent: "center"
     }
 };
 
-class AccountInfo extends React.Component {
+class AddAccount extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            color: 'FEC704',
-            description: '',
+            color: "#2196f3",
+            description: "",
             descriptionError: false,
             limit: 1000,
             limitError: false,
@@ -48,22 +55,18 @@ class AccountInfo extends React.Component {
         };
     }
 
-    static getColorStyle(colorString) {
-        return {color: colorString};
-    }
-
     createAccount = () => {
-        if(!this.state.validForm) {
+        if (!this.state.validForm) {
             return false;
         }
         const { user } = this.props;
 
         this.props.createAccount(
             user.id,
-            'EUR',
+            "EUR",
             this.state.description,
-            this.state.limit+"",
-            "#"+this.state.color,
+            this.state.limit + "",
+            this.state.color
         );
     };
 
@@ -92,29 +95,16 @@ class AccountInfo extends React.Component {
         );
     };
 
-    handleColorClick(color) {
-        this.setState({color: color});
-    }
-
-    getRadioButton(color) {
-        let button = '';
-        if(this.state.color === color) {
-            button = <RadioButtonChecked style={AccountInfo.getColorStyle(color)}/>;
-        } else {
-            button = <RadioButtonUnchecked style={AccountInfo.getColorStyle(color)}/>;
-        }
-        return button;
-    }
+    handleColorClick = color => {
+        this.setState({ color: color.hex });
+    };
 
     validateForm = () => {
-        const {
-            color,
-            description,
-            limit
-        } = this.state;
+        const { description, limit } = this.state;
 
         const limitErrorCondition = limit < 0.01 || limit > 10000;
-        const descriptionErrorCondition = description.length < 1 || description.length > 140;
+        const descriptionErrorCondition =
+            description.length < 1 || description.length > 140;
 
         this.setState({
             limitError: limitErrorCondition,
@@ -124,21 +114,15 @@ class AccountInfo extends React.Component {
     };
 
     render() {
-        const {
-            selectedColor
-        } = this.state;
-
-        const colors = ['FEC704', 'FD8B03', 'FD2248', '4C4CD1', 'BC3DFE', '006BFF', '49C1FD', '00C6B8', '80FD26',
-            '3CD753', 'B4B5B6', '83838A', '000001'];
-
+        const t = this.props.t;
 
         return (
-            <Grid container spacing={8}>
+            <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - Add an account`}</title>
+                    <title>{`BunqDesktop - ${t("Add an account")}`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={2}>
+                <Grid item xs={12} sm={3} md={4}>
                     <Button
                         onClick={this.props.history.goBack}
                         style={styles.btn}
@@ -147,41 +131,53 @@ class AccountInfo extends React.Component {
                     </Button>
                 </Grid>
 
-                <Grid item xs={12} sm={8}>
+                <Grid item xs={12} sm={6} md={4}>
                     <Paper style={styles.paper}>
-                        <Typography type="headline" style={{marginBottom:'25px'}}>Add an account</Typography>
-                        {colors.map((color) => <IconButton onClick={this.handleColorClick.bind(this, color)}>
-                            {this.getRadioButton(color)}
-                        </IconButton>)}
+                        <TypographyTranslate
+                            type="headline"
+                            style={{ marginBottom: "25px" }}
+                        >
+                            Add an account
+                        </TypographyTranslate>
+
+                        <div style={styles.colorPickerWrapper}>
+                            <CirclePicker
+                                onChange={this.handleColorClick}
+                                color={this.state.color}
+                                style={styles.circlePicker}
+                            />
+                        </div>
+
                         <TextField
                             fullWidth
                             error={this.state.descriptionError}
                             id="description"
-                            label="Description"
+                            label={t("Description")}
                             onChange={this.handleChange("description")}
                             value={this.state.description}
                             margin="normal"
                         />
-                        <FormControl
-                            style={styles.formControlAlt}
-                            error={this.state.limitError}
-                            fullWidth
-                        >
-                            <Typography type="body2">Daily limit</Typography>
+
+                        <FormControl error={this.state.limitError}>
+                            <TypographyTranslate type="body2">
+                                Daily limit
+                            </TypographyTranslate>
                             <MoneyFormatInput
                                 id="limit"
                                 onValueChange={this.handleChangeFormatted}
                                 value={this.state.limit}
                             />
                         </FormControl>
-                        <Button
+
+                        <ButtonTranslate
                             variant="raised"
                             color="primary"
                             disabled={!this.state.validForm}
                             onClick={this.createAccount}
+                            style={styles.btn}
                         >
                             Create account
-                        </Button>
+                        </ButtonTranslate>
                     </Paper>
                 </Grid>
             </Grid>
@@ -198,13 +194,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        createAccount: (
-            userId,
-            currency,
-            description,
-            dailyLimit,
-            color
-        ) =>
+        createAccount: (userId, currency, description, dailyLimit, color) =>
             dispatch(
                 createAccount(
                     BunqJSClient,
@@ -219,4 +209,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AccountInfo);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(AddAccount)
+);

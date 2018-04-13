@@ -6,10 +6,13 @@ import bunq_me_tabs from "./bunq_me_tabs";
 import bunq_me_tab_filter from "./bunq_me_tab_filter";
 import bunq_me_tab from "./bunq_me_tab";
 import categories from "./categories";
+import category_filter from "./category_filter";
 import cards from "./cards";
 import card_cvc2 from "./card_cvc2";
 import category_rules from "./category_rules.ts";
 import date_filter from "./date_filter";
+import export_new from "./export_new";
+import exports from "./exports";
 import general_filter from "./general_filter";
 import modal from "./modal";
 import user from "./user";
@@ -22,7 +25,7 @@ import main_drawer from "./main_drawer";
 import master_card_actions from "./master_card_actions";
 import master_card_action_info from "./master_card_action_info";
 import options from "./options";
-import options_drawer from "./options_drawer";
+import pagination from "./pagination";
 import pay from "./pay";
 import payments from "./payments";
 import payment_info from "./payment_info";
@@ -33,6 +36,8 @@ import request_inquiry_info from "./request_inquiry_info";
 import request_responses from "./request_responses";
 import request_response from "./request_response";
 import request_response_info from "./request_response_info";
+import scheduled_payments from "./scheduled_payments";
+import search_filter from "./search_filter";
 
 export default combineReducers({
     accounts,
@@ -41,10 +46,13 @@ export default combineReducers({
     bunq_me_tab_filter,
     bunq_me_tabs,
     categories,
+    category_filter,
     cards,
     card_cvc2,
     category_rules,
     date_filter,
+    export_new,
+    exports,
     general_filter,
     modal,
     user,
@@ -57,7 +65,7 @@ export default combineReducers({
     master_card_actions,
     master_card_action_info,
     options,
-    options_drawer,
+    pagination,
     pay,
     payment_info,
     payment_filter,
@@ -67,5 +75,7 @@ export default combineReducers({
     request_inquiry_info,
     request_responses,
     request_response,
-    request_response_info
+    request_response_info,
+    scheduled_payments,
+    search_filter
 });

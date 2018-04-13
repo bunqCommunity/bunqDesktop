@@ -1,19 +1,16 @@
 export const defaultState = {
-    open: false
+    loading: false
 };
 
 export default function reducer(state = defaultState, action) {
     switch (action.type) {
-        case "OPTIONS_DRAWER_OPEN":
+        case "EXPORT_NEW_IS_LOADING":
             return {
-                ...state,
-                open: true
+                loading: true
             };
-
-        case "OPTIONS_DRAWER_CLOSE":
+        case "EXPORT_NEW_IS_NOT_LOADING":
             return {
-                ...state,
-                open: false
+                loading: false
             };
     }
     return state;

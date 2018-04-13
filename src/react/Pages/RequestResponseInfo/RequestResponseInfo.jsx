@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
@@ -11,10 +12,11 @@ import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 import Collapse from "material-ui/transitions/Collapse";
 
-import ArrowBackIcon from "material-ui-icons/ArrowBack";
-import HelpIcon from "material-ui-icons/Help";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import HelpIcon from "@material-ui/icons/Help";
 
 import ExportDialog from "../../Components/ExportDialog";
+import TranslateButton from "../../Components/TranslationHelpers/Button";
 import MoneyAmountLabel from "../../Components/MoneyAmountLabel";
 import TransactionHeader from "../../Components/TransactionHeader";
 import CategorySelector from "../../Components/Categories/CategorySelector";
@@ -122,7 +124,8 @@ class RequestResponseInfo extends React.Component {
             accountsSelectedAccount,
             requestResponseInfo,
             requestResponseInfoLoading,
-            requestResponseLoading
+            requestResponseLoading,
+            t
         } = this.props;
         const paramAccountId = this.props.match.params.accountId;
 
@@ -153,7 +156,10 @@ class RequestResponseInfo extends React.Component {
             const paymentDate = humanReadableDate(requestResponse.updated);
             const paymentAmount = requestResponse.amount_inquired.value;
             const formattedPaymentAmount = formatMoney(paymentAmount);
-            const requestResponseLabel = requestResponseText(requestResponse);
+            const requestResponseLabel = requestResponseText(
+                requestResponse,
+                t
+            );
 
             content = [
                 <Paper style={styles.paper}>
@@ -193,7 +199,7 @@ class RequestResponseInfo extends React.Component {
                                         <Divider />,
                                         <ListItem>
                                             <ListItemText
-                                                primary={"Description"}
+                                                primary={t("Description")}
                                                 secondary={
                                                     requestResponse.description
                                                 }
@@ -205,27 +211,32 @@ class RequestResponseInfo extends React.Component {
                                 <Divider />
                                 <ListItem>
                                     <ListItemText
-                                        primary={"Date"}
+                                        primary={t("Date")}
                                         secondary={paymentDate}
                                     />
                                 </ListItem>
-                                <Divider />
-                                <ListItem>
-                                    <ListItemText
-                                        primary={"IBAN"}
-                                        secondary={
-                                            requestResponse.counterparty_alias
-                                                .iban
-                                        }
-                                    />
-                                </ListItem>
+                                {requestResponse.counterparty_alias &&
+                                requestResponse.counterparty_alias.iban ? (
+                                    <React.Fragment>
+                                        <Divider />
+                                        <ListItem>
+                                            <ListItemText
+                                                primary={t("IBAN")}
+                                                secondary={
+                                                    requestResponse
+                                                        .counterparty_alias.iban
+                                                }
+                                            />
+                                        </ListItem>
+                                    </React.Fragment>
+                                ) : null}
                                 <Divider />
                             </List>
 
                             {requestResponse.status === "PENDING" ? (
                                 <Grid container spacing={16}>
                                     <Grid item xs={12} sm={6}>
-                                        <Button
+                                        <TranslateButton
                                             variant="raised"
                                             color="primary"
                                             style={styles.button}
@@ -237,10 +248,10 @@ class RequestResponseInfo extends React.Component {
                                             }}
                                         >
                                             Continue
-                                        </Button>
+                                        </TranslateButton>
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
-                                        <Button
+                                        <TranslateButton
                                             variant="raised"
                                             color="secondary"
                                             disabled={
@@ -251,7 +262,7 @@ class RequestResponseInfo extends React.Component {
                                             style={styles.button}
                                         >
                                             Decline
-                                        </Button>
+                                        </TranslateButton>
                                     </Grid>
                                 </Grid>
                             ) : null}
@@ -272,7 +283,7 @@ class RequestResponseInfo extends React.Component {
                             justify={"center"}
                         >
                             <Grid item xs={12}>
-                                <Button
+                                <TranslateButton
                                     variant="raised"
                                     disabled={false}
                                     color="primary"
@@ -280,7 +291,7 @@ class RequestResponseInfo extends React.Component {
                                     onClick={this.acceptRequest}
                                 >
                                     Accept request
-                                </Button>
+                                </TranslateButton>
                             </Grid>
                         </Grid>
                     </Paper>
@@ -291,7 +302,7 @@ class RequestResponseInfo extends React.Component {
         return (
             <Grid container spacing={24}>
                 <Helmet>
-                    <title>{`BunqDesktop - Request Info`}</title>
+                    <title>{`BunqDesktop - ${t("Request Info")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={2}>
@@ -311,7 +322,7 @@ class RequestResponseInfo extends React.Component {
                     <ExportDialog
                         closeModal={event =>
                             this.setState({ displayExport: false })}
-                        title="Export info"
+                        title={t("Export info")}
                         open={this.state.displayExport}
                         object={this.props.requestResponseInfo}
                     />
@@ -382,5 +393,5 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-    RequestResponseInfo
+    translate("translations")(RequestResponseInfo)
 );

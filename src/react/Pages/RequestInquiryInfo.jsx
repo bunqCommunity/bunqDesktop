@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
@@ -10,10 +11,11 @@ import Divider from "material-ui/Divider";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
-import ArrowBackIcon from "material-ui-icons/ArrowBack";
-import HelpIcon from "material-ui-icons/Help";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import HelpIcon from "@material-ui/icons/Help";
 
 import ExportDialog from "../Components/ExportDialog";
+import TranslateButton from "../Components/TranslationHelpers/Button";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import TransactionHeader from "../Components/TransactionHeader";
 import CategorySelector from "../Components/Categories/CategorySelector";
@@ -93,7 +95,8 @@ class RequestInquiryInfo extends React.Component {
             accountsSelectedAccount,
             requestInquiryInfo,
             requestInquiryLoading,
-            requestInquiryInfoLoading
+            requestInquiryInfoLoading,
+            t
         } = this.props;
         const paramAccountId = this.props.match.params.accountId;
 
@@ -122,7 +125,7 @@ class RequestInquiryInfo extends React.Component {
             const paymentDate = humanReadableDate(requestInquiry.updated);
             const paymentAmount = requestInquiry.amount_inquired.value;
             const formattedPaymentAmount = formatMoney(paymentAmount);
-            const requestInquiryLabel = requestInquiryText(requestInquiry);
+            const requestInquiryLabel = requestInquiryText(requestInquiry, t);
 
             content = (
                 <Grid
@@ -173,7 +176,7 @@ class RequestInquiryInfo extends React.Component {
                             <Divider />
                             <ListItem>
                                 <ListItemText
-                                    primary={"Date"}
+                                    primary={t("Date")}
                                     secondary={paymentDate}
                                 />
                             </ListItem>
@@ -192,7 +195,7 @@ class RequestInquiryInfo extends React.Component {
                         {requestInquiry.status === "PENDING" ? (
                             <Grid container spacing={16} justify="center">
                                 <Grid item xs={12} sm={6}>
-                                    <Button
+                                    <TranslateButton
                                         variant="raised"
                                         disabled={
                                             requestInquiryLoading ||
@@ -203,7 +206,7 @@ class RequestInquiryInfo extends React.Component {
                                         style={styles.button}
                                     >
                                         Cancel
-                                    </Button>
+                                    </TranslateButton>
                                 </Grid>
                             </Grid>
                         ) : null}
@@ -220,7 +223,7 @@ class RequestInquiryInfo extends React.Component {
         return (
             <Grid container spacing={24}>
                 <Helmet>
-                    <title>{`BunqDesktop - Request Info`}</title>
+                    <title>{`BunqDesktop - ${t("Request Info")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={2}>
@@ -240,7 +243,7 @@ class RequestInquiryInfo extends React.Component {
                     <ExportDialog
                         closeModal={event =>
                             this.setState({ displayExport: false })}
-                        title="Export info"
+                        title={t("Export info")}
                         open={this.state.displayExport}
                         object={this.props.requestInquiryInfo}
                     />
@@ -292,4 +295,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(RequestInquiryInfo);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(RequestInquiryInfo)
+);

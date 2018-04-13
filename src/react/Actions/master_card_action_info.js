@@ -1,4 +1,5 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import MasterCardAction from "../Models/MasterCardAction";
 
 import { masterCardActionsSetInfo } from "./master_card_actions";
 
@@ -23,12 +24,20 @@ export function masterCardActionInfoUpdate(
     account_id,
     master_card_action_id
 ) {
+    const failedMessage = window.t(
+        "We failed to load the master card payment information"
+    );
+
     return dispatch => {
         dispatch(masterCardActionInfoLoading());
         BunqJSClient.api.masterCardAction
             .get(user_id, account_id, master_card_action_id)
-            .then(masterCardActionInfo => {
-                // update this item in the payments list and the stored data
+            .then(masterCardAction => {
+                const masterCardActionInfo = new MasterCardAction(
+                    masterCardAction
+                );
+
+                // update this item in the list and the stored data
                 dispatch(
                     masterCardActionsSetInfo(
                         [masterCardActionInfo],
@@ -49,11 +58,7 @@ export function masterCardActionInfoUpdate(
             })
             .catch(error => {
                 dispatch(masterCardActionInfoNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    "We failed to load the master card payment information"
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

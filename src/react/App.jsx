@@ -9,6 +9,9 @@ import Layout from "./Components/Layout";
 import ErrorBoundary from "./Components/ErrorBoundary";
 import Store from "./Store.jsx";
 
+// include translations setup
+import './i18n';
+
 export default class App extends React.Component {
     constructor(props, context) {
         super(props, context);

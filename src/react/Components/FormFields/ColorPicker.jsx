@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { ChromePicker } from "react-color";
+import { translate } from "react-i18next";
+import ChromePicker  from "react-color/lib/Chrome";
 import Button from "material-ui/Button";
 import Dialog from "material-ui/Dialog";
 
@@ -45,7 +46,7 @@ class ColorPicker extends React.Component {
                     style={this.props.buttonStyle}
                     {...this.props.buttonProps}
                 >
-                    Pick a color
+                    {this.props.t("Pick a color")}
                 </Button>
                 <Dialog
                     key={"randomkey2"}
@@ -69,4 +70,4 @@ ColorPicker.propTypes = {
     pickerProps: PropTypes.object.isRequired
 };
 
-export default ColorPicker;
+export default translate("translations")(ColorPicker);

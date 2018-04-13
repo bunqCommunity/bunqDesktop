@@ -1,4 +1,5 @@
 {
-  "name": "test",
-  "description": "Add here any environment specific stuff you like."
+    "name": "test",
+    "NODE_ENV": "TEST",
+    "description": "Add here any environment specific stuff you like."
 }

@@ -6,13 +6,17 @@ export default ({
     apiKey,
     userType,
     derivedPassword,
+    ignoreApiKey = false,
+    ignoreUserType = false,
     ...rest
 }) => {
     const componentHandler = rest.render ? rest.render : props => Component;
 
     // no user selected or no derived password set
     let redirectCondition =
-        userType === false || derivedPassword === false || apiKey === false;
+        derivedPassword === false ||
+        (userType === false && ignoreUserType === false) ||
+        (apiKey === false && ignoreApiKey === false);
 
     return (
         <Route

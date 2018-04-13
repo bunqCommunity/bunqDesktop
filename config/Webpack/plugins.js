@@ -17,17 +17,23 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
             "process.env.PRODUCTION": JSON.stringify(PRODUCTION),
             "process.env.WEBPACK_MODE": JSON.stringify(true)
         }),
+        // ignore all except en/fr/de
+        new webpack.ContextReplacementPlugin(
+            /moment[\/\\]locale$/,
+            /(en|de|fr)$/
+        ),
+        // extract css to file
         new ExtractTextPlugin({
             filename: OUTPUT_DIR + "[name].css",
             disable: false,
             allChunks: true
         }),
-        // split common files
+        // split common chunks
         new webpack.optimize.CommonsChunkPlugin({
             children: true,
             minChunks: 2
         }),
-        // webpack analyzer
+        // analyze bundle
         new BundleAnalyzerPlugin({
             // don't open the file automatically
             openAnalyzer: false,
@@ -36,14 +42,7 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
             // create a server for the watcher or a static file for production enviroments
             analyzerMode: "static",
             // output outside of the public folder
-            reportFilename: "../../webpack.report.html",
-            /**
-             * stats file for analyzer - use with:
-             * @see https://alexkuz.github.io/stellar-webpack/
-             * @see https://alexkuz.github.io/webpack-chart/
-             */
-            generateStatsFile: true,
-            statsFilename: "../../webpack.stats.json"
+            reportFilename: "../../webpack.report.html"
         })
     ];
 

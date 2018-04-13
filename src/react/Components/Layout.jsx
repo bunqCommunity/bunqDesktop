@@ -1,4 +1,5 @@
 import React from "react";
+import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import Grid from "material-ui/Grid";
@@ -10,6 +11,7 @@ import { ipcRenderer } from "electron";
 // custom components
 import Logger from "../Helpers/Logger";
 import VersionChecker from "../Helpers/VersionChecker";
+import RuleCollectionChecker from "./RuleCollectionChecker";
 import MainDialog from "./MainDialog";
 import MainSnackbar from "./MainSnackbar";
 import MainDrawer from "./MainDrawer";
@@ -27,26 +29,28 @@ const ThemeList = {
 };
 
 // redux actions
-import { applicationSetStatus } from "../Actions/application.js";
 import { userLogin } from "../Actions/user.js";
 import { usersUpdate } from "../Actions/users";
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
-import { registrationClearUserInfo } from "../Actions/registration";
-
 import { loadStoredPayments } from "../Actions/payments";
 import { loadStoredAccounts } from "../Actions/accounts";
 import { loadStoredBunqMeTabs } from "../Actions/bunq_me_tabs";
+import { applicationSetStatus } from "../Actions/application.js";
+import { registrationClearUserInfo } from "../Actions/registration";
 import { loadStoredMasterCardActions } from "../Actions/master_card_actions";
 import { loadStoredRequestInquiries } from "../Actions/request_inquiries";
 import { loadStoredRequestResponses } from "../Actions/request_responses";
-
 import {
     registrationLoading,
     registrationNotLoading,
-    registrationClearApiKey
+    registrationResetToApiScreen
 } from "../Actions/registration";
-import OptionsDrawer from "./OptionsDrawer";
+import {
+    setHideBalance,
+    setTheme,
+    setAutomaticThemeChange
+} from "../Actions/options";
 
 const styles = theme => ({
     contentContainer: {
@@ -78,8 +82,7 @@ class Layout extends React.Component {
         };
 
         this.activityTimer = null;
-        window.onmousemove = this.onActivityEvent.bind(this);
-        window.onkeypress = this.onActivityEvent.bind(this);
+        this.minuteTimer = null;
 
         ipcRenderer.on("change-path", (event, path) => {
             const currentPath = this.props.history.location.pathname;
@@ -88,6 +91,29 @@ class Layout extends React.Component {
                 this.props.history.push(path);
             }
         });
+        ipcRenderer.on("history-backward", (event, path) => {
+            this.props.history.goBack();
+        });
+        ipcRenderer.on("history-forward", (event, path) => {
+            this.props.history.goForward();
+        });
+
+        // keybind events from main process
+        ipcRenderer.on("toggle-balance", event => {
+            this.props.setHideBalance(!this.props.hideBalance);
+        });
+        ipcRenderer.on("toggle-theme", event => {
+            this.props.setTheme(
+                this.props.theme === "DefaultTheme"
+                    ? "DarkTheme"
+                    : "DefaultTheme"
+            );
+        });
+
+        // access the translations globally
+        window.t = this.props.t;
+        window.onmousemove = this.onActivityEvent.bind(this);
+        window.onkeypress = this.onActivityEvent.bind(this);
     }
 
     componentDidMount() {
@@ -100,20 +126,37 @@ class Layout extends React.Component {
             })
             .catch(Logger.error);
 
-        VersionChecker().then(versionInfo => {
-            if (versionInfo.newerLink !== false) {
-                this.props.openSnackbar(
-                    `A new version (v${versionInfo.latestVersion}) is available! You are currently using ${versionInfo.currentVersion}`,
-                    8000
-                );
-            }
-        });
+        if (process.env.NODE_ENV !== "development") {
+            VersionChecker().then(versionInfo => {
+                if (versionInfo.newerLink !== false) {
+                    this.props.openSnackbar(
+                        `A new version (v${versionInfo.latestVersion}) is available! You are currently using ${versionInfo.currentVersion}`,
+                        8000
+                    );
+                }
+            });
+        }
 
         // set initial timeout trigger
         this.setActivityTimeout();
+
+        // setup minute timer
+        this.checkTime();
+        this.minuteTimer = setInterval(this.checkTime, 60000);
+    }
+
+    componentWillMount() {
+        this.checkLanguageChange(this.props);
+
+        // unset the minuteTimer when set
+        if (this.minuteTimer) clearInterval(this.minuteTimer);
+        this.minuteTimer = null;
     }
 
     componentWillUpdate(nextProps) {
+        // make sure language is up-to-date
+        this.checkLanguageChange(nextProps);
+
         if (
             nextProps.apiKey !== this.props.apiKey ||
             nextProps.environment !== this.props.environment
@@ -128,6 +171,7 @@ class Layout extends React.Component {
                 .catch(Logger.error);
         }
 
+        // check for page changes
         if (process.env.NODE_ENV !== "development") {
             // compare pathnames and trigger a
             const nextUrl = nextProps.location.pathname;
@@ -141,6 +185,62 @@ class Layout extends React.Component {
         return true;
     }
 
+    /**
+     * Checks if the language chanaged and update i18n when required
+     * @param newProps
+     */
+    checkLanguageChange = newProps => {
+        const { i18n } = this.props;
+        if (
+            newProps.language !== this.props.language ||
+            newProps.i18n.language !== this.props.language
+        ) {
+            // update back-end language
+            ipcRenderer.send("change-language", newProps.language);
+
+            // change client-side langauge
+            i18n.changeLanguage(newProps.language);
+        }
+    };
+
+    /**
+     * Checks if automaticThemeChange is enabled and switches theme based on time
+     */
+    checkTime = () => {
+        if (this.props.automaticThemeChange) {
+            const currentTime = new Date().getTime();
+
+            const morningDate = new Date();
+            morningDate.setHours(8);
+            morningDate.setMinutes(30);
+            morningDate.setSeconds(0);
+            morningDate.setMilliseconds(0);
+            const morningTime = morningDate.getTime();
+
+            const nightDate = new Date();
+            nightDate.setHours(19);
+            nightDate.setMinutes(30);
+            nightDate.setSeconds(0);
+            nightDate.setMilliseconds(0);
+            const nightTime = nightDate.getTime();
+
+            if (currentTime > morningTime && currentTime < nightTime) {
+                if (this.props.theme === "DarkTheme") {
+                    this.props.setTheme("DefaultTheme");
+                }
+            } else {
+                if (this.props.theme === "DefaultTheme") {
+                    this.props.setTheme("DarkTheme");
+                }
+            }
+        }
+    };
+
+    /**
+     * Checks if the bunqjsclient needs to setup
+     * @param nextProps
+     * @returns {Promise<void>}
+     */
     checkBunqSetup = async (nextProps = false) => {
         if (nextProps === false) {
             nextProps = this.props;
@@ -177,7 +277,7 @@ class Layout extends React.Component {
                 .catch(setupError => {
                     Logger.error(setupError);
                     // installation failed so we reset the api key
-                    nextProps.registrationClearApiKey();
+                    nextProps.registrationResetToApiScreen();
                     nextProps.registrationNotLoading();
                 });
         }
@@ -199,6 +299,22 @@ class Layout extends React.Component {
         encryptionKey = false,
         allowReRun = false
     ) => {
+        const t = this.props.t;
+        const errorTitle = t("Something went wrong");
+        const error1 = t("We failed to setup BunqDesktop properly");
+        const error2 = t("We failed to install a new application");
+        const error3 = t(
+            "The API key or IP you are currently on is not valid for the selected bunq environment"
+        );
+        const error4 = t(
+            "We failed to register this device on the bunq servers Are you sure you entered a valid API key? And are you sure that this key is meant for the selected bunq environment?"
+        );
+        const error5 = t("We failed to create a new session");
+
+        const statusMessage1 = t("Registering our encryption keys");
+        const statusMessage2 = t("Installing this device");
+        const statusMessage3 = t("Creating a new session");
+
         try {
             await this.props.BunqJSClient.run(
                 apiKey,
@@ -207,10 +323,7 @@ class Layout extends React.Component {
                 encryptionKey
             );
         } catch (exception) {
-            this.props.openModal(
-                "We failed to setup BunqDesktop properly",
-                "Something went wrong"
-            );
+            this.props.openModal(error1, errorTitle);
             throw exception;
         }
 
@@ -219,18 +332,15 @@ class Layout extends React.Component {
             return;
         }
 
-        this.props.applicationSetStatus("Registering our encryption keys...");
+        this.props.applicationSetStatus(statusMessage1);
         try {
             await this.props.BunqJSClient.install();
         } catch (exception) {
-            this.props.openModal(
-                "We failed to install a new application",
-                "Something went wrong"
-            );
+            this.props.openModal(error2, errorTitle);
             throw exception;
         }
 
-        this.props.applicationSetStatus("Installing this device...");
+        this.props.applicationSetStatus(statusMessage2);
         try {
             await this.props.BunqJSClient.registerDevice(deviceName);
         } catch (exception) {
@@ -240,28 +350,19 @@ class Layout extends React.Component {
                     responseError.error_description ===
                     "User credentials are incorrect. Incorrect API key or IP address."
                 ) {
-                    this.props.openModal(
-                        `The API key or IP you are currently on is not valid for the ${environment} bunq environment.`,
-                        "Something went wrong"
-                    );
+                    this.props.openModal(error3, errorTitle);
                     throw exception;
                 }
             }
-            this.props.openModal(
-                `We failed to register this device on the bunq servers. Are you sure you entered a valid API key? And are you sure that this key is meant for the ${environment} bunq environment?`,
-                "Something went wrong"
-            );
+            this.props.openModal(error4, errorTitle);
             throw exception;
         }
 
-        this.props.applicationSetStatus("Creating a new session...");
+        this.props.applicationSetStatus(statusMessage3);
         try {
             await this.props.BunqJSClient.registerSession();
         } catch (exception) {
-            this.props.openModal(
-                "We failed to create a new session",
-                "Something went wrong"
-            );
+            this.props.openModal(error5, errorTitle);
 
             // custom error handling to prevent
             if (exception.errorCode) {
@@ -282,7 +383,6 @@ class Layout extends React.Component {
                                 encryptionKey,
                                 false
                             );
-
                             return;
                         }
 
@@ -342,42 +442,48 @@ class Layout extends React.Component {
             BunqJSClient: this.props.BunqJSClient,
             // modal and snackbar helpers
             openModal: this.props.openModal,
+            themeList: ThemeList,
             openSnackbar: this.props.openSnackbar,
             // helps all child components to prevent calls before the BunqJSClient is finished setting up
             initialBunqConnect: this.state.initialBunqConnect
         };
-
+        const selectedTheme = ThemeList[this.props.theme]
+            ? ThemeList[this.props.theme]
+            : ThemeList[Object.keys(ThemeList)[0]];
         const strippedLocation = this.props.location.pathname.replace(
             /\W/g,
             ""
         );
+
+        const isLoading =
+            this.props.paymentsLoading ||
+            this.props.bunqMeTabsLoading ||
+            this.props.masterCardActionsLoading ||
+            this.props.requestInquiriesLoading ||
+            this.props.requestResponsesLoading;
 
         const contentContainerClass = this.props.stickyMenu
             ? classes.contentContainerSticky
             : classes.contentContainer;
         const RouteComponent = this.props.routesComponent;
         return (
-            <MuiThemeProvider theme={ThemeList[this.props.theme]}>
+            <MuiThemeProvider theme={selectedTheme}>
                 <main className={classes.main}>
+                    <RuleCollectionChecker updateToggle={isLoading} />
+
                     <Header />
                     <MainDrawer
                         BunqJSClient={this.props.BunqJSClient}
-                        location={this.props.location}
-                    />
-                    <OptionsDrawer
-                        BunqJSClient={this.props.BunqJSClient}
-                        themeList={ThemeList}
                         location={this.props.location}
                     />
                     <Grid
                         container
                         spacing={16}
                         justify={"center"}
-                        className={`${contentContainerClass}  ${strippedLocation}-page`}
+                        className={`${contentContainerClass} ${strippedLocation}-page`}
                         style={{
                             backgroundColor:
-                                ThemeList[this.props.theme].palette.background
-                                    .default,
+                                selectedTheme.palette.background.default,
                             padding: 16
                         }}
                     >
@@ -407,8 +513,11 @@ class Layout extends React.Component {
 const mapStateToProps = state => {
     return {
         theme: state.options.theme,
+        language: state.options.language,
         stickyMenu: state.options.sticky_menu,
+        hideBalance: state.options.hide_balance,
         checkInactivity: state.options.check_inactivity,
+        automaticThemeChange: state.options.automatic_theme_change,
         inactivityCheckDuration: state.options.inactivity_check_duration,
 
         derivedPassword: state.registration.derivedPassword,
@@ -420,7 +529,13 @@ const mapStateToProps = state => {
         user: state.user.user,
         userType: state.user.user_type,
         userInitialCheck: state.user.initialCheck,
-        userLoading: state.user.loading
+        userLoading: state.user.loading,
+
+        paymentsLoading: state.payments.loading,
+        bunqMeTabsLoading: state.bunq_me_tabs.loading,
+        masterCardActionsLoading: state.master_card_actions.loading,
+        requestInquiriesLoading: state.request_inquiries.loading,
+        requestResponsesLoading: state.request_responses.loading
     };
 };
 
@@ -431,14 +546,20 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(openSnackbar(message, duration)),
         openModal: (message, title) => dispatch(openModal(message, title)),
 
+        // options
+        setAutomaticThemeChange: automaticThemeChange =>
+            dispatch(setAutomaticThemeChange(automaticThemeChange)),
+        setHideBalance: hideBalance => dispatch(setHideBalance(hideBalance)),
+        setTheme: theme => dispatch(setTheme(theme)),
+
         // set the current application status
         applicationSetStatus: status_message =>
             dispatch(applicationSetStatus(status_message)),
 
         registrationLoading: () => dispatch(registrationLoading()),
         registrationNotLoading: () => dispatch(registrationNotLoading()),
-        registrationClearApiKey: () =>
-            dispatch(registrationClearApiKey(BunqJSClient)),
+        registrationResetToApiScreen: () =>
+            dispatch(registrationResetToApiScreen(BunqJSClient)),
 
         // get latest user list from BunqJSClient
         usersUpdate: (updated = false) =>
@@ -464,5 +585,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 export default withStyles(styles, { withTheme: true })(
-    withRouter(connect(mapStateToProps, mapDispatchToProps)(Layout))
+    withRouter(
+        connect(mapStateToProps, mapDispatchToProps)(
+            translate("translations")(Layout)
+        )
+    )
 );

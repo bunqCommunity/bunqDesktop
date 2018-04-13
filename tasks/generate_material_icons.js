@@ -20,8 +20,7 @@ axios
         fs.writeFileSync(
             `${__dirname}/../src/react/Helpers/Icons.json`,
             JSON.stringify({
-                icons: icons,
-                updated: new Date()
+                icons: icons
             })
         );
 

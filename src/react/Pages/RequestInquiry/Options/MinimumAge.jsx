@@ -4,8 +4,8 @@ import { withStyles } from "material-ui/styles";
 import { FormControl } from "material-ui/Form";
 import Input, { InputLabel, InputAdornment } from "material-ui/Input";
 import { IconButton } from "material-ui";
-import Check from "material-ui-icons/Check";
-import NotInterested from "material-ui-icons/NotInterested";
+import Check from "@material-ui/icons/Check";
+import NotInterested from "@material-ui/icons/NotInterested";
 
 const styles = theme => ({
     formControl: {
@@ -26,7 +26,8 @@ class MinimumAge extends React.Component {
             minimumAgeError,
             minimumAge,
             handleChange,
-            handleToggle
+            handleToggle,
+            t
         } = this.props;
 
         if (targetType === "BUNQME") {
@@ -35,7 +36,9 @@ class MinimumAge extends React.Component {
 
         return (
             <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="minimumAge">Set a minimum age?</InputLabel>
+                <InputLabel htmlFor="minimumAge">
+                    {t("Set a minimum age?")}
+                </InputLabel>
                 <Input
                     className={classes.input}
                     id="minimumAge"

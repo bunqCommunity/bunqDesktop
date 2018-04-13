@@ -1,4 +1,6 @@
 import React from "react";
+import { translate } from "react-i18next";
+import { withTheme } from "material-ui/styles";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
@@ -10,16 +12,21 @@ import Divider from "material-ui/Divider";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
-import ArrowBackIcon from "material-ui-icons/ArrowBack";
-import HelpIcon from "material-ui-icons/Help";
+import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
+import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import HelpIcon from "@material-ui/icons/Help";
+import BookmarkIcon from "@material-ui/icons/Bookmark";
 
 import ExportDialog from "../Components/ExportDialog";
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import { paymentText, paymentTypeParser } from "../Helpers/StatusTexts";
 
+import SpeedDial from "../Components/SpeedDial";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import TransactionHeader from "../Components/TransactionHeader";
-import CategorySelector from "../Components/Categories/CategorySelector";
+import CategorySelectorDialog from "../Components/Categories/CategorySelectorDialog";
+import CategoryChips from "../Components/Categories/CategoryChips";
 
 import { paymentsUpdate } from "../Actions/payment_info";
 
@@ -40,12 +47,17 @@ class PaymentInfo extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            displayExport: false
+            displayExport: false,
+            displayCategories: false
         };
     }
 
     componentDidMount() {
-        if (this.props.initialBunqConnect) {
+        if (
+            this.props.user &&
+            this.props.user.id &&
+            this.props.initialBunqConnect
+        ) {
             const { paymentId, accountId } = this.props.match.params;
             this.props.updatePayment(
                 this.props.user.id,
@@ -76,11 +88,25 @@ class PaymentInfo extends React.Component {
         }
     }
 
+    toggleCategoryDialog = event =>
+        this.setState({ displayCategories: !this.state.displayCategories });
+
+    startPayment = event => {
+        const paymentInfo = this.props.paymentInfo;
+        this.props.history.push(`/pay?amount=${paymentInfo.getAmount()}`);
+    }
+    startRequest = event => {
+        const paymentInfo = this.props.paymentInfo;
+        this.props.history.push(`/request?amount=${paymentInfo.getAmount()}`);
+    }
+
     render() {
         const {
             accountsSelectedAccount,
             paymentInfo,
-            paymentLoading
+            paymentLoading,
+            theme,
+            t
         } = this.props;
         const paramAccountId = this.props.match.params.accountId;
 
@@ -107,7 +133,7 @@ class PaymentInfo extends React.Component {
             const paymentDate = humanReadableDate(payment.updated);
             const paymentAmount = payment.amount.value;
             const formattedPaymentAmount = formatMoney(paymentAmount);
-            const paymentLabel = paymentText(payment);
+            const paymentLabel = paymentText(payment, t);
             const counterPartyIban = payment.counterparty_alias.iban;
 
             content = (
@@ -159,15 +185,18 @@ class PaymentInfo extends React.Component {
                             <Divider />
                             <ListItem>
                                 <ListItemText
-                                    primary={"Date"}
+                                    primary={t("Date")}
                                     secondary={paymentDate}
                                 />
                             </ListItem>
                             <Divider />
                             <ListItem>
                                 <ListItemText
-                                    primary={"Payment Type"}
-                                    secondary={paymentTypeParser(payment.type)}
+                                    primary={t("Payment Type")}
+                                    secondary={paymentTypeParser(
+                                        payment.type,
+                                        t
+                                    )}
                                 />
                             </ListItem>
                             <Divider />
@@ -179,7 +208,48 @@ class PaymentInfo extends React.Component {
                             </ListItem>
                         </List>
 
-                        <CategorySelector type={"Payment"} item={paymentInfo} />
+                        <CategoryChips
+                            type={"Payment"}
+                            id={payment.id}
+                        />
+
+                        <CategorySelectorDialog
+                            type={"Payment"}
+                            item={paymentInfo}
+                            onClose={this.toggleCategoryDialog}
+                            open={this.state.displayCategories}
+                        />
+
+                        <SpeedDial
+                            hidden={false}
+                            actions={[
+                                {
+                                    name: "Send payment",
+                                    icon: ArrowUpIcon,
+                                    color: "action",
+                                    onClick: this.startPayment
+                                },
+                                {
+                                    name: "Send request",
+                                    icon: ArrowDownIcon,
+                                    color: "action",
+                                    onClick: this.startRequest
+                                },
+                                {
+                                    name: t("Manage categories"),
+                                    icon: BookmarkIcon,
+                                    color: "action",
+                                    onClick: this.toggleCategoryDialog
+                                },
+                                {
+                                    name: t("View debug information"),
+                                    icon: HelpIcon,
+                                    color: "action",
+                                    onClick: event =>
+                                        this.setState({ displayExport: true })
+                                }
+                            ]}
+                        />
                     </Grid>
                 </Grid>
             );
@@ -188,8 +258,16 @@ class PaymentInfo extends React.Component {
         return (
             <Grid container spacing={24}>
                 <Helmet>
-                    <title>{`BunqDesktop - Payment Info`}</title>
+                    <title>{`BunqDesktop - ${t("Payment Info")}`}</title>
                 </Helmet>
+
+                <ExportDialog
+                    closeModal={event =>
+                        this.setState({ displayExport: false })}
+                    title={t("Export info")}
+                    open={this.state.displayExport}
+                    object={this.props.paymentInfo}
+                />
 
                 <Grid item xs={12} sm={2}>
                     <Button
@@ -202,24 +280,6 @@ class PaymentInfo extends React.Component {
 
                 <Grid item xs={12} sm={8}>
                     <Paper style={styles.paper}>{content}</Paper>
-                </Grid>
-
-                <Grid item xs={12} sm={2} style={{ textAlign: "right" }}>
-                    <ExportDialog
-                        closeModal={event =>
-                            this.setState({ displayExport: false })}
-                        title="Export info"
-                        open={this.state.displayExport}
-                        object={this.props.paymentInfo}
-                    />
-
-                    <Button
-                        style={styles.button}
-                        onClick={event =>
-                            this.setState({ displayExport: true })}
-                    >
-                        <HelpIcon />
-                    </Button>
                 </Grid>
             </Grid>
         );
@@ -247,4 +307,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PaymentInfo);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(PaymentInfo)
+);
