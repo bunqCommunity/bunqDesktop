@@ -90,8 +90,11 @@ class CategorySelector extends React.Component {
                 </Grid>
 
                 <Grid item xs={12}>
+                    <Divider />
+                </Grid>
+                
+                <Grid item xs={12}>
                     <Collapse in={this.state.open}>
-                        <Divider />
                         <CategoryChips
                             type={type}
                             id={itemInfo.id}
