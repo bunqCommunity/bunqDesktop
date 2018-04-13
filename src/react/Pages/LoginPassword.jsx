@@ -8,14 +8,10 @@ import store from "store";
 import Grid from "material-ui/Grid";
 import Input from "material-ui/Input";
 import Card, { CardContent } from "material-ui/Card";
-import Button from "material-ui/Button";
-import { CardContent } from "material-ui/Card";
 import { CircularProgress } from "material-ui/Progress";
 
 import WarningIcon from "@material-ui/icons/Warning";
 import LockIcon from "@material-ui/icons/Lock";
-import WarningIcon from "material-ui-icons/Warning";
-import LockIcon from "material-ui-icons/Lock";
 
 import TranslateButton from "../Components/TranslationHelpers/Button";
 
@@ -36,18 +32,21 @@ const styles = {
     },
     loginButton: {
         width: "100%",
-        color: "white",
-        backgroundColor: "#2196f3"
+        color: "#ffffff",
+        backgroundColor: "#000000"
     },
     secondaryButtons: {
-        width: "100%"
+        width: "100%",
+        color: "#000000",
+        fontWeight: 700,
+        backgroundColor: "#ffffff"
     },
     clearButton: {
         width: "100%",
         marginTop: 20
     },
     passwordInput: {
-        color: "white",
+        color: "#000000",
         width: "100%",
         marginTop: 20
     },
@@ -58,6 +57,10 @@ const styles = {
         width: 50,
         height: 50
     },
+    cardContent: {
+        textAlign: "center",
+        backgroundColor: "#ffffff"
+    },
     girlSvg: {
         zIndex: 0,
         position: "fixed",
@@ -67,7 +70,7 @@ const styles = {
         maxWidth: "35%"
     },
     text: {
-        color: "white"
+        color: "#000000"
     }
 };
 
@@ -138,7 +141,7 @@ class LoginPassword extends React.Component {
             derivedPassword,
             t
         } = this.props;
-        const { hasReadWarning, passwordValid } = this.props;
+        const { passwordValid, hasReadWarning } = this.state;
 
         if (derivedPassword !== false) {
             return <Redirect to="/login" />;
@@ -148,6 +151,8 @@ class LoginPassword extends React.Component {
             passwordValid === false || registrationLoading === true;
 
         let cardContent = null;
+
+        console.log(hasReadWarning, registrationLoading);
 
         if (hasReadWarning === false && registrationLoading === false) {
             cardContent = (
@@ -187,7 +192,7 @@ class LoginPassword extends React.Component {
 
             // actual content
             cardContent = registrationLoading ? (
-                <CardContent style={{ textAlign: "center" }}>
+                <CardContent style={styles.cardContent}>
                     <Typography
                         variant="headline"
                         component="h2"
@@ -201,15 +206,7 @@ class LoginPassword extends React.Component {
                     </Typography>
                 </CardContent>
             ) : (
-                <CardContent style={{ textAlign: "center" }}>
-                    <Typography variant="headline" component="h2">
-                        {hasStoredApiKey ? (
-                            t("Enter your password")
-                        ) : (
-                            t("Enter a password")
-                        )}
-                    </Typography>
-
+                <CardContent style={styles.cardContent}>
                     <Input
                         autoFocus
                         style={styles.passwordInput}
@@ -225,12 +222,11 @@ class LoginPassword extends React.Component {
                         }
                         placeholder={
                             hasStoredApiKey ? (
-                                "Enter your password"
+                                t("Enter your password")
                             ) : (
-                                "Enter a password"
+                                t("Enter a password")
                             )
                         }
-                        hint="A secure 7+ character password"
                         onChange={this.handlePasswordChange}
                         onKeyPress={ev => {
                             if (
@@ -250,24 +246,11 @@ class LoginPassword extends React.Component {
                         justify="center"
                         style={{ marginTop: 16 }}
                     >
-                        <Grid item xs={6}>
-                            <TranslateButton
-                                variant="raised"
-                                disabled={buttonDisabled}
-                                color={"primary"}
-                                style={styles.loginButton}
-                                onClick={this.setRegistration}
-                            >
-                                Login
-                            </TranslateButton>
-                        </Grid>
-
                         {hasStoredApiKey ? (
-                            <Grid item xs={6}>
+                            <Grid item xs={6} sm={4}>
                                 <TranslateButton
                                     variant="raised"
-                                    color={"secondary"}
-                                    style={styles.loginButton}
+                                    style={styles.secondaryButtons}
                                     onClick={this.logOut}
                                 >
                                     Logout
@@ -278,10 +261,10 @@ class LoginPassword extends React.Component {
                         {(hasStoredApiKey === true && useNoPassword === true) ||
                         hasStoredApiKey === false ? (
                             <React.Fragment>
-                                <Grid item xs={6} />
-                                <Grid item xs={6}>
+                                <Grid item xs={6} sm={4} />
+                                <Grid item xs={6} sm={4}>
                                     <TranslateButton
-                                        color={"secondary"}
+                                        variant="raised"
                                         style={styles.secondaryButtons}
                                         onClick={this.props.useNoPasswordLogin}
                                     >
@@ -289,7 +272,21 @@ class LoginPassword extends React.Component {
                                     </TranslateButton>
                                 </Grid>
                             </React.Fragment>
-                        ) : null}
+                        ) : (
+                            <Grid item xs={6} sm={4} />
+                        )}
+
+                        <Grid item xs={12} sm={4}>
+                            <TranslateButton
+                                variant="raised"
+                                disabled={buttonDisabled}
+                                color={"primary"}
+                                style={styles.loginButton}
+                                onClick={this.setRegistration}
+                            >
+                                Login
+                            </TranslateButton>
+                        </Grid>
                     </Grid>
                 </CardContent>
             );
@@ -310,9 +307,9 @@ class LoginPassword extends React.Component {
                 <Grid
                     item
                     xs={12}
-                    sm={6}
-                    md={4}
-                    lg={3}
+                    sm={8}
+                    md={5}
+                    lg={4}
                     style={{ zIndex: 1 }}
                     className="animated zoomIn"
                 >
