@@ -42,6 +42,7 @@ Download the latest version of BunqDesktop from the [GitHub releases page.](http
  - CTRL/CMD + P : Payment page
  - CTRL/CMD + R : Request page
  - ALT + C      : Cards page
+ - ALT + S      : Settings page
 
 ## Translations
 The app is developed in English but translations in Dutch and German are available. 
