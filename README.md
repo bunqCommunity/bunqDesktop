@@ -20,6 +20,9 @@ Download the latest version of BunqDesktop from the [GitHub releases page.](http
 #### [Brew Cask](https://caskroom.github.io/)
 `brew cask install bunq`
 
+#### [Chocolatey](https://chocolatey.org/packages/bunqdesktop)
+`choco install bunqdesktop`
+
 ## Features
 - View all your accounts and payments
 - Send new payments to other users
