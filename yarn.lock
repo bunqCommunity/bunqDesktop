@@ -6865,6 +6865,10 @@ nopt@^4.0.1:
     abbrev "1"
     osenv "^0.1.4"
 
+normalize-css-color@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/normalize-css-color/-/normalize-css-color-1.0.2.tgz#02991e97cccec6623fe573afbbf0de6a1f3e9f8d"
+
 normalize-package-data@^2.3.2, normalize-package-data@^2.3.4, normalize-package-data@^2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/normalize-package-data/-/normalize-package-data-2.4.0.tgz#12f95a307d58352075a04907b84ac8be98ac012f"
@@ -8087,6 +8091,12 @@ react-side-effect@^1.1.0:
   dependencies:
     exenv "^1.2.1"
     shallowequal "^1.0.1"
+
+react-spring@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/react-spring/-/react-spring-3.1.0.tgz#fb2debbbd532b15896aaca60921aeedf49a616f6"
+  dependencies:
+    normalize-css-color "^1.0.2"
 
 react-sticky-box@^0.6.1:
   version "0.6.1"

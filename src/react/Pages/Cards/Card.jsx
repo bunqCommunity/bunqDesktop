@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { Parallax } from "react-spring";
 import { translate } from "react-i18next";
 import Countdown from "react-countdown-now";
 
@@ -326,7 +327,7 @@ class Card extends React.Component {
 
         return (
             <Grid container spacing={24} style={styles.gridContainer}>
-                <Grid item xs={6}>
+                <Grid item xs={6} className="animated fadeInLeft">
                     <ul
                         className="carousel"
                         style={{ transform: carouselTranslate }}
@@ -334,7 +335,7 @@ class Card extends React.Component {
                         {cards}
                     </ul>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={6} className="animated fadeInRight">
                     <Grid
                         container
                         spacing={24}

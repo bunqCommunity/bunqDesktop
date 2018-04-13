@@ -159,6 +159,7 @@
         "react-redux": "^5.0.7",
         "react-router": "^4.2.0",
         "react-router-dom": "^4.2.0",
+        "react-spring": "^3.1.0",
         "react-sticky-box": "^0.6.1",
         "react-visibility-sensor": "^3.11.0",
         "react-windowed-list": "^2.0.0",
