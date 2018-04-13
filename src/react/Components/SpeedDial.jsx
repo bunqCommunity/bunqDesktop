@@ -22,10 +22,6 @@ class SpeedDialCustom extends React.Component {
         };
     }
 
-    handleClick = () => {
-        this.setState({ open: !this.state.open });
-    };
-
     handleOpen = () => {
         if (!this.state.hidden) {
             this.setState({
@@ -49,7 +45,6 @@ class SpeedDialCustom extends React.Component {
                 hidden={hidden}
                 icon={<SpeedDialIcon openIcon={<CloseIcon />} />}
                 onBlur={this.handleClose}
-                onClick={this.handleClick}
                 onClose={this.handleClose}
                 onFocus={this.handleOpen}
                 onMouseEnter={this.handleOpen}
