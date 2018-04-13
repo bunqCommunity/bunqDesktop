@@ -10,8 +10,9 @@ import Input from "material-ui/Input";
 import Card, { CardContent } from "material-ui/Card";
 import { CircularProgress } from "material-ui/Progress";
 
-import WarningIcon from "@material-ui/icons/Warning";
+import BuildIcon from "@material-ui/icons/Build";
 import LockIcon from "@material-ui/icons/Lock";
+import DesktopIcon from "@material-ui/icons/DesktopMac";
 
 import TranslateButton from "../Components/TranslationHelpers/Button";
 
@@ -152,27 +153,34 @@ class LoginPassword extends React.Component {
 
         let cardContent = null;
 
-        console.log(hasReadWarning, registrationLoading);
-
         if (hasReadWarning === false && registrationLoading === false) {
             cardContent = (
                 <Card style={styles.warningCard}>
                     <CardContent>
                         <Typography variant="headline">
-                            <WarningIcon /> Caution!
+                            <DesktopIcon /> BunqDesktop
                         </Typography>
                         <Typography variant="body2">
-                            {t("ActiveDevelopmentWarning")}
+                            {t("LoginBunqDesktopWarning")}
                         </Typography>
                         <br />
+
+                        <Typography variant="headline">
+                            <BuildIcon /> Development
+                        </Typography>
+                        <Typography variant="body2">
+                            {t("LoginActiveDevelopmentWarning")}
+                        </Typography>
+                        <br />
+
                         <Typography variant="headline">
                             <LockIcon /> Password
                         </Typography>
                         <Typography variant="body2">
-                            {t("PasswordWarningPart1")}
+                            {t("LoginPasswordWarningPart1")}
                         </Typography>
                         <Typography variant="body2">
-                            {t("PasswordWarningPart2")}
+                            {t("LoginPasswordWarningPart2")}
                         </Typography>
                         <div style={{ textAlign: "center" }}>
                             <TranslateButton
