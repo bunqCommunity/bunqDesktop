@@ -65,7 +65,6 @@ class SpeedDialCustom extends React.Component {
                             ButtonProps={{
                                 color: buttonColor
                             }}
-                            className={"nooooooo"}
                             key={action.name}
                             icon={<Icon color={iconColor} />}
                             tooltipTitle={action.name}

@@ -91,6 +91,14 @@ class Layout extends React.Component {
                 this.props.history.push(path);
             }
         });
+        ipcRenderer.on("history-backward", (event, path) => {
+            this.props.history.goBack();
+        });
+        ipcRenderer.on("history-forward", (event, path) => {
+            this.props.history.goForward();
+        });
+
+        // keybind events from main process
         ipcRenderer.on("toggle-balance", event => {
             this.props.setHideBalance(!this.props.hideBalance);
         });

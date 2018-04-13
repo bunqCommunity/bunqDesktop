@@ -149,6 +149,18 @@ app.on("ready", () => {
         }
     });
 
+    // handle app command events like mouse-back/mouse-forward
+    mainWindow.on("app-command", function(e, cmd) {
+        switch(cmd){
+            case "browser-backward":
+                mainWindow.webContents.send("history-backward");
+                break;
+            case "browser-forward":
+                mainWindow.webContents.send("history-forward");
+                break;
+        }
+    });
+
     mainWindow.on("close", function(event) {
         app.quit();
     });
