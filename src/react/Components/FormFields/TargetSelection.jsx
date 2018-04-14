@@ -1,6 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { translate } from "react-i18next";
+import CopyToClipboard from "react-copy-to-clipboard";
+// const PNF = require("google-libphonenumber").PhoneNumberFormat;
+// const phoneUtil = require("google-libphonenumber").PhoneNumberUtil.getInstance();
 
 import Grid from "material-ui/Grid";
 import Radio from "material-ui/Radio";
@@ -8,9 +12,7 @@ import Avatar from "material-ui/Avatar";
 import Chip from "material-ui/Chip";
 import TextField from "material-ui/TextField";
 import Button from "material-ui/Button";
-import Typography from "material-ui/Typography";
-import { FormControl, FormControlLabel } from "material-ui/Form";
-import CopyToClipboard from "react-copy-to-clipboard";
+import { FormControlLabel } from "material-ui/Form";
 
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import EmailIcon from "@material-ui/icons/Email";
@@ -18,9 +20,9 @@ import PhoneIcon from "@material-ui/icons/Phone";
 import CompareArrowsIcon from "@material-ui/icons/CompareArrows";
 
 import PhoneFormatInput from "./PhoneFormatInput";
+import InputSuggestions from "./InputSuggestions";
 import AccountSelectorDialog from "./AccountSelectorDialog";
 import { openSnackbar } from "../../Actions/snackbar";
-import { translate } from "react-i18next";
 
 const styles = {
     payButton: {
@@ -44,7 +46,7 @@ class TargetSelection extends React.Component {
         }
     };
 
-    copiedValue = type => callback => {
+    copiedValue = event => {
         this.props.openSnackbar(this.props.t(`Copied to your clipboard`));
     };
 
@@ -66,37 +68,65 @@ class TargetSelection extends React.Component {
                 );
                 break;
             case "PHONE":
+                // loop through all types and create a full list of contacts (name/phoneNumber combination)
+                const phoneContactList = [];
+                Object.keys(this.props.contacts).map(contactType => {
+                    // go through all contacts for this type
+                    return this.props.contacts[contactType].map(contact => {
+                        // go through all phoneNumbers for this contact
+                        return contact.phoneNumbers.map(phoneNumber => {
+                            phoneContactList.push({
+                                field: phoneNumber,
+                                name: contact.name
+                            });
+                        });
+                    });
+                });
+
                 targetContent = (
-                    <FormControl fullWidth error={this.props.targetError}>
-                        <Typography variant="body1">
-                            {t(
-                                "Phone numbers should contain no spaces and include the land code For example 316123456789"
-                            )}
-                        </Typography>
-                        <PhoneFormatInput
-                            id="target"
-                            autoFocus
-                            placeholder="+316123456789"
-                            error={this.props.targetError}
-                            value={this.props.target}
-                            onChange={this.props.handleChange("target")}
-                            onKeyPress={this.enterKeySubmit}
-                        />
-                    </FormControl>
+                    <InputSuggestions
+                        id="target"
+                        autoFocus
+                        fullWidth
+                        placeholder="+316123456789"
+                        InputComponent={PhoneFormatInput}
+                        items={phoneContactList}
+                        error={this.props.targetError}
+                        value={this.props.target}
+                        onChange={this.props.handleChange("target")}
+                        onSelectItem={this.props.handleChangeDirect("target")}
+                        onKeyPress={this.enterKeySubmit}
+                    />
                 );
                 break;
             case "EMAIL":
+                // loop through all types and create a full list of contacts (name/email combination)
+                const emailList = [];
+                Object.keys(this.props.contacts).map(contactType => {
+                    // go through all contacts for this type
+                    return this.props.contacts[contactType].map(contact => {
+                        // go through all emails for this contact
+                        return contact.emails.map(email => {
+                            emailList.push({
+                                field: email,
+                                name: contact.name
+                            });
+                        });
+                    });
+                });
+
                 targetContent = (
-                    <TextField
+                    <InputSuggestions
                         autoFocus
-                        error={this.props.targetError}
                         fullWidth
-                        required
                         id="target"
                         type="email"
+                        items={emailList}
                         label={t("Email")}
+                        error={this.props.targetError}
                         value={this.props.target}
                         onChange={this.props.handleChange("target")}
+                        onSelectItem={this.props.handleChangeDirect("target")}
                         onKeyPress={this.enterKeySubmit}
                     />
                 );
@@ -164,7 +194,7 @@ class TargetSelection extends React.Component {
                     label={
                         <CopyToClipboard
                             text={targetValue}
-                            onCopy={this.copiedValue(target.type)}
+                            onCopy={this.copiedValue}
                         >
                             <p>{targetValue}</p>
                         </CopyToClipboard>
@@ -283,7 +313,10 @@ class TargetSelection extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return {};
+    return {
+        contacts: state.contacts.contacts,
+        contactsLoading: state.contacts.loading
+    };
 };
 
 const mapDispatchToProps = dispatch => {
@@ -293,7 +326,9 @@ const mapDispatchToProps = dispatch => {
 };
 
 TargetSelection.propTypes = {
-    disabledTypes: PropTypes.array
+    disabledTypes: PropTypes.array,
+    handleChange: PropTypes.func.isRequired,
+    handleChangeDirect: PropTypes.func.isRequired
 };
 TargetSelection.defaultProps = {
     disabledTypes: []

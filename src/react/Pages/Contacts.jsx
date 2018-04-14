@@ -10,7 +10,6 @@ import Button from "material-ui/Button";
 import Divider from "material-ui/Divider";
 import Avatar from "material-ui/Avatar";
 import Paper from "material-ui/Paper";
-import Typography from "material-ui/Typography";
 import List, {
     ListItem,
     ListItemIcon,
@@ -22,8 +21,8 @@ import PhoneIcon from "@material-ui/icons/Phone";
 import PersonIcon from "@material-ui/icons/Person";
 import EmailIcon from "@material-ui/icons/Email";
 
-import TranslateTypography from "../Components/TranslationHelpers/Typography"
-import TranslateButton from "../Components/TranslationHelpers/Button"
+import TranslateTypography from "../Components/TranslationHelpers/Typography";
+import TranslateButton from "../Components/TranslationHelpers/Button";
 
 import { openSnackbar } from "../Actions/snackbar";
 import { contactInfoUpdateGoogle, contactsClear } from "../Actions/contacts";

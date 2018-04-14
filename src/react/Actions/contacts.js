@@ -91,7 +91,22 @@ export function contactInfoUpdateGoogle(BunqJSClient, accessToken) {
                         entry["gd$phoneNumber"].length > 0
                     ) {
                         entry["gd$phoneNumber"].map(phoneNumber => {
-                            phoneNumbers.push(phoneNumber["$t"]);
+                            const inputNumber = phoneNumber["uri"];
+
+                            // remove the 'uri:' part from string
+                            const removedFrontNumber = inputNumber.slice(
+                                4,
+                                inputNumber.length
+                            );
+
+                            // replace - and spaces from string
+                            const removedCharsNumber = removedFrontNumber.replace(
+                                /[\- ]/g,
+                                ""
+                            );
+
+                            // add number to the list
+                            phoneNumbers.push(removedCharsNumber);
                         });
                     }
 

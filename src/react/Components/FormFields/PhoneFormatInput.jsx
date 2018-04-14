@@ -7,7 +7,7 @@ const PhoneFormatInput = props => {
         <NumberFormat
             required
             fullWidth
-            format="+####################"
+            format="####################"
             customInput={Input}
             {...props}
         />
