@@ -51,6 +51,7 @@ import {
     setTheme,
     setAutomaticThemeChange
 } from "../Actions/options";
+import {loadStoredContacts} from "../Actions/contacts";
 
 const styles = theme => ({
     contentContainer: {
@@ -397,6 +398,7 @@ class Layout extends React.Component {
         }
 
         this.props.loadStoredAccounts();
+        this.props.loadStoredContacts();
         this.props.loadStoredPayments();
         this.props.loadStoredBunqMeTabs();
         this.props.loadStoredMasterCardActions();
@@ -569,6 +571,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(userLogin(BunqJSClient, userType, updated)),
 
         loadStoredPayments: () => dispatch(loadStoredPayments(BunqJSClient)),
+        loadStoredContacts: () => dispatch(loadStoredContacts(BunqJSClient)),
         loadStoredBunqMeTabs: () =>
             dispatch(loadStoredBunqMeTabs(BunqJSClient)),
         loadStoredMasterCardActions: () =>

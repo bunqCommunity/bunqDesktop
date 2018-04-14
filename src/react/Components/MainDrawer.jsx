@@ -150,6 +150,12 @@ class MainDrawer extends React.Component {
                       location={this.props.location}
                   />,
                   <ListItemWrapper
+                      to="/contacts"
+                      icon={ContactsIcon}
+                      text={"Contacts"}
+                      location={this.props.location}
+                  />,
+                  <ListItemWrapper
                       to="/category-dashboard"
                       icon={Bookmark}
                       text={"Categories"}
@@ -185,12 +191,6 @@ class MainDrawer extends React.Component {
 
                 <ListItem style={styles.listFiller} />
 
-                <ListItemWrapper
-                    to="/contacts"
-                    icon={ContactsIcon}
-                    text={"Contacts"}
-                    location={this.props.location}
-                />
                 <ListItemWrapper
                     to="/settings"
                     icon={SettingsIcon}

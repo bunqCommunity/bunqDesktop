@@ -248,6 +248,19 @@ export default class Routes extends React.Component {
                         />
 
                         <PrivateRoute
+                            path="/contacts"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <Contacts
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
+                            )}
+                        />
+
+                        <PrivateRoute
                             path="/stats"
                             apiKey={this.props.apiKey}
                             userType={this.props.userType}
@@ -332,16 +345,6 @@ export default class Routes extends React.Component {
                             path="/debug-page"
                             render={props => (
                                 <DebugPage
-                                    {...props}
-                                    {...this.props.childProps}
-                                />
-                            )}
-                        />
-
-                        <Route
-                            path="/contacts"
-                            render={props => (
-                                <Contacts
                                     {...props}
                                     {...this.props.childProps}
                                 />

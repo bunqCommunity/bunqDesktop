@@ -1,18 +1,49 @@
 import React from "react";
+import axios from "axios";
+import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import { translate } from "react-i18next";
 import { ipcRenderer } from "electron";
+import Logger from "../Helpers/Logger";
 import Grid from "material-ui/Grid";
-import TextField from "material-ui/TextField";
 import Button from "material-ui/Button";
 import Divider from "material-ui/Divider";
 import Avatar from "material-ui/Avatar";
-import List, { ListItem, ListItemIcon } from "material-ui/List";
+import Paper from "material-ui/Paper";
+import Typography from "material-ui/Typography";
+import List, {
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    ListSubheader
+} from "material-ui/List";
 
 import PhoneIcon from "@material-ui/icons/Phone";
+import PersonIcon from "@material-ui/icons/Person";
 import EmailIcon from "@material-ui/icons/Email";
 
-import axios from "axios";
+import TranslateTypography from "../Components/TranslationHelpers/Typography"
+import TranslateButton from "../Components/TranslationHelpers/Button"
+
+import { openSnackbar } from "../Actions/snackbar";
+import { contactInfoUpdateGoogle, contactsClear } from "../Actions/contacts";
+
+const styles = {
+    title: {
+        margin: 16
+    },
+    body: {
+        margin: 16,
+        textAlign: "center"
+    },
+    button: {
+        width: "100%"
+    },
+    google_logo: {
+        width: 20,
+        marginLeft: 16
+    }
+};
 
 class Contacts extends React.Component {
     constructor(props, context) {
@@ -30,11 +61,17 @@ class Contacts extends React.Component {
     }
 
     handleError = event => {
-        console.error("whoops");
+        const failedMessage = this.props.t(
+            "Failed to validate the Google authentication tokens"
+        );
+
+        this.props.openSnackbar(failedMessage);
     };
 
     handleCallback = (event, accessToken) => {
-        console.log(accessToken);
+        const failedMessage = this.props.t(
+            "Failed to validate the Google authentication tokens"
+        );
 
         axios
             .get(
@@ -43,16 +80,16 @@ class Contacts extends React.Component {
             .then(response => {
                 const responseData = response.data;
 
-                console.log("Checked access token validity");
-                console.log(responseData);
-
                 this.setState({
                     accessToken: accessToken,
                     success: true
                 });
             })
             .catch(error => {
-                console.error(error);
+                this.props.openSnackbar(failedMessage);
+                if (error.response) {
+                    Logger.error(error.response.data);
+                }
 
                 this.setState({
                     accessToken: false,
@@ -62,72 +99,7 @@ class Contacts extends React.Component {
     };
 
     getContacts = event => {
-        const contactsUrl = `https://www.google.com/m8/feeds/contacts/default/full?alt=json&max-results=10000`;
-        axios
-            .get(contactsUrl, {
-                headers: {
-                    "GData-Version": 3.0,
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${this.state.accessToken}`
-                }
-            })
-            .then(response => {
-                const responseData = response.data;
-                console.log("Received contacts");
-                console.log(responseData);
-
-                console.log("===========");
-
-                console.log(responseData.feed.entry);
-
-                const collectedEntries = [];
-
-                responseData.feed.entry.map(entry => {
-                    // has email
-
-                    const emails = [];
-                    const phoneNumbers = [];
-                    let displayName = "";
-
-                    // has emails, loop through them
-                    if (entry["gd$email"] && entry["gd$email"].length > 0) {
-                        entry["gd$email"].map(email => {
-                            emails.push(email.address);
-                        });
-                    }
-
-                    // has numbers, loop through them
-                    if (
-                        entry["gd$phoneNumber"] &&
-                        entry["gd$phoneNumber"].length > 0
-                    ) {
-                        entry["gd$phoneNumber"].map(phoneNumber => {
-                            phoneNumbers.push(phoneNumber["$t"]);
-                        });
-                    }
-
-                    // has fullname, add it
-                    if (entry["gd$name"] && entry["gd$name"]["gd$fullName"]) {
-                        displayName = entry["gd$name"]["gd$fullName"]["$t"];
-                    }
-
-                    if (emails.length > 0 || phoneNumbers.length > 0) {
-                        collectedEntries.push({
-                            name: displayName,
-                            emails: emails,
-                            phoneNumbers: phoneNumbers
-                        });
-                    }
-                });
-
-                // log all collected data
-                console.log(collectedEntries);
-
-                this.setState({ contacts: collectedEntries });
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        this.props.contactInfoUpdateGoogle(this.state.accessToken);
     };
 
     openConsentScreen = event => {
@@ -135,79 +107,152 @@ class Contacts extends React.Component {
     };
 
     render() {
-        const t = this.props.t;
+        const { t, contacts } = this.props;
+
+        let googleContactItems = [];
+        if (contacts["GoogleContacts"]) {
+            googleContactItems = contacts[
+                "GoogleContacts"
+            ].map((contact, key) => {
+                return (
+                    <React.Fragment>
+                        {contact.name ? (
+                            <ListItem key={key}>
+                                <ListItemIcon>
+                                    <Avatar>
+                                        <PersonIcon />
+                                    </Avatar>
+                                </ListItemIcon>
+                                <ListItemText primary={contact.name} />
+                            </ListItem>
+                        ) : null}
+                        {contact.emails.map((email, key2) => {
+                            return (
+                                <ListItem key={key2}>
+                                    <ListItemIcon>
+                                        <Avatar>
+                                            <EmailIcon />
+                                        </Avatar>
+                                    </ListItemIcon>
+                                    <ListItemText primary={email} />
+                                </ListItem>
+                            );
+                        })}
+                        {contact.phoneNumbers.map((phoneNumber, key2) => {
+                            return (
+                                <ListItem key={key2}>
+                                    <ListItemIcon>
+                                        <Avatar>
+                                            <PhoneIcon />
+                                        </Avatar>
+                                    </ListItemIcon>
+                                    <ListItemText primary={phoneNumber} />
+                                </ListItem>
+                            );
+                        })}
+                        <Divider />
+                    </React.Fragment>
+                );
+            });
+        }
 
         return (
-            <div style={{ textAlign: "center", marginTop: 40 }}>
+            <Grid container spacing={16} justify={"center"}>
                 <Helmet>
                     <title>{`BunqDesktop - ${t("Contacts")}`}</title>
                 </Helmet>
 
-                <Grid container spacing={16} justify={"center"}>
-                    <Grid item xs={12}>
-                        <Button onClick={this.openConsentScreen}>
-                            Contacts please
-                        </Button>
-                    </Grid>
-                    <Grid item xs={12}>
-                        {this.state.accessToken ? (
-                            <React.Fragment>
-                                <TextField
-                                    style={{ width: "400px" }}
-                                    value={this.state.accessToken}
+                <Grid item xs={12} sm={10} md={8} lg={6}>
+                    <Paper>
+                        <Grid container alignItems={"center"} spacing={8}>
+                            <Grid item xs={12} sm={4} md={6} lg={8}>
+                                <TranslateTypography
+                                    variant={"title"}
+                                    style={styles.title}
+                                >
+                                    Google Contacts
+                                </TranslateTypography>
+                            </Grid>
+
+                            <Grid item xs={6} sm={4} md={3} lg={2}>
+                                <TranslateButton
+                                    variant="raised"
+                                    color="secondary"
+                                    style={styles.button}
+                                    disabled={this.props.contactsLoading}
+                                    onClick={this.props.clearContacts}
+                                >
+                                    Clear contacts
+                                </TranslateButton>
+                            </Grid>
+
+                            <Grid item xs={6} sm={4} md={3} lg={2}>
+                                {this.state.accessToken ? (
+                                    <TranslateButton
+                                        variant="raised"
+                                        color="primary"
+                                        style={styles.button}
+                                        disabled={this.props.contactsLoading}
+                                        onClick={this.getContacts}
+                                    >
+                                        Import contacts
+                                    </TranslateButton>
+                                ) : (
+                                    <Button
+                                        variant="raised"
+                                        color="primary"
+                                        style={styles.button}
+                                        disabled={this.props.contactsLoading}
+                                        onClick={this.openConsentScreen}
+                                    >
+                                        {t("Login")}
+                                        <img
+                                            style={styles.google_logo}
+                                            src={"./images/google-logo.svg"}
+                                        />
+                                    </Button>
+                                )}
+                            </Grid>
+                        </Grid>
+                        {googleContactItems.length > 0 ? (
+                            <List dense>
+                                <ListSubheader
+                                    primary={`${googleContactItems.length} contacts`}
                                 />
-                                <br />
-                                <Button onClick={this.getContacts}>
-                                    Get Contacts
-                                </Button>
-                            </React.Fragment>
-                        ) : null}
-                    </Grid>
-                    <Grid item xs={12}>
-                        <List>
-                            <Divider />
-                            {this.state.contacts.map((contact, key) => {
-                                return (
-                                    <React.Fragment>
-                                        <ListItem key={key}>
-                                            {contact.name}
-                                        </ListItem>
-                                        {contact.emails.map((email, key2) => {
-                                            return (
-                                                <ListItem key={key2}>
-                                                    <ListItemIcon>
-                                                        <Avatar>
-                                                            <EmailIcon />
-                                                        </Avatar>
-                                                    </ListItemIcon>
-                                                    {email}
-                                                </ListItem>
-                                            );
-                                        })}
-                                        {contact.phoneNumbers.map(
-                                            (phoneNumber, key2) => {
-                                                return (
-                                                    <ListItem key={key2}>
-                                                        <ListItemIcon>
-                                                            <Avatar>
-                                                                <PhoneIcon />
-                                                            </Avatar>
-                                                        </ListItemIcon>
-                                                        {phoneNumber}
-                                                    </ListItem>
-                                                );
-                                            }
-                                        )}
-                                        <Divider />
-                                    </React.Fragment>
-                                );
-                            })}
-                        </List>
-                    </Grid>
+                                <Divider />
+                                {googleContactItems}
+                            </List>
+                        ) : (
+                            <TranslateTypography
+                                variant={"subheading"}
+                                style={styles.body}
+                            >
+                                No stored contacts
+                            </TranslateTypography>
+                        )}
+                    </Paper>
                 </Grid>
-            </div>
+            </Grid>
         );
     }
 }
 
-export default translate("translations")(Contacts);
+const mapStateToProps = state => {
+    return {
+        contacts: state.contacts.contacts,
+        contactsLoading: state.contacts.loading
+    };
+};
+
+const mapDispatchToProps = (dispatch, props) => {
+    const { BunqJSClient } = props;
+    return {
+        contactInfoUpdateGoogle: accessToken =>
+            dispatch(contactInfoUpdateGoogle(BunqJSClient, accessToken)),
+        clearContacts: () => dispatch(contactsClear(BunqJSClient)),
+        openSnackbar: message => dispatch(openSnackbar(message))
+    };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(Contacts)
+);

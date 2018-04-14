@@ -10,6 +10,7 @@ import category_filter from "./category_filter";
 import cards from "./cards";
 import card_cvc2 from "./card_cvc2";
 import category_rules from "./category_rules.ts";
+import contacts from "./contacts";
 import date_filter from "./date_filter";
 import export_new from "./export_new";
 import exports from "./exports";
@@ -50,6 +51,7 @@ export default combineReducers({
     cards,
     card_cvc2,
     category_rules,
+    contacts,
     date_filter,
     export_new,
     exports,
