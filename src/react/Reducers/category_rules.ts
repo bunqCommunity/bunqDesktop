@@ -1,7 +1,4 @@
-const remote = require("electron").remote;
-const settings = remote
-    ? remote.require("electron-settings")
-    : require("electron-settings");
+import settings from "../ImportWrappers/electronSettings";
 
 import { STORED_CATEGORY_RULES } from "../Actions/category_rules";
 

@@ -1,7 +1,4 @@
-const remote = require("electron").remote;
-const settings = remote
-    ? remote.require("electron-settings")
-    : require("electron-settings");
+import settings from "../ImportWrappers/electronSettings";
 import { generateGUID } from "../Helpers/Utils";
 
 export const BUNQDESKTOP_CATEGORIES = "BUNQDESKTOP_CATEGORIES";

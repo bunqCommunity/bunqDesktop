@@ -1,11 +1,7 @@
 import store from "store";
-import localforage from "localforage";
+import localforage from "../ImportWrappers/localforage";
 import {ipcRenderer} from "electron";
-
-const remote = require("electron").remote;
-const settings = remote
-    ? remote.require("electron-settings")
-    : require("electron-settings");
+import settings from "../ImportWrappers/electronSettings";
 
 // configure the localforage instance
 localforage.config({
