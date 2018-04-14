@@ -22,8 +22,7 @@ import LogoutIcon from "@material-ui/icons/ExitToApp";
 import RemoveIcon from "@material-ui/icons/Delete";
 import HomeIcon from "@material-ui/icons/Home";
 
-const remote = require("electron").remote;
-const path = remote ? remote.require("path") : require("path");
+import path from "../ImportWrappers/path";
 const packageInfo = require("../../../package.json");
 const SUPPORTED_LANGUAGES = packageInfo.supported_languages;
 
