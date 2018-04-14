@@ -89,7 +89,7 @@
         "i18next-xhr-backend": "^1.5.1"
     },
     "devDependencies": {
-        "@bunq-community/bunq-js-client": "^0.15.6",
+        "@bunq-community/bunq-js-client": "^0.15.7",
         "@google-cloud/translate": "^1.1.0",
         "@material-ui/icons": "^1.0.0-beta.42",
         "@material-ui/lab": "^1.0.0-alpha.1",
