@@ -3,20 +3,9 @@ import localforage from "localforage";
 import {ipcRenderer} from "electron";
 
 const remote = require("electron").remote;
-const path = remote ? remote.require("path") : require("path");
-const fs = remote ? remote.require("fs") : require("fs");
 const settings = remote
     ? remote.require("electron-settings")
     : require("electron-settings");
-const app = remote ? remote.app : {};
-
-const getSettingsLockLocation = () => {
-    return path.normalize(
-        `${app.getPath(
-            "userData"
-        )}${path.sep}..${path.sep}BunqDesktop${path.sep}SETTINGS_LOCATION`
-    );
-};
 
 // configure the localforage instance
 localforage.config({

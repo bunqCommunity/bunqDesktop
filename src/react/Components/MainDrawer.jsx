@@ -9,6 +9,7 @@ import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
 import List, { ListItem, ListItemText, ListItemIcon } from "material-ui/List";
 
+import ContactsIcon from "@material-ui/icons/Contacts";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import HomeIcon from "@material-ui/icons/Home";
@@ -184,6 +185,12 @@ class MainDrawer extends React.Component {
 
                 <ListItem style={styles.listFiller} />
 
+                <ListItemWrapper
+                    to="/contacts"
+                    icon={ContactsIcon}
+                    text={"Contacts"}
+                    location={this.props.location}
+                />
                 <ListItemWrapper
                     to="/settings"
                     icon={SettingsIcon}

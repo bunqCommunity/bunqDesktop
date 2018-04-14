@@ -52,8 +52,11 @@ const Card = CL(() =>
 const DebugPage = CL(() =>
     import(/* webpackChunkName: "debug" */ "./Pages/DebugPage")
 );
+const Contacts = CL(() =>
+    import(/* webpackChunkName: "contacts" */ "./Pages/Contacts")
+);
 const Settings = CL(() =>
-    import(/* webpackChunkName: "debug" */ "./Pages/Settings")
+    import(/* webpackChunkName: "settings" */ "./Pages/Settings")
 );
 const Exports = CL(() =>
     import(/* webpackChunkName: "exports" */ "./Pages/Exports")
@@ -329,6 +332,16 @@ export default class Routes extends React.Component {
                             path="/debug-page"
                             render={props => (
                                 <DebugPage
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
+                            )}
+                        />
+
+                        <Route
+                            path="/contacts"
+                            render={props => (
+                                <Contacts
                                     {...props}
                                     {...this.props.childProps}
                                 />
