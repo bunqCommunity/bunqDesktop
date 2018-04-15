@@ -146,7 +146,7 @@ class Layout extends React.Component {
 
         // setup minute timer
         this.checkTime();
-        this.minuteTimer = setInterval(this.checkTime, 60000);
+        this.minuteTimer = setInterval(this.checkTime, 5000);
     }
 
     componentWillMount() {
