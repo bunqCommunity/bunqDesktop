@@ -1,9 +1,5 @@
 import RuleCollection from "../Types/RuleCollection";
 
-if (typeof onmessage === undefined) {
-    var onmessage = function(e) {};
-}
-
 onmessage = e => {
     const ruleCollection = new RuleCollection();
     ruleCollection.fromObject(e.data.ruleCollection);

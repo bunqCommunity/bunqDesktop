@@ -30,12 +30,9 @@ export default class ConfirmationDialog extends React.Component {
             let secondaryText = "";
 
             switch (targetItem.type) {
-                case "PHONE":
-                    primaryText = `${t("Phone")}: ${targetItem.value}`;
-                    break;
-                case "EMAIL":
-                    primaryText = `${t("Email")}: ${targetItem.value}`;
-                    break;
+                case "CONTACT":
+                    primaryText = `${t("Contact")}: ${targetItem.value}`;
+                    break
                 default:
                     return null;
             }
