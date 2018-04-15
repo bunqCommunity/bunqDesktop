@@ -160,54 +160,58 @@ class Contacts extends React.Component {
                                 <ListItemText primary={contact.name} />
                             </ListItem>
                         ) : null}
-                        {contact.emails.map((email, key2) => {
-                            return (
-                                <ListItem key={key2}>
-                                    <ListItemIcon>
-                                        <Avatar>
-                                            <EmailIcon />
-                                        </Avatar>
-                                    </ListItemIcon>
-                                    <ListItemText primary={email} />
-                                    <ListItemSecondaryAction>
-                                        <IconButton
-                                            onClick={this.removeContact(
-                                                "GoogleContacts",
-                                                key,
-                                                key2,
-                                                "EMAIL"
-                                            )}
-                                        >
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </ListItemSecondaryAction>
-                                </ListItem>
-                            );
-                        })}
-                        {contact.phoneNumbers.map((phoneNumber, key2) => {
-                            return (
-                                <ListItem key={key2}>
-                                    <ListItemIcon>
-                                        <Avatar>
-                                            <PhoneIcon />
-                                        </Avatar>
-                                    </ListItemIcon>
-                                    <ListItemText primary={phoneNumber} />
-                                    <ListItemSecondaryAction>
-                                        <IconButton
-                                            onClick={this.removeContact(
-                                                "GoogleContacts",
-                                                key,
-                                                key2,
-                                                "PHONE"
-                                            )}
-                                        >
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </ListItemSecondaryAction>
-                                </ListItem>
-                            );
-                        })}
+                        {contact.emails ? (
+                            contact.emails.map((email, key2) => {
+                                return (
+                                    <ListItem key={key2}>
+                                        <ListItemIcon>
+                                            <Avatar>
+                                                <EmailIcon />
+                                            </Avatar>
+                                        </ListItemIcon>
+                                        <ListItemText primary={email} />
+                                        <ListItemSecondaryAction>
+                                            <IconButton
+                                                onClick={this.removeContact(
+                                                    "GoogleContacts",
+                                                    key,
+                                                    key2,
+                                                    "EMAIL"
+                                                )}
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </ListItemSecondaryAction>
+                                    </ListItem>
+                                );
+                            })
+                        ) : null}
+                        {contact.phoneNumbers ? (
+                            contact.phoneNumbers.map((phoneNumber, key2) => {
+                                return (
+                                    <ListItem key={key2}>
+                                        <ListItemIcon>
+                                            <Avatar>
+                                                <PhoneIcon />
+                                            </Avatar>
+                                        </ListItemIcon>
+                                        <ListItemText primary={phoneNumber} />
+                                        <ListItemSecondaryAction>
+                                            <IconButton
+                                                onClick={this.removeContact(
+                                                    "GoogleContacts",
+                                                    key,
+                                                    key2,
+                                                    "PHONE"
+                                                )}
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </ListItemSecondaryAction>
+                                    </ListItem>
+                                );
+                            })
+                        ) : null}
                         <Divider />
                     </React.Fragment>
                 );
@@ -299,7 +303,7 @@ const mapStateToProps = state => {
     return {
         contacts: state.contacts.contacts,
         contactsLoading: state.contacts.loading,
-        contactsLastUpdate: state.contacts.last_update,
+        contactsLastUpdate: state.contacts.last_update
     };
 };
 

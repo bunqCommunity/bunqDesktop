@@ -71,58 +71,63 @@ export function contactInfoUpdateGoogle(BunqJSClient, accessToken) {
                 const collectedEntries = [];
 
                 // go through all entries
-                responseData.feed.entry.map(entry => {
-                    // has email
+                if (responseData.feed.entry) {
+                    responseData.feed.entry.map(entry => {
+                        // has email
 
-                    const emails = [];
-                    const phoneNumbers = [];
-                    let displayName = "";
+                        const emails = [];
+                        const phoneNumbers = [];
+                        let displayName = "";
 
-                    // has emails, loop through them
-                    if (entry["gd$email"] && entry["gd$email"].length > 0) {
-                        entry["gd$email"].map(email => {
-                            emails.push(email.address);
-                        });
-                    }
+                        // has emails, loop through them
+                        if (entry["gd$email"] && entry["gd$email"].length > 0) {
+                            entry["gd$email"].map(email => {
+                                emails.push(email.address);
+                            });
+                        }
 
-                    // has numbers, loop through them
-                    if (
-                        entry["gd$phoneNumber"] &&
-                        entry["gd$phoneNumber"].length > 0
-                    ) {
-                        entry["gd$phoneNumber"].map(phoneNumber => {
-                            const inputNumber = phoneNumber["uri"];
+                        // has numbers, loop through them
+                        if (
+                            entry["gd$phoneNumber"] &&
+                            entry["gd$phoneNumber"].length > 0
+                        ) {
+                            entry["gd$phoneNumber"].map(phoneNumber => {
+                                const inputNumber = phoneNumber["uri"];
 
-                            // remove the 'uri:' part from string
-                            const removedFrontNumber = inputNumber.slice(
-                                4,
-                                inputNumber.length
-                            );
+                                // remove the 'uri:' part from string
+                                const removedFrontNumber = inputNumber.slice(
+                                    4,
+                                    inputNumber.length
+                                );
 
-                            // replace - and spaces from string
-                            const removedCharsNumber = removedFrontNumber.replace(
-                                /[\- ]/g,
-                                ""
-                            );
+                                // replace - and spaces from string
+                                const removedCharsNumber = removedFrontNumber.replace(
+                                    /[\- ]/g,
+                                    ""
+                                );
 
-                            // add number to the list
-                            phoneNumbers.push(removedCharsNumber);
-                        });
-                    }
+                                // add number to the list
+                                phoneNumbers.push(removedCharsNumber);
+                            });
+                        }
 
-                    // has fullname, add it
-                    if (entry["gd$name"] && entry["gd$name"]["gd$fullName"]) {
-                        displayName = entry["gd$name"]["gd$fullName"]["$t"];
-                    }
+                        // has fullname, add it
+                        if (
+                            entry["gd$name"] &&
+                            entry["gd$name"]["gd$fullName"]
+                        ) {
+                            displayName = entry["gd$name"]["gd$fullName"]["$t"];
+                        }
 
-                    if (emails.length > 0 || phoneNumbers.length > 0) {
-                        collectedEntries.push({
-                            name: displayName,
-                            emails: emails,
-                            phoneNumbers: phoneNumbers
-                        });
-                    }
-                });
+                        if (emails.length > 0 || phoneNumbers.length > 0) {
+                            collectedEntries.push({
+                                name: displayName,
+                                emails: emails,
+                                phoneNumbers: phoneNumbers
+                            });
+                        }
+                    });
+                }
 
                 const sortedContacts = collectedEntries.sort((a, b) => {
                     if (a.name === "") {
