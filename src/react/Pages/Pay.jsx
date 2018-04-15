@@ -120,7 +120,17 @@ class Pay extends React.Component {
     componentDidMount() {
         const searchParams = new URLSearchParams(this.props.location.search);
         if (searchParams.has("amount")) {
-            this.setState({ amount: searchParams.get("amount") });
+            const amount = parseFloat(searchParams.get("amount"));
+            this.setState({ amount: amount >= 0 ? amount : amount * -1 });
+        }
+        if (searchParams.has("iban") && searchParams.has("iban-name")) {
+            const ibanParam = searchParams.get("iban");
+            const ibanNameParam = searchParams.get("iban-name");
+            this.setState({
+                target: ibanParam,
+                ibanName: ibanNameParam,
+                targetType: "IBAN"
+            });
         }
 
         // set the current account selected on the dashboard as the active one
@@ -416,7 +426,9 @@ class Pay extends React.Component {
                             value: target.value.trim()
                         };
                     } else if (validPhone) {
-                        const formattedNumber = getInternationalFormat(target.value);
+                        const formattedNumber = getInternationalFormat(
+                            target.value
+                        );
                         if (formattedNumber) {
                             targetInfo = {
                                 type: "PHONE_NUMBER",

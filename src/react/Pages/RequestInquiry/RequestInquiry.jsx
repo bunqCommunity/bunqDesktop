@@ -87,7 +87,8 @@ class RequestInquiry extends React.Component {
     componentDidMount() {
         const searchParams = new URLSearchParams(this.props.location.search);
         if (searchParams.has("amount")) {
-            this.setState({ amount: searchParams.get("amount") });
+            const amount = parseFloat(searchParams.get("amount"));
+            this.setState({ amount: amount >= 0 ? amount : amount * -1 });
         }
 
         // set the current account selected on the dashboard as the active one
