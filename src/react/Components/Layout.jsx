@@ -11,6 +11,7 @@ import { ipcRenderer } from "electron";
 // custom components
 import Logger from "../Helpers/Logger";
 import VersionChecker from "../Helpers/VersionChecker";
+import NetworkStatusChecker from "./NetworkStatusChecker";
 import RuleCollectionChecker from "./RuleCollectionChecker";
 import MainDialog from "./MainDialog";
 import MainSnackbar from "./MainSnackbar";
@@ -51,7 +52,7 @@ import {
     setTheme,
     setAutomaticThemeChange
 } from "../Actions/options";
-import {loadStoredContacts} from "../Actions/contacts";
+import { loadStoredContacts } from "../Actions/contacts";
 
 const styles = theme => ({
     contentContainer: {
@@ -113,6 +114,8 @@ class Layout extends React.Component {
 
         // access the translations globally
         window.t = this.props.t;
+
+        // register mouse and network events
         window.onmousemove = this.onActivityEvent.bind(this);
         window.onkeypress = this.onActivityEvent.bind(this);
     }
@@ -472,6 +475,7 @@ class Layout extends React.Component {
             <MuiThemeProvider theme={selectedTheme}>
                 <main className={classes.main}>
                     <RuleCollectionChecker updateToggle={isLoading} />
+                    <NetworkStatusChecker />
 
                     <Header />
                     <MainDrawer

@@ -205,7 +205,6 @@ const mapStateToProps = state => {
 
         hideBalance: state.options.hide_balance,
 
-        paymentType: state.payment_filter.type,
 
         accounts: state.accounts.accounts,
         accountsAccountId: state.accounts.selectedAccount,
