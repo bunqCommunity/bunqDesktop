@@ -78,7 +78,7 @@ if (env.name !== "production") {
 
 // setup the logger
 log.transports.file.appName = "BunqDesktop";
-log.transports.file.level = env.name === "development" ? "debug" : "warn";
+log.transports.file.level = "debug";
 log.transports.file.format = "{h}:{i}:{s}:{ms} {text}";
 log.transports.file.file = `${userDataPath}${path.sep}BunqDesktop.${env.name}.log.txt`;
 
