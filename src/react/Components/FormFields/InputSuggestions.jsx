@@ -120,7 +120,7 @@ class InputSuggestions extends React.Component {
                             event.key === "ArrowDown"
                         ) {
                             this.changeIndex(event.key === "ArrowDown", count);
-                            return false;
+                            event.preventDefault();
                         }
 
                         // select the current item
@@ -130,8 +130,19 @@ class InputSuggestions extends React.Component {
                             // only call event if info is set/visible
                             if (this.state.visible === true && info) {
                                 this.onSelectItem(info)(event);
+                                event.preventDefault();
                             }
-                            return false;
+                        }
+
+                        // select the current item
+                        if (event.key === "Tab") {
+                            const info =
+                                filteredItems[this.state.selectedIndex];
+                            // only call event if info is set/visible
+                            if (this.state.visible === true && info) {
+                                this.onSelectItem(info)(event);
+                                event.preventDefault();
+                            }
                         }
                     }}
                     onChange={event => {

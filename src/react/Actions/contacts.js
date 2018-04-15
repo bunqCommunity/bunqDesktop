@@ -124,10 +124,20 @@ export function contactInfoUpdateGoogle(BunqJSClient, accessToken) {
                     }
                 });
 
+                const sortedContacts = collectedEntries.sort((a, b) => {
+                    if (a.name === "") {
+                        return 1;
+                    } else if (b.name === "") {
+                        return -1;
+                    }
+
+                    return b.name.toLowerCase() < a.name.toLowerCase() ? 1 : -1;
+                });
+
                 // set the contacts
                 dispatch(
                     contactsSetInfoType(
-                        collectedEntries,
+                        sortedContacts,
                         "GoogleContacts",
                         BunqJSClient
                     )

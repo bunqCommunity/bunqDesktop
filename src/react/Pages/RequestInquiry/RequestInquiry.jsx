@@ -23,6 +23,7 @@ import AllowBunqMe from "./Options/AllowBunqMe";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { requestInquirySend } from "../../Actions/request_inquiry";
+import {getInternationalFormat, isValidPhonenumber} from "../../Helpers/PhoneLib";
 
 const styles = {
     payButton: {
@@ -79,7 +80,7 @@ class RequestInquiry extends React.Component {
             targets: [],
 
             // defines which type is used
-            targetType: "EMAIL"
+            targetType: "CONTACT"
         };
     }
 
@@ -126,6 +127,14 @@ class RequestInquiry extends React.Component {
                     validForm: false
                 });
             }
+        );
+    };
+    handleChangeDirect = name => value => {
+        this.setState(
+            {
+                [name]: value
+            },
+            this.validateForm
         );
     };
     handleChange = name => event => {
@@ -184,7 +193,12 @@ class RequestInquiry extends React.Component {
                 const currentTargets = [...this.state.targets];
 
                 let foundDuplicate = false;
-                const targetValue = this.state.target.trim();
+                let targetValue = this.state.target.trim();
+
+                if (isValidPhonenumber(targetValue)) {
+                    // valid phone number, we must format as international
+                    targetValue = getInternationalFormat(targetValue);
+                }
 
                 // check for duplicates in existing target list
                 currentTargets.map(newTarget => {
@@ -228,11 +242,12 @@ class RequestInquiry extends React.Component {
         // check if the target is valid based onthe targetType
         let targetErrorCondition = false;
         switch (targetType) {
-            case "EMAIL":
-                targetErrorCondition = !EmailValidator.validate(target);
-                break;
-            case "PHONE":
-                targetErrorCondition = target.length < 5 || target.length > 64;
+            case "CONTACT":
+                const validEmail = EmailValidator.validate(target);
+                const validPhone = isValidPhonenumber(target);
+
+                // only error if both are false
+                targetErrorCondition = !validEmail && !validPhone;
                 break;
         }
 
@@ -270,11 +285,12 @@ class RequestInquiry extends React.Component {
         // check if the target is valid based onthe targetType
         let targetErrorCondition = false;
         switch (targetType) {
-            case "EMAIL":
-                targetErrorCondition = !EmailValidator.validate(target);
-                break;
-            case "PHONE":
-                targetErrorCondition = target.length < 5 || target.length > 64;
+            case "CONTACT":
+                const validEmail = EmailValidator.validate(target);
+                const validPhone = isValidPhonenumber(target);
+
+                // only error if both are false
+                targetErrorCondition = !validEmail && !validPhone;
                 break;
             default:
         }
@@ -331,17 +347,24 @@ class RequestInquiry extends React.Component {
             // check if the target is valid based onthe targetType
             let targetInfo = false;
             switch (target.type) {
-                case "EMAIL":
-                    targetInfo = {
-                        type: "EMAIL",
-                        value: target.value.trim()
-                    };
-                    break;
-                case "PHONE":
-                    targetInfo = {
-                        type: "PHONE_NUMBER",
-                        value: target.value.trim()
-                    };
+                case "CONTACT":
+                    const validEmail = EmailValidator.validate(target.value);
+                    const validPhone = isValidPhonenumber(target.value);
+
+                    if (validEmail) {
+                        targetInfo = {
+                            type: "EMAIL",
+                            value: target.value.trim()
+                        };
+                    } else if (validPhone) {
+                        const formattedNumber = getInternationalFormat(target.value);
+                        if (formattedNumber) {
+                            targetInfo = {
+                                type: "PHONE_NUMBER",
+                                value: formattedNumber
+                            };
+                        }
+                    }
                     break;
                 default:
                     // invalid type
