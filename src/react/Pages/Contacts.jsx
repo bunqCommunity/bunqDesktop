@@ -10,22 +10,29 @@ import Button from "material-ui/Button";
 import Divider from "material-ui/Divider";
 import Avatar from "material-ui/Avatar";
 import Paper from "material-ui/Paper";
+import IconButton from "material-ui/IconButton";
 import List, {
     ListItem,
     ListItemIcon,
     ListItemText,
-    ListSubheader
+    ListSubheader,
+    ListItemSecondaryAction
 } from "material-ui/List";
 
 import PhoneIcon from "@material-ui/icons/Phone";
 import PersonIcon from "@material-ui/icons/Person";
 import EmailIcon from "@material-ui/icons/Email";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 import TranslateTypography from "../Components/TranslationHelpers/Typography";
 import TranslateButton from "../Components/TranslationHelpers/Button";
 
 import { openSnackbar } from "../Actions/snackbar";
-import { contactInfoUpdateGoogle, contactsClear } from "../Actions/contacts";
+import {
+    contactInfoUpdateGoogle,
+    contactsClear,
+    contactsSetInfoType
+} from "../Actions/contacts";
 
 const styles = {
     title: {
@@ -101,6 +108,34 @@ class Contacts extends React.Component {
         this.props.contactInfoUpdateGoogle(this.state.accessToken);
     };
 
+    removeContact = (sourceType, contactKey, itemKey, itemType) => event => {
+        if (
+            this.props.contacts[sourceType] &&
+            this.props.contacts[sourceType][contactKey]
+        ) {
+            const contacts = this.props.contacts[sourceType];
+
+            if (itemType === "EMAIL") {
+                // remove this email from the list
+                contacts[contactKey].emails.splice(itemKey, 1);
+            } else if (itemType === "PHONE") {
+                // remove this phonenumber from the list
+                contacts[contactKey].phoneNumbers.splice(itemKey, 1);
+            }
+
+            if (
+                contacts[contactKey].emails.length === 0 &&
+                contacts[contactKey].phoneNumbers.length === 0
+            ) {
+                // remove this entire contact since no emails/phonenumbers are left
+                contacts.splice(contactKey, 1);
+            }
+
+            // set the new contacts
+            this.props.contactsSetInfoType(contacts, "GoogleContacts");
+        }
+    };
+
     openConsentScreen = event => {
         ipcRenderer.send("open-google-oauth");
     };
@@ -134,6 +169,18 @@ class Contacts extends React.Component {
                                         </Avatar>
                                     </ListItemIcon>
                                     <ListItemText primary={email} />
+                                    <ListItemSecondaryAction>
+                                        <IconButton
+                                            onClick={this.removeContact(
+                                                "GoogleContacts",
+                                                key,
+                                                key2,
+                                                "EMAIL"
+                                            )}
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </ListItemSecondaryAction>
                                 </ListItem>
                             );
                         })}
@@ -146,6 +193,18 @@ class Contacts extends React.Component {
                                         </Avatar>
                                     </ListItemIcon>
                                     <ListItemText primary={phoneNumber} />
+                                    <ListItemSecondaryAction>
+                                        <IconButton
+                                            onClick={this.removeContact(
+                                                "GoogleContacts",
+                                                key,
+                                                key2,
+                                                "PHONE"
+                                            )}
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </ListItemSecondaryAction>
                                 </ListItem>
                             );
                         })}
@@ -239,7 +298,8 @@ class Contacts extends React.Component {
 const mapStateToProps = state => {
     return {
         contacts: state.contacts.contacts,
-        contactsLoading: state.contacts.loading
+        contactsLoading: state.contacts.loading,
+        contactsLastUpdate: state.contacts.last_update,
     };
 };
 
@@ -248,6 +308,8 @@ const mapDispatchToProps = (dispatch, props) => {
     return {
         contactInfoUpdateGoogle: accessToken =>
             dispatch(contactInfoUpdateGoogle(BunqJSClient, accessToken)),
+        contactsSetInfoType: (contacts, type) =>
+            dispatch(contactsSetInfoType(contacts, type, BunqJSClient)),
         clearContacts: () => dispatch(contactsClear(BunqJSClient)),
         openSnackbar: message => dispatch(openSnackbar(message))
     };
