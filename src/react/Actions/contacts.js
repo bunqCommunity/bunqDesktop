@@ -94,20 +94,22 @@ export function contactInfoUpdateGoogle(BunqJSClient, accessToken) {
                             entry["gd$phoneNumber"].map(phoneNumber => {
                                 const inputNumber = phoneNumber["uri"];
 
-                                // remove the 'uri:' part from string
-                                const removedFrontNumber = inputNumber.slice(
-                                    4,
-                                    inputNumber.length
-                                );
+                                if(inputNumber){
+                                    // remove the 'uri:' part from string
+                                    const removedFrontNumber = inputNumber.slice(
+                                        4,
+                                        inputNumber.length
+                                    );
 
-                                // replace - and spaces from string
-                                const removedCharsNumber = removedFrontNumber.replace(
-                                    /[\- ]/g,
-                                    ""
-                                );
+                                    // replace - and spaces from string
+                                    const removedCharsNumber = removedFrontNumber.replace(
+                                        /[\- ]/g,
+                                        ""
+                                    );
 
-                                // add number to the list
-                                phoneNumbers.push(removedCharsNumber);
+                                    // add number to the list
+                                    phoneNumbers.push(removedCharsNumber);
+                                }
                             });
                         }
 
@@ -150,7 +152,6 @@ export function contactInfoUpdateGoogle(BunqJSClient, accessToken) {
                 dispatch(contactsNotLoading());
             })
             .catch(error => {
-                console.error(error);
                 BunqErrorHandler(dispatch, error, failedMessage);
                 dispatch(contactsNotLoading());
             });
