@@ -21,10 +21,16 @@ import {
 } from "../Helpers/DataFilters";
 import MonetaryAccount from "../Models/MonetaryAccount";
 
+import Payment from "../Models/Payment";
+import MasterCardAction from "../Models/MasterCardAction";
+import RequestInquiry from "../Models/RequestInquiry";
+import RequestResponse from "../Models/RequestResponse";
+import BunqMeTab from "../Models/BunqMeTab";
+
 const labelFormat = (date, type = "daily") => {
     switch (type) {
         case "yearly":
-            return `year ${format(date, "YYYY")}`
+            return `year ${format(date, "YYYY")}`;
         case "monthly":
             return format(date, "MMM YYYY");
         case "weekly":
@@ -47,18 +53,18 @@ const bunqMeTabMapper = (
 ) => {
     const data = [];
     bunqMeTabs
+        .map(bunqmeTab => new BunqMeTab(bunqmeTab))
         .filter(bunqMeTabsFilter(bunqMeTabFilterSettings))
         .map(bunqMeTab => {
             data.push({
-                date: new Date(bunqMeTab.BunqMeTab.created),
+                date: bunqMeTab.created,
                 change: 0,
                 type: "bunqMeTab",
-                // categories: []
                 categories: CategoryHelper(
                     categories,
                     categoryConnections,
                     "BunqMeTab",
-                    bunqMeTab.BunqMeTab.id
+                    bunqMeTab.id
                 )
             });
         });
@@ -73,18 +79,18 @@ const requestInquiryMapper = (
 ) => {
     const data = [];
     requestInquiries
+        .map(requestInquiry => new RequestInquiry(requestInquiry))
         .filter(requestInquiryFilter(requestFilterSettings))
         .map(requestInquiry => {
             data.push({
-                date: new Date(requestInquiry.RequestInquiry.created),
+                date: requestInquiry.created,
                 change: 0,
                 type: "requestInquiry",
-                // categories: []
                 categories: CategoryHelper(
                     categories,
                     categoryConnections,
                     "RequestInquiry",
-                    requestInquiry.RequestInquiry.id
+                    requestInquiry.id
                 )
             });
         });
@@ -99,18 +105,18 @@ const requestResponseMapper = (
 ) => {
     const data = [];
     requestResponses
+        .map(requestResponse => new RequestResponse(requestResponse))
         .filter(requestResponseFilter(requestFilterSettings))
         .map(requestResponse => {
             data.push({
-                date: new Date(requestResponse.RequestResponse.created),
+                date: requestResponse.created,
                 change: 0,
                 type: "requestResponse",
-                // categories: []
                 categories: CategoryHelper(
                     categories,
                     categoryConnections,
                     "RequestResponse",
-                    requestResponse.RequestResponse.id
+                    requestResponse.id
                 )
             });
         });
@@ -124,23 +130,22 @@ const paymentMapper = (
     categoryConnections
 ) => {
     const data = [];
-    payments.filter(paymentFilter(paymentFilterSettings)).map(payment => {
-        const paymentInfo = payment.Payment;
-        const change = parseFloat(paymentInfo.amount.value);
-
-        data.push({
-            date: new Date(paymentInfo.created),
-            change: -change,
-            type: "payment",
-            // categories: []
-            categories: CategoryHelper(
-                categories,
-                categoryConnections,
-                "Payment",
-                paymentInfo.id
-            )
+    payments
+        .map(payment => new Payment(payment))
+        .filter(paymentFilter(paymentFilterSettings))
+        .map(payment => {
+            data.push({
+                date: payment.created,
+                change: payment.getDelta(),
+                type: "payment",
+                categories: CategoryHelper(
+                    categories,
+                    categoryConnections,
+                    "Payment",
+                    payment.id
+                )
+            });
         });
-    });
     return data;
 };
 
@@ -152,11 +157,9 @@ const masterCardActionMapper = (
 ) => {
     const data = [];
     masterCardActions
+        .map(masterCardAction => new MasterCardAction(masterCardAction))
         .filter(masterCardActionFilter(paymentFilterSettings))
         .map(masterCardAction => {
-            const masterCardInfo = masterCardAction.MasterCardAction;
-            const change = parseFloat(masterCardInfo.amount_billing.value);
-
             const validTypes = [
                 "CLEARING_REFUND",
                 "PRE_AUTHORISED",
@@ -168,17 +171,16 @@ const masterCardActionMapper = (
                 "UNAUTHORISED_CLEARING"
             ];
 
-            if (validTypes.includes(masterCardInfo.authorisation_status)) {
+            if (validTypes.includes(masterCardAction.authorisation_status)) {
                 data.push({
-                    date: new Date(masterCardInfo.updated),
-                    change: change,
+                    date: masterCardAction.updated,
+                    change: masterCardAction.getDelta(),
                     type: "masterCardAction",
-                    // categories: []
                     categories: CategoryHelper(
                         categories,
                         categoryConnections,
                         "MasterCardAction",
-                        masterCardInfo.id
+                        masterCardAction.id
                     )
                 });
             }
@@ -306,10 +308,7 @@ const getData = (
     let accountInfo = false;
     accounts.map(account => {
         const accountObject = new MonetaryAccount(account);
-        if (
-            accountObject.id === selectedAccount ||
-            selectedAccount === false
-        ) {
+        if (accountObject.id === selectedAccount || selectedAccount === false) {
             accountInfo = accountObject;
         }
     });
@@ -347,8 +346,15 @@ const getData = (
 
     // only create this object once
     const categoryList = {};
+    const categoryTransactionList = {};
     Object.keys(categories).forEach(categoryKey => {
         categoryList[categoryKey] = 0;
+        categoryTransactionList[categoryKey] = {
+            sent: 0,
+            received: 0,
+            total: 0
+        };
+
         categoryCountHistory[categoryKey] = [];
     });
 
@@ -356,6 +362,7 @@ const getData = (
     Object.keys(dataCollection).map(label => {
         const dataItem = dataCollection[label];
         const categoryInfo = Object.assign({}, categoryList);
+        const categoryTransactionInfo = Object.assign({}, categoryTransactionList);
 
         const timescaleData = dataItem.data;
         const timescaleDate = dataItem.date;
@@ -365,7 +372,12 @@ const getData = (
             requestResponse: 0,
             requestInquiry: 0,
             bunqMeTab: 0,
-            payment: 0
+            payment: 0,
+
+            masterCardpayment: 0,
+            maestroPayment: 0,
+            tapAndPayPayment: 0,
+            applePayPayment: 0
         };
 
         let timescaleChange = 0;
@@ -374,7 +386,23 @@ const getData = (
             timescaleInfo[item.type]++;
 
             // increment the category count for this timescale
-            item.categories.forEach(category => categoryInfo[category.id]++);
+            item.categories.forEach(category => {
+                // category count increment
+                categoryInfo[category.id]++;
+
+                if(item.change > 0){
+                    // received money since change is positive
+                    categoryTransactionInfo[category.id].received += item.change;
+                }
+                if(item.change < 0){
+                    // sent money since change is negative
+                    categoryTransactionInfo[category.id].sent += item.change;
+                }
+
+                // always increase the total change
+                categoryTransactionInfo[category.id].total += item.change;
+            });
+
 
             // calculate change
             timescaleChange = timescaleChange + item.change;

@@ -137,16 +137,16 @@ class Stats extends React.Component {
             this.state.parsedData !== false
                 ? this.state.parsedData
                 : {
-                    labels: [],
-                    balanceHistoryData: [],
-                    categoryCountHistory: {},
-                    eventCountHistory: [],
-                    masterCardActionHistory: [],
-                    requestInquiryHistory: [],
-                    requestResponseHistory: [],
-                    bunqMeTabHistory: [],
-                    paymentHistory: []
-                };
+                      labels: [],
+                      balanceHistoryData: [],
+                      categoryCountHistory: {},
+                      eventCountHistory: [],
+                      masterCardActionHistory: [],
+                      requestInquiryHistory: [],
+                      requestResponseHistory: [],
+                      bunqMeTabHistory: [],
+                      paymentHistory: []
+                  };
 
         const eventCountStats = (
             <Grid item xs={12}>
