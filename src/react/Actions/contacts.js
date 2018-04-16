@@ -150,6 +150,7 @@ export function contactInfoUpdateGoogle(BunqJSClient, accessToken) {
                 dispatch(contactsNotLoading());
             })
             .catch(error => {
+                console.error(error);
                 BunqErrorHandler(dispatch, error, failedMessage);
                 dispatch(contactsNotLoading());
             });
