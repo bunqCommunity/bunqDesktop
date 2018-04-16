@@ -103,6 +103,8 @@ class CombinedList extends React.Component {
         this.setState({ displayEventData: !this.state.displayEventData });
 
     paymentMapper = () => {
+        if (this.props.hiddenTypes.includes("Payment")) return [];
+
         return this.props.payments
             .filter(
                 paymentFilter({
@@ -132,6 +134,8 @@ class CombinedList extends React.Component {
     };
 
     bunqMeTabsMapper = () => {
+        if (this.props.hiddenTypes.includes("BunqMeTab")) return [];
+
         return this.props.bunqMeTabs
             .filter(
                 bunqMeTabsFilter({
@@ -166,6 +170,8 @@ class CombinedList extends React.Component {
     };
 
     masterCardActionMapper = () => {
+        if (this.props.hiddenTypes.includes("MasterCardAction")) return [];
+
         return this.props.masterCardActions
             .filter(
                 masterCardActionFilter({
@@ -195,6 +201,8 @@ class CombinedList extends React.Component {
     };
 
     requestResponseMapper = () => {
+        if (this.props.hiddenTypes.includes("RequestResponse")) return [];
+
         return this.props.requestResponses
             .filter(
                 requestResponseFilter({
@@ -224,6 +232,8 @@ class CombinedList extends React.Component {
     };
 
     requestInquiryMapper = () => {
+        if (this.props.hiddenTypes.includes("RequestInquiry")) return [];
+
         return this.props.requestInquiries
             .filter(
                 requestInquiryFilter({
@@ -468,7 +478,6 @@ const mapStateToProps = state => {
         pageSize: state.pagination.page_size,
 
         searchTerm: state.search_filter.search_term,
-
         paymentType: state.payment_filter.type,
         paymentVisibility: state.payment_filter.visible,
         bunqMeTabType: state.bunq_me_tab_filter.type,
@@ -514,6 +523,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         setPageSize: size => dispatch(setPageSize(size)),
         setPage: page => dispatch(setPage(page))
     };
+};
+
+CombinedList.defaultProps = {
+    hiddenTypes: []
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
