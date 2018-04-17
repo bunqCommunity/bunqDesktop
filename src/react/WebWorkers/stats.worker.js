@@ -340,11 +340,14 @@ const getData = (
     let eventCountHistory = [];
     // total category history
     let categoryCountHistory = {};
+    // total category transaction history
+    let categoryTransactionHistory = {};
     // individual count history
     let paymentCountHistory = [];
     let requestInquiryCountHistory = [];
     let requestResponseCountHistory = [];
     let bunqMeTabCountHistory = [];
+    // different card payment types count history
     let masterCardActionCountHistory = [];
     let masterCardPaymentCountHistory = [];
     let tapAndPayPaymentCountHistory = [];
@@ -371,6 +374,7 @@ const getData = (
     const categoryList = {};
     const categoryTransactionList = {};
     Object.keys(categories).forEach(categoryKey => {
+        // used to sum data for each category
         categoryList[categoryKey] = 0;
         categoryTransactionList[categoryKey] = {
             sent: 0,
@@ -378,21 +382,21 @@ const getData = (
             total: 0
         };
 
+        // used to actually store the final total values
         categoryCountHistory[categoryKey] = [];
+        categoryTransactionHistory[categoryKey] = [];
     });
 
     // loop through all the days
     Object.keys(dataCollection).map(label => {
         const dataItem = dataCollection[label];
+
+        // temporary local variables to track amounts throughout the events for this X axis
         const categoryInfo = Object.assign({}, categoryList);
         const categoryTransactionInfo = Object.assign(
             {},
             categoryTransactionList
         );
-
-        const timescaleData = dataItem.data;
-        const timescaleDate = dataItem.date;
-
         const timescaleInfo = {
             masterCardAction: 0,
             requestResponse: 0,
@@ -407,7 +411,7 @@ const getData = (
         };
 
         let timescaleChange = 0;
-        timescaleData.map(item => {
+        dataItem.data.map(item => {
             // increment this type to keep track of the different types
             timescaleInfo[item.type]++;
 
@@ -465,11 +469,11 @@ const getData = (
 
         if (
             timeToFixed === null ||
-            timescaleDate.getTime() <= timeToFixed.getTime()
+            dataItem.date.getTime() <= timeToFixed.getTime()
         ) {
             if (
                 timeFromFixed === null ||
-                timescaleDate.getTime() >= timeFromFixed.getTime()
+                dataItem.date.getTime() >= timeFromFixed.getTime()
             ) {
                 // only push this data and label if they are within the range
 
@@ -479,11 +483,16 @@ const getData = (
                         categoryInfo[categoryKey]
                     );
                 });
+                Object.keys(categoryTransactionInfo).forEach(categoryKey => {
+                    categoryTransactionHistory[categoryKey].push(
+                        categoryTransactionInfo[categoryKey]
+                    );
+                });
 
                 // update balance and push it to the list
                 balanceHistoryData.push(roundMoney(currentBalance));
                 // count the events for this timescale
-                eventCountHistory.push(timescaleData.length);
+                eventCountHistory.push(dataItem.data.length);
                 // update the individual counts
                 requestInquiryCountHistory.push(timescaleInfo.requestInquiry);
                 requestResponseCountHistory.push(timescaleInfo.requestResponse);
@@ -495,9 +504,13 @@ const getData = (
                     timescaleInfo.masterCardAction
                 );
                 maestroPaymentCountHistory.push(timescaleInfo.maestroPayment);
-                tapAndPayPaymentCountHistory.push(timescaleInfo.tapAndPayPayment);
+                tapAndPayPaymentCountHistory.push(
+                    timescaleInfo.tapAndPayPayment
+                );
                 applePayPaymentCountHistory.push(timescaleInfo.applePayPayment);
-                masterCardPaymentCountHistory.push(timescaleInfo.masterCardPayment);
+                masterCardPaymentCountHistory.push(
+                    timescaleInfo.masterCardPayment
+                );
 
                 // push the label here so we can ignore certain days if required
                 labelData.push(label);
@@ -508,9 +521,14 @@ const getData = (
         currentBalance = currentBalance + timescaleChange;
     });
 
-    // update the category counts for each category
+    // reverse each category amount
     Object.keys(categoryCountHistory).forEach(categoryKey => {
         categoryCountHistory[categoryKey] = categoryCountHistory[
+            categoryKey
+        ].reverse();
+    });
+    Object.keys(categoryTransactionHistory).forEach(categoryKey => {
+        categoryTransactionHistory[categoryKey] = categoryTransactionHistory[
             categoryKey
         ].reverse();
     });
@@ -524,6 +542,7 @@ const getData = (
         eventCountHistory: eventCountHistory,
         // total category count
         categoryCountHistory: categoryCountHistory,
+        categoryTransactionHistory: categoryTransactionHistory,
         // individual history count
         requestResponseHistory: requestResponseCountHistory.reverse(),
         requestInquiryHistory: requestInquiryCountHistory.reverse(),
@@ -534,7 +553,7 @@ const getData = (
         maestroPaymentCountHistory: maestroPaymentCountHistory.reverse(),
         tapAndPayPaymentCountHistory: tapAndPayPaymentCountHistory.reverse(),
         applePayPaymentCountHistory: applePayPaymentCountHistory.reverse(),
-        masterCardPaymentCountHistory: masterCardPaymentCountHistory.reverse(),
+        masterCardPaymentCountHistory: masterCardPaymentCountHistory.reverse()
     };
 };
 

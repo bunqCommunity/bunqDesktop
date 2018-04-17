@@ -16,7 +16,7 @@ import ClearBtn from "../../Components/FilterComponents/ClearFilter";
 import FilterDrawer from "../../Components/FilterComponents/FilterDrawer";
 import EventCountPieChart from "./EventCountPieChart";
 import CategoryCountPieChart from "./CategoryCountPieChart";
-import CategoryHistoryChart from "./CategoryHistoryChart";
+import CategoryCountHistoryChart from "./CategoryCountHistoryChart";
 import EventTypeHistoryChart from "./EventTypeHistoryChart";
 import EventTypeSplitHistoryChart from "./EventTypeSplitHistoryChart";
 
@@ -143,6 +143,7 @@ class Stats extends React.Component {
                       labels: [],
                       balanceHistoryData: [],
                       categoryCountHistory: {},
+                      categoryTransactionHistory: {},
                       eventCountHistory: [],
 
                       requestInquiryHistory: [],
@@ -401,7 +402,7 @@ class Stats extends React.Component {
 
                         <Grid item xs={12}>
                             <Paper>
-                                <CategoryHistoryChart
+                                <CategoryCountHistoryChart
                                     height={500}
                                     labels={data.labels}
                                     categories={this.props.categories}
