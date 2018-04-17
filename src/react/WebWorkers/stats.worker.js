@@ -172,10 +172,28 @@ const masterCardActionMapper = (
             ];
 
             if (validTypes.includes(masterCardAction.authorisation_status)) {
+                let paymentSubType = "";
+
+                switch (masterCardAction.label_card.type) {
+                    case "MAESTRO":
+                        paymentSubType = "maestroPayment";
+                        break;
+                    case "MASTERCARD":
+                        paymentSubType = "masterCardPayment";
+                        break;
+                    case "MAESTRO_MOBILE_NFC":
+                        paymentSubType =
+                            masterCardAction.label_card.second_line.length > 0
+                                ? "tapAndPayPayment"
+                                : "applePayPayment";
+                        break;
+                }
+
                 data.push({
                     date: masterCardAction.updated,
                     change: masterCardAction.getDelta(),
                     type: "masterCardAction",
+                    subType: paymentSubType,
                     categories: CategoryHelper(
                         categories,
                         categoryConnections,
@@ -314,6 +332,8 @@ const getData = (
     });
     let currentBalance = parseFloat(accountInfo.balance.value);
 
+    // X axis labels
+    let labelData = [];
     // balance across all days/weeks/months/years
     let balanceHistoryData = [];
     // total events history
@@ -322,11 +342,14 @@ const getData = (
     let categoryCountHistory = {};
     // individual count history
     let paymentCountHistory = [];
-    let masterCardActionCountHistory = [];
     let requestInquiryCountHistory = [];
     let requestResponseCountHistory = [];
     let bunqMeTabCountHistory = [];
-    let labelData = [];
+    let masterCardActionCountHistory = [];
+    let masterCardPaymentCountHistory = [];
+    let tapAndPayPaymentCountHistory = [];
+    let maestroPaymentCountHistory = [];
+    let applePayPaymentCountHistory = [];
 
     // sort all events by date first
     const sortedEvents = events.sort((a, b) => {
@@ -362,7 +385,10 @@ const getData = (
     Object.keys(dataCollection).map(label => {
         const dataItem = dataCollection[label];
         const categoryInfo = Object.assign({}, categoryList);
-        const categoryTransactionInfo = Object.assign({}, categoryTransactionList);
+        const categoryTransactionInfo = Object.assign(
+            {},
+            categoryTransactionList
+        );
 
         const timescaleData = dataItem.data;
         const timescaleDate = dataItem.date;
@@ -374,7 +400,7 @@ const getData = (
             bunqMeTab: 0,
             payment: 0,
 
-            masterCardpayment: 0,
+            masterCardPayment: 0,
             maestroPayment: 0,
             tapAndPayPayment: 0,
             applePayPayment: 0
@@ -385,16 +411,21 @@ const getData = (
             // increment this type to keep track of the different types
             timescaleInfo[item.type]++;
 
+            if (item.type === "masterCardAction") {
+                timescaleInfo[item.subType]++;
+            }
+
             // increment the category count for this timescale
             item.categories.forEach(category => {
                 // category count increment
                 categoryInfo[category.id]++;
 
-                if(item.change > 0){
+                if (item.change > 0) {
                     // received money since change is positive
-                    categoryTransactionInfo[category.id].received += item.change;
+                    categoryTransactionInfo[category.id].received +=
+                        item.change;
                 }
-                if(item.change < 0){
+                if (item.change < 0) {
                     // sent money since change is negative
                     categoryTransactionInfo[category.id].sent += item.change;
                 }
@@ -402,7 +433,6 @@ const getData = (
                 // always increase the total change
                 categoryTransactionInfo[category.id].total += item.change;
             });
-
 
             // calculate change
             timescaleChange = timescaleChange + item.change;
@@ -455,13 +485,19 @@ const getData = (
                 // count the events for this timescale
                 eventCountHistory.push(timescaleData.length);
                 // update the individual counts
-                masterCardActionCountHistory.push(
-                    timescaleInfo.masterCardAction
-                );
                 requestInquiryCountHistory.push(timescaleInfo.requestInquiry);
                 requestResponseCountHistory.push(timescaleInfo.requestResponse);
                 bunqMeTabCountHistory.push(timescaleInfo.bunqMeTab);
                 paymentCountHistory.push(timescaleInfo.payment);
+
+                // masterCardAction individual counts per type
+                masterCardActionCountHistory.push(
+                    timescaleInfo.masterCardAction
+                );
+                maestroPaymentCountHistory.push(timescaleInfo.maestroPayment);
+                tapAndPayPaymentCountHistory.push(timescaleInfo.tapAndPayPayment);
+                applePayPaymentCountHistory.push(timescaleInfo.applePayPayment);
+                masterCardPaymentCountHistory.push(timescaleInfo.masterCardPayment);
 
                 // push the label here so we can ignore certain days if required
                 labelData.push(label);
@@ -489,11 +525,16 @@ const getData = (
         // total category count
         categoryCountHistory: categoryCountHistory,
         // individual history count
-        masterCardActionHistory: masterCardActionCountHistory.reverse(),
         requestResponseHistory: requestResponseCountHistory.reverse(),
         requestInquiryHistory: requestInquiryCountHistory.reverse(),
         bunqMeTabHistory: bunqMeTabCountHistory.reverse(),
-        paymentHistory: paymentCountHistory.reverse()
+        paymentHistory: paymentCountHistory.reverse(),
+        masterCardActionHistory: masterCardActionCountHistory.reverse(),
+
+        maestroPaymentCountHistory: maestroPaymentCountHistory.reverse(),
+        tapAndPayPaymentCountHistory: tapAndPayPaymentCountHistory.reverse(),
+        applePayPaymentCountHistory: applePayPaymentCountHistory.reverse(),
+        masterCardPaymentCountHistory: masterCardPaymentCountHistory.reverse(),
     };
 };
 

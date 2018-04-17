@@ -4,10 +4,11 @@ import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Paper from "material-ui/Paper";
 import Grid from "material-ui/Grid";
+import Switch from "material-ui/Switch";
 import ListSubheader from "material-ui/List/ListSubheader";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Radio, { RadioGroup } from "material-ui/Radio";
-import { FormControlLabel } from "material-ui/Form";
+import { FormGroup, FormControlLabel } from "material-ui/Form";
 
 import AccountList from "../../Components/AccountList/AccountList";
 import LoadOlderButton from "../../Components/LoadOlderButton";
@@ -17,6 +18,7 @@ import EventCountPieChart from "./EventCountPieChart";
 import CategoryCountPieChart from "./CategoryCountPieChart";
 import CategoryHistoryChart from "./CategoryHistoryChart";
 import EventTypeHistoryChart from "./EventTypeHistoryChart";
+import EventTypeSplitHistoryChart from "./EventTypeSplitHistoryChart";
 
 const StatsWorker = require("../../WebWorkers/stats.worker.js");
 
@@ -25,7 +27,8 @@ class Stats extends React.Component {
         super(props, context);
         this.state = {
             timescale: "daily",
-            parsedData: false
+            parsedData: false,
+            splitCardTypes: true
         };
     }
 
@@ -141,11 +144,17 @@ class Stats extends React.Component {
                       balanceHistoryData: [],
                       categoryCountHistory: {},
                       eventCountHistory: [],
-                      masterCardActionHistory: [],
+
                       requestInquiryHistory: [],
                       requestResponseHistory: [],
                       bunqMeTabHistory: [],
-                      paymentHistory: []
+                      paymentHistory: [],
+
+                      masterCardActionHistory: [],
+                      maestroPaymentCountHistory: [],
+                      tapAndPayPaymentCountHistory: [],
+                      applePayPaymentCountHistory: [],
+                      masterCardPaymentCountHistory: []
                   };
 
         const eventCountStats = (
@@ -274,6 +283,22 @@ class Stats extends React.Component {
                             </Grid>
 
                             <Grid item xs={12}>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={this.state.splitCardTypes}
+                                            onChange={event =>
+                                                this.setState({
+                                                    splitCardTypes:
+                                                        event.target.checked
+                                                })}
+                                        />
+                                    }
+                                    label="Split card types"
+                                />
+                            </Grid>
+
+                            <Grid item xs={12}>
                                 <LoadOlderButton
                                     wrapperStyle={{ margin: 0 }}
                                     buttonStyle={{ width: "100%" }}
@@ -327,21 +352,48 @@ class Stats extends React.Component {
                     <Grid container spacing={16}>
                         <Grid item xs={12}>
                             <Paper>
-                                <EventTypeHistoryChart
-                                    height={500}
-                                    labels={data.labels}
-                                    masterCardActionHistory={
-                                        data.masterCardActionHistory
-                                    }
-                                    requestInquiryHistory={
-                                        data.requestInquiryHistory
-                                    }
-                                    requestResponseHistory={
-                                        data.requestResponseHistory
-                                    }
-                                    bunqMeTabHistory={data.bunqMeTabHistory}
-                                    paymentHistory={data.paymentHistory}
-                                />
+                                {this.state.splitCardTypes ? (
+                                    <EventTypeSplitHistoryChart
+                                        height={500}
+                                        labels={data.labels}
+                                        requestInquiryHistory={
+                                            data.requestInquiryHistory
+                                        }
+                                        requestResponseHistory={
+                                            data.requestResponseHistory
+                                        }
+                                        bunqMeTabHistory={data.bunqMeTabHistory}
+                                        paymentHistory={data.paymentHistory}
+                                        masterCardPaymentCountHistory={
+                                            data.masterCardPaymentCountHistory
+                                        }
+                                        maestroPaymentCountHistory={
+                                            data.maestroPaymentCountHistory
+                                        }
+                                        tapAndPayPaymentCountHistory={
+                                            data.tapAndPayPaymentCountHistory
+                                        }
+                                        applePayPaymentCountHistory={
+                                            data.applePayPaymentCountHistory
+                                        }
+                                    />
+                                ) : (
+                                    <EventTypeHistoryChart
+                                        height={500}
+                                        labels={data.labels}
+                                        requestInquiryHistory={
+                                            data.requestInquiryHistory
+                                        }
+                                        requestResponseHistory={
+                                            data.requestResponseHistory
+                                        }
+                                        bunqMeTabHistory={data.bunqMeTabHistory}
+                                        paymentHistory={data.paymentHistory}
+                                        masterCardActionHistory={
+                                            data.masterCardActionHistory
+                                        }
+                                    />
+                                )}
                             </Paper>
                         </Grid>
 
