@@ -54,6 +54,22 @@ export default props => {
             hoverBorderColor: paymentColor
         },
         {
+            label: "Apple Pay",
+            data: props.applePayPaymentCountHistory,
+            backgroundColor: applePayPaymentColor,
+            borderColor: applePayPaymentColor,
+            hoverBackgroundColor: applePayPaymentColor,
+            hoverBorderColor: applePayPaymentColor
+        },
+        {
+            label: "Tap & Pay",
+            data: props.tapAndPayPaymentCountHistory,
+            backgroundColor: tapAndPayPaymentColor,
+            borderColor: tapAndPayPaymentColor,
+            hoverBackgroundColor: tapAndPayPaymentColor,
+            hoverBorderColor: tapAndPayPaymentColor
+        },
+        {
             label: "Sent Requests",
             data: props.requestInquiryHistory,
             backgroundColor: requestInquiryColor,
@@ -68,14 +84,6 @@ export default props => {
             borderColor: requestResponseColor,
             hoverBackgroundColor: requestResponseColor,
             hoverBorderColor: requestResponseColor
-        },
-        {
-            label: "bunq.me Tabs",
-            data: props.bunqMeTabHistory,
-            backgroundColor: bunqMeTabColor,
-            borderColor: bunqMeTabColor,
-            hoverBackgroundColor: bunqMeTabColor,
-            hoverBorderColor: bunqMeTabColor
         },
         {
             label: "MasterCard",
@@ -94,20 +102,12 @@ export default props => {
             hoverBorderColor: maestroPaymentColor
         },
         {
-            label: "Apple Pay",
-            data: props.applePayPaymentCountHistory,
-            backgroundColor: applePayPaymentColor,
-            borderColor: applePayPaymentColor,
-            hoverBackgroundColor: applePayPaymentColor,
-            hoverBorderColor: applePayPaymentColor
-        },
-        {
-            label: "Tap & Pay",
-            data: props.tapAndPayPaymentCountHistory,
-            backgroundColor: tapAndPayPaymentColor,
-            borderColor: tapAndPayPaymentColor,
-            hoverBackgroundColor: tapAndPayPaymentColor,
-            hoverBorderColor: tapAndPayPaymentColor
+            label: "bunq.me Tabs",
+            data: props.bunqMeTabHistory,
+            backgroundColor: bunqMeTabColor,
+            borderColor: bunqMeTabColor,
+            hoverBackgroundColor: bunqMeTabColor,
+            hoverBorderColor: bunqMeTabColor
         }
     ];
 

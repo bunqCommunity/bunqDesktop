@@ -30,7 +30,7 @@ export default props => {
                 hoverBorderColor: paymentColor
             },
             {
-                label: "Master Card Payments",
+                label: "Card Payments",
                 data: props.masterCardActionHistory,
                 backgroundColor: masterCardActionColor,
                 borderColor: masterCardActionColor,

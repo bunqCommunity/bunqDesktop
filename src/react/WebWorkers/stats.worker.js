@@ -37,7 +37,7 @@ const labelFormat = (date, type = "daily") => {
             return format(date, "WW/YYYY");
         case "daily":
         default:
-            return format(date, "D MMM");
+            return format(date, "D MMM YY");
     }
 };
 
