@@ -38,11 +38,10 @@ const TransactionHeader = props => {
     // color the arrows
     const arrowColor = props.theme.palette.text.primary;
 
+    let toIsCounterparty = false;
+    let fromIsCounterparty = false;
     let toLabelName = toAlias.label_user.display_name;
     let fromLabelName = fromAlias.label_user.display_name;
-
-    let displayFromPayButton = false;
-    let displayToPayButton = false;
 
     // accounts list is available
     if (props.accounts) {
@@ -57,16 +56,22 @@ const TransactionHeader = props => {
                     if (alias.value === fromAlias.iban) {
                         fromLabelName = accountInfo.description;
                         // the "from" side is this user so we show a "to" button
-                        displayToPayButton = true;
+                        toIsCounterparty = true;
                     }
                     if (alias.value === toAlias.iban) {
                         toLabelName = accountInfo.description;
                         // the "to" side is this user so we show a "from" button
-                        displayFromPayButton = true;
+                        fromIsCounterparty = true;
                     }
                 }
             });
         });
+    }
+
+    // if both are true, than both from and to targets are within personl account
+    if (toIsCounterparty && fromIsCounterparty) {
+        toIsCounterparty = false;
+        fromIsCounterparty = false;
     }
 
     const components = [
@@ -75,6 +80,14 @@ const TransactionHeader = props => {
                 width={90}
                 BunqJSClient={props.BunqJSClient}
                 imageUUID={fromAvatar}
+                onClick={() => {
+                    if (fromIsCounterparty && props.startPaymentIban) {
+                        props.startPaymentIban(fromAlias);
+                    }
+                }}
+                style={{
+                    cursor: fromIsCounterparty ? "pointer" : "default"
+                }}
             />
             <Typography variant="subheading">{fromLabelName}</Typography>
         </Grid>,
@@ -92,6 +105,14 @@ const TransactionHeader = props => {
                 width={90}
                 BunqJSClient={props.BunqJSClient}
                 imageUUID={toAvatar}
+                onClick={() => {
+                    if (toIsCounterparty && props.startPaymentIban) {
+                        props.startPaymentIban(fromAlias);
+                    }
+                }}
+                style={{
+                    cursor: toIsCounterparty ? "pointer" : "default"
+                }}
             />
 
             <Typography variant="subheading">{toLabelName}</Typography>

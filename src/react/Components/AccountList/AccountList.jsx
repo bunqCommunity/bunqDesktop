@@ -155,7 +155,7 @@ class AccountList extends React.Component {
             }
             return total;
         }, 0);
-        const formattedTotalBalance = formatMoney(totalBalance);
+        const formattedTotalBalance = formatMoney(totalBalance, true);
 
         return (
             <List dense={this.props.denseMode} style={styles.list}>
@@ -205,7 +205,6 @@ const mapStateToProps = state => {
 
         hideBalance: state.options.hide_balance,
 
-        paymentType: state.payment_filter.type,
 
         accounts: state.accounts.accounts,
         accountsAccountId: state.accounts.selectedAccount,

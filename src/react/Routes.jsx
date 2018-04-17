@@ -52,8 +52,11 @@ const Card = CL(() =>
 const DebugPage = CL(() =>
     import(/* webpackChunkName: "debug" */ "./Pages/DebugPage")
 );
+const Contacts = CL(() =>
+    import(/* webpackChunkName: "contacts" */ "./Pages/Contacts")
+);
 const Settings = CL(() =>
-    import(/* webpackChunkName: "debug" */ "./Pages/Settings")
+    import(/* webpackChunkName: "settings" */ "./Pages/Settings")
 );
 const Exports = CL(() =>
     import(/* webpackChunkName: "exports" */ "./Pages/Exports")
@@ -238,6 +241,19 @@ export default class Routes extends React.Component {
                             derivedPassword={this.props.derivedPassword}
                             render={props => (
                                 <Exports
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
+                            )}
+                        />
+
+                        <PrivateRoute
+                            path="/contacts"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <Contacts
                                     {...props}
                                     {...this.props.childProps}
                                 />

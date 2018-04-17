@@ -9,6 +9,7 @@ import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
 import List, { ListItem, ListItemText, ListItemIcon } from "material-ui/List";
 
+import ContactsIcon from "@material-ui/icons/Contacts";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import HomeIcon from "@material-ui/icons/Home";
@@ -135,6 +136,12 @@ class MainDrawer extends React.Component {
                       text={"Scheduled payments"}
                       location={this.props.location}
                   />,
+                <ListItemWrapper
+                    to="/exports"
+                    icon={FileUpload}
+                    text={"Exports"}
+                    location={this.props.location}
+                />,
                   <Divider />,
                   <ListItemWrapper
                       to="/stats"
@@ -143,9 +150,9 @@ class MainDrawer extends React.Component {
                       location={this.props.location}
                   />,
                   <ListItemWrapper
-                      to="/exports"
-                      icon={FileUpload}
-                      text={"Exports"}
+                      to="/contacts"
+                      icon={ContactsIcon}
+                      text={"Contacts"}
                       location={this.props.location}
                   />,
                   <ListItemWrapper

@@ -11,6 +11,7 @@ import { ipcRenderer } from "electron";
 // custom components
 import Logger from "../Helpers/Logger";
 import VersionChecker from "../Helpers/VersionChecker";
+import NetworkStatusChecker from "./NetworkStatusChecker";
 import RuleCollectionChecker from "./RuleCollectionChecker";
 import MainDialog from "./MainDialog";
 import MainSnackbar from "./MainSnackbar";
@@ -51,6 +52,7 @@ import {
     setTheme,
     setAutomaticThemeChange
 } from "../Actions/options";
+import { loadStoredContacts } from "../Actions/contacts";
 
 const styles = theme => ({
     contentContainer: {
@@ -112,6 +114,8 @@ class Layout extends React.Component {
 
         // access the translations globally
         window.t = this.props.t;
+
+        // register mouse and network events
         window.onmousemove = this.onActivityEvent.bind(this);
         window.onkeypress = this.onActivityEvent.bind(this);
     }
@@ -142,7 +146,7 @@ class Layout extends React.Component {
 
         // setup minute timer
         this.checkTime();
-        this.minuteTimer = setInterval(this.checkTime, 60000);
+        this.minuteTimer = setInterval(this.checkTime, 5000);
     }
 
     componentWillMount() {
@@ -397,6 +401,7 @@ class Layout extends React.Component {
         }
 
         this.props.loadStoredAccounts();
+        this.props.loadStoredContacts();
         this.props.loadStoredPayments();
         this.props.loadStoredBunqMeTabs();
         this.props.loadStoredMasterCardActions();
@@ -470,6 +475,7 @@ class Layout extends React.Component {
             <MuiThemeProvider theme={selectedTheme}>
                 <main className={classes.main}>
                     <RuleCollectionChecker updateToggle={isLoading} />
+                    <NetworkStatusChecker />
 
                     <Header />
                     <MainDrawer
@@ -569,6 +575,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(userLogin(BunqJSClient, userType, updated)),
 
         loadStoredPayments: () => dispatch(loadStoredPayments(BunqJSClient)),
+        loadStoredContacts: () => dispatch(loadStoredContacts(BunqJSClient)),
         loadStoredBunqMeTabs: () =>
             dispatch(loadStoredBunqMeTabs(BunqJSClient)),
         loadStoredMasterCardActions: () =>

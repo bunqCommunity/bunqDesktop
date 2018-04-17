@@ -1,5 +1,6 @@
 export const defaultState = {
-    status_message: ""
+    status_message: "",
+    online: true
 };
 
 export default (state = defaultState, action) => {
@@ -8,6 +9,16 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 status_message: action.payload.status_message
+            };
+        case "APPLICATION_SET_OFFLINE":
+            return {
+                ...state,
+                online: false
+            };
+        case "APPLICATION_SET_ONLINE":
+            return {
+                ...state,
+                online: true
             };
     }
     return state;

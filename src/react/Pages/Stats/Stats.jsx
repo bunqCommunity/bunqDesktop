@@ -163,7 +163,7 @@ class Stats extends React.Component {
                                 </ListItem>
                                 <ListItem>
                                     <ListItemText
-                                        primary={t("Mastercard payments")}
+                                        primary={t("Card payments")}
                                         secondary={
                                             this.props.masterCardActions.length
                                         }

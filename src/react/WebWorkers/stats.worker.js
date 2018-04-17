@@ -24,7 +24,7 @@ import MonetaryAccount from "../Models/MonetaryAccount";
 const labelFormat = (date, type = "daily") => {
     switch (type) {
         case "yearly":
-            return format(date, "_YYYY");
+            return `year ${format(date, "YYYY")}`
         case "monthly":
             return format(date, "MMM YYYY");
         case "weekly":
@@ -457,7 +457,7 @@ const getData = (
         // account balance
         balanceHistoryData: balanceHistoryData.reverse(),
         // total event count
-        eventCountHistory: eventCountHistory.reverse(),
+        eventCountHistory: eventCountHistory,
         // total category count
         categoryCountHistory: categoryCountHistory,
         // individual history count

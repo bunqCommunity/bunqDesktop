@@ -1,6 +1,5 @@
 import React from "react";
 import { translate } from "react-i18next";
-import { withTheme } from "material-ui/styles";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
@@ -91,14 +90,19 @@ class PaymentInfo extends React.Component {
     toggleCategoryDialog = event =>
         this.setState({ displayCategories: !this.state.displayCategories });
 
+    startPaymentIban = alias => {
+        this.props.history.push(
+            `/pay?iban=${alias.iban}&iban-name=${alias.display_name}`
+        );
+    };
     startPayment = event => {
         const paymentInfo = this.props.paymentInfo;
         this.props.history.push(`/pay?amount=${paymentInfo.getAmount()}`);
-    }
+    };
     startRequest = event => {
         const paymentInfo = this.props.paymentInfo;
         this.props.history.push(`/request?amount=${paymentInfo.getAmount()}`);
-    }
+    };
 
     render() {
         const {
@@ -149,6 +153,7 @@ class PaymentInfo extends React.Component {
                         from={payment.alias}
                         user={this.props.user}
                         accounts={this.props.accounts}
+                        startPaymentIban={this.startPaymentIban}
                         swap={paymentAmount > 0}
                     />
 
@@ -208,10 +213,7 @@ class PaymentInfo extends React.Component {
                             </ListItem>
                         </List>
 
-                        <CategoryChips
-                            type={"Payment"}
-                            id={payment.id}
-                        />
+                        <CategoryChips type={"Payment"} id={payment.id} />
 
                         <CategorySelectorDialog
                             type={"Payment"}

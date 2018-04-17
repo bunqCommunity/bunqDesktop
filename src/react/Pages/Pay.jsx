@@ -7,7 +7,6 @@ import EmailValidator from "email-validator";
 import DateTimePicker from "material-ui-pickers/DateTimePicker/index.js";
 import DateFnsUtils from "material-ui-pickers/utils/date-fns-utils";
 import MuiPickersUtilsProvider from "material-ui-pickers/utils/MuiPickersUtilsProvider";
-
 import format from "date-fns/format";
 import enLocale from "date-fns/locale/en-US";
 import deLocale from "date-fns/locale/de";
@@ -39,8 +38,11 @@ import TargetSelection from "../Components/FormFields/TargetSelection";
 
 import { openSnackbar } from "../Actions/snackbar";
 import { paySchedule, paySend } from "../Actions/pay";
-import { humanReadableDate } from "../Helpers/Utils";
 import scheduleTexts from "../Helpers/ScheduleTexts";
+import {
+    getInternationalFormat,
+    isValidPhonenumber
+} from "../Helpers/PhoneLib";
 
 const styles = {
     payButton: {
@@ -111,14 +113,24 @@ class Pay extends React.Component {
             selectedTargetAccountError: false,
 
             // defines which type is used
-            targetType: "EMAIL"
+            targetType: "CONTACT"
         };
     }
 
     componentDidMount() {
         const searchParams = new URLSearchParams(this.props.location.search);
         if (searchParams.has("amount")) {
-            this.setState({ amount: searchParams.get("amount") });
+            const amount = parseFloat(searchParams.get("amount"));
+            this.setState({ amount: amount >= 0 ? amount : amount * -1 });
+        }
+        if (searchParams.has("iban") && searchParams.has("iban-name")) {
+            const ibanParam = searchParams.get("iban");
+            const ibanNameParam = searchParams.get("iban-name");
+            this.setState({
+                target: ibanParam,
+                ibanName: ibanNameParam,
+                targetType: "IBAN"
+            });
         }
 
         // set the current account selected on the dashboard as the active one
@@ -243,10 +255,15 @@ class Pay extends React.Component {
                 const currentTargets = [...this.state.targets];
 
                 let foundDuplicate = false;
-                const targetValue =
+                let targetValue =
                     this.state.targetType === "TRANSFER"
                         ? this.state.selectedTargetAccount
                         : this.state.target.trim();
+
+                if (isValidPhonenumber(targetValue)) {
+                    // valid phone number, we must format as international
+                    targetValue = getInternationalFormat(targetValue);
+                }
 
                 // check for duplicates in existing target list
                 currentTargets.map(newTarget => {
@@ -300,11 +317,12 @@ class Pay extends React.Component {
         // check if the target is valid based onthe targetType
         let targetErrorCondition = false;
         switch (targetType) {
-            case "EMAIL":
-                targetErrorCondition = !EmailValidator.validate(target);
-                break;
-            case "PHONE":
-                targetErrorCondition = target.length < 5 || target.length > 64;
+            case "CONTACT":
+                const validEmail = EmailValidator.validate(target);
+                const validPhone = isValidPhonenumber(target);
+
+                // only error if both are false
+                targetErrorCondition = !validEmail && !validPhone;
                 break;
             case "TRANSFER":
                 targetErrorCondition =
@@ -394,21 +412,30 @@ class Pay extends React.Component {
         const userId = user.id;
 
         const targetInfoList = [];
-        targets.map(target => {
+        targets.forEach(target => {
             // check if the target is valid based onthe targetType
             let targetInfo = false;
             switch (target.type) {
-                case "EMAIL":
-                    targetInfo = {
-                        type: "EMAIL",
-                        value: target.value.trim()
-                    };
-                    break;
-                case "PHONE":
-                    targetInfo = {
-                        type: "PHONE_NUMBER",
-                        value: target.value.trim()
-                    };
+                case "CONTACT":
+                    const validEmail = EmailValidator.validate(target.value);
+                    const validPhone = isValidPhonenumber(target.value);
+
+                    if (validEmail) {
+                        targetInfo = {
+                            type: "EMAIL",
+                            value: target.value.trim()
+                        };
+                    } else if (validPhone) {
+                        const formattedNumber = getInternationalFormat(
+                            target.value
+                        );
+                        if (formattedNumber) {
+                            targetInfo = {
+                                type: "PHONE_NUMBER",
+                                value: formattedNumber
+                            };
+                        }
+                    }
                     break;
                 case "TRANSFER":
                     const otherAccount = accounts[target.value];
@@ -443,7 +470,6 @@ class Pay extends React.Component {
             value: amount + "", // sigh, number has to be sent as a string
             currency: "EUR"
         };
-        paySchedule;
 
         if (schedulePayment) {
             const schedule = {
@@ -529,6 +555,9 @@ class Pay extends React.Component {
                         break;
                     case "EMAIL":
                         primaryText = `${t("Email")}: ${targetItem.value}`;
+                        break;
+                    case "CONTACT":
+                        primaryText = `${t("Contact")}: ${targetItem.value}`;
                         break;
                     case "IBAN":
                         primaryText = `${t("IBAN")}: ${targetItem.value.replace(
