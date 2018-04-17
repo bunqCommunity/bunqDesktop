@@ -78,7 +78,7 @@ export default props => {
             hoverBorderColor: bunqMeTabColor
         },
         {
-            label: "MasterCard Payments",
+            label: "MasterCard",
             data: props.masterCardPaymentCountHistory,
             backgroundColor: masterCardPaymentColor,
             borderColor: masterCardPaymentColor,
@@ -86,7 +86,7 @@ export default props => {
             hoverBorderColor: masterCardPaymentColor
         },
         {
-            label: "Maestro Payments",
+            label: "Maestro",
             data: props.maestroPaymentCountHistory,
             backgroundColor: maestroPaymentColor,
             borderColor: maestroPaymentColor,
@@ -94,7 +94,7 @@ export default props => {
             hoverBorderColor: maestroPaymentColor
         },
         {
-            label: "Apple Pay Payments",
+            label: "Apple Pay",
             data: props.applePayPaymentCountHistory,
             backgroundColor: applePayPaymentColor,
             borderColor: applePayPaymentColor,
@@ -102,7 +102,7 @@ export default props => {
             hoverBorderColor: applePayPaymentColor
         },
         {
-            label: "Tap & Pay Payments",
+            label: "Tap & Pay",
             data: props.tapAndPayPaymentCountHistory,
             backgroundColor: tapAndPayPaymentColor,
             borderColor: tapAndPayPaymentColor,
