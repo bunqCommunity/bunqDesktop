@@ -151,7 +151,7 @@ class Login extends React.Component {
                 this.props.deviceName !== false &&
                 this.props.userLoading === false
             ) {
-                // this.props.loginUser(userTypes[0], true);
+                this.props.loginUser(userTypes[0], true);
             }
         }
     };
