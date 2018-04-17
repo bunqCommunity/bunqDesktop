@@ -53,6 +53,14 @@ const styles = {
     smallAvatar: {
         width: 50,
         height: 50
+    },
+    girlSvg: {
+        zIndex: 0,
+        position: "fixed",
+        right: 0,
+        bottom: 0,
+        height: "50%",
+        maxWidth: "35%"
     }
 };
 
@@ -97,9 +105,14 @@ class Login extends React.Component {
             openOptions: isSandboxMode
         });
 
+        // check if only a single user is available
         this.checkForSingleUser();
+
+        // validate inputs based on current input
         this.validateInputs(this.props.apiKey, this.props.deviceName);
 
+        // set a timeout to let other stuff load first  before checking if we need to
+        // display a qr code
         this.displayQrCodeDelay = setTimeout(() => {
             if (
                 // currently no qr code set/being loaded
@@ -138,7 +151,7 @@ class Login extends React.Component {
                 this.props.deviceName !== false &&
                 this.props.userLoading === false
             ) {
-                this.props.loginUser(userTypes[0], true);
+                // this.props.loginUser(userTypes[0], true);
             }
         }
     };
@@ -508,7 +521,7 @@ class Login extends React.Component {
                     variant="raised"
                     color={"secondary"}
                     style={styles.clearButton}
-                    onClick={this.logout}
+                    onClick={this.props.logOut}
                     disabled={this.props.userLoading}
                 >
                     Logout
@@ -555,8 +568,10 @@ class Login extends React.Component {
                 >
                     <Card style={{ width: 250 }}>{cardContent}</Card>
                 </Grid>
-                <Grid item xs={12} />
+
                 {userItems}
+
+                <img src="images/svg/girl.svg" style={styles.girlSvg} />
             </Grid>
         );
     }
@@ -584,7 +599,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         // clear api key from bunqjsclient and bunqdesktop
-        logOut: () => dispatch(registrationLogOut(BunqJSClient)),
+        logOut: () => dispatch(registrationLogOut(BunqJSClient, true)),
         // set the api key and stores the encrypted version
         setApiKey: (api_key, derivedPassword) =>
             dispatch(registrationSetApiKey(api_key, derivedPassword)),
