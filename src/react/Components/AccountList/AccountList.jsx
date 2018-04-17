@@ -155,7 +155,7 @@ class AccountList extends React.Component {
             }
             return total;
         }, 0);
-        const formattedTotalBalance = formatMoney(totalBalance);
+        const formattedTotalBalance = formatMoney(totalBalance, true);
 
         return (
             <List dense={this.props.denseMode} style={styles.list}>
