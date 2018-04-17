@@ -30,7 +30,7 @@ export default (newItems, oldItems) => {
     // turn back into an array
     const mergedItemsArray = Object.keys(mergedItemsObject)
         // sort by key which is also the item id
-        .sort()
+        .sort((a, b) => (a > b ? -1 : a < b ? 1 : 0))
         // map the ids list  back to objects
         .map(eventId => mergedItemsObject[eventId]);
 
