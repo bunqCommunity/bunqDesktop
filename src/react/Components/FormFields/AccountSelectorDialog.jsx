@@ -25,7 +25,8 @@ const styles = {
 
 const AccountItem = ({ account, onClick, BunqJSClient, hideBalance }) => {
     const formattedBalance = formatMoney(
-        account.balance ? account.balance.value : 0
+        account.balance ? account.balance.value : 0,
+        true
     );
     return (
         <ListItem button onClick={onClick}>

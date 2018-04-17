@@ -23,7 +23,6 @@ export default (state = defaultState, action) => {
                 state.account_id !== action.payload.account_id;
 
             const mergedInfo = MergeApiObjects(
-                "Payment",
                 action.payload.payments,
                 ignoreOldItems ? [] : payments
             );

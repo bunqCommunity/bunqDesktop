@@ -23,7 +23,6 @@ export default (state = defaultState, action) => {
                 state.account_id !== action.payload.account_id;
 
             const mergedInfo = MergeApiObjects(
-                "BunqMeTab",
                 action.payload.bunqMeTabs,
                 ignoreOldItems ? [] : bunq_me_tabs
             );
