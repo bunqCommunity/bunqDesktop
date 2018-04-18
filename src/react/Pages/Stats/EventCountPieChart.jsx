@@ -20,7 +20,7 @@ export default props => {
     const pieChartData = {
         labels: [
             "Payments",
-            "Mastercard payments",
+            "Card payments",
             "Requests sent",
             "Requests received",
             "bunq.me requests"

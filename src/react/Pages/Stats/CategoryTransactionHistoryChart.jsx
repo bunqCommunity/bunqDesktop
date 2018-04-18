@@ -35,8 +35,8 @@ export default props => {
     const dataSets = [];
     const yAxes = [];
     let firstItem = true;
-    Object.keys(props.categoryCountHistory).forEach(categoryKey => {
-        const categoryCount = props.categoryCountHistory[categoryKey];
+    Object.keys(props.categoryTransactionHistory).forEach(categoryKey => {
+        const categoryCount = props.categoryTransactionHistory[categoryKey];
         const category = props.categories[categoryKey];
 
         // add data set for this category

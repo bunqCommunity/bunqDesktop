@@ -376,11 +376,12 @@ const getData = (
     Object.keys(categories).forEach(categoryKey => {
         // used to sum data for each category
         categoryList[categoryKey] = 0;
-        categoryTransactionList[categoryKey] = {
-            sent: 0,
-            received: 0,
-            total: 0
-        };
+        categoryTransactionList[categoryKey] = 0;
+        // categoryTransactionList[categoryKey] = {
+        //     sent: 0,
+        //     received: 0,
+        //     total: 0
+        // };
 
         // used to actually store the final total values
         categoryCountHistory[categoryKey] = [];
@@ -424,18 +425,18 @@ const getData = (
                 // category count increment
                 categoryInfo[category.id]++;
 
-                if (item.change > 0) {
-                    // received money since change is positive
-                    categoryTransactionInfo[category.id].received +=
-                        item.change;
-                }
-                if (item.change < 0) {
-                    // sent money since change is negative
-                    categoryTransactionInfo[category.id].sent += item.change;
-                }
+                // if (item.change > 0) {
+                //     // received money since change is positive
+                //     categoryTransactionInfo[category.id].received +=
+                //         item.change;
+                // }
+                // if (item.change < 0) {
+                //     // sent money since change is negative
+                //     categoryTransactionInfo[category.id].sent += item.change;
+                // }
 
                 // always increase the total change
-                categoryTransactionInfo[category.id].total += item.change;
+                categoryTransactionInfo[category.id] += item.change;
             });
 
             // calculate change
@@ -485,7 +486,7 @@ const getData = (
                 });
                 Object.keys(categoryTransactionInfo).forEach(categoryKey => {
                     categoryTransactionHistory[categoryKey].push(
-                        categoryTransactionInfo[categoryKey]
+                        categoryTransactionInfo[categoryKey].toFixed(2)
                     );
                 });
 
