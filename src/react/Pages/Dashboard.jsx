@@ -8,9 +8,11 @@ import Button from "material-ui/Button";
 import Grid from "material-ui/Grid";
 import IconButton from "material-ui/IconButton";
 import Typography from "material-ui/Typography";
+import Tooltip from "material-ui/Tooltip";
 
 import MoneyIcon from "@material-ui/icons/AttachMoney";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import KeyIcon from "@material-ui/icons/VpnKey";
 
 import CombinedList from "../Components/CombinedList/CombinedList";
 import AccountList from "../Components/AccountList/AccountList";
@@ -25,7 +27,11 @@ const styles = {
         width: "100%"
     },
     iconButton: {
-        height: 25
+        height: 25,
+        marginLeft: 16
+    },
+    headerButtonWrapper: {
+        textAlign: "right"
     }
 };
 
@@ -78,82 +84,96 @@ class Dashboard extends React.Component {
                     <title>{`BunqDesktop - ${t("Dashboard")}`}</title>
                 </Helmet>
 
-                <Grid item xs={7} sm={8} md={9}>
-                    <Typography variant="title" gutterBottom>
-                        {`${t("Welcome")} ${this.props.user.display_name}`}
-                    </Typography>
-                </Grid>
+                <Grid item xs={12} lg={8}>
+                    <Grid container spacing={16}>
+                        <Grid item xs={6}>
+                            <Typography variant="title" gutterBottom>
+                                {`${t("Welcome")} ${this.props.user
+                                    .display_name}`}
+                            </Typography>
+                        </Grid>
 
-                <Grid item xs={3} sm={2} md={2}>
-                    {/* hide the switch button if only one user is set */}
-                    {userTypes.length > 1 ? (
-                        <Button
-                            style={styles.btn}
-                            onClick={this.props.logoutUser}
-                        >
-                            {t("Switch user")}
-                        </Button>
-                    ) : null}
-                </Grid>
-
-                <Grid item xs={2} sm={2} md={1} style={{ textAlign: "right" }}>
-                    <IconButton
-                        style={styles.iconButton}
-                        onClick={this.props.registrationLogOut}
-                    >
-                        <ExitToAppIcon />
-                    </IconButton>
-                </Grid>
-
-                <Grid item xs={12} md={4}>
-                    <StickyBox className={"sticky-container"}>
-                        <Paper>
-                            <AccountList
-                                BunqJSClient={this.props.BunqJSClient}
-                                initialBunqConnect={
-                                    this.props.initialBunqConnect
-                                }
-                            />
-
-                            <LoadOlderButton
-                                wrapperStyle={{ padding: 8 }}
-                                buttonStyle={{ width: "100%" }}
-                                buttonContent={t("Load more events")}
-                                BunqJSClient={this.props.BunqJSClient}
-                                initialBunqConnect={
-                                    this.props.initialBunqConnect
-                                }
-                            />
-
-                            {this.props.environment === "SANDBOX" ? (
-                                <div
-                                    style={{ textAlign: "center", padding: 16 }}
+                        <Grid item xs={6} style={styles.headerButtonWrapper}>
+                            {userTypes.length > 1 ? (
+                                <Button
+                                    style={styles.btn}
+                                    onClick={this.props.logoutUser}
                                 >
-                                    <Typography>
-                                        {t("Psst, want some money?")}
-                                    </Typography>
-                                    <Button
-                                        variant={"raised"}
-                                        onClick={this.addMoney}
-                                        disabled={
-                                            this.props.requestInquiryLoading
-                                        }
-                                    >
-                                        <MoneyIcon /> {t("Yes")} <MoneyIcon />
-                                    </Button>
-                                </div>
+                                    {t("Switch user")}
+                                </Button>
                             ) : null}
-                        </Paper>
-                    </StickyBox>
-                </Grid>
 
-                <Grid item xs={12} md={8}>
-                    <Paper>
-                        <CombinedList
-                            BunqJSClient={this.props.BunqJSClient}
-                            initialBunqConnect={this.props.initialBunqConnect}
-                        />
-                    </Paper>
+                            <Tooltip id="tooltip-fab" title="Switch API keys">
+                                <IconButton
+                                    style={styles.iconButton}
+                                    onClick={this.props.registrationLogOut}
+                                >
+                                    <KeyIcon />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip id="tooltip-fab" title="Logout of account">
+                                <IconButton
+                                    style={styles.iconButton}
+                                    onClick={() => location.reload()}
+                                >
+                                    <ExitToAppIcon />
+                                </IconButton>
+                            </Tooltip>
+                        </Grid>
+
+                        <Grid item xs={12} md={4}>
+                            <StickyBox className={"sticky-container"}>
+                                <Paper>
+                                    <AccountList
+                                        BunqJSClient={this.props.BunqJSClient}
+                                        initialBunqConnect={
+                                            this.props.initialBunqConnect
+                                        }
+                                    />
+
+                                    <LoadOlderButton
+                                        wrapperStyle={{ padding: 8 }}
+                                        buttonStyle={{ width: "100%" }}
+                                        buttonContent={t("Load more events")}
+                                        BunqJSClient={this.props.BunqJSClient}
+                                        initialBunqConnect={
+                                            this.props.initialBunqConnect
+                                        }
+                                    />
+
+                                    {this.props.environment === "SANDBOX" ? (
+                                        <div
+                                            style={{
+                                                textAlign: "center",
+                                                padding: 16
+                                            }}
+                                        >
+                                            <Button
+                                                onClick={this.addMoney}
+                                                disabled={
+                                                    this.props
+                                                        .requestInquiryLoading
+                                                }
+                                            >
+                                                <MoneyIcon />
+                                            </Button>
+                                        </div>
+                                    ) : null}
+                                </Paper>
+                            </StickyBox>
+                        </Grid>
+
+                        <Grid item xs={12} md={8}>
+                            <Paper>
+                                <CombinedList
+                                    BunqJSClient={this.props.BunqJSClient}
+                                    initialBunqConnect={
+                                        this.props.initialBunqConnect
+                                    }
+                                />
+                            </Paper>
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Grid>
         );
