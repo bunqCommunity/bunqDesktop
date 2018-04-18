@@ -32,7 +32,7 @@ export default props => {
         };
     };
 
-    const dataSets = [];
+    let dataSets = [];
     const yAxes = [];
     let firstItem = true;
     Object.keys(props.categoryTransactionHistory).forEach(categoryKey => {
@@ -46,12 +46,13 @@ export default props => {
             borderColor: category.color,
             hoverBackgroundColor: category.color,
             hoverBorderColor: category.color
-        }
+        };
 
-        // add each data set for this category
-        dataSets.push({...datasetTemplate, stack: 'total', data: categoryHistory.total});
-        // dataSets.push({...datasetTemplate, stack: 'sent', data: categoryHistory.sent});
-        // dataSets.push({...datasetTemplate, stack: 'received', data: categoryHistory.received});
+        dataSets.push({
+            ...datasetTemplate,
+            stack: "total",
+            data: categoryHistory[props.transactionType]
+        });
 
         // add to y axes
         yAxes.push(barChartInfo(category.id, firstItem));
@@ -86,7 +87,7 @@ export default props => {
         }
     };
 
-    if(yAxes.length === 0){
+    if (yAxes.length === 0) {
         return null;
     }
 

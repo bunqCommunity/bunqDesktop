@@ -6,7 +6,6 @@ import Paper from "material-ui/Paper";
 import Grid from "material-ui/Grid";
 import Switch from "material-ui/Switch";
 import Typography from "material-ui/Typography";
-import ListSubheader from "material-ui/List/ListSubheader";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Radio, { RadioGroup } from "material-ui/Radio";
 import { FormControlLabel } from "material-ui/Form";
@@ -31,7 +30,11 @@ const StatsWorker = require("../../WebWorkers/stats.worker.js");
 
 const ChartTitle = ({ children, ...rest }) => {
     return (
-        <Typography variant="title" style={{ textAlign: "center" }} {...rest}>
+        <Typography
+            variant="title"
+            style={{ textAlign: "center", padding: 8 }}
+            {...rest}
+        >
             {children}
         </Typography>
     );
@@ -48,7 +51,10 @@ class Stats extends React.Component {
             splitCardTypes: true,
 
             // transaction amount vs event count
-            displayTransactionAmount: true
+            displayTransactionAmount: true,
+
+            // total, sent or received amount setting
+            categoryTransactionType: "total"
         };
     }
 
@@ -562,6 +568,10 @@ class Stats extends React.Component {
                                         <CategoryTransactionHistoryChart
                                             height={500}
                                             labels={data.labels}
+                                            transactionType={
+                                                this.state
+                                                    .categoryTransactionType
+                                            }
                                             categories={this.props.categories}
                                             categoryTransactionHistory={
                                                 data.categoryTransactionHistory
@@ -578,6 +588,43 @@ class Stats extends React.Component {
                                         />
                                     )}
                                 </div>
+                                {this.state.displayTransactionAmount ? (
+                                    <React.Fragment>
+                                        <RadioGroup
+                                            aria-label="View the total, sent or received amount for each category"
+                                            style={{
+                                                flexDirection: "row",
+                                                justifyContent: "center"
+                                            }}
+                                            name="categoryTransactionType"
+                                            value={
+                                                this.state
+                                                    .categoryTransactionType
+                                            }
+                                            onChange={event =>
+                                                this.setState({
+                                                    categoryTransactionType:
+                                                        event.target.value
+                                                })}
+                                        >
+                                            <FormControlLabel
+                                                value="total"
+                                                control={<Radio />}
+                                                label="Total amount"
+                                            />
+                                            <FormControlLabel
+                                                value="sent"
+                                                control={<Radio />}
+                                                label="Sent"
+                                            />
+                                            <FormControlLabel
+                                                value="received"
+                                                control={<Radio />}
+                                                label="Received"
+                                            />
+                                        </RadioGroup>
+                                    </React.Fragment>
+                                ) : null}
                             </Paper>
                         </Grid>
 
