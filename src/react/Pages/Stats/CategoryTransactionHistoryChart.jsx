@@ -50,7 +50,7 @@ export default props => {
 
         dataSets.push({
             ...datasetTemplate,
-            stack: "total",
+            stack: props.transactionType,
             data: categoryHistory[props.transactionType]
         });
 
