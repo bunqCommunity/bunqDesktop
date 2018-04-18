@@ -36,10 +36,6 @@ const styles = {
         width: "100%",
         marginTop: 20
     },
-    clearButton: {
-        width: "100%",
-        marginTop: 20
-    },
     apiInput: {
         width: "100%",
         marginTop: 20,
@@ -457,6 +453,17 @@ class Login extends React.Component {
                         }}
                     />
 
+                    {this.props.storedApiKeys.length > 0 ? (
+                        <Button
+                            className="black-button"
+                            style={styles.button}
+                            to={"/switch-api-keys"}
+                            component={NavLink}
+                        >
+                            {t("Use a stored API key")}
+                        </Button>
+                    ) : null}
+
                     <Button
                         className="white-button"
                         onClick={this.toggleOptionVisibility}
@@ -534,16 +541,6 @@ class Login extends React.Component {
                         >
                             Set API Key
                         </TranslateButton>
-
-                        {/*{this.props.storedApiKeys.length > 0 ? (*/}
-                        {/*<Button*/}
-                        {/*style={styles.loginButton}*/}
-                        {/*to={"/switch-api-keys"}*/}
-                        {/*component={NavLink}*/}
-                        {/*>*/}
-                        {/*{t("Use a stored API key")}*/}
-                        {/*</Button>*/}
-                        {/*) : null}*/}
                     </Collapse>
                 </CardContent>
             </React.Fragment>
@@ -559,7 +556,7 @@ class Login extends React.Component {
                 <TranslateButton
                     variant="raised"
                     color={"secondary"}
-                    style={styles.clearButton}
+                    style={styles.button}
                     onClick={this.props.logOut}
                     disabled={this.props.userLoading}
                 >
