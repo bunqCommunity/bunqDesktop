@@ -32,15 +32,10 @@ const styles = {
         marginTop: 16
     },
     loginButton: {
-        width: "100%",
-        color: "#ffffff",
-        backgroundColor: "#000000"
+        width: "100%"
     },
     secondaryButtons: {
-        width: "100%",
-        color: "#000000",
-        fontWeight: 700,
-        backgroundColor: "#ffffff"
+        width: "100%"
     },
     clearButton: {
         width: "100%",
@@ -225,7 +220,7 @@ class LoginPassword extends React.Component {
                             passwordInputError ? (
                                 "password-input-error"
                             ) : (
-                                "password-input"
+                                "text-input"
                             )
                         }
                         placeholder={
@@ -258,6 +253,7 @@ class LoginPassword extends React.Component {
                             <Grid item xs={6} sm={4}>
                                 <TranslateButton
                                     variant="raised"
+                                    className="white-button"
                                     style={styles.secondaryButtons}
                                     onClick={this.logOut}
                                 >
@@ -273,6 +269,7 @@ class LoginPassword extends React.Component {
                                 <Grid item xs={6} sm={4}>
                                     <TranslateButton
                                         variant="raised"
+                                        className="white-button"
                                         style={styles.secondaryButtons}
                                         onClick={this.props.useNoPasswordLogin}
                                     >
@@ -287,8 +284,9 @@ class LoginPassword extends React.Component {
                         <Grid item xs={12} sm={4}>
                             <TranslateButton
                                 variant="raised"
+                                color="primary"
+                                className="black-button"
                                 disabled={buttonDisabled}
-                                color={"primary"}
                                 style={styles.loginButton}
                                 onClick={this.setRegistration}
                             >

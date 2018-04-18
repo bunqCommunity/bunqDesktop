@@ -1,10 +1,36 @@
-
 .login-page,
-.password-page{
+.password-page {
     background-color: black !important;
-    .password-input {
+    .text-input {
         &:before {
             background-color: grey !important;
+        }
+    }
+
+    .black-button {
+        color: #ffffff !important;
+        background-color: #000000 !important;
+        &:hover,
+        &:focus {
+            background-color: #222123 !important;
+        }
+
+        &.disabled {
+            color: #b7b7b7 !important;
+        }
+    }
+
+    .white-button {
+        color: #000000 !important;
+        background-color: #ffffff !important;
+        fontWeight: 700;
+        &:hover,
+        &:focus {
+            background-color: #e3e3e3 !important;
+        }
+
+        &.disabled {
+            color: #191919 !important;
         }
     }
 }
