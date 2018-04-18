@@ -36,19 +36,23 @@ export default props => {
     const yAxes = [];
     let firstItem = true;
     Object.keys(props.categoryTransactionHistory).forEach(categoryKey => {
-        const categoryCount = props.categoryTransactionHistory[categoryKey];
+        const categoryHistory = props.categoryTransactionHistory[categoryKey];
         const category = props.categories[categoryKey];
 
-        // add data set for this category
-        dataSets.push({
+        const datasetTemplate = {
             yAxesID: category.id,
             label: category.label,
-            data: categoryCount,
             backgroundColor: category.color,
             borderColor: category.color,
             hoverBackgroundColor: category.color,
             hoverBorderColor: category.color
-        });
+        }
+
+        // add each data set for this category
+        dataSets.push({...datasetTemplate, stack: 'total', data: categoryHistory.total});
+        // dataSets.push({...datasetTemplate, stack: 'sent', data: categoryHistory.sent});
+        // dataSets.push({...datasetTemplate, stack: 'received', data: categoryHistory.received});
+
         // add to y axes
         yAxes.push(barChartInfo(category.id, firstItem));
 

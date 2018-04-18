@@ -376,16 +376,19 @@ const getData = (
     Object.keys(categories).forEach(categoryKey => {
         // used to sum data for each category
         categoryList[categoryKey] = 0;
-        categoryTransactionList[categoryKey] = 0;
-        // categoryTransactionList[categoryKey] = {
-        //     sent: 0,
-        //     received: 0,
-        //     total: 0
-        // };
+        categoryTransactionList[categoryKey] = {
+            sent: 0,
+            received: 0,
+            total: 0
+        };
 
         // used to actually store the final total values
         categoryCountHistory[categoryKey] = [];
-        categoryTransactionHistory[categoryKey] = [];
+        categoryTransactionHistory[categoryKey] = {
+            sent: [],
+            received: [],
+            total: []
+        };
     });
 
     // loop through all the days
@@ -394,10 +397,17 @@ const getData = (
 
         // temporary local variables to track amounts throughout the events for this X axis
         const categoryInfo = Object.assign({}, categoryList);
-        const categoryTransactionInfo = Object.assign(
-            {},
-            categoryTransactionList
+        const categoryTransactionInfo = {};
+        // loop through them while making sure no references exist
+        Object.keys(categoryTransactionList).forEach(
+            key =>
+                (categoryTransactionInfo[key] = Object.assign(
+                    {},
+                    categoryTransactionList[key]
+                ))
         );
+
+
         const timescaleInfo = {
             masterCardAction: 0,
             requestResponse: 0,
@@ -425,18 +435,18 @@ const getData = (
                 // category count increment
                 categoryInfo[category.id]++;
 
-                // if (item.change > 0) {
-                //     // received money since change is positive
-                //     categoryTransactionInfo[category.id].received +=
-                //         item.change;
-                // }
-                // if (item.change < 0) {
-                //     // sent money since change is negative
-                //     categoryTransactionInfo[category.id].sent += item.change;
-                // }
+                if (item.change > 0) {
+                    // received money since change is positive
+                    categoryTransactionInfo[category.id].received +=
+                        item.change;
+                }
+                if (item.change < 0) {
+                    // sent money since change is negative
+                    categoryTransactionInfo[category.id].sent += item.change;
+                }
 
                 // always increase the total change
-                categoryTransactionInfo[category.id] += item.change;
+                categoryTransactionInfo[category.id].total += item.change;
             });
 
             // calculate change
@@ -485,8 +495,14 @@ const getData = (
                     );
                 });
                 Object.keys(categoryTransactionInfo).forEach(categoryKey => {
-                    categoryTransactionHistory[categoryKey].push(
-                        categoryTransactionInfo[categoryKey].toFixed(2)
+                    categoryTransactionHistory[categoryKey].sent.push(
+                        categoryTransactionInfo[categoryKey].sent
+                    );
+                    categoryTransactionHistory[categoryKey].received.push(
+                        categoryTransactionInfo[categoryKey].received
+                    );
+                    categoryTransactionHistory[categoryKey].total.push(
+                        categoryTransactionInfo[categoryKey].total
                     );
                 });
 
@@ -522,16 +538,22 @@ const getData = (
         currentBalance = currentBalance + timescaleChange;
     });
 
-    // reverse each category amount
+    // reverse each category separately
     Object.keys(categoryCountHistory).forEach(categoryKey => {
         categoryCountHistory[categoryKey] = categoryCountHistory[
             categoryKey
         ].reverse();
     });
     Object.keys(categoryTransactionHistory).forEach(categoryKey => {
-        categoryTransactionHistory[categoryKey] = categoryTransactionHistory[
+        categoryTransactionHistory[
             categoryKey
-        ].reverse();
+        ].sent = categoryTransactionHistory[categoryKey].sent.reverse();
+        categoryTransactionHistory[
+            categoryKey
+        ].received = categoryTransactionHistory[categoryKey].received.reverse();
+        categoryTransactionHistory[
+            categoryKey
+        ].total = categoryTransactionHistory[categoryKey].total.reverse();
     });
 
     return {
