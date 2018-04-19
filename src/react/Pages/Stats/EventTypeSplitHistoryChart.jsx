@@ -32,6 +32,7 @@ export default props => {
                 display: showAxis
             },
             ticks: {
+                fontColor: props.theme.palette.text.primary,
                 beginAtZero: true,
                 callback: value => {
                     // only show integer values
@@ -134,6 +135,11 @@ export default props => {
             enabled: true,
             mode: "index"
         },
+        legend: {
+            labels: {
+                fontColor: props.theme.palette.text.primary
+            }
+        },
         scales: {
             xAxes: [
                 {
@@ -141,6 +147,9 @@ export default props => {
                     display: true,
                     gridLines: {
                         display: true
+                    },
+                    ticks: {
+                        fontColor: props.theme.palette.text.primary
                     },
                     labels: props.labels
                 }

@@ -1,4 +1,5 @@
 import React from "react";
+import { withTheme } from "material-ui/styles";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
@@ -174,7 +175,7 @@ class Stats extends React.Component {
     };
 
     render() {
-        const t = this.props.t;
+        const { t, theme} = this.props;
 
         const data =
             this.state.parsedData !== false
@@ -302,6 +303,7 @@ class Stats extends React.Component {
                             {this.state.splitCardTypes ? (
                                 <EventSplitCountPieChart
                                     height={500}
+                                    theme={theme}
                                     payments={this.props.payments}
                                     requestInquiryHistory={
                                         data.requestInquiryHistory
@@ -327,6 +329,7 @@ class Stats extends React.Component {
                             ) : (
                                 <EventCountPieChart
                                     height={500}
+                                    theme={theme}
                                     payments={this.props.payments}
                                     masterCardActions={
                                         this.props.masterCardActions
@@ -352,6 +355,7 @@ class Stats extends React.Component {
 
                             <CategoryCountPieChart
                                 height={500}
+                                theme={theme}
                                 categories={this.props.categories}
                                 categoryCountHistory={data.categoryCountHistory}
                             />
@@ -506,6 +510,7 @@ class Stats extends React.Component {
                                     {this.state.splitCardTypes ? (
                                         <EventTypeSplitHistoryChart
                                             height={500}
+                                            theme={theme}
                                             labels={data.labels}
                                             requestInquiryHistory={
                                                 data.requestInquiryHistory
@@ -533,6 +538,7 @@ class Stats extends React.Component {
                                     ) : (
                                         <EventTypeHistoryChart
                                             height={500}
+                                            theme={theme}
                                             labels={data.labels}
                                             requestInquiryHistory={
                                                 data.requestInquiryHistory
@@ -567,6 +573,7 @@ class Stats extends React.Component {
                                     {this.state.displayTransactionAmount ? (
                                         <CategoryTransactionHistoryChart
                                             height={500}
+                                            theme={theme}
                                             labels={data.labels}
                                             transactionType={
                                                 this.state
@@ -580,6 +587,7 @@ class Stats extends React.Component {
                                     ) : (
                                         <CategoryCountHistoryChart
                                             height={500}
+                                            theme={theme}
                                             labels={data.labels}
                                             categories={this.props.categories}
                                             categoryCountHistory={
@@ -638,8 +646,6 @@ class Stats extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        theme: state.options.theme,
-
         user: state.user.user,
         accounts: state.accounts.accounts,
         selectedAccount: state.accounts.selectedAccount,
@@ -676,5 +682,5 @@ const mapDispatchToProps = dispatch => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(Stats)
+    withTheme()(translate("translations")(Stats))
 );

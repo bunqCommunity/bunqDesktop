@@ -10,7 +10,7 @@ export default props => {
         ...props
     };
 
-    const barChartInfo = (id, showAxis = false, changes = {}) => {
+    const barChartInfo = (showAxis = false, changes = {}) => {
         return {
             stacked: true,
             display: showAxis,
@@ -20,6 +20,7 @@ export default props => {
                 display: showAxis
             },
             ticks: {
+                fontColor: props.theme.palette.text.primary,
                 beginAtZero: true,
                 callback: value => {
                     // only show integer values
@@ -50,7 +51,7 @@ export default props => {
             hoverBorderColor: category.color
         });
         // add to y axes
-        yAxes.push(barChartInfo(category.id, firstItem));
+        yAxes.push(barChartInfo(firstItem));
 
         firstItem = false;
     });
@@ -67,6 +68,11 @@ export default props => {
             enabled: true,
             mode: "index"
         },
+        legend: {
+            labels: {
+                fontColor: props.theme.palette.text.primary
+            }
+        },
         scales: {
             xAxes: [
                 {
@@ -75,6 +81,9 @@ export default props => {
                     gridLines: {
                         display: true
                     },
+                    ticks: {
+                        fontColor: props.theme.palette.text.primary
+                    },
                     labels: props.labels
                 }
             ],
@@ -82,7 +91,7 @@ export default props => {
         }
     };
 
-    if(yAxes.length === 0){
+    if (yAxes.length === 0) {
         return null;
     }
 

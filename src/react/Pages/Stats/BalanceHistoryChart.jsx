@@ -2,12 +2,7 @@ import React from "react";
 import { Bar } from "react-chartjs-2";
 import {
     balanceColor,
-    bunqMeTabColor,
-    eventCountColor,
-    masterCardActionColor,
-    paymentColor,
-    requestInquiryColor,
-    requestResponseColor
+    eventCountColor
 } from "./Colors";
 
 export default props => {
@@ -58,6 +53,11 @@ export default props => {
             enabled: true,
             mode: "index"
         },
+        legend: {
+            labels: {
+                fontColor: props.theme.palette.text.primary
+            }
+        },
         scales: {
             xAxes: [
                 {
@@ -66,7 +66,10 @@ export default props => {
                     gridLines: {
                         display: true
                     },
-                    labels: props.labels
+                    labels: props.labels,
+                    ticks: {
+                        fontColor: props.theme.palette.text.primary
+                    }
                 }
             ],
             yAxes: [
@@ -83,6 +86,7 @@ export default props => {
                         color: "rgb(255, 99, 132, 70)"
                     },
                     ticks: {
+                        fontColor: props.theme.palette.text.primary,
                         beginAtZero: true
                     }
                 },
@@ -100,6 +104,7 @@ export default props => {
                         color: "rgb(54, 162, 235, 70)"
                     },
                     ticks: {
+                        fontColor: props.theme.palette.text.primary,
                         beginAtZero: true,
                         callback: value => {
                             // only show integer values

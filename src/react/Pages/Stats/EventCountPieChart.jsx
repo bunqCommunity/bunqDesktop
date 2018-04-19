@@ -54,7 +54,10 @@ export default props => {
 
     const pieChartOptions = {
         legend: {
-            position: "top"
+            position: "top",
+            labels: {
+                fontColor: props.theme.palette.text.primary
+            }
         }
     };
 
