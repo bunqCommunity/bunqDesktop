@@ -10,7 +10,7 @@ export default props => {
         ...props
     };
 
-    const barChartInfo = (id, showAxis = false, changes = {}) => {
+    const barChartInfo = (showAxis = false, changes = {}) => {
         return {
             stacked: true,
             display: showAxis,
@@ -20,6 +20,7 @@ export default props => {
                 display: showAxis
             },
             ticks: {
+                fontColor: props.theme.palette.text.primary,
                 beginAtZero: true,
                 callback: value => {
                     // only show integer values
@@ -32,25 +33,30 @@ export default props => {
         };
     };
 
-    const dataSets = [];
+    let dataSets = [];
     const yAxes = [];
     let firstItem = true;
-    Object.keys(props.categoryCountHistory).forEach(categoryKey => {
-        const categoryCount = props.categoryCountHistory[categoryKey];
+    Object.keys(props.categoryTransactionHistory).forEach(categoryKey => {
+        const categoryHistory = props.categoryTransactionHistory[categoryKey];
         const category = props.categories[categoryKey];
 
-        // add data set for this category
-        dataSets.push({
+        const datasetTemplate = {
             yAxesID: category.id,
             label: category.label,
-            data: categoryCount,
             backgroundColor: category.color,
             borderColor: category.color,
             hoverBackgroundColor: category.color,
             hoverBorderColor: category.color
+        };
+
+        dataSets.push({
+            ...datasetTemplate,
+            stack: props.transactionType,
+            data: categoryHistory[props.transactionType]
         });
+
         // add to y axes
-        yAxes.push(barChartInfo(category.id, firstItem));
+        yAxes.push(barChartInfo(firstItem));
 
         firstItem = false;
     });
@@ -67,6 +73,11 @@ export default props => {
             enabled: true,
             mode: "index"
         },
+        legend: {
+            labels: {
+                fontColor: props.theme.palette.text.primary
+            }
+        },
         scales: {
             xAxes: [
                 {
@@ -75,6 +86,9 @@ export default props => {
                     gridLines: {
                         display: true
                     },
+                    ticks: {
+                        fontColor: props.theme.palette.text.primary
+                    },
                     labels: props.labels
                 }
             ],
@@ -82,7 +96,7 @@ export default props => {
         }
     };
 
-    if(yAxes.length === 0){
+    if (yAxes.length === 0) {
         return null;
     }
 
