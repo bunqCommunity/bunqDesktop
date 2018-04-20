@@ -11,7 +11,7 @@ import {
     paymentColor,
     requestInquiryColor,
     requestResponseColor
-} from "./Colors";
+} from "../Colors";
 
 export default props => {
     const defaultOptions = {
@@ -48,7 +48,7 @@ export default props => {
     const dataSets = [
         {
             label: "Payments",
-            data: props.paymentHistory,
+            data: props.paymentTransactionHistory,
             backgroundColor: paymentColor,
             borderColor: paymentColor,
             hoverBackgroundColor: paymentColor,
@@ -56,7 +56,7 @@ export default props => {
         },
         {
             label: "Apple Pay",
-            data: props.applePayPaymentCountHistory,
+            data: props.applePayPaymentTransactionHistory,
             backgroundColor: applePayPaymentColor,
             borderColor: applePayPaymentColor,
             hoverBackgroundColor: applePayPaymentColor,
@@ -64,7 +64,7 @@ export default props => {
         },
         {
             label: "Tap & Pay",
-            data: props.tapAndPayPaymentCountHistory,
+            data: props.tapAndPayPaymentTransactionHistory,
             backgroundColor: tapAndPayPaymentColor,
             borderColor: tapAndPayPaymentColor,
             hoverBackgroundColor: tapAndPayPaymentColor,
@@ -72,7 +72,7 @@ export default props => {
         },
         {
             label: "Sent Requests",
-            data: props.requestInquiryHistory,
+            data: props.requestInquiryTransactionHistory,
             backgroundColor: requestInquiryColor,
             borderColor: requestInquiryColor,
             hoverBackgroundColor: requestInquiryColor,
@@ -80,7 +80,7 @@ export default props => {
         },
         {
             label: "Received Requests",
-            data: props.requestResponseHistory,
+            data: props.requestResponseTransactionHistory,
             backgroundColor: requestResponseColor,
             borderColor: requestResponseColor,
             hoverBackgroundColor: requestResponseColor,
@@ -88,7 +88,7 @@ export default props => {
         },
         {
             label: "MasterCard",
-            data: props.masterCardPaymentCountHistory,
+            data: props.masterCardPaymentTransactionHistory,
             backgroundColor: masterCardPaymentColor,
             borderColor: masterCardPaymentColor,
             hoverBackgroundColor: masterCardPaymentColor,
@@ -96,7 +96,7 @@ export default props => {
         },
         {
             label: "Maestro",
-            data: props.maestroPaymentCountHistory,
+            data: props.maestroPaymentTransactionHistory,
             backgroundColor: maestroPaymentColor,
             borderColor: maestroPaymentColor,
             hoverBackgroundColor: maestroPaymentColor,
@@ -104,7 +104,7 @@ export default props => {
         },
         {
             label: "bunq.me Tabs",
-            data: props.bunqMeTabHistory,
+            data: props.bunqMeTabTransactionHistory,
             backgroundColor: bunqMeTabColor,
             borderColor: bunqMeTabColor,
             hoverBackgroundColor: bunqMeTabColor,

@@ -16,16 +16,18 @@ import LoadOlderButton from "../../Components/LoadOlderButton";
 import ClearBtn from "../../Components/FilterComponents/ClearFilter";
 import FilterDrawer from "../../Components/FilterComponents/FilterDrawer";
 
-import EventCountPieChart from "./EventCountPieChart";
-import EventSplitCountPieChart from "./EventSplitCountPieChart";
+import EventCountPieChart from "./Chart/EventCountPieChart";
+import EventSplitCountPieChart from "./Chart/EventSplitCountPieChart";
 
-import CategoryCountPieChart from "./CategoryCountPieChart";
-import CategoryCountHistoryChart from "./CategoryCountHistoryChart";
+import CategoryCountPieChart from "./Chart/CategoryCountPieChart";
+import CategoryCountHistoryChart from "./Chart/CategoryCountHistoryChart";
 
-import CategoryTransactionHistoryChart from "./CategoryTransactionHistoryChart";
+import CategoryTransactionHistoryChart from "./Chart/CategoryTransactionHistoryChart";
 
-import EventTypeHistoryChart from "./EventTypeHistoryChart";
-import EventTypeSplitHistoryChart from "./EventTypeSplitHistoryChart";
+import EventTypeTransactionHistoryChart from "./Chart/EventTypeTransactionHistoryChart";
+import EventTypeSplitTransactionHistoryChart from "./Chart/EventTypeSplitTransactionHistoryChart";
+import EventTypeHistoryChart from "./Chart/EventTypeHistoryChart";
+import EventTypeSplitHistoryChart from "./Chart/EventTypeSplitHistoryChart";
 
 const StatsWorker = require("../../WebWorkers/stats.worker.js");
 
@@ -52,7 +54,7 @@ class Stats extends React.Component {
             splitCardTypes: true,
 
             // transaction amount vs event count
-            displayTransactionAmount: true,
+            displayTransactionAmount: false,
 
             // total, sent or received amount setting
             categoryTransactionType: "total"
@@ -175,7 +177,7 @@ class Stats extends React.Component {
     };
 
     render() {
-        const { t, theme} = this.props;
+        const { t, theme } = this.props;
 
         const data =
             this.state.parsedData !== false
@@ -187,16 +189,27 @@ class Stats extends React.Component {
                       categoryTransactionHistory: {},
                       eventCountHistory: [],
 
+                      // event count
                       requestInquiryHistory: [],
                       requestResponseHistory: [],
                       bunqMeTabHistory: [],
                       paymentHistory: [],
-
                       masterCardActionHistory: [],
                       maestroPaymentCountHistory: [],
                       tapAndPayPaymentCountHistory: [],
                       applePayPaymentCountHistory: [],
-                      masterCardPaymentCountHistory: []
+                      masterCardPaymentCountHistory: [],
+
+                      // event transaction amount
+                      paymentTransactionHistory: [],
+                      requestInquiryTransactionHistory: [],
+                      requestResponseTransactionHistory: [],
+                      bunqMeTabTransactionHistory: [],
+                      masterCardActionTransactionHistory: [],
+                      masterCardPaymentTransactionHistory: [],
+                      tapAndPayPaymentTransactionHistory: [],
+                      maestroPaymentTransactionHistory: [],
+                      applePayPaymentTransactionHistory: []
                   };
 
         const eventCountStats = (
@@ -365,6 +378,109 @@ class Stats extends React.Component {
             </Grid>
         );
 
+        const eventHistoryCharts = (
+            <Paper>
+                <ChartTitle>
+                    {this.state.displayTransactionAmount ? (
+                        "Event transaction history"
+                    ) : (
+                        "Event history count"
+                    )}
+                </ChartTitle>
+
+                <div>
+                    {this.state.splitCardTypes ? this.state
+                        .displayTransactionAmount ? (
+                        <EventTypeSplitTransactionHistoryChart
+                            height={500}
+                            theme={theme}
+                            labels={data.labels}
+                            requestInquiryTransactionHistory={
+                                data.requestInquiryTransactionHistory
+                            }
+                            requestResponseTransactionHistory={
+                                data.requestResponseTransactionHistory
+                            }
+                            bunqMeTabTransactionHistory={
+                                data.bunqMeTabTransactionHistory
+                            }
+                            paymentTransactionHistory={
+                                data.paymentTransactionHistory
+                            }
+                            masterCardActionTransactionHistory={
+                                data.masterCardActionTransactionHistory
+                            }
+                            maestroPaymentTransactionHistory={
+                                data.maestroPaymentTransactionHistory
+                            }
+                            tapAndPayPaymentTransactionHistory={
+                                data.tapAndPayPaymentTransactionHistory
+                            }
+                            applePayPaymentTransactionHistory={
+                                data.applePayPaymentTransactionHistory
+                            }
+                        />
+                    ) : (
+                        <EventTypeSplitHistoryChart
+                            height={500}
+                            theme={theme}
+                            labels={data.labels}
+                            requestInquiryHistory={data.requestInquiryHistory}
+                            requestResponseHistory={data.requestResponseHistory}
+                            bunqMeTabHistory={data.bunqMeTabHistory}
+                            paymentHistory={data.paymentHistory}
+                            masterCardPaymentCountHistory={
+                                data.masterCardPaymentCountHistory
+                            }
+                            maestroPaymentCountHistory={
+                                data.maestroPaymentCountHistory
+                            }
+                            tapAndPayPaymentCountHistory={
+                                data.tapAndPayPaymentCountHistory
+                            }
+                            applePayPaymentCountHistory={
+                                data.applePayPaymentCountHistory
+                            }
+                        />
+                    ) : this.state.displayTransactionAmount ? (
+                        <EventTypeTransactionHistoryChart
+                            height={500}
+                            theme={theme}
+                            labels={data.labels}
+                            requestInquiryTransactionHistory={
+                                data.requestInquiryTransactionHistory
+                            }
+                            requestResponseTransactionHistory={
+                                data.requestResponseTransactionHistory
+                            }
+                            bunqMeTabTransactionHistory={
+                                data.bunqMeTabTransactionHistory
+                            }
+                            paymentTransactionHistory={
+                                data.paymentTransactionHistory
+                            }
+                            masterCardActionTransactionHistory={
+                                data.masterCardActionTransactionHistory
+                            }
+                        />
+                    ) : (
+                        <EventTypeHistoryChart
+                            height={500}
+                            theme={theme}
+                            labels={data.labels}
+                            requestInquiryHistory={data.requestInquiryHistory}
+                            requestResponseHistory={data.requestResponseHistory}
+                            bunqMeTabHistory={data.bunqMeTabHistory}
+                            paymentHistory={data.paymentHistory}
+                            masterCardActionHistory={
+                                data.masterCardActionHistory
+                            }
+                        />
+                    )}
+                </div>
+            </Paper>
+        );
+
         return (
             <Grid container spacing={16}>
                 <Helmet>
@@ -503,60 +619,7 @@ class Stats extends React.Component {
                 <Grid item xs={12} sm={8} md={9}>
                     <Grid container spacing={16}>
                         <Grid item xs={12}>
-                            <Paper>
-                                <ChartTitle>Event history count</ChartTitle>
-
-                                <div>
-                                    {this.state.splitCardTypes ? (
-                                        <EventTypeSplitHistoryChart
-                                            height={500}
-                                            theme={theme}
-                                            labels={data.labels}
-                                            requestInquiryHistory={
-                                                data.requestInquiryHistory
-                                            }
-                                            requestResponseHistory={
-                                                data.requestResponseHistory
-                                            }
-                                            bunqMeTabHistory={
-                                                data.bunqMeTabHistory
-                                            }
-                                            paymentHistory={data.paymentHistory}
-                                            masterCardPaymentCountHistory={
-                                                data.masterCardPaymentCountHistory
-                                            }
-                                            maestroPaymentCountHistory={
-                                                data.maestroPaymentCountHistory
-                                            }
-                                            tapAndPayPaymentCountHistory={
-                                                data.tapAndPayPaymentCountHistory
-                                            }
-                                            applePayPaymentCountHistory={
-                                                data.applePayPaymentCountHistory
-                                            }
-                                        />
-                                    ) : (
-                                        <EventTypeHistoryChart
-                                            height={500}
-                                            theme={theme}
-                                            labels={data.labels}
-                                            requestInquiryHistory={
-                                                data.requestInquiryHistory
-                                            }
-                                            requestResponseHistory={
-                                                data.requestResponseHistory
-                                            }
-                                            bunqMeTabHistory={
-                                                data.bunqMeTabHistory
-                                            }
-                                            paymentHistory={data.paymentHistory}
-                                            masterCardActionHistory={
-                                                data.masterCardActionHistory
-                                            }
-                                        />
-                                    )}
-                                </div>
-                            </Paper>
+                            {eventHistoryCharts}
                         </Grid>
 
                         <Grid item xs={12}>

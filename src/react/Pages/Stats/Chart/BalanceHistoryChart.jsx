@@ -3,7 +3,7 @@ import { Bar } from "react-chartjs-2";
 import {
     balanceColor,
     eventCountColor
-} from "./Colors";
+} from "../Colors";
 
 export default props => {
     const defaultOptions = {

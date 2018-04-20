@@ -347,12 +347,22 @@ const getData = (
     let requestInquiryCountHistory = [];
     let requestResponseCountHistory = [];
     let bunqMeTabCountHistory = [];
-    // different card payment types count history
     let masterCardActionCountHistory = [];
     let masterCardPaymentCountHistory = [];
     let tapAndPayPaymentCountHistory = [];
     let maestroPaymentCountHistory = [];
     let applePayPaymentCountHistory = [];
+
+    // individual transaction history
+    let paymentTransactionHistory = [];
+    let requestInquiryTransactionHistory = [];
+    let requestResponseTransactionHistory = [];
+    let bunqMeTabTransactionHistory = [];
+    let masterCardActionTransactionHistory = [];
+    let masterCardPaymentTransactionHistory = [];
+    let tapAndPayPaymentTransactionHistory = [];
+    let maestroPaymentTransactionHistory = [];
+    let applePayPaymentTransactionHistory = [];
 
     // sort all events by date first
     const sortedEvents = events.sort((a, b) => {
@@ -407,8 +417,19 @@ const getData = (
                 ))
         );
 
-
         const timescaleInfo = {
+            masterCardAction: 0,
+            requestResponse: 0,
+            requestInquiry: 0,
+            bunqMeTab: 0,
+            payment: 0,
+
+            masterCardPayment: 0,
+            maestroPayment: 0,
+            tapAndPayPayment: 0,
+            applePayPayment: 0
+        };
+        const timescaleTransactionInfo = {
             masterCardAction: 0,
             requestResponse: 0,
             requestInquiry: 0,
@@ -425,9 +446,13 @@ const getData = (
         dataItem.data.map(item => {
             // increment this type to keep track of the different types
             timescaleInfo[item.type]++;
+            // add the change to total
+            timescaleTransactionInfo[item.type] += item.change;
 
             if (item.type === "masterCardAction") {
                 timescaleInfo[item.subType]++;
+                // add the subtype to total
+                timescaleTransactionInfo[item.subType] += item.change;
             }
 
             // increment the category count for this timescale
@@ -511,10 +536,10 @@ const getData = (
                 // count the events for this timescale
                 eventCountHistory.push(dataItem.data.length);
                 // update the individual counts
+                paymentCountHistory.push(timescaleInfo.payment);
                 requestInquiryCountHistory.push(timescaleInfo.requestInquiry);
                 requestResponseCountHistory.push(timescaleInfo.requestResponse);
                 bunqMeTabCountHistory.push(timescaleInfo.bunqMeTab);
-                paymentCountHistory.push(timescaleInfo.payment);
 
                 // masterCardAction individual counts per type
                 masterCardActionCountHistory.push(
@@ -527,6 +552,37 @@ const getData = (
                 applePayPaymentCountHistory.push(timescaleInfo.applePayPayment);
                 masterCardPaymentCountHistory.push(
                     timescaleInfo.masterCardPayment
+                );
+
+                // update the individual counts
+                paymentTransactionHistory.push(
+                    timescaleTransactionInfo.payment
+                );
+                requestInquiryTransactionHistory.push(
+                    timescaleTransactionInfo.requestInquiry
+                );
+                requestResponseTransactionHistory.push(
+                    timescaleTransactionInfo.requestResponse
+                );
+                bunqMeTabTransactionHistory.push(
+                    timescaleTransactionInfo.bunqMeTab
+                );
+
+                // masterCardAction individual counts per type
+                masterCardActionTransactionHistory.push(
+                    timescaleTransactionInfo.masterCardAction
+                );
+                masterCardPaymentTransactionHistory.push(
+                    timescaleTransactionInfo.maestroPayment
+                );
+                tapAndPayPaymentTransactionHistory.push(
+                    timescaleTransactionInfo.tapAndPayPayment
+                );
+                maestroPaymentTransactionHistory.push(
+                    timescaleTransactionInfo.masterCardPayment
+                );
+                applePayPaymentTransactionHistory.push(
+                    timescaleTransactionInfo.applePayPayment
                 );
 
                 // push the label here so we can ignore certain days if required
@@ -572,11 +628,21 @@ const getData = (
         bunqMeTabHistory: bunqMeTabCountHistory.reverse(),
         paymentHistory: paymentCountHistory.reverse(),
         masterCardActionHistory: masterCardActionCountHistory.reverse(),
-
         maestroPaymentCountHistory: maestroPaymentCountHistory.reverse(),
         tapAndPayPaymentCountHistory: tapAndPayPaymentCountHistory.reverse(),
         applePayPaymentCountHistory: applePayPaymentCountHistory.reverse(),
-        masterCardPaymentCountHistory: masterCardPaymentCountHistory.reverse()
+        masterCardPaymentCountHistory: masterCardPaymentCountHistory.reverse(),
+
+        // individual transaction amounts
+        paymentTransactionHistory: paymentTransactionHistory.reverse(),
+        requestInquiryTransactionHistory: requestInquiryTransactionHistory.reverse(),
+        requestResponseTransactionHistory: requestResponseTransactionHistory.reverse(),
+        bunqMeTabTransactionHistory: bunqMeTabTransactionHistory.reverse(),
+        masterCardActionTransactionHistory: masterCardActionTransactionHistory.reverse(),
+        masterCardPaymentTransactionHistory: masterCardPaymentTransactionHistory.reverse(),
+        tapAndPayPaymentTransactionHistory: tapAndPayPaymentTransactionHistory.reverse(),
+        maestroPaymentTransactionHistory: maestroPaymentTransactionHistory.reverse(),
+        applePayPaymentTransactionHistory: applePayPaymentTransactionHistory.reverse()
     };
 };
 

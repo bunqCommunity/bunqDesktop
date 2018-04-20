@@ -7,7 +7,7 @@ import {
     paymentColor,
     requestInquiryColor,
     requestResponseColor
-} from "./Colors";
+} from "../Colors";
 
 export default props => {
     const defaultOptions = {
@@ -23,7 +23,7 @@ export default props => {
         datasets: [
             {
                 label: "Payments",
-                data: props.paymentHistory,
+                data: props.paymentTransactionHistory,
                 backgroundColor: paymentColor,
                 borderColor: paymentColor,
                 hoverBackgroundColor: paymentColor,
@@ -31,7 +31,7 @@ export default props => {
             },
             {
                 label: "Card Payments",
-                data: props.masterCardActionHistory,
+                data: props.masterCardActionTransactionHistory,
                 backgroundColor: masterCardActionColor,
                 borderColor: masterCardActionColor,
                 hoverBackgroundColor: masterCardActionColor,
@@ -39,7 +39,7 @@ export default props => {
             },
             {
                 label: "Sent Requests",
-                data: props.requestInquiryHistory,
+                data: props.requestInquiryTransactionHistory,
                 backgroundColor: requestInquiryColor,
                 borderColor: requestInquiryColor,
                 hoverBackgroundColor: requestInquiryColor,
@@ -47,7 +47,7 @@ export default props => {
             },
             {
                 label: "Received Requests",
-                data: props.requestResponseHistory,
+                data: props.requestResponseTransactionHistory,
                 backgroundColor: requestResponseColor,
                 borderColor: requestResponseColor,
                 hoverBackgroundColor: requestResponseColor,
@@ -55,7 +55,7 @@ export default props => {
             },
             {
                 label: "bunq.me Tabs",
-                data: props.bunqMeTabHistory,
+                data: props.bunqMeTabTransactionHistory,
                 backgroundColor: bunqMeTabColor,
                 borderColor: bunqMeTabColor,
                 hoverBackgroundColor: bunqMeTabColor,
