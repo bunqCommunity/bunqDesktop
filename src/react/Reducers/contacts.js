@@ -67,16 +67,40 @@ export default function reducer(state = defaultState, action) {
                 loading: false
             };
         case "CONTACTS_CLEAR":
-            // remove the data
-            if (action.payload.BunqJSClient) {
-                action.payload.BunqJSClient.Session
-                    .asyncStorageRemove(STORED_CONTACTS)
-                    .then(() => {})
-                    .catch(() => {});
+            let newState = state;
+
+            if (action.payload.type) {
+                // reset this type to empty array
+                newState.contacts[action.payload.type] = [];
+                newState.last_update = new Date().getTime();
+
+                // store the data if we have access to the bunqjsclient
+                if (action.payload.BunqJSClient) {
+                    action.payload.BunqJSClient.Session
+                        .storeEncryptedData(
+                            {
+                                items: newState.contacts
+                            },
+                            STORED_CONTACTS
+                        )
+                        .then(() => {})
+                        .catch(() => {});
+                }
+            } else {
+                newState = defaultState;
+
+                // remove the data completely
+                if (action.payload.BunqJSClient) {
+                    action.payload.BunqJSClient.Session
+                        .asyncStorageRemove(STORED_CONTACTS)
+                        .then(() => {})
+                        .catch(() => {});
+                }
             }
 
             return {
-                ...defaultState
+                ...state,
+                ...newState
             };
     }
     return state;

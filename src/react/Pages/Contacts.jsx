@@ -1,10 +1,8 @@
 import React from "react";
-import axios from "axios";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import { translate } from "react-i18next";
 import { ipcRenderer } from "electron";
-import Logger from "../Helpers/Logger";
 import Grid from "material-ui/Grid";
 import Button from "material-ui/Button";
 import Divider from "material-ui/Divider";
@@ -30,6 +28,7 @@ import TranslateButton from "../Components/TranslationHelpers/Button";
 import { openSnackbar } from "../Actions/snackbar";
 import {
     contactInfoUpdateGoogle,
+    contactInfoUpdateOffice365,
     contactsClear,
     contactsSetInfoType
 } from "../Actions/contacts";
@@ -55,57 +54,53 @@ class Contacts extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            accessToken: false,
-            error: false,
-            success: false,
+            googleAccessToken: false,
+            office365AccessToken: false,
 
-            contacts: []
+            contacts: {}
         };
 
-        ipcRenderer.on("received-oauth-access-token", this.handleCallback);
+        ipcRenderer.on(
+            "received-oauth-google-access-token",
+            this.handleGoogleCallback
+        );
+        ipcRenderer.on(
+            "received-oauth-office-365-access-token",
+            this.handleOffice365Callback
+        );
         ipcRenderer.on("received-oauth-failed", this.handleError);
     }
 
     handleError = event => {
         const failedMessage = this.props.t(
-            "Failed to validate the Google authentication tokens"
+            "Failed to validate the authentication tokens"
         );
 
         this.props.openSnackbar(failedMessage);
     };
 
-    handleCallback = (event, accessToken) => {
-        const failedMessage = this.props.t(
-            "Failed to validate the Google authentication tokens"
-        );
-
-        axios
-            .get(
-                `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`
-            )
-            .then(response => {
-                const responseData = response.data;
-
-                this.setState({
-                    accessToken: accessToken,
-                    success: true
-                });
-            })
-            .catch(error => {
-                this.props.openSnackbar(failedMessage);
-                if (error.response) {
-                    Logger.error(error.response.data);
-                }
-
-                this.setState({
-                    accessToken: false,
-                    error: true
-                });
-            });
+    openGoogleConsentScreen = event => {
+        ipcRenderer.send("open-google-oauth");
+    };
+    handleGoogleCallback = (event, accessToken) => {
+        this.setState({
+            googleAccessToken: accessToken
+        });
+    };
+    getGoogleContacts = event => {
+        this.props.contactInfoUpdateGoogle(this.state.googleAccessToken);
     };
 
-    getContacts = event => {
-        this.props.contactInfoUpdateGoogle(this.state.accessToken);
+    openOfficeConsentScreen = event => {
+        ipcRenderer.send("open-office-365-oauth");
+    };
+    handleOffice365Callback = (event, accessToken) => {
+        this.setState({
+            office365AccessToken: accessToken
+        });
+    };
+    getOfficeContacts = event => {
+        this.props.contactInfoUpdateOffice365(this.state.office365AccessToken);
     };
 
     removeContact = (sourceType, contactKey, itemKey, itemType) => event => {
@@ -132,89 +127,96 @@ class Contacts extends React.Component {
             }
 
             // set the new contacts
-            this.props.contactsSetInfoType(contacts, "GoogleContacts");
+            this.props.contactsSetInfoType(contacts, contactKey);
         }
-    };
-
-    openConsentScreen = event => {
-        ipcRenderer.send("open-google-oauth");
     };
 
     render() {
         const { t, contacts } = this.props;
 
-        let googleContactItems = [];
-        if (contacts["GoogleContacts"]) {
-            googleContactItems = contacts[
-                "GoogleContacts"
-            ].map((contact, key) => {
-                return (
-                    <React.Fragment>
-                        {contact.name ? (
-                            <ListItem key={key}>
-                                <ListItemIcon>
-                                    <Avatar>
-                                        <PersonIcon />
-                                    </Avatar>
-                                </ListItemIcon>
-                                <ListItemText primary={contact.name} />
-                            </ListItem>
-                        ) : null}
-                        {contact.emails ? (
-                            contact.emails.map((email, key2) => {
-                                return (
-                                    <ListItem key={key2}>
-                                        <ListItemIcon>
-                                            <Avatar>
-                                                <EmailIcon />
-                                            </Avatar>
-                                        </ListItemIcon>
-                                        <ListItemText primary={email} />
-                                        <ListItemSecondaryAction>
-                                            <IconButton
-                                                onClick={this.removeContact(
-                                                    "GoogleContacts",
-                                                    key,
-                                                    key2,
-                                                    "EMAIL"
-                                                )}
-                                            >
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </ListItemSecondaryAction>
-                                    </ListItem>
-                                );
-                            })
-                        ) : null}
-                        {contact.phoneNumbers ? (
-                            contact.phoneNumbers.map((phoneNumber, key2) => {
-                                return (
-                                    <ListItem key={key2}>
-                                        <ListItemIcon>
-                                            <Avatar>
-                                                <PhoneIcon />
-                                            </Avatar>
-                                        </ListItemIcon>
-                                        <ListItemText primary={phoneNumber} />
-                                        <ListItemSecondaryAction>
-                                            <IconButton
-                                                onClick={this.removeContact(
-                                                    "GoogleContacts",
-                                                    key,
-                                                    key2,
-                                                    "PHONE"
-                                                )}
-                                            >
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </ListItemSecondaryAction>
-                                    </ListItem>
-                                );
-                            })
-                        ) : null}
-                        <Divider />
-                    </React.Fragment>
-                );
+        let contactItems = {
+            GoogleContacts: [],
+            Office365: []
+        };
+        if (contacts) {
+            Object.keys(contacts).map(contactProvider => {
+                const contactList = contacts[contactProvider];
+
+                contactItems[
+                    contactProvider
+                ] = contactList.map((contact, key) => {
+                    return (
+                        <React.Fragment>
+                            {contact.name ? (
+                                <ListItem key={key}>
+                                    <ListItemIcon>
+                                        <Avatar>
+                                            <PersonIcon />
+                                        </Avatar>
+                                    </ListItemIcon>
+                                    <ListItemText primary={contact.name} />
+                                </ListItem>
+                            ) : null}
+                            {contact.emails ? (
+                                contact.emails.map((email, key2) => {
+                                    return (
+                                        <ListItem key={key2}>
+                                            <ListItemIcon>
+                                                <Avatar>
+                                                    <EmailIcon />
+                                                </Avatar>
+                                            </ListItemIcon>
+                                            <ListItemText primary={email} />
+                                            <ListItemSecondaryAction>
+                                                <IconButton
+                                                    onClick={this.removeContact(
+                                                        contactProvider,
+                                                        key,
+                                                        key2,
+                                                        "EMAIL"
+                                                    )}
+                                                >
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </ListItemSecondaryAction>
+                                        </ListItem>
+                                    );
+                                })
+                            ) : null}
+                            {contact.phoneNumbers ? (
+                                contact.phoneNumbers.map(
+                                    (phoneNumber, key2) => {
+                                        return (
+                                            <ListItem key={key2}>
+                                                <ListItemIcon>
+                                                    <Avatar>
+                                                        <PhoneIcon />
+                                                    </Avatar>
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={phoneNumber}
+                                                />
+                                                <ListItemSecondaryAction>
+                                                    <IconButton
+                                                        onClick={this.removeContact(
+                                                            contactProvider,
+                                                            key,
+                                                            key2,
+                                                            "PHONE"
+                                                        )}
+                                                    >
+                                                        <DeleteIcon />
+                                                    </IconButton>
+                                                </ListItemSecondaryAction>
+                                            </ListItem>
+                                        );
+                                    }
+                                )
+                            ) : null}
+                            <Divider />
+                        </React.Fragment>
+                    );
+                });
             });
         }
 
@@ -224,7 +226,7 @@ class Contacts extends React.Component {
                     <title>{`BunqDesktop - ${t("Contacts")}`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={10} md={8} lg={6}>
+                <Grid item xs={12} sm={10} md={6}>
                     <Paper>
                         <Grid container alignItems={"center"} spacing={8}>
                             <Grid item xs={12} sm={4} md={6} lg={8}>
@@ -242,30 +244,37 @@ class Contacts extends React.Component {
                                     color="secondary"
                                     style={styles.button}
                                     disabled={this.props.contactsLoading}
-                                    onClick={this.props.clearContacts}
+                                    onClick={() =>
+                                        this.props.clearContacts(
+                                            "GoogleContacts"
+                                        )}
                                 >
-                                    Clear contacts
+                                    Clear
                                 </TranslateButton>
                             </Grid>
 
                             <Grid item xs={6} sm={4} md={3} lg={2}>
-                                {this.state.accessToken ? (
-                                    <TranslateButton
+                                {this.state.googleAccessToken ? (
+                                    <Button
                                         variant="raised"
                                         color="primary"
                                         style={styles.button}
                                         disabled={this.props.contactsLoading}
-                                        onClick={this.getContacts}
+                                        onClick={this.getGoogleContacts}
                                     >
-                                        Import contacts
-                                    </TranslateButton>
+                                        {t("Import")}
+                                        <img
+                                            style={styles.google_logo}
+                                            src={"./images/google-logo.svg"}
+                                        />
+                                    </Button>
                                 ) : (
                                     <Button
                                         variant="raised"
                                         color="primary"
                                         style={styles.button}
                                         disabled={this.props.contactsLoading}
-                                        onClick={this.openConsentScreen}
+                                        onClick={this.openGoogleConsentScreen}
                                     >
                                         {t("Login")}
                                         <img
@@ -276,13 +285,91 @@ class Contacts extends React.Component {
                                 )}
                             </Grid>
                         </Grid>
-                        {googleContactItems.length > 0 ? (
+                        {contactItems["GoogleContacts"].length > 0 ? (
                             <List dense>
                                 <ListSubheader
-                                    primary={`${googleContactItems.length} contacts`}
+                                    primary={`${contactItems["GoogleContacts"]
+                                        .length} contacts`}
                                 />
                                 <Divider />
-                                {googleContactItems}
+                                {contactItems["GoogleContacts"]}
+                            </List>
+                        ) : (
+                            <TranslateTypography
+                                variant={"subheading"}
+                                style={styles.body}
+                            >
+                                No stored contacts
+                            </TranslateTypography>
+                        )}
+                    </Paper>
+                </Grid>
+
+                <Grid item xs={12} sm={10} md={6}>
+                    <Paper>
+                        <Grid container alignItems={"center"} spacing={8}>
+                            <Grid item xs={12} sm={4} md={6} lg={8}>
+                                <TranslateTypography
+                                    variant={"title"}
+                                    style={styles.title}
+                                >
+                                    Office 365 Contacts
+                                </TranslateTypography>
+                            </Grid>
+
+                            <Grid item xs={6} sm={4} md={3} lg={2}>
+                                <TranslateButton
+                                    variant="raised"
+                                    color="secondary"
+                                    style={styles.button}
+                                    disabled={this.props.contactsLoading}
+                                    onClick={() =>
+                                        this.props.clearContacts("Office365")}
+                                >
+                                    Clear
+                                </TranslateButton>
+                            </Grid>
+
+                            <Grid item xs={6} sm={4} md={3} lg={2}>
+                                {this.state.office365AccessToken ? (
+                                    <Button
+                                        variant="raised"
+                                        color="primary"
+                                        style={styles.button}
+                                        disabled={this.props.contactsLoading}
+                                        onClick={this.getOfficeContacts}
+                                    >
+                                        {t("Import")}
+                                        <img
+                                            style={styles.google_logo}
+                                            src={"./images/office-365-logo.svg"}
+                                        />
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        variant="raised"
+                                        color="primary"
+                                        style={styles.button}
+                                        disabled={this.props.contactsLoading}
+                                        onClick={this.openOfficeConsentScreen}
+                                    >
+                                        {t("Login")}
+                                        <img
+                                            style={styles.google_logo}
+                                            src={"./images/office-365-logo.svg"}
+                                        />
+                                    </Button>
+                                )}
+                            </Grid>
+                        </Grid>
+                        {contactItems["Office365"].length > 0 ? (
+                            <List dense>
+                                <ListSubheader
+                                    primary={`${contactItems["Office365"]
+                                        .length} contacts`}
+                                />
+                                <Divider />
+                                {contactItems["Office365"]}
                             </List>
                         ) : (
                             <TranslateTypography
@@ -312,9 +399,12 @@ const mapDispatchToProps = (dispatch, props) => {
     return {
         contactInfoUpdateGoogle: accessToken =>
             dispatch(contactInfoUpdateGoogle(BunqJSClient, accessToken)),
+        contactInfoUpdateOffice365: accessToken =>
+            dispatch(contactInfoUpdateOffice365(BunqJSClient, accessToken)),
         contactsSetInfoType: (contacts, type) =>
             dispatch(contactsSetInfoType(contacts, type, BunqJSClient)),
-        clearContacts: () => dispatch(contactsClear(BunqJSClient)),
+        clearContacts: (type = false) =>
+            dispatch(contactsClear(BunqJSClient, type)),
         openSnackbar: message => dispatch(openSnackbar(message))
     };
 };

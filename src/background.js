@@ -11,6 +11,7 @@ import registerShortcuts from "./helpers/shortcuts";
 import registerTouchBar from "./helpers/touchbar";
 import changePage from "./helpers/react_navigate";
 import settingsHelper from "./helpers/settings";
+import oauth from "./helpers/oauth";
 
 import i18n from "./i18n-background";
 import env from "./env";
@@ -29,28 +30,6 @@ ipcMain.on("change-settings-path", (event, newPath) => {
 });
 
 const userDataPath = app.getPath("userData");
-
-// google oauth settings
-const clientId =
-    "735593750948-9ktjprrnvb8l827d6216grhrctrismp4.apps.googleusercontent.com";
-const state = 123412341; // randomize?
-const responseType = "token";
-const redirectUrl = "http://localhost:1234/oauth2/callback";
-const scope = "https://www.googleapis.com/auth/contacts.readonly";
-
-// format the url
-const oauthGoogleUrl = url.format({
-    pathname: "//accounts.google.com/o/oauth2/v2/auth",
-    protocol: "https",
-    query: {
-        scope: scope,
-        included_granted_scopes: true,
-        state: state,
-        redirect_uri: redirectUrl,
-        response_type: responseType,
-        client_id: clientId
-    }
-});
 
 // hide/show different native menus based on env
 const setApplicationMenu = () => {
@@ -198,67 +177,8 @@ app.on("ready", () => {
         log.debug("suspend");
     });
 
-    ipcMain.on("open-google-oauth", event => {
-        const consentWindow = new BrowserWindow({
-            width: 900,
-            height: 750,
-            show: false,
-            modal: true,
-            parent: mainWindow
-        });
-        consentWindow.loadURL(oauthGoogleUrl);
-        consentWindow.show();
-
-        const handleUrl = receivedUrl => {
-            // get url data
-            const parsedUrl = url.parse(receivedUrl);
-
-            // check if we reached callbakc url
-            if (parsedUrl.hostname !== "localhost") {
-                // not a callback page
-                return;
-            }
-
-            // parse the fragment params
-            const params = {};
-            const regex = /([^&=]+)=([^&]*)/g;
-            let m;
-            while ((m = regex.exec(parsedUrl.hash))) {
-                params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
-                // Try to exchange the param values for an access token.
-            }
-
-            // check if we received an access token
-            if (params.access_token) {
-                // send data to renderer view
-                mainWindow.webContents.send(
-                    "received-oauth-access-token",
-                    params.access_token
-                );
-            } else {
-                mainWindow.webContents.send(
-                    "received-oauth-failed"
-                );
-            }
-            consentWindow.destroy();
-        };
-
-        // check if the page changed and we received a valid url
-        consentWindow.webContents.on("will-navigate", function(
-            event,
-            receivedUrl
-        ) {
-            handleUrl(receivedUrl);
-        });
-
-        consentWindow.webContents.on("did-get-redirect-request", function(
-            event,
-            oldUrl,
-            newUrl
-        ) {
-            handleUrl(newUrl);
-        });
-    });
+    // register oauth handlers
+    oauth(mainWindow);
 });
 
 app.on("window-all-closed", () => {
