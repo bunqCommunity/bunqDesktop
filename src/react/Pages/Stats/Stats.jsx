@@ -407,8 +407,8 @@ class Stats extends React.Component {
                             paymentTransactionHistory={
                                 data.paymentTransactionHistory
                             }
-                            masterCardActionTransactionHistory={
-                                data.masterCardActionTransactionHistory
+                            masterCardPaymentTransactionHistory={
+                                data.masterCardPaymentTransactionHistory
                             }
                             maestroPaymentTransactionHistory={
                                 data.maestroPaymentTransactionHistory

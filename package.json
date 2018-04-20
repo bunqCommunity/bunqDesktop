@@ -78,8 +78,7 @@
         "update-icons": "node tasks/generate_material_icons.js",
         "update-translations": "node tasks/update_translations.js",
         "update-release-files": "node tasks/update_release_files.js",
-        "add-contributer": "all-contributors add",
-        "fix-memory": "cross-env LIMIT=8192 increase-memory-limit"
+        "add-contributer": "all-contributors add"
     },
     "publish": null,
     "jest": {
