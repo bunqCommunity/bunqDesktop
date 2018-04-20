@@ -90,8 +90,7 @@ deploy:
     script: docker run -v $(pwd):$(pwd) -w $(pwd) snapcore/snapcraft sh -c "apt update && snapcraft push dist/bunqdesktop_*_amd64.snap --release stable"
     skip_cleanup: true
     on:
-      condition: $TRAVIS_OS_NAME == 'linux'
-      branch: master
+      condition: $TRAVIS_OS_NAME == 'linux' && $TRAVIS_BRANCH == 'master'
       tags: true
 
 after_success:
