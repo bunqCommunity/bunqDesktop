@@ -54,7 +54,7 @@ class Stats extends React.Component {
             splitCardTypes: true,
 
             // transaction amount vs event count
-            displayTransactionAmount: false,
+            displayTransactionAmount: true,
 
             // total, sent or received amount setting
             categoryTransactionType: "total"
