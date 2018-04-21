@@ -53,7 +53,7 @@ const DebugPage = CL(() =>
     import(/* webpackChunkName: "debug" */ "./Pages/DebugPage")
 );
 const Contacts = CL(() =>
-    import(/* webpackChunkName: "contacts" */ "./Pages/Contacts")
+    import(/* webpackChunkName: "contacts" */ "./Pages/Contacts/Contacts")
 );
 const Settings = CL(() =>
     import(/* webpackChunkName: "settings" */ "./Pages/Settings")

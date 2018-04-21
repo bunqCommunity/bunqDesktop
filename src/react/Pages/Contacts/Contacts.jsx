@@ -5,33 +5,20 @@ import { translate } from "react-i18next";
 import { ipcRenderer } from "electron";
 import Grid from "material-ui/Grid";
 import Button from "material-ui/Button";
-import Divider from "material-ui/Divider";
-import Avatar from "material-ui/Avatar";
 import Paper from "material-ui/Paper";
-import IconButton from "material-ui/IconButton";
-import List, {
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    ListSubheader,
-    ListItemSecondaryAction
-} from "material-ui/List";
 
-import PhoneIcon from "@material-ui/icons/Phone";
-import PersonIcon from "@material-ui/icons/Person";
-import EmailIcon from "@material-ui/icons/Email";
-import DeleteIcon from "@material-ui/icons/Delete";
+import TranslateTypography from "../../Components/TranslationHelpers/Typography";
+import TranslateButton from "../../Components/TranslationHelpers/Button";
 
-import TranslateTypography from "../Components/TranslationHelpers/Typography";
-import TranslateButton from "../Components/TranslationHelpers/Button";
-
-import { openSnackbar } from "../Actions/snackbar";
+import { openSnackbar } from "../../Actions/snackbar";
 import {
     contactInfoUpdateGoogle,
     contactInfoUpdateOffice365,
     contactsClear,
     contactsSetInfoType
-} from "../Actions/contacts";
+} from "../../Actions/contacts";
+
+import ContactList from "./ContactList";
 
 const styles = {
     title: {
@@ -44,7 +31,7 @@ const styles = {
     button: {
         width: "100%"
     },
-    google_logo: {
+    logo: {
         width: 20,
         marginLeft: 16
     }
@@ -56,6 +43,8 @@ class Contacts extends React.Component {
         this.state = {
             googleAccessToken: false,
             office365AccessToken: false,
+
+            shownContacts: {},
 
             contacts: {}
         };
@@ -103,6 +92,12 @@ class Contacts extends React.Component {
         this.props.contactInfoUpdateOffice365(this.state.office365AccessToken);
     };
 
+    toggleContactType = type => {
+        const shownContacts = this.state.shownContacts;
+        shownContacts[type] = !shownContacts[type];
+        this.setState({ shownContacts: shownContacts });
+    };
+
     removeContact = (sourceType, contactKey, itemKey, itemType) => event => {
         if (
             this.props.contacts[sourceType] &&
@@ -134,99 +129,29 @@ class Contacts extends React.Component {
     render() {
         const { t, contacts } = this.props;
 
-        let contactItems = {
-            GoogleContacts: [],
-            Office365: []
-        };
-        if (contacts) {
-            Object.keys(contacts).map(contactProvider => {
-                const contactList = contacts[contactProvider];
-
-                contactItems[
-                    contactProvider
-                ] = contactList.map((contact, key) => {
-                    return (
-                        <React.Fragment>
-                            {contact.name ? (
-                                <ListItem key={key}>
-                                    <ListItemIcon>
-                                        <Avatar>
-                                            <PersonIcon />
-                                        </Avatar>
-                                    </ListItemIcon>
-                                    <ListItemText primary={contact.name} />
-                                </ListItem>
-                            ) : null}
-                            {contact.emails ? (
-                                contact.emails.map((email, key2) => {
-                                    return (
-                                        <ListItem key={key2}>
-                                            <ListItemIcon>
-                                                <Avatar>
-                                                    <EmailIcon />
-                                                </Avatar>
-                                            </ListItemIcon>
-                                            <ListItemText primary={email} />
-                                            <ListItemSecondaryAction>
-                                                <IconButton
-                                                    onClick={this.removeContact(
-                                                        contactProvider,
-                                                        key,
-                                                        key2,
-                                                        "EMAIL"
-                                                    )}
-                                                >
-                                                    <DeleteIcon />
-                                                </IconButton>
-                                            </ListItemSecondaryAction>
-                                        </ListItem>
-                                    );
-                                })
-                            ) : null}
-                            {contact.phoneNumbers ? (
-                                contact.phoneNumbers.map(
-                                    (phoneNumber, key2) => {
-                                        return (
-                                            <ListItem key={key2}>
-                                                <ListItemIcon>
-                                                    <Avatar>
-                                                        <PhoneIcon />
-                                                    </Avatar>
-                                                </ListItemIcon>
-                                                <ListItemText
-                                                    primary={phoneNumber}
-                                                />
-                                                <ListItemSecondaryAction>
-                                                    <IconButton
-                                                        onClick={this.removeContact(
-                                                            contactProvider,
-                                                            key,
-                                                            key2,
-                                                            "PHONE"
-                                                        )}
-                                                    >
-                                                        <DeleteIcon />
-                                                    </IconButton>
-                                                </ListItemSecondaryAction>
-                                            </ListItem>
-                                        );
-                                    }
-                                )
-                            ) : null}
-                            <Divider />
-                        </React.Fragment>
-                    );
-                });
-            });
-        }
-
         return (
             <Grid container spacing={16} justify={"center"}>
                 <Helmet>
                     <title>{`BunqDesktop - ${t("Contacts")}`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={10} md={6}>
+                <Grid item xs={12} sm={10} md={6} lg={4}>
+                   <TranslateTypography variant={"headline"}>
+                       Contacts
+                   </TranslateTypography>
+                </Grid>
+
+                <Grid item xs={12} sm={10} md={6} lg={4}>
+                    <Paper>
+                        <Grid container alignItems={"center"} spacing={8}>
+                            <Grid item xs={6} sm={4} md={3} lg={2}>
+
+                            </Grid>
+                        </Grid>
+                    </Paper>
+                </Grid>
+
+                <Grid item xs={12} sm={10} md={6} lg={4}>
                     <Paper>
                         <Grid container alignItems={"center"} spacing={8}>
                             <Grid item xs={12} sm={4} md={6} lg={8}>
@@ -264,7 +189,7 @@ class Contacts extends React.Component {
                                     >
                                         {t("Import")}
                                         <img
-                                            style={styles.google_logo}
+                                            style={styles.logo}
                                             src={"./images/google-logo.svg"}
                                         />
                                     </Button>
@@ -278,34 +203,25 @@ class Contacts extends React.Component {
                                     >
                                         {t("Login")}
                                         <img
-                                            style={styles.google_logo}
+                                            style={styles.logo}
                                             src={"./images/google-logo.svg"}
                                         />
                                     </Button>
                                 )}
                             </Grid>
                         </Grid>
-                        {contactItems["GoogleContacts"].length > 0 ? (
-                            <List dense>
-                                <ListSubheader
-                                    primary={`${contactItems["GoogleContacts"]
-                                        .length} contacts`}
-                                />
-                                <Divider />
-                                {contactItems["GoogleContacts"]}
-                            </List>
-                        ) : (
-                            <TranslateTypography
-                                variant={"subheading"}
-                                style={styles.body}
-                            >
-                                No stored contacts
-                            </TranslateTypography>
-                        )}
+
+                        <ContactList
+                            contacts={contacts}
+                            contactType={"GoogleContacts"}
+                            shownContacts={this.state.shownContacts}
+                            removeContact={this.removeContact}
+                            toggleContactType={this.toggleContactType}
+                        />
                     </Paper>
                 </Grid>
 
-                <Grid item xs={12} sm={10} md={6}>
+                <Grid item xs={12} sm={10} md={6} lg={4}>
                     <Paper>
                         <Grid container alignItems={"center"} spacing={8}>
                             <Grid item xs={12} sm={4} md={6} lg={8}>
@@ -341,7 +257,7 @@ class Contacts extends React.Component {
                                     >
                                         {t("Import")}
                                         <img
-                                            style={styles.google_logo}
+                                            style={styles.logo}
                                             src={"./images/office-365-logo.svg"}
                                         />
                                     </Button>
@@ -355,30 +271,21 @@ class Contacts extends React.Component {
                                     >
                                         {t("Login")}
                                         <img
-                                            style={styles.google_logo}
+                                            style={styles.logo}
                                             src={"./images/office-365-logo.svg"}
                                         />
                                     </Button>
                                 )}
                             </Grid>
                         </Grid>
-                        {contactItems["Office365"].length > 0 ? (
-                            <List dense>
-                                <ListSubheader
-                                    primary={`${contactItems["Office365"]
-                                        .length} contacts`}
-                                />
-                                <Divider />
-                                {contactItems["Office365"]}
-                            </List>
-                        ) : (
-                            <TranslateTypography
-                                variant={"subheading"}
-                                style={styles.body}
-                            >
-                                No stored contacts
-                            </TranslateTypography>
-                        )}
+
+                        <ContactList
+                            contacts={contacts}
+                            contactType={"Office365"}
+                            shownContacts={this.state.shownContacts}
+                            removeContact={this.removeContact}
+                            toggleContactType={this.toggleContactType}
+                        />
                     </Paper>
                 </Grid>
             </Grid>
