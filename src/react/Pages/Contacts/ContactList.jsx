@@ -111,7 +111,7 @@ export default props => {
                     item
                     xs={12}
                     sm={6}
-                    style={{ padding: 12, marginLeft: 8 }}
+                    style={{ padding: 12 }}
                 >
                     <Typography variant={"subheading"}>
                         {`${contactList.length} ${t("contacts")}`}
