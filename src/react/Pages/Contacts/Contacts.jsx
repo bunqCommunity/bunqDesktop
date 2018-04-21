@@ -135,23 +135,35 @@ class Contacts extends React.Component {
                     <title>{`BunqDesktop - ${t("Contacts")}`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={10} md={6} lg={4}>
-                   <TranslateTypography variant={"headline"}>
-                       Contacts
-                   </TranslateTypography>
-                </Grid>
-
-                <Grid item xs={12} sm={10} md={6} lg={4}>
-                    <Paper>
-                        <Grid container alignItems={"center"} spacing={8}>
-                            <Grid item xs={6} sm={4} md={3} lg={2}>
-
-                            </Grid>
+                <Grid item xs={12} sm={10} md={12}>
+                    <Grid container justify={"center"} spacing={8}>
+                        <Grid item xs={8} md={9} lg={10}>
+                            <TranslateTypography variant={"headline"}>
+                                Contacts
+                            </TranslateTypography>
                         </Grid>
-                    </Paper>
+
+                        <Grid
+                            item
+                            xs={4}
+                            md={3}
+                            lg={2}
+                            style={{ textAlign: "right" }}
+                        >
+                            <TranslateButton
+                                variant="raised"
+                                color="secondary"
+                                style={styles.button}
+                                disabled={this.props.contactsLoading}
+                                onClick={() => this.props.clearContacts()}
+                            >
+                                Clear all
+                            </TranslateButton>
+                        </Grid>
+                    </Grid>
                 </Grid>
 
-                <Grid item xs={12} sm={10} md={6} lg={4}>
+                <Grid item xs={12} sm={10} md={6}>
                     <Paper>
                         <Grid container alignItems={"center"} spacing={8}>
                             <Grid item xs={12} sm={4} md={6} lg={8}>
@@ -221,7 +233,7 @@ class Contacts extends React.Component {
                     </Paper>
                 </Grid>
 
-                <Grid item xs={12} sm={10} md={6} lg={4}>
+                <Grid item xs={12} sm={10} md={6}>
                     <Paper>
                         <Grid container alignItems={"center"} spacing={8}>
                             <Grid item xs={12} sm={4} md={6} lg={8}>
