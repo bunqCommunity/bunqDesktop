@@ -4,11 +4,17 @@ import Helmet from "react-helmet";
 import { translate } from "react-i18next";
 import { ipcRenderer } from "electron";
 import Grid from "material-ui/Grid";
-import Button from "material-ui/Button";
 import Paper from "material-ui/Paper";
+
+import fs from "../../ImportWrappers/fs";
+const vcf = require("vcf");
+const remote = require("electron").remote;
+const dialog = remote.dialog;
 
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
+import ContactList from "./ContactList";
+import ContactHeader from "./ContactHeader";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import {
@@ -17,8 +23,6 @@ import {
     contactsClear,
     contactsSetInfoType
 } from "../../Actions/contacts";
-
-import ContactList from "./ContactList";
 
 const styles = {
     title: {
@@ -78,6 +82,40 @@ class Contacts extends React.Component {
     };
     getGoogleContacts = event => {
         this.props.contactInfoUpdateGoogle(this.state.googleAccessToken);
+    };
+
+    getAppleContacts = event => {
+        dialog.showOpenDialog(
+            {
+                properties: ["openFile"],
+                filters: [{ name: "vCards", extensions: ["vcf"] }]
+            },
+            this.handleAppleFileChange
+        );
+    };
+    handleAppleFileChange = filePaths => {
+        if (filePaths && filePaths.length > 0) {
+            const content = fs.readFileSync(filePaths[0]);
+            const result = vcf.parse(content.toString());
+
+            if (result.data) {
+                // single vcard
+                console.log(result.data);
+            } else {
+                result.forEach((vCardItem) => {
+                    const data = vCardItem.data;
+                    console.log(data);
+
+                    if(data.tel){
+
+                    }
+                    if(data.email){
+
+                    }
+
+                });
+            }
+        }
     };
 
     openOfficeConsentScreen = event => {
@@ -163,65 +201,18 @@ class Contacts extends React.Component {
                     </Grid>
                 </Grid>
 
-                <Grid item xs={12} sm={10} md={6}>
+                <Grid item xs={12} sm={10} md={6} lg={4}>
                     <Paper>
-                        <Grid container alignItems={"center"} spacing={8}>
-                            <Grid item xs={12} sm={4} md={6} lg={8}>
-                                <TranslateTypography
-                                    variant={"title"}
-                                    style={styles.title}
-                                >
-                                    Google Contacts
-                                </TranslateTypography>
-                            </Grid>
-
-                            <Grid item xs={6} sm={4} md={3} lg={2}>
-                                <TranslateButton
-                                    variant="raised"
-                                    color="secondary"
-                                    style={styles.button}
-                                    disabled={this.props.contactsLoading}
-                                    onClick={() =>
-                                        this.props.clearContacts(
-                                            "GoogleContacts"
-                                        )}
-                                >
-                                    Clear
-                                </TranslateButton>
-                            </Grid>
-
-                            <Grid item xs={6} sm={4} md={3} lg={2}>
-                                {this.state.googleAccessToken ? (
-                                    <Button
-                                        variant="raised"
-                                        color="primary"
-                                        style={styles.button}
-                                        disabled={this.props.contactsLoading}
-                                        onClick={this.getGoogleContacts}
-                                    >
-                                        {t("Import")}
-                                        <img
-                                            style={styles.logo}
-                                            src={"./images/google-logo.svg"}
-                                        />
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        variant="raised"
-                                        color="primary"
-                                        style={styles.button}
-                                        disabled={this.props.contactsLoading}
-                                        onClick={this.openGoogleConsentScreen}
-                                    >
-                                        {t("Login")}
-                                        <img
-                                            style={styles.logo}
-                                            src={"./images/google-logo.svg"}
-                                        />
-                                    </Button>
-                                )}
-                            </Grid>
-                        </Grid>
+                        <ContactHeader
+                            title="Google Contacts"
+                            contactType="GoogleContacts"
+                            logo="./images/google-logo.svg"
+                            canImport={!!this.state.googleAccessToken}
+                            loading={this.props.contactsLoading}
+                            clear={this.props.clearContacts}
+                            import={this.getGoogleContacts}
+                            login={this.openGoogleConsentScreen}
+                        />
 
                         <ContactList
                             contacts={contacts}
@@ -233,63 +224,41 @@ class Contacts extends React.Component {
                     </Paper>
                 </Grid>
 
-                <Grid item xs={12} sm={10} md={6}>
+                <Grid item xs={12} sm={10} md={6} lg={4}>
                     <Paper>
-                        <Grid container alignItems={"center"} spacing={8}>
-                            <Grid item xs={12} sm={4} md={6} lg={8}>
-                                <TranslateTypography
-                                    variant={"title"}
-                                    style={styles.title}
-                                >
-                                    Office 365 Contacts
-                                </TranslateTypography>
-                            </Grid>
+                        <ContactHeader
+                            title="Apple Contacts"
+                            contactType="AppleContacts"
+                            logo="./images/apple-logo.svg"
+                            canImport={true}
+                            loading={this.props.contactsLoading}
+                            clear={this.props.clearContacts}
+                            import={this.getAppleContacts}
+                            login={() => {}}
+                        />
 
-                            <Grid item xs={6} sm={4} md={3} lg={2}>
-                                <TranslateButton
-                                    variant="raised"
-                                    color="secondary"
-                                    style={styles.button}
-                                    disabled={this.props.contactsLoading}
-                                    onClick={() =>
-                                        this.props.clearContacts("Office365")}
-                                >
-                                    Clear
-                                </TranslateButton>
-                            </Grid>
+                        <ContactList
+                            contacts={contacts}
+                            contactType={"AppleContacts"}
+                            shownContacts={this.state.shownContacts}
+                            removeContact={this.removeContact}
+                            toggleContactType={this.toggleContactType}
+                        />
+                    </Paper>
+                </Grid>
 
-                            <Grid item xs={6} sm={4} md={3} lg={2}>
-                                {this.state.office365AccessToken ? (
-                                    <Button
-                                        variant="raised"
-                                        color="primary"
-                                        style={styles.button}
-                                        disabled={this.props.contactsLoading}
-                                        onClick={this.getOfficeContacts}
-                                    >
-                                        {t("Import")}
-                                        <img
-                                            style={styles.logo}
-                                            src={"./images/office-365-logo.svg"}
-                                        />
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        variant="raised"
-                                        color="primary"
-                                        style={styles.button}
-                                        disabled={this.props.contactsLoading}
-                                        onClick={this.openOfficeConsentScreen}
-                                    >
-                                        {t("Login")}
-                                        <img
-                                            style={styles.logo}
-                                            src={"./images/office-365-logo.svg"}
-                                        />
-                                    </Button>
-                                )}
-                            </Grid>
-                        </Grid>
+                <Grid item xs={12} sm={10} md={6} lg={4}>
+                    <Paper>
+                        <ContactHeader
+                            title="Office 365 Contacts"
+                            contactType="Office365"
+                            logo="./images/office-365-logo.svg"
+                            canImport={!!this.state.office365AccessToken}
+                            loading={this.props.contactsLoading}
+                            clear={this.props.clearContacts}
+                            import={this.getOfficeContacts}
+                            login={this.openOfficeConsentScreen}
+                        />
 
                         <ContactList
                             contacts={contacts}

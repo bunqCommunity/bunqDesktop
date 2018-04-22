@@ -107,12 +107,7 @@ export default props => {
     return contactList.length > 0 ? (
         <React.Fragment>
             <Grid container spacing={8}>
-                <Grid
-                    item
-                    xs={12}
-                    sm={6}
-                    style={{ padding: 12 }}
-                >
+                <Grid item xs={12} sm={6} style={{ padding: 12 }}>
                     <Typography variant={"subheading"}>
                         {`${contactList.length} ${t("contacts")}`}
                     </Typography>
@@ -130,7 +125,10 @@ export default props => {
             </List>
         </React.Fragment>
     ) : (
-        <TranslateTypography variant={"subheading"}>
+        <TranslateTypography
+            variant={"subheading"}
+            style={{ textAlign: "center", padding: 16 }}
+        >
             No stored contacts
         </TranslateTypography>
     );
