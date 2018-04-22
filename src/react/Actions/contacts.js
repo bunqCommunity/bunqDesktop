@@ -1,7 +1,9 @@
 import url from "url";
 import axios from "axios";
+const vcf = require("vcf");
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { getInternationalFormat } from "../Helpers/PhoneLib";
+import fs from "../ImportWrappers/fs";
 
 export const STORED_CONTACTS = "BUNQDESKTOP_STORED_CONTACTS";
 
@@ -271,6 +273,84 @@ export function contactInfoUpdateOffice365(BunqJSClient, accessToken) {
                 BunqErrorHandler(dispatch, error, failedMessage);
                 dispatch(contactsNotLoading());
             });
+    };
+}
+
+export function contactInfoUpdateApple(BunqJSClient, files) {
+    const failedMessage = window.t(
+        "We failed to load the contacts from the vCard file"
+    );
+
+    return dispatch => {
+        dispatch(contactsLoading());
+
+        const content = fs.readFileSync(files[0]);
+        let result = vcf.parse(content.toString());
+
+        const collectedEntries = [];
+
+        if (result.data) {
+            result = [result];
+        }
+
+        result.forEach(vCardItem => {
+            const data = vCardItem.data;
+
+            let displayName = "";
+            let emails = [];
+            let phoneNumbers = [];
+
+            if (data.n && data.n._data) {
+                displayName = data.n._data;
+            }
+
+            if (data.tel) {
+                data.tel.map(phoneNumber => {
+                    // format as international
+                    const phoneNumberFormatted = getInternationalFormat(
+                        phoneNumber
+                    );
+                    if (phoneNumberFormatted) {
+                        // add number to the list
+                        phoneNumbers.push(phoneNumberFormatted);
+                    }
+                });
+            }
+
+            if (data.email) {
+                data.email.map(email => {
+                    if (email._data) {
+                        emails.push(email._data);
+                    }
+                });
+            }
+
+            if (emails.length > 0 || phoneNumbers.length > 0) {
+                collectedEntries.push({
+                    name: displayName,
+                    emails: emails,
+                    phoneNumbers: phoneNumbers
+                });
+            }
+        });
+
+        const sortedContacts = collectedEntries.sort((a, b) => {
+            if (a.name === "") {
+                return 1;
+            } else if (b.name === "") {
+                return -1;
+            }
+
+            return b.name.toLowerCase() < a.name.toLowerCase() ? 1 : -1;
+        });
+
+        console.log(sortedContacts);
+
+        // set the contacts
+        // dispatch(
+        //     contactsSetInfoType(sortedContacts, "Office365", BunqJSClient)
+        // );
+        dispatch(contactsNotLoading());
     };
 }
 

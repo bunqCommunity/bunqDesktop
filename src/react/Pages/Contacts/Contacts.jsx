@@ -6,8 +6,6 @@ import { ipcRenderer } from "electron";
 import Grid from "material-ui/Grid";
 import Paper from "material-ui/Paper";
 
-import fs from "../../ImportWrappers/fs";
-const vcf = require("vcf");
 const remote = require("electron").remote;
 const dialog = remote.dialog;
 
@@ -19,6 +17,7 @@ import ContactHeader from "./ContactHeader";
 import { openSnackbar } from "../../Actions/snackbar";
 import {
     contactInfoUpdateGoogle,
+    contactInfoUpdateApple,
     contactInfoUpdateOffice365,
     contactsClear,
     contactsSetInfoType
@@ -95,26 +94,7 @@ class Contacts extends React.Component {
     };
     handleAppleFileChange = filePaths => {
         if (filePaths && filePaths.length > 0) {
-            const content = fs.readFileSync(filePaths[0]);
-            const result = vcf.parse(content.toString());
-
-            if (result.data) {
-                // single vcard
-                console.log(result.data);
-            } else {
-                result.forEach((vCardItem) => {
-                    const data = vCardItem.data;
-                    console.log(data);
-
-                    if(data.tel){
-
-                    }
-                    if(data.email){
-
-                    }
-
-                });
-            }
+            this.props.contactInfoUpdateApple(filePaths);
         }
     };
 
@@ -287,6 +267,8 @@ const mapDispatchToProps = (dispatch, props) => {
     return {
         contactInfoUpdateGoogle: accessToken =>
             dispatch(contactInfoUpdateGoogle(BunqJSClient, accessToken)),
+        contactInfoUpdateApple: filePaths =>
+            dispatch(contactInfoUpdateApple(BunqJSClient, filePaths)),
         contactInfoUpdateOffice365: accessToken =>
             dispatch(contactInfoUpdateOffice365(BunqJSClient, accessToken)),
         contactsSetInfoType: (contacts, type) =>
