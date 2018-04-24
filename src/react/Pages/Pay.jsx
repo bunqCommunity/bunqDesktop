@@ -207,24 +207,38 @@ class Pay extends React.Component {
     schedulePaymentChange = () => {
         const schedulePayment = !this.state.schedulePayment;
 
-        this.setState({
-            schedulePayment: schedulePayment
-        });
-        if (schedulePayment)
-            this.setState({
-                sendDraftPayment: false
-            });
+        this.setState(
+            {
+                schedulePayment: schedulePayment
+            },
+            this.validateForm
+        );
+        if (schedulePayment) {
+            this.setState(
+                {
+                    sendDraftPayment: false
+                },
+                this.validateForm
+            );
+        }
     };
     draftChange = () => {
         const sendDraftPayment = !this.state.sendDraftPayment;
 
-        this.setState({
-            sendDraftPayment: sendDraftPayment
-        });
-        if (sendDraftPayment)
-            this.setState({
-                schedulePayment: false
-            });
+        this.setState(
+            {
+                sendDraftPayment: sendDraftPayment
+            },
+            this.validateForm
+        );
+        if (sendDraftPayment) {
+            this.setState(
+                {
+                    schedulePayment: false
+                },
+                this.validateForm
+            );
+        }
     };
 
     // remove a key from the target list
@@ -353,6 +367,7 @@ class Pay extends React.Component {
             amount,
             ibanName,
             selectedAccount,
+            sendDraftPayment,
             targets
         } = this.state;
 
@@ -361,7 +376,9 @@ class Pay extends React.Component {
         const noTargetsCondition = targets.length < 0;
         const insufficientFundsCondition =
             amount !== "" &&
-            amount > (account.balance ? account.balance.value : 0);
+            // enough funds or draft enabled
+            (amount > (account.balance ? account.balance.value : 0) &&
+                sendDraftPayment === false);
         const amountErrorCondition = amount < 0.01 || amount > 10000;
         const descriptionErrorCondition = description.length > 140;
         const ibanNameErrorCondition =
