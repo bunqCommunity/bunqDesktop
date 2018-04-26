@@ -151,7 +151,7 @@ class Exports extends React.Component {
                 );
 
                 return {
-                    date: masterCardAction.updated,
+                    date: masterCardAction.created,
                     info: masterCardAction,
                     categories: categories
                 };

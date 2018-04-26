@@ -190,7 +190,7 @@ const masterCardActionMapper = (
                 }
 
                 data.push({
-                    date: masterCardAction.updated,
+                    date: masterCardAction.created,
                     change: masterCardAction.getDelta(),
                     type: "masterCardAction",
                     subType: paymentSubType,
