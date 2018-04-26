@@ -1,6 +1,7 @@
 import url from "url";
 import axios from "axios";
 const vcf = require("vcf");
+import Logger from "../Helpers/Logger";
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { getInternationalFormat } from "../Helpers/PhoneLib";
 import fs from "../ImportWrappers/fs";
@@ -285,30 +286,51 @@ export function contactInfoUpdateApple(BunqJSClient, files) {
         dispatch(contactsLoading());
 
         const content = fs.readFileSync(files[0]);
-        let result = vcf.parse(content.toString());
+
+        let result;
+        try {
+            result = vcf.parse(content.toString());
+        } catch (error) {
+            Logger.error(error.message);
+            dispatch(contactsNotLoading());
+            return;
+        }
 
         const collectedEntries = [];
 
+        // turn single item into array
         if (result.data) {
             result = [result];
         }
 
-        result.forEach(vCardItem => {
-            const data = vCardItem.data;
-
+        // go through each result
+        result.forEach(vcardInstance => {
             let displayName = "";
             let emails = [];
             let phoneNumbers = [];
 
-            if (data.n && data.n._data) {
-                displayName = data.n._data;
+            if (vcardInstance.get("n")) {
+                const nameData = vcardInstance.get("n");
+                const nameParts = nameData.valueOf().split(";");
+                const [
+                    familyName,
+                    givenName,
+                    additionalName,
+                    prefix
+                ] = nameParts;
+
+                // combine the parts into a single display name
+                displayName = `${prefix} ${givenName} ${additionalName} ${familyName}`.trim();
             }
 
-            if (data.tel) {
-                data.tel.map(phoneNumber => {
+            if (vcardInstance.get("tel")) {
+                let phoneData = vcardInstance.get("tel");
+                if (phoneData._data) phoneData = [phoneData];
+
+                phoneData.map(phoneNumber => {
                     // format as international
                     const phoneNumberFormatted = getInternationalFormat(
-                        phoneNumber
+                        phoneNumber.valueOf()
                     );
                     if (phoneNumberFormatted) {
                         // add number to the list
@@ -317,11 +339,12 @@ export function contactInfoUpdateApple(BunqJSClient, files) {
                 });
             }
 
-            if (data.email) {
-                data.email.map(email => {
-                    if (email._data) {
-                        emails.push(email._data);
-                    }
+            if (vcardInstance.get("email")) {
+                let emailData = vcardInstance.get("email");
+                if (emailData._data) emailData = [emailData];
+
+                emailData.map(email => {
+                    if (email._data) emails.push(email.valueOf());
                 });
             }
 
@@ -344,12 +367,10 @@ export function contactInfoUpdateApple(BunqJSClient, files) {
             return b.name.toLowerCase() < a.name.toLowerCase() ? 1 : -1;
         });
 
-        console.log(sortedContacts);
-
         // set the contacts
-        // dispatch(
-        //     contactsSetInfoType(sortedContacts, "Office365", BunqJSClient)
-        // );
+        dispatch(
+            contactsSetInfoType(sortedContacts, "AppleContacts", BunqJSClient)
+        );
         dispatch(contactsNotLoading());
     };
 }
