@@ -1,5 +1,4 @@
 import url from "url";
-import path from "path";
 import { BrowserWindow, ipcMain } from "electron";
 
 // google oauth settings
@@ -9,6 +8,7 @@ const state = 123412341;
 const responseType = "token";
 const redirectUrl = "http://localhost:1234/oauth2/callback";
 const scope = "https://www.googleapis.com/auth/contacts.readonly";
+const prompt = "select_account";
 
 // format the url
 const oauthGoogleUrl = url.format({
@@ -16,6 +16,7 @@ const oauthGoogleUrl = url.format({
     protocol: "https",
     query: {
         scope: scope,
+        prompt: prompt,
         included_granted_scopes: true,
         state: state,
         redirect_uri: redirectUrl,
