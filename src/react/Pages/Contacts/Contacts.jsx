@@ -4,21 +4,21 @@ import Helmet from "react-helmet";
 import { translate } from "react-i18next";
 import { ipcRenderer } from "electron";
 import Grid from "material-ui/Grid";
-import Button from "material-ui/Button";
 import Paper from "material-ui/Paper";
-
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
+import ContactHeader from "./ContactHeader";
 
-import { openSnackbar } from "../../Actions/snackbar";
+const remote = require("electron").remote;
+const dialog = remote.dialog;
 import {
     contactInfoUpdateGoogle,
+    contactInfoUpdateApple,
     contactInfoUpdateOffice365,
     contactsClear,
     contactsSetInfoType
 } from "../../Actions/contacts";
-
-import ContactList from "./ContactList";
+import { openSnackbar } from "../../Actions/snackbar";
 
 const styles = {
     title: {
@@ -43,8 +43,6 @@ class Contacts extends React.Component {
         this.state = {
             googleAccessToken: false,
             office365AccessToken: false,
-
-            shownContacts: {},
 
             contacts: {}
         };
@@ -80,6 +78,21 @@ class Contacts extends React.Component {
         this.props.contactInfoUpdateGoogle(this.state.googleAccessToken);
     };
 
+    getAppleContacts = event => {
+        dialog.showOpenDialog(
+            {
+                properties: ["openFile"],
+                filters: [{ name: "vCards", extensions: ["vcf"] }]
+            },
+            this.handleAppleFileChange
+        );
+    };
+    handleAppleFileChange = filePaths => {
+        if (filePaths && filePaths.length > 0) {
+            this.props.contactInfoUpdateApple(filePaths);
+        }
+    };
+
     openOfficeConsentScreen = event => {
         ipcRenderer.send("open-office-365-oauth");
     };
@@ -92,39 +105,33 @@ class Contacts extends React.Component {
         this.props.contactInfoUpdateOffice365(this.state.office365AccessToken);
     };
 
-    toggleContactType = type => {
-        const shownContacts = this.state.shownContacts;
-        shownContacts[type] = !shownContacts[type];
-        this.setState({ shownContacts: shownContacts });
-    };
-
-    removeContact = (sourceType, contactKey, itemKey, itemType) => event => {
-        if (
-            this.props.contacts[sourceType] &&
-            this.props.contacts[sourceType][contactKey]
-        ) {
-            const contacts = this.props.contacts[sourceType];
-
-            if (itemType === "EMAIL") {
-                // remove this email from the list
-                contacts[contactKey].emails.splice(itemKey, 1);
-            } else if (itemType === "PHONE") {
-                // remove this phonenumber from the list
-                contacts[contactKey].phoneNumbers.splice(itemKey, 1);
-            }
-
-            if (
-                contacts[contactKey].emails.length === 0 &&
-                contacts[contactKey].phoneNumbers.length === 0
-            ) {
-                // remove this entire contact since no emails/phonenumbers are left
-                contacts.splice(contactKey, 1);
-            }
-
-            // set the new contacts
-            this.props.contactsSetInfoType(contacts, contactKey);
-        }
-    };
+    // removeContact = (sourceType, contactKey, itemKey, itemType) => event => {
+    //     if (
+    //         this.props.contacts[sourceType] &&
+    //         this.props.contacts[sourceType][contactKey]
+    //     ) {
+    //         const contacts = this.props.contacts[sourceType];
+    //
+    //         if (itemType === "EMAIL") {
+    //             // remove this email from the list
+    //             contacts[contactKey].emails.splice(itemKey, 1);
+    //         } else if (itemType === "PHONE") {
+    //             // remove this phonenumber from the list
+    //             contacts[contactKey].phoneNumbers.splice(itemKey, 1);
+    //         }
+    //
+    //         if (
+    //             contacts[contactKey].emails.length === 0 &&
+    //             contacts[contactKey].phoneNumbers.length === 0
+    //         ) {
+    //             // remove this entire contact since no emails/phonenumbers are left
+    //             contacts.splice(contactKey, 1);
+    //         }
+    //
+    //         // set the new contacts
+    //         this.props.contactsSetInfoType(contacts, contactKey);
+    //     }
+    // };
 
     render() {
         const { t, contacts } = this.props;
@@ -135,7 +142,7 @@ class Contacts extends React.Component {
                     <title>{`BunqDesktop - ${t("Contacts")}`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={10} md={12}>
+                <Grid item xs={12} sm={10} md={6} lg={4}>
                     <Grid container justify={"center"} spacing={8}>
                         <Grid item xs={8} md={9} lg={10}>
                             <TranslateTypography variant={"headline"}>
@@ -163,140 +170,56 @@ class Contacts extends React.Component {
                     </Grid>
                 </Grid>
 
-                <Grid item xs={12} sm={10} md={6}>
+                <Grid item xs={12} />
+
+                <Grid item xs={12} sm={10} md={6} lg={4}>
                     <Paper>
-                        <Grid container alignItems={"center"} spacing={8}>
-                            <Grid item xs={12} sm={4} md={6} lg={8}>
-                                <TranslateTypography
-                                    variant={"title"}
-                                    style={styles.title}
-                                >
-                                    Google Contacts
-                                </TranslateTypography>
-                            </Grid>
-
-                            <Grid item xs={6} sm={4} md={3} lg={2}>
-                                <TranslateButton
-                                    variant="raised"
-                                    color="secondary"
-                                    style={styles.button}
-                                    disabled={this.props.contactsLoading}
-                                    onClick={() =>
-                                        this.props.clearContacts(
-                                            "GoogleContacts"
-                                        )}
-                                >
-                                    Clear
-                                </TranslateButton>
-                            </Grid>
-
-                            <Grid item xs={6} sm={4} md={3} lg={2}>
-                                {this.state.googleAccessToken ? (
-                                    <Button
-                                        variant="raised"
-                                        color="primary"
-                                        style={styles.button}
-                                        disabled={this.props.contactsLoading}
-                                        onClick={this.getGoogleContacts}
-                                    >
-                                        {t("Import")}
-                                        <img
-                                            style={styles.logo}
-                                            src={"./images/google-logo.svg"}
-                                        />
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        variant="raised"
-                                        color="primary"
-                                        style={styles.button}
-                                        disabled={this.props.contactsLoading}
-                                        onClick={this.openGoogleConsentScreen}
-                                    >
-                                        {t("Login")}
-                                        <img
-                                            style={styles.logo}
-                                            src={"./images/google-logo.svg"}
-                                        />
-                                    </Button>
-                                )}
-                            </Grid>
-                        </Grid>
-
-                        <ContactList
+                        <ContactHeader
+                            title="Google Contacts"
+                            contactType="GoogleContacts"
+                            logo="./images/google-logo.svg"
+                            canImport={!!this.state.googleAccessToken}
+                            loading={this.props.contactsLoading}
+                            clear={this.props.clearContacts}
                             contacts={contacts}
-                            contactType={"GoogleContacts"}
-                            shownContacts={this.state.shownContacts}
-                            removeContact={this.removeContact}
-                            toggleContactType={this.toggleContactType}
+                            import={this.getGoogleContacts}
+                            login={this.openGoogleConsentScreen}
                         />
                     </Paper>
                 </Grid>
 
-                <Grid item xs={12} sm={10} md={6}>
+                <Grid item xs={12} />
+
+                <Grid item xs={12} sm={10} md={6} lg={4}>
                     <Paper>
-                        <Grid container alignItems={"center"} spacing={8}>
-                            <Grid item xs={12} sm={4} md={6} lg={8}>
-                                <TranslateTypography
-                                    variant={"title"}
-                                    style={styles.title}
-                                >
-                                    Office 365 Contacts
-                                </TranslateTypography>
-                            </Grid>
-
-                            <Grid item xs={6} sm={4} md={3} lg={2}>
-                                <TranslateButton
-                                    variant="raised"
-                                    color="secondary"
-                                    style={styles.button}
-                                    disabled={this.props.contactsLoading}
-                                    onClick={() =>
-                                        this.props.clearContacts("Office365")}
-                                >
-                                    Clear
-                                </TranslateButton>
-                            </Grid>
-
-                            <Grid item xs={6} sm={4} md={3} lg={2}>
-                                {this.state.office365AccessToken ? (
-                                    <Button
-                                        variant="raised"
-                                        color="primary"
-                                        style={styles.button}
-                                        disabled={this.props.contactsLoading}
-                                        onClick={this.getOfficeContacts}
-                                    >
-                                        {t("Import")}
-                                        <img
-                                            style={styles.logo}
-                                            src={"./images/office-365-logo.svg"}
-                                        />
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        variant="raised"
-                                        color="primary"
-                                        style={styles.button}
-                                        disabled={this.props.contactsLoading}
-                                        onClick={this.openOfficeConsentScreen}
-                                    >
-                                        {t("Login")}
-                                        <img
-                                            style={styles.logo}
-                                            src={"./images/office-365-logo.svg"}
-                                        />
-                                    </Button>
-                                )}
-                            </Grid>
-                        </Grid>
-
-                        <ContactList
+                        <ContactHeader
+                            title="Apple Export"
+                            contactType="AppleContacts"
+                            logo="./images/apple-logo.svg"
+                            canImport={true}
+                            loading={this.props.contactsLoading}
+                            clear={this.props.clearContacts}
                             contacts={contacts}
-                            contactType={"Office365"}
-                            shownContacts={this.state.shownContacts}
-                            removeContact={this.removeContact}
-                            toggleContactType={this.toggleContactType}
+                            import={this.getAppleContacts}
+                            login={() => {}}
+                        />
+                    </Paper>
+                </Grid>
+
+                <Grid item xs={12} />
+
+                <Grid item xs={12} sm={10} md={6} lg={4}>
+                    <Paper>
+                        <ContactHeader
+                            title="Office 365"
+                            contactType="Office365"
+                            logo="./images/office-365-logo.svg"
+                            canImport={!!this.state.office365AccessToken}
+                            loading={this.props.contactsLoading}
+                            clear={this.props.clearContacts}
+                            contacts={contacts}
+                            import={this.getOfficeContacts}
+                            login={this.openOfficeConsentScreen}
                         />
                     </Paper>
                 </Grid>
@@ -318,6 +241,8 @@ const mapDispatchToProps = (dispatch, props) => {
     return {
         contactInfoUpdateGoogle: accessToken =>
             dispatch(contactInfoUpdateGoogle(BunqJSClient, accessToken)),
+        contactInfoUpdateApple: filePaths =>
+            dispatch(contactInfoUpdateApple(BunqJSClient, filePaths)),
         contactInfoUpdateOffice365: accessToken =>
             dispatch(contactInfoUpdateOffice365(BunqJSClient, accessToken)),
         contactsSetInfoType: (contacts, type) =>
