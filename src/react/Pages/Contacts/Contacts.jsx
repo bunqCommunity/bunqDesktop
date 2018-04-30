@@ -21,12 +21,11 @@ import {
 import { openSnackbar } from "../../Actions/snackbar";
 
 const styles = {
+    row: {
+        marginBottom: 8
+    },
     title: {
         margin: 16
-    },
-    body: {
-        margin: 16,
-        textAlign: "center"
     },
     button: {
         width: "100%"
@@ -137,26 +136,20 @@ class Contacts extends React.Component {
         const { t, contacts } = this.props;
 
         return (
-            <Grid container spacing={16} justify={"center"}>
+            <Grid container spacing={8} justify={"center"}>
                 <Helmet>
                     <title>{`BunqDesktop - ${t("Contacts")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={10} md={6} lg={4}>
-                    <Grid container justify={"center"} spacing={8}>
-                        <Grid item xs={8} md={9} lg={10}>
+                    <Grid container spacing={8} justify={"center"}>
+                        <Grid item xs={8} md={9} lg={10} style={styles.row}>
                             <TranslateTypography variant={"headline"}>
                                 Contacts
                             </TranslateTypography>
                         </Grid>
 
-                        <Grid
-                            item
-                            xs={4}
-                            md={3}
-                            lg={2}
-                            style={{ textAlign: "right" }}
-                        >
+                        <Grid item xs={4} md={3} lg={2} style={styles.row}>
                             <TranslateButton
                                 variant="raised"
                                 color="secondary"
@@ -167,61 +160,57 @@ class Contacts extends React.Component {
                                 Clear all
                             </TranslateButton>
                         </Grid>
+
+                        <Grid item xs={12} style={styles.row}>
+                            <Paper>
+                                <ContactHeader
+                                    title="Google Contacts"
+                                    contactType="GoogleContacts"
+                                    logo="./images/google-logo.svg"
+                                    canImport={!!this.state.googleAccessToken}
+                                    loading={this.props.contactsLoading}
+                                    clear={this.props.clearContacts}
+                                    contacts={contacts}
+                                    import={this.getGoogleContacts}
+                                    login={this.openGoogleConsentScreen}
+                                />
+                            </Paper>
+                        </Grid>
+
+                        <Grid item xs={12} style={styles.row}>
+                            <Paper>
+                                <ContactHeader
+                                    title="Apple Export"
+                                    contactType="AppleContacts"
+                                    logo="./images/apple-logo.svg"
+                                    canImport={true}
+                                    loading={this.props.contactsLoading}
+                                    clear={this.props.clearContacts}
+                                    contacts={contacts}
+                                    import={this.getAppleContacts}
+                                    login={() => {}}
+                                />
+                            </Paper>
+                        </Grid>
+
+                        <Grid item xs={12} style={styles.row}>
+                            <Paper>
+                                <ContactHeader
+                                    title="Office 365"
+                                    contactType="Office365"
+                                    logo="./images/office-365-logo.svg"
+                                    canImport={
+                                        !!this.state.office365AccessToken
+                                    }
+                                    loading={this.props.contactsLoading}
+                                    clear={this.props.clearContacts}
+                                    contacts={contacts}
+                                    import={this.getOfficeContacts}
+                                    login={this.openOfficeConsentScreen}
+                                />
+                            </Paper>
+                        </Grid>
                     </Grid>
-                </Grid>
-
-                <Grid item xs={12} />
-
-                <Grid item xs={12} sm={10} md={6} lg={4}>
-                    <Paper>
-                        <ContactHeader
-                            title="Google Contacts"
-                            contactType="GoogleContacts"
-                            logo="./images/google-logo.svg"
-                            canImport={!!this.state.googleAccessToken}
-                            loading={this.props.contactsLoading}
-                            clear={this.props.clearContacts}
-                            contacts={contacts}
-                            import={this.getGoogleContacts}
-                            login={this.openGoogleConsentScreen}
-                        />
-                    </Paper>
-                </Grid>
-
-                <Grid item xs={12} />
-
-                <Grid item xs={12} sm={10} md={6} lg={4}>
-                    <Paper>
-                        <ContactHeader
-                            title="Apple Export"
-                            contactType="AppleContacts"
-                            logo="./images/apple-logo.svg"
-                            canImport={true}
-                            loading={this.props.contactsLoading}
-                            clear={this.props.clearContacts}
-                            contacts={contacts}
-                            import={this.getAppleContacts}
-                            login={() => {}}
-                        />
-                    </Paper>
-                </Grid>
-
-                <Grid item xs={12} />
-
-                <Grid item xs={12} sm={10} md={6} lg={4}>
-                    <Paper>
-                        <ContactHeader
-                            title="Office 365"
-                            contactType="Office365"
-                            logo="./images/office-365-logo.svg"
-                            canImport={!!this.state.office365AccessToken}
-                            loading={this.props.contactsLoading}
-                            clear={this.props.clearContacts}
-                            contacts={contacts}
-                            import={this.getOfficeContacts}
-                            login={this.openOfficeConsentScreen}
-                        />
-                    </Paper>
                 </Grid>
             </Grid>
         );

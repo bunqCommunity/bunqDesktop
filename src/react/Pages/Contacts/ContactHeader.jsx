@@ -12,9 +12,8 @@ const styles = {
     title: {
         margin: 16
     },
-    body: {
-        margin: 16,
-        textAlign: "center"
+    container: {
+        padding: 8
     },
     button: {
         width: "100%"
@@ -29,7 +28,7 @@ const styles = {
         alignItems: "center"
     },
     contactCount: {
-        marginLeft: 50
+        marginLeft: 54
     }
 };
 
@@ -46,7 +45,7 @@ const ContactHeader = props => {
         : 0;
 
     return (
-        <Grid container alignItems={"center"} spacing={8}>
+        <Grid container alignItems={"center"} spacing={8} style={styles.container}>
             <Grid item xs={12} sm={4} md={6} style={styles.titleWrapper}>
                 <img style={styles.logo} src={props.logo} />
 
