@@ -143,13 +143,13 @@ class Contacts extends React.Component {
 
                 <Grid item xs={12} sm={10} md={6} lg={4}>
                     <Grid container spacing={8} justify={"center"}>
-                        <Grid item xs={8} md={9} lg={10} style={styles.row}>
+                        <Grid item xs={8} md={9} style={styles.row}>
                             <TranslateTypography variant={"headline"}>
                                 Contacts
                             </TranslateTypography>
                         </Grid>
 
-                        <Grid item xs={4} md={3} lg={2} style={styles.row}>
+                        <Grid item xs={4} md={3} style={styles.row}>
                             <TranslateButton
                                 variant="raised"
                                 color="secondary"

@@ -84,6 +84,8 @@ class Dashboard extends React.Component {
                     <title>{`BunqDesktop - ${t("Dashboard")}`}</title>
                 </Helmet>
 
+                <Grid item hidden={{ mdDown: true }} lg={2} />
+
                 <Grid item xs={12} lg={8}>
                     <Grid container spacing={16}>
                         <Grid item xs={6}>
