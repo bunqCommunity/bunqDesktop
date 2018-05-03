@@ -215,7 +215,7 @@
         "uglifyjs-webpack-plugin": "^1.2.4",
         "universal-analytics": "^0.4.15",
         "vcf": "^2.0.1",
-        "webpack": "^3.0.0",
+        "webpack": "^3.11.0",
         "webpack-bundle-analyzer": "^2.11.1",
         "webpack-cli": "^2.0.13",
         "worker-loader": "^1.1.1"

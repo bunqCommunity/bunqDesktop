@@ -32,6 +32,7 @@ before_install:
     fi
 
 before_script:
+  - yarn config set ignore-engines true
   - git lfs pull
 
 script:
