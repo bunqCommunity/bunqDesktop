@@ -16,6 +16,9 @@ import oauth from "./helpers/oauth";
 import i18n from "./i18n-background";
 import env from "./env";
 
+// disable security warnings since we need cross-origin requests
+process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 1;
+
 // use english by default
 i18n.changeLanguage("en");
 
