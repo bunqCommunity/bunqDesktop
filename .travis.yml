@@ -11,6 +11,7 @@ matrix:
     services: docker
     language: generic
     sudo: required
+    node_js: '9'
 
 addons:
   apt:
