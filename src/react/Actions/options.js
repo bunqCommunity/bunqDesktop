@@ -25,6 +25,15 @@ export function setNativeFrame(useFrame) {
     };
 }
 
+export function setAnalyticsEnabled(analyticsEnabled) {
+    return {
+        type: "OPTIONS_SET_ANALYTICS_ENABLED",
+        payload: {
+            analytics_enabled: analyticsEnabled
+        }
+    };
+}
+
 export function setStickyMenu(stickyMenu) {
     return {
         type: "OPTIONS_SET_STICKY_MENU",

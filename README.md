@@ -15,6 +15,8 @@ ___
 Download the latest version of BunqDesktop from the [GitHub releases page.](https://github.com/BunqCommunity/BunqDesktop/releases)
 
 #### [Snapcraft](https://snapcraft.io/bunqdesktop)
+You can directly search for 'BunqDesktop' in the Ubuntu store or use  the snap command.
+
 `sudo snap install bunqdesktop`
 
 #### [Brew Cask](https://caskroom.github.io/)
@@ -46,6 +48,20 @@ Download the latest version of BunqDesktop from the [GitHub releases page.](http
 ## Translations
 The app is developed in English but translations in Dutch and German are available. 
 If you spot errors or want to help us translate the desktop app to a different language let us know!
+
+## Security
+All sensitive data is encrypted with the password that is entered on startup. You can choose to skip this step which will encrypt the data with a default password so that you will be logged in without asking you for a password. 
+
+The BunqDesktop settings, custom categories and category rules are not stored using encryption. This data is stored seperatly so it can be synced more easily across multiple devices.
+
+Check out the settings page to see where this information is stored and to change this location if you'd like to move it. You can easily use services like Google Drive, iCloud Drive, Dropbox and other software to sync the settings file to always have the same categories and settings across your devices.
+
+## Privacy
+At no point is your API key, session information or other data directly sent to other servers or systems. All requests to the bunq API are done directly from the BunqDesktop client to the bunq servers.
+
+We use Google Analytics with minimal settings ([Source code](./src/react/Helpers/Analytics.js)) to check which version of the application is used and other basic information like system language, OS version and country. Your IP address is anonimized using [IP Anonymization in Analytics](https://support.google.com/analytics/answer/2763052?hl=en).
+
+You can choose to disable Google Analytics on the settings page whenever you want.
 
 ## Development
 We use [yarn](https://yarnpkg.com/en/) for package management and the following global packages:

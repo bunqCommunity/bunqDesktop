@@ -6,7 +6,11 @@ import Grid from "material-ui/Grid";
 import Button from "material-ui/Button";
 import Input, { InputLabel } from "material-ui/Input";
 import { MenuItem } from "material-ui/Menu";
-import { FormControl, FormControlLabel } from "material-ui/Form";
+import {
+    FormControl,
+    FormHelperText,
+    FormControlLabel
+} from "material-ui/Form";
 import Select from "material-ui/Select";
 import Paper from "material-ui/Paper";
 import Switch from "material-ui/Switch";
@@ -45,7 +49,8 @@ import {
     overwriteSettingsLocation,
     toggleInactivityCheck,
     loadSettingsLocation,
-    setAutomaticThemeChange
+    setAutomaticThemeChange,
+    setAnalyticsEnabled
 } from "../Actions/options";
 import {
     registrationClearPrivateData,
@@ -54,7 +59,7 @@ import {
 
 const styles = {
     sideButton: {
-      marginBottom: 16
+        marginBottom: 16
     },
     avatar: {
         width: 55,
@@ -134,7 +139,7 @@ class Settings extends React.Component {
 
     handleNativeFrameCheckChange = event => {
         this.props.openSnackbar(
-            "Restart the application to view these changes!"
+            this.props.t("Restart the application to view these changes!")
         );
         this.props.setNativeFrame(!this.props.nativeFrame);
     };
@@ -147,6 +152,17 @@ class Settings extends React.Component {
     };
     handleHideBalanceCheckChange = event => {
         this.props.setHideBalance(!this.props.hideBalance);
+    };
+    handleAnalyticsEnabledChange = event => {
+        // if next state is false, display a mesage
+        if (!this.props.analyticsEnabled === false) {
+            this.props.openSnackbar(
+                this.props.t(
+                    "Restart the application to start without Google Analytics!"
+                )
+            );
+        }
+        this.props.setAnalyticsEnabled(!this.props.analyticsEnabled);
     };
     handleHideInactivityCheckChange = event => {
         this.props.toggleInactivityCheck(!this.props.checkInactivity);
@@ -303,6 +319,9 @@ class Settings extends React.Component {
                                     }
                                     label={t("Use the native frame")}
                                 />
+                                <FormHelperText>
+                                    Requires a restart of the application
+                                </FormHelperText>
                             </Grid>
 
                             <Grid item xs={12} md={6}>
@@ -318,6 +337,29 @@ class Settings extends React.Component {
                                     }
                                     label={t("Minimize to tray")}
                                 />
+                            </Grid>
+
+                            <Grid item xs={12} md={6}>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            id="set-analytics-enabled"
+                                            checked={
+                                                this.props.analyticsEnabled
+                                            }
+                                            onChange={
+                                                this
+                                                    .handleAnalyticsEnabledChange
+                                            }
+                                        />
+                                    }
+                                    label={t(
+                                        "Allow basic Google Analytics tracking"
+                                    )}
+                                />
+                                <FormHelperText>
+                                    Requires a restart of the application
+                                </FormHelperText>
                             </Grid>
 
                             <Grid item xs={12} md={6}>
@@ -536,6 +578,7 @@ const mapStateToProps = state => {
         minimizeToTray: state.options.minimize_to_tray,
         nativeFrame: state.options.native_frame,
         stickyMenu: state.options.sticky_menu,
+        analyticsEnabled: state.options.analytics_enabled,
         checkInactivity: state.options.check_inactivity,
         settingsLocation: state.options.settings_location,
         automaticThemeChange: state.options.automatic_theme_change,
@@ -554,12 +597,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(setAutomaticThemeChange(automaticThemeChange)),
         setTheme: theme => dispatch(setTheme(theme)),
         setLanguage: language => dispatch(setLanguage(language)),
+        setLanguage: language => dispatch(setLanguage(language)),
         setNativeFrame: useFrame => dispatch(setNativeFrame(useFrame)),
         setStickyMenu: userStickyMenu =>
             dispatch(setStickyMenu(userStickyMenu)),
         setHideBalance: hideBalance => dispatch(setHideBalance(hideBalance)),
         setMinimizeToTray: minimizeToTray =>
             dispatch(setMinimizeToTray(minimizeToTray)),
+        setAnalyticsEnabled: enabled => dispatch(setAnalyticsEnabled(enabled)),
         toggleInactivityCheck: inactivityCheck =>
             dispatch(toggleInactivityCheck(inactivityCheck)),
         setInactivityCheckDuration: inactivityCheckDuration =>
@@ -570,7 +615,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(loadSettingsLocation(location)),
 
         // clear api key from bunqjsclient and bunqdesktop
-        clearPrivateData: () => dispatch(registrationClearPrivateData(BunqJSClient)),
+        clearPrivateData: () =>
+            dispatch(registrationClearPrivateData(BunqJSClient)),
         // logout of current session without destroying stored keys
         logOut: () => dispatch(registrationLogOut(BunqJSClient)),
         // full hard reset off all storage

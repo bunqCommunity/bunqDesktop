@@ -13,6 +13,7 @@ localforage.config({
 });
 
 export const THEME_LOCATION = "BUNQDESKTOP_THEME";
+export const ANALYTICS_ENABLED = "ANALYTICS_ENABLED";
 export const LANGUAGE_LOCATION = "BUNQDESKTOP_LANGUAGE";
 export const USE_NATIVE_FRAME_LOCATION = "USE_NATIVE_FRAME";
 export const MINIMIZE_TO_TRAY_LOCATION = "MINIMIZE_TO_TRAY";
@@ -36,6 +37,7 @@ const automaticThemeChangeStored = settings.get(
 const hideBalanceStored = settings.get(HIDE_BALANCE_LOCATION);
 const themeDefaultStored = settings.get(THEME_LOCATION);
 const languageDefaultStored = settings.get(LANGUAGE_LOCATION);
+const analyticsEnabledStored = settings.get(ANALYTICS_ENABLED);
 
 const nativeFrameDefault =
     nativeFrameStored !== undefined ? nativeFrameStored : false;
@@ -51,6 +53,8 @@ const inactivityCheckDurationDefault =
         : 300;
 const hideBalanceDefault =
     hideBalanceStored !== undefined ? hideBalanceStored : false;
+const analyticsEnabledDefault =
+    analyticsEnabledStored !== undefined ? analyticsEnabledStored : true;
 const automaticThemeChangeDefault =
     automaticThemeChangeStored !== undefined
         ? automaticThemeChangeStored
@@ -68,6 +72,7 @@ export const defaultState = {
     automatic_theme_change: automaticThemeChangeDefault,
     native_frame: nativeFrameDefault,
     sticky_menu: stickyMenuDefault,
+    analytics_enabled: analyticsEnabledDefault,
     hide_balance: hideBalanceDefault,
     check_inactivity: checkInactivityDefault,
     settings_location: settingsLocationDefault,
@@ -127,6 +132,13 @@ export default function reducer(state = defaultState, action) {
                 sticky_menu: action.payload.sticky_menu
             };
 
+        case "OPTIONS_SET_ANALYTICS_ENABLED":
+            settings.set(ANALYTICS_ENABLED, action.payload.analytics_enabled);
+            return {
+                ...state,
+                analytics_enabled: action.payload.analytics_enabled
+            };
+
         case "OPTIONS_SET_CHECK_INACTIVITY":
             settings.set(
                 CHECK_INACTIVITY_ENABLED_LOCATION,
@@ -174,6 +186,7 @@ export default function reducer(state = defaultState, action) {
             settings.set(LANGUAGE_LOCATION, state.language);
             settings.set(MINIMIZE_TO_TRAY_LOCATION, state.minimize_to_tray);
             settings.set(USE_NATIVE_FRAME_LOCATION, state.native_frame);
+            settings.set(ANALYTICS_ENABLED, state.analytics_enabled);
             settings.set(
                 AUTOMATIC_THEME_CHANGE_LOCATION,
                 state.automatic_theme_change
@@ -223,6 +236,7 @@ export default function reducer(state = defaultState, action) {
             const hideBalanceStored = settings.get(HIDE_BALANCE_LOCATION);
             const themeDefaultStored = settings.get(THEME_LOCATION);
             const languageDefaultStored = settings.get(LANGUAGE_LOCATION);
+            const analyticsEnabledStored = settings.get(ANALYTICS_ENABLED);
 
             // only overwrite if the new settings file contains these settings
             return {
@@ -252,6 +266,10 @@ export default function reducer(state = defaultState, action) {
                     typeof nativeFrameStored !== "undefined"
                         ? nativeFrameStored
                         : state.native_frame,
+                analytics_enabled:
+                    typeof analyticsEnabledStored !== "undefined"
+                        ? analyticsEnabledStored
+                        : state.analytics_enabled,
                 check_inactivity:
                     typeof checkInactivityStored !== "undefined"
                         ? checkInactivityStored

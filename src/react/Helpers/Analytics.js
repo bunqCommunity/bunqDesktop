@@ -1,7 +1,22 @@
 import store from "store";
+import settings from "../ImportWrappers/electronSettings";
 import { generateGUID } from "./Utils";
+import Logger from "./Logger";
+import { ANALYTICS_ENABLED } from "../Reducers/options";
 
 export default () => {
+    if (process.env.NODE_ENV === "development") {
+        Logger.debug("Disabled GA: dev mode");
+        return false;
+    }
+
+    // get setting value for enabled status
+    const enabled = settings.get(ANALYTICS_ENABLED);
+    if (enabled === false) {
+        Logger.debug("Disabled GA: setting = " + enabled);
+        return;
+    }
+
     (function(i, s, o, g, r, a, m) {
         i["GoogleAnalyticsObject"] = r;
         (i[r] =
@@ -40,4 +55,6 @@ export default () => {
     window.ga("set", "historyImportTask", null);
     window.ga("set", "anonymizeIp", true);
     window.ga("send", "event", "Version", process.env.CURRENT_VERSION);
+
+    return true;
 };
