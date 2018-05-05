@@ -54,7 +54,7 @@ const inactivityCheckDurationDefault =
 const hideBalanceDefault =
     hideBalanceStored !== undefined ? hideBalanceStored : false;
 const analyticsEnabledDefault =
-    analyticsEnabledStored !== undefined ? analyticsEnabledStored : true;
+    analyticsEnabledStored !== undefined ? analyticsEnabledStored : undefined;
 const automaticThemeChangeDefault =
     automaticThemeChangeStored !== undefined
         ? automaticThemeChangeStored
@@ -293,7 +293,7 @@ export default function reducer(state = defaultState, action) {
 
             // clear image cache and reload once that completes
             localforage.clear().then(done => {
-                location.reload();
+                // location.reload();
             });
 
             return {

@@ -1,12 +1,12 @@
 import React from "react";
 import { translate } from "react-i18next";
-import { Typography } from "material-ui";
 import { connect } from "react-redux";
 import Redirect from "react-router-dom/Redirect";
 import Helmet from "react-helmet";
 import store from "store";
 import Grid from "material-ui/Grid";
 import Input from "material-ui/Input";
+import Typography from "material-ui/Typography";
 import Card, { CardContent } from "material-ui/Card";
 import { CircularProgress } from "material-ui/Progress";
 
@@ -103,11 +103,6 @@ class LoginPassword extends React.Component {
         this.props.logOut();
     };
 
-    ignoreWarning = event => {
-        store.set("HAS_READ_DEV_WARNING", true);
-        this.setState({ hasReadWarning: true });
-    };
-
     render() {
         const {
             status_message,
@@ -115,140 +110,105 @@ class LoginPassword extends React.Component {
             hasStoredApiKey,
             useNoPassword,
             derivedPassword,
+            analyticsEnabled,
             t
         } = this.props;
 
         if (derivedPassword !== false) {
             return <Redirect to="/login" />;
         }
+        if (
+            this.state.hasReadWarning === false ||
+            typeof analyticsEnabled === "undefined"
+        ) {
+            return <Redirect to="/disclaimer" />;
+        }
 
         const buttonDisabled =
             this.state.passwordValid === false || registrationLoading === true;
 
-        let cardContent = null;
+        let cardContent = registrationLoading ? (
+            <CardContent style={{ textAlign: "center" }}>
+                <Typography variant="headline" component="h2">
+                    Loading
+                </Typography>
+                <CircularProgress size={50} />
+                <Typography variant="subheading">{status_message}</Typography>
+            </CardContent>
+        ) : (
+            <CardContent style={{ textAlign: "center" }}>
+                <Typography variant="headline" component="h2">
+                    {hasStoredApiKey ? (
+                        t("Enter your password")
+                    ) : (
+                        t("Enter a password")
+                    )}
+                </Typography>
 
-        if (this.state.hasReadWarning === false) {
-            cardContent = (
-                <Card style={styles.warningCard}>
-                    <CardContent>
-                        <Typography variant="headline">
-                            <WarningIcon /> Caution!
-                        </Typography>
-                        <Typography variant="body2">
-                            {t("ActiveDevelopmentWarning")}
-                        </Typography>
-                        <br />
-                        <Typography variant="headline">
-                            <LockIcon /> Password
-                        </Typography>
-                        <Typography variant="body2">
-                            {t("PasswordWarningPart1")}
-                        </Typography>
-                        <Typography variant="body2">
-                            {t("PasswordWarningPart2")}
-                        </Typography>
-                        <div style={{ textAlign: "center" }}>
-                            <TranslateButton
-                                variant={"raised"}
-                                style={{ marginTop: 12 }}
-                                onClick={this.ignoreWarning}
-                            >
-                                Don't show this again
-                            </TranslateButton>
-                        </div>
-                    </CardContent>
-                </Card>
-            );
-        } else {
-            // actual content
-            cardContent = registrationLoading ? (
-                <CardContent style={{ textAlign: "center" }}>
-                    <Typography variant="headline" component="h2">
-                        Loading
-                    </Typography>
-                    <CircularProgress size={50} />
-                    <Typography variant="subheading">
-                        {status_message}
-                    </Typography>
-                </CardContent>
-            ) : (
-                <CardContent style={{ textAlign: "center" }}>
-                    <Typography variant="headline" component="h2">
-                        {hasStoredApiKey ? (
-                            t("Enter your password")
-                        ) : (
-                            t("Enter a password")
-                        )}
-                    </Typography>
+                <Input
+                    autoFocus
+                    style={styles.passwordInput}
+                    error={!this.state.passwordValid}
+                    type="password"
+                    label="Password"
+                    hint="A secure 7+ character password"
+                    onChange={this.handlePasswordChange}
+                    onKeyPress={ev => {
+                        if (ev.key === "Enter" && buttonDisabled === false) {
+                            this.setRegistration();
+                            ev.preventDefault();
+                        }
+                    }}
+                    value={this.state.password}
+                />
 
-                    <Input
-                        autoFocus
-                        style={styles.passwordInput}
-                        error={!this.state.passwordValid}
-                        type="password"
-                        label="Password"
-                        hint="A secure 7+ character password"
-                        onChange={this.handlePasswordChange}
-                        onKeyPress={ev => {
-                            if (
-                                ev.key === "Enter" &&
-                                buttonDisabled === false
-                            ) {
-                                this.setRegistration();
-                                ev.preventDefault();
-                            }
-                        }}
-                        value={this.state.password}
-                    />
+                <Grid
+                    container
+                    spacing={16}
+                    justify="center"
+                    style={{ marginTop: 16 }}
+                >
+                    <Grid item xs={6}>
+                        <TranslateButton
+                            variant="raised"
+                            disabled={buttonDisabled}
+                            color={"primary"}
+                            style={styles.loginButton}
+                            onClick={this.setRegistration}
+                        >
+                            Login
+                        </TranslateButton>
+                    </Grid>
 
-                    <Grid
-                        container
-                        spacing={16}
-                        justify="center"
-                        style={{ marginTop: 16 }}
-                    >
+                    {hasStoredApiKey ? (
                         <Grid item xs={6}>
                             <TranslateButton
                                 variant="raised"
-                                disabled={buttonDisabled}
-                                color={"primary"}
+                                color={"secondary"}
                                 style={styles.loginButton}
-                                onClick={this.setRegistration}
+                                onClick={this.logOut}
                             >
-                                Login
+                                Logout
                             </TranslateButton>
                         </Grid>
+                    ) : null}
 
-                        {hasStoredApiKey ? (
-                            <Grid item xs={6}>
-                                <TranslateButton
-                                    variant="raised"
-                                    color={"secondary"}
-                                    style={styles.loginButton}
-                                    onClick={this.logOut}
-                                >
-                                    Logout
-                                </TranslateButton>
-                            </Grid>
-                        ) : null}
-
-                        {(hasStoredApiKey === true && useNoPassword === true) ||
-                        hasStoredApiKey === false ? (
-                            <Grid item xs={6}>
-                                <TranslateButton
-                                    variant="raised"
-                                    color={"secondary"}
-                                    style={styles.loginButton}
-                                    onClick={this.props.useNoPasswordLogin}
-                                >
-                                    Use no password
-                                </TranslateButton>
-                            </Grid>
-                        ) : null}
-                    </Grid>
-                </CardContent>
-            );
-        }
+                    {(hasStoredApiKey === true && useNoPassword === true) ||
+                    hasStoredApiKey === false ? (
+                        <Grid item xs={6}>
+                            <TranslateButton
+                                variant="raised"
+                                color={"secondary"}
+                                style={styles.loginButton}
+                                onClick={this.props.useNoPasswordLogin}
+                            >
+                                Use no password
+                            </TranslateButton>
+                        </Grid>
+                    ) : null}
+                </Grid>
+            </CardContent>
+        );
 
         return (
             <Grid
@@ -273,6 +233,8 @@ class LoginPassword extends React.Component {
 const mapStateToProps = state => {
     return {
         status_message: state.application.status_message,
+
+        analyticsEnabled: state.options.analytics_enabled,
 
         hasStoredApiKey: state.registration.has_stored_api_key,
         useNoPassword: state.registration.use_no_password,

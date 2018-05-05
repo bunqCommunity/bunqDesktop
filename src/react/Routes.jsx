@@ -70,6 +70,9 @@ const RulePage = CL(() =>
 const SwitchApiKeys = CL(() =>
     import(/* webpackChunkName: "switch_api_keys" */ "./Pages/SwitchApiKeys")
 );
+const Disclaimer = CL(() =>
+    import(/* webpackChunkName: "disclaimer" */ "./Pages/Disclaimer")
+);
 
 // router react component
 export default class Routes extends React.Component {
@@ -355,6 +358,16 @@ export default class Routes extends React.Component {
                             path="/settings"
                             render={props => (
                                 <Settings
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
+                            )}
+                        />
+
+                        <Route
+                            path="/disclaimer"
+                            render={props => (
+                                <Disclaimer
                                     {...props}
                                     {...this.props.childProps}
                                 />

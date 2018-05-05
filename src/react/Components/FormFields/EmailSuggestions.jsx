@@ -35,7 +35,6 @@ class EmailSuggestions extends React.Component {
     onFocus = event => this.setState({ visible: true });
 
     onSelectItem = email => event => {
-        console.log("click");
         // update the email value
         this.props.onSelectItem(email.email);
     };

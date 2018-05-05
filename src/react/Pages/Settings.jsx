@@ -319,9 +319,6 @@ class Settings extends React.Component {
                                     }
                                     label={t("Use the native frame")}
                                 />
-                                <FormHelperText>
-                                    Requires a restart of the application
-                                </FormHelperText>
                             </Grid>
 
                             <Grid item xs={12} md={6}>
@@ -345,7 +342,7 @@ class Settings extends React.Component {
                                         <Switch
                                             id="set-analytics-enabled"
                                             checked={
-                                                this.props.analyticsEnabled
+                                                !!this.props.analyticsEnabled
                                             }
                                             onChange={
                                                 this
@@ -354,12 +351,9 @@ class Settings extends React.Component {
                                         />
                                     }
                                     label={t(
-                                        "Allow basic Google Analytics tracking"
+                                        "Allow basic and anonymous Google Analytics tracking"
                                     )}
                                 />
-                                <FormHelperText>
-                                    Requires a restart of the application
-                                </FormHelperText>
                             </Grid>
 
                             <Grid item xs={12} md={6}>
