@@ -17,6 +17,8 @@ import List, {
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import RemoveIcon from "@material-ui/icons/Delete";
 
+import TranslateTypography from "../Components/TranslationHelpers/Typography";
+
 import {
     registrationRemoveStoredApiKey,
     registrationLoadStoredApiKey,
@@ -63,7 +65,7 @@ class SwitchApiKeys extends React.Component {
     };
 
     render() {
-        const { storedApiKeys, t } = this.props;
+        const { storedApiKeys, passwordIdentifier, t } = this.props;
 
         if (
             this.props.derivedPassword === false &&
@@ -75,7 +77,11 @@ class SwitchApiKeys extends React.Component {
 
         const apiKeyItems = storedApiKeys.map((storedApiKey, index) => {
             return (
-                <ListItem button onClick={this.selectApiKey(index)}>
+                <ListItem
+                    button
+                    onClick={this.selectApiKey(index)}
+                    disabled={storedApiKey.identifier !== passwordIdentifier}
+                >
                     <ListItemText
                         primary={storedApiKey.device_name}
                         secondary={
@@ -115,15 +121,31 @@ class SwitchApiKeys extends React.Component {
                         {apiKeyItems.length > 0 ? (
                             <List>{apiKeyItems}</List>
                         ) : (
-                            <Typography variant={"title"} style={styles.text}>
+                            <TranslateTypography
+                                variant={"title"}
+                                style={styles.text}
+                            >
                                 No stored API keys set!
-                            </Typography>
+                            </TranslateTypography>
                         )}
-
-                        <Typography variant={"body1"} style={styles.textBody}>
-                            To add more API keys, logout and log in with the
-                            same password and a different API key
-                        </Typography>
+                    </Paper>
+                </Grid>
+                <Grid item xs={12} sm={2} md={3}>
+                    <Paper style={styles.paper}>
+                        <TranslateTypography
+                            variant={"body1"}
+                            style={styles.textBody}
+                        >
+                            When you login with an API key it will appear in
+                            this list
+                        </TranslateTypography>
+                        <TranslateTypography
+                            variant={"body1"}
+                            style={styles.textBody}
+                        >
+                            A disabled button means the API key was stored with
+                            a different password so it can't be decrypted
+                        </TranslateTypography>
                     </Paper>
                 </Grid>
             </Grid>
@@ -136,6 +158,7 @@ const mapStateToProps = state => {
         status_message: state.application.status_message,
 
         derivedPassword: state.registration.derivedPassword,
+        passwordIdentifier: state.registration.identifier,
         registrationLoading: state.registration.loading,
         storedApiKeys: state.registration.stored_api_keys,
         apiKey: state.registration.api_key,
@@ -163,8 +186,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         resetToApiScreen: () =>
             dispatch(registrationResetToApiScreen(BunqJSClient)),
 
-        logOut: () =>
-            dispatch(registrationLogOut(BunqJSClient)),
+        logOut: () => dispatch(registrationLogOut(BunqJSClient)),
 
         removeStoredApiKey: index =>
             dispatch(registrationRemoveStoredApiKey(index))

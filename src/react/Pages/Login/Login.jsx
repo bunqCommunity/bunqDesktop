@@ -13,6 +13,8 @@ import { FormControlLabel } from "material-ui/Form";
 import Card, { CardContent } from "material-ui/Card";
 import { CircularProgress } from "material-ui/Progress";
 
+import KeyIcon from "@material-ui/icons/VpnKey";
+
 import QRSvg from "../../Components/QR/QRSvg";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
@@ -45,6 +47,9 @@ const styles = {
     environmentToggle: {
         marginTop: 10
     },
+    cardContent: {
+        width: 250
+    },
     wrapperContainer: {
         height: "100%"
     },
@@ -53,6 +58,11 @@ const styles = {
     smallAvatar: {
         width: 50,
         height: 50
+    },
+    keyIcon: {
+        position: "absolute",
+        top: 58,
+        right: 8
     }
 };
 
@@ -180,6 +190,7 @@ class Login extends React.Component {
         this.setState({ openOptions: !this.state.openOptions });
     };
 
+    // create a new registration and display the qr code
     displayQrCode = () => {
         if (this.state.loadingQrCode === false) {
             this.setState({ loadingQrCode: true });
@@ -205,6 +216,7 @@ class Login extends React.Component {
         }
     };
 
+    // create a new sandbox user
     createSandboxUser = () => {
         this.setState({ loadingBunqUser: true });
         this.props.BunqJSClient.api.sandboxUser
@@ -231,6 +243,7 @@ class Login extends React.Component {
             });
     };
 
+    // check if the qr code has been scanned yet
     checkForScanEvent = () => {
         this.checkerInterval = setInterval(() => {
             if (this.state.requestUuid !== false) {
@@ -314,7 +327,14 @@ class Login extends React.Component {
     };
 
     render() {
-        const t = this.props.t;
+        const {
+            t,
+            users,
+            status_message,
+            userLoading,
+            usersLoading,
+            BunqJSClient
+        } = this.props;
 
         if (
             this.props.derivedPassword === false &&
@@ -331,14 +351,25 @@ class Login extends React.Component {
             return <Redirect to="/" />;
         }
 
-        const { status_message, BunqJSClient, users } = this.props;
-        const userItems = Object.keys(users).map(userKey => (
-            <UserItem
-                BunqJSClient={BunqJSClient}
-                user={users[userKey]}
-                userKey={userKey}
-            />
-        ));
+        const userItems =
+            userLoading || usersLoading ? (
+                <Grid item xs={12}>
+                    <CardContent style={{ textAlign: "center" }}>
+                        <TranslateTypography variant="headline" component="h2">
+                            Loading user accounts
+                        </TranslateTypography>
+                        <CircularProgress size={50} />
+                    </CardContent>
+                </Grid>
+            ) : (
+                Object.keys(users).map(userKey => (
+                    <UserItem
+                        BunqJSClient={BunqJSClient}
+                        user={users[userKey]}
+                        userKey={userKey}
+                    />
+                ))
+            );
 
         const currentSelectedEnvironmnent = this.state.sandboxMode
             ? "SANDBOX"
@@ -485,18 +516,18 @@ class Login extends React.Component {
                         >
                             Set API Key
                         </TranslateButton>
-
-                        {this.props.storedApiKeys.length > 0 ? (
-                            <Button
-                                style={styles.loginButton}
-                                to={"/switch-api-keys"}
-                                component={NavLink}
-                            >
-                                {t("Use a stored API key")}
-                            </Button>
-                        ) : null}
                     </Collapse>
                 </CardContent>
+
+                {this.props.storedApiKeys.length > 0 ? (
+                    <IconButton
+                        to={"/switch-api-keys"}
+                        component={NavLink}
+                        style={styles.keyIcon}
+                    >
+                        <KeyIcon />
+                    </IconButton>
+                ) : null}
             </React.Fragment>
         ) : (
             <CardContent>
@@ -552,9 +583,8 @@ class Login extends React.Component {
                         justifyContent: "center"
                     }}
                 >
-                    <Card style={{ width: 250 }}>{cardContent}</Card>
+                    <Card style={styles.cardContent}>{cardContent}</Card>
                 </Grid>
-                <Grid item xs={12} />
                 {userItems}
             </Grid>
         );
@@ -573,6 +603,8 @@ const mapStateToProps = state => {
         storedApiKeys: state.registration.stored_api_keys,
 
         users: state.users.users,
+        usersLoading: state.users.loading,
+
         user: state.user.user,
         userType: state.user.user_type,
         userLoading: state.user.loading

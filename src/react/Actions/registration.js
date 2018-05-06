@@ -178,11 +178,10 @@ export function registrationLoadStoredApiKey(
 
         decryptString(encryptedApiKey, derivedPassword.key, encryptedApiKeyIV)
             .then(decryptedString => {
-                dispatch(registrationNotLoading());
-
                 // validate decrypted result
                 if (decryptedString.length !== 64) {
                     // clear the password so the user can try again
+                    dispatch(registrationNotLoading());
                     dispatch(registrationClearPassword());
                     dispatch(openSnackbar(failedMessage));
                     Logger.error(
@@ -212,8 +211,8 @@ export function registrationLoadStoredApiKey(
                     dispatch(registrationNotLoading());
                 } else {
                     // nothing changes, just set the api key but do nothing else
-                    dispatch(registrationSetApiKeyBasic(decryptedString));
                     dispatch(registrationNotLoading());
+                    dispatch(registrationSetApiKeyBasic(decryptedString));
                 }
             })
             .catch(_ => {
@@ -243,11 +242,28 @@ export function registrationDerivePassword(password) {
             salt = store.get(SALT_LOCATION);
         }
 
-        derivePasswordKey(password, salt, 15000)
+        // derive the password itself
+        derivePasswordKey(password, salt, 250000)
             .then(derivedPassword => {
-                // DO NOT store the salt here, if the password ends up being wrong we overwrite the salt here!
-                dispatch(registrationNotLoading());
-                dispatch(registrationSetDerivedPassword(derivedPassword));
+                // create a quick identifier based on this exact key
+                derivePasswordKey(
+                    derivedPassword.key + "identifier",
+                    salt,
+                    100000
+                )
+                    .then(derivedIdentifier => {
+                        dispatch(registrationNotLoading());
+                        dispatch(
+                            registrationSetDerivedPassword(
+                                derivedPassword,
+                                derivedIdentifier.key
+                            )
+                        );
+                    })
+                    .catch(error => {
+                        Logger.error(error);
+                        dispatch(registrationNotLoading());
+                    });
             })
             .catch(error => {
                 Logger.error(error);
@@ -362,11 +378,12 @@ export function registrationClearUserInfo() {
  * @param derivedPassword
  * @returns {{type: string, payload: {derivedPassword: *}}}
  */
-export function registrationSetDerivedPassword(derivedPassword) {
+export function registrationSetDerivedPassword(derivedPassword, identifier) {
     return {
         type: "REGISTRATION_SET_PASSWORD",
         payload: {
-            derivedPassword: derivedPassword
+            derivedPassword: derivedPassword,
+            identifier: identifier
         }
     };
 }
