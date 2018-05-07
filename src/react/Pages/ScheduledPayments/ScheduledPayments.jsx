@@ -39,7 +39,9 @@ class ScheduledPayments extends React.Component {
         super(props, context);
         this.state = {
             showInactive: false,
-            deleteLoading: false
+            deleteLoading: false,
+
+            selectedPayment: false
         };
     }
 
@@ -123,6 +125,8 @@ class ScheduledPayments extends React.Component {
                 <Helmet>
                     <title>{`BunqDesktop - ${t("Scheduled payments")}`}</title>
                 </Helmet>
+
+
 
                 <Grid item xs={12} md={4}>
                     <Paper>
