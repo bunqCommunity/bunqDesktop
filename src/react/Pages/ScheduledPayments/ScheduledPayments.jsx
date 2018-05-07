@@ -10,6 +10,8 @@ import IconButton from "material-ui/IconButton";
 import { LinearProgress, CircularProgress } from "material-ui/Progress";
 
 import RefreshIcon from "@material-ui/icons/Refresh";
+import InvisibleIcon from "@material-ui/icons/VisibilityOff";
+import VisibleIcon from "@material-ui/icons/Visibility";
 
 import ScheduledPaymentItem from "./ScheduledPaymentItem";
 import AccountList from "../../Components/AccountList/AccountList";
@@ -135,10 +137,22 @@ class ScheduledPayments extends React.Component {
                 <Grid item xs={12} md={8}>
                     <Paper style={styles.paper}>
                         <Grid container spacing={16}>
-                            <Grid item xs={10} md={11}>
+                            <Grid item xs={8} md={10}>
                                 <TranslateTypography variant={"headline"}>
                                     Scheduled payments
                                 </TranslateTypography>
+                            </Grid>
+
+                            <Grid item xs={2} md={1}>
+                                <IconButton
+                                    onClick={() => this.toggleInactive()}
+                                >
+                                    {this.state.showInactive ? (
+                                        <VisibleIcon />
+                                    ) : (
+                                        <InvisibleIcon />
+                                    )}
+                                </IconButton>
                             </Grid>
 
                             <Grid item xs={2} md={1}>
