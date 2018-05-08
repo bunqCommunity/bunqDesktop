@@ -214,6 +214,7 @@
         "typescript": "^2.8.1",
         "uglifyjs-webpack-plugin": "^1.2.4",
         "universal-analytics": "^0.4.15",
+        "upath": "^1.0.5",
         "vcf": "^2.0.1",
         "webpack": "^3.11.0",
         "webpack-bundle-analyzer": "^2.11.1",
