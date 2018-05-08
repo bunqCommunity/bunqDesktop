@@ -62,6 +62,10 @@ class ScheduledPaymentsEditDialog extends React.Component {
         }
     }
 
+    editPayment = () => {
+
+    }
+
     handleChange = name => event => {
         this.setState(
             {
@@ -70,13 +74,14 @@ class ScheduledPaymentsEditDialog extends React.Component {
             this.validateForm
         );
     };
-    handleChangeFormatted = valueObject => {
+    handleAmountChange = valueObject => {
+        let amount =
+            valueObject.formattedValue.length > 0 ? valueObject.floatValue : 0;
+        if (amount < 0) amount = amount * -1;
+
         this.setState(
             {
-                amount:
-                    valueObject.formattedValue.length > 0
-                        ? valueObject.floatValue
-                        : ""
+                amount: amount
             },
             this.validateForm
         );
@@ -99,6 +104,7 @@ class ScheduledPaymentsEditDialog extends React.Component {
         const { t } = this.props;
         const { selectedPaymentIndex } = this.state;
         const open = selectedPaymentIndex !== false;
+        const isValid = this.state.description.length <= 140;
 
         if (!open) return null;
 
@@ -112,7 +118,7 @@ class ScheduledPaymentsEditDialog extends React.Component {
                         style={styles.descriptionTextField}
                         value={this.state.description}
                         onChange={this.handleChange("description")}
-                        error={this.state.description.length > 140}
+                        error={!isValid}
                         placeholder={t("Description")}
                     />
 
@@ -130,16 +136,13 @@ class ScheduledPaymentsEditDialog extends React.Component {
                     <MoneyFormatInput
                         id="amount"
                         value={this.state.amount}
-                        onValueChange={this.handleChangeFormatted}
-                        // onKeyPress={ev => {
-                        //     if (
-                        //         ev.key === "Enter" &&
-                        //         this.state.validForm
-                        //     ) {
-                        //         this.openModal();
-                        //         ev.preventDefault();
-                        //     }
-                        // }}
+                        onValueChange={this.handleAmountChange}
+                        onKeyPress={ev => {
+                            if (ev.key === "Enter" && isValid) {
+                                this.editPayment();
+                                ev.preventDefault();
+                            }
+                        }}
                     />
                 </DialogContent>
 
@@ -153,10 +156,8 @@ class ScheduledPaymentsEditDialog extends React.Component {
                     </ButtonTranslate>
                     <ButtonTranslate
                         variant="raised"
-                        onClick={this.editAccount}
-                        disabled={
-                            this.state.description.length < 140
-                        }
+                        onClick={this.editPayment}
+                        disabled={!isValid}
                         color="primary"
                     >
                         Update
