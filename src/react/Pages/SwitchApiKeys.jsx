@@ -7,7 +7,6 @@ import Grid from "material-ui/Grid";
 import Paper from "material-ui/Paper";
 import Button from "material-ui/Button";
 import IconButton from "material-ui/IconButton";
-import Typography from "material-ui/Typography";
 import List, {
     ListItem,
     ListItemText,
@@ -22,7 +21,6 @@ import TranslateTypography from "../Components/TranslationHelpers/Typography";
 import {
     registrationRemoveStoredApiKey,
     registrationLoadStoredApiKey,
-    registrationResetToApiScreen,
     registrationLogOut
 } from "../Actions/registration";
 
@@ -182,9 +180,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                     derivedPassword
                 )
             ),
-
-        resetToApiScreen: () =>
-            dispatch(registrationResetToApiScreen(BunqJSClient)),
 
         logOut: () => dispatch(registrationLogOut(BunqJSClient)),
 

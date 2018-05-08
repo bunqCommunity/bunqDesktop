@@ -14,6 +14,7 @@ import InvisibleIcon from "@material-ui/icons/VisibilityOff";
 import VisibleIcon from "@material-ui/icons/Visibility";
 
 import ScheduledPaymentItem from "./ScheduledPaymentItem";
+import ScheduledPaymentsEdit from "./ScheduledPaymentsEditDialog";
 import AccountList from "../../Components/AccountList/AccountList";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 
@@ -41,7 +42,7 @@ class ScheduledPayments extends React.Component {
             showInactive: false,
             deleteLoading: false,
 
-            selectedPayment: false
+            selectedPaymentIndex: false
         };
     }
 
@@ -57,7 +58,6 @@ class ScheduledPayments extends React.Component {
 
         this.props.scheduledPaymentsInfoUpdate(userId, accountId);
     };
-
     deleteScheduledPayment = scheduledPaymentInfo => event => {
         if (this.state.deleteLoading === false) {
             this.setState({ deleteLoading: true });
@@ -98,6 +98,12 @@ class ScheduledPayments extends React.Component {
     toggleInactive = event =>
         this.setState({ showInactive: !this.state.showInactive });
 
+    validateForm = () => {};
+
+    selectScheduledPayment = index => event => {
+        this.setState({ selectedPaymentIndex: index });
+    };
+
     render() {
         const t = this.props.t;
 
@@ -107,14 +113,17 @@ class ScheduledPayments extends React.Component {
                     <ScheduledPaymentItem
                         t={t}
                         key={key}
+                        BunqJSClient={this.props.BunqJSClient}
                         scheduledPayment={scheduledPayment}
                         showInactive={this.state.showInactive}
                         deleteLoading={
                             this.state.deleteLoading ||
                             this.props.scheduledPaymentsLoading
                         }
-                        BunqJSClient={this.props.BunqJSClient}
                         deleteScheduledPayment={this.deleteScheduledPayment}
+                        selectScheduledPayment={this.selectScheduledPayment(
+                            key
+                        )}
                     />
                 );
             }
@@ -126,7 +135,12 @@ class ScheduledPayments extends React.Component {
                     <title>{`BunqDesktop - ${t("Scheduled payments")}`}</title>
                 </Helmet>
 
-
+                <ScheduledPaymentsEdit
+                    t={t}
+                    scheduledPayments={this.props.scheduledPayments}
+                    selectedPaymentIndex={this.state.selectedPaymentIndex}
+                    selectScheduledPayment={this.selectScheduledPayment}
+                />
 
                 <Grid item xs={12} md={4}>
                     <Paper>
