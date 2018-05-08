@@ -39,6 +39,7 @@ import {
     getInternationalFormat,
     isValidPhonenumber
 } from "../../Helpers/PhoneLib";
+import { getUTCDate } from "../../Helpers/Utils";
 
 const styles = {
     payButton: {
@@ -73,7 +74,6 @@ class Pay extends React.Component {
             schedulePayment: false,
             scheduleStartDate: new Date(),
             scheduleEndDate: null,
-            scheduleEndDateError: false,
             recurrenceSize: 1,
             recurrenceUnit: "ONCE",
 
@@ -365,9 +365,6 @@ class Pay extends React.Component {
             ibanName,
             selectedAccount,
             sendDraftPayment,
-            scheduleStartDate,
-            scheduleEndDate,
-            schedulePayment,
             targets
         } = this.state;
 
@@ -383,10 +380,6 @@ class Pay extends React.Component {
         const descriptionErrorCondition = description.length > 140;
         const ibanNameErrorCondition =
             ibanName.length < 1 || ibanName.length > 64;
-        const scheduleEndDateErrorCondition =
-            scheduleStartDate > scheduleEndDate &&
-            scheduleEndDate !== null &&
-            schedulePayment === true;
 
         this.setState({
             amountError: amountErrorCondition,
@@ -394,7 +387,6 @@ class Pay extends React.Component {
             descriptionError: descriptionErrorCondition,
             ibanNameError: ibanNameErrorCondition,
             validForm:
-                !scheduleEndDateErrorCondition &&
                 !noTargetsCondition &&
                 !insufficientFundsCondition &&
                 !amountErrorCondition &&
@@ -495,7 +487,10 @@ class Pay extends React.Component {
 
         if (schedulePayment) {
             const schedule = {
-                time_start: format(scheduleStartDate, "YYYY-MM-DD HH:mm:ss"),
+                time_start: format(
+                    getUTCDate(scheduleStartDate),
+                    "YYYY-MM-DD HH:mm:ss"
+                ),
                 recurrence_unit: recurrenceUnit,
                 // on once size has to be 1
                 recurrence_size: parseInt(
@@ -505,7 +500,7 @@ class Pay extends React.Component {
 
             if (scheduleEndDate) {
                 schedule.time_end = format(
-                    scheduleEndDate,
+                    getUTCDate(scheduleEndDate),
                     "YYYY-MM-DD HH:mm:ss"
                 );
             }
@@ -785,9 +780,6 @@ class Pay extends React.Component {
                                     recurrenceUnit={this.state.recurrenceUnit}
                                     recurrenceSize={this.state.recurrenceSize}
                                     scheduleEndDate={this.state.scheduleEndDate}
-                                    scheduleEndDateError={
-                                        this.state.scheduleEndDateError
-                                    }
                                     scheduleStartDate={
                                         this.state.scheduleStartDate
                                     }

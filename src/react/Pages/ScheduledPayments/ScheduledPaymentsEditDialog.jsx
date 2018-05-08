@@ -32,7 +32,6 @@ class ScheduledPaymentsEditDialog extends React.Component {
             recurrenceSize: "",
             recurrenceUnit: "",
             scheduleEndDate: "",
-            scheduleEndDateError: false,
             scheduleStartDate: ""
         };
     }
@@ -54,7 +53,7 @@ class ScheduledPaymentsEditDialog extends React.Component {
                 selectedPaymentIndex: newProps.selectedPaymentIndex,
 
                 description: scheduledPayment.payment.description,
-                amount: parseFloat(scheduledPayment.payment.amount.value),
+                amount: parseFloat(scheduledPayment.payment.amount.value) * -1,
                 recurrenceSize: scheduledPayment.schedule.recurrence_size,
                 recurrenceUnit: scheduledPayment.schedule.recurrence_unit,
                 scheduleEndDate: scheduledPayment.schedule.time_end,
@@ -124,7 +123,6 @@ class ScheduledPaymentsEditDialog extends React.Component {
                         recurrenceSize={this.state.recurrenceSize}
                         scheduleEndDate={this.state.scheduleEndDate}
                         scheduleStartDate={this.state.scheduleStartDate}
-                        scheduleEndDateError={this.state.scheduleEndDateError}
                         handleChangeDirect={this.handleChangeDirect}
                         handleChange={this.handleChange}
                     />
@@ -157,8 +155,7 @@ class ScheduledPaymentsEditDialog extends React.Component {
                         variant="raised"
                         onClick={this.editAccount}
                         disabled={
-                            this.props.accountsLoading ||
-                            this.state.description.length === 0
+                            this.state.description.length < 140
                         }
                         color="primary"
                     >

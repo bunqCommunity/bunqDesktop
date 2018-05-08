@@ -81,7 +81,16 @@ export default props => {
                             format="MMMM DD, YYYY HH:mm"
                             style={styles.textField}
                             value={scheduleEndDate}
-                            onChange={handleChangeDirect("scheduleEndDate")}
+                            onChange={date => {
+                                // reset to current time if
+                                if (date > scheduleStartDate) {
+                                    handleChangeDirect("scheduleEndDate")(date);
+                                } else {
+                                    handleChangeDirect("scheduleEndDate")(
+                                        scheduleStartDate
+                                    );
+                                }
+                            }}
                             clearable={true}
                             ampm={false}
                             cancelLabel={t("Cancel")}
