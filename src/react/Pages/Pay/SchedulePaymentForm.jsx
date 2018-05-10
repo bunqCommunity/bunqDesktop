@@ -62,10 +62,28 @@ export default props => {
                         <DateTimePicker
                             helperText={t("Start date")}
                             format="MMMM DD, YYYY HH:mm"
-                            disablePast
                             style={styles.textField}
                             value={scheduleStartDate}
                             onChange={handleChangeDirect("scheduleStartDate")}
+                            onChange={date => {
+                                // reset to current time if
+                                if (!date || date > new Date()) {
+                                    handleChangeDirect("scheduleStartDate")(
+                                        date
+                                    );
+
+                                    // if start date further than the end date, we reset the end date to start date
+                                    if (date > scheduleEndDate) {
+                                        handleChangeDirect("scheduleEndDate")(
+                                            date
+                                        );
+                                    }
+                                } else {
+                                    handleChangeDirect("scheduleStartDate")(
+                                        new Date()
+                                    );
+                                }
+                            }}
                             ampm={false}
                             cancelLabel={t("Cancel")}
                             clearLabel={t("Clear")}
@@ -83,7 +101,7 @@ export default props => {
                             value={scheduleEndDate}
                             onChange={date => {
                                 // reset to current time if
-                                if (date > scheduleStartDate) {
+                                if (!date || date > scheduleStartDate) {
                                     handleChangeDirect("scheduleEndDate")(date);
                                 } else {
                                     handleChangeDirect("scheduleEndDate")(

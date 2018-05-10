@@ -313,6 +313,7 @@
 	"We failed to load your users": "We failed to load your users",
 	"We failed to register this device on the bunq servers Are you sure you entered a valid API key? And are you sure that this key is meant for the selected bunq environment?": "We failed to register this device on the bunq servers. Are you sure you entered a valid API key? And are you sure that this key is meant for the selected bunq environment?",
 	"We failed to setup BunqDesktop properly": "We failed to setup BunqDesktop properly",
+	"We failed to update the scheduled payment for this monetary account": "We failed to update the scheduled payment for this monetary account",
 	"We received the following error updating the settings for your account": "We received the following error updating the settings for your account",
 	"We received the following error while creating your account": "We received the following error while creating your account",
 	"We received the following error while creating your bunqme request": "We received the following error while creating your bunqme request",

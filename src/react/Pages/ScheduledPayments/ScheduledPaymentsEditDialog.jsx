@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import format from "date-fns/format";
 import TextField from "material-ui/TextField";
 import Dialog, {
     DialogActions,
@@ -10,6 +11,9 @@ import Dialog, {
 import ButtonTranslate from "../../Components/TranslationHelpers/Button";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
 import SchedulePaymentForm from "../../Pages/Pay/SchedulePaymentForm";
+import { getUTCDate } from "../../Helpers/Utils";
+
+import { scheduledPaymentUpdate } from "../../Actions/scheduled_payments";
 
 const styles = {
     textField: {
@@ -56,14 +60,14 @@ class ScheduledPaymentsEditDialog extends React.Component {
                 amount: parseFloat(scheduledPayment.payment.amount.value) * -1,
                 recurrenceSize: scheduledPayment.schedule.recurrence_size,
                 recurrenceUnit: scheduledPayment.schedule.recurrence_unit,
-                scheduleEndDate: scheduledPayment.schedule.time_end,
-                scheduleStartDate: scheduledPayment.schedule.time_start
+                scheduleEndDate: scheduledPayment.schedule.time_end
+                    ? new Date(scheduledPayment.schedule.time_end)
+                    : scheduledPayment.schedule.time_end,
+                scheduleStartDate: new Date(
+                    scheduledPayment.schedule.time_start
+                )
             });
         }
-    }
-
-    editPayment = () => {
-
     }
 
     handleChange = name => event => {
@@ -98,6 +102,64 @@ class ScheduledPaymentsEditDialog extends React.Component {
     closeDialog = event => {
         // close the dialog by deselecting this payment
         this.props.selectScheduledPayment(false)(event);
+    };
+
+    editPayment = () => {
+        const {
+            amount,
+            description,
+            recurrenceUnit,
+            recurrenceSize,
+            scheduleEndDate,
+            scheduleStartDate
+        } = this.state;
+
+        let scheduledPayment = this.props.scheduledPayments[
+            this.props.selectedPaymentIndex
+        ];
+        if (!scheduledPayment) return false;
+        scheduledPayment = scheduledPayment.ScheduledPayment;
+
+        // create a valid payment object with our updated avlues
+        const paymentInfo = {
+            counterparty_alias: {
+                type: "IBAN",
+                value: scheduledPayment.payment.counterparty_alias.iban,
+                name: scheduledPayment.payment.counterparty_alias.display_name
+            },
+            description: description,
+            amount: {
+                value: amount + "",
+                currency: "EUR"
+            }
+        };
+
+        // setup the new schedule object
+        const scheduleInfo = {
+            recurrence_size: parseInt(
+                recurrenceUnit !== "ONCE" ? recurrenceSize : 1
+            ),
+            recurrence_unit: recurrenceUnit,
+            time_start: format(
+                getUTCDate(scheduleStartDate),
+                "YYYY-MM-DD HH:mm:ss"
+            )
+        };
+        if (scheduleEndDate) {
+            scheduleInfo.time_end = format(
+                getUTCDate(scheduleEndDate),
+                "YYYY-MM-DD HH:mm:ss"
+            );
+        }
+
+        this.props.scheduledPaymentUpdate(
+            this.props.user.id,
+            this.props.selectedAccount,
+            scheduledPayment.id,
+            paymentInfo,
+            scheduleInfo
+        );
+        this.closeDialog();
     };
 
     render() {
@@ -157,7 +219,9 @@ class ScheduledPaymentsEditDialog extends React.Component {
                     <ButtonTranslate
                         variant="raised"
                         onClick={this.editPayment}
-                        disabled={!isValid}
+                        disabled={
+                            !isValid || this.props.scheduledPaymentsLoading
+                        }
                         color="primary"
                     >
                         Update
@@ -169,12 +233,19 @@ class ScheduledPaymentsEditDialog extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return {};
+    return {
+        user: state.user.user,
+        scheduledPaymentsLoading: state.scheduled_payments.loading,
+        selectedAccount: state.accounts.selectedAccount
+    };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
-    return {};
+    return {
+        scheduledPaymentUpdate: (...params) =>
+            dispatch(scheduledPaymentUpdate(BunqJSClient, ...params))
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(

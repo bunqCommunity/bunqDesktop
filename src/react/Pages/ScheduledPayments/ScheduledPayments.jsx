@@ -14,7 +14,7 @@ import InvisibleIcon from "@material-ui/icons/VisibilityOff";
 import VisibleIcon from "@material-ui/icons/Visibility";
 
 import ScheduledPaymentItem from "./ScheduledPaymentItem";
-import ScheduledPaymentsEdit from "./ScheduledPaymentsEditDialog";
+import ScheduledPaymentsEditDialog from "./ScheduledPaymentsEditDialog";
 import AccountList from "../../Components/AccountList/AccountList";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 
@@ -135,8 +135,9 @@ class ScheduledPayments extends React.Component {
                     <title>{`BunqDesktop - ${t("Scheduled payments")}`}</title>
                 </Helmet>
 
-                <ScheduledPaymentsEdit
+                <ScheduledPaymentsEditDialog
                     t={t}
+                    BunqJSClient={this.props.BunqJSClient}
                     scheduledPayments={this.props.scheduledPayments}
                     selectedPaymentIndex={this.state.selectedPaymentIndex}
                     selectScheduledPayment={this.selectScheduledPayment}
