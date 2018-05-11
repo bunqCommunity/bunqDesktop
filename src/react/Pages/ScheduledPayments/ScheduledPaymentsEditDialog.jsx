@@ -2,15 +2,19 @@ import React from "react";
 import { connect } from "react-redux";
 import format from "date-fns/format";
 import TextField from "material-ui/TextField";
+import Avatar from "material-ui/Avatar";
 import Dialog, {
     DialogActions,
     DialogContent,
     DialogTitle
 } from "material-ui/Dialog";
+import { ListItem, ListItemText } from "material-ui/List";
 
 import ButtonTranslate from "../../Components/TranslationHelpers/Button";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
-import SchedulePaymentForm from "../../Pages/Pay/SchedulePaymentForm";
+import SchedulePaymentForm from "../../Components/FormFields/SchedulePaymentForm";
+import AttachmentImage from "../../Components/AttachmentImage/AttachmentImage";
+
 import { getUTCDate } from "../../Helpers/Utils";
 
 import { scheduledPaymentUpdate } from "../../Actions/scheduled_payments";
@@ -18,6 +22,10 @@ import { scheduledPaymentUpdate } from "../../Actions/scheduled_payments";
 const styles = {
     textField: {
         width: "100%"
+    },
+    smallAvatar: {
+        width: 60,
+        height: 60
     },
     descriptionTextField: {
         width: "100%",
@@ -163,18 +171,46 @@ class ScheduledPaymentsEditDialog extends React.Component {
     };
 
     render() {
-        const { t } = this.props;
+        const { t, BunqJSClient, scheduledPayments } = this.props;
         const { selectedPaymentIndex } = this.state;
         const open = selectedPaymentIndex !== false;
         const isValid = this.state.description.length <= 140;
 
         if (!open) return null;
+        if (!scheduledPayments[selectedPaymentIndex]) return null;
+
+        const scheduledPayment =
+            scheduledPayments[selectedPaymentIndex].ScheduledPayment;
+
+        const imageUUID =
+            scheduledPayment.payment.counterparty_alias.avatar.image[0]
+                .attachment_public_uuid;
 
         return (
             <Dialog open={open} onClose={this.closeDialog}>
                 <DialogTitle>{t("Edit scheduled payment")}</DialogTitle>
 
                 <DialogContent>
+                    <ListItem>
+                        <Avatar style={styles.smallAvatar}>
+                            <AttachmentImage
+                                width={60}
+                                BunqJSClient={BunqJSClient}
+                                imageUUID={imageUUID}
+                            />
+                        </Avatar>
+
+                        <ListItemText
+                            primary={
+                                scheduledPayment.payment.counterparty_alias
+                                    .display_name
+                            }
+                            secondary={
+                                scheduledPayment.payment.counterparty_alias.iban
+                            }
+                        />
+                    </ListItem>
+
                     <TextField
                         label={t("Description")}
                         style={styles.descriptionTextField}
@@ -236,6 +272,7 @@ const mapStateToProps = state => {
     return {
         user: state.user.user,
         scheduledPaymentsLoading: state.scheduled_payments.loading,
+        scheduledPayments: state.scheduled_payments.scheduled_payments,
         selectedAccount: state.accounts.selectedAccount
     };
 };

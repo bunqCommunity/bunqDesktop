@@ -30,7 +30,7 @@ import Dialog, {
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
 import TargetSelection from "../../Components/FormFields/TargetSelection";
-import SchedulePaymentForm from "./SchedulePaymentForm";
+import SchedulePaymentForm from "../../Components/FormFields/SchedulePaymentForm";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { paySchedule, paySend } from "../../Actions/pay";

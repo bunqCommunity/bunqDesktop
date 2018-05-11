@@ -9,7 +9,7 @@ import Collapse from "material-ui/transitions/Collapse";
 import { FormControl } from "material-ui/Form";
 import { ListItem, ListItemText } from "material-ui/List";
 
-import TranslateMenuItem from "../../Components/TranslationHelpers/MenuItem";
+import TranslateMenuItem from "../TranslationHelpers/MenuItem";
 import scheduleTexts from "../../Helpers/ScheduleTexts";
 
 const styles = {
