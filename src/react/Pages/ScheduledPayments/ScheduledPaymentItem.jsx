@@ -36,8 +36,6 @@ class ScheduledPaymentItem extends React.Component {
         this.state = {};
     }
 
-    openInfo = event => this.setState({ open: !this.state.open });
-
     render() {
         const { scheduledPayment, BunqJSClient, key, t } = this.props;
 
@@ -47,6 +45,8 @@ class ScheduledPaymentItem extends React.Component {
         if (scheduledPaymentInfo.status !== "ACTIVE") {
             return null;
         }
+
+        const description = scheduledPaymentInfo.payment.description;
 
         const scheduleTextResult = scheduleTexts(
             t,
@@ -75,7 +75,11 @@ class ScheduledPaymentItem extends React.Component {
 
         return (
             <React.Fragment>
-                <ListItem key={key}>
+                <ListItem
+                    key={key}
+                    button
+                    onClick={this.props.selectScheduledPayment}
+                >
                     <Avatar style={styles.smallAvatar}>
                         <LazyAttachmentImage
                             width={50}
@@ -99,8 +103,9 @@ class ScheduledPaymentItem extends React.Component {
                         </MoneyAmountLabel>
                     </ListItemSecondaryAction>
                 </ListItem>
+
                 <ListItem>
-                    <ListItemText inset primary={nextPaymentText} />
+                    <ListItemText inset primary={nextPaymentText} secondary={description}/>
 
                     <ListItemSecondaryAction>
                         <IconButton
@@ -113,6 +118,7 @@ class ScheduledPaymentItem extends React.Component {
                         </IconButton>
                     </ListItemSecondaryAction>
                 </ListItem>
+
                 <Divider />
             </React.Fragment>
         );

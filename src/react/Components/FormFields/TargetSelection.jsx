@@ -281,6 +281,9 @@ const mapDispatchToProps = dispatch => {
 
 TargetSelection.propTypes = {
     disabledTypes: PropTypes.array,
+
+    addTarget: PropTypes.func.isRequired,
+    removeTarget: PropTypes.func.isRequired,
     handleChange: PropTypes.func.isRequired,
     handleChangeDirect: PropTypes.func.isRequired
 };
