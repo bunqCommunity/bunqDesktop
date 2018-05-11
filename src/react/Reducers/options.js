@@ -293,7 +293,7 @@ export default function reducer(state = defaultState, action) {
 
             // clear image cache and reload once that completes
             localforage.clear().then(done => {
-                // location.reload();
+                location.reload();
             });
 
             return {
