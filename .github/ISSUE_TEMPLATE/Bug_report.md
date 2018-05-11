@@ -1,3 +1,9 @@
+---
+name: Bug report
+about: Report a bug or missing translation
+
+---
+
 Before submitting a new bug report make sure you check the following things!
 
 ## Checklist before submitting
