@@ -15,6 +15,7 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { userLogin } from "../../Actions/user";
+import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
 
 const styles = {
     title: {
@@ -42,6 +43,8 @@ class Profile extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
+            loading: false,
+
             public_nick_name: "",
 
             address_main: {
@@ -109,7 +112,9 @@ class Profile extends React.Component {
 
     updateSettings = () => {
         const { address_postal, address_main, public_nick_name } = this.state;
-        const { user, userType, BunqJSClient } = this.props;
+        const { t, user, userType, BunqJSClient } = this.props;
+        const errorMessage = t("We failed to update your user information");
+        this.setState({ loading: true });
 
         const userInfo = {
             address_postal: {
@@ -139,16 +144,20 @@ class Profile extends React.Component {
         apiHandler
             .put(user.id, userInfo)
             .then(response => {
+                this.setState({ loading: false });
                 this.props.userLogin(userType, true);
             })
-            .catch(console.error);
+            .catch(error => {
+                this.setState({ loading: false });
+                this.props.BunqErrorHandler(error, errorMessage);
+            });
     };
 
     render() {
         const { t, user, userLoading } = this.props;
 
         let content = null;
-        if (userLoading === false) {
+        if (userLoading === false || this.state.loading) {
             content = (
                 <React.Fragment>
                     <Paper style={styles.paper}>
@@ -254,7 +263,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
         userLogin: (userType, updated) =>
-            dispatch(userLogin(BunqJSClient, userType, updated))
+            dispatch(userLogin(BunqJSClient, userType, updated)),
+
+        BunqErrorHandler: (error, message) =>
+            BunqErrorHandler(dispatch, error, message)
     };
 };
 
