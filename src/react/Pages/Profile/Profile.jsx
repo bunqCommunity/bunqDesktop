@@ -90,7 +90,6 @@ class Profile extends React.Component {
                     ? address[key]
                     : "";
         });
-        console.log(formattedAddress);
         return formattedAddress;
     };
 

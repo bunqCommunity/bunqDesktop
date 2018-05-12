@@ -62,7 +62,7 @@ class ImportDialog extends React.Component<any, any> {
 
         return (
             <Dialog
-                transition={Transition}
+                TransitionComponent={Transition}
                 keepMounted
                 open={open}
                 onClose={closeModal}
