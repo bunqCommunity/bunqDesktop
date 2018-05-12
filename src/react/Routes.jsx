@@ -55,6 +55,9 @@ const DebugPage = CL(() =>
 const Contacts = CL(() =>
     import(/* webpackChunkName: "contacts" */ "./Pages/Contacts/Contacts")
 );
+const Profile = CL(() =>
+    import(/* webpackChunkName: "profile" */ "./Pages/Profile/Profile")
+);
 const Settings = CL(() =>
     import(/* webpackChunkName: "settings" */ "./Pages/Settings")
 );
@@ -306,6 +309,19 @@ export default class Routes extends React.Component {
                             derivedPassword={this.props.derivedPassword}
                             render={props => (
                                 <RulePage
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
+                            )}
+                        />
+
+                        <PrivateRoute
+                            path="/profile"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <Profile
                                     {...props}
                                     {...this.props.childProps}
                                 />
