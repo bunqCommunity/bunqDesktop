@@ -154,7 +154,7 @@ class LoginPassword extends React.Component {
             </CardContent>
         ) : (
             <CardContent style={styles.cardContent}>
-                <Typography variant="headline" component="h2">
+                <Typography variant="headline" component="h2" style={styles.text}>
                     {hasStoredApiKey ? (
                         t("Enter your password")
                     ) : (

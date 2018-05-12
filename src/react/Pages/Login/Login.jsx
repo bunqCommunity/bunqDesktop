@@ -61,8 +61,12 @@ const styles = {
         width: 50,
         height: 50
     },
-    keyIcon: {
-        color: "white",
+    switchKeyIcon: {
+        color: "#000000",
+        marginLeft: 8
+    },
+    switchKeyButton: {
+        color: "#000000",
         position: "absolute",
         top: 58,
         right: 8
@@ -484,17 +488,6 @@ class Login extends React.Component {
                         }}
                     />
 
-                    {this.props.storedApiKeys.length > 0 ? (
-                        <Button
-                            className="black-button"
-                            style={styles.button}
-                            to={"/switch-api-keys"}
-                            component={NavLink}
-                        >
-                            {t("Use a stored API key")}
-                        </Button>
-                    ) : null}
-
                     <Button
                         className="white-button"
                         onClick={this.toggleOptionVisibility}
@@ -576,13 +569,14 @@ class Login extends React.Component {
                 </CardContent>
 
                 {this.props.storedApiKeys.length > 0 ? (
-                    <IconButton
+                    <Button
                         to={"/switch-api-keys"}
                         component={NavLink}
-                        style={styles.keyIcon}
+                        style={styles.switchKeyButton}
+                        className={"white-button"}
                     >
-                        <KeyIcon />
-                    </IconButton>
+                        Switch keys <KeyIcon style={styles.switchKeyIcon} />
+                    </Button>
                 ) : null}
             </React.Fragment>
         ) : (
@@ -597,6 +591,7 @@ class Login extends React.Component {
                 <TranslateButton
                     variant="raised"
                     color={"secondary"}
+                    className={"black-button"}
                     style={styles.button}
                     onClick={this.props.logOut}
                     disabled={this.props.userLoading}
@@ -608,7 +603,11 @@ class Login extends React.Component {
 
         const cardContent = this.props.registrationLoading ? (
             <CardContent style={styles.cardContent}>
-                <TranslateTypography variant="headline" component="h2">
+                <TranslateTypography
+                    variant="headline"
+                    component="h2"
+                    style={styles.text}
+                >
                     Loading
                 </TranslateTypography>
                 <CircularProgress size={50} />

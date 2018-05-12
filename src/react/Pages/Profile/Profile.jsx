@@ -157,7 +157,7 @@ class Profile extends React.Component {
         const { t, user, userLoading } = this.props;
 
         let content = null;
-        if (userLoading === false || this.state.loading) {
+        if (userLoading === false && this.state.loading === false) {
             content = (
                 <React.Fragment>
                     <Paper style={styles.paper}>
@@ -205,6 +205,7 @@ class Profile extends React.Component {
 
                             <Grid item xs={12} sm={6}>
                                 <Button
+                                    disabled={this.state.loading}
                                     onClick={this.updateSettings}
                                     variant={"raised"}
                                     color={"primary"}
