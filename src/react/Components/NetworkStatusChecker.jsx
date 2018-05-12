@@ -69,7 +69,7 @@ class NetworkStatusChecker extends React.PureComponent {
                 style={styles.snackbar}
                 open={!this.props.online}
                 message={this.props.t("Network seems to be offline")}
-                transition={Transition}
+                TransitionComponent={Transition}
                 anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
                 action={[
                     <IconButton

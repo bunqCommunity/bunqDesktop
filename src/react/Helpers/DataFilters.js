@@ -194,7 +194,7 @@ export const masterCardActionFilter = options => masterCardAction => {
     return checkDateRange(
         options.dateFromFilter,
         options.dateToFilter,
-        masterCardAction.MasterCardAction.updated
+        masterCardAction.MasterCardAction.created
     );
 };
 

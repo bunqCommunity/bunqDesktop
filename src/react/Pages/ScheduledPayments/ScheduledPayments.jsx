@@ -10,8 +10,11 @@ import IconButton from "material-ui/IconButton";
 import { LinearProgress, CircularProgress } from "material-ui/Progress";
 
 import RefreshIcon from "@material-ui/icons/Refresh";
+import InvisibleIcon from "@material-ui/icons/VisibilityOff";
+import VisibleIcon from "@material-ui/icons/Visibility";
 
 import ScheduledPaymentItem from "./ScheduledPaymentItem";
+import ScheduledPaymentsEditDialog from "./ScheduledPaymentsEditDialog";
 import AccountList from "../../Components/AccountList/AccountList";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 
@@ -37,7 +40,9 @@ class ScheduledPayments extends React.Component {
         super(props, context);
         this.state = {
             showInactive: false,
-            deleteLoading: false
+            deleteLoading: false,
+
+            selectedPaymentIndex: false
         };
     }
 
@@ -53,7 +58,6 @@ class ScheduledPayments extends React.Component {
 
         this.props.scheduledPaymentsInfoUpdate(userId, accountId);
     };
-
     deleteScheduledPayment = scheduledPaymentInfo => event => {
         if (this.state.deleteLoading === false) {
             this.setState({ deleteLoading: true });
@@ -94,6 +98,12 @@ class ScheduledPayments extends React.Component {
     toggleInactive = event =>
         this.setState({ showInactive: !this.state.showInactive });
 
+    validateForm = () => {};
+
+    selectScheduledPayment = index => event => {
+        this.setState({ selectedPaymentIndex: index });
+    };
+
     render() {
         const t = this.props.t;
 
@@ -103,14 +113,17 @@ class ScheduledPayments extends React.Component {
                     <ScheduledPaymentItem
                         t={t}
                         key={key}
+                        BunqJSClient={this.props.BunqJSClient}
                         scheduledPayment={scheduledPayment}
                         showInactive={this.state.showInactive}
                         deleteLoading={
                             this.state.deleteLoading ||
                             this.props.scheduledPaymentsLoading
                         }
-                        BunqJSClient={this.props.BunqJSClient}
                         deleteScheduledPayment={this.deleteScheduledPayment}
+                        selectScheduledPayment={this.selectScheduledPayment(
+                            key
+                        )}
                     />
                 );
             }
@@ -121,6 +134,14 @@ class ScheduledPayments extends React.Component {
                 <Helmet>
                     <title>{`BunqDesktop - ${t("Scheduled payments")}`}</title>
                 </Helmet>
+
+                <ScheduledPaymentsEditDialog
+                    t={t}
+                    BunqJSClient={this.props.BunqJSClient}
+                    scheduledPayments={this.props.scheduledPayments}
+                    selectedPaymentIndex={this.state.selectedPaymentIndex}
+                    selectScheduledPayment={this.selectScheduledPayment}
+                />
 
                 <Grid item xs={12} md={4}>
                     <Paper>
@@ -135,10 +156,22 @@ class ScheduledPayments extends React.Component {
                 <Grid item xs={12} md={8}>
                     <Paper style={styles.paper}>
                         <Grid container spacing={16}>
-                            <Grid item xs={10} md={11}>
+                            <Grid item xs={8} md={10}>
                                 <TranslateTypography variant={"headline"}>
                                     Scheduled payments
                                 </TranslateTypography>
+                            </Grid>
+
+                            <Grid item xs={2} md={1}>
+                                <IconButton
+                                    onClick={() => this.toggleInactive()}
+                                >
+                                    {this.state.showInactive ? (
+                                        <VisibleIcon />
+                                    ) : (
+                                        <InvisibleIcon />
+                                    )}
+                                </IconButton>
                             </Grid>
 
                             <Grid item xs={2} md={1}>

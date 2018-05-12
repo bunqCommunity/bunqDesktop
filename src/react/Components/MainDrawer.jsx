@@ -136,12 +136,12 @@ class MainDrawer extends React.Component {
                       text={"Scheduled payments"}
                       location={this.props.location}
                   />,
-                <ListItemWrapper
-                    to="/exports"
-                    icon={FileUpload}
-                    text={"Exports"}
-                    location={this.props.location}
-                />,
+                  <ListItemWrapper
+                      to="/exports"
+                      icon={FileUpload}
+                      text={"Exports"}
+                      location={this.props.location}
+                  />,
                   <Divider />,
                   <ListItemWrapper
                       to="/stats"

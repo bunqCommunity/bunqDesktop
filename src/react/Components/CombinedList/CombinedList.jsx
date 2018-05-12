@@ -163,7 +163,7 @@ class CombinedList extends React.Component {
                             user={this.props.user}
                         />
                     ),
-                    filterDate: bunqMeTab.updated,
+                    filterDate: bunqMeTab.created,
                     info: bunqMeTab
                 };
             });
@@ -194,7 +194,7 @@ class CombinedList extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                         />
                     ),
-                    filterDate: masterCardAction.updated,
+                    filterDate: masterCardAction.created,
                     info: masterCardAction
                 };
             });

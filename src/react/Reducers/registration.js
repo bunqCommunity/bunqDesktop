@@ -42,6 +42,7 @@ export const defaultState = {
     device_name: deviceNameDefault,
     environment: environmentDefault,
     derivedPassword: false,
+    identifier: false,
     loading: false,
     status_message: ""
 };
@@ -65,9 +66,14 @@ export default (state = defaultState, action) => {
             });
 
             const storedApiKeyInfo = {
+                // link to current password by the identifier
+                identifier: state.identifier,
+                // key and iv for this api key
                 api_key: encryptedKey,
                 api_key_iv: encryptedKeyIv,
+                // device name so we can easily recognize it
                 device_name: state.device_name,
+                // environment for this api key
                 environment: state.environment
             };
 
@@ -151,7 +157,8 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_SET_PASSWORD":
             return {
                 ...state,
-                derivedPassword: action.payload.derivedPassword
+                derivedPassword: action.payload.derivedPassword,
+                identifier: action.payload.identifier
             };
 
         case "REGISTRATION_USE_NO_PASSWORD":

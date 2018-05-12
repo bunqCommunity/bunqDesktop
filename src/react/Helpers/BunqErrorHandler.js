@@ -22,7 +22,7 @@ export default (dispatch, error, customError = false) => {
     const response = error.response;
 
     // log to logger
-    Logger.error(error.response ? error.response.data : error.toString());
+    Logger.error(response ? response.data : error.message);
 
     // check if a network error occured
     if (error.toString() === "Error: Network Error") {

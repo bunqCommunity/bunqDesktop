@@ -24,7 +24,7 @@ export default props => {
 
     return (
         <Dialog
-            transition={Transition}
+            TransitionComponent={Transition}
             keepMounted
             open={open}
             onClose={closeModal}

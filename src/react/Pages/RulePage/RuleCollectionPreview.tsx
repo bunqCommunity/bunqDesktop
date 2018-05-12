@@ -1,10 +1,11 @@
 import * as React from "react";
 import { translate } from "react-i18next";
-import Paper from "material-ui/Paper";
+import PaperWrapper from "material-ui/Paper";
 import Button from "material-ui/Button";
 import Switch from "material-ui/Switch";
 import { FormControlLabel } from "material-ui/Form";
 import List from "material-ui/List";
+const Paper: any = PaperWrapper;
 
 import RuleCollection, { EventObjectResult } from "../../Types/RuleCollection";
 import RuleCollectionPreviewItem from "./RuleCollectionPreviewItem";

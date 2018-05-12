@@ -13,10 +13,12 @@ import Tooltip from "material-ui/Tooltip";
 import MoneyIcon from "@material-ui/icons/AttachMoney";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import KeyIcon from "@material-ui/icons/VpnKey";
+import ProfileIcon from "@material-ui/icons/Person";
 
 import CombinedList from "../Components/CombinedList/CombinedList";
 import AccountList from "../Components/AccountList/AccountList";
 import LoadOlderButton from "../Components/LoadOlderButton";
+import NavLink from "../Components/Routing/NavLink";
 
 import { userLogin, userLogout } from "../Actions/user";
 import { requestInquirySend } from "../Actions/request_inquiry";
@@ -27,8 +29,15 @@ const styles = {
         width: "100%"
     },
     iconButton: {
-        height: 25,
         marginLeft: 16
+    },
+    title: {
+        marginBottom: 0,
+        marginLeft: 12
+    },
+    titleWrapper: {
+        display: "flex",
+        alignItems: "center"
     },
     headerButtonWrapper: {
         textAlign: "right"
@@ -78,18 +87,34 @@ class Dashboard extends React.Component {
         const t = this.props.t;
         const userTypes = Object.keys(this.props.users);
 
+        const displayName = this.props.user.display_name
+            ? this.props.user.display_name
+            : t("user");
+
         return (
             <Grid container spacing={16}>
                 <Helmet>
                     <title>{`BunqDesktop - ${t("Dashboard")}`}</title>
                 </Helmet>
 
+                <Grid item hidden={{ mdDown: true }} lg={2} />
+
                 <Grid item xs={12} lg={8}>
                     <Grid container spacing={16}>
-                        <Grid item xs={6}>
-                            <Typography variant="title" gutterBottom>
-                                {`${t("Welcome")} ${this.props.user
-                                    .display_name}`}
+                        <Grid item xs={6} style={styles.titleWrapper}>
+                            <IconButton
+                                style={styles.iconButton}
+                                component={NavLink}
+                                to={"/profile"}
+                            >
+                                <ProfileIcon />
+                            </IconButton>
+                            <Typography
+                                variant="title"
+                                gutterBottom
+                                style={styles.title}
+                            >
+                                {`${t("Welcome")} ${displayName}`}
                             </Typography>
                         </Grid>
 

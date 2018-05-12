@@ -4,7 +4,6 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import EmailValidator from "email-validator";
-import DateTimePicker from "material-ui-pickers/DateTimePicker/index.js";
 import DateFnsUtils from "material-ui-pickers/utils/date-fns-utils";
 import MuiPickersUtilsProvider from "material-ui-pickers/utils/MuiPickersUtilsProvider";
 import format from "date-fns/format";
@@ -12,9 +11,7 @@ import enLocale from "date-fns/locale/en-US";
 import deLocale from "date-fns/locale/de";
 import nlLocale from "date-fns/locale/nl";
 
-import Select from "material-ui/Select";
 import Grid from "material-ui/Grid";
-import Input from "material-ui/Input";
 import Button from "material-ui/Button";
 import Paper from "material-ui/Paper";
 import Switch from "material-ui/Switch";
@@ -22,7 +19,6 @@ import Divider from "material-ui/Divider";
 import TextField from "material-ui/TextField";
 import { InputLabel } from "material-ui/Input";
 import Typography from "material-ui/Typography";
-import Collapse from "material-ui/transitions/Collapse";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import { FormControl, FormControlLabel } from "material-ui/Form";
 import Dialog, {
@@ -31,18 +27,19 @@ import Dialog, {
     DialogTitle
 } from "material-ui/Dialog";
 
-import TranslateMenuItem from "../Components/TranslationHelpers/MenuItem";
-import AccountSelectorDialog from "../Components/FormFields/AccountSelectorDialog";
-import MoneyFormatInput from "../Components/FormFields/MoneyFormatInput";
-import TargetSelection from "../Components/FormFields/TargetSelection";
+import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
+import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
+import TargetSelection from "../../Components/FormFields/TargetSelection";
+import SchedulePaymentForm from "../../Components/FormFields/SchedulePaymentForm";
 
-import { openSnackbar } from "../Actions/snackbar";
-import { paySchedule, paySend } from "../Actions/pay";
-import scheduleTexts from "../Helpers/ScheduleTexts";
+import { openSnackbar } from "../../Actions/snackbar";
+import { paySchedule, paySend } from "../../Actions/pay";
+import scheduleTexts from "../../Helpers/ScheduleTexts";
 import {
     getInternationalFormat,
     isValidPhonenumber
-} from "../Helpers/PhoneLib";
+} from "../../Helpers/PhoneLib";
+import { getUTCDate } from "../../Helpers/Utils";
 
 const styles = {
     payButton: {
@@ -207,24 +204,38 @@ class Pay extends React.Component {
     schedulePaymentChange = () => {
         const schedulePayment = !this.state.schedulePayment;
 
-        this.setState({
-            schedulePayment: schedulePayment
-        });
-        if (schedulePayment)
-            this.setState({
-                sendDraftPayment: false
-            });
+        this.setState(
+            {
+                schedulePayment: schedulePayment
+            },
+            this.validateForm
+        );
+        if (schedulePayment) {
+            this.setState(
+                {
+                    sendDraftPayment: false
+                },
+                this.validateForm
+            );
+        }
     };
     draftChange = () => {
         const sendDraftPayment = !this.state.sendDraftPayment;
 
-        this.setState({
-            sendDraftPayment: sendDraftPayment
-        });
-        if (sendDraftPayment)
-            this.setState({
-                schedulePayment: false
-            });
+        this.setState(
+            {
+                sendDraftPayment: sendDraftPayment
+            },
+            this.validateForm
+        );
+        if (sendDraftPayment) {
+            this.setState(
+                {
+                    schedulePayment: false
+                },
+                this.validateForm
+            );
+        }
     };
 
     // remove a key from the target list
@@ -353,6 +364,7 @@ class Pay extends React.Component {
             amount,
             ibanName,
             selectedAccount,
+            sendDraftPayment,
             targets
         } = this.state;
 
@@ -361,7 +373,9 @@ class Pay extends React.Component {
         const noTargetsCondition = targets.length < 0;
         const insufficientFundsCondition =
             amount !== "" &&
-            amount > (account.balance ? account.balance.value : 0);
+            // enough funds or draft enabled
+            (amount > (account.balance ? account.balance.value : 0) &&
+                sendDraftPayment === false);
         const amountErrorCondition = amount < 0.01 || amount > 10000;
         const descriptionErrorCondition = description.length > 140;
         const ibanNameErrorCondition =
@@ -473,7 +487,10 @@ class Pay extends React.Component {
 
         if (schedulePayment) {
             const schedule = {
-                time_start: format(scheduleStartDate, "YYYY-MM-DD HH:mm:ss"),
+                time_start: format(
+                    getUTCDate(scheduleStartDate),
+                    "YYYY-MM-DD HH:mm:ss"
+                ),
                 recurrence_unit: recurrenceUnit,
                 // on once size has to be 1
                 recurrence_size: parseInt(
@@ -483,7 +500,7 @@ class Pay extends React.Component {
 
             if (scheduleEndDate) {
                 schedule.time_end = format(
-                    scheduleEndDate,
+                    getUTCDate(scheduleEndDate),
                     "YYYY-MM-DD HH:mm:ss"
                 );
             }
@@ -520,7 +537,6 @@ class Pay extends React.Component {
         } = this.state;
 
         let scheduledPaymentText = null;
-
         if (this.state.schedulePayment) {
             const scheduleTextResult = scheduleTexts(
                 t,
@@ -665,107 +681,6 @@ class Pay extends React.Component {
                 break;
         }
 
-        const scheduleForm = (
-            <Grid item xs={12}>
-                <Collapse in={this.state.schedulePayment}>
-                    <Grid container spacing={8}>
-                        <Grid item xs={6}>
-                            <DateTimePicker
-                                helperText={t("Start date")}
-                                format="MMMM DD, YYYY HH:mm"
-                                disablePast
-                                style={styles.textField}
-                                value={this.state.scheduleStartDate}
-                                onChange={this.handleChangeDirect(
-                                    "scheduleStartDate"
-                                )}
-                                ampm={false}
-                                cancelLabel={t("Cancel")}
-                                clearLabel={t("Clear")}
-                                okLabel={t("Ok")}
-                                todayLabel={t("Today")}
-                            />
-                        </Grid>
-
-                        <Grid item xs={6}>
-                            <DateTimePicker
-                                helperText={t("End date")}
-                                emptyLabel={t("No end date")}
-                                format="MMMM DD, YYYY HH:mm"
-                                style={styles.textField}
-                                value={this.state.scheduleEndDate}
-                                onChange={this.handleChangeDirect(
-                                    "scheduleEndDate"
-                                )}
-                                clearable={true}
-                                ampm={false}
-                                cancelLabel={t("Cancel")}
-                                clearLabel={t("Clear")}
-                                okLabel={t("Ok")}
-                                todayLabel={t("Today")}
-                            />
-                        </Grid>
-
-                        <Grid item xs={6}>
-                            <TextField
-                                style={styles.textField}
-                                value={this.state.recurrenceSize}
-                                disabled={this.state.recurrenceUnit === "ONCE"}
-                                onChange={this.handleChange("recurrenceSize")}
-                                helperText={"Repeat every"}
-                                type={"number"}
-                                inputProps={{
-                                    min: 0,
-                                    step: 1
-                                }}
-                            />
-                        </Grid>
-
-                        <Grid item xs={6}>
-                            <FormControl style={styles.formControl}>
-                                <Select
-                                    style={styles.textField}
-                                    value={this.state.recurrenceUnit}
-                                    input={
-                                        <Input name="field" id="field-helper" />
-                                    }
-                                    onChange={this.handleChange(
-                                        "recurrenceUnit"
-                                    )}
-                                >
-                                    <TranslateMenuItem value={"ONCE"}>
-                                        Once
-                                    </TranslateMenuItem>
-                                    <TranslateMenuItem value={"HOURLY"}>
-                                        Hours
-                                    </TranslateMenuItem>
-                                    <TranslateMenuItem value={"DAILY"}>
-                                        Days
-                                    </TranslateMenuItem>
-                                    <TranslateMenuItem value={"WEEKLY"}>
-                                        Weeks
-                                    </TranslateMenuItem>
-                                    <TranslateMenuItem value={"MONTHLY"}>
-                                        Months
-                                    </TranslateMenuItem>
-                                    <TranslateMenuItem value={"YEARLY"}>
-                                        Years
-                                    </TranslateMenuItem>
-                                </Select>
-                                {/*<FormHelperText htmlFor="age-simple">*/}
-                                {/*Repeat every*/}
-                                {/*</FormHelperText>*/}
-                            </FormControl>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            {scheduledPaymentText}
-                        </Grid>
-                    </Grid>
-                </Collapse>
-            </Grid>
-        );
-
         return (
             <Grid container spacing={24} align={"center"} justify={"center"}>
                 <Helmet>
@@ -859,7 +774,18 @@ class Pay extends React.Component {
                                     />
                                 </Grid>
 
-                                {scheduleForm}
+                                <SchedulePaymentForm
+                                    t={t}
+                                    schedulePayment={this.state.schedulePayment}
+                                    recurrenceUnit={this.state.recurrenceUnit}
+                                    recurrenceSize={this.state.recurrenceSize}
+                                    scheduleEndDate={this.state.scheduleEndDate}
+                                    scheduleStartDate={
+                                        this.state.scheduleStartDate
+                                    }
+                                    handleChangeDirect={this.handleChangeDirect}
+                                    handleChange={this.handleChange}
+                                />
                             </Grid>
 
                             <FormControl

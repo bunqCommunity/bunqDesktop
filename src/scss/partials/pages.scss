@@ -1,6 +1,23 @@
+@-webkit-keyframes AnimatedRainbow {
+    0%{background-position:1% 0%}
+    50%{background-position:99% 100%}
+    100%{background-position:1% 0%}
+}
+@keyframes AnimatedRainbow {
+    0%{background-position:1% 0%}
+    50%{background-position:99% 100%}
+    100%{background-position:1% 0%}
+}
+
 .login-page,
 .password-page {
     background-color: black !important;
+
+    //background: linear-gradient(133deg, #70e145, #3b8bd9, #b7159c);
+    //background-size: 600% 600%;
+    //-webkit-animation: AnimatedRainbow 25s ease infinite;
+    //animation: AnimatedRainbow 25s ease infinite;
+
     .text-input {
         &:before {
             background-color: grey !important;

@@ -11,7 +11,7 @@ import Login from "./Pages/Login/Login";
 const NotFound = CL(() =>
     import(/* webpackChunkName: "notfound" */ "./Pages/NotFound")
 );
-const Pay = CL(() => import(/* webpackChunkName: "pay" */ "./Pages/Pay"));
+const Pay = CL(() => import(/* webpackChunkName: "pay" */ "./Pages/Pay/Pay"));
 const ScheduledPayments = CL(() => import(/* webpackChunkName: "pay" */ "./Pages/ScheduledPayments/ScheduledPayments"));
 const BunqMeTab = CL(() =>
     import(/* webpackChunkName: "bunqmetab" */ "./Pages/BunqMeTab/BunqMeTab")
@@ -53,7 +53,10 @@ const DebugPage = CL(() =>
     import(/* webpackChunkName: "debug" */ "./Pages/DebugPage")
 );
 const Contacts = CL(() =>
-    import(/* webpackChunkName: "contacts" */ "./Pages/Contacts")
+    import(/* webpackChunkName: "contacts" */ "./Pages/Contacts/Contacts")
+);
+const Profile = CL(() =>
+    import(/* webpackChunkName: "profile" */ "./Pages/Profile/Profile")
 );
 const Settings = CL(() =>
     import(/* webpackChunkName: "settings" */ "./Pages/Settings")
@@ -69,6 +72,9 @@ const RulePage = CL(() =>
 );
 const SwitchApiKeys = CL(() =>
     import(/* webpackChunkName: "switch_api_keys" */ "./Pages/SwitchApiKeys")
+);
+const Disclaimer = CL(() =>
+    import(/* webpackChunkName: "disclaimer" */ "./Pages/Disclaimer")
 );
 
 // router react component
@@ -310,6 +316,19 @@ export default class Routes extends React.Component {
                         />
 
                         <PrivateRoute
+                            path="/profile"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <Profile
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
+                            )}
+                        />
+
+                        <PrivateRoute
                             path="/switch-api-keys"
                             apiKey={this.props.apiKey}
                             userType={this.props.userType}
@@ -355,6 +374,16 @@ export default class Routes extends React.Component {
                             path="/settings"
                             render={props => (
                                 <Settings
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
+                            )}
+                        />
+
+                        <Route
+                            path="/disclaimer"
+                            render={props => (
+                                <Disclaimer
                                     {...props}
                                     {...this.props.childProps}
                                 />
