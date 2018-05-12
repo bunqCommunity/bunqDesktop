@@ -178,7 +178,7 @@
         "minimist": "^1.2.0",
         "mocha": "^3.4.2",
         "node-forge": "^0.7.1",
-        "node-sass": "^4.6.0",
+        "node-sass": "^4.9.0",
         "prop-types": "^15.5.8",
         "qrcode.react": "^0.7.2",
         "react": "^16.3.0",

@@ -130,22 +130,6 @@ class Profile extends React.Component {
                 street: address_main.street
             },
             public_nick_name: public_nick_name
-
-            // avatar_uuid: user.avatar.uuid,
-            // document_type: user.document_type,
-            // document_number: user.document_number,
-            // document_country_of_issuance: user.document_country_of_issuance,
-            // document_front_attachment_id: user.document_front_attachment_id,
-            // date_of_birth: user.date_of_birth,
-            // place_of_birth: user.place_of_birth,
-            // country_of_birth: user.country_of_birth,
-            // nationality: user.nationality,
-            // language: user.language,
-            // region: user.region,
-            // gender: user.gender,
-            // status: user.status,
-            // sub_status: user.sub_status,
-            // legal_guardian_alias: user.legal_guardian_alias,
         };
 
         const apiHandler =
@@ -156,8 +140,6 @@ class Profile extends React.Component {
         apiHandler
             .put(user.id, userInfo)
             .then(response => {
-                console.log(response);
-
                 this.props.userLogin(userType, true);
             })
             .catch(console.error);
@@ -165,8 +147,6 @@ class Profile extends React.Component {
 
     render() {
         const { t, user, userLoading } = this.props;
-
-        console.log(user);
 
         let content = null;
         if (userLoading === false) {
