@@ -4,6 +4,9 @@ import { translate } from "react-i18next";
 import Grid from "material-ui/Grid";
 import Button from "material-ui/Button";
 import Typography from "material-ui/Typography";
+import IconButton from "material-ui/IconButton";
+
+import HelpIcon from "@material-ui/icons/Help"
 
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
@@ -90,7 +93,7 @@ const ContactHeader = props => {
                 )}
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={8} sm={10}>
                 {contactsCount > 0 ? (
                     <Typography
                         variant={"subheading"}
@@ -107,6 +110,11 @@ const ContactHeader = props => {
                     </TranslateTypography>
                 )}
             </Grid>
+            <Grid item xs={4} sm={2}>
+                {props.questionLink? <IconButton >
+                    <HelpIcon />
+                </IconButton>: null}
+            </Grid>
         </Grid>
     );
 };
@@ -120,6 +128,8 @@ ContactHeader.propTypes = {
     logo: PropTypes.string.isRequired,
     contactType: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
+
+    questionLink: PropTypes.string,
 
     loginButtonText: PropTypes.string,
     importButtonText: PropTypes.string

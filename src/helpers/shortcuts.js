@@ -28,4 +28,7 @@ export default (window, app) => {
     localShortcuts.register(window, "Alt+C", () => {
         changePage(window, "/card");
     });
+    localShortcuts.register(window, "Alt+S", () => {
+        changePage(window, "/settings");
+    });
 };

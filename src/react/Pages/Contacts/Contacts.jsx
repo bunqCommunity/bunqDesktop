@@ -183,6 +183,7 @@ class Contacts extends React.Component {
                                     title="Apple Export"
                                     contactType="AppleContacts"
                                     logo="./images/apple-logo.svg"
+                                    questionLink={"https://support.apple.com/guide/contacts/export-and-archive-contacts-adrbdcfd32e6/mac"}
                                     canImport={true}
                                     loading={this.props.contactsLoading}
                                     clear={this.props.clearContacts}

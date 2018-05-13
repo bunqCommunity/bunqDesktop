@@ -7,11 +7,8 @@ import store from "store";
 import Grid from "material-ui/Grid";
 import Input from "material-ui/Input";
 import Typography from "material-ui/Typography";
-import Card, { CardContent } from "material-ui/Card";
+import { CardContent } from "material-ui/Card";
 import { CircularProgress } from "material-ui/Progress";
-
-import WarningIcon from "@material-ui/icons/Warning";
-import LockIcon from "@material-ui/icons/Lock";
 
 import TranslateButton from "../Components/TranslationHelpers/Button";
 
@@ -33,11 +30,15 @@ const styles = {
     loginButton: {
         width: "100%"
     },
+    secondaryButtons: {
+        width: "100%"
+    },
     clearButton: {
         width: "100%",
         marginTop: 20
     },
     passwordInput: {
+        color: "#000000",
         width: "100%",
         marginTop: 20
     },
@@ -47,6 +48,21 @@ const styles = {
     smallAvatar: {
         width: 50,
         height: 50
+    },
+    cardContent: {
+        textAlign: "center",
+        backgroundColor: "#ffffff"
+    },
+    girlSvg: {
+        zIndex: 0,
+        position: "fixed",
+        right: 0,
+        bottom: 0,
+        height: "50%",
+        maxWidth: "35%"
+    },
+    text: {
+        color: "#000000"
     }
 };
 
@@ -113,6 +129,7 @@ class LoginPassword extends React.Component {
             analyticsEnabled,
             t
         } = this.props;
+        const { passwordValid, hasReadWarning } = this.state;
 
         if (derivedPassword !== false) {
             return <Redirect to="/login" />;
@@ -125,10 +142,10 @@ class LoginPassword extends React.Component {
         }
 
         const buttonDisabled =
-            this.state.passwordValid === false || registrationLoading === true;
+            passwordValid === false || registrationLoading === true;
 
         let cardContent = registrationLoading ? (
-            <CardContent style={{ textAlign: "center" }}>
+            <CardContent style={styles.cardContent}>
                 <Typography variant="headline" component="h2">
                     Loading
                 </Typography>
@@ -136,8 +153,8 @@ class LoginPassword extends React.Component {
                 <Typography variant="subheading">{status_message}</Typography>
             </CardContent>
         ) : (
-            <CardContent style={{ textAlign: "center" }}>
-                <Typography variant="headline" component="h2">
+            <CardContent style={styles.cardContent}>
+                <Typography variant="headline" component="h2" style={styles.text}>
                     {hasStoredApiKey ? (
                         t("Enter your password")
                     ) : (
@@ -168,24 +185,13 @@ class LoginPassword extends React.Component {
                     justify="center"
                     style={{ marginTop: 16 }}
                 >
-                    <Grid item xs={6}>
-                        <TranslateButton
-                            variant="raised"
-                            disabled={buttonDisabled}
-                            color={"primary"}
-                            style={styles.loginButton}
-                            onClick={this.setRegistration}
-                        >
-                            Login
-                        </TranslateButton>
-                    </Grid>
 
                     {hasStoredApiKey ? (
-                        <Grid item xs={6}>
+                        <Grid item xs={6} sm={4}>
                             <TranslateButton
                                 variant="raised"
-                                color={"secondary"}
-                                style={styles.loginButton}
+                                className="white-button"
+                                style={styles.secondaryButtons}
                                 onClick={this.logOut}
                             >
                                 Logout
@@ -195,17 +201,35 @@ class LoginPassword extends React.Component {
 
                     {(hasStoredApiKey === true && useNoPassword === true) ||
                     hasStoredApiKey === false ? (
-                        <Grid item xs={6}>
-                            <TranslateButton
-                                variant="raised"
-                                color={"secondary"}
-                                style={styles.loginButton}
-                                onClick={this.props.useNoPasswordLogin}
-                            >
-                                Use no password
-                            </TranslateButton>
-                        </Grid>
-                    ) : null}
+                        <React.Fragment>
+                            <Grid item xs={6} sm={4} />
+                            <Grid item xs={6} sm={4}>
+                                <TranslateButton
+                                    variant="raised"
+                                    className="white-button"
+                                    style={styles.secondaryButtons}
+                                    onClick={this.props.useNoPasswordLogin}
+                                >
+                                    Skip
+                                </TranslateButton>
+                            </Grid>
+                        </React.Fragment>
+                    ) : (
+                        <Grid item xs={6} sm={4} />
+                    )}
+
+                    <Grid item xs={12} sm={4}>
+                        <TranslateButton
+                            variant="raised"
+                            color="primary"
+                            className="black-button"
+                            disabled={buttonDisabled}
+                            style={styles.loginButton}
+                            onClick={this.setRegistration}
+                        >
+                            Login
+                        </TranslateButton>
+                    </Grid>
                 </Grid>
             </CardContent>
         );
@@ -222,9 +246,23 @@ class LoginPassword extends React.Component {
                     <title>{`BunqDesktop - ${t("Password Setup")}`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={8} md={6} lg={4}>
-                    <Card>{cardContent}</Card>
+                <Grid
+                    item
+                    xs={12}
+                    sm={8}
+                    md={5}
+                    lg={4}
+                    style={{ zIndex: 1 }}
+                    className="animated zoomIn"
+                >
+                    <div>{cardContent}</div>
                 </Grid>
+
+                {/*<img*/}
+                    {/*className="animated fadeInRight"*/}
+                    {/*src="images/svg/girl.svg"*/}
+                    {/*style={styles.girlSvg}*/}
+                {/*/>*/}
             </Grid>
         );
     }

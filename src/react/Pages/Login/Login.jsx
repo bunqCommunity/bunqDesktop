@@ -14,6 +14,7 @@ import Card, { CardContent } from "material-ui/Card";
 import { CircularProgress } from "material-ui/Progress";
 
 import KeyIcon from "@material-ui/icons/VpnKey";
+import VpnKeyIcon from "@material-ui/icons/VpnKey";
 
 import QRSvg from "../../Components/QR/QRSvg";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
@@ -32,37 +33,64 @@ import { userLogin } from "../../Actions/user";
 import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
 
 const styles = {
-    loginButton: {
-        width: "100%",
-        marginTop: 20
-    },
-    clearButton: {
+    button: {
         width: "100%",
         marginTop: 20
     },
     apiInput: {
         width: "100%",
-        marginTop: 20
+        marginTop: 20,
+        color: "#000000"
     },
     environmentToggle: {
-        marginTop: 10
-    },
-    cardContent: {
-        width: 250
+        marginTop: 10,
+        color: "#000000"
     },
     wrapperContainer: {
         height: "100%"
     },
-    qrCode: { width: 200, height: 200 },
-    optionsButton: { marginTop: 12 },
+    qrCode: {
+        width: 200,
+        height: 200
+    },
+    optionsButton: {
+        marginTop: 12,
+        color: "#000000"
+    },
     smallAvatar: {
         width: 50,
         height: 50
     },
-    keyIcon: {
+    switchKeyIcon: {
+        color: "#000000",
+        marginLeft: 8
+    },
+    switchKeyButton: {
+        color: "#000000",
         position: "absolute",
         top: 58,
         right: 8
+    },
+    valueInput: {
+        color: "#000000"
+    },
+    card: {
+        width: 250
+    },
+    cardContent: {
+        backgroundColor: "#ffffff",
+        textAlign: "center"
+    },
+    text: {
+        color: "#000000"
+    },
+    girlSvg: {
+        zIndex: 0,
+        position: "fixed",
+        right: 0,
+        bottom: 0,
+        height: "50%",
+        maxWidth: "35%"
     }
 };
 
@@ -107,9 +135,14 @@ class Login extends React.Component {
             openOptions: isSandboxMode
         });
 
+        // check if only a single user is available
         this.checkForSingleUser();
+
+        // validate inputs based on current input
         this.validateInputs(this.props.apiKey, this.props.deviceName);
 
+        // set a timeout to let other stuff load first  before checking if we need to
+        // display a qr code
         this.displayQrCodeDelay = setTimeout(() => {
             if (
                 // currently no qr code set/being loaded
@@ -393,6 +426,10 @@ class Login extends React.Component {
             // registration is loading
             this.props.registrationLoading === true;
 
+        const setApiKeyClassname = `black-button ${buttonDisabled
+            ? "disabled"
+            : ""}`;
+
         const sandboxButtonDisabled =
             // user info is already being loaded
             this.props.userLoading === true ||
@@ -403,7 +440,7 @@ class Login extends React.Component {
 
         const apiKeyContent = hasNoApiKey ? (
             <React.Fragment>
-                <CardContent style={{ textAlign: "center" }}>
+                <CardContent style={styles.cardContent}>
                     <div style={{ textAlign: "center" }}>
                         {this.state.requestQrCodeBase64 === false ? (
                             <div style={styles.qrCode}>
@@ -413,6 +450,7 @@ class Login extends React.Component {
                             </div>
                         ) : (
                             <img
+                                className="animated fadeIn"
                                 src={`data:image/png;base64, ${this.state
                                     .requestQrCodeBase64}`}
                                 style={styles.qrCode}
@@ -420,7 +458,7 @@ class Login extends React.Component {
                         )}
                         <TranslateTypography
                             variant="body2"
-                            style={{ margin: 0 }}
+                            style={{ ...styles.text, margin: 0 }}
                         >
                             Scan the QR code with the bunq app to begin!
                         </TranslateTypography>
@@ -428,6 +466,7 @@ class Login extends React.Component {
 
                     <Input
                         autoFocus
+                        className={"text-input"}
                         style={styles.apiInput}
                         error={!this.state.deviceNameValid}
                         placeholder={t("Device Name")}
@@ -450,6 +489,7 @@ class Login extends React.Component {
                     />
 
                     <Button
+                        className="white-button"
                         onClick={this.toggleOptionVisibility}
                         style={styles.optionsButton}
                     >
@@ -463,12 +503,13 @@ class Login extends React.Component {
                     <Collapse in={this.state.openOptions}>
                         <Input
                             style={styles.apiInput}
-                            error={!this.state.apiKeyValid}
+                            className={"text-input"}
                             placeholder={t("API key")}
                             label={t("API key")}
                             hint={t("Your personal API key")}
                             onChange={this.handleKeyChange}
                             value={this.state.apiKey}
+                            error={!this.state.apiKeyValid}
                             disabled={
                                 // unchanged api key
                                 this.state.apiKey === this.props.apiKey
@@ -485,7 +526,14 @@ class Login extends React.Component {
                         />
                         <FormControlLabel
                             style={styles.environmentToggle}
-                            label={t("Enable sandbox mode?")}
+                            label={
+                                <TranslateTypography
+                                    variant="body1"
+                                    style={styles.text}
+                                >
+                                    Enable sandbox mode?
+                                </TranslateTypography>
+                            }
                             control={
                                 <Switch
                                     checked={this.state.sandboxMode}
@@ -498,9 +546,9 @@ class Login extends React.Component {
                         {this.state.sandboxMode ? (
                             <TranslateButton
                                 variant="raised"
+                                color="secondary"
                                 disabled={sandboxButtonDisabled}
-                                color={"secondary"}
-                                style={styles.loginButton}
+                                style={styles.button}
                                 onClick={this.createSandboxUser}
                             >
                                 Create a sandbox account
@@ -509,9 +557,10 @@ class Login extends React.Component {
 
                         <TranslateButton
                             variant="raised"
+                            color="primary"
+                            className={setApiKeyClassname}
                             disabled={buttonDisabled}
-                            color={"primary"}
-                            style={styles.loginButton}
+                            style={styles.button}
                             onClick={this.setRegistration}
                         >
                             Set API Key
@@ -520,25 +569,31 @@ class Login extends React.Component {
                 </CardContent>
 
                 {this.props.storedApiKeys.length > 0 ? (
-                    <IconButton
+                    <Button
                         to={"/switch-api-keys"}
                         component={NavLink}
-                        style={styles.keyIcon}
+                        style={styles.switchKeyButton}
+                        className={"white-button"}
                     >
-                        <KeyIcon />
-                    </IconButton>
+                        Switch keys <KeyIcon style={styles.switchKeyIcon} />
+                    </Button>
                 ) : null}
             </React.Fragment>
         ) : (
-            <CardContent>
-                <TranslateTypography variant="headline" component="h2">
+            <CardContent style={styles.cardContent}>
+                <TranslateTypography
+                    variant="headline"
+                    component="h2"
+                    style={styles.text}
+                >
                     You're logged in!
                 </TranslateTypography>
                 <TranslateButton
                     variant="raised"
                     color={"secondary"}
-                    style={styles.clearButton}
-                    onClick={this.logout}
+                    className={"black-button"}
+                    style={styles.button}
+                    onClick={this.props.logOut}
                     disabled={this.props.userLoading}
                 >
                     Logout
@@ -547,8 +602,12 @@ class Login extends React.Component {
         );
 
         const cardContent = this.props.registrationLoading ? (
-            <CardContent style={{ textAlign: "center" }}>
-                <TranslateTypography variant="headline" component="h2">
+            <CardContent style={styles.cardContent}>
+                <TranslateTypography
+                    variant="headline"
+                    component="h2"
+                    style={styles.text}
+                >
                     Loading
                 </TranslateTypography>
                 <CircularProgress size={50} />
@@ -583,9 +642,11 @@ class Login extends React.Component {
                         justifyContent: "center"
                     }}
                 >
-                    <Card style={styles.cardContent}>{cardContent}</Card>
+                    <Card style={styles.card}>{cardContent}</Card>
                 </Grid>
                 {userItems}
+
+                {/*<img src="images/svg/girl.svg" style={styles.girlSvg} />*/}
             </Grid>
         );
     }
@@ -615,7 +676,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         // clear api key from bunqjsclient and bunqdesktop
-        logOut: () => dispatch(registrationLogOut(BunqJSClient)),
+        logOut: () => dispatch(registrationLogOut(BunqJSClient, true)),
         // set the api key and stores the encrypted version
         setApiKey: (api_key, derivedPassword) =>
             dispatch(registrationSetApiKey(api_key, derivedPassword)),
