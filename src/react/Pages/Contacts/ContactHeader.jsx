@@ -6,7 +6,7 @@ import Button from "material-ui/Button";
 import Typography from "material-ui/Typography";
 import IconButton from "material-ui/IconButton";
 
-import HelpIcon from "@material-ui/icons/Help"
+import HelpIcon from "@material-ui/icons/Help";
 
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
@@ -48,7 +48,12 @@ const ContactHeader = props => {
         : 0;
 
     return (
-        <Grid container alignItems={"center"} spacing={8} style={styles.container}>
+        <Grid
+            container
+            alignItems={"center"}
+            spacing={8}
+            style={styles.container}
+        >
             <Grid item xs={12} sm={4} md={6} style={styles.titleWrapper}>
                 <img style={styles.logo} src={props.logo} />
 
@@ -111,9 +116,16 @@ const ContactHeader = props => {
                 )}
             </Grid>
             <Grid item xs={4} sm={2}>
-                {props.questionLink? <IconButton >
-                    <HelpIcon />
-                </IconButton>: null}
+                {props.questionLink ? (
+                    <IconButton
+                        component="a"
+                        className="js-external-link"
+                        rel="noopener"
+                        href={props.questionLink}
+                    >
+                        <HelpIcon />
+                    </IconButton>
+                ) : null}
             </Grid>
         </Grid>
     );
