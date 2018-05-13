@@ -54,7 +54,9 @@ class BunqMeTab extends React.Component {
                     <title>{`BunqDesktop - ${t("bunqme Requests")}`}</title>
                 </Helmet>
 
-                <Grid item xs={12} md={4}>
+                <Grid item hidden={{ mdDown: true }} lg={2} />
+
+                <Grid item xs={12} md={4} lg={3}>
                     <Paper style={styles.paper}>
                         <AccountList
                             BunqJSClient={this.props.BunqJSClient}
@@ -64,7 +66,7 @@ class BunqMeTab extends React.Component {
                     </Paper>
                 </Grid>
 
-                <Grid item xs={12} md={8}>
+                <Grid item xs={12} md={8} lg={6}>
                     <Collapse
                         in={this.state.showForm}
                         unmountOnExit

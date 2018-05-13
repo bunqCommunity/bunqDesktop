@@ -690,7 +690,7 @@ class Pay extends React.Component {
                     utils={DateFnsUtils}
                     locale={localeData}
                 >
-                    <Grid item xs={12} sm={10} md={6} lg={4}>
+                    <Grid item xs={12} sm={8} lg={6} xl={4}>
                         <Paper style={styles.paper}>
                             <Typography variant="headline">
                                 {t("New Payment")}

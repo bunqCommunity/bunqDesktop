@@ -413,7 +413,7 @@ class RequestInquiry extends React.Component {
                     <title>{`BunqDesktop - ${t("Pay")}`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={10} md={6} lg={4}>
+                <Grid item xs={12} sm={8} lg={6} xl={4}>
                     <Paper style={styles.paper}>
                         <TypographyTranslate variant="headline">
                             Request Payment

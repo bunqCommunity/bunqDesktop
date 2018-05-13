@@ -305,7 +305,7 @@ class RequestResponseInfo extends React.Component {
                     <title>{`BunqDesktop - ${t("Request Info")}`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={2}>
+                <Grid item xs={12} sm={2} lg={3}>
                     <Button
                         onClick={this.props.history.goBack}
                         style={styles.btn}
@@ -314,11 +314,11 @@ class RequestResponseInfo extends React.Component {
                     </Button>
                 </Grid>
 
-                <Grid item xs={12} sm={8}>
+                <Grid item xs={12} sm={8} lg={6}>
                     {content}
                 </Grid>
 
-                <Grid item xs={12} sm={2} style={{ textAlign: "right" }}>
+                <Grid item xs={12} sm={2} lg={3} style={{ textAlign: "right" }}>
                     <ExportDialog
                         closeModal={event =>
                             this.setState({ displayExport: false })}

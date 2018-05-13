@@ -99,7 +99,7 @@ class Dashboard extends React.Component {
 
                 <Grid item hidden={{ mdDown: true }} lg={2} />
 
-                <Grid item xs={12} lg={8}>
+                <Grid item xs={12} md={12} lg={8}>
                     <Grid container spacing={16}>
                         <Grid item xs={6} style={styles.titleWrapper}>
                             <IconButton
