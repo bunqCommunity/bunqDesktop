@@ -12,8 +12,8 @@ import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 import Collapse from "material-ui/transitions/Collapse";
 
-import ArrowBackIcon from "material-ui-icons/ArrowBack";
-import HelpIcon from "material-ui-icons/Help";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import HelpIcon from "@material-ui/icons/Help";
 
 import ExportDialog from "../../Components/ExportDialog";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
@@ -160,8 +160,6 @@ class RequestResponseInfo extends React.Component {
                 requestResponse,
                 t
             );
-
-            console.log(requestResponseLabel);
 
             content = [
                 <Paper style={styles.paper}>

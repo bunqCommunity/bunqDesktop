@@ -2,9 +2,8 @@ import i18n from "i18next";
 import Backend from "i18next-xhr-backend";
 import { reactI18nextModule } from "react-i18next";
 
-const remote = require("electron").remote;
-const path = remote.require("path");
-const fs = remote.require("fs");
+import fs from "./ImportWrappers/fs";
+import path from "./ImportWrappers/path";
 
 /**
  * Adds a new key to the reference locale data

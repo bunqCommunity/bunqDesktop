@@ -1,9 +1,9 @@
 import React from "react";
-import localforage from "localforage";
+import localforage from "../../ImportWrappers/localforage";
 import Logger from "../../Helpers/Logger";
 
 const defaultImageUrl =
-    "https://static.useresponse.com/public/bunq/avatars/default-avatar.svg";
+    "./images/default-avatar.svg";
 
 class AttachmentImage extends React.PureComponent {
     constructor(props, context) {

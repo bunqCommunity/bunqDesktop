@@ -25,11 +25,29 @@ export function setNativeFrame(useFrame) {
     };
 }
 
+export function setAnalyticsEnabled(analyticsEnabled) {
+    return {
+        type: "OPTIONS_SET_ANALYTICS_ENABLED",
+        payload: {
+            analytics_enabled: analyticsEnabled
+        }
+    };
+}
+
 export function setStickyMenu(stickyMenu) {
     return {
         type: "OPTIONS_SET_STICKY_MENU",
         payload: {
             sticky_menu: stickyMenu
+        }
+    };
+}
+
+export function setAutomaticThemeChange(automaticThemeChange) {
+    return {
+        type: "OPTIONS_SET_AUTOMATIC_THEME_CHANGE",
+        payload: {
+            automatic_theme_change: automaticThemeChange
         }
     };
 }

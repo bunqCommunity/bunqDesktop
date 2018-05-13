@@ -1,7 +1,9 @@
 const webpack = require("webpack");
 const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+    .BundleAnalyzerPlugin;
 
 const packageInfo = require("../../package.json");
 
@@ -15,9 +17,32 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
             "process.env.PRODUCTION": JSON.stringify(PRODUCTION),
             "process.env.WEBPACK_MODE": JSON.stringify(true)
         }),
-        new MiniCssExtractPlugin({
-            filename: "[name].css",
-            chunkFilename: "[id].css"
+        // ignore all except en/fr/de
+        new webpack.ContextReplacementPlugin(
+            /moment[\/\\]locale$/,
+            /(en|de|fr)$/
+        ),
+        // extract css to file
+        new ExtractTextPlugin({
+            filename: OUTPUT_DIR + "[name].css",
+            disable: false,
+            allChunks: true
+        }),
+        // split common chunks
+        new webpack.optimize.CommonsChunkPlugin({
+            children: true,
+            minChunks: 2
+        }),
+        // analyze bundle
+        new BundleAnalyzerPlugin({
+            // don't open the file automatically
+            openAnalyzer: false,
+            // default type to open (`stat`, `parsed` or `gzip`)
+            defaultSizes: "parse",
+            // create a server for the watcher or a static file for production enviroments
+            analyzerMode: "static",
+            // output outside of the public folder
+            reportFilename: "../../webpack.report.html"
         })
     ];
 

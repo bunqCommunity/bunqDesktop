@@ -43,6 +43,20 @@ export const validateJSON = input => {
     return true;
 };
 
+// turns date into a UTC timezone date
+export const getUTCDate = dateString => {
+    const date = new Date(dateString);
+
+    return new Date(
+        date.getUTCFullYear(),
+        date.getUTCMonth(),
+        date.getUTCDate(),
+        date.getUTCHours(),
+        date.getUTCMinutes(),
+        date.getUTCSeconds()
+    );
+};
+
 // transforms a date string into a date object in current timezone
 export const UTCDateToLocalDate = date => {
     let utcDate = date;

@@ -52,7 +52,9 @@ export default (state = defaultState, action) => {
             };
 
         case "USER_CLEAR":
-        case "REGISTRATION_CLEAR_API_KEY":
+        case "REGISTRATION_LOG_OUT":
+        case "REGISTRATION_CLEAR_PRIVATE_DATA":
+        case "REGISTRATION_LOG_OUT":
         case "REGISTRATION_CLEAR_USER_INFO":
             store.remove(USER_TYPE_LOCATION);
             return {

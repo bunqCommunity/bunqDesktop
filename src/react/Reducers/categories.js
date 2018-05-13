@@ -1,4 +1,4 @@
-const settings = require("electron").remote.require("electron-settings");
+import settings from "../ImportWrappers/electronSettings";
 import { generateGUID } from "../Helpers/Utils";
 
 export const BUNQDESKTOP_CATEGORIES = "BUNQDESKTOP_CATEGORIES";
@@ -165,6 +165,43 @@ export default function reducer(state = defaultState, action) {
                 BUNQDESKTOP_CATEGORY_CONNECTIONS,
                 category_connections
             );
+            return {
+                ...state,
+                last_update: new Date().getTime(),
+                category_connections: category_connections
+            };
+
+        case "CATEGORIES_SET_CATEGORY_CONNECTION_MULTIPLE":
+            const categoryConnectionMultiple =
+                action.payload.category_connections;
+
+            categoryConnectionMultiple.forEach(categoryConnectionItem => {
+                const catId = categoryConnectionItem.category_id;
+                const catType = categoryConnectionItem.event_type;
+                const eventId = categoryConnectionItem.event_id;
+
+                if (!category_connections[catId]) {
+                    category_connections[catId] = {};
+                }
+                if (!category_connections[catId][catType]) {
+                    category_connections[catId][catType] = [];
+                }
+
+                // prevent duplicates
+                if (
+                    category_connections[catId][catType].includes(eventId) ===
+                    false
+                ) {
+                    category_connections[catId][catType].push(eventId);
+                }
+            });
+
+            // update settings
+            settings.set(
+                BUNQDESKTOP_CATEGORY_CONNECTIONS,
+                category_connections
+            );
+            // return new state
             return {
                 ...state,
                 last_update: new Date().getTime(),

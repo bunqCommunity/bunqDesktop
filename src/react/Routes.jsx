@@ -12,6 +12,7 @@ const NotFound = CL(() =>
     import(/* webpackChunkName: "notfound" */ "./Pages/NotFound")
 );
 const Pay = CL(() => import(/* webpackChunkName: "pay" */ "./Pages/Pay/Pay"));
+const ScheduledPayments = CL(() => import(/* webpackChunkName: "pay" */ "./Pages/ScheduledPayments/ScheduledPayments"));
 const BunqMeTab = CL(() =>
     import(/* webpackChunkName: "bunqmetab" */ "./Pages/BunqMeTab/BunqMeTab")
 );
@@ -51,18 +52,30 @@ const Card = CL(() =>
 const DebugPage = CL(() =>
     import(/* webpackChunkName: "debug" */ "./Pages/DebugPage")
 );
+const Contacts = CL(() =>
+    import(/* webpackChunkName: "contacts" */ "./Pages/Contacts/Contacts")
+);
+const Profile = CL(() =>
+    import(/* webpackChunkName: "profile" */ "./Pages/Profile/Profile")
+);
 const Settings = CL(() =>
-    import(/* webpackChunkName: "debug" */ "./Pages/Settings")
+    import(/* webpackChunkName: "settings" */ "./Pages/Settings")
 );
 const Exports = CL(() =>
     import(/* webpackChunkName: "exports" */ "./Pages/Exports")
 );
-// const RuleDashboard = CL(() =>
-//     import(/* webpackChunkName: "rules_dashboard" */ "./Pages/RuleDashboard/RuleDashboard")
-// );
-// const RulePage = CL(() =>
-//     import(/* webpackChunkName: "rules_page" */ "./Pages/RulePage/RulePage")
-// );
+const RuleDashboard = CL(() =>
+    import(/* webpackChunkName: "rules_dashboard" */ "./Pages/RuleDashboard/RuleDashboard")
+);
+const RulePage = CL(() =>
+    import(/* webpackChunkName: "rules_page" */ "./Pages/RulePage/RulePage")
+);
+const SwitchApiKeys = CL(() =>
+    import(/* webpackChunkName: "switch_api_keys" */ "./Pages/SwitchApiKeys")
+);
+const Disclaimer = CL(() =>
+    import(/* webpackChunkName: "disclaimer" */ "./Pages/Disclaimer")
+);
 
 // router react component
 export default class Routes extends React.Component {
@@ -100,6 +113,16 @@ export default class Routes extends React.Component {
                             derivedPassword={this.props.derivedPassword}
                             render={props => (
                                 <Pay {...props} {...this.props.childProps} />
+                            )}
+                        />
+
+                        <PrivateRoute
+                            path="/scheduled-payments"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <ScheduledPayments {...props} {...this.props.childProps} />
                             )}
                         />
 
@@ -193,13 +216,50 @@ export default class Routes extends React.Component {
                                 />
                             )}
                         />
+
                         <PrivateRoute
-                            path="/add-account"
+                            path="/new-account"
                             apiKey={this.props.apiKey}
                             userType={this.props.userType}
                             derivedPassword={this.props.derivedPassword}
                             render={props => (
                                 <AddAccount
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
+                            )}
+                        />
+
+                        <PrivateRoute
+                            path="/card"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <Card {...props} {...this.props.childProps} />
+                            )}
+                        />
+
+                        <PrivateRoute
+                            path="/exports"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <Exports
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
+                            )}
+                        />
+
+                        <PrivateRoute
+                            path="/contacts"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <Contacts
                                     {...props}
                                     {...this.props.childProps}
                                 />
@@ -230,50 +290,58 @@ export default class Routes extends React.Component {
                         />
 
                         <PrivateRoute
-                            path="/card"
+                            path="/rules-dashboard"
                             apiKey={this.props.apiKey}
                             userType={this.props.userType}
                             derivedPassword={this.props.derivedPassword}
                             render={props => (
-                                <Card {...props} {...this.props.childProps} />
+                                <RuleDashboard
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
                             )}
                         />
 
                         <PrivateRoute
-                            path="/exports"
+                            path="/rule-page/:ruleId"
                             apiKey={this.props.apiKey}
                             userType={this.props.userType}
                             derivedPassword={this.props.derivedPassword}
                             render={props => (
-                                <Exports {...props} {...this.props.childProps} />
+                                <RulePage
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
                             )}
                         />
 
-                        {/*<PrivateRoute*/}
-                        {/*path="/rules-dashboard"*/}
-                        {/*apiKey={this.props.apiKey}*/}
-                        {/*userType={this.props.userType}*/}
-                        {/*derivedPassword={this.props.derivedPassword}*/}
-                        {/*render={props => (*/}
-                        {/*<RuleDashboard*/}
-                        {/*{...props}*/}
-                        {/*{...this.props.childProps}*/}
-                        {/*/>*/}
-                        {/*)}*/}
-                        {/*/>*/}
+                        <PrivateRoute
+                            path="/profile"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <Profile
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
+                            )}
+                        />
 
-                        {/*<PrivateRoute*/}
-                        {/*path="/rule-page/:ruleId"*/}
-                        {/*apiKey={this.props.apiKey}*/}
-                        {/*userType={this.props.userType}*/}
-                        {/*derivedPassword={this.props.derivedPassword}*/}
-                        {/*render={props => (*/}
-                        {/*<RulePage*/}
-                        {/*{...props}*/}
-                        {/*{...this.props.childProps}*/}
-                        {/*/>*/}
-                        {/*)}*/}
-                        {/*/>*/}
+                        <PrivateRoute
+                            path="/switch-api-keys"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            ignoreApiKey={true}
+                            ignoreUserType={true}
+                            render={props => (
+                                <SwitchApiKeys
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
+                            )}
+                        />
 
                         <Route
                             path="/login"
@@ -306,6 +374,16 @@ export default class Routes extends React.Component {
                             path="/settings"
                             render={props => (
                                 <Settings
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
+                            )}
+                        />
+
+                        <Route
+                            path="/disclaimer"
+                            render={props => (
+                                <Disclaimer
                                     {...props}
                                     {...this.props.childProps}
                                 />

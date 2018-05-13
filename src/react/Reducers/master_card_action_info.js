@@ -28,7 +28,8 @@ export default (state = defaultState, action) => {
             };
 
         case "MASTER_CARD_ACTION_INFO_CLEAR":
-        case "REGISTRATION_CLEAR_API_KEY":
+        case "REGISTRATION_LOG_OUT":
+        case "REGISTRATION_CLEAR_PRIVATE_DATA":
         case "REGISTRATION_CLEAR_USER_INFO":
             return {
                 master_card_action_info: false,

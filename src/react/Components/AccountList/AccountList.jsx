@@ -9,7 +9,7 @@ import List, {
     ListItemSecondaryAction
 } from "material-ui/List";
 import { CircularProgress, LinearProgress } from "material-ui/Progress";
-import RefreshIcon from "material-ui-icons/Refresh";
+import RefreshIcon from "@material-ui/icons/Refresh";
 
 import AccountListItem from "./AccountListItem";
 import AddAccount from "./AddAccount";
@@ -155,7 +155,7 @@ class AccountList extends React.Component {
             }
             return total;
         }, 0);
-        const formattedTotalBalance = formatMoney(totalBalance);
+        const formattedTotalBalance = formatMoney(totalBalance, true);
 
         return (
             <List dense={this.props.denseMode} style={styles.list}>
@@ -183,9 +183,12 @@ class AccountList extends React.Component {
                 {this.props.accountsLoading ? <LinearProgress /> : <Divider />}
                 {accounts}
                 {this.props.denseMode === false ? (
-                    <AddAccount
-                        displayAddAccount={this.props.displayAddAccount}
-                    />
+                    <React.Fragment>
+                        <AddAccount
+                            displayAddAccount={this.props.displayAddAccount}
+                        />
+                        <Divider />
+                    </React.Fragment>
                 ) : null}
             </List>
         );
@@ -202,7 +205,6 @@ const mapStateToProps = state => {
 
         hideBalance: state.options.hide_balance,
 
-        paymentType: state.payment_filter.type,
 
         accounts: state.accounts.accounts,
         accountsAccountId: state.accounts.selectedAccount,

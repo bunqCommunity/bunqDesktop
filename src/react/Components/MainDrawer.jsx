@@ -9,15 +9,18 @@ import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
 import List, { ListItem, ListItemText, ListItemIcon } from "material-ui/List";
 
-import ArrowUpwardIcon from "material-ui-icons/ArrowUpward";
-import ArrowDownwardIcon from "material-ui-icons/ArrowDownward";
-import HomeIcon from "material-ui-icons/Home";
-import SettingsIcon from "material-ui-icons/Settings";
-import ShareIcon from "material-ui-icons/Share";
-import TimeLineIcon from "material-ui-icons/Timeline";
-import CardIcon from "material-ui-icons/CreditCard";
-import Bookmark from "material-ui-icons/Bookmark";
-import FileUpload from "material-ui-icons/FileUpload";
+import ContactsIcon from "@material-ui/icons/Contacts";
+import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
+import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
+import HomeIcon from "@material-ui/icons/Home";
+import SettingsIcon from "@material-ui/icons/Settings";
+import ShareIcon from "@material-ui/icons/Share";
+import TimeLineIcon from "@material-ui/icons/Timeline";
+import CardIcon from "@material-ui/icons/CreditCard";
+import Bookmark from "@material-ui/icons/Bookmark";
+import CreateIcon from "@material-ui/icons/Create";
+import FileUpload from "@material-ui/icons/FileUpload";
+import EventIcon from "@material-ui/icons/Event";
 
 import NavLink from "./Routing/NavLink";
 import ListItemWrapper from "./ListItemWrapper";
@@ -127,11 +130,10 @@ class MainDrawer extends React.Component {
                       text={"Cards"}
                       location={this.props.location}
                   />,
-                  <Divider />,
                   <ListItemWrapper
-                      to="/stats"
-                      icon={TimeLineIcon}
-                      text={"Stats"}
+                      to="/scheduled-payments"
+                      icon={EventIcon}
+                      text={"Scheduled payments"}
                       location={this.props.location}
                   />,
                   <ListItemWrapper
@@ -140,31 +142,32 @@ class MainDrawer extends React.Component {
                       text={"Exports"}
                       location={this.props.location}
                   />,
+                  <Divider />,
+                  <ListItemWrapper
+                      to="/stats"
+                      icon={TimeLineIcon}
+                      text={"Stats"}
+                      location={this.props.location}
+                  />,
+                  <ListItemWrapper
+                      to="/contacts"
+                      icon={ContactsIcon}
+                      text={"Contacts"}
+                      location={this.props.location}
+                  />,
                   <ListItemWrapper
                       to="/category-dashboard"
                       icon={Bookmark}
                       text={"Categories"}
                       location={this.props.location}
+                  />,
+                  <ListItemWrapper
+                      to="/rules-dashboard"
+                      icon={CreateIcon}
+                      text="Category rules"
+                      location={this.props.location}
                   />
               ];
-        {
-            /*<ListItemWrapper*/
-        }
-        {
-            /*to="/rules-dashboard"*/
-        }
-        {
-            /*icon={CreateIcon}*/
-        }
-        {
-            /*text="Category rules"*/
-        }
-        {
-            /*location={this.props.location}*/
-        }
-        {
-            /*/>*/
-        }
 
         const drawerList = (
             <List style={styles.list}>

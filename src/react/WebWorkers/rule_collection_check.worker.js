@@ -40,5 +40,8 @@ onmessage = e => {
 
     // filter the results
     const result = ruleCollection.filterItems(events);
-    postMessage(result);
+    postMessage({
+        result: result,
+        ruleCollectionId: ruleCollection.getId()
+    });
 };

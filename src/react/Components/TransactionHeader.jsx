@@ -1,8 +1,8 @@
 import React from "react";
 import withTheme from "material-ui/styles/withTheme";
 import Grid from "material-ui/Grid";
-import ArrowForwardIcon from "material-ui-icons/ArrowForward";
-import ArrowDownIcon from "material-ui-icons/ArrowDownward";
+import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
+import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 import Typography from "material-ui/Typography";
 
 import LazyAttachmentImage from "./AttachmentImage/LazyAttachmentImage";
@@ -38,28 +38,40 @@ const TransactionHeader = props => {
     // color the arrows
     const arrowColor = props.theme.palette.text.primary;
 
-    let toLabelName = toAlias.label_user.public_nick_name;
-    let fromLabelName = fromAlias.label_user.public_nick_name;
+    let toIsCounterparty = false;
+    let fromIsCounterparty = false;
+    let toLabelName = toAlias.label_user.display_name;
+    let fromLabelName = fromAlias.label_user.display_name;
 
     // accounts list is available
     if (props.accounts) {
         // loop through accounts
         props.accounts.forEach(account => {
             const accountInfo = account;
-            
+
             // loop through alias to find the iban and check if it matches
             accountInfo.alias.forEach(alias => {
                 // if IBAN check if it matches the from or to alias
                 if (alias.type === "IBAN") {
                     if (alias.value === fromAlias.iban) {
                         fromLabelName = accountInfo.description;
+                        // the "from" side is this user so we show a "to" button
+                        toIsCounterparty = true;
                     }
                     if (alias.value === toAlias.iban) {
                         toLabelName = accountInfo.description;
+                        // the "to" side is this user so we show a "from" button
+                        fromIsCounterparty = true;
                     }
                 }
             });
         });
+    }
+
+    // if both are true, than both from and to targets are within personl account
+    if (toIsCounterparty && fromIsCounterparty) {
+        toIsCounterparty = false;
+        fromIsCounterparty = false;
     }
 
     const components = [
@@ -68,6 +80,14 @@ const TransactionHeader = props => {
                 width={90}
                 BunqJSClient={props.BunqJSClient}
                 imageUUID={fromAvatar}
+                onClick={() => {
+                    if (fromIsCounterparty && props.startPaymentIban) {
+                        props.startPaymentIban(fromAlias);
+                    }
+                }}
+                style={{
+                    cursor: fromIsCounterparty ? "pointer" : "default"
+                }}
             />
             <Typography variant="subheading">{fromLabelName}</Typography>
         </Grid>,
@@ -85,6 +105,14 @@ const TransactionHeader = props => {
                 width={90}
                 BunqJSClient={props.BunqJSClient}
                 imageUUID={toAvatar}
+                onClick={() => {
+                    if (toIsCounterparty && props.startPaymentIban) {
+                        props.startPaymentIban(fromAlias);
+                    }
+                }}
+                style={{
+                    cursor: toIsCounterparty ? "pointer" : "default"
+                }}
             />
 
             <Typography variant="subheading">{toLabelName}</Typography>

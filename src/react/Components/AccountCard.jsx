@@ -10,11 +10,13 @@ import Paper from "material-ui/Paper";
 import IconButton from "material-ui/IconButton";
 import Avatar from "material-ui/Avatar";
 
-import AccountBalanceIcon from "material-ui-icons/AccountBalance";
-import PhoneIcon from "material-ui-icons/Phone";
-import EmailIcon from "material-ui-icons/Email";
-import PersonIcon from "material-ui-icons/Person";
-import DeleteIcon from "material-ui-icons/Delete";
+import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
+import PhoneIcon from "@material-ui/icons/Phone";
+import EmailIcon from "@material-ui/icons/Email";
+import PersonIcon from "@material-ui/icons/Person";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import UrlIcon from "@material-ui/icons/Link";
 
 import LazyAttachmentImage from "./AttachmentImage/LazyAttachmentImage";
 import AccountQRFullscreen from "./QR/AccountQRFullscreen";
@@ -40,7 +42,8 @@ class AccountCard extends React.Component {
     render() {
         const { account } = this.props;
         const formattedBalance = formatMoney(
-            account.balance ? account.balance.value : 0
+            account.balance ? account.balance.value : 0,
+            true
         );
 
         const accountBalanceText = this.props.hideBalance
@@ -67,11 +70,22 @@ class AccountCard extends React.Component {
                         />
                         <ListItemSecondaryAction>
                             <AccountQRFullscreen accountId={account.id} />
-                            <IconButton
-                                onClick={this.props.toggleDeactivateDialog}
-                            >
-                                <DeleteIcon />
-                            </IconButton>
+
+                            {this.props.toggleSettingsDialog ? (
+                                <IconButton
+                                    onClick={this.props.toggleSettingsDialog}
+                                >
+                                    <EditIcon />
+                                </IconButton>
+                            ) : null}
+
+                            {this.props.toggleDeactivateDialog ? (
+                                <IconButton
+                                    onClick={this.props.toggleDeactivateDialog}
+                                >
+                                    <DeleteIcon />
+                                </IconButton>
+                            ) : null}
                         </ListItemSecondaryAction>
                     </ListItem>
                     {account.alias.map(alias => {
@@ -85,6 +99,9 @@ class AccountCard extends React.Component {
                                 break;
                             case "IBAN":
                                 icon = <AccountBalanceIcon />;
+                                break;
+                            case "URL":
+                                icon = <UrlIcon />;
                                 break;
                         }
 
@@ -105,5 +122,10 @@ class AccountCard extends React.Component {
         );
     }
 }
+
+AccountCard.defaultProps = {
+    toggleDeactivateDialog: false,
+    toggleSettingsDialog: false
+};
 
 export default AccountCard;

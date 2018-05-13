@@ -40,14 +40,15 @@ main {
 }
 
 .money-input {
-    width: 50%;
+    width: 100%;
     background: none;
     border: none;
     text-align: center;
-    margin: 40px auto;
+    margin: 25px auto;
     outline: none;
 }
 
 .rainbow-background {
     background-image: $backgroundRainbow;
 }
+

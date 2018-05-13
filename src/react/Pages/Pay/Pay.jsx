@@ -4,17 +4,23 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import EmailValidator from "email-validator";
+import DateFnsUtils from "material-ui-pickers/utils/date-fns-utils";
+import MuiPickersUtilsProvider from "material-ui-pickers/utils/MuiPickersUtilsProvider";
+import format from "date-fns/format";
+import enLocale from "date-fns/locale/en-US";
+import deLocale from "date-fns/locale/de";
+import nlLocale from "date-fns/locale/nl";
 
 import Grid from "material-ui/Grid";
-import TextField from "material-ui/TextField";
-import { InputLabel } from "material-ui/Input";
-import List, { ListItem, ListItemText } from "material-ui/List";
 import Button from "material-ui/Button";
 import Paper from "material-ui/Paper";
-import Typography from "material-ui/Typography";
-import { FormControl, FormControlLabel } from "material-ui/Form";
 import Switch from "material-ui/Switch";
 import Divider from "material-ui/Divider";
+import TextField from "material-ui/TextField";
+import { InputLabel } from "material-ui/Input";
+import Typography from "material-ui/Typography";
+import List, { ListItem, ListItemText } from "material-ui/List";
+import { FormControl, FormControlLabel } from "material-ui/Form";
 import Dialog, {
     DialogActions,
     DialogContent,
@@ -24,14 +30,24 @@ import Dialog, {
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
 import TargetSelection from "../../Components/FormFields/TargetSelection";
+import SchedulePaymentForm from "../../Components/FormFields/SchedulePaymentForm";
 
 import { openSnackbar } from "../../Actions/snackbar";
-import { paySend } from "../../Actions/pay";
+import { paySchedule, paySend } from "../../Actions/pay";
+import scheduleTexts from "../../Helpers/ScheduleTexts";
+import {
+    getInternationalFormat,
+    isValidPhonenumber
+} from "../../Helpers/PhoneLib";
+import { getUTCDate } from "../../Helpers/Utils";
 
 const styles = {
     payButton: {
         width: "100%",
         marginTop: 10
+    },
+    formControl: {
+        width: "100%"
     },
     formControlAlt: {
         marginBottom: 10
@@ -39,6 +55,9 @@ const styles = {
     paper: {
         padding: 24,
         textAlign: "left"
+    },
+    textField: {
+        width: "100%"
     }
 };
 
@@ -51,13 +70,20 @@ class Pay extends React.Component {
             // if true, a draft-payment will be sent instead of a default payment
             sendDraftPayment: false,
 
+            // if true the schedule payment form is shown
+            schedulePayment: false,
+            scheduleStartDate: new Date(),
+            scheduleEndDate: null,
+            recurrenceSize: 1,
+            recurrenceUnit: "ONCE",
+
             // when false, don't allow payment request
             validForm: false,
 
             // source wallet has insuffient funds
             insufficientFundsCondition: false,
 
-            // top account selection picker
+            // the "from" account selection picker
             selectedAccount: 0,
 
             // amount input field
@@ -84,11 +110,26 @@ class Pay extends React.Component {
             selectedTargetAccountError: false,
 
             // defines which type is used
-            targetType: "EMAIL"
+            targetType: "CONTACT"
         };
     }
 
     componentDidMount() {
+        const searchParams = new URLSearchParams(this.props.location.search);
+        if (searchParams.has("amount")) {
+            const amount = parseFloat(searchParams.get("amount"));
+            this.setState({ amount: amount >= 0 ? amount : amount * -1 });
+        }
+        if (searchParams.has("iban") && searchParams.has("iban-name")) {
+            const ibanParam = searchParams.get("iban");
+            const ibanNameParam = searchParams.get("iban-name");
+            this.setState({
+                target: ibanParam,
+                ibanName: ibanNameParam,
+                targetType: "IBAN"
+            });
+        }
+
         // set the current account selected on the dashboard as the active one
         this.props.accounts.map((account, accountKey) => {
             if (this.props.selectedAccount === account.id) {
@@ -160,6 +201,43 @@ class Pay extends React.Component {
         );
     };
 
+    schedulePaymentChange = () => {
+        const schedulePayment = !this.state.schedulePayment;
+
+        this.setState(
+            {
+                schedulePayment: schedulePayment
+            },
+            this.validateForm
+        );
+        if (schedulePayment) {
+            this.setState(
+                {
+                    sendDraftPayment: false
+                },
+                this.validateForm
+            );
+        }
+    };
+    draftChange = () => {
+        const sendDraftPayment = !this.state.sendDraftPayment;
+
+        this.setState(
+            {
+                sendDraftPayment: sendDraftPayment
+            },
+            this.validateForm
+        );
+        if (sendDraftPayment) {
+            this.setState(
+                {
+                    schedulePayment: false
+                },
+                this.validateForm
+            );
+        }
+    };
+
     // remove a key from the target list
     removeTarget = key => {
         const newTargets = [...this.state.targets];
@@ -188,10 +266,15 @@ class Pay extends React.Component {
                 const currentTargets = [...this.state.targets];
 
                 let foundDuplicate = false;
-                const targetValue =
+                let targetValue =
                     this.state.targetType === "TRANSFER"
                         ? this.state.selectedTargetAccount
                         : this.state.target.trim();
+
+                if (isValidPhonenumber(targetValue)) {
+                    // valid phone number, we must format as international
+                    targetValue = getInternationalFormat(targetValue);
+                }
 
                 // check for duplicates in existing target list
                 currentTargets.map(newTarget => {
@@ -245,11 +328,12 @@ class Pay extends React.Component {
         // check if the target is valid based onthe targetType
         let targetErrorCondition = false;
         switch (targetType) {
-            case "EMAIL":
-                targetErrorCondition = !EmailValidator.validate(target);
-                break;
-            case "PHONE":
-                targetErrorCondition = target.length < 5 || target.length > 64;
+            case "CONTACT":
+                const validEmail = EmailValidator.validate(target);
+                const validPhone = isValidPhonenumber(target);
+
+                // only error if both are false
+                targetErrorCondition = !validEmail && !validPhone;
                 break;
             case "TRANSFER":
                 targetErrorCondition =
@@ -280,6 +364,7 @@ class Pay extends React.Component {
             amount,
             ibanName,
             selectedAccount,
+            sendDraftPayment,
             targets
         } = this.state;
 
@@ -288,7 +373,9 @@ class Pay extends React.Component {
         const noTargetsCondition = targets.length < 0;
         const insufficientFundsCondition =
             amount !== "" &&
-            amount > (account.balance ? account.balance.value : 0);
+            // enough funds or draft enabled
+            (amount > (account.balance ? account.balance.value : 0) &&
+                sendDraftPayment === false);
         const amountErrorCondition = amount < 0.01 || amount > 10000;
         const descriptionErrorCondition = description.length > 140;
         const ibanNameErrorCondition =
@@ -325,7 +412,12 @@ class Pay extends React.Component {
             selectedAccount,
             description,
             amount,
-            targets
+            targets,
+            schedulePayment,
+            scheduleStartDate,
+            scheduleEndDate,
+            recurrenceSize,
+            recurrenceUnit
         } = this.state;
 
         // account the payment is made from
@@ -334,21 +426,30 @@ class Pay extends React.Component {
         const userId = user.id;
 
         const targetInfoList = [];
-        targets.map(target => {
+        targets.forEach(target => {
             // check if the target is valid based onthe targetType
             let targetInfo = false;
             switch (target.type) {
-                case "EMAIL":
-                    targetInfo = {
-                        type: "EMAIL",
-                        value: target.value.trim()
-                    };
-                    break;
-                case "PHONE":
-                    targetInfo = {
-                        type: "PHONE_NUMBER",
-                        value: target.value.trim()
-                    };
+                case "CONTACT":
+                    const validEmail = EmailValidator.validate(target.value);
+                    const validPhone = isValidPhonenumber(target.value);
+
+                    if (validEmail) {
+                        targetInfo = {
+                            type: "EMAIL",
+                            value: target.value.trim()
+                        };
+                    } else if (validPhone) {
+                        const formattedNumber = getInternationalFormat(
+                            target.value
+                        );
+                        if (formattedNumber) {
+                            targetInfo = {
+                                type: "PHONE_NUMBER",
+                                value: formattedNumber
+                            };
+                        }
+                    }
                     break;
                 case "TRANSFER":
                     const otherAccount = accounts[target.value];
@@ -384,14 +485,45 @@ class Pay extends React.Component {
             currency: "EUR"
         };
 
-        this.props.paySend(
-            userId,
-            account.id,
-            description,
-            amountInfo,
-            targetInfoList,
-            sendDraftPayment
-        );
+        if (schedulePayment) {
+            const schedule = {
+                time_start: format(
+                    getUTCDate(scheduleStartDate),
+                    "YYYY-MM-DD HH:mm:ss"
+                ),
+                recurrence_unit: recurrenceUnit,
+                // on once size has to be 1
+                recurrence_size: parseInt(
+                    recurrenceUnit !== "ONCE" ? recurrenceSize : 1
+                )
+            };
+
+            if (scheduleEndDate) {
+                schedule.time_end = format(
+                    getUTCDate(scheduleEndDate),
+                    "YYYY-MM-DD HH:mm:ss"
+                );
+            }
+
+            this.props.paySchedule(
+                userId,
+                account.id,
+                description,
+                amountInfo,
+                targetInfoList,
+                schedule
+            );
+        } else {
+            // regular payment/draft
+            this.props.paySend(
+                userId,
+                account.id,
+                description,
+                amountInfo,
+                targetInfoList,
+                sendDraftPayment
+            );
+        }
     };
 
     render() {
@@ -403,6 +535,26 @@ class Pay extends React.Component {
             amount,
             targets
         } = this.state;
+
+        let scheduledPaymentText = null;
+        if (this.state.schedulePayment) {
+            const scheduleTextResult = scheduleTexts(
+                t,
+                this.state.scheduleStartDate,
+                this.state.scheduleEndDate,
+                this.state.recurrenceSize,
+                this.state.recurrenceUnit
+            );
+
+            scheduledPaymentText = (
+                <ListItem>
+                    <ListItemText
+                        primary={scheduleTextResult.primary}
+                        secondary={scheduleTextResult.secondary}
+                    />
+                </ListItem>
+            );
+        }
 
         let confirmationModal = null;
         if (this.state.confirmModalOpen) {
@@ -419,6 +571,9 @@ class Pay extends React.Component {
                         break;
                     case "EMAIL":
                         primaryText = `${t("Email")}: ${targetItem.value}`;
+                        break;
+                    case "CONTACT":
+                        primaryText = `${t("Contact")}: ${targetItem.value}`;
                         break;
                     case "IBAN":
                         primaryText = `${t("IBAN")}: ${targetItem.value.replace(
@@ -488,6 +643,8 @@ class Pay extends React.Component {
                             </ListItem>
                             <Divider />
                             {confirmationModelTargets}
+
+                            {scheduledPaymentText ? scheduledPaymentText : null}
                         </List>
                     </DialogContent>
                     <DialogActions>
@@ -510,116 +667,165 @@ class Pay extends React.Component {
             );
         }
 
+        let localeData;
+        switch (this.props.language) {
+            case "nl":
+                localeData = nlLocale;
+                break;
+            case "de":
+                localeData = deLocale;
+                break;
+            case "en":
+            default:
+                localeData = enLocale;
+                break;
+        }
+
         return (
             <Grid container spacing={24} align={"center"} justify={"center"}>
                 <Helmet>
                     <title>{`BunqDesktop - Pay`}</title>
                 </Helmet>
+                <MuiPickersUtilsProvider
+                    utils={DateFnsUtils}
+                    locale={localeData}
+                >
+                    <Grid item xs={12} sm={10} md={6} lg={4}>
+                        <Paper style={styles.paper}>
+                            <Typography variant="headline">
+                                {t("New Payment")}
+                            </Typography>
 
-                <Grid item xs={12} sm={10} md={8} lg={6}>
-                    <Paper style={styles.paper}>
-                        <Typography variant="headline">
-                            {t("New Payment")}
-                        </Typography>
-
-                        <AccountSelectorDialog
-                            value={this.state.selectedAccount}
-                            onChange={this.handleChangeDirect(
-                                "selectedAccount"
-                            )}
-                            accounts={this.props.accounts}
-                            BunqJSClient={this.props.BunqJSClient}
-                        />
-                        {this.state.insufficientFundsCondition !== false ? (
-                            <InputLabel error={true}>
-                                {t(
-                                    "Your source account does not have sufficient funds!"
+                            <AccountSelectorDialog
+                                value={this.state.selectedAccount}
+                                onChange={this.handleChangeDirect(
+                                    "selectedAccount"
                                 )}
-                            </InputLabel>
-                        ) : null}
-
-                        <TargetSelection
-                            selectedTargetAccount={
-                                this.state.selectedTargetAccount
-                            }
-                            targetType={this.state.targetType}
-                            targets={this.state.targets}
-                            target={this.state.target}
-                            ibanNameError={this.state.ibanNameError}
-                            ibanName={this.state.ibanName}
-                            targetError={this.state.targetError}
-                            validForm={this.state.validForm}
-                            accounts={this.props.accounts}
-                            handleChangeDirect={this.handleChangeDirect}
-                            handleChange={this.handleChange}
-                            setTargetType={this.setTargetType}
-                            removeTarget={this.removeTarget}
-                            addTarget={this.addTarget}
-                        />
-
-                        <TextField
-                            fullWidth
-                            error={this.state.descriptionError}
-                            id="description"
-                            label={t("Description")}
-                            value={this.state.description}
-                            onChange={this.handleChange("description")}
-                            margin="normal"
-                        />
-
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    color="primary"
-                                    checked={this.state.sendDraftPayment}
-                                    onChange={() =>
-                                        this.setState({
-                                            sendDraftPayment: !this.state
-                                                .sendDraftPayment
-                                        })}
-                                />
-                            }
-                            label={t(
-                                "Draft a new payment instead of directly sending it?"
-                            )}
-                        />
-
-                        <FormControl
-                            style={styles.formControlAlt}
-                            error={this.state.amountError}
-                            fullWidth
-                        >
-                            <MoneyFormatInput
-                                id="amount"
-                                value={this.state.amount}
-                                onValueChange={this.handleChangeFormatted}
-                                onKeyPress={ev => {
-                                    if (
-                                        ev.key === "Enter" &&
-                                        this.state.validForm
-                                    ) {
-                                        this.openModal();
-                                        ev.preventDefault();
-                                    }
-                                }}
+                                accounts={this.props.accounts}
+                                BunqJSClient={this.props.BunqJSClient}
                             />
-                        </FormControl>
+                            {this.state.insufficientFundsCondition !== false ? (
+                                <InputLabel error={true}>
+                                    {t(
+                                        "Your source account does not have sufficient funds!"
+                                    )}
+                                </InputLabel>
+                            ) : null}
 
-                        <Button
-                            variant="raised"
-                            color="primary"
-                            disabled={
-                                !this.state.validForm || this.props.payLoading
-                            }
-                            style={styles.payButton}
-                            onClick={this.openModal}
-                        >
-                            {t("Pay")}
-                        </Button>
-                    </Paper>
+                            <TargetSelection
+                                selectedTargetAccount={
+                                    this.state.selectedTargetAccount
+                                }
+                                targetType={this.state.targetType}
+                                targets={this.state.targets}
+                                target={this.state.target}
+                                ibanNameError={this.state.ibanNameError}
+                                ibanName={this.state.ibanName}
+                                targetError={this.state.targetError}
+                                validForm={this.state.validForm}
+                                accounts={this.props.accounts}
+                                handleChangeDirect={this.handleChangeDirect}
+                                handleChange={this.handleChange}
+                                setTargetType={this.setTargetType}
+                                removeTarget={this.removeTarget}
+                                addTarget={this.addTarget}
+                            />
 
-                    {confirmationModal}
-                </Grid>
+                            <TextField
+                                fullWidth
+                                error={this.state.descriptionError}
+                                id="description"
+                                label={t("Description")}
+                                value={this.state.description}
+                                onChange={this.handleChange("description")}
+                                margin="normal"
+                            />
+
+                            <Grid container justify={"center"}>
+                                <Grid item xs={6}>
+                                    <FormControlLabel
+                                        control={
+                                            <Switch
+                                                color="primary"
+                                                checked={
+                                                    this.state.sendDraftPayment
+                                                }
+                                                onChange={this.draftChange}
+                                            />
+                                        }
+                                        label={t("Draft this payment")}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={6}>
+                                    <FormControlLabel
+                                        control={
+                                            <Switch
+                                                color="primary"
+                                                checked={
+                                                    this.state.schedulePayment
+                                                }
+                                                onChange={
+                                                    this.schedulePaymentChange
+                                                }
+                                            />
+                                        }
+                                        label={t("Schedule payment")}
+                                    />
+                                </Grid>
+
+                                <SchedulePaymentForm
+                                    t={t}
+                                    schedulePayment={this.state.schedulePayment}
+                                    recurrenceUnit={this.state.recurrenceUnit}
+                                    recurrenceSize={this.state.recurrenceSize}
+                                    scheduleEndDate={this.state.scheduleEndDate}
+                                    scheduleStartDate={
+                                        this.state.scheduleStartDate
+                                    }
+                                    handleChangeDirect={this.handleChangeDirect}
+                                    handleChange={this.handleChange}
+                                />
+                            </Grid>
+
+                            <FormControl
+                                style={styles.formControlAlt}
+                                error={this.state.amountError}
+                                fullWidth
+                            >
+                                <MoneyFormatInput
+                                    id="amount"
+                                    value={this.state.amount}
+                                    onValueChange={this.handleChangeFormatted}
+                                    onKeyPress={ev => {
+                                        if (
+                                            ev.key === "Enter" &&
+                                            this.state.validForm
+                                        ) {
+                                            this.openModal();
+                                            ev.preventDefault();
+                                        }
+                                    }}
+                                />
+                            </FormControl>
+
+                            <Button
+                                variant="raised"
+                                color="primary"
+                                disabled={
+                                    !this.state.validForm ||
+                                    this.props.payLoading
+                                }
+                                style={styles.payButton}
+                                onClick={this.openModal}
+                            >
+                                {t("Pay")}
+                            </Button>
+                        </Paper>
+
+                        {confirmationModal}
+                    </Grid>
+                </MuiPickersUtilsProvider>
             </Grid>
         );
     }
@@ -630,6 +836,7 @@ const mapStateToProps = state => {
         payLoading: state.pay.loading,
         accounts: state.accounts.accounts,
         selectedAccount: state.accounts.selectedAccount,
+        language: state.options.language,
         user: state.user.user
     };
 };
@@ -643,7 +850,8 @@ const mapDispatchToProps = (dispatch, props) => {
             description,
             amount,
             targets,
-            draft = false
+            draft = false,
+            schedule = false
         ) =>
             dispatch(
                 paySend(
@@ -653,7 +861,27 @@ const mapDispatchToProps = (dispatch, props) => {
                     description,
                     amount,
                     targets,
-                    draft
+                    draft,
+                    schedule
+                )
+            ),
+        paySchedule: (
+            userId,
+            accountId,
+            description,
+            amount,
+            targets,
+            schedule
+        ) =>
+            dispatch(
+                paySchedule(
+                    BunqJSClient,
+                    userId,
+                    accountId,
+                    description,
+                    amount,
+                    targets,
+                    schedule
                 )
             ),
         openSnackbar: message => dispatch(openSnackbar(message))

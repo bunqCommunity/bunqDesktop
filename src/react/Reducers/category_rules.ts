@@ -1,10 +1,11 @@
-const store = require("store");
+import settings from "../ImportWrappers/electronSettings";
+
 import { STORED_CATEGORY_RULES } from "../Actions/category_rules";
 
 import { RuleCollectionList } from "../Types/Types";
 import RuleCollection from "../Types/RuleCollection";
 
-const categoryRulesStored = store.get(STORED_CATEGORY_RULES);
+const categoryRulesStored = settings.get(STORED_CATEGORY_RULES);
 const categoryRulesDefault: RuleCollectionList =
     categoryRulesStored !== undefined ? categoryRulesStored : [];
 
@@ -36,7 +37,7 @@ export default (state = defaultState, action) => {
                 action.payload.category_rules;
 
             // store the category rules
-            store.set(STORED_CATEGORY_RULES, category_rules_new);
+            settings.set(STORED_CATEGORY_RULES, category_rules_new);
 
             return {
                 ...state,
@@ -53,7 +54,7 @@ export default (state = defaultState, action) => {
             category_rules[categoryRuleId] = rule_collection;
 
             // store the category rules
-            store.set(STORED_CATEGORY_RULES, category_rules);
+            settings.set(STORED_CATEGORY_RULES, category_rules);
 
             return {
                 ...state,
@@ -70,12 +71,27 @@ export default (state = defaultState, action) => {
             }
 
             // store the category rules
-            store.set(STORED_CATEGORY_RULES, category_rules);
+            settings.set(STORED_CATEGORY_RULES, category_rules);
 
             return {
                 ...state,
                 last_update: new Date().getTime(),
                 category_rules: category_rules
+            };
+
+        // update categories in new settings location
+        case "OPTIONS_OVERWRITE_SETTINGS_LOCATION":
+            settings.set(STORED_CATEGORY_RULES, state.category_rules);
+
+        // load categories from new settings location
+        case "OPTIONS_LOAD_SETTINGS_LOCATION":
+            const storedCategoryRules = settings.get(STORED_CATEGORY_RULES);
+            return {
+                ...state,
+                last_update: new Date().getTime(),
+                category_rules: storedCategoryRules
+                    ? storedCategoryRules
+                    : state.category_rules
             };
     }
     return state;

@@ -41,7 +41,8 @@ export default (state = defaultState, action) => {
             };
 
         case "CARDS_CLEAR":
-        case "REGISTRATION_CLEAR_API_KEY":
+        case "REGISTRATION_CLEAR_PRIVATE_DATA":
+        case "REGISTRATION_LOG_OUT":
         case "REGISTRATION_CLEAR_USER_INFO":
             store.remove(SELECTED_CARD_LOCATION);
             return {

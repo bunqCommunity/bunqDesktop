@@ -8,6 +8,12 @@ import NavLink from "./Routing/NavLink";
 const styles = {
     listBottomItem: {
         flex: 0
+    },
+    propIcon: {
+        marginRight: 16,
+        flexShrink: 0,
+        height: 24,
+        width: 24
     }
 };
 
@@ -32,11 +38,11 @@ export default ({
         rest.component = NavLink;
     }
 
+    const iconColor = isActive ? "primary" : "action";
+
     return (
         <ListItem style={styles.listBottomItem} {...rest}>
-            <ListItemIcon>
-                <PropIcon color={isActive ? "primary" : "inherit"} />
-            </ListItemIcon>
+            <PropIcon color={iconColor} style={styles.propIcon} />
             <TranslateTypography variant="subheading">
                 {text}
             </TranslateTypography>

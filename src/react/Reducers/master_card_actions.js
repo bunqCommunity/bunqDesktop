@@ -23,7 +23,6 @@ export default (state = defaultState, action) => {
                 state.account_id !== action.payload.account_id;
 
             const mergedInfo = MergeApiObjects(
-                "MasterCardAction",
                 action.payload.masterCardActions,
                 ignoreOldItems ? [] : master_card_actions
             );
@@ -63,7 +62,8 @@ export default (state = defaultState, action) => {
             };
 
         case "MASTER_CARD_ACTIONS_CLEAR":
-        case "REGISTRATION_CLEAR_API_KEY":
+        case "REGISTRATION_LOG_OUT":
+        case "REGISTRATION_CLEAR_PRIVATE_DATA":
         case "REGISTRATION_CLEAR_USER_INFO":
             store.remove(STORED_MASTER_CARD_ACTIONS);
             return {

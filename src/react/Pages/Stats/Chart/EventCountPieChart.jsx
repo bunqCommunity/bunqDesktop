@@ -6,7 +6,7 @@ import {
     paymentColor,
     requestInquiryColor,
     requestResponseColor
-} from "./Colors";
+} from "../Colors";
 
 export default props => {
     const defaultOptions = {
@@ -20,7 +20,7 @@ export default props => {
     const pieChartData = {
         labels: [
             "Payments",
-            "Mastercard payments",
+            "Card payments",
             "Requests sent",
             "Requests received",
             "bunq.me requests"
@@ -54,7 +54,10 @@ export default props => {
 
     const pieChartOptions = {
         legend: {
-            position: "top"
+            position: "top",
+            labels: {
+                fontColor: props.theme.palette.text.primary
+            }
         }
     };
 

@@ -3,11 +3,9 @@ import { connect } from "react-redux";
 import { translate } from "react-i18next";
 import Grid from "material-ui/Grid";
 import Divider from "material-ui/Divider";
-import Button from "material-ui/Button";
 import Collapse from "material-ui/transitions/Collapse";
 
 import TranslateButton from "../TranslationHelpers/Button";
-import TranslateTypography from "../TranslationHelpers/Typography";
 
 import CategoryChips from "./CategoryChips";
 import {
@@ -28,6 +26,12 @@ class CategorySelector extends React.Component {
         this.state = {
             open: false
         };
+    }
+
+    componentDidMount() {
+        if (!this.props.displayToggleButton) {
+            this.setState({ open: true });
+        }
     }
 
     handleDisconnect = event => {
@@ -55,7 +59,7 @@ class CategorySelector extends React.Component {
     };
 
     render() {
-        const { item, type, t } = this.props;
+        const { item, type, displayToggleButton, t } = this.props;
         if (!item[type]) return null;
         const itemInfo = item[type];
 
@@ -75,16 +79,22 @@ class CategorySelector extends React.Component {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <TranslateButton
-                        onClick={_ => this.setState({ open: !this.state.open })}
-                    >
-                        {this.state.open ? "Cancel" : "Manage categories"}
-                    </TranslateButton>
+                    {displayToggleButton ? (
+                        <TranslateButton
+                            onClick={_ =>
+                                this.setState({ open: !this.state.open })}
+                        >
+                            {this.state.open ? "Cancel" : "Manage categories"}
+                        </TranslateButton>
+                    ) : null}
                 </Grid>
 
                 <Grid item xs={12}>
+                    <Divider />
+                </Grid>
+                
+                <Grid item xs={12}>
                     <Collapse in={this.state.open}>
-                        <Divider />
                         <CategoryChips
                             type={type}
                             id={itemInfo.id}
@@ -99,7 +109,8 @@ class CategorySelector extends React.Component {
 }
 
 CategorySelector.defaultProps = {
-    style: {}
+    style: {},
+    displayToggleButton: true
 };
 
 const mapStateToProps = state => {

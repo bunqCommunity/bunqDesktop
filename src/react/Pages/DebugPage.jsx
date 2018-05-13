@@ -3,6 +3,9 @@ import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import ReactJson from "react-json-view";
 import Grid from "material-ui/Grid";
+import Button from "material-ui/Button";
+
+import ReactJsonWrapper from "../Components/ReactJsonWrapper"
 
 const styles = {
     paper: {
@@ -38,21 +41,16 @@ class DebugPage extends React.Component {
                 </Helmet>
 
                 <Grid item xs={12}>
-                    <ReactJson
+                    <Button onClick={() => this.props.history.push("/")}>
+                        Home
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12}>
+                    <ReactJsonWrapper
                         style={styles.paper}
-                        src={modifiedState}
+                        data={modifiedState}
                         name="BunqDesktopState"
-                        theme="monokai"
-                        iconStyle="square"
-                        enableEdit={false}
-                        enableAdd={false}
-                        enabledDelete={false}
-                        enableClipboard={true}
-                        displayDataTypes={true}
-                        displayObjectSize={true}
-                        indentWidth={2}
-                        collapsed={1}
-                        collapseStringsAfterLength={30}
                     />
                 </Grid>
             </Grid>
@@ -66,8 +64,4 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
-    return {};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(DebugPage);
+export default connect(mapStateToProps)(DebugPage);

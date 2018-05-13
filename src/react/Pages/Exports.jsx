@@ -1,11 +1,14 @@
 import React from "react";
 import { translate } from "react-i18next";
-import { subMonths } from "date-fns";
+import subMonths from "date-fns/subMonths";
+import format from "date-fns/format/index.js";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import DatePicker from "material-ui-pickers/DatePicker/index.js";
 import Grid from "material-ui/Grid";
 import Avatar from "material-ui/Avatar";
+import AppBar from "material-ui/AppBar";
+import Typography from "material-ui/Typography";
 import IconButton from "material-ui/IconButton";
 import { MenuItem } from "material-ui/Menu";
 import { FormControl } from "material-ui/Form";
@@ -15,28 +18,32 @@ import Select from "material-ui/Select";
 import { LinearProgress, CircularProgress } from "material-ui/Progress";
 import Input, { InputLabel } from "material-ui/Input";
 import List, { ListItem, ListItemText } from "material-ui/List";
+import Tabs, { Tab } from "material-ui/Tabs";
 import InputAdornment from "material-ui/Input/InputAdornment";
 
-import FolderIcon from "material-ui-icons/Folder";
-import RefreshIcon from "material-ui-icons/Refresh";
+import FolderIcon from "@material-ui/icons/Folder";
+import RefreshIcon from "@material-ui/icons/Refresh";
 
 import { shell } from "electron";
 const remote = require("electron").remote;
-const app = remote.app;
-const fs = remote.require("fs");
-const path = remote.require("path");
+const app = remote ? remote.app : {};
+import fs from "../ImportWrappers/fs";
+import path from "../ImportWrappers/path";
 
 import AccountList from "../Components/AccountList/AccountList";
 import TranslateTypography from "../Components/TranslationHelpers/Typography";
 import TranslateButton from "../Components/TranslationHelpers/Button";
+import CombinedList from "../Components/CombinedList/CombinedList";
 
 import Logger from "../Helpers/Logger";
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { humanReadableDate } from "../Helpers/Utils";
+import CategoryHelper from "../Helpers/CategoryHelper";
 
 import { openSnackbar } from "../Actions/snackbar";
 import { exportNew } from "../Actions/export_new";
 import { exportInfoUpdate } from "../Actions/exports";
+import { paymentFilter, masterCardActionFilter } from "../Helpers/DataFilters";
 
 const styles = {
     selectField: {
@@ -66,7 +73,9 @@ class Exports extends React.Component {
             dateTo: new Date(),
             dateFrom: subMonths(new Date(), 1),
 
-            exportContentLoading: false
+            exportContentLoading: false,
+
+            selectedTab: 0
         };
     }
 
@@ -86,6 +95,68 @@ class Exports extends React.Component {
             );
         }
     }
+
+    paymentMapper = () => {
+        return this.props.payments
+            .filter(
+                paymentFilter({
+                    categories: this.props.categories,
+                    categoryConnections: this.props.categoryConnections,
+                    selectedCategories: this.props.selectedCategories,
+
+                    searchTerm: this.props.searchTerm,
+                    paymentVisibility: this.props.paymentVisibility,
+                    paymentType: this.props.paymentType,
+                    dateFromFilter: this.props.dateFromFilter,
+                    dateToFilter: this.props.dateToFilter
+                })
+            )
+            .map(payment => {
+                const categories = CategoryHelper(
+                    this.props.categories,
+                    this.props.categoryConnections,
+                    "Payment",
+                    payment.id
+                );
+
+                return {
+                    date: payment.created,
+                    info: payment,
+                    categories: categories
+                };
+            });
+    };
+
+    masterCardActionMapper = () => {
+        return this.props.masterCardActions
+            .filter(
+                masterCardActionFilter({
+                    categories: this.props.categories,
+                    categoryConnections: this.props.categoryConnections,
+                    selectedCategories: this.props.selectedCategories,
+
+                    searchTerm: this.props.searchTerm,
+                    paymentVisibility: this.props.paymentVisibility,
+                    paymentType: this.props.paymentType,
+                    dateFromFilter: this.props.dateFromFilter,
+                    dateToFilter: this.props.dateToFilter
+                })
+            )
+            .map(masterCardAction => {
+                const categories = CategoryHelper(
+                    this.props.categories,
+                    this.props.categoryConnections,
+                    "MasterCardAction",
+                    masterCardAction.id
+                );
+
+                return {
+                    date: masterCardAction.created,
+                    info: masterCardAction,
+                    categories: categories
+                };
+            });
+    };
 
     updateExports = (userId, accountId) => {
         if (!this.props.initialBunqConnect) {
@@ -178,7 +249,7 @@ class Exports extends React.Component {
                     // set event handler
                     fileReader.onload = result => {
                         // store the resulting arraybuffer in the downloads folder
-                        this.downloadFile(
+                        this.storeFile(
                             Buffer.from(new Uint8Array(result.target.result)),
                             fileName
                         );
@@ -195,7 +266,84 @@ class Exports extends React.Component {
         }
     };
 
-    downloadFile = (content, fileName) => {
+    createCustomExport = () => {
+        const payments = this.paymentMapper();
+        const masterCardActions = this.masterCardActionMapper();
+
+        const events = [...masterCardActions, ...payments]
+            .sort(function(a, b) {
+                return b.date - a.date;
+            })
+            .reverse();
+
+        const columnNames = [
+            "Date",
+            "Time",
+            "Amount",
+            "Account",
+            "Counterparty",
+            "Name",
+            "Description",
+            "Categories",
+            "EventType",
+            "EventId",
+            "Type",
+            "SubType",
+            "AuthorisationStatus",
+            "AuthorisationType"
+        ];
+
+        const columnRows = [];
+        events.forEach(event => {
+            const info = event.info;
+            const labels = event.categories.map(category => category.label);
+            columnRows.push([
+                format(event.date, "YYYY-MM-DD"),
+                format(event.date, "HH:mm:ss"),
+                info.getDelta(),
+                info.alias.iban,
+                info.counterparty_alias.iban,
+                info.counterparty_alias.display_name,
+                info.description.replace("\n", " "),
+                labels.join(","),
+                info.eventType,
+                info.id,
+                info.type,
+                info.sub_type,
+                info.authorisation_status,
+                info.authorisation_type
+            ]);
+        });
+
+        let resultingCsv = columnNames.join(";");
+        columnRows.forEach(row => {
+            resultingCsv += `\n${row.join(";")}`;
+        });
+
+        // if no from date is set, the export targets the oldest event
+        const dateFromFilter = this.props.dateFromFilter
+            ? this.props.dateFromFilter
+            : events[0].date;
+        // if no date is set the bunqdesktop app creates a date range which defaults to today
+        const dateToFilter = this.props.dateToFilter
+            ? this.props.dateToFilter
+            : new Date();
+
+        // format a file name
+        const startDateLabel = format(dateFromFilter, "YYYY-MM-DD");
+        const endDateLabel = format(dateToFilter, "YYYY-MM-DD");
+        const fileName = `bunqdesktop-export.${startDateLabel}_${endDateLabel}.csv`;
+
+        // store the file using our custom output
+        this.storeFile(resultingCsv, fileName);
+    };
+
+    /**
+     * Stores content in the downloads folder using a given name
+     * @param content
+     * @param fileName
+     */
+    storeFile = (content, fileName) => {
         const downloadDir = app.getPath("downloads");
         const targetFile = `${downloadDir}${path.sep}${fileName}`;
 
@@ -258,169 +406,252 @@ class Exports extends React.Component {
                 </Grid>
 
                 <Grid item xs={12} md={8}>
-                    <Paper style={styles.paper}>
-                        <Grid container spacing={16}>
-                            <Grid item xs={12}>
-                                <TranslateTypography variant={"headline"}>
-                                    New export
-                                </TranslateTypography>
-                            </Grid>
+                    <AppBar position="static">
+                        <Tabs
+                            value={this.state.selectedTab}
+                            onChange={(event, value) =>
+                                this.setState({ selectedTab: value })}
+                        >
+                            <Tab value={0} label="bunq Exports" />
+                            <Tab value={1} label="Custom Exports" />
+                        </Tabs>
+                    </AppBar>
 
-                            <Grid item xs={12} md={6}>
-                                <FormControl style={styles.formControl}>
-                                    <InputLabel htmlFor="export-type-selection">
-                                        {t("Export type")}
-                                    </InputLabel>
-                                    <Select
-                                        value={this.state.exportType}
-                                        onChange={this.handleExportTypeChange}
-                                        input={
-                                            <Input id="export-type-selection" />
-                                        }
-                                        style={styles.selectField}
-                                    >
-                                        <MenuItem value={"CSV"}>CSV</MenuItem>
-                                        <MenuItem value={"MT940"}>
-                                            MT940
-                                        </MenuItem>
-                                        <MenuItem value={"PDF"}>PDF</MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </Grid>
+                    {this.state.selectedTab === 0 ? (
+                        <React.Fragment>
+                            <Paper style={styles.paper}>
+                                <Grid container spacing={16}>
+                                    <Grid item xs={12}>
+                                        <TranslateTypography
+                                            variant={"headline"}
+                                        >
+                                            New export
+                                        </TranslateTypography>
+                                    </Grid>
 
-                            <Grid item xs={12} md={6}>
-                                <FormControl style={styles.formControl}>
-                                    <InputLabel htmlFor="regional-format-selection">
-                                        {t("Regional format")}
-                                    </InputLabel>
-                                    <Select
-                                        value={this.state.regionalFormat}
-                                        onChange={
-                                            this.handleRegionalFormatChange
-                                        }
-                                        input={
-                                            <Input id="regional-format-selection" />
-                                        }
-                                        style={styles.selectField}
-                                    >
-                                        <MenuItem value={"UK_US"}>
-                                            UK_US (comma-separated)
-                                        </MenuItem>
-                                        <MenuItem value={"EUROPEAN"}>
-                                            EUROPEAN (semicolon-separated)
-                                        </MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </Grid>
+                                    <Grid item xs={12} md={6}>
+                                        <FormControl style={styles.formControl}>
+                                            <InputLabel htmlFor="export-type-selection">
+                                                {t("Export type")}
+                                            </InputLabel>
+                                            <Select
+                                                value={this.state.exportType}
+                                                onChange={
+                                                    this.handleExportTypeChange
+                                                }
+                                                input={
+                                                    <Input id="export-type-selection" />
+                                                }
+                                                style={styles.selectField}
+                                            >
+                                                <MenuItem value={"CSV"}>
+                                                    CSV
+                                                </MenuItem>
+                                                <MenuItem value={"MT940"}>
+                                                    MT940
+                                                </MenuItem>
+                                                <MenuItem value={"PDF"}>
+                                                    PDF
+                                                </MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
 
-                            <Grid item xs={12} md={6}>
-                                <DatePicker
-                                    id="from-date"
-                                    helperText={t("From date")}
-                                    emptyLabel="No filter"
-                                    format="MMMM DD, YYYY"
-                                    disableFuture
-                                    style={styles.dateInput}
-                                    maxDate={this.state.dateTo}
-                                    value={this.state.dateFrom}
-                                    onChange={this.handleDateFromChange}
-                                    clearable={true}
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    onClick={this.clearDateFrom}
-                                                >
-                                                    <Icon>clear</Icon>
-                                                </IconButton>
-                                            </InputAdornment>
-                                        )
-                                    }}
-                                />
-                            </Grid>
+                                    <Grid item xs={12} md={6}>
+                                        <FormControl style={styles.formControl}>
+                                            <InputLabel htmlFor="regional-format-selection">
+                                                {t("Regional format")}
+                                            </InputLabel>
+                                            <Select
+                                                value={
+                                                    this.state.regionalFormat
+                                                }
+                                                onChange={
+                                                    this
+                                                        .handleRegionalFormatChange
+                                                }
+                                                input={
+                                                    <Input id="regional-format-selection" />
+                                                }
+                                                style={styles.selectField}
+                                            >
+                                                <MenuItem value={"UK_US"}>
+                                                    UK_US (comma-separated)
+                                                </MenuItem>
+                                                <MenuItem value={"EUROPEAN"}>
+                                                    EUROPEAN
+                                                    (semicolon-separated)
+                                                </MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
 
-                            <Grid item xs={12} md={6}>
-                                <DatePicker
-                                    id="to-date"
-                                    helperText={t("To date")}
-                                    emptyLabel="No filter"
-                                    format="MMMM DD, YYYY"
-                                    disableFuture
-                                    style={styles.dateInput}
-                                    minDate={this.state.dateFrom}
-                                    value={this.state.dateTo}
-                                    onChange={this.handleDateToChange}
-                                    clearable={true}
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    onClick={this.clearDateTo}
-                                                >
-                                                    <Icon>clear</Icon>
-                                                </IconButton>
-                                            </InputAdornment>
-                                        )
-                                    }}
-                                />
-                            </Grid>
+                                    <Grid item xs={12} md={6}>
+                                        <DatePicker
+                                            id="from-date"
+                                            helperText={t("From date")}
+                                            emptyLabel="No filter"
+                                            format="MMMM DD, YYYY"
+                                            disableFuture
+                                            style={styles.dateInput}
+                                            maxDate={this.state.dateTo}
+                                            value={this.state.dateFrom}
+                                            onChange={this.handleDateFromChange}
+                                            clearable={true}
+                                            InputProps={{
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            onClick={
+                                                                this
+                                                                    .clearDateFrom
+                                                            }
+                                                        >
+                                                            <Icon>clear</Icon>
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                )
+                                            }}
+                                        />
+                                    </Grid>
 
-                            <Grid item xs={12} md={6}>
-                                <TranslateButton
-                                    variant="raised"
-                                    color="primary"
-                                    onClick={this.createNew}
-                                    disabled={
-                                        this.props.exportNewLoading ||
-                                        this.props.exportsLoading ||
-                                        this.state.dateFrom === null ||
-                                        this.state.dateTo === null
-                                    }
-                                >
-                                    Create export
-                                </TranslateButton>
-                            </Grid>
-                        </Grid>
-                    </Paper>
+                                    <Grid item xs={12} md={6}>
+                                        <DatePicker
+                                            id="to-date"
+                                            helperText={t("To date")}
+                                            emptyLabel="No filter"
+                                            format="MMMM DD, YYYY"
+                                            disableFuture
+                                            style={styles.dateInput}
+                                            minDate={this.state.dateFrom}
+                                            value={this.state.dateTo}
+                                            onChange={this.handleDateToChange}
+                                            clearable={true}
+                                            InputProps={{
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            onClick={
+                                                                this.clearDateTo
+                                                            }
+                                                        >
+                                                            <Icon>clear</Icon>
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                )
+                                            }}
+                                        />
+                                    </Grid>
 
-                    <Paper style={styles.paper}>
-                        <Grid container spacing={16}>
-                            <Grid item xs={8} md={10}>
-                                <TranslateTypography variant={"headline"}>
-                                    Existing Exports
-                                </TranslateTypography>
-                            </Grid>
+                                    <Grid item xs={12} md={6}>
+                                        <TranslateButton
+                                            variant="raised"
+                                            color="primary"
+                                            onClick={this.createNew}
+                                            disabled={
+                                                this.props.exportNewLoading ||
+                                                this.props.exportsLoading ||
+                                                this.state.dateFrom === null ||
+                                                this.state.dateTo === null
+                                            }
+                                        >
+                                            Create export
+                                        </TranslateButton>
+                                    </Grid>
+                                </Grid>
+                            </Paper>
 
-                            <Grid item xs={2} md={1}>
-                                {this.props.exportsLoading ? (
-                                    <CircularProgress />
-                                ) : (
-                                    <IconButton onClick={this.refreshClick}>
-                                        <RefreshIcon />
-                                    </IconButton>
-                                )}
-                            </Grid>
-                            <Grid item xs={2} md={1}>
-                                <IconButton
-                                    onClick={() =>
-                                        shell.openItem(
-                                            app.getPath("downloads")
+                            <Paper style={styles.paper}>
+                                <Grid container spacing={16}>
+                                    <Grid item xs={8} md={10}>
+                                        <TranslateTypography
+                                            variant={"headline"}
+                                        >
+                                            Existing Exports
+                                        </TranslateTypography>
+                                    </Grid>
+
+                                    <Grid item xs={2} md={1}>
+                                        {this.props.exportsLoading ? (
+                                            <CircularProgress />
+                                        ) : (
+                                            <IconButton
+                                                onClick={this.refreshClick}
+                                            >
+                                                <RefreshIcon />
+                                            </IconButton>
                                         )}
-                                >
-                                    <FolderIcon />
-                                </IconButton>
-                            </Grid>
+                                    </Grid>
+                                    <Grid item xs={2} md={1}>
+                                        <IconButton
+                                            onClick={() =>
+                                                shell.openItem(
+                                                    app.getPath("downloads")
+                                                )}
+                                        >
+                                            <FolderIcon />
+                                        </IconButton>
+                                    </Grid>
 
-                            <Grid item xs={12}>
-                                <List>
-                                    {this.props.exportsLoading ? (
-                                        <LinearProgress />
-                                    ) : null}
-                                    {exportItems}
-                                </List>
-                            </Grid>
-                        </Grid>
-                    </Paper>
+                                    <Grid item xs={12}>
+                                        <List>
+                                            {this.props.exportsLoading ? (
+                                                <LinearProgress />
+                                            ) : null}
+                                            {exportItems}
+                                        </List>
+                                    </Grid>
+                                </Grid>
+                            </Paper>
+                        </React.Fragment>
+                    ) : null}
+
+                    {this.state.selectedTab === 1 ? (
+                        <React.Fragment>
+                            <Paper style={styles.paper}>
+                                <Grid container spacing={16}>
+                                    <Grid item xs={12}>
+                                        <TranslateTypography
+                                            variant={"headline"}
+                                        >
+                                            New custom export
+                                        </TranslateTypography>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <Typography variant={"body1"}>
+                                            The export will include all the
+                                            events shown in the list below
+                                        </Typography>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6}>
+                                        <TranslateButton
+                                            variant="raised"
+                                            color="primary"
+                                            onClick={this.createCustomExport}
+                                        >
+                                            Create export
+                                        </TranslateButton>
+                                    </Grid>
+                                </Grid>
+                            </Paper>
+
+                            <Paper>
+                                <CombinedList
+                                    BunqJSClient={this.props.BunqJSClient}
+                                    initialBunqConnect={
+                                        this.props.initialBunqConnect
+                                    }
+                                    hiddenTypes={[
+                                        "BunqMeTab",
+                                        "RequestInquiry",
+                                        "RequestResponse"
+                                    ]}
+                                />
+                            </Paper>
+                        </React.Fragment>
+                    ) : null}
                 </Grid>
             </Grid>
         );
@@ -433,9 +664,20 @@ const mapStateToProps = state => {
         accountsAccountId: state.accounts.selectedAccount,
 
         exportNewLoading: state.export_new.loading,
-
         exports: state.exports.exports,
-        exportsLoading: state.exports.loading
+        exportsLoading: state.exports.loading,
+
+        searchTerm: state.search_filter.search_term,
+        dateFromFilter: state.date_filter.from_date,
+        dateToFilter: state.date_filter.to_date,
+
+        categories: state.categories.categories,
+        categoryConnections: state.categories.category_connections,
+
+        masterCardActions: state.master_card_actions.master_card_actions,
+        masterCardActionsLoading: state.master_card_actions.loading,
+        payments: state.payments.payments,
+        paymentsLoading: state.payments.loading
     };
 };
 

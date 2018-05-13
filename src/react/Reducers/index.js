@@ -6,9 +6,11 @@ import bunq_me_tabs from "./bunq_me_tabs";
 import bunq_me_tab_filter from "./bunq_me_tab_filter";
 import bunq_me_tab from "./bunq_me_tab";
 import categories from "./categories";
+import category_filter from "./category_filter";
 import cards from "./cards";
 import card_cvc2 from "./card_cvc2";
 import category_rules from "./category_rules.ts";
+import contacts from "./contacts";
 import date_filter from "./date_filter";
 import export_new from "./export_new";
 import exports from "./exports";
@@ -35,6 +37,8 @@ import request_inquiry_info from "./request_inquiry_info";
 import request_responses from "./request_responses";
 import request_response from "./request_response";
 import request_response_info from "./request_response_info";
+import scheduled_payments from "./scheduled_payments";
+import search_filter from "./search_filter";
 
 export default combineReducers({
     accounts,
@@ -43,20 +47,16 @@ export default combineReducers({
     bunq_me_tab_filter,
     bunq_me_tabs,
     categories,
+    category_filter,
     cards,
     card_cvc2,
     category_rules,
+    contacts,
     date_filter,
     export_new,
     exports,
     general_filter,
     modal,
-    user,
-    users,
-    registration,
-    request_filter,
-    snackbar,
-    theme,
     main_drawer,
     master_card_actions,
     master_card_action_info,
@@ -66,10 +66,18 @@ export default combineReducers({
     payment_info,
     payment_filter,
     payments,
+    scheduled_payments,
+    registration,
+    request_filter,
     request_inquiries,
     request_inquiry,
     request_inquiry_info,
     request_responses,
     request_response,
-    request_response_info
+    request_response_info,
+    search_filter,
+    snackbar,
+    theme,
+    user,
+    users
 });

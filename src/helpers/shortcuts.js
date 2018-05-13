@@ -9,6 +9,12 @@ export default (window, app) => {
     localShortcuts.register(window, "CmdOrCtrl+H", () => {
         window.webContents.send("toggle-balance");
     });
+    localShortcuts.register(window, "CmdOrCtrl+T", () => {
+        window.webContents.send("toggle-theme");
+    });
+    localShortcuts.register(window, "F5", () => {
+        window.reload();
+    });
 
     localShortcuts.register(window, "CmdOrCtrl+D", () => {
         changePage(window, "/");
@@ -21,5 +27,8 @@ export default (window, app) => {
     });
     localShortcuts.register(window, "Alt+C", () => {
         changePage(window, "/card");
+    });
+    localShortcuts.register(window, "Alt+S", () => {
+        changePage(window, "/settings");
     });
 };

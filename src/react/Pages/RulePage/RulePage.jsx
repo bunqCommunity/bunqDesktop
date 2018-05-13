@@ -3,17 +3,18 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Grid from "material-ui/Grid";
+import Button from "material-ui/Button";
+import Typography from "material-ui/Typography";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 import RuleCreator from "./RuleCreator.tsx";
 import RuleCollection from "../../Types/RuleCollection";
+import RuleCollectionPreview from "./RuleCollectionPreview";
 import {
     setCategoryRule,
     removeCategoryRule
 } from "../../Actions/category_rules";
 import { openSnackbar } from "../../Actions/snackbar";
-import RuleCollectionPreview from "./RuleCollectionPreview";
-
-const styles = {};
 
 class RulesPage extends React.Component {
     constructor(props, context) {
@@ -56,12 +57,19 @@ class RulesPage extends React.Component {
         const masterCardActions = this.props.masterCardActions.map(item =>
             item.toJSON()
         );
+        const bunqMeTabs = this.props.bunqMeTabs.map(item => item.toJSON());
 
         return (
             <Grid container spacing={16}>
                 <Helmet>
                     <title>{`BunqDesktop - ${t("Rule Editor")}`}</title>
                 </Helmet>
+
+                <Grid item xs={12}>
+                    <Button onClick={this.props.history.goBack}>
+                        <ArrowBackIcon />
+                    </Button>
+                </Grid>
 
                 <Grid item xs={12}>
                     <RuleCreator
@@ -74,7 +82,10 @@ class RulesPage extends React.Component {
                         removeCategoryCollection={this.props.removeCategoryRule}
                     />
                 </Grid>
-                <Grid item xs={12}>
+
+                <Grid item xs={12} md={2} />
+
+                <Grid item xs={12} md={8}>
                     <RuleCollectionPreview
                         t={t}
                         ruleCollection={this.state.previewRuleCollection}
@@ -82,7 +93,7 @@ class RulesPage extends React.Component {
                         payments={payments}
                         requestInquiries={requestInquiries}
                         masterCardActions={masterCardActions}
-                        bunqMeTabs={this.props.bunqMeTabs}
+                        bunqMeTabs={bunqMeTabs}
                         requestResponses={requestResponses}
                     />
                 </Grid>

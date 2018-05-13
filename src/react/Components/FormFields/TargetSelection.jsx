@@ -1,6 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { translate } from "react-i18next";
+import CopyToClipboard from "react-copy-to-clipboard";
 
 import Grid from "material-ui/Grid";
 import Radio from "material-ui/Radio";
@@ -8,19 +10,15 @@ import Avatar from "material-ui/Avatar";
 import Chip from "material-ui/Chip";
 import TextField from "material-ui/TextField";
 import Button from "material-ui/Button";
-import Typography from "material-ui/Typography";
-import { FormControl, FormControlLabel } from "material-ui/Form";
-import CopyToClipboard from "react-copy-to-clipboard";
+import { FormControlLabel } from "material-ui/Form";
 
-import AccountBalanceIcon from "material-ui-icons/AccountBalance";
-import EmailIcon from "material-ui-icons/Email";
-import PhoneIcon from "material-ui-icons/Phone";
-import CompareArrowsIcon from "material-ui-icons/CompareArrows";
+import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
+import CompareArrowsIcon from "@material-ui/icons/CompareArrows";
+import PersonIcon from "@material-ui/icons/Person";
 
-import PhoneFormatInput from "./PhoneFormatInput";
+import InputSuggestions from "./InputSuggestions";
 import AccountSelectorDialog from "./AccountSelectorDialog";
 import { openSnackbar } from "../../Actions/snackbar";
-import { translate } from "react-i18next";
 
 const styles = {
     payButton: {
@@ -44,7 +42,7 @@ class TargetSelection extends React.Component {
         }
     };
 
-    copiedValue = type => callback => {
+    copiedValue = event => {
         this.props.openSnackbar(this.props.t(`Copied to your clipboard`));
     };
 
@@ -66,37 +64,42 @@ class TargetSelection extends React.Component {
                 );
                 break;
             case "PHONE":
-                targetContent = (
-                    <FormControl fullWidth error={this.props.targetError}>
-                        <Typography variant="body1">
-                            {t(
-                                "Phone numbers should contain no spaces and include the land code For example 316123456789"
-                            )}
-                        </Typography>
-                        <PhoneFormatInput
-                            id="target"
-                            autoFocus
-                            placeholder="+316123456789"
-                            error={this.props.targetError}
-                            value={this.props.target}
-                            onChange={this.props.handleChange("target")}
-                            onKeyPress={this.enterKeySubmit}
-                        />
-                    </FormControl>
-                );
-                break;
             case "EMAIL":
+            case "CONTACT":
+                // loop through all types and create a full list of contacts (name/email combination)
+                const contactList = [];
+                Object.keys(this.props.contacts).map(contactType => {
+                    // go through all contacts for this type
+                    this.props.contacts[contactType].forEach(contact => {
+                        // go through all emails for this contact
+                        contact.emails.forEach(email => {
+                            contactList.push({
+                                field: email,
+                                name: contact.name
+                            });
+                        });
+
+                        // go through all phoneNumbers for this contact
+                        contact.phoneNumbers.forEach(phoneNumber => {
+                            contactList.push({
+                                field: phoneNumber,
+                                name: contact.name
+                            });
+                        });
+                    });
+                });
+
                 targetContent = (
-                    <TextField
+                    <InputSuggestions
                         autoFocus
-                        error={this.props.targetError}
                         fullWidth
-                        required
                         id="target"
-                        type="email"
-                        label={t("Email")}
+                        items={contactList}
+                        label={t("Email or phone number")}
+                        error={this.props.targetError}
                         value={this.props.target}
                         onChange={this.props.handleChange("target")}
+                        onSelectItem={this.props.handleChangeDirect("target")}
                         onKeyPress={this.enterKeySubmit}
                     />
                 );
@@ -134,10 +137,9 @@ class TargetSelection extends React.Component {
             let targetValue = target.value;
             switch (target.type) {
                 case "EMAIL":
-                    Icon = EmailIcon;
-                    break;
                 case "PHONE":
-                    Icon = PhoneIcon;
+                case "CONTACT":
+                    Icon = PersonIcon;
                     break;
                 case "TRANSFER":
                     // for transfers we can try to display a description
@@ -164,7 +166,7 @@ class TargetSelection extends React.Component {
                     label={
                         <CopyToClipboard
                             text={targetValue}
-                            onCopy={this.copiedValue(target.type)}
+                            onCopy={this.copiedValue}
                         >
                             <p>{targetValue}</p>
                         </CopyToClipboard>
@@ -179,44 +181,26 @@ class TargetSelection extends React.Component {
                 <Grid item xs={12}>
                     {chipList}
                 </Grid>
-                {this.props.disabledTypes.includes("EMAIL") ? null : (
-                    <Grid item xs={6} sm={3}>
+                {this.props.disabledTypes.includes("CONTACT") ? null : (
+                    <Grid item xs={6} sm={4}>
                         <FormControlLabel
                             control={
                                 <Radio
-                                    icon={<EmailIcon />}
-                                    checkedIcon={<EmailIcon />}
+                                    icon={<PersonIcon />}
+                                    checkedIcon={<PersonIcon />}
                                     color={"secondary"}
-                                    checked={this.props.targetType === "EMAIL"}
-                                    onChange={this.props.setTargetType("EMAIL")}
-                                    value="EMAIL"
-                                    name="target-type-email"
-                                />
-                            }
-                            label="EMAIL"
-                        />
-                    </Grid>
-                )}
-                {this.props.disabledTypes.includes("PHONE") ? null : (
-                    <Grid item xs={6} sm={3}>
-                        <FormControlLabel
-                            control={
-                                <Radio
-                                    icon={<PhoneIcon />}
-                                    checkedIcon={<PhoneIcon />}
-                                    color={"secondary"}
-                                    checked={this.props.targetType === "PHONE"}
-                                    onChange={this.props.setTargetType("PHONE")}
-                                    value="PHONE"
+                                    checked={this.props.targetType === "CONTACT"}
+                                    onChange={this.props.setTargetType("CONTACT")}
+                                    value="CONTACT"
                                     name="target-type-phone"
                                 />
                             }
-                            label="PHONE"
+                            label={"CONTACT"}
                         />
                     </Grid>
                 )}
                 {this.props.disabledTypes.includes("IBAN") ? null : (
-                    <Grid item xs={6} sm={3}>
+                    <Grid item xs={6} sm={4}>
                         <FormControlLabel
                             control={
                                 <Radio
@@ -233,7 +217,7 @@ class TargetSelection extends React.Component {
                     </Grid>
                 )}
                 {this.props.disabledTypes.includes("TRANSFER") ? null : (
-                    <Grid item xs={6} sm={3}>
+                    <Grid item xs={6} sm={4}>
                         <FormControlLabel
                             control={
                                 <Radio
@@ -250,7 +234,7 @@ class TargetSelection extends React.Component {
                                     name="target-type-transfer"
                                 />
                             }
-                            label="Transfer"
+                            label={t("TRANSFER")}
                         />
                     </Grid>
                 )}
@@ -283,7 +267,10 @@ class TargetSelection extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return {};
+    return {
+        contacts: state.contacts.contacts,
+        contactsLoading: state.contacts.loading
+    };
 };
 
 const mapDispatchToProps = dispatch => {
@@ -293,7 +280,12 @@ const mapDispatchToProps = dispatch => {
 };
 
 TargetSelection.propTypes = {
-    disabledTypes: PropTypes.array
+    disabledTypes: PropTypes.array,
+
+    addTarget: PropTypes.func.isRequired,
+    removeTarget: PropTypes.func.isRequired,
+    handleChange: PropTypes.func.isRequired,
+    handleChangeDirect: PropTypes.func.isRequired
 };
 TargetSelection.defaultProps = {
     disabledTypes: []

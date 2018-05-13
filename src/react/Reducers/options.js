@@ -1,19 +1,7 @@
 import store from "store";
-import localforage from "localforage";
-
-const remote = require("electron").remote;
-const settings = remote.require("electron-settings");
-const fs = remote.require("fs");
-const path = remote.require("path");
-const app = remote.app;
-
-const getSettingsLockLocation = () => {
-    return path.normalize(
-        `${app.getPath(
-            "userData"
-        )}${path.sep}..${path.sep}BunqDesktop${path.sep}SETTINGS_LOCATION`
-    );
-};
+import localforage from "../ImportWrappers/localforage";
+import {ipcRenderer} from "electron";
+import settings from "../ImportWrappers/electronSettings";
 
 // configure the localforage instance
 localforage.config({
@@ -25,75 +13,66 @@ localforage.config({
 });
 
 export const THEME_LOCATION = "BUNQDESKTOP_THEME";
+export const ANALYTICS_ENABLED = "ANALYTICS_ENABLED";
 export const LANGUAGE_LOCATION = "BUNQDESKTOP_LANGUAGE";
 export const USE_NATIVE_FRAME_LOCATION = "USE_NATIVE_FRAME";
 export const MINIMIZE_TO_TRAY_LOCATION = "MINIMIZE_TO_TRAY";
 export const USE_STICKY_MENU_LOCATION = "USE_STICKY_MENU";
 export const CHECK_INACTIVITY_ENABLED_LOCATION = "CHECK_INACTIVITY_ENABLED";
 export const CHECK_INACTIVITY_DURATION_LOCATION = "CHECK_INACTIVITY_DURATION";
+export const AUTOMATIC_THEME_CHANGE_LOCATION = "AUTOMATIC_THEME_CHANGE";
 export const HIDE_BALANCE_LOCATION = "HIDE_BALANCE";
 
 // get stored values
-const loadData = () => {
-    const nativeFrameStored = settings.get(USE_NATIVE_FRAME_LOCATION);
-    const minimizeToTrayStored = settings.get(MINIMIZE_TO_TRAY_LOCATION);
-    const stickyMenuStored = settings.get(USE_STICKY_MENU_LOCATION);
-    const checkInactivityStored = settings.get(
-        CHECK_INACTIVITY_ENABLED_LOCATION
-    );
-    const inactivityCheckDurationStored = settings.get(
-        CHECK_INACTIVITY_DURATION_LOCATION
-    );
-    const hideBalanceStored = settings.get(HIDE_BALANCE_LOCATION);
-    const themeDefaultStored = settings.get(THEME_LOCATION);
-    const languageDefaultStored = settings.get(LANGUAGE_LOCATION);
+const nativeFrameStored = settings.get(USE_NATIVE_FRAME_LOCATION);
+const minimizeToTrayStored = settings.get(MINIMIZE_TO_TRAY_LOCATION);
+const stickyMenuStored = settings.get(USE_STICKY_MENU_LOCATION);
+const checkInactivityStored = settings.get(CHECK_INACTIVITY_ENABLED_LOCATION);
+const inactivityCheckDurationStored = settings.get(
+    CHECK_INACTIVITY_DURATION_LOCATION
+);
+const automaticThemeChangeStored = settings.get(
+    AUTOMATIC_THEME_CHANGE_LOCATION
+);
+const hideBalanceStored = settings.get(HIDE_BALANCE_LOCATION);
+const themeDefaultStored = settings.get(THEME_LOCATION);
+const languageDefaultStored = settings.get(LANGUAGE_LOCATION);
+const analyticsEnabledStored = settings.get(ANALYTICS_ENABLED);
 
-    // get settings file location
-    const settingsLocationStored = settings.file();
-
-    return {
-        nativeFrameDefault:
-            nativeFrameStored !== undefined ? nativeFrameStored : false,
-        minimizeToTrayDefault:
-            minimizeToTrayStored !== undefined ? minimizeToTrayStored : false,
-        stickyMenuDefault:
-            stickyMenuStored !== undefined ? stickyMenuStored : false,
-        checkInactivityDefault:
-            checkInactivityStored !== undefined ? checkInactivityStored : false,
-        inactivityCheckDurationDefault:
-            inactivityCheckDurationStored !== undefined
-                ? inactivityCheckDurationStored
-                : 300,
-        hideBalanceDefault:
-            hideBalanceStored !== undefined ? hideBalanceStored : false,
-        settingsLocationDefault: settingsLocationStored,
-        themeDefault:
-            themeDefaultStored !== undefined
-                ? themeDefaultStored
-                : "DefaultTheme",
-        languageDefault:
-            languageDefaultStored !== undefined ? languageDefaultStored : "en"
-    };
-};
-
-const {
-    nativeFrameDefault,
-    minimizeToTrayDefault,
-    stickyMenuDefault,
-    checkInactivityDefault,
-    inactivityCheckDurationDefault,
-    hideBalanceDefault,
-    settingsLocationDefault,
-    themeDefault,
-    languageDefault
-} = loadData();
+const nativeFrameDefault =
+    nativeFrameStored !== undefined ? nativeFrameStored : false;
+const minimizeToTrayDefault =
+    minimizeToTrayStored !== undefined ? minimizeToTrayStored : false;
+const stickyMenuDefault =
+    stickyMenuStored !== undefined ? stickyMenuStored : false;
+const checkInactivityDefault =
+    checkInactivityStored !== undefined ? checkInactivityStored : false;
+const inactivityCheckDurationDefault =
+    inactivityCheckDurationStored !== undefined
+        ? inactivityCheckDurationStored
+        : 300;
+const hideBalanceDefault =
+    hideBalanceStored !== undefined ? hideBalanceStored : false;
+const analyticsEnabledDefault =
+    analyticsEnabledStored !== undefined ? analyticsEnabledStored : undefined;
+const automaticThemeChangeDefault =
+    automaticThemeChangeStored !== undefined
+        ? automaticThemeChangeStored
+        : false;
+const settingsLocationDefault = settings.file();
+const themeDefault =
+    themeDefaultStored !== undefined ? themeDefaultStored : "DefaultTheme";
+const languageDefault =
+    languageDefaultStored !== undefined ? languageDefaultStored : "en";
 
 export const defaultState = {
     theme: themeDefault,
     language: languageDefault,
     minimize_to_tray: minimizeToTrayDefault,
+    automatic_theme_change: automaticThemeChangeDefault,
     native_frame: nativeFrameDefault,
     sticky_menu: stickyMenuDefault,
+    analytics_enabled: analyticsEnabledDefault,
     hide_balance: hideBalanceDefault,
     check_inactivity: checkInactivityDefault,
     settings_location: settingsLocationDefault,
@@ -126,6 +105,16 @@ export default function reducer(state = defaultState, action) {
                 minimize_to_tray: action.payload.minimize_to_tray
             };
 
+        case "OPTIONS_SET_AUTOMATIC_THEME_CHANGE":
+            settings.set(
+                AUTOMATIC_THEME_CHANGE_LOCATION,
+                action.payload.automatic_theme_change
+            );
+            return {
+                ...state,
+                automatic_theme_change: action.payload.automatic_theme_change
+            };
+
         case "OPTIONS_SET_NATIVE_FRAME":
             settings.set(
                 USE_NATIVE_FRAME_LOCATION,
@@ -141,6 +130,13 @@ export default function reducer(state = defaultState, action) {
             return {
                 ...state,
                 sticky_menu: action.payload.sticky_menu
+            };
+
+        case "OPTIONS_SET_ANALYTICS_ENABLED":
+            settings.set(ANALYTICS_ENABLED, action.payload.analytics_enabled);
+            return {
+                ...state,
+                analytics_enabled: action.payload.analytics_enabled
             };
 
         case "OPTIONS_SET_CHECK_INACTIVITY":
@@ -175,8 +171,10 @@ export default function reducer(state = defaultState, action) {
             let targetLocation = action.payload.location;
 
             try {
-                // check if file exists and is writeable
-                fs.writeFileSync(getSettingsLockLocation(), targetLocation);
+                // update main process
+                ipcRenderer.send("change-settings-path", targetLocation);
+
+                // set the settinsg path
                 settings.setPath(targetLocation);
             } catch (err) {
                 targetLocation = state.settings_location;
@@ -188,6 +186,11 @@ export default function reducer(state = defaultState, action) {
             settings.set(LANGUAGE_LOCATION, state.language);
             settings.set(MINIMIZE_TO_TRAY_LOCATION, state.minimize_to_tray);
             settings.set(USE_NATIVE_FRAME_LOCATION, state.native_frame);
+            settings.set(ANALYTICS_ENABLED, state.analytics_enabled);
+            settings.set(
+                AUTOMATIC_THEME_CHANGE_LOCATION,
+                state.automatic_theme_change
+            );
             settings.set(
                 CHECK_INACTIVITY_ENABLED_LOCATION,
                 state.check_inactivity
@@ -207,8 +210,10 @@ export default function reducer(state = defaultState, action) {
             let targetLocation2 = action.payload.location;
 
             try {
-                // check if file exists and is writeable
-                fs.writeFileSync(getSettingsLockLocation(), targetLocation2);
+                // update main process
+                ipcRenderer.send("change-settings-path", targetLocation2);
+
+                // set the settinsg path
                 settings.setPath(targetLocation2);
             } catch (err) {
                 targetLocation2 = state.settings_location;
@@ -222,12 +227,16 @@ export default function reducer(state = defaultState, action) {
             const checkInactivityStored = settings.get(
                 CHECK_INACTIVITY_ENABLED_LOCATION
             );
+            const automaticThemeChangeStored = settings.get(
+                AUTOMATIC_THEME_CHANGE_LOCATION
+            );
             const inactivityCheckDurationStored = settings.get(
                 CHECK_INACTIVITY_DURATION_LOCATION
             );
             const hideBalanceStored = settings.get(HIDE_BALANCE_LOCATION);
             const themeDefaultStored = settings.get(THEME_LOCATION);
             const languageDefaultStored = settings.get(LANGUAGE_LOCATION);
+            const analyticsEnabledStored = settings.get(ANALYTICS_ENABLED);
 
             // only overwrite if the new settings file contains these settings
             return {
@@ -245,6 +254,10 @@ export default function reducer(state = defaultState, action) {
                     typeof languageDefaultStored !== "undefined"
                         ? languageDefaultStored
                         : state.language,
+                automatic_theme_change:
+                    typeof automaticThemeChangeStored !== "undefined"
+                        ? automaticThemeChangeStored
+                        : state.automatic_theme_change,
                 minimize_to_tray:
                     typeof minimizeToTrayStored !== "undefined"
                         ? minimizeToTrayStored
@@ -253,6 +266,10 @@ export default function reducer(state = defaultState, action) {
                     typeof nativeFrameStored !== "undefined"
                         ? nativeFrameStored
                         : state.native_frame,
+                analytics_enabled:
+                    typeof analyticsEnabledStored !== "undefined"
+                        ? analyticsEnabledStored
+                        : state.analytics_enabled,
                 check_inactivity:
                     typeof checkInactivityStored !== "undefined"
                         ? checkInactivityStored

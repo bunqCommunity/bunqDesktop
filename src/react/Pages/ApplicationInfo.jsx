@@ -9,7 +9,7 @@ import Typography from "material-ui/Typography";
 import Avatar from "material-ui/Avatar";
 import List, { ListItem, ListItemText } from "material-ui/List";
 
-import FolderIcon from "material-ui-icons/Folder";
+import FolderIcon from "@material-ui/icons/Folder";
 
 const remote = require("electron").remote;
 const shell = require("electron").shell;

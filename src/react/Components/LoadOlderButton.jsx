@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import Button from "material-ui/Button";
-import RefreshIcon from "material-ui-icons/Refresh";
+import RefreshIcon from "@material-ui/icons/Refresh";
 import { CircularProgress } from "material-ui/Progress";
 
 import { paymentInfoUpdate } from "../Actions/payments";

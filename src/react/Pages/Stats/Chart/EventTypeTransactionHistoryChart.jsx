@@ -7,7 +7,7 @@ import {
     paymentColor,
     requestInquiryColor,
     requestResponseColor
-} from "./Colors";
+} from "../Colors";
 
 export default props => {
     const defaultOptions = {
@@ -23,15 +23,15 @@ export default props => {
         datasets: [
             {
                 label: "Payments",
-                data: props.paymentHistory,
+                data: props.paymentTransactionHistory,
                 backgroundColor: paymentColor,
                 borderColor: paymentColor,
                 hoverBackgroundColor: paymentColor,
                 hoverBorderColor: paymentColor
             },
             {
-                label: "Master Card Payments",
-                data: props.masterCardActionHistory,
+                label: "Card Payments",
+                data: props.masterCardActionTransactionHistory,
                 backgroundColor: masterCardActionColor,
                 borderColor: masterCardActionColor,
                 hoverBackgroundColor: masterCardActionColor,
@@ -39,7 +39,7 @@ export default props => {
             },
             {
                 label: "Sent Requests",
-                data: props.requestInquiryHistory,
+                data: props.requestInquiryTransactionHistory,
                 backgroundColor: requestInquiryColor,
                 borderColor: requestInquiryColor,
                 hoverBackgroundColor: requestInquiryColor,
@@ -47,7 +47,7 @@ export default props => {
             },
             {
                 label: "Received Requests",
-                data: props.requestResponseHistory,
+                data: props.requestResponseTransactionHistory,
                 backgroundColor: requestResponseColor,
                 borderColor: requestResponseColor,
                 hoverBackgroundColor: requestResponseColor,
@@ -55,7 +55,7 @@ export default props => {
             },
             {
                 label: "bunq.me Tabs",
-                data: props.bunqMeTabHistory,
+                data: props.bunqMeTabTransactionHistory,
                 backgroundColor: bunqMeTabColor,
                 borderColor: bunqMeTabColor,
                 hoverBackgroundColor: bunqMeTabColor,
@@ -64,7 +64,7 @@ export default props => {
         ]
     };
 
-    const barChartInfo = (id, showAxis = false, changes = {}) => {
+    const barChartInfo = (showAxis = false, changes = {}) => {
         return {
             stacked: true,
             display: showAxis,
@@ -74,6 +74,7 @@ export default props => {
                 display: showAxis
             },
             ticks: {
+                fontColor: props.theme.palette.text.primary,
                 beginAtZero: true,
                 callback: value => {
                     // only show integer values
@@ -93,6 +94,11 @@ export default props => {
             enabled: true,
             mode: "index"
         },
+        legend: {
+            labels: {
+                fontColor: props.theme.palette.text.primary
+            }
+        },
         scales: {
             xAxes: [
                 {
@@ -101,15 +107,18 @@ export default props => {
                     gridLines: {
                         display: true
                     },
-                    labels: props.labels
+                    labels: props.labels,
+                    ticks: {
+                        fontColor: props.theme.palette.text.primary
+                    }
                 }
             ],
             yAxes: [
-                barChartInfo("payment", true),
-                barChartInfo("masterCardActions", false),
-                barChartInfo("requestInquiry", false),
-                barChartInfo("requestResponse", false),
-                barChartInfo("bunqMeTab", false)
+                barChartInfo(true),
+                barChartInfo(false),
+                barChartInfo(false),
+                barChartInfo(false),
+                barChartInfo(false)
             ]
         }
     };

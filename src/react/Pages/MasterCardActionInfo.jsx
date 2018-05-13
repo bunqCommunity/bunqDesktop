@@ -12,13 +12,16 @@ import Divider from "material-ui/Divider";
 import CircularProgress from "material-ui/Progress/CircularProgress";
 import Typography from "material-ui/Typography";
 
-import ArrowBackIcon from "material-ui-icons/ArrowBack";
-import HelpIcon from "material-ui-icons/Help";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import HelpIcon from "@material-ui/icons/Help";
+import BookmarkIcon from "@material-ui/icons/Bookmark";
 
 import ExportDialog from "../Components/ExportDialog";
+import SpeedDial from "../Components/SpeedDial";
 import TransactionHeader from "../Components/TransactionHeader";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
-import CategorySelector from "../Components/Categories/CategorySelector";
+import CategorySelectorDialog from "../Components/Categories/CategorySelectorDialog";
+import CategoryChips from "../Components/Categories/CategoryChips";
 
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import {
@@ -26,6 +29,8 @@ import {
     masterCardActionParser
 } from "../Helpers/StatusTexts";
 import { masterCardActionInfoUpdate } from "../Actions/master_card_action_info";
+import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
+import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 
 const styles = {
     btn: {},
@@ -44,7 +49,8 @@ class MasterCardActionInfo extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            displayExport: false
+            displayExport: false,
+            displayCategories: false
         };
     }
 
@@ -83,6 +89,9 @@ class MasterCardActionInfo extends React.Component {
             );
         }
     }
+
+    toggleCategoryDialog = event =>
+        this.setState({ displayCategories: !this.state.displayCategories });
 
     render() {
         const {
@@ -215,9 +224,45 @@ class MasterCardActionInfo extends React.Component {
                             <Divider />
                         </List>
 
-                        <CategorySelector
+                        <CategoryChips
+                            type={"MasterCardAction"}
+                            id={masterCardActionInfo.id}
+                        />
+
+                        <CategorySelectorDialog
                             type={"MasterCardAction"}
                             item={masterCardActionInfo}
+                            onClose={this.toggleCategoryDialog}
+                            open={this.state.displayCategories}
+                        />
+
+                        <SpeedDial
+                            hidden={false}
+                            actions={[
+                                {
+                                    name: "Send payment",
+                                    icon: ArrowUpIcon,
+                                    color: "action",
+                                    onClick: this.startPayment
+                                },
+                                {
+                                    name: "Send request",
+                                    icon: ArrowDownIcon,
+                                    color: "action",
+                                    onClick: this.startRequest
+                                },
+                                {
+                                    name: t("Manage categories"),
+                                    icon: BookmarkIcon,
+                                    onClick: this.toggleCategoryDialog
+                                },
+                                {
+                                    name: t("View debug information"),
+                                    icon: HelpIcon,
+                                    onClick: event =>
+                                        this.setState({ displayExport: true })
+                                }
+                            ]}
                         />
                     </Grid>
                 </Grid>
@@ -230,6 +275,14 @@ class MasterCardActionInfo extends React.Component {
                     <title>{`BunqDesktop - ${t("Mastercard Info")}`}</title>
                 </Helmet>
 
+                <ExportDialog
+                    closeModal={event =>
+                        this.setState({ displayExport: false })}
+                    title={t("Export info")}
+                    open={this.state.displayExport}
+                    object={this.props.masterCardActionInfo}
+                />
+
                 <Grid item xs={12} sm={2}>
                     <Button
                         onClick={this.props.history.goBack}
@@ -241,24 +294,6 @@ class MasterCardActionInfo extends React.Component {
 
                 <Grid item xs={12} sm={8}>
                     <Paper style={styles.paper}>{content}</Paper>
-                </Grid>
-
-                <Grid item xs={12} sm={2} style={{ textAlign: "right" }}>
-                    <ExportDialog
-                        closeModal={event =>
-                            this.setState({ displayExport: false })}
-                        title={t("Export info")}
-                        open={this.state.displayExport}
-                        object={this.props.masterCardActionInfo}
-                    />
-
-                    <Button
-                        style={styles.button}
-                        onClick={event =>
-                            this.setState({ displayExport: true })}
-                    >
-                        <HelpIcon />
-                    </Button>
                 </Grid>
             </Grid>
         );

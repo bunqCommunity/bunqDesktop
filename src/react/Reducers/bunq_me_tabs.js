@@ -23,7 +23,6 @@ export default (state = defaultState, action) => {
                 state.account_id !== action.payload.account_id;
 
             const mergedInfo = MergeApiObjects(
-                "BunqMeTab",
                 action.payload.bunqMeTabs,
                 ignoreOldItems ? [] : bunq_me_tabs
             );
@@ -63,7 +62,8 @@ export default (state = defaultState, action) => {
             };
 
         case "BUNQ_ME_TABS_CLEAR":
-        case "REGISTRATION_CLEAR_API_KEY":
+        case "REGISTRATION_LOG_OUT":
+        case "REGISTRATION_CLEAR_PRIVATE_DATA":
         case "REGISTRATION_CLEAR_USER_INFO":
             store.remove(STORED_BUNQ_ME_TABS);
             return {

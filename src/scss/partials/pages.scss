@@ -1,0 +1,53 @@
+@-webkit-keyframes AnimatedRainbow {
+    0%{background-position:1% 0%}
+    50%{background-position:99% 100%}
+    100%{background-position:1% 0%}
+}
+@keyframes AnimatedRainbow {
+    0%{background-position:1% 0%}
+    50%{background-position:99% 100%}
+    100%{background-position:1% 0%}
+}
+
+.login-page,
+.password-page {
+    background-color: black !important;
+
+    //background: linear-gradient(133deg, #70e145, #3b8bd9, #b7159c);
+    //background-size: 600% 600%;
+    //-webkit-animation: AnimatedRainbow 25s ease infinite;
+    //animation: AnimatedRainbow 25s ease infinite;
+
+    .text-input {
+        &:before {
+            background-color: grey !important;
+        }
+    }
+
+    .black-button {
+        color: #ffffff !important;
+        background-color: #000000 !important;
+        &:hover,
+        &:focus {
+            background-color: #222123 !important;
+        }
+
+        &.disabled {
+            color: #b7b7b7 !important;
+        }
+    }
+
+    .white-button {
+        color: #000000 !important;
+        background-color: #ffffff !important;
+        fontWeight: 700;
+        &:hover,
+        &:focus {
+            background-color: #e3e3e3 !important;
+        }
+
+        &.disabled {
+            color: #191919 !important;
+        }
+    }
+}

@@ -14,6 +14,7 @@ class MoneyFormatInput extends React.Component {
                 required
                 margin="normal"
                 placeholder="€ 0.00"
+                min={0}
                 style={{
                     fontSize: 30,
                     ...this.props.theme.styles.moneyInput,

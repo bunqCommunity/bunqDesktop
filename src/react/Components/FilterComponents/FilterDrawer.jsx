@@ -18,16 +18,16 @@ import List, {
     ListItemSecondaryAction
 } from "material-ui/List";
 
-import FilterListIcon from "material-ui-icons/FilterList";
-import CompareArrowsIcon from "material-ui-icons/CompareArrows";
-import ArrowUpward from "material-ui-icons/ArrowUpward";
-import ArrowDownward from "material-ui-icons/ArrowDownward";
-import Visible from "material-ui-icons/Visibility";
-import VisibleOff from "material-ui-icons/VisibilityOff";
-import ClearIcon from "material-ui-icons/Clear";
-import CheckCircle from "material-ui-icons/CheckCircle";
-import TimerOff from "material-ui-icons/TimerOff";
-import Cancel from "material-ui-icons/Cancel";
+import FilterListIcon from "@material-ui/icons/FilterList";
+import CompareArrowsIcon from "@material-ui/icons/CompareArrows";
+import ArrowUpward from "@material-ui/icons/ArrowUpward";
+import ArrowDownward from "@material-ui/icons/ArrowDownward";
+import Visible from "@material-ui/icons/Visibility";
+import VisibleOff from "@material-ui/icons/VisibilityOff";
+import ClearIcon from "@material-ui/icons/Clear";
+import CheckCircle from "@material-ui/icons/CheckCircle";
+import TimerOff from "@material-ui/icons/TimerOff";
+import Cancel from "@material-ui/icons/Cancel";
 
 import {
     clearPaymentFilterType,
@@ -42,8 +42,12 @@ import {
     setFromDateFilter,
     setToDateFilter,
     clearFromDateFilter,
-    clearToDateFilter
+    clearToDateFilter,
+    resetFilters
 } from "../../Actions/filters";
+
+import SearchFilter from "./SearchFilter";
+import CategorySelection from "./CategorySelection";
 
 const styles = {
     list: {
@@ -63,6 +67,12 @@ const styles = {
         paddingTop: 0,
         paddingBottom: 0,
         height: 38
+    },
+    textFieldListItem: {
+        width: "100%"
+    },
+    textField: {
+        width: "100%"
     },
     subheaderTitle: {
         height: 40
@@ -106,14 +116,6 @@ class FilterDrawer extends React.Component {
     };
     closeDrawer = () => {
         this.setState({ open: false });
-    };
-
-    clearAll = () => {
-        this.props.clearPaymentFilterType();
-        this.props.clearBunqMeTabFilterType();
-        this.props.clearRequestFilterType();
-        this.props.clearFromDateFilter();
-        this.props.clearToDateFilter();
     };
 
     handlePaymentTypeChange = event => {
@@ -165,6 +167,10 @@ class FilterDrawer extends React.Component {
 
         const drawerList = (
             <List style={styles.list}>
+                <ListItem style={styles.textFieldListItem}>
+                    <SearchFilter style={styles.textField} t={t} />
+                </ListItem>
+
                 {/* filters for both normal payments and master card actions */}
                 <ListSubheader style={styles.subheaderTitle}>
                     {t("Payments")}
@@ -391,10 +397,12 @@ class FilterDrawer extends React.Component {
                     />
                 </ListItem>
 
+                <CategorySelection t={t} />
+
                 <ListItem style={styles.listFiller} />
 
                 <Divider />
-                <ListItem button onClick={this.clearAll}>
+                <ListItem button onClick={this.props.resetFilters}>
                     <ListItemIcon>
                         <ClearIcon />
                     </ListItemIcon>
@@ -466,6 +474,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        resetFilters: () => dispatch(resetFilters()),
+
         clearPaymentFilterType: () => dispatch(clearPaymentFilterType()),
         setPaymentFilterType: type => dispatch(setPaymentFilterType(type)),
         togglePaymentFilterVisibility: () =>

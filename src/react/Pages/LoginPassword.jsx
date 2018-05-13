@@ -1,24 +1,19 @@
 import React from "react";
 import { translate } from "react-i18next";
-import { Typography } from "material-ui";
 import { connect } from "react-redux";
 import Redirect from "react-router-dom/Redirect";
 import Helmet from "react-helmet";
 import store from "store";
 import Grid from "material-ui/Grid";
 import Input from "material-ui/Input";
-import Button from "material-ui/Button";
-import Card, { CardContent } from "material-ui/Card";
+import Typography from "material-ui/Typography";
+import { CardContent } from "material-ui/Card";
 import { CircularProgress } from "material-ui/Progress";
-
-import WarningIcon from "material-ui-icons/Warning";
-import LockIcon from "material-ui-icons/Lock";
 
 import TranslateButton from "../Components/TranslationHelpers/Button";
 
 import {
-    registrationClearApiKey,
-    registrationSetApiKey,
+    registrationLogOut,
     registrationSetDeviceName,
     registrationSetEnvironment,
     registrationUseNoPassword,
@@ -35,11 +30,15 @@ const styles = {
     loginButton: {
         width: "100%"
     },
+    secondaryButtons: {
+        width: "100%"
+    },
     clearButton: {
         width: "100%",
         marginTop: 20
     },
     passwordInput: {
+        color: "#000000",
         width: "100%",
         marginTop: 20
     },
@@ -49,6 +48,21 @@ const styles = {
     smallAvatar: {
         width: 50,
         height: 50
+    },
+    cardContent: {
+        textAlign: "center",
+        backgroundColor: "#ffffff"
+    },
+    girlSvg: {
+        zIndex: 0,
+        position: "fixed",
+        right: 0,
+        bottom: 0,
+        height: "50%",
+        maxWidth: "35%"
+    },
+    text: {
+        color: "#000000"
     }
 };
 
@@ -101,13 +115,8 @@ class LoginPassword extends React.Component {
         });
     };
 
-    clearApiKey = () => {
-        this.props.clearApiKey();
-    };
-
-    ignoreWarning = event => {
-        store.set("HAS_READ_DEV_WARNING", true);
-        this.setState({ hasReadWarning: true });
+    logOut = () => {
+        this.props.logOut();
     };
 
     render() {
@@ -117,140 +126,113 @@ class LoginPassword extends React.Component {
             hasStoredApiKey,
             useNoPassword,
             derivedPassword,
+            analyticsEnabled,
             t
         } = this.props;
+        const { passwordValid, hasReadWarning } = this.state;
 
         if (derivedPassword !== false) {
             return <Redirect to="/login" />;
         }
+        if (
+            this.state.hasReadWarning === false ||
+            typeof analyticsEnabled === "undefined"
+        ) {
+            return <Redirect to="/disclaimer" />;
+        }
 
         const buttonDisabled =
-            this.state.passwordValid === false || registrationLoading === true;
+            passwordValid === false || registrationLoading === true;
 
-        let cardContent = null;
+        let cardContent = registrationLoading ? (
+            <CardContent style={styles.cardContent}>
+                <Typography variant="headline" component="h2">
+                    Loading
+                </Typography>
+                <CircularProgress size={50} />
+                <Typography variant="subheading">{status_message}</Typography>
+            </CardContent>
+        ) : (
+            <CardContent style={styles.cardContent}>
+                <Typography variant="headline" component="h2" style={styles.text}>
+                    {hasStoredApiKey ? (
+                        t("Enter your password")
+                    ) : (
+                        t("Enter a password")
+                    )}
+                </Typography>
 
-        if (this.state.hasReadWarning === false) {
-            cardContent = (
-                <Card style={styles.warningCard}>
-                    <CardContent>
-                        <Typography variant="headline">
-                            <WarningIcon /> Caution!
-                        </Typography>
-                        <Typography variant="body2">
-                            {t("ActiveDevelopmentWarning")}
-                        </Typography>
-                        <br />
-                        <Typography variant="headline">
-                            <LockIcon /> Password
-                        </Typography>
-                        <Typography variant="body2">
-                            {t("PasswordWarningPart1")}
-                        </Typography>
-                        <Typography variant="body2">
-                            {t("PasswordWarningPart2")}
-                        </Typography>
-                        <div style={{ textAlign: "center" }}>
-                            <TranslateButton
-                                variant={"raised"}
-                                style={{ marginTop: 12 }}
-                                onClick={this.ignoreWarning}
-                            >
-                                Don't show this again
-                            </TranslateButton>
-                        </div>
-                    </CardContent>
-                </Card>
-            );
-        } else {
-            // actual content
-            cardContent = registrationLoading ? (
-                <CardContent style={{ textAlign: "center" }}>
-                    <Typography variant="headline" component="h2">
-                        Loading
-                    </Typography>
-                    <CircularProgress size={50} />
-                    <Typography variant="subheading">
-                        {status_message}
-                    </Typography>
-                </CardContent>
-            ) : (
-                <CardContent style={{ textAlign: "center" }}>
-                    <Typography variant="headline" component="h2">
-                        {hasStoredApiKey ? (
-                            t("Enter your password")
-                        ) : (
-                            t("Enter a password")
-                        )}
-                    </Typography>
+                <Input
+                    autoFocus
+                    style={styles.passwordInput}
+                    error={!this.state.passwordValid}
+                    type="password"
+                    label="Password"
+                    hint="A secure 7+ character password"
+                    onChange={this.handlePasswordChange}
+                    onKeyPress={ev => {
+                        if (ev.key === "Enter" && buttonDisabled === false) {
+                            this.setRegistration();
+                            ev.preventDefault();
+                        }
+                    }}
+                    value={this.state.password}
+                />
 
-                    <Input
-                        autoFocus
-                        style={styles.passwordInput}
-                        error={!this.state.passwordValid}
-                        type="password"
-                        label="Password"
-                        hint="A secure 7+ character password"
-                        onChange={this.handlePasswordChange}
-                        onKeyPress={ev => {
-                            if (
-                                ev.key === "Enter" &&
-                                buttonDisabled === false
-                            ) {
-                                this.setRegistration();
-                                ev.preventDefault();
-                            }
-                        }}
-                        value={this.state.password}
-                    />
+                <Grid
+                    container
+                    spacing={16}
+                    justify="center"
+                    style={{ marginTop: 16 }}
+                >
 
-                    <Grid
-                        container
-                        spacing={16}
-                        justify="center"
-                        style={{ marginTop: 16 }}
-                    >
-                        <Grid item xs={6}>
+                    {hasStoredApiKey ? (
+                        <Grid item xs={6} sm={4}>
                             <TranslateButton
                                 variant="raised"
-                                disabled={buttonDisabled}
-                                color={"primary"}
-                                style={styles.loginButton}
-                                onClick={this.setRegistration}
+                                className="white-button"
+                                style={styles.secondaryButtons}
+                                onClick={this.logOut}
                             >
-                                Login
+                                Logout
                             </TranslateButton>
                         </Grid>
+                    ) : null}
 
-                        {hasStoredApiKey ? (
-                            <Grid item xs={6}>
+                    {(hasStoredApiKey === true && useNoPassword === true) ||
+                    hasStoredApiKey === false ? (
+                        <React.Fragment>
+                            <Grid item xs={6} sm={4} />
+                            <Grid item xs={6} sm={4}>
                                 <TranslateButton
                                     variant="raised"
-                                    color={"secondary"}
-                                    style={styles.loginButton}
-                                    onClick={this.clearApiKey}
-                                >
-                                    Logout
-                                </TranslateButton>
-                            </Grid>
-                        ) : null}
-
-                        {(hasStoredApiKey === true && useNoPassword === true) ||
-                        hasStoredApiKey === false ? (
-                            <Grid item xs={6}>
-                                <TranslateButton
-                                    variant="raised"
-                                    color={"secondary"}
-                                    style={styles.loginButton}
+                                    className="white-button"
+                                    style={styles.secondaryButtons}
                                     onClick={this.props.useNoPasswordLogin}
                                 >
-                                    Use no password
+                                    Skip
                                 </TranslateButton>
                             </Grid>
-                        ) : null}
+                        </React.Fragment>
+                    ) : (
+                        <Grid item xs={6} sm={4} />
+                    )}
+
+                    <Grid item xs={12} sm={4}>
+                        <TranslateButton
+                            variant="raised"
+                            color="primary"
+                            className="black-button"
+                            disabled={buttonDisabled}
+                            style={styles.loginButton}
+                            onClick={this.setRegistration}
+                        >
+                            Login
+                        </TranslateButton>
                     </Grid>
-                </CardContent>
-            );
-        }
+                </Grid>
+            </CardContent>
+        );
 
         return (
             <Grid
@@ -264,9 +246,23 @@ class LoginPassword extends React.Component {
                     <title>{`BunqDesktop - ${t("Password Setup")}`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={8} md={6} lg={4}>
-                    <Card>{cardContent}</Card>
+                <Grid
+                    item
+                    xs={12}
+                    sm={8}
+                    md={5}
+                    lg={4}
+                    style={{ zIndex: 1 }}
+                    className="animated zoomIn"
+                >
+                    <div>{cardContent}</div>
                 </Grid>
+
+                {/*<img*/}
+                    {/*className="animated fadeInRight"*/}
+                    {/*src="images/svg/girl.svg"*/}
+                    {/*style={styles.girlSvg}*/}
+                {/*/>*/}
             </Grid>
         );
     }
@@ -275,6 +271,8 @@ class LoginPassword extends React.Component {
 const mapStateToProps = state => {
     return {
         status_message: state.application.status_message,
+
+        analyticsEnabled: state.options.analytics_enabled,
 
         hasStoredApiKey: state.registration.has_stored_api_key,
         useNoPassword: state.registration.use_no_password,
@@ -291,15 +289,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         // use no password
-        useNoPasswordLogin: password => dispatch(registrationUseNoPassword()),
+        useNoPasswordLogin: () => dispatch(registrationUseNoPassword()),
         // use password
         usePasswordLogin: password =>
             dispatch(registrationUsePassword(password)),
 
         // clear api key from bunqjsclient and bunqdesktop
-        clearApiKey: () => dispatch(registrationClearApiKey(BunqJSClient)),
-        // set the api key and stores the encrypted version
-        setApiKey: api_key => dispatch(registrationSetApiKey(api_key)),
+        logOut: () => dispatch(registrationLogOut(BunqJSClient)),
 
         setEnvironment: environment =>
             dispatch(registrationSetEnvironment(environment)),

@@ -50,7 +50,7 @@ const checkCredentials = async () => {
         if(!googleTranslate){
             resolve();
         }
-        
+
         // check the following url on how to set this up
         // https://github.com/googleapis/nodejs-translate#before-you-begin
         googleTranslate.getCredentials((error, result) => {
@@ -131,8 +131,8 @@ const start = async () => {
                 // set translated data in localeData for this language
                 localeData[missingTranslationKey] = result.translated;
 
-                // delay to prevent hitting the api limit
-                await awaiting.delay(500);
+                // delay to prevent hitting the api limit if translations are enabled
+                await awaiting.delay(googleTranslate? 500: 10);
             }
         );
 

@@ -6,7 +6,11 @@ import Grid from "material-ui/Grid";
 import Button from "material-ui/Button";
 import Input, { InputLabel } from "material-ui/Input";
 import { MenuItem } from "material-ui/Menu";
-import { FormControl, FormControlLabel } from "material-ui/Form";
+import {
+    FormControl,
+    FormHelperText,
+    FormControlLabel
+} from "material-ui/Form";
 import Select from "material-ui/Select";
 import Paper from "material-ui/Paper";
 import Switch from "material-ui/Switch";
@@ -17,10 +21,12 @@ import Dialog, {
     DialogTitle
 } from "material-ui/Dialog";
 
-import ArrowBackIcon from "material-ui-icons/ArrowBack";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import LogoutIcon from "@material-ui/icons/ExitToApp";
+import RemoveIcon from "@material-ui/icons/Delete";
+import HomeIcon from "@material-ui/icons/Home";
 
-const remote = require("electron").remote;
-const path = remote.require("path");
+import path from "../ImportWrappers/path";
 const packageInfo = require("../../../package.json");
 const SUPPORTED_LANGUAGES = packageInfo.supported_languages;
 
@@ -42,11 +48,19 @@ import {
     setLanguage,
     overwriteSettingsLocation,
     toggleInactivityCheck,
-    loadSettingsLocation
+    loadSettingsLocation,
+    setAutomaticThemeChange,
+    setAnalyticsEnabled
 } from "../Actions/options";
-import { registrationClearApiKey } from "../Actions/registration";
+import {
+    registrationClearPrivateData,
+    registrationLogOut
+} from "../Actions/registration";
 
 const styles = {
+    sideButton: {
+        marginBottom: 16
+    },
     avatar: {
         width: 55,
         height: 55
@@ -105,8 +119,17 @@ class Settings extends React.Component {
         this.props.setLanguage(event.target.value);
     };
 
-    clearApiKey = event => {
-        this.props.clearApiKey();
+    clearPrivateData = event => {
+        this.props.clearPrivateData();
+
+        // minor delay to ensure it happens after the state updates
+        setTimeout(() => {
+            this.props.history.push("/");
+        }, 500);
+    };
+
+    logout = event => {
+        this.props.logOut();
 
         // minor delay to ensure it happens after the state updates
         setTimeout(() => {
@@ -116,7 +139,7 @@ class Settings extends React.Component {
 
     handleNativeFrameCheckChange = event => {
         this.props.openSnackbar(
-            "Restart the application to view these changes!"
+            this.props.t("Restart the application to view these changes!")
         );
         this.props.setNativeFrame(!this.props.nativeFrame);
     };
@@ -130,8 +153,22 @@ class Settings extends React.Component {
     handleHideBalanceCheckChange = event => {
         this.props.setHideBalance(!this.props.hideBalance);
     };
+    handleAnalyticsEnabledChange = event => {
+        // if next state is false, display a mesage
+        if (!this.props.analyticsEnabled === false) {
+            this.props.openSnackbar(
+                this.props.t(
+                    "Restart the application to start without Google Analytics!"
+                )
+            );
+        }
+        this.props.setAnalyticsEnabled(!this.props.analyticsEnabled);
+    };
     handleHideInactivityCheckChange = event => {
         this.props.toggleInactivityCheck(!this.props.checkInactivity);
+    };
+    handleAutomaticThemeChange = event => {
+        this.props.setAutomaticThemeChange(!this.props.automaticThemeChange);
     };
     handleHideInactivityDurationChange = event => {
         this.props.setInactivityCheckDuration(event.target.value);
@@ -181,30 +218,47 @@ class Settings extends React.Component {
                 <Grid item xs={12} sm={2}>
                     <Button
                         onClick={this.props.history.goBack}
-                        style={styles.btn}
+                        style={styles.sideButton}
                     >
                         <ArrowBackIcon />
+                    </Button>
+                    <Button
+                        onClick={() => this.props.history.push("/")}
+                        style={styles.sideButton}
+                    >
+                        <HomeIcon />
                     </Button>
                 </Grid>
 
                 <Grid item xs={12} sm={8}>
                     <Paper style={styles.paper}>
                         <Grid container spacing={16}>
-                            <Grid item xs={6} sm={8} md={9} lg={10}>
+                            <Grid item xs={12} md={6} lg={8}>
                                 <TypographyTranslate variant={"headline"}>
                                     Settings
                                 </TypographyTranslate>
                             </Grid>
 
-                            <Grid item xs={6} sm={4} md={3} lg={2}>
-                                <ButtonTranslate
+                            <Grid item xs={6} md={3} lg={2}>
+                                <Button
                                     variant="raised"
                                     color="secondary"
                                     style={styles.button}
-                                    onClick={this.clearApiKey}
+                                    onClick={this.clearPrivateData}
                                 >
-                                    Logout
-                                </ButtonTranslate>
+                                    {t("Remove keys")} <RemoveIcon />
+                                </Button>
+                            </Grid>
+
+                            <Grid item xs={6} md={3} lg={2}>
+                                <Button
+                                    variant="raised"
+                                    color="primary"
+                                    style={styles.button}
+                                    onClick={this.logout}
+                                >
+                                    {t("Logout")} <LogoutIcon />
+                                </Button>
                             </Grid>
 
                             <Grid item xs={12} md={6}>
@@ -286,6 +340,26 @@ class Settings extends React.Component {
                                 <FormControlLabel
                                     control={
                                         <Switch
+                                            id="set-analytics-enabled"
+                                            checked={
+                                                !!this.props.analyticsEnabled
+                                            }
+                                            onChange={
+                                                this
+                                                    .handleAnalyticsEnabledChange
+                                            }
+                                        />
+                                    }
+                                    label={t(
+                                        "Allow basic and anonymous Google Analytics tracking"
+                                    )}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={6}>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
                                             id="sticky-menu-selection"
                                             checked={this.props.stickyMenu}
                                             onChange={
@@ -294,6 +368,25 @@ class Settings extends React.Component {
                                         />
                                     }
                                     label={t("Enable sticky menu")}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={6}>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            id="automatic-change-selection"
+                                            checked={
+                                                this.props.automaticThemeChange
+                                            }
+                                            onChange={
+                                                this.handleAutomaticThemeChange
+                                            }
+                                        />
+                                    }
+                                    label={t(
+                                        "Automatically switch theme based on the time"
+                                    )}
                                 />
                             </Grid>
 
@@ -479,8 +572,10 @@ const mapStateToProps = state => {
         minimizeToTray: state.options.minimize_to_tray,
         nativeFrame: state.options.native_frame,
         stickyMenu: state.options.sticky_menu,
+        analyticsEnabled: state.options.analytics_enabled,
         checkInactivity: state.options.check_inactivity,
         settingsLocation: state.options.settings_location,
+        automaticThemeChange: state.options.automatic_theme_change,
         inactivityCheckDuration: state.options.inactivity_check_duration
     };
 };
@@ -492,7 +587,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
         // options and options_drawer handlers
         openSnackbar: message => dispatch(openSnackbar(message)),
+        setAutomaticThemeChange: automaticThemeChange =>
+            dispatch(setAutomaticThemeChange(automaticThemeChange)),
         setTheme: theme => dispatch(setTheme(theme)),
+        setLanguage: language => dispatch(setLanguage(language)),
         setLanguage: language => dispatch(setLanguage(language)),
         setNativeFrame: useFrame => dispatch(setNativeFrame(useFrame)),
         setStickyMenu: userStickyMenu =>
@@ -500,6 +598,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         setHideBalance: hideBalance => dispatch(setHideBalance(hideBalance)),
         setMinimizeToTray: minimizeToTray =>
             dispatch(setMinimizeToTray(minimizeToTray)),
+        setAnalyticsEnabled: enabled => dispatch(setAnalyticsEnabled(enabled)),
         toggleInactivityCheck: inactivityCheck =>
             dispatch(toggleInactivityCheck(inactivityCheck)),
         setInactivityCheckDuration: inactivityCheckDuration =>
@@ -510,7 +609,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(loadSettingsLocation(location)),
 
         // clear api key from bunqjsclient and bunqdesktop
-        clearApiKey: () => dispatch(registrationClearApiKey(BunqJSClient)),
+        clearPrivateData: () =>
+            dispatch(registrationClearPrivateData(BunqJSClient)),
+        // logout of current session without destroying stored keys
+        logOut: () => dispatch(registrationLogOut(BunqJSClient)),
         // full hard reset off all storage
         resetApplication: () => dispatch(resetApplication())
     };

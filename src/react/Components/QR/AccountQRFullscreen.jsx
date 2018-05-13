@@ -128,7 +128,7 @@ class AccountQRFullscreen extends React.PureComponent {
                     open={this.state.open}
                     onClose={this.handleRequestClose}
                     onClick={this.handleRequestClose}
-                    transition={Transition}
+                    TransitionComponent={Transition}
                 >
                     <div className={classes.content}>
                         <div style={{ width: 195 }}>{dialogContent}</div>
