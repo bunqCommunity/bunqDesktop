@@ -40,11 +40,11 @@ const styles = {
     apiInput: {
         width: "100%",
         marginTop: 20,
-        color: "#000000"
+        // color: "#000000"
     },
     environmentToggle: {
         marginTop: 10,
-        color: "#000000"
+        // color: "#000000"
     },
     wrapperContainer: {
         height: "100%"
@@ -55,34 +55,34 @@ const styles = {
     },
     optionsButton: {
         marginTop: 12,
-        color: "#000000"
+        // color: "#000000"
     },
     smallAvatar: {
         width: 50,
         height: 50
     },
     switchKeyIcon: {
-        color: "#000000",
+        // color: "#000000",
         marginLeft: 8
     },
     switchKeyButton: {
-        color: "#000000",
+        // color: "#000000",
         position: "absolute",
         top: 58,
         right: 8
     },
     valueInput: {
-        color: "#000000"
+        // color: "#000000"
     },
     card: {
         width: 250
     },
     cardContent: {
-        backgroundColor: "#ffffff",
+        // backgroundColor: "#ffffff",
         textAlign: "center"
     },
     text: {
-        color: "#000000"
+        // color: "#000000"
     },
     girlSvg: {
         zIndex: 0,
@@ -574,6 +574,7 @@ class Login extends React.Component {
                         component={NavLink}
                         style={styles.switchKeyButton}
                         className={"white-button"}
+                        variant={"raised"}
                     >
                         Switch keys <KeyIcon style={styles.switchKeyIcon} />
                     </Button>

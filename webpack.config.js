@@ -27,7 +27,7 @@ let config = {
         extensions: [".jsx", ".js", ".tsx", ".ts", ".json"],
         modules: ["node_modules", path.resolve(__dirname, "./src")]
     },
-    devtool: DEVELOPMENT ? "eval" : "source-map",
+    devtool: DEVELOPMENT ? "cheap-module-eval-source-map" : "source-map",
     cache: DEVELOPMENT,
     performance: PRODUCTION
         ? {
