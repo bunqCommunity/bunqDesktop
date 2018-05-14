@@ -146,9 +146,9 @@ class AccountInfo extends React.Component {
     handleDailyLimitChange = event => {
         let inputLimit = event.target.value;
         if (inputLimit > 10000) inputLimit = 10000;
-        if (inputLimit < 1) inputLimit = 1;
+        if (inputLimit < 1) inputLimit = 0;
 
-        this.setState({ settingsDailyLimit: inputLimit });
+        this.setState({ settingsDailyLimit: parseFloat(inputLimit) });
     };
 
     editAccount = event => {
@@ -163,11 +163,18 @@ class AccountInfo extends React.Component {
             account => account.id === accountId
         );
 
+        // fix daily limit if required
+        let settingsDailyLimit = this.state.settingsDailyLimit;
+        if (settingsDailyLimit > 10000) settingsDailyLimit = 10000;
+        if (settingsDailyLimit < 1) settingsDailyLimit = 1;
+
+        console.log(settingsDailyLimit);
+
         // update settings
         this.props.updateSettings(this.props.user.id, accountInfo.id, {
             description: this.state.settingsDescription,
             daily_limit: {
-                value: "" + this.state.settingsDailyLimit.toFixed(2),
+                value: "" + settingsDailyLimit.toFixed(2),
                 currency: "EUR"
             },
             setting: {
@@ -261,7 +268,7 @@ class AccountInfo extends React.Component {
                                 value={this.state.settingsDailyLimit}
                                 onChange={this.handleDailyLimitChange}
                                 type={"number"}
-                                placeholder={t("Daily limit")}
+                                label={t("Daily limit")}
                                 inputProps={{
                                     min: 0,
                                     max: 10000

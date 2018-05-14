@@ -574,7 +574,6 @@ class Login extends React.Component {
                         component={NavLink}
                         style={styles.switchKeyButton}
                         className={"white-button"}
-                        variant={"raised"}
                     >
                         Switch keys <KeyIcon style={styles.switchKeyIcon} />
                     </Button>
