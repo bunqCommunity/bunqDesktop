@@ -66,6 +66,7 @@ class AccountList extends React.Component {
         if (this.props.updateExternal) {
             this.props.updateExternal(userId, accountId);
         } else {
+            this.props.accountsUpdate(userId);
             this.props.paymentsUpdate(userId, accountId);
             this.props.bunqMeTabsUpdate(userId, accountId);
             this.props.requestResponsesUpdate(userId, accountId);
