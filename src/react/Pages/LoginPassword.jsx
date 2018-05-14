@@ -7,7 +7,7 @@ import store from "store";
 import Grid from "material-ui/Grid";
 import Input from "material-ui/Input";
 import Typography from "material-ui/Typography";
-import { CardContent } from "material-ui/Card";
+import Card, { CardContent } from "material-ui/Card";
 import { CircularProgress } from "material-ui/Progress";
 
 import TranslateButton from "../Components/TranslationHelpers/Button";
@@ -38,7 +38,7 @@ const styles = {
         marginTop: 20
     },
     passwordInput: {
-        color: "#000000",
+        // color: "#000000",
         width: "100%",
         marginTop: 20
     },
@@ -51,7 +51,7 @@ const styles = {
     },
     cardContent: {
         textAlign: "center",
-        backgroundColor: "#ffffff"
+        // backgroundColor: "#ffffff"
     },
     girlSvg: {
         zIndex: 0,
@@ -62,7 +62,7 @@ const styles = {
         maxWidth: "35%"
     },
     text: {
-        color: "#000000"
+        // color: "#000000"
     }
 };
 
@@ -255,7 +255,7 @@ class LoginPassword extends React.Component {
                     style={{ zIndex: 1 }}
                     className="animated zoomIn"
                 >
-                    <div>{cardContent}</div>
+                    <Card>{cardContent}</Card>
                 </Grid>
 
                 {/*<img*/}
