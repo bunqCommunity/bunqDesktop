@@ -299,6 +299,12 @@ class RequestResponseInfo extends React.Component {
             ];
         }
 
+        const exportData =
+            this.props.requestResponseInfo &&
+            this.props.requestResponseInfo._rawData
+                ? this.props.requestResponseInfo._rawData.RequestResponse
+                : {};
+
         return (
             <Grid container spacing={24}>
                 <Helmet>
@@ -324,7 +330,7 @@ class RequestResponseInfo extends React.Component {
                             this.setState({ displayExport: false })}
                         title={t("Export info")}
                         open={this.state.displayExport}
-                        object={this.props.requestResponseInfo}
+                        object={exportData}
                     />
 
                     <Button

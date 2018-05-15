@@ -257,6 +257,11 @@ class PaymentInfo extends React.Component {
             );
         }
 
+        const exportData =
+            this.props.paymentInfo && this.props.paymentInfo._rawData
+                ? this.props.paymentInfo._rawData.Payment
+                : {};
+
         return (
             <Grid container spacing={24}>
                 <Helmet>
@@ -268,7 +273,7 @@ class PaymentInfo extends React.Component {
                         this.setState({ displayExport: false })}
                     title={t("Export info")}
                     open={this.state.displayExport}
-                    object={this.props.paymentInfo}
+                    object={exportData}
                 />
 
                 <Grid item xs={12} sm={2} lg={3}>

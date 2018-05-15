@@ -171,7 +171,7 @@ class FilterDrawer extends React.Component {
                     <SearchFilter style={styles.textField} t={t} />
                 </ListItem>
 
-                {/* filters for both normal payments and master card actions */}
+                {/* filters for both normal payments and mastercard actions */}
                 <ListSubheader style={styles.subheaderTitle}>
                     {t("Payments")}
                     <ListItemSecondaryAction>

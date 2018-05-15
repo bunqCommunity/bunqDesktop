@@ -124,8 +124,8 @@ class MasterCardActionInfo extends React.Component {
                 </Grid>
             );
         } else {
-            const masterCardAction = masterCardActionInfo.MasterCardAction;
-            const paymentAmount = masterCardAction.amount_local.value;
+            const masterCardAction = masterCardActionInfo;
+            const paymentAmount = masterCardAction.getAmount();
             const paymentDate = humanReadableDate(masterCardAction.created);
             const formattedPaymentAmount = formatMoney(paymentAmount);
             const paymentLabel = masterCardActionText(masterCardAction, t);
@@ -269,6 +269,12 @@ class MasterCardActionInfo extends React.Component {
             );
         }
 
+        const exportData =
+            this.props.masterCardActionInfo &&
+            this.props.masterCardActionInfo._rawData
+                ? this.props.masterCardActionInfo._rawData.MasterCardAction
+                : {};
+
         return (
             <Grid container spacing={24}>
                 <Helmet>
@@ -280,7 +286,7 @@ class MasterCardActionInfo extends React.Component {
                         this.setState({ displayExport: false })}
                     title={t("Export info")}
                     open={this.state.displayExport}
-                    object={this.props.masterCardActionInfo}
+                    object={exportData}
                 />
 
                 <Grid item xs={12} sm={2} lg={3}>

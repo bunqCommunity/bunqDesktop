@@ -220,6 +220,12 @@ class RequestInquiryInfo extends React.Component {
             );
         }
 
+        const exportData =
+            this.props.requestInquiryInfo &&
+            this.props.requestInquiryInfo._rawData
+                ? this.props.requestInquiryInfo._rawData.RequestInquiry
+                : {};
+
         return (
             <Grid container spacing={24}>
                 <Helmet>
@@ -245,7 +251,7 @@ class RequestInquiryInfo extends React.Component {
                             this.setState({ displayExport: false })}
                         title={t("Export info")}
                         open={this.state.displayExport}
-                        object={this.props.requestInquiryInfo}
+                        object={exportData}
                     />
 
                     <Button

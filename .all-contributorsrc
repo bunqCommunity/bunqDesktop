@@ -20,7 +20,9 @@
         "doc",
         "infra",
         "review",
-        "platform"
+        "platform",
+        "question",
+        "bug"
       ]
     },
     {
@@ -33,7 +35,8 @@
         "code",
         "design",
         "ideas",
-        "doc"
+        "doc",
+        "question"
       ]
     },
     {
@@ -56,7 +59,8 @@
       "contributions": [
         "bug",
         "code",
-        "ideas"
+        "ideas",
+        "question"
       ]
     },
     {
@@ -77,6 +81,16 @@
       "contributions": [
         "bug",
         "code"
+      ]
+    },
+    {
+      "login": "OGKevin",
+      "name": "Kevin Hellemun",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/17928966?v=4",
+      "profile": "https://www.linkedin.com/in/kevin-hellemun-9b3ab8130",
+      "contributions": [
+        "question",
+        "ideas"
       ]
     },
     {
