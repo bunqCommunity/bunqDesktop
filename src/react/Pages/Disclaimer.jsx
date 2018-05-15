@@ -9,11 +9,10 @@ import { FormControlLabel } from "material-ui/Form";
 import Card, { CardContent } from "material-ui/Card";
 import Checkbox from "material-ui/Checkbox";
 import Typography from "material-ui/Typography";
-import IconButton from "material-ui/IconButton";
 
-import WarningIcon from "@material-ui/icons/Warning";
 import LockIcon from "@material-ui/icons/Lock";
-import HelpIcon from "@material-ui/icons/Help";
+import DesktopIcon from "@material-ui/icons/DesktopMac";
+import BuildIcon from "@material-ui/icons/Edit";
 
 import TranslateButton from "../Components/TranslationHelpers/Button";
 
@@ -84,50 +83,57 @@ class Disclaimer extends React.Component {
                 </Helmet>
 
                 <Grid item xs={12} sm={8} md={6} lg={4}>
-                    <Card>
-                        <Card style={styles.warningCard}>
-                            <CardContent>
-                                <Typography variant="headline">
-                                    <WarningIcon /> Caution!
-                                </Typography>
-                                <Typography variant="body2">
-                                    {t("ActiveDevelopmentWarning")}
-                                </Typography>
-                                <br />
-                                <Typography variant="headline">
-                                    <LockIcon /> Password
-                                </Typography>
-                                <Typography variant="body2">
-                                    {t("PasswordWarningPart1")}
-                                </Typography>
-                                <Typography variant="body2">
-                                    {t("PasswordWarningPart2")}
-                                </Typography>
+                    <Card style={styles.warningCard}>
+                        <CardContent>
+                            <Typography variant="headline">
+                                <DesktopIcon /> BunqDesktop
+                            </Typography>
+                            <Typography variant="body2">
+                                {t("LoginBunqDesktopWarning")}
+                            </Typography>
+                            <br />
 
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={analyticsEnabled !== false}
-                                            onChange={this.toggleAnalytics}
-                                        />
-                                    }
-                                    label={t(
-                                        "Allow basic and anonymous Google Analytics tracking"
-                                    )}
-                                />
+                            <Typography variant="headline">
+                                <BuildIcon /> Development
+                            </Typography>
+                            <Typography variant="body2">
+                                {t("LoginActiveDevelopmentWarning")}
+                            </Typography>
+                            <br />
 
-                                <div style={{ textAlign: "center" }}>
-                                    <TranslateButton
-                                        variant={"raised"}
-                                        color={"primary"}
-                                        style={styles.buttons}
-                                        onClick={this.ignoreWarning}
-                                    >
-                                        Get started
-                                    </TranslateButton>
-                                </div>
-                            </CardContent>
-                        </Card>
+                            <Typography variant="headline">
+                                <LockIcon /> Password
+                            </Typography>
+                            <Typography variant="body2">
+                                {t("LoginPasswordWarningPart1")}
+                            </Typography>
+                            <Typography variant="body2">
+                                {t("LoginPasswordWarningPart2")}
+                            </Typography>
+
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={analyticsEnabled !== false}
+                                        onChange={this.toggleAnalytics}
+                                    />
+                                }
+                                label={t(
+                                    "Allow basic and anonymous Google Analytics tracking"
+                                )}
+                            />
+
+                            <div style={{ textAlign: "center" }}>
+                                <TranslateButton
+                                    variant={"raised"}
+                                    color={"primary"}
+                                    style={styles.buttons}
+                                    onClick={this.ignoreWarning}
+                                >
+                                    Get started
+                                </TranslateButton>
+                            </div>
+                        </CardContent>
                     </Card>
                 </Grid>
             </Grid>

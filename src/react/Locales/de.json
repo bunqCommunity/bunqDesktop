@@ -145,8 +145,6 @@
 	"Loading cards": "Karten werden geladen",
 	"Loading user accounts": "Lade Benutzerkonten",
 	"Login": "Anmeldung",
-	"LoginActiveDevelopmentWarning": "LoginActiveDevelopmentWarnung",
-	"LoginBunqDesktopWarning": "LoginBunqDesktopWarnung",
 	"LoginPasswordWarningPart1": "Um deine Daten zu schützen, wird alles mit dem eingegebenen Passwort verschlüsselt. Wenn du dieses Passwort vergisst, werden alle persönlichen Daten in BunqDesktop zurückgesetzt und du musst dich erneut anmelden.",
 	"LoginPasswordWarningPart2": "Wenn du dich dazu entschließt, ein leeres Passwort zu verwenden, kann jeder mit Zugang zu deinem Gerät deine Daten einsehen!",
 	"Logout": "Ausloggen",
