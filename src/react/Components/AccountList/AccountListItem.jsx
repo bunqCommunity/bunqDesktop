@@ -7,8 +7,11 @@ import {
 } from "material-ui/List";
 import Avatar from "material-ui/Avatar";
 import IconButton from "material-ui/IconButton";
+
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import InfoIcon from "@material-ui/icons/InfoOutline";
+import ShareIcon from "@material-ui/icons/Share";
+import PeopleIcon from "@material-ui/icons/People";
 
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 import NavLink from "../../Components/Routing/NavLink";
@@ -72,6 +75,9 @@ class AccountListItem extends React.Component {
                         }
                     />
                 </Avatar>
+                {/*<div style={{ position: "absolute", left: 60, bottom: 4 }}>*/}
+                    {/*<PeopleIcon />*/}
+                {/*</div>*/}
                 <ListItemText
                     primary={account.description}
                     secondary={formattedBalance}

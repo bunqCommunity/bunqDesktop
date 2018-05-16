@@ -21,6 +21,7 @@ import { requestResponsesUpdate } from "../../Actions/request_responses";
 import { bunqMeTabsUpdate } from "../../Actions/bunq_me_tabs";
 import { masterCardActionsUpdate } from "../../Actions/master_card_actions";
 import { requestInquiriesUpdate } from "../../Actions/request_inquiries";
+import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_response";
 
 const styles = {
     list: {
@@ -72,6 +73,7 @@ class AccountList extends React.Component {
             this.props.requestResponsesUpdate(userId, accountId);
             this.props.requestInquiriesUpdate(userId, accountId);
             this.props.masterCardActionsUpdate(userId, accountId);
+            this.props.shareInviteBankResponsesInfoUpdate(userId);
         }
     };
 
@@ -129,7 +131,9 @@ class AccountList extends React.Component {
     };
 
     render() {
-        const { t } = this.props;
+        const { t, shareInviteBankResponses } = this.props;
+
+        console.log(shareInviteBankResponses);
 
         let accounts = [];
         if (this.props.accounts !== false) {
@@ -206,10 +210,12 @@ const mapStateToProps = state => {
 
         hideBalance: state.options.hide_balance,
 
-
         accounts: state.accounts.accounts,
         accountsAccountId: state.accounts.selectedAccount,
         accountsLoading: state.accounts.loading,
+
+        shareInviteBankResponses:
+            state.share_invite_bank_responses.share_invite_bank_responses,
 
         paymentsLoading: state.payments.loading
     };
@@ -230,6 +236,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(bunqMeTabsUpdate(BunqJSClient, userId, accountId)),
         accountsUpdate: userId =>
             dispatch(accountsUpdate(BunqJSClient, userId)),
+        shareInviteBankResponsesInfoUpdate: userId =>
+            dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId)),
         selectAccount: acountId => dispatch(accountsSelectAccount(acountId))
     };
 };

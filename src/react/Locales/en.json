@@ -322,6 +322,7 @@
 	"We failed to load the payments for this monetary account": "We failed to load the payments for this monetary account",
 	"We failed to load the request information": "We failed to load the request information",
 	"We failed to load the scheduled payments for this monetary account": "We failed to load the scheduled payments for this monetary account",
+	"We failed to load the share invite responses for this account": "We failed to load the share invite responses for this account",
 	"We failed to load the stored API key Try again or re-enter the key": "We failed to load the stored API key. Try again or re-enter the key",
 	"We failed to load your monetary accounts": "We failed to load your monetary accounts",
 	"We failed to load your users": "We failed to load your users",

@@ -53,6 +53,7 @@ import {
     setAutomaticThemeChange
 } from "../Actions/options";
 import { loadStoredContacts } from "../Actions/contacts";
+import { loadStoredShareInviteBankResponses } from "../Actions/share_invite_bank_response";
 
 const styles = theme => ({
     contentContainer: {
@@ -396,6 +397,7 @@ class Layout extends React.Component {
         this.props.loadStoredMasterCardActions();
         this.props.loadStoredRequestInquiries();
         this.props.loadStoredRequestResponses();
+        this.props.loadStoredShareInviteBankResponses();
 
         // setup finished with no errors
         this.props.applicationSetStatus("");
@@ -574,6 +576,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         loadStoredAccounts: () => dispatch(loadStoredAccounts(BunqJSClient)),
         loadStoredRequestResponses: () =>
             dispatch(loadStoredRequestResponses(BunqJSClient)),
+        loadStoredShareInviteBankResponses: () =>
+            dispatch(loadStoredShareInviteBankResponses(BunqJSClient)),
 
         // functions to clear user data
         registrationClearUserInfo: () => dispatch(registrationClearUserInfo())
