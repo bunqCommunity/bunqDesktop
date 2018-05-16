@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
-import IconButton from "material-ui/IconButton";
-import Hidden from "material-ui/Hidden";
+import IconButton from "@material-ui/core/IconButton";
+import Hidden from "@material-ui/core/Hidden";
 const remote = require("electron").remote;
 import MenuIcon from "@material-ui/icons/Menu";
 import CloseIcon from "@material-ui/icons/Close";

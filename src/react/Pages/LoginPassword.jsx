@@ -4,11 +4,12 @@ import { connect } from "react-redux";
 import Redirect from "react-router-dom/Redirect";
 import Helmet from "react-helmet";
 import store from "store";
-import Grid from "material-ui/Grid";
-import Input from "material-ui/Input";
-import Typography from "material-ui/Typography";
-import Card, { CardContent } from "material-ui/Card";
-import { CircularProgress } from "material-ui/Progress";
+import Grid from "@material-ui/core/Grid";
+import Input from "@material-ui/core/Input";
+import Typography from "@material-ui/core/Typography";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import TranslateButton from "../Components/TranslationHelpers/Button";
 

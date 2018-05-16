@@ -1,11 +1,10 @@
 import * as React from "react";
-import TextField from "material-ui/TextField";
-import Dialog, {
-    DialogActions,
-    DialogContent,
-    DialogTitle
-} from "material-ui/Dialog";
-import Slide from "material-ui/transitions/Slide";
+import TextField from "@material-ui/core/TextField";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Dialog from "@material-ui/core/Dialog";
+import Slide from "@material-ui/core/Slide";
 
 import TranslateButton2 from "./TranslationHelpers/Button";
 const TranslateButton: any = TranslateButton2;

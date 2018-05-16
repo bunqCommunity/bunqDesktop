@@ -4,12 +4,13 @@ import Helmet from "react-helmet";
 import { translate } from "react-i18next";
 import EmailValidator from "email-validator";
 
-import Grid from "material-ui/Grid";
-import TextField from "material-ui/TextField";
-import Paper from "material-ui/Paper";
-import Collapse from "material-ui/transitions/Collapse";
-import Switch from "material-ui/Switch";
-import { FormControl, FormControlLabel } from "material-ui/Form";
+import Grid from "@material-ui/core/Grid";
+import TextField from "@material-ui/core/TextField";
+import Paper from "@material-ui/core/Paper";
+import Collapse from "@material-ui/core/Collapse";
+import Switch from "@material-ui/core/Switch";
+import FormControl from "@material-ui/core/FormControl";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
 import TargetSelection from "../../Components/FormFields/TargetSelection";

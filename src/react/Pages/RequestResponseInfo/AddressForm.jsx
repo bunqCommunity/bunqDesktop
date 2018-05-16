@@ -1,9 +1,9 @@
 import React from "react";
-import Grid from "material-ui/Grid";
+import Grid from "@material-ui/core/Grid";
 import { translate } from "react-i18next";
-import TextField from "material-ui/TextField";
-import Typography from "material-ui/Typography";
-import Collapse from "material-ui/transitions/Collapse";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
+import Collapse from "@material-ui/core/Collapse";
 
 const styles = {
     paper: {

@@ -1,12 +1,14 @@
 import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import Input, { InputLabel } from "material-ui/Input";
-import { MenuItem } from "material-ui/Menu";
-import { FormControl } from "material-ui/Form";
-import Select from "material-ui/Select";
-import { ListItem, ListItemText } from "material-ui/List";
-import Avatar from "material-ui/Avatar";
+import Input  from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/Menu";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Avatar from "@material-ui/core/Avatar";
 
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 import { formatMoney } from "../../Helpers/Utils";

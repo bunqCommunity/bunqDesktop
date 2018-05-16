@@ -2,8 +2,8 @@ import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 
-import TextField from "material-ui/TextField";
-import { FormControl } from "material-ui/Form";
+import TextField from "@material-ui/core/TextField";
+import FormControl from "@material-ui/core/FormControl";
 
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";

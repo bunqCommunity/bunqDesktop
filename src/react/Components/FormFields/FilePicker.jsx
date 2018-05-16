@@ -1,7 +1,7 @@
 import React from "react";
-import Grid from "material-ui/Grid";
+import Grid from "@material-ui/core/Grid";
 import { translate } from "react-i18next";
-import TextField from "material-ui/TextField";
+import TextField from "@material-ui/core/TextField";
 
 import ButtonTranslate from "../TranslationHelpers/Button";
 import TypographyTranslate from "../TranslationHelpers/Typography";

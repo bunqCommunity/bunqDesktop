@@ -1,10 +1,10 @@
 import * as React from "react";
 import { translate } from "react-i18next";
-import PaperWrapper from "material-ui/Paper";
-import Button from "material-ui/Button";
-import Switch from "material-ui/Switch";
-import { FormControlLabel } from "material-ui/Form";
-import List from "material-ui/List";
+import PaperWrapper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
+import Switch from "@material-ui/core/Switch";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import List from "@material-ui/core/List";
 const Paper: any = PaperWrapper;
 
 import RuleCollection, { EventObjectResult } from "../../Types/RuleCollection";

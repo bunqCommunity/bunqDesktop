@@ -2,10 +2,10 @@ import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
-import Grid from "material-ui/Grid";
-import Paper from "material-ui/Paper";
-import Collapse from "material-ui/transitions/Collapse";
-import IconButton from "material-ui/IconButton";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Collapse from "@material-ui/core/Collapse";
+import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import AddIcon from "@material-ui/icons/Add";
 

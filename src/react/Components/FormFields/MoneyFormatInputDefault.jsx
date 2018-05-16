@@ -1,12 +1,12 @@
 import React from "react";
 import NumberFormat from "react-number-format";
-import TextField from "material-ui/TextField";
+import TextField from "@material-ui/core/TextField";
 import {
     preferedThousandSeparator,
     preferedDecimalSeparator
 } from "../../Helpers/Utils";
 
-import { withTheme } from "material-ui/styles";
+import { withTheme } from "@material-ui/core/styles";
 
 class MoneyFormatInputDefault extends React.Component {
     NumberFormatCustom = props => {

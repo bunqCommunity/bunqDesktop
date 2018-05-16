@@ -1,7 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
-import { ListItem, ListItemText } from "material-ui/List";
-import Avatar from "material-ui/Avatar";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Avatar from "@material-ui/core/Avatar";
 import AddBoxIcon from "@material-ui/icons/AddBox";
 
 import NavLink from "../../Components/Routing/NavLink";

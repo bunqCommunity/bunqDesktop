@@ -1,8 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import TextField from "material-ui/TextField";
-import Paper from "material-ui/Paper";
-import { ListItem, ListItemText } from "material-ui/List";
+import TextField from "@material-ui/core/TextField";
+import Paper from "@material-ui/core/Paper";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 
 const styles = {
     container: {

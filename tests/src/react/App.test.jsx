@@ -1,4 +1,4 @@
-import { createShallow } from "material-ui/test-utils";
+import { createShallow } from "@material-ui/core/test-utils";
 import React from "react";
 import enzyme from "enzyme";
 import Adapter from "enzyme-adapter-react-16";

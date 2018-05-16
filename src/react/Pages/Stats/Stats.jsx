@@ -1,15 +1,18 @@
 import React from "react";
-import { withTheme } from "material-ui/styles";
+import { withTheme } from "@material-ui/core/styles";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
-import Paper from "material-ui/Paper";
-import Grid from "material-ui/Grid";
-import Switch from "material-ui/Switch";
-import Typography from "material-ui/Typography";
-import List, { ListItem, ListItemText } from "material-ui/List";
-import Radio, { RadioGroup } from "material-ui/Radio";
-import { FormControlLabel } from "material-ui/Form";
+import Paper from "@material-ui/core/Paper";
+import Grid from "@material-ui/core/Grid";
+import Switch from "@material-ui/core/Switch";
+import Typography from "@material-ui/core/Typography";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Radio  from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 import AccountList from "../../Components/AccountList/AccountList";
 import LoadOlderButton from "../../Components/LoadOlderButton";

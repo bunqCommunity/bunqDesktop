@@ -1,14 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
-import Icon from "material-ui/Icon";
-import IconButton from "material-ui/IconButton";
-import {
-    ListItem,
-    ListItemIcon,
-    ListSubheader,
-    ListItemSecondaryAction
-} from "material-ui/List";
-import Menu, { MenuItem } from "material-ui/Menu";
+import Icon from "@material-ui/core/Icon";
+import IconButton from "@material-ui/core/IconButton";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListSubheader from "@material-ui/core/ListSubheader";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import Menu from "@material-ui/core/Menu";
+import MenuItem  from "@material-ui/core/MenuItem";
 
 import AddIcon from "@material-ui/icons/Add";
 

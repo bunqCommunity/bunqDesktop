@@ -1,11 +1,10 @@
 import React from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
-import Dialog, {
-    DialogActions,
-    DialogContent,
-    DialogTitle
-} from "material-ui/Dialog";
-import Slide from "material-ui/transitions/Slide";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Slide from "@material-ui/core/Slide";
 
 import TranslateButton from "./TranslationHelpers/Button";
 import ReactJsonWrapper from "./ReactJsonWrapper";
