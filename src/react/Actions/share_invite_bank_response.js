@@ -70,6 +70,6 @@ export function shareInviteBankResponsesNotLoading() {
     return { type: "SHARE_INVITE_RESPONSES_IS_NOT_LOADING" };
 }
 
-export function paymentsClear() {
+export function shareInviteBankResponsesClear() {
     return { type: "SHARE_INVITE_RESPONSES_CLEAR" };
 }

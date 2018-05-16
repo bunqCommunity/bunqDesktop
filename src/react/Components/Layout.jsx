@@ -54,6 +54,7 @@ import {
 } from "../Actions/options";
 import { loadStoredContacts } from "../Actions/contacts";
 import { loadStoredShareInviteBankResponses } from "../Actions/share_invite_bank_response";
+import { loadStoredShareInviteBankInquiries } from "../Actions/share_invite_bank_inquiry";
 
 const styles = theme => ({
     contentContainer: {
@@ -398,6 +399,7 @@ class Layout extends React.Component {
         this.props.loadStoredRequestInquiries();
         this.props.loadStoredRequestResponses();
         this.props.loadStoredShareInviteBankResponses();
+        this.props.loadStoredShareInviteBankInquiries();
 
         // setup finished with no errors
         this.props.applicationSetStatus("");
@@ -578,6 +580,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(loadStoredRequestResponses(BunqJSClient)),
         loadStoredShareInviteBankResponses: () =>
             dispatch(loadStoredShareInviteBankResponses(BunqJSClient)),
+        loadStoredShareInviteBankInquiries: () =>
+            dispatch(loadStoredShareInviteBankInquiries(BunqJSClient)),
 
         // functions to clear user data
         registrationClearUserInfo: () => dispatch(registrationClearUserInfo())
