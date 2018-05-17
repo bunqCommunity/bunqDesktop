@@ -2,7 +2,7 @@
     "name": "bunqdesktop",
     "description": "A desktop implementation for the bunq API",
     "productName": "BunqDesktop",
-    "homepage": "https://bunqdesktop.com/",
+    "homepage": "https://bunqdesk.top/",
     "version": "0.8.6",
     "author": {
         "name": "BunqCommunity",
@@ -121,7 +121,7 @@
         "upath": "1.0.5"
     },
     "devDependencies": {
-        "@bunq-community/bunq-js-client": "^0.17.0",
+        "@bunq-community/bunq-js-client": "^0.17.1",
         "@google-cloud/translate": "^1.1.0",
         "@material-ui/icons": "^1.0.0-beta.42",
         "@material-ui/lab": "^1.0.0-alpha.1",
