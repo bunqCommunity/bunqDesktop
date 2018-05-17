@@ -21,7 +21,7 @@
     <bugTrackerUrl>https://github.com/BunqCommunity/BunqDesktop/issues</bugTrackerUrl>
 
     <tags>bunqdesktop finance desktop bunq api</tags>
-    <summary>A desktop implementation for the bunq API</summary>
+    <summary>The unofficial, free and open source desktop application for the bunq API</summary>
     <description>A desktop implementation for bunq's API. This app does everything within the application so you don't  have to worry about sharing your API key with anyone else!</description>
   </metadata>
   <files>

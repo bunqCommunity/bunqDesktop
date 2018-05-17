@@ -6,7 +6,7 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-14-orange.svg?style=flat-square)](#contributors)
 [![MIT License](https://img.shields.io/npm/l/all-contributors-cli.svg?style=flat-square)](https://github.com/BunqCommunity/BunqDesktop/blob/master/LICENSE)
 
-#### A desktop implementation for bunq's API. This app does everything within the application so you don't  have to worry about sharing your API key with anyone else!
+#### The unofficial, free and open source desktop application for the bunq API. 
 
 ___   
 
