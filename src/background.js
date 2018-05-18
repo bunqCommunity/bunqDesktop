@@ -61,6 +61,7 @@ if (env.name !== "production") {
 // setup the logger
 log.transports.file.appName = "BunqDesktop";
 log.transports.file.level = "debug";
+log.transports.file.maxSize = 512 * 1024;
 log.transports.file.format = "{h}:{i}:{s}:{ms} {text}";
 log.transports.file.file = `${userDataPath}${path.sep}BunqDesktop.${env.name}.log.txt`;
 
