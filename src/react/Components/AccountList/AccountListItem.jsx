@@ -26,7 +26,9 @@ const styles = {
     },
     secondaryIcon: {
         width: 26,
-        height: 26
+        height: 26,
+        color: "#ffffff",
+        backgroundColor: "#ffa500"
     }
 };
 
