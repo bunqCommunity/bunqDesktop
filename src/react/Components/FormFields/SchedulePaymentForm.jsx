@@ -1,5 +1,5 @@
 import React from "react";
-import DateTimePicker from "material-ui-pickers/DateTimePicker/index.js";
+import DateTimePicker from "material-ui-pickers/DateTimePicker";
 
 import Select from "@material-ui/core/Select";
 import Grid from "@material-ui/core/Grid";
