@@ -14,24 +14,29 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
+import List from "@material-ui/core/List";
+import ListSubHeader from "@material-ui/core/ListSubheader";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
-import CombinedList from "../Components/CombinedList/CombinedList";
-import AccountCard from "../Components/AccountCard";
-import ButtonTranslate from "../Components/TranslationHelpers/Button";
+import ConnectlistItem from "./ConnectlistItem";
+import CombinedList from "../../Components/CombinedList/CombinedList";
+import AccountCard from "../../Components/AccountCard";
+import ButtonTranslate from "../../Components/TranslationHelpers/Button";
 
-import { openSnackbar } from "../Actions/snackbar";
+import { openSnackbar } from "../../Actions/snackbar";
 import {
     accountsUpdate,
     accountsUpdateSettings,
     accountsDeactivate
-} from "../Actions/accounts";
-import { paymentInfoUpdate } from "../Actions/payments";
-import { requestResponsesUpdate } from "../Actions/request_responses";
-import { bunqMeTabsUpdate } from "../Actions/bunq_me_tabs";
-import { masterCardActionsUpdate } from "../Actions/master_card_actions";
-import { requestInquiriesUpdate } from "../Actions/request_inquiries";
+} from "../../Actions/accounts";
+import { paymentInfoUpdate } from "../../Actions/payments";
+import { requestResponsesUpdate } from "../../Actions/request_responses";
+import { bunqMeTabsUpdate } from "../../Actions/bunq_me_tabs";
+import { masterCardActionsUpdate } from "../../Actions/master_card_actions";
+import { requestInquiriesUpdate } from "../../Actions/request_inquiries";
+import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiry";
+import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_response";
 
 const styles = {
     textField: {
@@ -78,6 +83,8 @@ class AccountInfo extends React.Component {
             const userId = this.props.user.id;
             const accountId = parseFloat(this.props.match.params.accountId);
 
+            this.props.shareInviteBankInquiriesInfoUpdate(userId, accountId);
+            this.props.shareInviteBankResponsesInfoUpdate(userId);
             this.props.paymentsUpdate(userId, accountId);
             this.props.bunqMeTabsUpdate(userId, accountId);
             this.props.requestResponsesUpdate(userId, accountId);
@@ -101,13 +108,22 @@ class AccountInfo extends React.Component {
     }
 
     componentWillUpdate(nextProps, nextState) {
-        const { initialBunqConnect, user } = nextProps;
+        const { initialBunqConnect, accountsLoading, user } = nextProps;
         const accountId = parseFloat(this.props.match.params.accountId);
         const nextAccountId = parseFloat(nextProps.match.params.accountId);
 
-        if (initialBunqConnect && nextAccountId !== accountId) {
+        if (
+            accountsLoading === false &&
+            initialBunqConnect &&
+            nextAccountId !== accountId
+        ) {
             this.props.accountsUpdate(user.id);
 
+            this.props.shareInviteBankInquiriesInfoUpdate(
+                user.id,
+                nextAccountId
+            );
+            this.props.shareInviteBankResponsesInfoUpdate(user.id);
             this.props.paymentsUpdate(user.id, nextAccountId);
             this.props.bunqMeTabsUpdate(user.id, nextAccountId);
             this.props.requestResponsesUpdate(user.id, nextAccountId);
@@ -167,8 +183,6 @@ class AccountInfo extends React.Component {
         if (settingsDailyLimit > 10000) settingsDailyLimit = 10000;
         if (settingsDailyLimit < 1) settingsDailyLimit = 1;
 
-        console.log(settingsDailyLimit);
-
         // update settings
         this.props.updateSettings(this.props.user.id, accountInfo.id, {
             description: this.state.settingsDescription,
@@ -183,7 +197,12 @@ class AccountInfo extends React.Component {
     };
 
     render() {
-        const { accounts, t } = this.props;
+        const {
+            accounts,
+            shareInviteBankResponses,
+            shareInviteBankInquiries,
+            t
+        } = this.props;
         const accountId = parseFloat(this.props.match.params.accountId);
 
         if (this.state.deactivateActivated) return <Redirect to="/" />;
@@ -192,6 +211,33 @@ class AccountInfo extends React.Component {
 
         let content = null;
         if (accountInfo !== false) {
+            const filteredInviteResponses = shareInviteBankResponses.filter(
+                shareInviteBankResponse => {
+                    if (!shareInviteBankResponse.ShareInviteBankResponse)
+                        return false;
+
+                    return (
+                        shareInviteBankResponse.ShareInviteBankResponse
+                            .status === "ACCEPTED" &&
+                        shareInviteBankResponse.ShareInviteBankResponse
+                            .monetary_account_id === accountInfo.id
+                    );
+                }
+            );
+            const filteredInviteInquiries = shareInviteBankInquiries.filter(
+                shareInviteBankInquiry => {
+                    if (!shareInviteBankInquiry.ShareInviteBankInquiry)
+                        return false;
+
+                    return (
+                        shareInviteBankInquiry.ShareInviteBankInquiry.status ===
+                            "ACCEPTED" &&
+                        shareInviteBankInquiry.ShareInviteBankInquiry
+                            .monetary_account_id === accountInfo.id
+                    );
+                }
+            );
+
             content = (
                 <React.Fragment>
                     <Dialog
@@ -307,6 +353,55 @@ class AccountInfo extends React.Component {
                         account={accountInfo}
                     />
 
+                    {filteredInviteResponses.length > 0 ||
+                    filteredInviteInquiries.length > 0 ? (
+                        <Grid container spacing={8}>
+                            <Grid item xs={12} sm={6}>
+                                <Paper style={styles.paperList}>
+                                    <List dense>
+                                        <ListSubHeader>
+                                            Shared With:
+                                        </ListSubHeader>
+                                        {filteredInviteInquiries.map(
+                                            filteredInviteInquiry => (
+                                                <ConnectlistItem
+                                                    connectInfo={
+                                                        filteredInviteInquiry.ShareInviteBankInquiry
+                                                    }
+                                                    BunqJSClient={
+                                                        this.props.BunqJSClient
+                                                    }
+                                                />
+                                            )
+                                        )}
+                                    </List>
+                                </Paper>
+                            </Grid>
+
+                            <Grid item xs={12} sm={6}>
+                                <Paper style={styles.paperList}>
+                                    <List dense>
+                                        <ListSubHeader>
+                                            Shared By:
+                                        </ListSubHeader>
+                                        {filteredInviteResponses.map(
+                                            filteredInviteResponse => (
+                                                <ConnectlistItem
+                                                    connectInfo={
+                                                        filteredInviteResponse.ShareInviteBankResponse
+                                                    }
+                                                    BunqJSClient={
+                                                        this.props.BunqJSClient
+                                                    }
+                                                />
+                                            )
+                                        )}
+                                    </List>
+                                </Paper>
+                            </Grid>
+                        </Grid>
+                    ) : null}
+
                     <Paper style={styles.paperList}>
                         <CombinedList
                             BunqJSClient={this.props.BunqJSClient}
@@ -353,6 +448,16 @@ const mapStateToProps = state => {
     return {
         hideBalance: state.options.hide_balance,
 
+        shareInviteBankResponses:
+            state.share_invite_bank_responses.share_invite_bank_responses,
+        shareInviteBankResponsesLoading:
+            state.share_invite_bank_responses.loading,
+
+        shareInviteBankInquiries:
+            state.share_invite_bank_inquiries.share_invite_bank_inquiries,
+        shareInviteBankInquiriesLoading:
+            state.share_invite_bank_inquiries.loading,
+
         user: state.user.user,
         accounts: state.accounts.accounts,
         accountsLoading: state.accounts.loading
@@ -380,6 +485,16 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                 )
             ),
 
+        shareInviteBankInquiriesInfoUpdate: (userId, accountId) =>
+            dispatch(
+                shareInviteBankInquiriesInfoUpdate(
+                    BunqJSClient,
+                    userId,
+                    accountId
+                )
+            ),
+        shareInviteBankResponsesInfoUpdate: (userId, accountId) =>
+            dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId)),
         paymentsUpdate: (userId, accountId) =>
             dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId)),
         requestInquiriesUpdate: (userId, accountId) =>

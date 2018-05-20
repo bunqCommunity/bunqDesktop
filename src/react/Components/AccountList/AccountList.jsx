@@ -152,6 +152,8 @@ class AccountList extends React.Component {
                 .map(account => {
                     const filteredResponses = shareInviteBankResponses.filter(
                         shareInviteBankResponse => {
+                            if(!shareInviteBankResponse.ShareInviteBankResponse) return false;
+
                             return (
                                 shareInviteBankResponse.ShareInviteBankResponse
                                     .status === "ACCEPTED" &&
@@ -160,16 +162,18 @@ class AccountList extends React.Component {
                             );
                         }
                     );
-                    const filteredInquiries = shareInviteBankInquiries.filter(
-                        shareInviteBankInquiry => {
-                            return (
-                                shareInviteBankInquiry.ShareInviteBankInquiry
-                                    .status === "ACCEPTED" &&
-                                shareInviteBankInquiry.ShareInviteBankInquiry
-                                    .monetary_account_id === account.id
-                            );
-                        }
-                    );
+                    // const filteredInquiries = shareInviteBankInquiries.filter(
+                    //     shareInviteBankInquiry => {
+                    //         if(!shareInviteBankInquiry.ShareInviteBankInquiry) return false;
+                    //
+                    //         return (
+                    //             shareInviteBankInquiry.ShareInviteBankInquiry
+                    //                 .status === "ACCEPTED" &&
+                    //             shareInviteBankInquiry.ShareInviteBankInquiry
+                    //                 .monetary_account_id === account.id
+                    //         );
+                    //     }
+                    // );
 
                     return (
                         <AccountListItem
@@ -181,8 +185,8 @@ class AccountList extends React.Component {
                                 account.accountType === "MonetaryAccountJoint"
                             }
                             isConnect={
-                                filteredResponses.length > 0 ||
-                                filteredInquiries.length > 0
+                                filteredResponses.length > 0
+                                // || filteredInquiries.length > 0
                             }
                         />
                     );

@@ -35,7 +35,7 @@ const ApplicationInfo = CL(() =>
     import(/* webpackChunkName: "applicationinfo" */ "./Pages/ApplicationInfo")
 );
 const AccountInfo = CL(() =>
-    import(/* webpackChunkName: "accountinfo" */ "./Pages/AccountInfo")
+    import(/* webpackChunkName: "accountinfo" */ "./Pages/AccountInfo/AccountInfo")
 );
 const AddAccount = CL(() =>
     import(/* webpackChunkName: "addaccount" */ "./Pages/AddAccount")

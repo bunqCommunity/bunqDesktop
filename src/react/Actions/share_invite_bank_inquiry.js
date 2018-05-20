@@ -75,5 +75,5 @@ export function shareInviteBankInquiriesNotLoading() {
 }
 
 export function shareInviteBankInquiriesClear() {
-    return { type: "SHARE_INVITE_RESPONSES_CLEAR" };
+    return { type: "SHARE_INVITE_INQUIRIES_CLEAR" };
 }
