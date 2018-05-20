@@ -362,7 +362,8 @@ class Layout extends React.Component {
             // custom error handling to prevent
             if (exception.errorCode) {
                 switch (exception.errorCode) {
-                    case BunqJSClient.errorCodes.INSTALLATION_HAS_SESSION:
+                    case this.props.BunqJSClient.errorCodes
+                        .INSTALLATION_HAS_SESSION:
                         Logger.error(
                             `Error while creating a new session: ${exception.errorCode}`
                         );

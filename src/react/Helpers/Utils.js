@@ -98,6 +98,7 @@ export const humanReadableDate = (
     return `${createDate.getDate()} ${month} ${hoursMinutes}`;
 };
 
+// pseudo random uid
 export const generateGUID = () => {
     function s4() {
         return Math.floor((1 + Math.random()) * 0x10000)
@@ -118,10 +119,4 @@ export const generateGUID = () => {
         s4() +
         s4()
     );
-};
-
-// get the week for a specific date
-export const getWeek = date => {
-    const onejan = new Date(date.getFullYear(), 0, 1);
-    return Math.ceil(((date - onejan) / 86400000 + onejan.getDay() + 1) / 7);
 };

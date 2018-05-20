@@ -46,6 +46,10 @@ export default (dispatch, error, customError = false) => {
     // check if we can display a bunq error
     const contentType = response.headers["content-type"];
 
+    // attempt to get response id from request
+    const responseId = response.headers["x-bunq-client-response-id"];
+    if (responseId) Logger.error(`Response-Id: ${responseId}`);
+
     // response was json so we can retrieve the error
     if (contentType && contentType.includes("application/json")) {
         const errorObject = response.data.Error[0];
@@ -57,9 +61,14 @@ export default (dispatch, error, customError = false) => {
                     ? "We received the following error while sending a request to bunq"
                     : customError;
 
+            // add response id when possible
+            const responseIdText = responseId
+                ? `\n\nResponse-Id: ${responseId}`
+                : "";
+
             return dispatch(
                 openModal(
-                    `${message}: ${errorObject.error_description}`,
+                    `${message}:\n ${errorObject.error_description}${responseIdText}`,
                     "Something went wrong"
                 )
             );
