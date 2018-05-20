@@ -2,24 +2,21 @@ import React from "react";
 import { connect } from "react-redux";
 import { translate } from "react-i18next";
 import Helmet from "react-helmet";
-import Grid from "material-ui/Grid";
-import Button from "material-ui/Button";
-import Input, { InputLabel } from "material-ui/Input";
-import { MenuItem } from "material-ui/Menu";
-import {
-    FormControl,
-    FormHelperText,
-    FormControlLabel
-} from "material-ui/Form";
-import Select from "material-ui/Select";
-import Paper from "material-ui/Paper";
-import Switch from "material-ui/Switch";
-import Dialog, {
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle
-} from "material-ui/Dialog";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
+import Input  from "@material-ui/core/Input";
+import InputLabel  from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/Menu";
+import FormControl from "@material-ui/core/FormControl";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Select from "@material-ui/core/Select";
+import Paper from "@material-ui/core/Paper";
+import Switch from "@material-ui/core/Switch";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Dialog from "@material-ui/core/Dialog";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import LogoutIcon from "@material-ui/icons/ExitToApp";

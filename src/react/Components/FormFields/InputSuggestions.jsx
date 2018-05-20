@@ -1,9 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import TextField from "material-ui/TextField";
-import Paper from "material-ui/Paper";
-import Avatar from "material-ui/Avatar";
-import { ListItem, ListItemText, ListItemIcon } from "material-ui/List";
+import TextField from "@material-ui/core/TextField";
+import Paper from "@material-ui/core/Paper";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
 
 import ArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 

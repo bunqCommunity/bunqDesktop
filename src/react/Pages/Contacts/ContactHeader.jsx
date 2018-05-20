@@ -1,10 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { translate } from "react-i18next";
-import Grid from "material-ui/Grid";
-import Button from "material-ui/Button";
-import Typography from "material-ui/Typography";
-import IconButton from "material-ui/IconButton";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
 
 import HelpIcon from "@material-ui/icons/Help";
 

@@ -1,12 +1,13 @@
 import React from "react";
-import Button from "material-ui/Button";
-import Divider from "material-ui/Divider";
-import List, { ListItem, ListItemText } from "material-ui/List";
-import Dialog, {
-    DialogActions,
-    DialogContent,
-    DialogTitle
-} from "material-ui/Dialog";
+import Button from "@material-ui/core/Button";
+import Divider from "@material-ui/core/Divider";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import { formatMoney } from "../../Helpers/Utils";
 
 export default class ConfirmationDialog extends React.Component {

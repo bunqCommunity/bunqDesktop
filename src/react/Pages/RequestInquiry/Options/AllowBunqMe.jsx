@@ -1,6 +1,6 @@
 import React from "react";
-import { FormControlLabel } from "material-ui/Form";
-import Switch from "material-ui/Switch";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Switch from "@material-ui/core/Switch";
 
 class AllowBunqMe extends React.Component {
     render() {

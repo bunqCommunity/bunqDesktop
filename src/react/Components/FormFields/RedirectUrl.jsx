@@ -1,9 +1,11 @@
 import React from "react";
 import { translate } from "react-i18next";
-import { withStyles } from "material-ui/styles";
-import { FormControl } from "material-ui/Form";
-import Input, { InputLabel, InputAdornment } from "material-ui/Input";
-import { IconButton } from "material-ui";
+import { withStyles } from "@material-ui/core/styles";
+import FormControl from "@material-ui/core/FormControl";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import IconButton from "@material-ui/core/IconButton";
 import Check from "@material-ui/icons/Check";
 import NotInterested from "@material-ui/icons/NotInterested";
 

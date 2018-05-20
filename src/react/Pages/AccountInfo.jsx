@@ -4,17 +4,16 @@ import Redirect from "react-router-dom/Redirect";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import CirclePicker from "react-color/lib/Circle";
-import Grid from "material-ui/Grid";
-import Paper from "material-ui/Paper";
-import Button from "material-ui/Button";
-import TextField from "material-ui/TextField";
-import { CircularProgress } from "material-ui/Progress";
-import Dialog, {
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle
-} from "material-ui/Dialog";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Dialog from "@material-ui/core/Dialog";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 

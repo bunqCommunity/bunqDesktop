@@ -1,12 +1,10 @@
 import React from "react";
 import { translate } from "react-i18next";
-import {
-    ListItem,
-    ListItemText,
-    ListItemSecondaryAction
-} from "material-ui/List";
-import Avatar from "material-ui/Avatar";
-import Divider from "material-ui/Divider";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import Avatar from "@material-ui/core/Avatar";
+import Divider from "@material-ui/core/Divider";
 
 import { formatMoney } from "../../Helpers/Utils";
 import { paymentText } from "../../Helpers/StatusTexts";

@@ -2,12 +2,12 @@ import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
-import Grid from "material-ui/Grid";
+import Grid from "@material-ui/core/Grid";
 import CirclePicker from "react-color/lib/Circle";
-import Button from "material-ui/Button";
-import Paper from "material-ui/Paper";
-import TextField from "material-ui/TextField";
-import { FormControl } from "material-ui/Form";
+import Button from "@material-ui/core/Button";
+import Paper from "@material-ui/core/Paper";
+import TextField from "@material-ui/core/TextField";
+import FormControl from "@material-ui/core/FormControl";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 

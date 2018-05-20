@@ -1,14 +1,14 @@
 import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
-import Divider from "material-ui/Divider";
-import IconButton from "material-ui/IconButton";
-import List, {
-    ListItemText,
-    ListItem,
-    ListItemSecondaryAction
-} from "material-ui/List";
-import { CircularProgress, LinearProgress } from "material-ui/Progress";
+import Divider from "@material-ui/core/Divider";
+import IconButton from "@material-ui/core/IconButton";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import LinearProgress from "@material-ui/core/LinearProgress";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import RefreshIcon from "@material-ui/icons/Refresh";
 
 import AccountListItem from "./AccountListItem";

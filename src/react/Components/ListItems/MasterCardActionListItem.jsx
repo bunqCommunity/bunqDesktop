@@ -1,13 +1,11 @@
 import React from "react";
 import { translate } from "react-i18next";
-import { withTheme } from "material-ui/styles";
-import {
-    ListItem,
-    ListItemText,
-    ListItemSecondaryAction
-} from "material-ui/List";
-import Avatar from "material-ui/Avatar";
-import Divider from "material-ui/Divider";
+import { withTheme } from "@material-ui/core/styles";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import Avatar from "@material-ui/core/Avatar";
+import Divider from "@material-ui/core/Divider";
 
 import NavLink from "../../Components/Routing/NavLink";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";

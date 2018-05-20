@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
-import TextField from "material-ui/TextField";
-import IconButton from "material-ui/IconButton";
-import { InputAdornment } from "material-ui/Input";
+import TextField from "@material-ui/core/TextField";
+import IconButton from "@material-ui/core/IconButton";
+import InputAdornment from "@material-ui/core/InputAdornment";
 
 import ClearIcon from "@material-ui/icons/Clear";
 

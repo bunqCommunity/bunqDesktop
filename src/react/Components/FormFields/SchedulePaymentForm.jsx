@@ -1,13 +1,14 @@
 import React from "react";
-import DateTimePicker from "material-ui-pickers/DateTimePicker/index.js";
+import DateTimePicker from "material-ui-pickers/DateTimePicker";
 
-import Select from "material-ui/Select";
-import Grid from "material-ui/Grid";
-import Input from "material-ui/Input";
-import TextField from "material-ui/TextField";
-import Collapse from "material-ui/transitions/Collapse";
-import { FormControl } from "material-ui/Form";
-import { ListItem, ListItemText } from "material-ui/List";
+import Select from "@material-ui/core/Select";
+import Grid from "@material-ui/core/Grid";
+import Input from "@material-ui/core/Input";
+import TextField from "@material-ui/core/TextField";
+import Collapse from "@material-ui/core/Collapse";
+import FormControl from "@material-ui/core/FormControl";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 
 import TranslateMenuItem from "../TranslationHelpers/MenuItem";
 import scheduleTexts from "../../Helpers/ScheduleTexts";

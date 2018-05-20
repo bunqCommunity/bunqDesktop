@@ -1,11 +1,12 @@
 import React from "react";
 import { translate } from "react-i18next";
-import List, { ListItem, ListItemText } from "material-ui/List";
-import Dialog, {
-    DialogActions,
-    DialogContent,
-    DialogTitle
-} from "material-ui/Dialog";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Dialog  from "@material-ui/core/Dialog";
 
 import { formatMoney } from "../../Helpers/Utils";
 

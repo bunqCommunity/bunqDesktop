@@ -1,21 +1,22 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Parallax } from "react-spring";
 import { translate } from "react-i18next";
 import Countdown from "react-countdown-now";
 
-import Grid from "material-ui/Grid";
-import Paper from "material-ui/Paper";
-import Button from "material-ui/Button";
-import Divider from "material-ui/Divider";
-import List, { ListItem, ListSubheader, ListItemText } from "material-ui/List";
-import Typography from "material-ui/Typography";
-import { CircularProgress } from "material-ui/Progress";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
+import Divider from "@material-ui/core/Divider";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListSubheader from "@material-ui/core/ListSubheader";
+import ListItemText  from "@material-ui/core/ListItemText";
+import Typography from "@material-ui/core/Typography";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import CardListItem from "./CardListItem";
 import AccountListItem from "../../Components/AccountList/AccountListItem";
 import TypographyTranslate from "../../Components/TranslationHelpers/Typography";
-import ButtonTranslate from "../../Components/TranslationHelpers/Button";
 
 import { cardUpdate } from "../../Actions/card";
 import {

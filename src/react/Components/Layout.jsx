@@ -2,10 +2,10 @@ import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import Grid from "material-ui/Grid";
-import { withStyles } from "material-ui/styles";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import createMuiTheme from "material-ui/styles/createMuiTheme";
+import Grid from "@material-ui/core/Grid";
+import { withStyles } from "@material-ui/core/styles";
+import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
+import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import { ipcRenderer } from "electron";
 
 // custom components

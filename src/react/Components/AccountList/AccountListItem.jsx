@@ -1,12 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
-import {
-    ListItem,
-    ListItemText,
-    ListItemSecondaryAction
-} from "material-ui/List";
-import Avatar from "material-ui/Avatar";
-import IconButton from "material-ui/IconButton";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import Avatar from "@material-ui/core/Avatar";
+import IconButton from "@material-ui/core/IconButton";
 
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import InfoIcon from "@material-ui/icons/InfoOutline";

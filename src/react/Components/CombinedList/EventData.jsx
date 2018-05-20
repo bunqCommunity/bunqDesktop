@@ -1,10 +1,10 @@
 import React from "react";
 import { translate } from "react-i18next";
-import { withTheme } from "material-ui/styles";
-import Grid from "material-ui/Grid";
-import Paper from "material-ui/Paper";
-import Typography from "material-ui/Typography";
-import Collapse from "material-ui/transitions/Collapse";
+import { withTheme } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
+import Collapse from "@material-ui/core/Collapse";
 
 import IncomingIcon from "@material-ui/icons/KeyboardArrowDown";
 import OutgoingIcon from "@material-ui/icons/KeyboardArrowUp";
