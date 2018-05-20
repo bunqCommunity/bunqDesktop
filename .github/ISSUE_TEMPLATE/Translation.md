@@ -1,6 +1,6 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
+name: Translation
+about: Report a translation mistake/suggest an improvement 
 
 ---
 
