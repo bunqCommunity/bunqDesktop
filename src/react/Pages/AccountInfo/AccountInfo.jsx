@@ -19,7 +19,7 @@ import ListSubHeader from "@material-ui/core/ListSubheader";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
-import ConnectlistItem from "./ConnectlistItem";
+import ConnectlistItem from "./ConnectListItem";
 import CombinedList from "../../Components/CombinedList/CombinedList";
 import AccountCard from "../../Components/AccountCard";
 import ButtonTranslate from "../../Components/TranslationHelpers/Button";
