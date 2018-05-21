@@ -3,6 +3,7 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Grid from "@material-ui/core/Grid";
+import Hidden from "@material-ui/core/Hidden";
 import Paper from "@material-ui/core/Paper";
 import Collapse from "@material-ui/core/Collapse";
 import IconButton from "@material-ui/core/IconButton";
@@ -54,7 +55,9 @@ class BunqMeTab extends React.Component {
                     <title>{`BunqDesktop - ${t("bunqme Requests")}`}</title>
                 </Helmet>
 
-                <Grid item hidden={{ mdDown: true }} lg={2} />
+                <Hidden mdDown>
+                    <Grid item lg={2} />
+                </Hidden>
 
                 <Grid item xs={12} md={4} lg={3}>
                     <Paper style={styles.paper}>

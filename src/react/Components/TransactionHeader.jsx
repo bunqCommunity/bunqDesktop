@@ -1,6 +1,7 @@
 import React from "react";
 import withTheme from "@material-ui/core/styles/withTheme";
 import Grid from "@material-ui/core/Grid";
+import Hidden from "@material-ui/core/Hidden";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 import Typography from "@material-ui/core/Typography";
@@ -92,13 +93,23 @@ const TransactionHeader = props => {
             <Typography variant="subheading">{fromLabelName}</Typography>
         </Grid>,
 
-        <Grid item md={2} hidden={{ smDown: true }} style={styles.arrow}>
-            <ArrowForwardIcon style={{ color: arrowColor }} color={"inherit"} />
-        </Grid>,
+        <Hidden smDown>
+            <Grid item md={2} style={styles.arrow}>
+                <ArrowForwardIcon
+                    style={{ color: arrowColor }}
+                    color={"inherit"}
+                />
+            </Grid>
+        </Hidden>,
 
-        <Grid item xs={12} hidden={{ mdUp: true }} style={styles.arrow}>
-            <ArrowDownIcon style={{ color: arrowColor }} color={"inherit"} />
-        </Grid>,
+        <Hidden mdUp>
+            <Grid item xs={12}  style={styles.arrow}>
+                <ArrowDownIcon
+                    style={{ color: arrowColor }}
+                    color={"inherit"}
+                />
+            </Grid>
+        </Hidden>,
 
         <Grid item xs={12} md={5} style={styles.textCenter}>
             <LazyAttachmentImage
