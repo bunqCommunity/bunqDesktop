@@ -84,13 +84,16 @@ export const masterCardActionText = (masterCardAction, t) => {
 };
 
 export const masterCardActionParser = (masterCardAction, t) => {
+    const paymentText = t("Payment");
+
     if (masterCardAction.label_card) {
-        const paymentText = t("Payment");
+        if(masterCardAction.wallet_provider_id === "103"){
+            return "Apple Pay " + paymentText;
+        }
+
         switch (masterCardAction.label_card.type) {
             case "MAESTRO_MOBILE_NFC":
-                return masterCardAction.wallet_provider_id === "103"
-                    ? "Apple Pay " + paymentText
-                    : "Tap & Pay " + paymentText;
+                return "Tap & Pay " + paymentText;
             case "MASTERCARD":
                 return "Mastercard " + paymentText;
             case "MAESTRO":
