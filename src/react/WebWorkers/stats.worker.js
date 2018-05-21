@@ -174,19 +174,20 @@ const masterCardActionMapper = (
             if (validTypes.includes(masterCardAction.authorisation_status)) {
                 let paymentSubType = "";
 
-                switch (masterCardAction.label_card.type) {
-                    case "MAESTRO":
-                        paymentSubType = "maestroPayment";
-                        break;
-                    case "MASTERCARD":
-                        paymentSubType = "masterCardPayment";
-                        break;
-                    case "MAESTRO_MOBILE_NFC":
-                        paymentSubType =
-                            masterCardAction.masterCardAction.wallet_provider_id === "103"
-                                ? "applePayPayment"
-                                : "tapAndPayPayment";
-                        break;
+                if (masterCardAction.wallet_provider_id === "103") {
+                    paymentSubType = "applePayPayment";
+                } else {
+                    switch (masterCardAction.label_card.type) {
+                        case "MAESTRO":
+                            paymentSubType = "maestroPayment";
+                            break;
+                        case "MASTERCARD":
+                            paymentSubType = "masterCardPayment";
+                            break;
+                        case "MAESTRO_MOBILE_NFC":
+                            paymentSubType = "tapAndPayPayment";
+                            break;
+                    }
                 }
 
                 data.push({
