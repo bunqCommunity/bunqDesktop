@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import Input  from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import ListItem from "@material-ui/core/ListItem";
