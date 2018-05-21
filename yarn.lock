@@ -3099,7 +3099,36 @@ ejs@~2.5.6:
   version "2.5.9"
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.5.9.tgz#7ba254582a560d267437109a68354112475b0ce5"
 
-electron-builder-lib@20.13.3, electron-builder-lib@~20.13.2:
+electron-builder-lib@20.13.4:
+  version "20.13.4"
+  resolved "https://registry.yarnpkg.com/electron-builder-lib/-/electron-builder-lib-20.13.4.tgz#dcadc4a72b4d57996c11a32e5a6a4669bbb4cff9"
+  dependencies:
+    "7zip-bin" "~3.1.0"
+    app-builder-bin "1.8.6"
+    async-exit-hook "^2.0.1"
+    bluebird-lst "^1.0.5"
+    builder-util "5.8.1"
+    builder-util-runtime "4.2.1"
+    chromium-pickle-js "^0.2.0"
+    debug "^3.1.0"
+    ejs "^2.6.1"
+    electron-osx-sign "0.4.10"
+    electron-publish "20.13.2"
+    fs-extra-p "^4.6.0"
+    hosted-git-info "^2.6.0"
+    is-ci "^1.1.0"
+    isbinaryfile "^3.0.2"
+    js-yaml "^3.11.0"
+    lazy-val "^1.0.3"
+    minimatch "^3.0.4"
+    normalize-package-data "^2.4.0"
+    plist "^3.0.1"
+    read-config-file "3.0.1"
+    sanitize-filename "^1.6.1"
+    semver "^5.5.0"
+    temp-file "^3.1.2"
+
+electron-builder-lib@~20.13.2:
   version "20.13.3"
   resolved "https://registry.yarnpkg.com/electron-builder-lib/-/electron-builder-lib-20.13.3.tgz#1fc9b795fa913125c0708426a16159fb854b8e3b"
   dependencies:
@@ -3128,16 +3157,16 @@ electron-builder-lib@20.13.3, electron-builder-lib@~20.13.2:
     semver "^5.5.0"
     temp-file "^3.1.2"
 
-electron-builder@^20.2.0:
-  version "20.13.3"
-  resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-20.13.3.tgz#ef419c9a2a62faaf5d5e5e1968b18b2418befe36"
+electron-builder@^20.13.4:
+  version "20.13.4"
+  resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-20.13.4.tgz#fad23bcf9db1923785ef6bdbcf286a8780453240"
   dependencies:
     bluebird-lst "^1.0.5"
     builder-util "5.8.1"
     builder-util-runtime "4.2.1"
     chalk "^2.4.1"
     dmg-builder "4.1.8"
-    electron-builder-lib "20.13.3"
+    electron-builder-lib "20.13.4"
     electron-download-tf "4.3.4"
     fs-extra-p "^4.6.0"
     is-ci "^1.1.0"
@@ -3251,9 +3280,9 @@ electron-to-chromium@^1.2.7, electron-to-chromium@^1.3.45:
   version "1.3.45"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.45.tgz#458ac1b1c5c760ce8811a16d2bfbd97ec30bafb8"
 
-electron@^2.0.0:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-2.0.1.tgz#d9defcc187862143b9027378be78490eddbfabf4"
+electron@^1.8.4:
+  version "1.8.7"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-1.8.7.tgz#373c1dc4589d7ab4acd49aff8db4a1c0a6c3bcc1"
   dependencies:
     "@types/node" "^8.0.24"
     electron-download "^3.0.1"
