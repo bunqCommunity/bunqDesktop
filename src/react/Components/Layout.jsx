@@ -2,10 +2,10 @@ import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import Grid from "material-ui/Grid";
-import { withStyles } from "material-ui/styles";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import createMuiTheme from "material-ui/styles/createMuiTheme";
+import Grid from "@material-ui/core/Grid";
+import { withStyles } from "@material-ui/core/styles";
+import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
+import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import { ipcRenderer } from "electron";
 
 // custom components
@@ -53,6 +53,8 @@ import {
     setAutomaticThemeChange
 } from "../Actions/options";
 import { loadStoredContacts } from "../Actions/contacts";
+import { loadStoredShareInviteBankResponses } from "../Actions/share_invite_bank_response";
+import { loadStoredShareInviteBankInquiries } from "../Actions/share_invite_bank_inquiry";
 
 const styles = theme => ({
     contentContainer: {
@@ -360,7 +362,8 @@ class Layout extends React.Component {
             // custom error handling to prevent
             if (exception.errorCode) {
                 switch (exception.errorCode) {
-                    case BunqJSClient.errorCodes.INSTALLATION_HAS_SESSION:
+                    case this.props.BunqJSClient.errorCodes
+                        .INSTALLATION_HAS_SESSION:
                         Logger.error(
                             `Error while creating a new session: ${exception.errorCode}`
                         );
@@ -396,6 +399,8 @@ class Layout extends React.Component {
         this.props.loadStoredMasterCardActions();
         this.props.loadStoredRequestInquiries();
         this.props.loadStoredRequestResponses();
+        this.props.loadStoredShareInviteBankResponses();
+        this.props.loadStoredShareInviteBankInquiries();
 
         // setup finished with no errors
         this.props.applicationSetStatus("");
@@ -574,6 +579,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         loadStoredAccounts: () => dispatch(loadStoredAccounts(BunqJSClient)),
         loadStoredRequestResponses: () =>
             dispatch(loadStoredRequestResponses(BunqJSClient)),
+        loadStoredShareInviteBankResponses: () =>
+            dispatch(loadStoredShareInviteBankResponses(BunqJSClient)),
+        loadStoredShareInviteBankInquiries: () =>
+            dispatch(loadStoredShareInviteBankInquiries(BunqJSClient)),
 
         // functions to clear user data
         registrationClearUserInfo: () => dispatch(registrationClearUserInfo())

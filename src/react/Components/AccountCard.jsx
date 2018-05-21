@@ -1,14 +1,13 @@
 import React from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import List, {
-    ListItem,
-    ListItemText,
-    ListItemIcon,
-    ListItemSecondaryAction
-} from "material-ui/List";
-import Paper from "material-ui/Paper";
-import IconButton from "material-ui/IconButton";
-import Avatar from "material-ui/Avatar";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import Paper from "@material-ui/core/Paper";
+import IconButton from "@material-ui/core/IconButton";
+import Avatar from "@material-ui/core/Avatar";
 
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import PhoneIcon from "@material-ui/icons/Phone";

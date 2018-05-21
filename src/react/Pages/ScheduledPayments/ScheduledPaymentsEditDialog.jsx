@@ -1,14 +1,14 @@
 import React from "react";
 import { connect } from "react-redux";
 import format from "date-fns/format";
-import TextField from "material-ui/TextField";
-import Avatar from "material-ui/Avatar";
-import Dialog, {
-    DialogActions,
-    DialogContent,
-    DialogTitle
-} from "material-ui/Dialog";
-import { ListItem, ListItemText } from "material-ui/List";
+import TextField from "@material-ui/core/TextField";
+import Avatar from "@material-ui/core/Avatar";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 
 import ButtonTranslate from "../../Components/TranslationHelpers/Button";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";

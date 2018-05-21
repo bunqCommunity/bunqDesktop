@@ -4,11 +4,12 @@ import { connect } from "react-redux";
 import Redirect from "react-router-dom/Redirect";
 import Helmet from "react-helmet";
 import store from "store";
-import Grid from "material-ui/Grid";
-import { FormControlLabel } from "material-ui/Form";
-import Card, { CardContent } from "material-ui/Card";
-import Checkbox from "material-ui/Checkbox";
-import Typography from "material-ui/Typography";
+import Grid from "@material-ui/core/Grid";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Card  from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import Checkbox from "@material-ui/core/Checkbox";
+import Typography from "@material-ui/core/Typography";
 
 import LockIcon from "@material-ui/icons/Lock";
 import DesktopIcon from "@material-ui/icons/DesktopMac";

@@ -25,7 +25,7 @@ export function masterCardActionInfoUpdate(
     master_card_action_id
 ) {
     const failedMessage = window.t(
-        "We failed to load the master card payment information"
+        "We failed to load the mastercard payment information"
     );
 
     return dispatch => {

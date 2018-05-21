@@ -1,9 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
-import Grid from "material-ui/Grid";
-import Button from "material-ui/Button";
-import Avatar from "material-ui/Avatar";
-import Card, { CardHeader, CardContent } from "material-ui/Card";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
+import Avatar from "@material-ui/core/Avatar";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardContent from "@material-ui/core/CardContent";
 
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 

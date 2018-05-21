@@ -1,11 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
-import { withStyles } from "material-ui/styles";
-import Dialog from "material-ui/Dialog";
-import IconButton from "material-ui/IconButton";
-import Slide from "material-ui/transitions/Slide";
-import { ListItem, ListItemText } from "material-ui/List";
-import Avatar from "material-ui/Avatar";
+import { withStyles } from "@material-ui/core/styles";
+import Dialog from "@material-ui/core/Dialog";
+import IconButton from "@material-ui/core/IconButton";
+import Slide from "@material-ui/core/Slide";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItem from "@material-ui/core/ListItem";
+import Avatar from "@material-ui/core/Avatar";
 
 const Transition = props => <Slide direction={"up"} {...props} />;
 

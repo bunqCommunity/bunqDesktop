@@ -1,9 +1,11 @@
 import * as React from "react";
 import { translate } from "react-i18next";
-import Select from "material-ui/Select";
-import Input from "material-ui/Input";
-import { FormControl } from "material-ui/Form";
-import { TableBody, TableCell, TableRow } from "material-ui/Table";
+import Select from "@material-ui/core/Select";
+import Input from "@material-ui/core/Input";
+import FormControl from "@material-ui/core/FormControl";
+import TableBody from "@material-ui/core/Table";
+import TableCell from "@material-ui/core/TableCell";
+import TableRow from "@material-ui/core/TableRow";
 
 import TypeRule from "../../../Types/Rules/TypeRule";
 import RuleItemMenu2 from "../RuleItemMenu";

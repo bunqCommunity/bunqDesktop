@@ -5,7 +5,7 @@ import {
     preferedDecimalSeparator
 } from "../../Helpers/Utils";
 
-import { withTheme } from "material-ui/styles";
+import { withTheme } from "@material-ui/core/styles";
 
 class MoneyFormatInput extends React.Component {
     render() {

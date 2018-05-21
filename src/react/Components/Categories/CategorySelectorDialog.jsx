@@ -1,11 +1,10 @@
 import React from "react";
 import { translate } from "react-i18next";
-import Button from "material-ui/Button";
-import Dialog, {
-    DialogContent,
-    DialogActions,
-    DialogTitle
-} from "material-ui/Dialog";
+import Button from "@material-ui/core/Button";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Dialog from "@material-ui/core/Dialog";
 
 import CategorySelector from "./CategorySelector";
 

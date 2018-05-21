@@ -3,12 +3,12 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import StickyBox from "react-sticky-box";
-import Paper from "material-ui/Paper";
-import Button from "material-ui/Button";
-import Grid from "material-ui/Grid";
-import IconButton from "material-ui/IconButton";
-import Typography from "material-ui/Typography";
-import Tooltip from "material-ui/Tooltip";
+import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
+import IconButton from "@material-ui/core/IconButton";
+import Typography from "@material-ui/core/Typography";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import MoneyIcon from "@material-ui/icons/AttachMoney";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";

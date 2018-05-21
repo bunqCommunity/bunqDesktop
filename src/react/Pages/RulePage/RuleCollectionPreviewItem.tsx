@@ -1,7 +1,9 @@
 import * as React from "react";
-import Avatar from "material-ui/Avatar";
-import Collapse from "material-ui/transitions/Collapse";
-import { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
+import Avatar from "@material-ui/core/Avatar";
+import Collapse from "@material-ui/core/Collapse";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
 
 import CheckIcon from "@material-ui/icons/Check";
 import CrossIcon from "@material-ui/icons/Cancel";

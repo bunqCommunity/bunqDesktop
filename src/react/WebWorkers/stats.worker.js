@@ -183,9 +183,9 @@ const masterCardActionMapper = (
                         break;
                     case "MAESTRO_MOBILE_NFC":
                         paymentSubType =
-                            masterCardAction.label_card.second_line.length > 0
-                                ? "tapAndPayPayment"
-                                : "applePayPayment";
+                            masterCardAction.masterCardAction.wallet_provider_id === "103"
+                                ? "applePayPayment"
+                                : "tapAndPayPayment";
                         break;
                 }
 

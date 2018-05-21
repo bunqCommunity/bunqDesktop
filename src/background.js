@@ -13,19 +13,19 @@ import changePage from "./helpers/react_navigate";
 import settingsHelper from "./helpers/settings";
 import oauth from "./helpers/oauth";
 
-import i18n from "./i18n-background";
+// import i18n from "./i18n-background";
 import env from "./env";
 
 // disable security warnings since we need cross-origin requests
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 1;
 
-// use english by default
-i18n.changeLanguage("en");
-
-// listen for changes in language in the client
-ipcMain.on("change-language", (event, arg) => {
-    i18n.changeLanguage(arg);
-});
+// // use english by default
+// i18n.changeLanguage("en");
+//
+// // listen for changes in language in the client
+// ipcMain.on("change-language", (event, arg) => {
+//     i18n.changeLanguage(arg);
+// });
 
 // listen for changes in settings path
 ipcMain.on("change-settings-path", (event, newPath) => {
@@ -61,6 +61,7 @@ if (env.name !== "production") {
 // setup the logger
 log.transports.file.appName = "BunqDesktop";
 log.transports.file.level = "debug";
+log.transports.file.maxSize = 512 * 1024;
 log.transports.file.format = "{h}:{i}:{s}:{ms} {text}";
 log.transports.file.file = `${userDataPath}${path.sep}BunqDesktop.${env.name}.log.txt`;
 
@@ -94,7 +95,7 @@ app.on("ready", () => {
     mainWindow.loadURL(getWindowUrl("app.html"));
 
     registerShortcuts(mainWindow, app);
-    registerTouchBar(mainWindow, i18n);
+    registerTouchBar(mainWindow, null);
 
     if (env.name === "development") {
         mainWindow.openDevTools();
@@ -112,24 +113,29 @@ app.on("ready", () => {
         const tray = new Tray(trayIcon);
         const contextMenu = Menu.buildFromTemplate([
             {
-                label: i18n.t("Dashboard"),
+                // label: i18n.t("Dashboard"),
+                label: "Dashboard",
                 click: () => changePage(mainWindow, "/")
             },
             {
-                label: i18n.t("Pay"),
+                // label: i18n.t("Pay"),
+                label: "Pay",
                 click: () => changePage(mainWindow, "/pay")
             },
             {
-                label: i18n.t("Request"),
+                // label: i18n.t("Request"),
+                label: "Request",
                 click: () => changePage(mainWindow, "/request")
             },
             {
-                label: i18n.t("Cards"),
+                // label: i18n.t("Cards"),
+                label: "Cards",
                 click: () => changePage(mainWindow, "/card")
             },
             { type: "separator" },
             {
-                label: i18n.t("Quit"),
+                // label: i18n.t("Quit"),
+                label: "Quit",
                 click: () => app.quit()
             }
         ]);

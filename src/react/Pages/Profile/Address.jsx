@@ -1,6 +1,6 @@
 import React from "react";
-import Grid from "material-ui/Grid";
-import TextField from "material-ui/TextField";
+import Grid from "@material-ui/core/Grid";
+import TextField from "@material-ui/core/TextField";
 
 const styles = {
     textField: {

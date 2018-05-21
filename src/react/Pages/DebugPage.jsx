@@ -2,8 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import ReactJson from "react-json-view";
-import Grid from "material-ui/Grid";
-import Button from "material-ui/Button";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
 
 import ReactJsonWrapper from "../Components/ReactJsonWrapper"
 

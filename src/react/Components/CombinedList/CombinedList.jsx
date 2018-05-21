@@ -1,13 +1,15 @@
 import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
-import Grid from "material-ui/Grid";
-import Divider from "material-ui/Divider";
-import IconButton from "material-ui/IconButton";
-import TextField from "material-ui/TextField";
-import MenuItem from "material-ui/Menu/MenuItem";
-import { LinearProgress } from "material-ui/Progress";
-import List, { ListItemSecondaryAction, ListSubheader } from "material-ui/List";
+import Grid from "@material-ui/core/Grid";
+import Divider from "@material-ui/core/Divider";
+import IconButton from "@material-ui/core/IconButton";
+import TextField from "@material-ui/core/TextField";
+import MenuItem from "@material-ui/core/MenuItem";
+import LinearProgress from "@material-ui/core/LinearProgress";
+import List from "@material-ui/core/List";
+import ListSubheader from "@material-ui/core/ListSubheader";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";

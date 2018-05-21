@@ -2,11 +2,11 @@ import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
-import Grid from "material-ui/Grid";
-import Paper from "material-ui/Paper";
-import Button from "material-ui/Button";
-import TextField from "material-ui/TextField";
-import { CircularProgress } from "material-ui/Progress";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import Address from "./Address";

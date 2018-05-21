@@ -11,21 +11,23 @@ import enLocale from "date-fns/locale/en-US";
 import deLocale from "date-fns/locale/de";
 import nlLocale from "date-fns/locale/nl";
 
-import Grid from "material-ui/Grid";
-import Button from "material-ui/Button";
-import Paper from "material-ui/Paper";
-import Switch from "material-ui/Switch";
-import Divider from "material-ui/Divider";
-import TextField from "material-ui/TextField";
-import { InputLabel } from "material-ui/Input";
-import Typography from "material-ui/Typography";
-import List, { ListItem, ListItemText } from "material-ui/List";
-import { FormControl, FormControlLabel } from "material-ui/Form";
-import Dialog, {
-    DialogActions,
-    DialogContent,
-    DialogTitle
-} from "material-ui/Dialog";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
+import Paper from "@material-ui/core/Paper";
+import Switch from "@material-ui/core/Switch";
+import Divider from "@material-ui/core/Divider";
+import TextField from "@material-ui/core/TextField";
+import InputLabel from "@material-ui/core/InputLabel";
+import Typography from "@material-ui/core/Typography";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import FormControl from "@material-ui/core/FormControl";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";

@@ -2,12 +2,14 @@ import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
-import Grid from "material-ui/Grid";
-import Paper from "material-ui/Paper";
-import IconButton from "material-ui/IconButton";
-import Typography from "material-ui/Typography";
-import Avatar from "material-ui/Avatar";
-import List, { ListItem, ListItemText } from "material-ui/List";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import IconButton from "@material-ui/core/IconButton";
+import Typography from "@material-ui/core/Typography";
+import Avatar from "@material-ui/core/Avatar";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 
 import FolderIcon from "@material-ui/icons/Folder";
 

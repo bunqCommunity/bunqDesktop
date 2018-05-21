@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
-import Button from "material-ui/Button";
+import Button from "@material-ui/core/Button";
 import RefreshIcon from "@material-ui/icons/Refresh";
-import { CircularProgress } from "material-ui/Progress";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import { paymentInfoUpdate } from "../Actions/payments";
 import { requestResponsesUpdate } from "../Actions/request_responses";

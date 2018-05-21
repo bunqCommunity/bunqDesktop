@@ -86,13 +86,14 @@ deploy:
     draft: true
     skip_cleanup: true
     on:
-      tags: true
+      all_branches: true
+      condition: $TRAVIS_TAG || $TRAVIS_BRANCH == 'release'
   - provider: script
     script: docker run -v $(pwd):$(pwd) -w $(pwd) snapcore/snapcraft sh -c "apt update && snapcraft push dist/bunqdesktop_*_amd64.snap --release stable"
     skip_cleanup: true
     on:
-      condition: $TRAVIS_OS_NAME == 'linux' && $TRAVIS_BRANCH == 'master'
-      tags: true
+      branch: release
+      condition: $TRAVIS_OS_NAME == 'linux'
 
 after_success:
   - openssl aes-256-cbc -K $encrypted_6a955bf10c5f_key -iv $encrypted_6a955bf10c5f_iv -in .snapcraft/travis_snapcraft.cfg -out .snapcraft/snapcraft.cfg -d

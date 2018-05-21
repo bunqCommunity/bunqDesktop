@@ -2,10 +2,14 @@ import React from "react";
 import { connect } from "react-redux";
 import { translate } from "react-i18next";
 import PropTypes from "prop-types";
-import Avatar from "material-ui/Avatar";
-import { FormControl } from "material-ui/Form";
-import List, { ListItem, ListItemText } from "material-ui/List";
-import Dialog, { DialogContent, DialogTitle } from "material-ui/Dialog";
+import Avatar from "@material-ui/core/Avatar";
+import FormControl from "@material-ui/core/FormControl";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Dialog from "@material-ui/core/Dialog";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 import { formatMoney } from "../../Helpers/Utils";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";

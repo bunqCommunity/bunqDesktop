@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { translate } from "react-i18next";
 
-import Chip from "material-ui/Chip";
-import Icon from "material-ui/Icon";
-import Grid from "material-ui/Grid";
-import Avatar from "material-ui/Avatar";
-import TextField from "material-ui/TextField";
+import Chip from "@material-ui/core/Chip";
+import Icon from "@material-ui/core/Icon";
+import Grid from "@material-ui/core/Grid";
+import Avatar from "@material-ui/core/Avatar";
+import TextField from "@material-ui/core/TextField";
 
 import IconPicker from "../FormFields/IconPicker";
 import ColorPicker from "../FormFields/ColorPicker";

@@ -1,16 +1,18 @@
 import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
-import { withTheme } from "material-ui/styles";
+import { withTheme } from "@material-ui/core/styles";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
-import Grid from "material-ui/Grid";
-import Paper from "material-ui/Paper";
-import Button from "material-ui/Button";
-import List, { ListItem, ListItemText } from "material-ui/List";
-import Divider from "material-ui/Divider";
-import CircularProgress from "material-ui/Progress/CircularProgress";
-import Typography from "material-ui/Typography";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Divider from "@material-ui/core/Divider";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Typography from "@material-ui/core/Typography";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import HelpIcon from "@material-ui/icons/Help";
@@ -124,8 +126,8 @@ class MasterCardActionInfo extends React.Component {
                 </Grid>
             );
         } else {
-            const masterCardAction = masterCardActionInfo.MasterCardAction;
-            const paymentAmount = masterCardAction.amount_local.value;
+            const masterCardAction = masterCardActionInfo;
+            const paymentAmount = masterCardAction.getAmount();
             const paymentDate = humanReadableDate(masterCardAction.created);
             const formattedPaymentAmount = formatMoney(paymentAmount);
             const paymentLabel = masterCardActionText(masterCardAction, t);
@@ -269,6 +271,12 @@ class MasterCardActionInfo extends React.Component {
             );
         }
 
+        const exportData =
+            this.props.masterCardActionInfo &&
+            this.props.masterCardActionInfo._rawData
+                ? this.props.masterCardActionInfo._rawData.MasterCardAction
+                : {};
+
         return (
             <Grid container spacing={24}>
                 <Helmet>
@@ -280,7 +288,7 @@ class MasterCardActionInfo extends React.Component {
                         this.setState({ displayExport: false })}
                     title={t("Export info")}
                     open={this.state.displayExport}
-                    object={this.props.masterCardActionInfo}
+                    object={exportData}
                 />
 
                 <Grid item xs={12} sm={2} lg={3}>

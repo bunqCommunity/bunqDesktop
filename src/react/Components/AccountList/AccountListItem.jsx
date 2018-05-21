@@ -1,14 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
-import {
-    ListItem,
-    ListItemText,
-    ListItemSecondaryAction
-} from "material-ui/List";
-import Avatar from "material-ui/Avatar";
-import IconButton from "material-ui/IconButton";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import Avatar from "@material-ui/core/Avatar";
+import IconButton from "@material-ui/core/IconButton";
+
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import InfoIcon from "@material-ui/icons/InfoOutline";
+import LinkIcon from "@material-ui/icons/Link";
+import PeopleIcon from "@material-ui/icons/People";
 
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 import NavLink from "../../Components/Routing/NavLink";
@@ -20,6 +21,12 @@ const styles = {
     bigAvatar: {
         width: 60,
         height: 60
+    },
+    secondaryIcon: {
+        width: 26,
+        height: 26,
+        color: "#ffffff",
+        backgroundColor: "#ffa500"
     }
 };
 
@@ -61,6 +68,21 @@ class AccountListItem extends React.Component {
             listItemProps.onClick = this.fetchPaymentsHandler(account.id);
         }
 
+        let avatarSub = null;
+        if (this.props.isJoint) {
+            avatarSub = (
+                <Avatar style={styles.secondaryIcon}>
+                    <PeopleIcon />
+                </Avatar>
+            );
+        } else if (this.props.isConnect) {
+            avatarSub = (
+                <Avatar style={styles.secondaryIcon}>
+                    <LinkIcon />
+                </Avatar>
+            );
+        }
+
         return (
             <ListItem divider {...listItemProps}>
                 <Avatar style={styles.bigAvatar}>
@@ -72,6 +94,9 @@ class AccountListItem extends React.Component {
                         }
                     />
                 </Avatar>
+                <div style={{ position: "absolute", left: 60, bottom: 4 }}>
+                    {avatarSub}
+                </div>
                 <ListItemText
                     primary={account.description}
                     secondary={formattedBalance}
@@ -111,7 +136,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 AccountListItem.defaultProps = {
     clickable: true,
-    denseMode: false
+    denseMode: false,
+    isJoint: false,
+    isConnect: false
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AccountListItem);
