@@ -17,14 +17,27 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
             test: /\.css$/,
             use: ExtractTextPlugin.extract({
                 fallback: "style-loader!css-loader",
-                use: "css-loader"
+                use: {
+                    loader: "css-loader",
+                    options: {
+                        url: false
+                    }
+                }
             })
         },
         {
             test: /\.scss$/,
             use: ExtractTextPlugin.extract({
                 fallback: "style-loader!css-loader!sass-loader",
-                use: "css-loader!sass-loader"
+                use: [
+                    {
+                        loader: "css-loader",
+                        options: {
+                            url: false
+                        }
+                    },
+                    "sass-loader"
+                ]
             })
         },
         {
