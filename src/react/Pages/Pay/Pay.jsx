@@ -41,7 +41,9 @@ import {
     getInternationalFormat,
     isValidPhonenumber
 } from "../../Helpers/PhoneLib";
-import { getUTCDate } from "../../Helpers/Utils";
+import { formatMoney, getUTCDate } from "../../Helpers/Utils";
+import { filterShareInviteBankResponses } from "../../Helpers/Filters";
+import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
 
 const styles = {
     payButton: {
@@ -372,12 +374,24 @@ class Pay extends React.Component {
 
         const account = this.props.accounts[selectedAccount];
 
+        // check if this account item has connect details
+        const filteredInviteResponses = this.props.shareInviteBankResponses.filter(
+            filterShareInviteBankResponses(account.id)
+        );
+
+        // regular balance value
+        let accountBalance = account.balance ? account.balance.value : 0;
+
+        // get budget if atleast one connect
+        if (filteredInviteResponses.length > 0) {
+            accountBalance = GetShareDetailBudget(filteredInviteResponses);
+        }
+
         const noTargetsCondition = targets.length < 0;
         const insufficientFundsCondition =
             amount !== "" &&
             // enough funds or draft enabled
-            (amount > (account.balance ? account.balance.value : 0) &&
-                sendDraftPayment === false);
+            (amount > accountBalance && sendDraftPayment === false);
         const amountErrorCondition = amount < 0.01 || amount > 10000;
         const descriptionErrorCondition = description.length > 140;
         const ibanNameErrorCondition =
@@ -537,6 +551,21 @@ class Pay extends React.Component {
             amount,
             targets
         } = this.state;
+        const account = this.props.accounts[selectedAccount];
+
+        let accountBalance = 0;
+        if (account) {
+            // check if this account item has connect details
+            const filteredInviteResponses = this.props.shareInviteBankResponses.filter(
+                filterShareInviteBankResponses(account.id)
+            );
+            // regular balance value
+            accountBalance = account.balance ? account.balance.value : 0;
+            if (filteredInviteResponses.length > 0) {
+                accountBalance = GetShareDetailBudget(filteredInviteResponses);
+            }
+        }
+        accountBalance = formatMoney(accountBalance, true);
 
         let scheduledPaymentText = null;
         if (this.state.schedulePayment) {
@@ -560,8 +589,6 @@ class Pay extends React.Component {
 
         let confirmationModal = null;
         if (this.state.confirmModalOpen) {
-            const account = this.props.accounts[selectedAccount];
-
             // create a list of ListItems with our targets
             const confirmationModelTargets = targets.map(targetItem => {
                 let primaryText = "";
@@ -585,12 +612,12 @@ class Pay extends React.Component {
                         secondaryText = `${t("Name")}: ${targetItem.name}`;
                         break;
                     case "TRANSFER":
-                        const account = this.props.accounts[
-                            selectedTargetAccount
+                        const targetAccountInfo = this.props.accounts[
+                            targetItem.value
                         ];
                         primaryText = `${t(
                             "Transfer"
-                        )}: ${account.description}`;
+                        )}: ${targetAccountInfo.description}`;
                         break;
                 }
 
@@ -617,8 +644,7 @@ class Pay extends React.Component {
                             <ListItem>
                                 <ListItemText
                                     primary={t("From")}
-                                    secondary={`${account.description} ${account
-                                        .balance.value}`}
+                                    secondary={`${account.description} ${accountBalance}`}
                                 />
                             </ListItem>
                             <ListItem>
@@ -636,8 +662,7 @@ class Pay extends React.Component {
                             <ListItem>
                                 <ListItemText
                                     primary={t("Amount")}
-                                    secondary={`${amount.toFixed(2)} ${account
-                                        .balance.currency}`}
+                                    secondary={formatMoney(amount)}
                                 />
                             </ListItem>
                             <ListItem>
@@ -839,6 +864,10 @@ const mapStateToProps = state => {
         accounts: state.accounts.accounts,
         selectedAccount: state.accounts.selectedAccount,
         language: state.options.language,
+
+        shareInviteBankResponses:
+            state.share_invite_bank_responses.share_invite_bank_responses,
+
         user: state.user.user
     };
 };

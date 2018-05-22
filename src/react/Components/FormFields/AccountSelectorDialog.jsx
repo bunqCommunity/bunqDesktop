@@ -13,6 +13,8 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 
 import { formatMoney } from "../../Helpers/Utils";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
+import { filterShareInviteBankResponses } from "../../Helpers/Filters";
+import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
 
 const styles = {
     formControl: {
@@ -27,11 +29,28 @@ const styles = {
     }
 };
 
-const AccountItem = ({ account, onClick, BunqJSClient, hideBalance }) => {
-    const formattedBalance = formatMoney(
-        account.balance ? account.balance.value : 0,
-        true
+const AccountItem = ({
+    account,
+    onClick,
+    BunqJSClient,
+    hideBalance,
+    shareInviteBankResponses
+}) => {
+    // format default balance
+    let formattedBalance = account.balance ? account.balance.value : 0;
+
+    const filteredInviteResponses = shareInviteBankResponses.filter(
+        filterShareInviteBankResponses(account.id)
     );
+
+    // attempt to get connect budget if possible
+    if (filteredInviteResponses.length > 0) {
+        formattedBalance = GetShareDetailBudget(filteredInviteResponses);
+    }
+
+    // hide balance if used
+    formattedBalance = hideBalance ? "" : formatMoney(formattedBalance, true);
+
     return (
         <ListItem button onClick={onClick}>
             <Avatar style={styles.bigAvatar}>
@@ -83,6 +102,9 @@ class AccountSelectorDialog extends React.Component {
             }
             return (
                 <AccountItem
+                    shareInviteBankResponses={
+                        this.props.shareInviteBankResponses
+                    }
                     account={account}
                     onClick={this.onClickHandler(accountKey)}
                     hideBalance={this.props.hideBalance}
@@ -95,6 +117,9 @@ class AccountSelectorDialog extends React.Component {
         if (value !== "" && accounts[value]) {
             selectedAccountItem = (
                 <AccountItem
+                    shareInviteBankResponses={
+                        this.props.shareInviteBankResponses
+                    }
                     account={accounts[value]}
                     onClick={this.openDialog}
                     BunqJSClient={BunqJSClient}
@@ -136,9 +161,12 @@ AccountSelectorDialog.defaultProps = {
     selectStyle: styles.selectField
 };
 
-const mapStateToProps = store => {
+const mapStateToProps = state => {
     return {
-        hideBalance: store.options.hide_balance
+        shareInviteBankResponses:
+            state.share_invite_bank_responses.share_invite_bank_responses,
+
+        hideBalance: state.options.hide_balance
     };
 };
 

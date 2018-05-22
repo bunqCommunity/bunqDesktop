@@ -14,6 +14,7 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import AccountListItem from "./AccountListItem";
 import AddAccount from "./AddAccount";
 import { formatMoney } from "../../Helpers/Utils";
+import { filterShareInviteBankResponses } from "../../Helpers/Filters";
 
 import { accountsSelectAccount, accountsUpdate } from "../../Actions/accounts";
 import { paymentInfoUpdate } from "../../Actions/payments";
@@ -151,29 +152,8 @@ class AccountList extends React.Component {
                 })
                 .map(account => {
                     const filteredResponses = shareInviteBankResponses.filter(
-                        shareInviteBankResponse => {
-                            if(!shareInviteBankResponse.ShareInviteBankResponse) return false;
-
-                            return (
-                                shareInviteBankResponse.ShareInviteBankResponse
-                                    .status === "ACCEPTED" &&
-                                shareInviteBankResponse.ShareInviteBankResponse
-                                    .monetary_account_id === account.id
-                            );
-                        }
+                        filterShareInviteBankResponses(account.id)
                     );
-                    // const filteredInquiries = shareInviteBankInquiries.filter(
-                    //     shareInviteBankInquiry => {
-                    //         if(!shareInviteBankInquiry.ShareInviteBankInquiry) return false;
-                    //
-                    //         return (
-                    //             shareInviteBankInquiry.ShareInviteBankInquiry
-                    //                 .status === "ACCEPTED" &&
-                    //             shareInviteBankInquiry.ShareInviteBankInquiry
-                    //                 .monetary_account_id === account.id
-                    //         );
-                    //     }
-                    // );
 
                     return (
                         <AccountListItem
@@ -184,10 +164,7 @@ class AccountList extends React.Component {
                             isJoint={
                                 account.accountType === "MonetaryAccountJoint"
                             }
-                            isConnect={
-                                filteredResponses.length > 0
-                                // || filteredInquiries.length > 0
-                            }
+                            shareInviteBankResponses={filteredResponses}
                         />
                     );
                 });

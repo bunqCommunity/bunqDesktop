@@ -16,6 +16,7 @@ import NavLink from "../../Components/Routing/NavLink";
 import { formatMoney } from "../../Helpers/Utils";
 
 import { accountsSelectAccount } from "../../Actions/accounts.js";
+import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
 
 const styles = {
     bigAvatar: {
@@ -58,10 +59,6 @@ class AccountListItem extends React.Component {
             return null;
         }
 
-        const formattedBalance = this.props.hideBalance
-            ? ""
-            : formatMoney(account.balance ? account.balance.value : 0, true);
-
         const listItemProps = {};
         if (this.props.clickable) {
             listItemProps.button = true;
@@ -75,13 +72,23 @@ class AccountListItem extends React.Component {
                     <PeopleIcon />
                 </Avatar>
             );
-        } else if (this.props.isConnect) {
+        } else if (this.props.shareInviteBankResponses.length > 0) {
             avatarSub = (
                 <Avatar style={styles.secondaryIcon}>
                     <LinkIcon />
                 </Avatar>
             );
         }
+
+        let formattedBalance = account.balance ? account.balance.value : 0;
+        if (this.props.shareInviteBankResponses.length > 0) {
+            formattedBalance = GetShareDetailBudget(
+                this.props.shareInviteBankResponses
+            );
+        }
+        formattedBalance = this.props.hideBalance
+            ? ""
+            : formatMoney(formattedBalance);
 
         return (
             <ListItem divider {...listItemProps}>
@@ -138,7 +145,7 @@ AccountListItem.defaultProps = {
     clickable: true,
     denseMode: false,
     isJoint: false,
-    isConnect: false
+    shareInviteBankResponses: []
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AccountListItem);
