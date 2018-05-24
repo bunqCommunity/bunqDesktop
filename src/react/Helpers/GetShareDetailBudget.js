@@ -1,5 +1,3 @@
-import { formatMoney } from "./Utils";
-
 export default shareInviteBankResponses => {
     // get first connect (should only be one)
     const shareInviteResponseFirst = shareInviteBankResponses.pop();
@@ -22,6 +20,5 @@ export default shareInviteBankResponses => {
             return budgetInfo.amount_available.value;
         }
     }
-
     return 0;
 };
