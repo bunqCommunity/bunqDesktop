@@ -49,7 +49,6 @@ export default class ConnectListItem extends React.Component {
                         />
                     </Avatar>
                     <ListItemText primary={counterAliasInfo.display_name} />
-                    {/*<ListItemSecondaryAction>secondary</ListItemSecondaryAction>*/}
                 </ListItem>
                 <Collapse in={this.state.open}>
                     {shareDetails.budget ? (
