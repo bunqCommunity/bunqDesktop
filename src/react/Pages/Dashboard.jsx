@@ -6,6 +6,7 @@ import StickyBox from "react-sticky-box";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
+import Hidden from "@material-ui/core/Hidden";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -97,7 +98,9 @@ class Dashboard extends React.Component {
                     <title>{`BunqDesktop - ${t("Dashboard")}`}</title>
                 </Helmet>
 
-                <Grid item hidden={{ mdDown: true }} lg={2} />
+                <Hidden mdDown>
+                    <Grid item lg={2} />
+                </Hidden>
 
                 <Grid item xs={12} md={12} lg={8}>
                     <Grid container spacing={16}>

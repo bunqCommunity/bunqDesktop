@@ -20,6 +20,7 @@ import UrlIcon from "@material-ui/icons/Link";
 import LazyAttachmentImage from "./AttachmentImage/LazyAttachmentImage";
 import AccountQRFullscreen from "./QR/AccountQRFullscreen";
 import { formatMoney } from "../Helpers/Utils";
+import GetShareDetailBudget from "../Helpers/GetShareDetailBudget";
 
 const styles = {
     avatar: {
@@ -39,15 +40,18 @@ class AccountCard extends React.Component {
     };
 
     render() {
-        const { account } = this.props;
-        const formattedBalance = formatMoney(
-            account.balance ? account.balance.value : 0,
-            true
-        );
+        const { account, hideBalance } = this.props;
+        let formattedBalance = account.balance ? account.balance.value : 0;
 
-        const accountBalanceText = this.props.hideBalance
+        if (this.props.shareInviteBankResponses.length > 0) {
+            formattedBalance = GetShareDetailBudget(
+                this.props.shareInviteBankResponses
+            );
+        }
+
+        const accountBalanceText = hideBalance
             ? "HIDDEN"
-            : formattedBalance;
+            : formatMoney(formattedBalance, true);
 
         return (
             <Paper>

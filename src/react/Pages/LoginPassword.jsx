@@ -39,7 +39,7 @@ const styles = {
         marginTop: 20
     },
     passwordInput: {
-        // color: "#000000",
+        color: "#000000",
         width: "100%",
         marginTop: 20
     },
@@ -52,18 +52,10 @@ const styles = {
     },
     cardContent: {
         textAlign: "center",
-        // backgroundColor: "#ffffff"
-    },
-    girlSvg: {
-        zIndex: 0,
-        position: "fixed",
-        right: 0,
-        bottom: 0,
-        height: "50%",
-        maxWidth: "35%"
+        backgroundColor: "#ffffff"
     },
     text: {
-        // color: "#000000"
+        color: "#000000"
     }
 };
 
@@ -155,7 +147,11 @@ class LoginPassword extends React.Component {
             </CardContent>
         ) : (
             <CardContent style={styles.cardContent}>
-                <Typography variant="headline" component="h2" style={styles.text}>
+                <Typography
+                    variant="headline"
+                    component="h2"
+                    style={styles.text}
+                >
                     {hasStoredApiKey ? (
                         t("Enter your password")
                     ) : (
@@ -186,7 +182,6 @@ class LoginPassword extends React.Component {
                     justify="center"
                     style={{ marginTop: 16 }}
                 >
-
                     {hasStoredApiKey ? (
                         <Grid item xs={6} sm={4}>
                             <TranslateButton
@@ -259,11 +254,10 @@ class LoginPassword extends React.Component {
                     <Card>{cardContent}</Card>
                 </Grid>
 
-                {/*<img*/}
-                    {/*className="animated fadeInRight"*/}
-                    {/*src="images/svg/girl.svg"*/}
-                    {/*style={styles.girlSvg}*/}
-                {/*/>*/}
+                <span className="bunqdesktop-text-wrapper">
+                    <span className="bunqdesktop-text-first">Bunq</span>
+                    <span className="bunqdesktop-text-second">Desktop</span>
+                </span>
             </Grid>
         );
     }

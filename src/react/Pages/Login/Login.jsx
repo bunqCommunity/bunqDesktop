@@ -9,8 +9,8 @@ import Input from "@material-ui/core/Input";
 import Button from "@material-ui/core/Button";
 import Switch from "@material-ui/core/Switch";
 import Collapse from "@material-ui/core/Collapse";
-import FormControlLabel  from "@material-ui/core/FormControlLabel";
-import Card  from "@material-ui/core/Card";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
@@ -40,11 +40,11 @@ const styles = {
     apiInput: {
         width: "100%",
         marginTop: 20,
-        // color: "#000000"
+        color: "#000000"
     },
     environmentToggle: {
         marginTop: 10,
-        // color: "#000000"
+        color: "#000000"
     },
     wrapperContainer: {
         height: "100%"
@@ -55,42 +55,34 @@ const styles = {
     },
     optionsButton: {
         marginTop: 12,
-        // color: "#000000"
+        color: "#000000"
     },
     smallAvatar: {
         width: 50,
         height: 50
     },
     switchKeyIcon: {
-        // color: "#000000",
+        color: "#000000",
         marginLeft: 8
     },
     switchKeyButton: {
-        // color: "#000000",
+        color: "#000000",
         position: "absolute",
         top: 58,
         right: 8
     },
     valueInput: {
-        // color: "#000000"
+        color: "#000000"
     },
     card: {
         width: 250
     },
     cardContent: {
-        // backgroundColor: "#ffffff",
+        backgroundColor: "#ffffff",
         textAlign: "center"
     },
     text: {
-        // color: "#000000"
-    },
-    girlSvg: {
-        zIndex: 0,
-        position: "fixed",
-        right: 0,
-        bottom: 0,
-        height: "50%",
-        maxWidth: "35%"
+        color: "#000000"
     }
 };
 
@@ -647,7 +639,10 @@ class Login extends React.Component {
                 </Grid>
                 {userItems}
 
-                {/*<img src="images/svg/girl.svg" style={styles.girlSvg} />*/}
+                <span className="bunqdesktop-text-wrapper">
+                    <span className="bunqdesktop-text-first">Bunq</span>
+                    <span className="bunqdesktop-text-second">Desktop</span>
+                </span>
             </Grid>
         );
     }

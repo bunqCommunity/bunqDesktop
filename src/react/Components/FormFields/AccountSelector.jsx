@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import Input  from "@material-ui/core/Input";
+import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
@@ -11,7 +11,9 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Avatar from "@material-ui/core/Avatar";
 
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
+import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
 import { formatMoney } from "../../Helpers/Utils";
+import { filterShareInviteBankResponses } from "../../Helpers/Filters";
 
 const styles = {
     formControl: {
@@ -40,8 +42,20 @@ class AccountSelector extends React.Component {
 
         const accountItems = accounts.map((account, accountKey) => {
             const bankAccount = account;
-            const balance = bankAccount.balance.value;
+            let balance = bankAccount.balance.value;
             const description = bankAccount.description;
+
+            // check if this account item has connect details
+            const filteredInviteResponses = this.props.shareInviteBankResponses.filter(
+                filterShareInviteBankResponses(account.id)
+            );
+
+            // get budget if atleast one connect
+            if (filteredInviteResponses.length > 0) {
+                balance = GetShareDetailBudget(filteredInviteResponses);
+            }
+
+            balance = formatMoney(balance);
 
             return (
                 <MenuItem value={accountKey}>
@@ -56,9 +70,25 @@ class AccountSelector extends React.Component {
             if (account.status !== "ACTIVE") {
                 return null;
             }
-            const formattedBalance = this.props.hideBalance
+
+            // format default balance
+            let formattedBalance = account.balance ? account.balance.value : 0;
+
+            // attempt to get connect budget if possible
+            if (this.props.shareInviteBankResponses.length > 0) {
+                const filteredInviteResponses = this.props.shareInviteBankResponses.filter(
+                    filterShareInviteBankResponses(account.id)
+                );
+                formattedBalance = GetShareDetailBudget(
+                    filteredInviteResponses
+                );
+            }
+
+            // hide balance if used or format it
+            formattedBalance = this.props.hideBalance
                 ? ""
-                : formatMoney(account.balance ? account.balance.value : 0, true);
+                : formatMoney(formattedBalance);
+
             selectedAccountItem = (
                 <ListItem button>
                     <Avatar style={styles.bigAvatar}>
@@ -105,9 +135,12 @@ AccountSelector.defaultProps = {
     selectStyle: styles.selectField
 };
 
-const mapStateToProps = store => {
+const mapStateToProps = state => {
     return {
-        hideBalance: store.options.hide_balance
+        shareInviteBankResponses:
+            state.share_invite_bank_responses.share_invite_bank_responses,
+
+        hideBalance: state.options.hide_balance
     };
 };
 

@@ -23,6 +23,10 @@ import ConnectlistItem from "./ConnectListItem";
 import CombinedList from "../../Components/CombinedList/CombinedList";
 import AccountCard from "../../Components/AccountCard";
 import ButtonTranslate from "../../Components/TranslationHelpers/Button";
+import {
+    filterShareInviteBankInquiries,
+    filterShareInviteBankResponses
+} from "../../Helpers/Filters";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import {
@@ -212,30 +216,10 @@ class AccountInfo extends React.Component {
         let content = null;
         if (accountInfo !== false) {
             const filteredInviteResponses = shareInviteBankResponses.filter(
-                shareInviteBankResponse => {
-                    if (!shareInviteBankResponse.ShareInviteBankResponse)
-                        return false;
-
-                    return (
-                        shareInviteBankResponse.ShareInviteBankResponse
-                            .status === "ACCEPTED" &&
-                        shareInviteBankResponse.ShareInviteBankResponse
-                            .monetary_account_id === accountInfo.id
-                    );
-                }
+                filterShareInviteBankResponses(accountInfo.id)
             );
             const filteredInviteInquiries = shareInviteBankInquiries.filter(
-                shareInviteBankInquiry => {
-                    if (!shareInviteBankInquiry.ShareInviteBankInquiry)
-                        return false;
-
-                    return (
-                        shareInviteBankInquiry.ShareInviteBankInquiry.status ===
-                            "ACCEPTED" &&
-                        shareInviteBankInquiry.ShareInviteBankInquiry
-                            .monetary_account_id === accountInfo.id
-                    );
-                }
+                filterShareInviteBankInquiries(accountInfo.id)
             );
 
             content = (
@@ -350,6 +334,7 @@ class AccountInfo extends React.Component {
                         hideBalance={this.props.hideBalance}
                         toggleSettingsDialog={this.toggleSettingsDialog}
                         toggleDeactivateDialog={this.toggleDeactivateDialog}
+                        shareInviteBankResponses={filteredInviteResponses}
                         account={accountInfo}
                     />
 
