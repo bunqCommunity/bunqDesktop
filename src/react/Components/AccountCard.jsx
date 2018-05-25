@@ -44,9 +44,12 @@ class AccountCard extends React.Component {
         let formattedBalance = account.balance ? account.balance.value : 0;
 
         if (this.props.shareInviteBankResponses.length > 0) {
-            formattedBalance = GetShareDetailBudget(
+            const connectBudget = GetShareDetailBudget(
                 this.props.shareInviteBankResponses
             );
+            if (connectBudget) {
+                formattedBalance = connectBudget;
+            }
         }
 
         const accountBalanceText = hideBalance

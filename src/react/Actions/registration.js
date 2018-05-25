@@ -287,6 +287,23 @@ export function registrationResetToApiScreen(BunqJSClient) {
     };
 }
 
+
+/**
+ * Log out without removing the stored apikey and password
+ * and keep the api Installation and Device installation
+ * @param BunqJSClient
+ * @returns {function(*)}
+ */
+export function registrationResetToApiScreenSoft(BunqJSClient) {
+    return dispatch => {
+        BunqJSClient.destroyApiSession(true).then(_ => {
+            dispatch({
+                type: "REGISTRATION_RESET_TO_API_SCREEN"
+            });
+        });
+    };
+}
+
 /**
  * Log out without removing the stored apikey
  * @param BunqJSClient

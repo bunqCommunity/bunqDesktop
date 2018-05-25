@@ -45,7 +45,10 @@ const AccountItem = ({
 
     // attempt to get connect budget if possible
     if (filteredInviteResponses.length > 0) {
-        formattedBalance = GetShareDetailBudget(filteredInviteResponses);
+        const connectBudget = GetShareDetailBudget(filteredInviteResponses);
+        if(connectBudget){
+            formattedBalance = connectBudget;
+        }
     }
 
     // hide balance if used

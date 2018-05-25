@@ -22,5 +22,5 @@ export default shareInviteBankResponses => {
             }
         }
     }
-    return 0;
+    return false;
 };

@@ -384,7 +384,10 @@ class Pay extends React.Component {
 
         // get budget if atleast one connect
         if (filteredInviteResponses.length > 0) {
-            accountBalance = GetShareDetailBudget(filteredInviteResponses);
+            const connectBudget = GetShareDetailBudget(filteredInviteResponses);
+            if(connectBudget){
+                accountBalance = connectBudget;
+            }
         }
 
         const noTargetsCondition = targets.length < 0;
@@ -562,7 +565,10 @@ class Pay extends React.Component {
             // regular balance value
             accountBalance = account.balance ? account.balance.value : 0;
             if (filteredInviteResponses.length > 0) {
-                accountBalance = GetShareDetailBudget(filteredInviteResponses);
+                const connectBudget = GetShareDetailBudget(filteredInviteResponses);
+                if(connectBudget){
+                    accountBalance = connectBudget;
+                }
             }
         }
         accountBalance = formatMoney(accountBalance, true);
