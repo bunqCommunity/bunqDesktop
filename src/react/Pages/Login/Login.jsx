@@ -630,6 +630,7 @@ class Login extends React.Component {
                     sm={10}
                     md={6}
                     lg={4}
+                    className="login-wrapper"
                     style={{
                         display: "flex",
                         justifyContent: "center"
@@ -638,6 +639,11 @@ class Login extends React.Component {
                     <Card style={styles.card}>{cardContent}</Card>
                 </Grid>
                 {userItems}
+
+                <img
+                    src="./images/svg/login-bg2.svg"
+                    id="login-background-image"
+                />
 
                 <span className="bunqdesktop-text-wrapper">
                     <span className="bunqdesktop-text-first">Bunq</span>

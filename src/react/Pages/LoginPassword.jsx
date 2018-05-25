@@ -249,10 +249,15 @@ class LoginPassword extends React.Component {
                     md={5}
                     lg={4}
                     style={{ zIndex: 1 }}
-                    className="animated zoomIn"
+                    className="animated zoomIn login-wrapper"
                 >
                     <Card>{cardContent}</Card>
                 </Grid>
+
+                <img
+                    src="./images/svg/login-bg2.svg"
+                    id="login-background-image"
+                />
 
                 <span className="bunqdesktop-text-wrapper">
                     <span className="bunqdesktop-text-first">Bunq</span>
