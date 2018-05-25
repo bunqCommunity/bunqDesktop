@@ -312,7 +312,7 @@ export function registrationResetToApiScreenSoft(BunqJSClient) {
  */
 export function registrationLogOut(BunqJSClient, resetPassword = false) {
     return dispatch => {
-        BunqJSClient.destroySession().then(_ => {
+        BunqJSClient.destroyApiSession().then(_ => {
             dispatch({
                 type: "REGISTRATION_LOG_OUT",
                 payload: {

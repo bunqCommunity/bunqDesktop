@@ -38,7 +38,10 @@ import { loadStoredPayments } from "../Actions/payments";
 import { loadStoredAccounts } from "../Actions/accounts";
 import { loadStoredBunqMeTabs } from "../Actions/bunq_me_tabs";
 import { applicationSetStatus } from "../Actions/application.js";
-import { registrationClearUserInfo } from "../Actions/registration";
+import {
+    registrationClearUserInfo,
+    registrationResetToApiScreenSoft
+} from "../Actions/registration";
 import { loadStoredMasterCardActions } from "../Actions/master_card_actions";
 import { loadStoredRequestInquiries } from "../Actions/request_inquiries";
 import { loadStoredRequestResponses } from "../Actions/request_responses";
@@ -240,6 +243,15 @@ class Layout extends React.Component {
         if (nextProps === false) {
             nextProps = this.props;
         }
+
+        if (
+            nextProps.apiKey === false &&
+            this.state.initialBunqConnect === true
+        ) {
+            // api key not set but bunq connect is true so we reset it
+            this.setState({ initialBunqConnect: true });
+        }
+
         // run only if apikey is not false or first setup AND the registration isnt already loading
         if (
             (this.state.initialBunqConnect === false ||
@@ -272,7 +284,7 @@ class Layout extends React.Component {
                 .catch(setupError => {
                     Logger.error(setupError);
                     // installation failed so we reset the api key
-                    nextProps.registrationResetToApiScreen();
+                    nextProps.registrationResetToApiScreenSoft();
                     nextProps.registrationNotLoading();
                 });
         }
@@ -560,6 +572,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         registrationNotLoading: () => dispatch(registrationNotLoading()),
         registrationResetToApiScreen: () =>
             dispatch(registrationResetToApiScreen(BunqJSClient)),
+        registrationResetToApiScreenSoft: () =>
+            dispatch(registrationResetToApiScreenSoft(BunqJSClient)),
 
         // get latest user list from BunqJSClient
         usersUpdate: (updated = false) =>
