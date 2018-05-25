@@ -82,7 +82,7 @@ deploy:
       - dist/bunqdesktop_*_amd64.snap
       - dist/bunqdesktop-*-x86_64.AppImage
       - dist/bunqdesktop-*-i386.AppImage
-      - dist/linux-unpacked-*.tar.gz
+      - dist/linux-unpacked.tar.gz
     draft: true
     skip_cleanup: true
     on:
