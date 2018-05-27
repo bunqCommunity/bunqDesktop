@@ -99,10 +99,10 @@ class Dashboard extends React.Component {
                 </Helmet>
 
                 <Hidden mdDown>
-                    <Grid item lg={2} />
+                    <Grid item lg={1} xl={2} />
                 </Hidden>
 
-                <Grid item xs={12} md={12} lg={8}>
+                <Grid item xs={12} md={12} lg={10} xl={8}>
                     <Grid container spacing={16}>
                         <Grid item xs={6} style={styles.titleWrapper}>
                             <IconButton
@@ -149,7 +149,7 @@ class Dashboard extends React.Component {
                             </Tooltip>
                         </Grid>
 
-                        <Grid item xs={12} md={4}>
+                        <Grid item xs={12} sm={5} md={4}>
                             <StickyBox className={"sticky-container"}>
                                 <Paper>
                                     <AccountList
@@ -191,7 +191,7 @@ class Dashboard extends React.Component {
                             </StickyBox>
                         </Grid>
 
-                        <Grid item xs={12} md={8}>
+                        <Grid item xs={12} sm={7} md={8}>
                             <Paper>
                                 <CombinedList
                                     BunqJSClient={this.props.BunqJSClient}
