@@ -316,7 +316,9 @@ class Layout extends React.Component {
         const error4 = t(
             "We failed to register this device on the bunq servers Are you sure you entered a valid API key? And are you sure that this key is meant for the selected bunq environment?"
         );
-        const error5 = t("We failed to create a new session");
+        const error5 = t(
+            "We failed to create a new session! Your IP might have changed or the API key is no longer valid"
+        );
 
         const statusMessage1 = t("Registering our encryption keys");
         const statusMessage2 = t("Installing this device");
@@ -382,7 +384,8 @@ class Layout extends React.Component {
 
                         if (allowReRun) {
                             // this might be solved by reseting the bunq client
-                            await BunqJSClient.destroySession();
+                            await BunqJSClient.destroyApiSession();
+
                             // try one re-run but with allowReRun false this time
                             await this.setupBunqClient(
                                 apiKey,

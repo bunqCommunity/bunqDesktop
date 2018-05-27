@@ -305,7 +305,6 @@
 	"Version": "Version",
 	"View CVC Codes": "CVC-Codes anzeigen",
 	"View debug information": "Zeige debug Informationen",
-	"We failed to create a new session": "Wir konnten keine neue Sitzung erstellen",
 	"We failed to create the export for this monetary account": "Wir konnten den Kontoauszug für dieses Konto nicht erstellen",
 	"We failed to install a new application": "Wir konnten keine neue Applikation installieren",
 	"We failed to load the CVC codes": "Wir konnten die CVC Codes nicht laden",

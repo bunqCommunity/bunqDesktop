@@ -164,8 +164,8 @@ class AccountInfo extends React.Component {
         this.setState({ settingsDescription: event.target.value });
     handleDailyLimitChange = event => {
         let inputLimit = event.target.value;
-        if (inputLimit > 10000) inputLimit = 10000;
-        if (inputLimit < 1) inputLimit = 0;
+        if (inputLimit > 50000) inputLimit = 50000;
+        if (inputLimit < 0) inputLimit = 0;
 
         this.setState({ settingsDailyLimit: parseFloat(inputLimit) });
     };
@@ -184,8 +184,8 @@ class AccountInfo extends React.Component {
 
         // fix daily limit if required
         let settingsDailyLimit = this.state.settingsDailyLimit;
-        if (settingsDailyLimit > 10000) settingsDailyLimit = 10000;
-        if (settingsDailyLimit < 1) settingsDailyLimit = 1;
+        if (settingsDailyLimit > 50000) settingsDailyLimit = 50000;
+        if (settingsDailyLimit <= 0) settingsDailyLimit = 0;
 
         // update settings
         this.props.updateSettings(this.props.user.id, accountInfo.id, {
@@ -300,7 +300,7 @@ class AccountInfo extends React.Component {
                                 label={t("Daily limit")}
                                 inputProps={{
                                     min: 0,
-                                    max: 10000
+                                    max: 50000
                                 }}
                             />
                         </DialogContent>

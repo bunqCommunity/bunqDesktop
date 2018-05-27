@@ -307,7 +307,7 @@
 	"Version": "Versie",
 	"View CVC Codes": "CVC-codes bekijken",
 	"View debug information": "Bekijk debug informatie",
-	"We failed to create a new session": "Het is niet gelukt om een nieuwe session aan te maken",
+	"We failed to create a new session! Your IP might have changed or the API key is no longer valid": "Het is niet gelukt om een nieuwe sessie aan te maken! Het kan zijn dat je IP adres is gewijzigd of de API key is niet meer geldig",
 	"We failed to create the export for this monetary account": "Het is niet gelukt om een nieuwe export aan te maken voor dit account",
 	"We failed to install a new application": "Het is niet gelukt om deze applicatie te installeren",
 	"We failed to load the CVC codes": "Het is niet gelukt om je CVC codes op te halen",
