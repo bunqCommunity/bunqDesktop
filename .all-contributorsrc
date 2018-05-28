@@ -7,13 +7,13 @@
     "README.md"
   ],
   "imageSize": 80,
-  "commit": true,
+  "commit": false,
   "contributors": [
     {
       "login": "Crecket",
       "name": "Gregory Goijaerts",
       "avatar_url": "https://avatars2.githubusercontent.com/u/7481136?v=4",
-      "profile": "https://www.masterypoints.com",
+      "profile": "https://github.com/Crecket",
       "contributions": [
         "code",
         "design",
