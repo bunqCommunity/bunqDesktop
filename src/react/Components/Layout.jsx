@@ -336,7 +336,11 @@ class Layout extends React.Component {
         try {
             await this.props.BunqJSClient.install();
         } catch (exception) {
-            this.props.BunqErrorHandler(exception, this.props.BunqJSClient);
+            this.props.BunqErrorHandler(
+                exception,
+                false,
+                this.props.BunqJSClient
+            );
             throw exception;
         }
 
@@ -344,7 +348,11 @@ class Layout extends React.Component {
         try {
             await this.props.BunqJSClient.registerDevice(deviceName);
         } catch (exception) {
-            this.props.BunqErrorHandler(exception, this.props.BunqJSClient);
+            this.props.BunqErrorHandler(
+                exception,
+                false,
+                this.props.BunqJSClient
+            );
             throw exception;
         }
 
@@ -538,7 +546,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(openSnackbar(message, duration)),
         openModal: (message, title) => dispatch(openModal(message, title)),
         BunqErrorHandler: (error, customError = false) =>
-            dispatch(BunqErrorHandler(dispatch, error, customError)),
+            BunqErrorHandler(dispatch, error, customError),
 
         // options
         setAutomaticThemeChange: automaticThemeChange =>
