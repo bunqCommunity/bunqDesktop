@@ -9,6 +9,7 @@ import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import { ipcRenderer } from "electron";
 
 // custom components
+import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import Logger from "../Helpers/Logger";
 import VersionChecker from "../Helpers/VersionChecker";
 import NetworkStatusChecker from "./NetworkStatusChecker";
@@ -309,16 +310,6 @@ class Layout extends React.Component {
         const t = this.props.t;
         const errorTitle = t("Something went wrong");
         const error1 = t("We failed to setup BunqDesktop properly");
-        const error2 = t("We failed to install a new application");
-        const error3 = t(
-            "The API key or IP you are currently on is not valid for the selected bunq environment"
-        );
-        const error4 = t(
-            "We failed to register this device on the bunq servers Are you sure you entered a valid API key? And are you sure that this key is meant for the selected bunq environment?"
-        );
-        const error5 = t(
-            "We failed to create a new session! Your IP might have changed or the API key is no longer valid"
-        );
 
         const statusMessage1 = t("Registering our encryption keys");
         const statusMessage2 = t("Installing this device");
@@ -345,7 +336,7 @@ class Layout extends React.Component {
         try {
             await this.props.BunqJSClient.install();
         } catch (exception) {
-            this.props.openModal(error2, errorTitle);
+            this.props.BunqErrorHandler(exception, this.props.BunqJSClient);
             throw exception;
         }
 
@@ -353,17 +344,7 @@ class Layout extends React.Component {
         try {
             await this.props.BunqJSClient.registerDevice(deviceName);
         } catch (exception) {
-            if (exception.response && exception.response.data.Error[0]) {
-                const responseError = exception.response.data.Error[0];
-                if (
-                    responseError.error_description ===
-                    "User credentials are incorrect. Incorrect API key or IP address."
-                ) {
-                    this.props.openModal(error3, errorTitle);
-                    throw exception;
-                }
-            }
-            this.props.openModal(error4, errorTitle);
+            this.props.BunqErrorHandler(exception, this.props.BunqJSClient);
             throw exception;
         }
 
@@ -371,17 +352,13 @@ class Layout extends React.Component {
         try {
             await this.props.BunqJSClient.registerSession();
         } catch (exception) {
-            this.props.openModal(error5, errorTitle);
+            this.props.BunqErrorHandler(exception);
 
             // custom error handling to prevent
             if (exception.errorCode) {
                 switch (exception.errorCode) {
                     case this.props.BunqJSClient.errorCodes
                         .INSTALLATION_HAS_SESSION:
-                        Logger.error(
-                            `Error while creating a new session: ${exception.errorCode}`
-                        );
-
                         if (allowReRun) {
                             // this might be solved by reseting the bunq client
                             await BunqJSClient.destroyApiSession();
@@ -560,6 +537,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         openSnackbar: (message, duration = 4000) =>
             dispatch(openSnackbar(message, duration)),
         openModal: (message, title) => dispatch(openModal(message, title)),
+        BunqErrorHandler: (error, customError = false) =>
+            dispatch(BunqErrorHandler(dispatch, error, customError)),
 
         // options
         setAutomaticThemeChange: automaticThemeChange =>
