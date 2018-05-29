@@ -16,7 +16,7 @@
         "de"
     ],
     "build": {
-        "appId": "com.bunq.desktop",
+        "appId": "com.bunqdesktop",
         "files": [
             "app/**/*",
             "node_modules/**/*",
