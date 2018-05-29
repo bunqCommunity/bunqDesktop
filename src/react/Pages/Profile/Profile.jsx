@@ -6,6 +6,7 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
@@ -16,6 +17,7 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { openSnackbar } from "../../Actions/snackbar";
 import { userLogin } from "../../Actions/user";
 import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
+import { formatMoney } from "../../Helpers/Utils";
 
 const styles = {
     title: {
@@ -154,10 +156,29 @@ class Profile extends React.Component {
     };
 
     render() {
-        const { t, user, userLoading } = this.props;
+        const { t, user, userType, userLoading, accounts } = this.props;
 
         let content = null;
         if (userLoading === false && this.state.loading === false) {
+            // const totalAmount = accounts.reduce((total, account) => {
+            //     return total + account.getBalance();
+            // }, 0);
+            // const formattedAmount = formatMoney(totalAmount);
+
+            const businessInfo = null;
+            // const businessInfo =
+            //     userType !== "UserCompany" ? null : (
+            //         <Paper style={styles.paper}>
+            //             <Grid container spacing={16} justify="center">
+            //                 <Grid item xs={12}>
+            //                     <Typography variant="body1">
+            //                         {formattedAmount}
+            //                     </Typography>
+            //                 </Grid>
+            //             </Grid>
+            //         </Paper>
+            //     );
+
             content = (
                 <React.Fragment>
                     <Paper style={styles.paper}>
@@ -215,6 +236,8 @@ class Profile extends React.Component {
                             </Grid>
                         </Grid>
                     </Paper>
+
+                    {businessInfo}
                 </React.Fragment>
             );
         } else {
@@ -255,7 +278,9 @@ const mapStateToProps = state => {
     return {
         user: state.user.user,
         userType: state.user.user_type,
-        userLoading: state.user.loading
+        userType: state.user.user_type,
+        userLoading: state.user.loading,
+        accounts: state.accounts.accounts
     };
 };
 

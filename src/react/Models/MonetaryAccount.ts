@@ -80,6 +80,7 @@ export default class MonetaryAccount {
      * @returns {number}
      */
     public getBalance(): number {
+        if(!this.balance) return 0;
         return parseFloat(this.balance.value);
     }
 
