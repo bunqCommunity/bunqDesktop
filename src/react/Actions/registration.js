@@ -287,7 +287,6 @@ export function registrationResetToApiScreen(BunqJSClient) {
     };
 }
 
-
 /**
  * Log out without removing the stored apikey and password
  * and keep the api Installation and Device installation
@@ -371,7 +370,6 @@ export function registrationSetEnvironment(environment) {
 
 /**
  * Clear the password
- * @param bool resetNoPassword - set to false when something else is going wrong
  * @returns {{type: string}}
  */
 export function registrationClearPassword() {
@@ -410,10 +408,17 @@ export function registrationSetDerivedPassword(derivedPassword, identifier) {
  */
 export function registrationUseNoPassword() {
     return dispatch => {
-        dispatch({
-            type: "REGISTRATION_USE_NO_PASSWORD"
-        });
+        dispatch(registrationSetUseNoPassword());
         dispatch(registrationDerivePassword("SOME_DEFAULT_PASSWORD"));
+    };
+}
+
+/**
+ * @returns {function(*)}
+ */
+export function registrationSetUseNoPassword() {
+    return {
+        type: "REGISTRATION_USE_NO_PASSWORD"
     };
 }
 
@@ -423,10 +428,17 @@ export function registrationUseNoPassword() {
  */
 export function registrationUsePassword(password) {
     return dispatch => {
-        dispatch({
-            type: "REGISTRATION_USE_PASSWORD"
-        });
+        dispatch(registrationSetUsePassword());
         dispatch(registrationDerivePassword(password));
+    };
+}
+
+/**
+ * @returns {function(*)}
+ */
+export function registrationSetUsePassword() {
+    return {
+        type: "REGISTRATION_USE_PASSWORD"
     };
 }
 

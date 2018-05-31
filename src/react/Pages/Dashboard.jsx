@@ -23,7 +23,11 @@ import NavLink from "../Components/Routing/NavLink";
 
 import { userLogin, userLogout } from "../Actions/user";
 import { requestInquirySend } from "../Actions/request_inquiry";
-import { registrationLogOut } from "../Actions/registration";
+import {
+    registrationSetUseNoPassword,
+    registrationClearPassword,
+    registrationLogOut
+} from "../Actions/registration";
 
 const styles = {
     btn: {
@@ -142,7 +146,11 @@ class Dashboard extends React.Component {
                             <Tooltip id="tooltip-fab" title="Logout of account">
                                 <IconButton
                                     style={styles.iconButton}
-                                    onClick={() => location.reload()}
+                                    onClick={() => {
+                                        this.props.registrationSetUseNoPassword();
+                                        this.props.registrationClearPassword();
+                                        location.reload();
+                                    }}
                                 >
                                     <ExitToAppIcon />
                                 </IconButton>
@@ -232,6 +240,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
         // hard-logout
         registrationLogOut: () => dispatch(registrationLogOut(BunqJSClient)),
+        registrationClearPassword: () => dispatch(registrationClearPassword()),
+        registrationSetUseNoPassword: () => dispatch(registrationSetUseNoPassword()),
 
         // send a request, used for sandbox button
         requestInquirySend: (userId, accountId, requestInquiries) =>
