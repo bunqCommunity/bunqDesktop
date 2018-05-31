@@ -55,70 +55,68 @@ class ItemTypeRuleItem extends React.Component<IPropTypes, any> {
     render() {
         const rule: TypeRule = this.props.rule;
 
-        return [
-            <TableBody key={"tableBody"}>
-                <TableRow>
-                    <TableCell>
-                        <TranslateTypography variant="subheading">
-                            Event type
-                        </TranslateTypography>
-                    </TableCell>
+        return (
+            <TableRow>
+                <TableCell>
+                    <TranslateTypography variant="subheading">
+                        Event type
+                    </TranslateTypography>
+                </TableCell>
 
-                    <TableCell style={styles.tableCell}>
-                        <FormControl style={styles.textField}>
-                            <Select
-                                value={rule.matchType}
-                                onChange={this.handleMatchTypeChange}
-                                input={
-                                    <Input
-                                        name="match-type"
-                                        id="match-type-helper"
-                                    />
-                                }
-                            >
-                                <TranslateMenuItem value={"PAYMENT"}>
-                                    Payment or card payment
-                                </TranslateMenuItem>
-                                <TranslateMenuItem value={"REGULAR_PAYMENT"}>
-                                    Payment
-                                </TranslateMenuItem>
-                                <TranslateMenuItem value={"PAYMENT_RECEIVED"}>
-                                    Received payment
-                                </TranslateMenuItem>
-                                <TranslateMenuItem value={"PAYMENT_SENT"}>
-                                    Sent payment
-                                </TranslateMenuItem>
-                                <TranslateMenuItem value={"BUNQ_ME_TAB"}>
-                                    bunqme request
-                                </TranslateMenuItem>
-                                <TranslateMenuItem value={"MASTERCARD_PAYMENT"}>
-                                    Card payments (Maestro or Mastercard)
-                                </TranslateMenuItem>
-                                <TranslateMenuItem value={"REQUEST"}>
-                                    Request (sent and received)
-                                </TranslateMenuItem>
-                                <TranslateMenuItem value={"REQUEST_INQUIRY"}>
-                                    Sent request
-                                </TranslateMenuItem>
-                                <TranslateMenuItem value={"REQUEST_RESPONSE"}>
-                                    Received request
-                                </TranslateMenuItem>
-                            </Select>
-                        </FormControl>
-                    </TableCell>
+                <TableCell style={styles.tableCell}>
+                    <FormControl style={styles.textField}>
+                        <Select
+                            value={rule.matchType}
+                            onChange={this.handleMatchTypeChange}
+                            input={
+                                <Input
+                                    name="match-type"
+                                    id="match-type-helper"
+                                />
+                            }
+                        >
+                            <TranslateMenuItem value={"PAYMENT"}>
+                                Payment or card payment
+                            </TranslateMenuItem>
+                            <TranslateMenuItem value={"REGULAR_PAYMENT"}>
+                                Payment
+                            </TranslateMenuItem>
+                            <TranslateMenuItem value={"PAYMENT_RECEIVED"}>
+                                Received payment
+                            </TranslateMenuItem>
+                            <TranslateMenuItem value={"PAYMENT_SENT"}>
+                                Sent payment
+                            </TranslateMenuItem>
+                            <TranslateMenuItem value={"BUNQ_ME_TAB"}>
+                                bunqme request
+                            </TranslateMenuItem>
+                            <TranslateMenuItem value={"MASTERCARD_PAYMENT"}>
+                                Card payments (Maestro or Mastercard)
+                            </TranslateMenuItem>
+                            <TranslateMenuItem value={"REQUEST"}>
+                                Request (sent and received)
+                            </TranslateMenuItem>
+                            <TranslateMenuItem value={"REQUEST_INQUIRY"}>
+                                Sent request
+                            </TranslateMenuItem>
+                            <TranslateMenuItem value={"REQUEST_RESPONSE"}>
+                                Received request
+                            </TranslateMenuItem>
+                        </Select>
+                    </FormControl>
+                </TableCell>
 
-                    <TableCell style={styles.tableCell}>{null}</TableCell>
+                <TableCell style={styles.tableCell}>{null}</TableCell>
 
-                    <TableCell style={styles.tableIconCell}>
-                        <RuleItemMenu
-                            removeRule={this.props.removeRule}
-                            rule={this.state.rule}
-                            openExportDialog={this.props.openExportDialog}
-                        />
-                    </TableCell>
-                </TableRow>
-            </TableBody>
-        ];
+                <TableCell style={styles.tableIconCell}>
+                    <RuleItemMenu
+                        removeRule={this.props.removeRule}
+                        rule={this.state.rule}
+                        openExportDialog={this.props.openExportDialog}
+                    />
+                </TableCell>
+            </TableRow>
+        );
     }
 }
 
