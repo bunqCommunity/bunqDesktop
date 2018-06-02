@@ -129,7 +129,7 @@ const TransactionHeader = props => {
                     imageUUID={toAvatar}
                     onClick={() => {
                         if (toIsCounterparty && props.startPaymentIban) {
-                            props.startPaymentIban(fromAlias);
+                            props.startPaymentIban(toAlias);
                         }
                     }}
                     style={{

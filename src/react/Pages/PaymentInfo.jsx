@@ -93,6 +93,7 @@ class PaymentInfo extends React.Component {
         this.setState({ displayCategories: !this.state.displayCategories });
 
     startPaymentIban = alias => {
+        console.log(alias)
         this.props.history.push(
             `/pay?iban=${alias.iban}&iban-name=${alias.display_name}`
         );
@@ -137,7 +138,7 @@ class PaymentInfo extends React.Component {
             const payment = paymentInfo.Payment;
             const paymentDescription = payment.description;
             const paymentDate = humanReadableDate(payment.updated);
-            const paymentAmount = payment.amount.value;
+            const paymentAmount = payment.getAmount();
             const formattedPaymentAmount = formatMoney(paymentAmount);
             const paymentLabel = paymentText(payment, t);
             const counterPartyIban = payment.counterparty_alias.iban;
