@@ -45,7 +45,7 @@ class PaymentListItem extends React.Component {
                     .attachment_public_uuid;
         }
         const displayName = payment.counterparty_alias.display_name;
-        const paymentAmount = payment.amount.value;
+        const paymentAmount = payment.getAmount();
         const formattedPaymentAmount = formatMoney(paymentAmount);
         const paymentTypeLabel = paymentText(payment, this.props.t);
 

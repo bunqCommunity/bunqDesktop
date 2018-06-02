@@ -55,6 +55,8 @@ export const paymentTypeParser = (paymentType, t) => {
     switch (paymentType) {
         case "BUNQ":
             return "bunq";
+        case "BUNQME":
+            return "bunq.me";
         case "IDEAL":
             return "iDEAL";
         case "EBA_SCT":
