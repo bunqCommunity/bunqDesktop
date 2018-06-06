@@ -23,11 +23,7 @@ import NavLink from "../Components/Routing/NavLink";
 
 import { userLogin, userLogout } from "../Actions/user";
 import { requestInquirySend } from "../Actions/request_inquiry";
-import {
-    registrationSetUseNoPassword,
-    registrationClearPassword,
-    registrationLogOut
-} from "../Actions/registration";
+import { registrationLogOut } from "../Actions/registration";
 
 const styles = {
     btn: {
@@ -147,8 +143,10 @@ class Dashboard extends React.Component {
                                 <IconButton
                                     style={styles.iconButton}
                                     onClick={() => {
-                                        this.props.registrationSetUseNoPassword();
-                                        this.props.registrationClearPassword();
+                                        if (this.props.useNoPassword) {
+                                            // if no password is set
+                                            this.props.registrationLogOut();
+                                        }
                                         location.reload();
                                     }}
                                 >
@@ -227,6 +225,7 @@ const mapStateToProps = state => {
         requestInquiryLoading: state.request_inquiry.loading,
         selectedAccount: state.accounts.selectedAccount,
 
+        useNoPassword: state.registration.use_no_password,
         storedApiKeys: state.registration.stored_api_keys,
         environment: state.registration.environment
     };
@@ -240,8 +239,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
         // hard-logout
         registrationLogOut: () => dispatch(registrationLogOut(BunqJSClient)),
-        registrationClearPassword: () => dispatch(registrationClearPassword()),
-        registrationSetUseNoPassword: () => dispatch(registrationSetUseNoPassword()),
 
         // send a request, used for sandbox button
         requestInquirySend: (userId, accountId, requestInquiries) =>

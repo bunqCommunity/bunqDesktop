@@ -121,7 +121,7 @@
         "upath": "1.0.5"
     },
     "devDependencies": {
-        "@bunq-community/bunq-js-client": "^0.19.1",
+        "@bunq-community/bunq-js-client": "^0.19.2",
         "@google-cloud/translate": "^1.1.0",
         "@material-ui/core": "^1.0.0",
         "@material-ui/icons": "^1.0.0",
