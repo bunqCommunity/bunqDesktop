@@ -350,6 +350,7 @@ class AccountInfo extends React.Component {
                                         {filteredInviteInquiries.map(
                                             filteredInviteInquiry => (
                                                 <ConnectlistItem
+                                                    t={t}
                                                     connectInfo={
                                                         filteredInviteInquiry.ShareInviteBankInquiry
                                                     }
@@ -372,6 +373,7 @@ class AccountInfo extends React.Component {
                                         {filteredInviteResponses.map(
                                             filteredInviteResponse => (
                                                 <ConnectlistItem
+                                                    t={t}
                                                     connectInfo={
                                                         filteredInviteResponse.ShareInviteBankResponse
                                                     }

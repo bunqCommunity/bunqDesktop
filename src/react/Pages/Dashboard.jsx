@@ -84,6 +84,51 @@ class Dashboard extends React.Component {
         }
     };
 
+    // connectTest = event => {
+    //     this.props.BunqJSClient.api.shareInviteBankInquiry
+    //         .post(
+    //             3436,
+    //             5214,
+    //             {
+    //                 type: "EMAIL",
+    //                 value: "lydia.beckwith@bunq.nl"
+    //             },
+    //             {
+    //                 // ShareDetailPayment: {
+    //                 //     make_payments: true,
+    //                 //     make_draft_payments: true,
+    //                 //     view_balance: true,
+    //                 //     view_old_events: true,
+    //                 //     view_new_events: true,
+    //                 //     budget: {
+    //                 //         amount: {
+    //                 //             value: "25.00",
+    //                 //             currency: "EUR"
+    //                 //         },
+    //                 //         frequency: "DAILY"
+    //                 //     }
+    //                 // },
+    //                 ShareDetailReadOnly: {
+    //                     view_balance: true,
+    //                     view_old_events: false,
+    //                     view_new_events: true
+    //                 },
+    //                 // ShareDetailDraftPayment: {
+    //                 //     make_draft_payments: true,
+    //                 //     view_balance: true,
+    //                 //     view_old_events: true,
+    //                 //     view_new_events: true
+    //                 // }
+    //             },
+    //             "PENDING",
+    //             {
+    //                 share_type: "STANDARD"
+    //             }
+    //         )
+    //         .then(console.log)
+    //         .catch(console.error);
+    // };
+
     render() {
         const t = this.props.t;
         const userTypes = Object.keys(this.props.users);
@@ -153,6 +198,14 @@ class Dashboard extends React.Component {
                                     <ExitToAppIcon />
                                 </IconButton>
                             </Tooltip>
+                            {/*<Tooltip id="tooltip-fab" title="Test connect request">*/}
+                                {/*<IconButton*/}
+                                    {/*style={styles.iconButton}*/}
+                                    {/*onClick={this.connectTest}*/}
+                                {/*>*/}
+                                    {/*<ExitToAppIcon />*/}
+                                {/*</IconButton>*/}
+                            {/*</Tooltip>*/}
                         </Grid>
 
                         <Grid item xs={12} sm={5} md={4}>
