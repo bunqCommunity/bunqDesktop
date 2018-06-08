@@ -40,6 +40,9 @@ const AccountInfo = CL(() =>
 const AddAccount = CL(() =>
     import(/* webpackChunkName: "addaccount" */ "./Pages/AddAccount")
 );
+const Connect = CL(() =>
+    import(/* webpackChunkName: "connect" */ "./Pages/Connect")
+);
 const Stats = CL(() =>
     import(/* webpackChunkName: "stats" */ "./Pages/Stats/Stats")
 );

@@ -184,6 +184,7 @@ class Dashboard extends React.Component {
                                     <KeyIcon />
                                 </IconButton>
                             </Tooltip>
+
                             <Tooltip id="tooltip-fab" title="Logout of account">
                                 <IconButton
                                     style={styles.iconButton}
@@ -198,14 +199,6 @@ class Dashboard extends React.Component {
                                     <ExitToAppIcon />
                                 </IconButton>
                             </Tooltip>
-                            {/*<Tooltip id="tooltip-fab" title="Test connect request">*/}
-                                {/*<IconButton*/}
-                                    {/*style={styles.iconButton}*/}
-                                    {/*onClick={this.connectTest}*/}
-                                {/*>*/}
-                                    {/*<ExitToAppIcon />*/}
-                                {/*</IconButton>*/}
-                            {/*</Tooltip>*/}
                         </Grid>
 
                         <Grid item xs={12} sm={5} md={4}>
