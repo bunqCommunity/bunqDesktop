@@ -35,13 +35,13 @@ const ApplicationInfo = CL(() =>
     import(/* webpackChunkName: "applicationinfo" */ "./Pages/ApplicationInfo")
 );
 const AccountInfo = CL(() =>
-    import(/* webpackChunkName: "accountinfo" */ "./Pages/AccountInfo/AccountInfo")
+    import(/* webpackChunkName: "accountinfo" */ "./Pages/AccountInfo")
 );
 const AddAccount = CL(() =>
     import(/* webpackChunkName: "addaccount" */ "./Pages/AddAccount")
 );
 const Connect = CL(() =>
-    import(/* webpackChunkName: "connect" */ "./Pages/Connect")
+    import(/* webpackChunkName: "connect" */ "./Pages/Connect/Connect")
 );
 const Stats = CL(() =>
     import(/* webpackChunkName: "stats" */ "./Pages/Stats/Stats")
@@ -227,6 +227,19 @@ export default class Routes extends React.Component {
                             derivedPassword={this.props.derivedPassword}
                             render={props => (
                                 <AddAccount
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
+                            )}
+                        />
+
+                        <PrivateRoute
+                            path="/connect/:accountId"
+                            apiKey={this.props.apiKey}
+                            userType={this.props.userType}
+                            derivedPassword={this.props.derivedPassword}
+                            render={props => (
+                                <Connect
                                     {...props}
                                     {...this.props.childProps}
                                 />

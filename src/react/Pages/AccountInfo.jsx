@@ -14,33 +14,30 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
-import List from "@material-ui/core/List";
-import ListSubHeader from "@material-ui/core/ListSubheader";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
-import ConnectlistItem from "./ConnectListItem";
-import CombinedList from "../../Components/CombinedList/CombinedList";
-import AccountCard from "../../Components/AccountCard";
-import ButtonTranslate from "../../Components/TranslationHelpers/Button";
-import {
-    filterShareInviteBankInquiries,
-    filterShareInviteBankResponses
-} from "../../Helpers/Filters";
+import NavLink from "../Components/Routing/NavLink";
+import CombinedList from "../Components/CombinedList/CombinedList";
+import AccountCard from "../Components/AccountCard";
+import ButtonTranslate from "../Components/TranslationHelpers/Button";
+import { filterShareInviteBankResponses } from "../Helpers/Filters";
 
-import { openSnackbar } from "../../Actions/snackbar";
+import { openSnackbar } from "../Actions/snackbar";
 import {
     accountsUpdate,
     accountsUpdateSettings,
     accountsDeactivate
-} from "../../Actions/accounts";
-import { paymentInfoUpdate } from "../../Actions/payments";
-import { requestResponsesUpdate } from "../../Actions/request_responses";
-import { bunqMeTabsUpdate } from "../../Actions/bunq_me_tabs";
-import { masterCardActionsUpdate } from "../../Actions/master_card_actions";
-import { requestInquiriesUpdate } from "../../Actions/request_inquiries";
-import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiry";
-import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_response";
+} from "../Actions/accounts";
+import { paymentInfoUpdate } from "../Actions/payments";
+import { requestResponsesUpdate } from "../Actions/request_responses";
+import { bunqMeTabsUpdate } from "../Actions/bunq_me_tabs";
+import { masterCardActionsUpdate } from "../Actions/master_card_actions";
+import { requestInquiriesUpdate } from "../Actions/request_inquiries";
+import { shareInviteBankInquiriesInfoUpdate } from "../Actions/share_invite_bank_inquiry";
+import { shareInviteBankResponsesInfoUpdate } from "../Actions/share_invite_bank_response";
 
 const styles = {
     textField: {
@@ -204,7 +201,6 @@ class AccountInfo extends React.Component {
         const {
             accounts,
             shareInviteBankResponses,
-            shareInviteBankInquiries,
             t
         } = this.props;
         const accountId = parseFloat(this.props.match.params.accountId);
@@ -217,9 +213,6 @@ class AccountInfo extends React.Component {
         if (accountInfo !== false) {
             const filteredInviteResponses = shareInviteBankResponses.filter(
                 filterShareInviteBankResponses(accountInfo.id)
-            );
-            const filteredInviteInquiries = shareInviteBankInquiries.filter(
-                filterShareInviteBankInquiries(accountInfo.id)
             );
 
             content = (
@@ -338,56 +331,17 @@ class AccountInfo extends React.Component {
                         account={accountInfo}
                     />
 
-                    {filteredInviteResponses.length > 0 ||
-                    filteredInviteInquiries.length > 0 ? (
-                        <Grid container spacing={8}>
-                            <Grid item xs={12} sm={6}>
-                                <Paper style={styles.paperList}>
-                                    <List dense>
-                                        <ListSubHeader>
-                                            Shared With:
-                                        </ListSubHeader>
-                                        {filteredInviteInquiries.map(
-                                            filteredInviteInquiry => (
-                                                <ConnectlistItem
-                                                    t={t}
-                                                    connectInfo={
-                                                        filteredInviteInquiry.ShareInviteBankInquiry
-                                                    }
-                                                    BunqJSClient={
-                                                        this.props.BunqJSClient
-                                                    }
-                                                />
-                                            )
-                                        )}
-                                    </List>
-                                </Paper>
-                            </Grid>
-
-                            <Grid item xs={12} sm={6}>
-                                <Paper style={styles.paperList}>
-                                    <List dense>
-                                        <ListSubHeader>
-                                            Shared By:
-                                        </ListSubHeader>
-                                        {filteredInviteResponses.map(
-                                            filteredInviteResponse => (
-                                                <ConnectlistItem
-                                                    t={t}
-                                                    connectInfo={
-                                                        filteredInviteResponse.ShareInviteBankResponse
-                                                    }
-                                                    BunqJSClient={
-                                                        this.props.BunqJSClient
-                                                    }
-                                                />
-                                            )
-                                        )}
-                                    </List>
-                                </Paper>
-                            </Grid>
+                    <Grid container spacing={8}>
+                        <Grid item xs={12}>
+                            <ListItem
+                                to={`/connect/${accountId}`}
+                                component={NavLink}
+                                button
+                            >
+                                <ListItemText primary={"Shared with: "} />
+                            </ListItem>
                         </Grid>
-                    ) : null}
+                    </Grid>
 
                     <Paper style={styles.paperList}>
                         <CombinedList
@@ -439,11 +393,6 @@ const mapStateToProps = state => {
             state.share_invite_bank_responses.share_invite_bank_responses,
         shareInviteBankResponsesLoading:
             state.share_invite_bank_responses.loading,
-
-        shareInviteBankInquiries:
-            state.share_invite_bank_inquiries.share_invite_bank_inquiries,
-        shareInviteBankInquiriesLoading:
-            state.share_invite_bank_inquiries.loading,
 
         user: state.user.user,
         accounts: state.accounts.accounts,
