@@ -9,11 +9,12 @@ import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import Dialog from "@material-ui/core/Dialog";
+import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 
@@ -198,11 +199,7 @@ class AccountInfo extends React.Component {
     };
 
     render() {
-        const {
-            accounts,
-            shareInviteBankResponses,
-            t
-        } = this.props;
+        const { accounts, shareInviteBankResponses, t } = this.props;
         const accountId = parseFloat(this.props.match.params.accountId);
 
         if (this.state.deactivateActivated) return <Redirect to="/" />;
@@ -331,8 +328,8 @@ class AccountInfo extends React.Component {
                         account={accountInfo}
                     />
 
-                    <Grid container spacing={8}>
-                        <Grid item xs={12}>
+                    <Paper style={styles.paperList}>
+                        <List>
                             <ListItem
                                 to={`/connect/${accountId}`}
                                 component={NavLink}
@@ -340,8 +337,8 @@ class AccountInfo extends React.Component {
                             >
                                 <ListItemText primary={"Shared with: "} />
                             </ListItem>
-                        </Grid>
-                    </Grid>
+                        </List>
+                    </Paper>
 
                     <Paper style={styles.paperList}>
                         <CombinedList
