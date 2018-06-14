@@ -23,7 +23,7 @@ import {
 import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_response";
 import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiry";
 import { openSnackbar } from "../../Actions/snackbar";
-import {accountsUpdate} from "../../Actions/accounts";
+import { accountsUpdate } from "../../Actions/accounts";
 
 const styles = {
     bigAvatar: {
@@ -128,6 +128,51 @@ class Connect extends React.Component {
         });
     };
 
+    connectTest = event => {
+        this.props.BunqJSClient.api.shareInviteBankInquiry
+            .post(
+                457,
+                602,
+                {
+                    type: "EMAIL",
+                    value: "cass.eireann-beaufort@bunq.bar"
+                },
+                {
+                    ShareDetailReadOnly: {
+                        view_balance: true,
+                        view_old_events: false,
+                        view_new_events: true
+                    }
+                    // ShareDetailPayment: {
+                    //     make_payments: true,
+                    //     make_draft_payments: true,
+                    //     view_balance: true,
+                    //     view_old_events: true,
+                    //     view_new_events: true,
+                    //     budget: {
+                    //         amount: {
+                    //             value: "25.00",
+                    //             currency: "EUR"
+                    //         },
+                    //         frequency: "DAILY"
+                    //     }
+                    // },
+                    // ShareDetailDraftPayment: {
+                    //     make_draft_payments: true,
+                    //     view_balance: true,
+                    //     view_old_events: true,
+                    //     view_new_events: true
+                    // }
+                },
+                "PENDING",
+                {
+                    share_type: "STANDARD"
+                }
+            )
+            .then(console.log)
+            .catch(console.error);
+    };
+
     render() {
         const {
             accounts,
@@ -204,6 +249,14 @@ class Connect extends React.Component {
                         {/*>*/}
                         {/*Create account*/}
                         {/*</ButtonTranslate>*/}
+
+                        <Button
+                            variant="raised"
+                            color="primary"
+                            onClick={this.connectTest}
+                        >
+                            Lydia pls
+                        </Button>
                     </Paper>
                 </Grid>
 
