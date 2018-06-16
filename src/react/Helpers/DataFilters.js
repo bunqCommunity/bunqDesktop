@@ -310,3 +310,32 @@ export const requestInquiryFilter = options => requestInquiry => {
         requestInquiry.RequestInquiry.updated
     );
 };
+
+export const shareInviteBankInquiryFilter = options => shareInviteBankInquiry => {
+    const shareInviteBankInquiryInfo =
+        shareInviteBankInquiry.ShareInviteBankInquiry;
+
+    if (shareInviteBankInquiryInfo.status === "ACCEPTED") {
+        return false;
+    }
+
+    // don't bother with search terms or category filters
+    if (options.searchTerm && options.searchTerm.length > 0) {
+        return false;
+    }
+
+    if (
+        options.selectedCategories &&
+        options.categories &&
+        options.categoryConnections &&
+        options.selectedCategories.length > 0
+    ) {
+        return false;
+    }
+
+    return checkDateRange(
+        options.dateFromFilter,
+        options.dateToFilter,
+        shareInviteBankInquiryInfo.updated
+    );
+};

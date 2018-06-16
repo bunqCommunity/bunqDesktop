@@ -651,7 +651,8 @@ class Exports extends React.Component {
                                     hiddenTypes={[
                                         "BunqMeTab",
                                         "RequestInquiry",
-                                        "RequestResponse"
+                                        "RequestResponse",
+                                        "ShareInviteBankInquiry"
                                     ]}
                                 />
                             </Paper>

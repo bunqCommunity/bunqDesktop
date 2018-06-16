@@ -22,6 +22,7 @@ import PaymentListItem from "../ListItems/PaymentListItem";
 import MasterCardActionListItem from "../ListItems/MasterCardActionListItem";
 import RequestResponseListItem from "../ListItems/RequestResponseListItem";
 import RequestInquiryListItem from "../ListItems/RequestInquiryListItem";
+import ShareInviteBankInquiryListItem from "../ListItems/ShareInviteBankInquiryListItem";
 import ClearBtn from "../FilterComponents/ClearFilter";
 import FilterDrawer from "../FilterComponents/FilterDrawer";
 import EventData from "./EventData";
@@ -42,7 +43,8 @@ import {
     bunqMeTabsFilter,
     masterCardActionFilter,
     requestInquiryFilter,
-    requestResponseFilter
+    requestResponseFilter,
+    shareInviteBankInquiryFilter
 } from "../../Helpers/DataFilters";
 
 const styles = {
@@ -264,6 +266,35 @@ class CombinedList extends React.Component {
             });
     };
 
+    shareInviteBankInquiryMapper = () => {
+        if (this.props.hiddenTypes.includes("ShareInviteBankInquiry"))
+            return [];
+
+        return this.props.shareInviteBankInquiries
+            .filter(
+                shareInviteBankInquiryFilter({
+                    categories: this.props.categories,
+                    categoryConnections: this.props.categoryConnections,
+                    selectedCategories: this.props.selectedCategories,
+
+                    searchTerm: this.props.searchTerm,
+                    dateFromFilter: this.props.dateFromFilter,
+                    dateToFilter: this.props.dateToFilter
+                })
+            )
+            .map(shareInviteBankInquiry => {
+                return (
+                    <ShareInviteBankInquiryListItem
+                        shareInviteBankInquiry={
+                            shareInviteBankInquiry.ShareInviteBankInquiry
+                        }
+                        BunqJSClient={this.props.BunqJSClient}
+                        t={this.props.t}
+                    />
+                );
+            });
+    };
+
     lastPage = page => () => {
         this.props.setPage(page);
     };
@@ -288,6 +319,7 @@ class CombinedList extends React.Component {
             this.props.paymentsLoading ||
             this.props.requestResponsesLoading ||
             this.props.requestInquiriesLoading ||
+            this.props.shareInviteBankInquiriesLoading ||
             this.props.masterCardActionsLoading ? (
                 <LinearProgress />
             ) : (
@@ -300,6 +332,7 @@ class CombinedList extends React.Component {
         const masterCardActions = this.masterCardActionMapper();
         const requestResponses = this.requestResponseMapper();
         const requestInquiries = this.requestInquiryMapper();
+        const shareInviteBankInquiries = this.shareInviteBankInquiryMapper();
 
         let groupedItems = {};
 
@@ -308,30 +341,30 @@ class CombinedList extends React.Component {
             ...bunqMeTabs,
             ...requestResponses,
             ...masterCardActions,
-            ...requestInquiries,
-            ...payments
+                ...requestInquiries,
+                ...payments
         ].sort(function(a, b) {
-            return new Date(b.filterDate) - new Date(a.filterDate);
-        });
+                return new Date(b.filterDate) - new Date(a.filterDate);
+            });
 
-        // check if all pages is set (pageSize = 0)
-        const usedPageSize = pageSize === 0 ? events.length : pageSize;
-        // calculate last page
-        const unRoundedPageCount = events.length / usedPageSize;
-        const pageCount = unRoundedPageCount
-            ? Math.ceil(unRoundedPageCount)
-            : 1;
-        // create a smaller list based on the page and pageSize
-        const slicedEvents = events.slice(
-            page * usedPageSize,
-            (page + 1) * usedPageSize
-        );
+            // check if all pages is set (pageSize = 0)
+            const usedPageSize = pageSize === 0 ? events.length : pageSize;
+            // calculate last page
+            const unRoundedPageCount = events.length / usedPageSize;
+            const pageCount = unRoundedPageCount
+                ? Math.ceil(unRoundedPageCount)
+                : 1;
+            // create a smaller list based on the page and pageSize
+            const slicedEvents = events.slice(
+                page * usedPageSize,
+                (page + 1) * usedPageSize
+            );
 
-        slicedEvents.map(item => {
-            const dateFull = new Date(item.filterDate);
-            const date = new Date(
-                dateFull.getFullYear(),
-                dateFull.getMonth(),
+            slicedEvents.map(item => {
+                const dateFull = new Date(item.filterDate);
+                const date = new Date(
+                    dateFull.getFullYear(),
+                    dateFull.getMonth(),
                 dateFull.getDate(),
                 0,
                 0,
@@ -369,6 +402,9 @@ class CombinedList extends React.Component {
                 combinedComponentList.push(component)
             );
         });
+
+        // add the connect requests to the top
+        combinedComponentList.unshift(...shareInviteBankInquiries);
 
         return (
             <List style={styles.left}>
@@ -507,7 +543,12 @@ const mapStateToProps = state => {
         requestResponsesLoading: state.request_responses.loading,
 
         payments: state.payments.payments,
-        paymentsLoading: state.payments.loading
+        paymentsLoading: state.payments.loading,
+
+        shareInviteBankInquiries:
+            state.share_invite_bank_inquiries.share_invite_bank_inquiries,
+        shareInviteBankInquiriesLoading:
+            state.share_invite_bank_inquiries.loading
     };
 };
 

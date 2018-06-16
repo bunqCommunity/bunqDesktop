@@ -344,6 +344,9 @@ class AccountInfo extends React.Component {
                         <CombinedList
                             BunqJSClient={this.props.BunqJSClient}
                             initialBunqConnect={this.props.initialBunqConnect}
+                            hiddenTypes={[
+                                "ShareInviteBankInquiry"
+                            ]}
                         />
                     </Paper>
                 </React.Fragment>
