@@ -60,11 +60,17 @@ class AccountList extends React.Component {
 
     updateAccounts = () => {
         const userId = this.props.user.id;
-        this.props.accountsUpdate(userId);
-        this.props.shareInviteBankInquiriesInfoUpdate(
-            userId,
-            this.props.accountsSelectedId
-        );
+
+        if (!this.props.accountsLoading) this.props.accountsUpdate(userId);
+
+        if (!this.props.shareInviteBankInquiriesLoading)
+            this.props.shareInviteBankInquiriesInfoUpdate(
+                userId,
+                this.props.accountsSelectedId
+            );
+
+        if (!this.props.shareInviteBankResponsesLoading)
+            this.props.shareInviteBankResponsesInfoUpdate(userId);
     };
 
     /**
@@ -74,13 +80,18 @@ class AccountList extends React.Component {
         if (this.props.updateExternal) {
             this.props.updateExternal(userId, accountId);
         } else {
-            this.props.accountsUpdate(userId);
-            this.props.paymentsUpdate(userId, accountId);
+            if (!this.props.accountsLoading) this.props.accountsUpdate(userId);
+
+            if (!this.props.paymentsLoading)
+                this.props.paymentsUpdate(userId, accountId);
+
             this.props.bunqMeTabsUpdate(userId, accountId);
             this.props.requestResponsesUpdate(userId, accountId);
             this.props.requestInquiriesUpdate(userId, accountId);
             this.props.masterCardActionsUpdate(userId, accountId);
-            this.props.shareInviteBankResponsesInfoUpdate(userId);
+
+            if (!this.props.shareInviteBankResponsesLoading)
+                this.props.shareInviteBankResponsesInfoUpdate(userId);
         }
     };
 
@@ -235,8 +246,13 @@ const mapStateToProps = state => {
 
         shareInviteBankResponses:
             state.share_invite_bank_responses.share_invite_bank_responses,
+        shareInviteBankResponsesLoading:
+            state.share_invite_bank_responses.loading,
+
         shareInviteBankInquiries:
             state.share_invite_bank_inquiries.share_invite_bank_inquiries,
+        shareInviteBankInquiriesLoading:
+            state.share_invite_bank_inquiries.loading,
 
         paymentsLoading: state.payments.loading
     };

@@ -315,7 +315,7 @@ export const shareInviteBankResponseFilter = options => shareInviteBankResponse 
     const shareInviteBankResponseInfo =
         shareInviteBankResponse.ShareInviteBankResponse;
 
-    if (shareInviteBankResponseInfo.status === "ACCEPTED") {
+    if (shareInviteBankResponseInfo.status !== "PENDING") {
         return false;
     }
 

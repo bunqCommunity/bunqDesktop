@@ -13,6 +13,8 @@ import TranslateButton from "../TranslationHelpers/Button";
 import ShowOnly from "./ShareInviteBankTypes/ShowOnly";
 import FullAccess from "./ShareInviteBankTypes/FullAccess";
 import ParentChild from "./ShareInviteBankTypes/ParentChild";
+import { connect } from "react-redux";
+import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_response";
 
 const styles = {
     smallAvatar: {
@@ -45,12 +47,13 @@ class ShareInviteBankResponseListItem extends React.Component {
             BunqJSClient.api.shareInviteBankResponse
                 .put(user.id, shareInviteBankResponse.id, "ACCEPTED")
                 .then(response => {
-                    console.log(response);
+                    // trigger an update
+                    this.props.shareInviteBankResponsesInfoUpdate(user.id);
+
                     this.setState({ loading: false });
                     this.props.openSnackbar(success);
                 })
                 .catch(error => {
-                    console.error(error);
                     this.setState({ loading: false });
                     this.props.openSnackbar(failed);
                 });
@@ -69,12 +72,13 @@ class ShareInviteBankResponseListItem extends React.Component {
             BunqJSClient.api.shareInviteBankResponse
                 .put(user.id, shareInviteBankResponse.id, "CANCELLED")
                 .then(response => {
-                    console.log(response);
+                    // trigger an update
+                    this.props.shareInviteBankResponsesInfoUpdate(user.id);
+
                     this.setState({ loading: false });
                     this.props.openSnackbar(success);
                 })
                 .catch(error => {
-                    console.error(error);
                     this.setState({ loading: false });
                     this.props.openSnackbar(failed);
                 });
@@ -170,4 +174,20 @@ ShareInviteBankResponseListItem.defaultProps = {
     minimalDisplay: false
 };
 
-export default translate("translations")(ShareInviteBankResponseListItem);
+const mapStateToProps = state => {
+    return {
+        user: state.user.user,
+        accountsSelectedId: state.accounts.selectedAccount
+    };
+};
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    const { BunqJSClient } = ownProps;
+    return {
+        shareInviteBankResponsesInfoUpdate: userId =>
+            dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId))
+    };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(ShareInviteBankResponseListItem)
+);

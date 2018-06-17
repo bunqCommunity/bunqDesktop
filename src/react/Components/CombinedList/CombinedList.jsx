@@ -298,7 +298,6 @@ class CombinedList extends React.Component {
                             }
                             openSnackbar={this.props.openSnackbar}
                             user={this.props.user}
-                            t={this.props.t}
                         />
                     ),
                     filterDate: shareInviteBankInquiry.created,
@@ -336,7 +335,6 @@ class CombinedList extends React.Component {
                         }
                         openSnackbar={this.props.openSnackbar}
                         user={this.props.user}
-                        t={this.props.t}
                     />
                 );
             });
