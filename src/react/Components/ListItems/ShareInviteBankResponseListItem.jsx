@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import { translate } from "react-i18next";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -13,7 +14,6 @@ import TranslateButton from "../TranslationHelpers/Button";
 import ShowOnly from "./ShareInviteBankTypes/ShowOnly";
 import FullAccess from "./ShareInviteBankTypes/FullAccess";
 import ParentChild from "./ShareInviteBankTypes/ParentChild";
-import { connect } from "react-redux";
 import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_response";
 
 const styles = {

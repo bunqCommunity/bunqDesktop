@@ -60,13 +60,14 @@ class AccountList extends React.Component {
 
     updateAccounts = () => {
         const userId = this.props.user.id;
+        const selectedAccountId = this.props.accountsSelectedId;
 
         if (!this.props.accountsLoading) this.props.accountsUpdate(userId);
 
         if (!this.props.shareInviteBankInquiriesLoading)
             this.props.shareInviteBankInquiriesInfoUpdate(
                 userId,
-                this.props.accountsSelectedId
+                selectedAccountId
             );
 
         if (!this.props.shareInviteBankResponsesLoading)
@@ -90,6 +91,11 @@ class AccountList extends React.Component {
             this.props.requestInquiriesUpdate(userId, accountId);
             this.props.masterCardActionsUpdate(userId, accountId);
 
+            if (!this.props.shareInviteBankInquiriesLoading)
+                this.props.shareInviteBankInquiriesInfoUpdate(
+                    userId,
+                    accountId
+                );
             if (!this.props.shareInviteBankResponsesLoading)
                 this.props.shareInviteBankResponsesInfoUpdate(userId);
         }

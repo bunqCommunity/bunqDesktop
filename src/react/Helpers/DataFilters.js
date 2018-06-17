@@ -350,7 +350,7 @@ export const shareInviteBankInquiryFilter = options => shareInviteBankInquiry =>
     const shareInviteBankInquiryInfo =
         shareInviteBankInquiry.ShareInviteBankInquiry;
 
-    if (shareInviteBankInquiryInfo.status === "ACCEPTED") {
+    if (shareInviteBankInquiryInfo.status !== "PENDING") {
         return false;
     }
 

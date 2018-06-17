@@ -300,7 +300,8 @@ class CombinedList extends React.Component {
                             user={this.props.user}
                         />
                     ),
-                    filterDate: shareInviteBankInquiry.created,
+                    filterDate:
+                        shareInviteBankInquiry.ShareInviteBankInquiry.created,
                     info: shareInviteBankInquiry
                 };
             });
