@@ -40,15 +40,14 @@ class ShareInviteBankInquiryListItem extends React.Component {
     render() {
         const { t, shareInviteBankInquiry } = this.props;
 
-        console.log(shareInviteBankInquiry);
-
         let imageUUID = false;
-        if (shareInviteBankInquiry.alias.avatar) {
+        if (shareInviteBankInquiry.counter_alias.avatar) {
             imageUUID =
-                shareInviteBankInquiry.alias.avatar.image[0]
+                shareInviteBankInquiry.counter_alias.avatar.image[0]
                     .attachment_public_uuid;
         }
-        const displayName = shareInviteBankInquiry.alias.display_name;
+        const displayName =
+            shareInviteBankInquiry.counter_alias.display_name;
 
         const connectActions = (
             <React.Fragment>
@@ -57,14 +56,7 @@ class ShareInviteBankInquiryListItem extends React.Component {
                     variant="raised"
                     color="secondary"
                 >
-                    Reject
-                </TranslateButton>
-                <TranslateButton
-                    style={styles.buttons}
-                    variant="raised"
-                    color="primary"
-                >
-                    Accept
+                    Cancel
                 </TranslateButton>
             </React.Fragment>
         );
@@ -83,7 +75,7 @@ class ShareInviteBankInquiryListItem extends React.Component {
                 </Avatar>
                 <ListItemText
                     primary={displayName}
-                    secondary={t("Connect invite received")}
+                    secondary={t("Connect invite sent")}
                 />
                 <ListItemSecondaryAction />
             </ListItem>,

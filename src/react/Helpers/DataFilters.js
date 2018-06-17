@@ -311,6 +311,41 @@ export const requestInquiryFilter = options => requestInquiry => {
     );
 };
 
+export const shareInviteBankResponseFilter = options => shareInviteBankResponse => {
+    const shareInviteBankResponseInfo =
+        shareInviteBankResponse.ShareInviteBankResponse;
+
+    if (shareInviteBankResponseInfo.status === "ACCEPTED") {
+        return false;
+    }
+
+    // hide these if any type of filter is set
+    if (options.searchTerm && options.searchTerm.length > 0) {
+        return false;
+    }
+    if (
+        options.selectedCategories &&
+        options.categories &&
+        options.categoryConnections &&
+        options.selectedCategories.length > 0
+    ) {
+        return false;
+    }
+    if (
+        options.bunqMeTabType !== "active" ||
+        options.paymentType !== "default" ||
+        options.requestType !== "default"
+    ) {
+        return false;
+    }
+
+    return checkDateRange(
+        options.dateFromFilter,
+        options.dateToFilter,
+        shareInviteBankResponseInfo.updated
+    );
+};
+
 export const shareInviteBankInquiryFilter = options => shareInviteBankInquiry => {
     const shareInviteBankInquiryInfo =
         shareInviteBankInquiry.ShareInviteBankInquiry;
@@ -319,16 +354,22 @@ export const shareInviteBankInquiryFilter = options => shareInviteBankInquiry =>
         return false;
     }
 
-    // don't bother with search terms or category filters
+    // hide these if any type of filter is set
     if (options.searchTerm && options.searchTerm.length > 0) {
         return false;
     }
-
     if (
         options.selectedCategories &&
         options.categories &&
         options.categoryConnections &&
         options.selectedCategories.length > 0
+    ) {
+        return false;
+    }
+    if (
+        options.bunqMeTabType !== "active" ||
+        options.paymentType !== "default" ||
+        options.requestType !== "default"
     ) {
         return false;
     }

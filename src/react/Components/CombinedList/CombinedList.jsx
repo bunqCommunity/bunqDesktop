@@ -23,6 +23,7 @@ import MasterCardActionListItem from "../ListItems/MasterCardActionListItem";
 import RequestResponseListItem from "../ListItems/RequestResponseListItem";
 import RequestInquiryListItem from "../ListItems/RequestInquiryListItem";
 import ShareInviteBankInquiryListItem from "../ListItems/ShareInviteBankInquiryListItem";
+import ShareInviteBankResponseListItem from "../ListItems/ShareInviteBankResponseListItem";
 import ClearBtn from "../FilterComponents/ClearFilter";
 import FilterDrawer from "../FilterComponents/FilterDrawer";
 import EventData from "./EventData";
@@ -44,7 +45,8 @@ import {
     masterCardActionFilter,
     requestInquiryFilter,
     requestResponseFilter,
-    shareInviteBankInquiryFilter
+    shareInviteBankInquiryFilter,
+    shareInviteBankResponseFilter
 } from "../../Helpers/DataFilters";
 
 const styles = {
@@ -277,18 +279,63 @@ class CombinedList extends React.Component {
                     categoryConnections: this.props.categoryConnections,
                     selectedCategories: this.props.selectedCategories,
 
+                    bunqMeTabType: this.props.bunqMeTabType,
+                    paymentType: this.props.paymentType,
+                    requestType: this.props.requestType,
+
                     searchTerm: this.props.searchTerm,
                     dateFromFilter: this.props.dateFromFilter,
                     dateToFilter: this.props.dateToFilter
                 })
             )
             .map(shareInviteBankInquiry => {
+                return {
+                    component: (
+                        <ShareInviteBankInquiryListItem
+                            BunqJSClient={this.props.BunqJSClient}
+                            shareInviteBankInquiry={
+                                shareInviteBankInquiry.ShareInviteBankInquiry
+                            }
+                            openSnackbar={this.props.openSnackbar}
+                            user={this.props.user}
+                            t={this.props.t}
+                        />
+                    ),
+                    filterDate: shareInviteBankInquiry.created,
+                    info: shareInviteBankInquiry
+                };
+            });
+    };
+
+    shareInviteBankResponseMapper = () => {
+        if (this.props.hiddenTypes.includes("ShareInviteBankResponse"))
+            return [];
+
+        return this.props.shareInviteBankResponses
+            .filter(
+                shareInviteBankResponseFilter({
+                    categories: this.props.categories,
+                    categoryConnections: this.props.categoryConnections,
+                    selectedCategories: this.props.selectedCategories,
+
+                    bunqMeTabType: this.props.bunqMeTabType,
+                    paymentType: this.props.paymentType,
+                    requestType: this.props.requestType,
+
+                    searchTerm: this.props.searchTerm,
+                    dateFromFilter: this.props.dateFromFilter,
+                    dateToFilter: this.props.dateToFilter
+                })
+            )
+            .map(shareInviteBankResponse => {
                 return (
-                    <ShareInviteBankInquiryListItem
-                        shareInviteBankInquiry={
-                            shareInviteBankInquiry.ShareInviteBankInquiry
-                        }
+                    <ShareInviteBankResponseListItem
                         BunqJSClient={this.props.BunqJSClient}
+                        shareInviteBankResponse={
+                            shareInviteBankResponse.ShareInviteBankResponse
+                        }
+                        openSnackbar={this.props.openSnackbar}
+                        user={this.props.user}
                         t={this.props.t}
                     />
                 );
@@ -333,6 +380,7 @@ class CombinedList extends React.Component {
         const requestResponses = this.requestResponseMapper();
         const requestInquiries = this.requestInquiryMapper();
         const shareInviteBankInquiries = this.shareInviteBankInquiryMapper();
+        const shareInviteBankResponses = this.shareInviteBankResponseMapper();
 
         let groupedItems = {};
 
@@ -341,30 +389,31 @@ class CombinedList extends React.Component {
             ...bunqMeTabs,
             ...requestResponses,
             ...masterCardActions,
-                ...requestInquiries,
-                ...payments
+            ...requestInquiries,
+            ...shareInviteBankInquiries,
+            ...payments
         ].sort(function(a, b) {
-                return new Date(b.filterDate) - new Date(a.filterDate);
-            });
+            return new Date(b.filterDate) - new Date(a.filterDate);
+        });
 
-            // check if all pages is set (pageSize = 0)
-            const usedPageSize = pageSize === 0 ? events.length : pageSize;
-            // calculate last page
-            const unRoundedPageCount = events.length / usedPageSize;
-            const pageCount = unRoundedPageCount
-                ? Math.ceil(unRoundedPageCount)
-                : 1;
-            // create a smaller list based on the page and pageSize
-            const slicedEvents = events.slice(
-                page * usedPageSize,
-                (page + 1) * usedPageSize
-            );
+        // check if all pages is set (pageSize = 0)
+        const usedPageSize = pageSize === 0 ? events.length : pageSize;
+        // calculate last page
+        const unRoundedPageCount = events.length / usedPageSize;
+        const pageCount = unRoundedPageCount
+            ? Math.ceil(unRoundedPageCount)
+            : 1;
+        // create a smaller list based on the page and pageSize
+        const slicedEvents = events.slice(
+            page * usedPageSize,
+            (page + 1) * usedPageSize
+        );
 
-            slicedEvents.map(item => {
-                const dateFull = new Date(item.filterDate);
-                const date = new Date(
-                    dateFull.getFullYear(),
-                    dateFull.getMonth(),
+        slicedEvents.map(item => {
+            const dateFull = new Date(item.filterDate);
+            const date = new Date(
+                dateFull.getFullYear(),
+                dateFull.getMonth(),
                 dateFull.getDate(),
                 0,
                 0,
@@ -404,7 +453,7 @@ class CombinedList extends React.Component {
         });
 
         // add the connect requests to the top
-        combinedComponentList.unshift(...shareInviteBankInquiries);
+        combinedComponentList.unshift(...shareInviteBankResponses);
 
         return (
             <List style={styles.left}>
@@ -548,7 +597,12 @@ const mapStateToProps = state => {
         shareInviteBankInquiries:
             state.share_invite_bank_inquiries.share_invite_bank_inquiries,
         shareInviteBankInquiriesLoading:
-            state.share_invite_bank_inquiries.loading
+            state.share_invite_bank_inquiries.loading,
+
+        shareInviteBankResponses:
+            state.share_invite_bank_responses.share_invite_bank_responses,
+        shareInviteBankResponsesLoading:
+            state.share_invite_bank_responses.loading
     };
 };
 

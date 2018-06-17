@@ -61,8 +61,10 @@ class AccountList extends React.Component {
     updateAccounts = () => {
         const userId = this.props.user.id;
         this.props.accountsUpdate(userId);
-        this.props.shareInviteBankResponsesInfoUpdate(userId);
-        // this.props.shareInviteBankInquiriesInfoUpdate(userId);
+        this.props.shareInviteBankInquiriesInfoUpdate(
+            userId,
+            this.props.accountsSelectedId
+        );
     };
 
     /**
@@ -78,13 +80,14 @@ class AccountList extends React.Component {
             this.props.requestResponsesUpdate(userId, accountId);
             this.props.requestInquiriesUpdate(userId, accountId);
             this.props.masterCardActionsUpdate(userId, accountId);
+            this.props.shareInviteBankResponsesInfoUpdate(userId);
         }
     };
 
     checkUpdateRequirement = (props = this.props) => {
         const {
             accounts,
-            accountsAccountId,
+            accountsSelectedId,
             paymentsAccountId,
             paymentsLoading,
             initialBunqConnect,
@@ -95,7 +98,7 @@ class AccountList extends React.Component {
             return;
         }
 
-        if (accountsAccountId === false && accounts.length > 0) {
+        if (accountsSelectedId === false && accounts.length > 0) {
             // get the first active account in the accounts list
             const firstAccount = accounts.find(account => {
                 return account && account.status === "ACTIVE";
@@ -109,8 +112,8 @@ class AccountList extends React.Component {
         if (
             user &&
             user.id &&
-            accountsAccountId !== false &&
-            accountsAccountId !== paymentsAccountId &&
+            accountsSelectedId !== false &&
+            accountsSelectedId !== paymentsAccountId &&
             paymentsLoading === false &&
             this.state.fetchedExternal === false
         ) {
@@ -119,7 +122,7 @@ class AccountList extends React.Component {
             // delay the initial loading by 1000ms to improve startup ui performance
             if (this.delayedUpdate) clearTimeout(this.delayedUpdate);
             this.delayedUpdate = setTimeout(() => {
-                this.updateExternal(user.id, accountsAccountId);
+                this.updateExternal(user.id, accountsSelectedId);
             }, 500);
         }
 
@@ -227,7 +230,7 @@ const mapStateToProps = state => {
         hideBalance: state.options.hide_balance,
 
         accounts: state.accounts.accounts,
-        accountsAccountId: state.accounts.selectedAccount,
+        accountsSelectedId: state.accounts.selectedAccount,
         accountsLoading: state.accounts.loading,
 
         shareInviteBankResponses:
@@ -252,12 +255,20 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(masterCardActionsUpdate(BunqJSClient, userId, accountId)),
         bunqMeTabsUpdate: (userId, accountId) =>
             dispatch(bunqMeTabsUpdate(BunqJSClient, userId, accountId)),
+
         accountsUpdate: userId =>
             dispatch(accountsUpdate(BunqJSClient, userId)),
+
         shareInviteBankResponsesInfoUpdate: userId =>
             dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId)),
-        shareInviteBankInquiriesInfoUpdate: userId =>
-            dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId)),
+        shareInviteBankInquiriesInfoUpdate: (userId, accountId) =>
+            dispatch(
+                shareInviteBankInquiriesInfoUpdate(
+                    BunqJSClient,
+                    userId,
+                    accountId
+                )
+            ),
         selectAccount: acountId => dispatch(accountsSelectAccount(acountId))
     };
 };

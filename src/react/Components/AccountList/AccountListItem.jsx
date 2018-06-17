@@ -91,7 +91,7 @@ class AccountListItem extends React.Component {
         }
         formattedBalance = this.props.hideBalance
             ? ""
-            : formatMoney(formattedBalance);
+            : formatMoney(formattedBalance, true);
 
         return (
             <ListItem divider {...listItemProps}>
