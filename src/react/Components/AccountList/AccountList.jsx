@@ -14,7 +14,7 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import AccountListItem from "./AccountListItem";
 import AddAccount from "./AddAccount";
 import { formatMoney } from "../../Helpers/Utils";
-import { filterShareInviteBankResponses } from "../../Helpers/Filters";
+import { filterShareInviteBankResponses } from "../../Helpers/DataFilters";
 
 import { accountsSelectAccount, accountsUpdate } from "../../Actions/accounts";
 import { paymentInfoUpdate } from "../../Actions/payments";

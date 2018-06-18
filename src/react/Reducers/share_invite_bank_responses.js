@@ -2,7 +2,6 @@ import { STORED_SHARE_INVITE_BANK_RESPONSES } from "../Actions/share_invite_bank
 
 export const defaultState = {
     share_invite_bank_responses: [],
-    user_id: false,
     loading: false
 };
 
@@ -25,8 +24,7 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 share_invite_bank_responses:
-                    action.payload.share_invite_bank_responses,
-                user_id: action.payload.user_id
+                    action.payload.share_invite_bank_responses
             };
 
         case "SHARE_INVITE_RESPONSES_IS_LOADING":

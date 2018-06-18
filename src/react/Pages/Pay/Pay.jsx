@@ -42,7 +42,7 @@ import {
     isValidPhonenumber
 } from "../../Helpers/PhoneLib";
 import { formatMoney, getUTCDate } from "../../Helpers/Utils";
-import { filterShareInviteBankResponses } from "../../Helpers/Filters";
+import { filterShareInviteBankResponses } from "../../Helpers/DataFilters";
 import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
 
 const styles = {

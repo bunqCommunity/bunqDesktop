@@ -13,7 +13,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 
 import { formatMoney } from "../../Helpers/Utils";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
-import { filterShareInviteBankResponses } from "../../Helpers/Filters";
+import { filterShareInviteBankResponses } from "../../Helpers/DataFilters";
 import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
 
 const styles = {

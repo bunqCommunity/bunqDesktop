@@ -24,7 +24,10 @@ import NavLink from "../Components/Routing/NavLink";
 import CombinedList from "../Components/CombinedList/CombinedList";
 import AccountCard from "../Components/AccountCard";
 import ButtonTranslate from "../Components/TranslationHelpers/Button";
-import { filterShareInviteBankResponses } from "../Helpers/Filters";
+import {
+    filterShareInviteBankResponses,
+    filterShareInviteBankInquiries
+} from "../Helpers/DataFilters";
 
 import { openSnackbar } from "../Actions/snackbar";
 import {
@@ -202,6 +205,10 @@ class AccountInfo extends React.Component {
         const { accounts, shareInviteBankResponses, t } = this.props;
         const accountId = parseFloat(this.props.match.params.accountId);
 
+        const noneText = t("None");
+        const sharedWithText = t("Shared with");
+        const sharedByText = t("Shared by");
+
         if (this.state.deactivateActivated) return <Redirect to="/" />;
 
         const accountInfo = accounts.find(account => account.id === accountId);
@@ -211,6 +218,41 @@ class AccountInfo extends React.Component {
             const filteredInviteResponses = shareInviteBankResponses.filter(
                 filterShareInviteBankResponses(accountInfo.id)
             );
+
+            const filteredShareInquiries = shareInviteBankResponses.filter(
+                filterShareInviteBankInquiries(accountInfo.id)
+            );
+
+            let primaryConnectText = sharedWithText;
+            let secondaryConnectText = noneText;
+            let displayNameList = [];
+            let allowConnectSettings = true;
+
+            if (filteredInviteResponses.length > 0) {
+                // this account was shared by someone
+                primaryConnectText = sharedByText;
+                allowConnectSettings = false;
+
+                displayNameList = filteredInviteResponses.map(
+                    filteredInviteResponse => {
+                        return filteredInviteResponse.ShareInviteBankResponse
+                            .counter_alias.display_name;
+                    }
+                );
+            } else if (filteredShareInquiries.length > 0) {
+                // this account was shared with someone
+                primaryConnectText = sharedWithText;
+
+                displayNameList = filteredShareInquiries.map(
+                    filteredShareInquiry => {
+                        return filteredShareInquiry.ShareInviteBankInquiry
+                            .counter_alias.display_name;
+                    }
+                );
+            }
+            if (displayNameList.length > 0) {
+                secondaryConnectText = displayNameList.join(", ");
+            }
 
             content = (
                 <React.Fragment>
@@ -330,13 +372,25 @@ class AccountInfo extends React.Component {
 
                     <Paper style={styles.paperList}>
                         <List>
-                            <ListItem
-                                to={`/connect/${accountId}`}
-                                component={NavLink}
-                                button
-                            >
-                                <ListItemText primary={"Shared with: "} />
-                            </ListItem>
+                            {allowConnectSettings ? (
+                                <ListItem
+                                    to={`/connect/${accountId}`}
+                                    component={NavLink}
+                                    button
+                                >
+                                    <ListItemText
+                                        primary={`${primaryConnectText}: `}
+                                        secondary={secondaryConnectText}
+                                    />
+                                </ListItem>
+                            ) : (
+                                <ListItem>
+                                    <ListItemText
+                                        primary={`${primaryConnectText}: `}
+                                        secondary={secondaryConnectText}
+                                    />
+                                </ListItem>
+                            )}
                         </List>
                     </Paper>
 
@@ -344,9 +398,7 @@ class AccountInfo extends React.Component {
                         <CombinedList
                             BunqJSClient={this.props.BunqJSClient}
                             initialBunqConnect={this.props.initialBunqConnect}
-                            hiddenTypes={[
-                                "ShareInviteBankInquiry"
-                            ]}
+                            hiddenTypes={["ShareInviteBankInquiry"]}
                         />
                     </Paper>
                 </React.Fragment>
@@ -393,6 +445,11 @@ const mapStateToProps = state => {
             state.share_invite_bank_responses.share_invite_bank_responses,
         shareInviteBankResponsesLoading:
             state.share_invite_bank_responses.loading,
+
+        shareInviteBankInquiries:
+            state.share_invite_bank_inquiries.share_invite_bank_inquiries,
+        shareInviteBankInquiriesLoading:
+            state.share_invite_bank_inquiries.loading,
 
         user: state.user.user,
         accounts: state.accounts.accounts,

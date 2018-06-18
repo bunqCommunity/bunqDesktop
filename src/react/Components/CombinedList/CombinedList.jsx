@@ -289,19 +289,20 @@ class CombinedList extends React.Component {
                 })
             )
             .map(shareInviteBankInquiry => {
+                const shareInviteBankInquiryInfo = shareInviteBankInquiry.ShareInviteBankInquiry
+                    ? shareInviteBankInquiry.ShareInviteBankInquiry
+                    : shareInviteBankInquiry.ShareInviteBankResponse;
+
                 return {
                     component: (
                         <ShareInviteBankInquiryListItem
                             BunqJSClient={this.props.BunqJSClient}
-                            shareInviteBankInquiry={
-                                shareInviteBankInquiry.ShareInviteBankInquiry
-                            }
+                            shareInviteBankInquiry={shareInviteBankInquiryInfo}
                             openSnackbar={this.props.openSnackbar}
                             user={this.props.user}
                         />
                     ),
-                    filterDate:
-                        shareInviteBankInquiry.ShareInviteBankInquiry.created,
+                    filterDate: shareInviteBankInquiryInfo.created,
                     info: shareInviteBankInquiry
                 };
             });

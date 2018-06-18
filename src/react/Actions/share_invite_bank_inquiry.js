@@ -1,6 +1,6 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
-export const STORED_SHARE_INVITE_BANK_INQUIRIES = "STORED_SHARE_INVITE_BANK_INQUIRIES"
+export const STORED_SHARE_INVITE_BANK_INQUIRIES = "BUNQDESKTOP_SHARE_INVITE_BANK_INQUIRIES"
 
 export function shareInviteBankInquiriesSetInfo(
     share_invite_bank_inquiries,

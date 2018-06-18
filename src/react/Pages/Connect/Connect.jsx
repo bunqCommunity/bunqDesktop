@@ -9,6 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
 import List from "@material-ui/core/List";
+import ListSubheader from "@material-ui/core/ListSubheader";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
@@ -18,12 +19,12 @@ import TypographyTranslate from "../../Components/TranslationHelpers/Typography"
 import {
     filterShareInviteBankInquiries,
     filterShareInviteBankResponses
-} from "../../Helpers/Filters";
+} from "../../Helpers/DataFilters";
 
 import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_response";
 import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiry";
-import { openSnackbar } from "../../Actions/snackbar";
 import { accountsUpdate } from "../../Actions/accounts";
+import { openSnackbar } from "../../Actions/snackbar";
 
 const styles = {
     bigAvatar: {

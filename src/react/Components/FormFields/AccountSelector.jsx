@@ -13,7 +13,7 @@ import Avatar from "@material-ui/core/Avatar";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
 import { formatMoney } from "../../Helpers/Utils";
-import { filterShareInviteBankResponses } from "../../Helpers/Filters";
+import { filterShareInviteBankResponses } from "../../Helpers/DataFilters";
 
 const styles = {
     formControl: {

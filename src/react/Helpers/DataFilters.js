@@ -347,8 +347,9 @@ export const shareInviteBankResponseFilter = options => shareInviteBankResponse 
 };
 
 export const shareInviteBankInquiryFilter = options => shareInviteBankInquiry => {
-    const shareInviteBankInquiryInfo =
-        shareInviteBankInquiry.ShareInviteBankInquiry;
+    const shareInviteBankInquiryInfo = shareInviteBankInquiry.ShareInviteBankInquiry
+        ? shareInviteBankInquiry.ShareInviteBankInquiry
+        : shareInviteBankInquiry.ShareInviteBankResponse;
 
     if (shareInviteBankInquiryInfo.status !== "PENDING") {
         return false;
@@ -379,4 +380,33 @@ export const shareInviteBankInquiryFilter = options => shareInviteBankInquiry =>
         options.dateToFilter,
         shareInviteBankInquiryInfo.updated
     );
+};
+
+export const filterShareInviteBankResponses = accountId => shareInviteBankResponse => {
+    if (!shareInviteBankResponse.ShareInviteBankResponse) return false;
+
+    return (
+        shareInviteBankResponse.ShareInviteBankResponse.status === "ACCEPTED" &&
+        shareInviteBankResponse.ShareInviteBankResponse.monetary_account_id ===
+            accountId
+    );
+};
+
+export const filterShareInviteBankInquiries = accountId => shareInviteBankInquiry => {
+    if (shareInviteBankInquiry.ShareInviteBankInquiry) {
+        return (
+            shareInviteBankInquiry.ShareInviteBankInquiry.status ===
+                "ACCEPTED" &&
+            shareInviteBankInquiry.ShareInviteBankInquiry
+                .monetary_account_id === accountId
+        );
+    } else if (shareInviteBankInquiry.ShareInviteBankResponse) {
+        return (
+            shareInviteBankInquiry.ShareInviteBankResponse.status ===
+                "ACCEPTED" &&
+            shareInviteBankInquiry.ShareInviteBankResponse
+                .monetary_account_id === accountId
+        );
+    }
+    return false;
 };

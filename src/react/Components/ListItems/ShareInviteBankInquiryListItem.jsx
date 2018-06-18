@@ -70,22 +70,21 @@ class ShareInviteBankInquiryListItem extends React.Component {
 
     render() {
         const { t, shareInviteBankInquiry } = this.props;
+        if (!shareInviteBankInquiry) return null;
 
-        if (
-            !shareInviteBankInquiry ||
-            !shareInviteBankInquiry.counter_user_alias
-        ) {
-            return null;
-        }
+        let aliasInfo = shareInviteBankInquiry.counter_user_alias
+            ? shareInviteBankInquiry.counter_user_alias
+            : shareInviteBankInquiry.counter_alias;
+        if (!aliasInfo) return null;
 
         let imageUUID = false;
-        if (shareInviteBankInquiry.counter_user_alias.avatar) {
+        if (aliasInfo.avatar) {
             imageUUID =
-                shareInviteBankInquiry.counter_user_alias.avatar.image[0]
+                aliasInfo.avatar.image[0]
                     .attachment_public_uuid;
         }
         const displayName =
-            shareInviteBankInquiry.counter_user_alias.display_name;
+            aliasInfo.display_name;
 
         const connectActions = (
             <React.Fragment>

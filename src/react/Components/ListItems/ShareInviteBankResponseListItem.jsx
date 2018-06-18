@@ -87,14 +87,16 @@ class ShareInviteBankResponseListItem extends React.Component {
 
     render() {
         const { t, shareInviteBankResponse } = this.props;
+        if (!shareInviteBankResponse) return null;
+
+        let aliasInfo = shareInviteBankResponse.counter_alias;
+        if (!aliasInfo) return null;
 
         let imageUUID = false;
-        if (shareInviteBankResponse.counter_alias.avatar) {
-            imageUUID =
-                shareInviteBankResponse.counter_alias.avatar.image[0]
-                    .attachment_public_uuid;
+        if (aliasInfo.avatar) {
+            imageUUID = aliasInfo.avatar.image[0].attachment_public_uuid;
         }
-        const displayName = shareInviteBankResponse.counter_alias.display_name;
+        const displayName = aliasInfo.display_name;
 
         const connectActions = (
             <React.Fragment>
