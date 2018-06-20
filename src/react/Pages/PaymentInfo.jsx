@@ -93,7 +93,6 @@ class PaymentInfo extends React.Component {
         this.setState({ displayCategories: !this.state.displayCategories });
 
     startPaymentIban = alias => {
-        console.log(alias)
         this.props.history.push(
             `/pay?iban=${alias.iban}&iban-name=${alias.display_name}`
         );

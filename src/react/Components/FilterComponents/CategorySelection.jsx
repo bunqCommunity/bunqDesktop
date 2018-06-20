@@ -4,7 +4,7 @@ import Icon from "@material-ui/core/Icon";
 import IconButton from "@material-ui/core/IconButton";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListSubheader from "@material-ui/core/ListSubheader";
+import ListSubHeader from "@material-ui/core/ListSubHeader";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Menu from "@material-ui/core/Menu";
 import MenuItem  from "@material-ui/core/MenuItem";
@@ -109,7 +109,7 @@ class CategorySelection extends React.Component {
 
         return (
             <React.Fragment>
-                <ListSubheader style={styles.subheaderTitle}>
+                <ListSubHeader style={styles.subheaderTitle}>
                     {t("Category filter")}
 
                     <ListItemSecondaryAction>
@@ -127,7 +127,7 @@ class CategorySelection extends React.Component {
                     >
                         {categoryMenuItems}
                     </Menu>
-                </ListSubheader>
+                </ListSubHeader>
                 <ListItem style={styles.listItem}>{categoryItems}</ListItem>
             </React.Fragment>
         );

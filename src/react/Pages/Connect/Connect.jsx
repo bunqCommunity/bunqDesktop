@@ -9,7 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
 import List from "@material-ui/core/List";
-import ListSubheader from "@material-ui/core/ListSubheader";
+import ListSubHeader from "@material-ui/core/ListSubHeader";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
@@ -262,6 +262,7 @@ class Connect extends React.Component {
                 </Grid>
 
                 <Grid item xs={12} />
+                <Grid item xs={12} md={3} />
 
                 <Grid item xs={12} md={6}>
                     {filteredInviteResponses.length > 0 ||

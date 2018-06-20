@@ -202,7 +202,12 @@ class AccountInfo extends React.Component {
     };
 
     render() {
-        const { accounts, shareInviteBankResponses, t } = this.props;
+        const {
+            accounts,
+            shareInviteBankResponses,
+            shareInviteBankInquiries,
+            t
+        } = this.props;
         const accountId = parseFloat(this.props.match.params.accountId);
 
         const noneText = t("None");
@@ -219,7 +224,7 @@ class AccountInfo extends React.Component {
                 filterShareInviteBankResponses(accountInfo.id)
             );
 
-            const filteredShareInquiries = shareInviteBankResponses.filter(
+            const filteredShareInquiries = shareInviteBankInquiries.filter(
                 filterShareInviteBankInquiries(accountInfo.id)
             );
 
@@ -246,7 +251,7 @@ class AccountInfo extends React.Component {
                 displayNameList = filteredShareInquiries.map(
                     filteredShareInquiry => {
                         return filteredShareInquiry.ShareInviteBankInquiry
-                            .counter_alias.display_name;
+                            .counter_user_alias.display_name;
                     }
                 );
             }

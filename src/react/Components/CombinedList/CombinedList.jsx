@@ -8,7 +8,7 @@ import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import List from "@material-ui/core/List";
-import ListSubheader from "@material-ui/core/ListSubheader";
+import ListSubHeader from "@material-ui/core/ListSubHeader";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
@@ -442,7 +442,7 @@ class CombinedList extends React.Component {
 
             // add a header component for this date
             combinedComponentList.push([
-                <ListSubheader>{groupTitleText}</ListSubheader>,
+                <ListSubHeader>{groupTitleText}</ListSubHeader>,
                 <Divider />
             ]);
 
@@ -457,7 +457,7 @@ class CombinedList extends React.Component {
 
         return (
             <List style={styles.left}>
-                <ListSubheader>
+                <ListSubHeader>
                     {t("Payments and requests")}: {events.length}
                     <ListItemSecondaryAction>
                         <ClearBtn />
@@ -466,9 +466,9 @@ class CombinedList extends React.Component {
                         </IconButton>
                         <FilterDrawer />
                     </ListItemSecondaryAction>
-                </ListSubheader>
+                </ListSubHeader>
 
-                <ListSubheader>
+                <ListSubHeader>
                     <Grid container>
                         <Grid item xs={1}>
                             <IconButton
@@ -541,7 +541,7 @@ class CombinedList extends React.Component {
                             </IconButton>
                         </Grid>
                     </Grid>
-                </ListSubheader>
+                </ListSubHeader>
 
                 <EventData
                     t={t}
