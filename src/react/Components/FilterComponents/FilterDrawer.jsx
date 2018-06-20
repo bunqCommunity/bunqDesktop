@@ -13,7 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import Radio  from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import ListItem from "@material-ui/core/ListItem";
-import ListSubHeader from "@material-ui/core/ListSubHeader";
+import ListSubheader from "@material-ui/core/ListSubheader";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import List from "@material-ui/core/List";
@@ -172,7 +172,7 @@ class FilterDrawer extends React.Component {
                 </ListItem>
 
                 {/* filters for both normal payments and mastercard actions */}
-                <ListSubHeader style={styles.subheaderTitle}>
+                <ListSubheader style={styles.subheaderTitle}>
                     {t("Payments")}
                     <ListItemSecondaryAction>
                         <IconButton
@@ -182,7 +182,7 @@ class FilterDrawer extends React.Component {
                             {paymentVisibility ? <Visible /> : <VisibleOff />}
                         </IconButton>
                     </ListItemSecondaryAction>
-                </ListSubHeader>
+                </ListSubheader>
                 <ListItem style={styles.radioListItem}>
                     <RadioGroup
                         name="payment-type"
@@ -224,7 +224,7 @@ class FilterDrawer extends React.Component {
                 </ListItem>
 
                 {/* filters for both request-responses and request-requests*/}
-                <ListSubHeader style={styles.subheaderTitle}>
+                <ListSubheader style={styles.subheaderTitle}>
                     {t("Requests")}
                     <ListItemSecondaryAction>
                         <IconButton
@@ -234,7 +234,7 @@ class FilterDrawer extends React.Component {
                             {requestVisibility ? <Visible /> : <VisibleOff />}
                         </IconButton>
                     </ListItemSecondaryAction>
-                </ListSubHeader>
+                </ListSubheader>
                 <ListItem style={styles.radioListItem}>
                     <RadioGroup
                         name="request-type"
@@ -276,7 +276,7 @@ class FilterDrawer extends React.Component {
                 </ListItem>
 
                 {/* filters bunq.me tabs */}
-                <ListSubHeader style={styles.subheaderTitle}>
+                <ListSubheader style={styles.subheaderTitle}>
                     {t("bunqme Requests")}
                     <ListItemSecondaryAction>
                         <IconButton
@@ -286,7 +286,7 @@ class FilterDrawer extends React.Component {
                             {bunqMeTabVisibility ? <Visible /> : <VisibleOff />}
                         </IconButton>
                     </ListItemSecondaryAction>
-                </ListSubHeader>
+                </ListSubheader>
                 <ListItem style={styles.radioListItem}>
                     <RadioGroup
                         name="bunqmetab-type"
@@ -347,9 +347,9 @@ class FilterDrawer extends React.Component {
                     </RadioGroup>
                 </ListItem>
 
-                <ListSubHeader style={styles.subheaderTitle}>
+                <ListSubheader style={styles.subheaderTitle}>
                     {t("Date range filter")}
-                </ListSubHeader>
+                </ListSubheader>
                 <ListItem style={styles.listItem}>
                     <DatePicker
                         id="from-date"

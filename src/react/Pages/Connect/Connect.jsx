@@ -9,7 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
 import List from "@material-ui/core/List";
-import ListSubHeader from "@material-ui/core/ListSubHeader";
+import ListSubheader from "@material-ui/core/ListSubheader";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
@@ -271,9 +271,9 @@ class Connect extends React.Component {
                             <Grid item xs={12} sm={6}>
                                 <Paper style={styles.paperList}>
                                     <List dense>
-                                        <ListSubHeader>
+                                        <ListSubheader>
                                             Shared With:
-                                        </ListSubHeader>
+                                        </ListSubheader>
                                         {filteredInviteInquiries.map(
                                             filteredInviteInquiry => (
                                                 <ConnectListItem
@@ -294,9 +294,9 @@ class Connect extends React.Component {
                             <Grid item xs={12} sm={6}>
                                 <Paper style={styles.paperList}>
                                     <List dense>
-                                        <ListSubHeader>
+                                        <ListSubheader>
                                             Shared By:
-                                        </ListSubHeader>
+                                        </ListSubheader>
                                         {filteredInviteResponses.map(
                                             filteredInviteResponse => (
                                                 <ConnectListItem

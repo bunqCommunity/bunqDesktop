@@ -9,7 +9,7 @@ import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListSubHeader from "@material-ui/core/ListSubHeader";
+import ListSubheader from "@material-ui/core/ListSubheader";
 import ListItemText  from "@material-ui/core/ListItemText";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -222,9 +222,9 @@ class Card extends React.Component {
                 // return the accout item for this account
                 return (
                     <React.Fragment>
-                        <ListSubHeader style={{ height: 28 }}>
+                        <ListSubheader style={{ height: 28 }}>
                             {connectedText}
-                        </ListSubHeader>
+                        </ListSubheader>
                         {!currentAccount ? (
                             <ListItem divider>
                                 <ListItemText

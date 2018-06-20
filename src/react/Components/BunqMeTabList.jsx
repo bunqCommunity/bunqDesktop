@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import List from "@material-ui/core/List";
-import ListSubHeader from "@material-ui/core/ListSubHeader";
+import ListSubheader from "@material-ui/core/ListSubheader";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Divider from "@material-ui/core/Divider";
@@ -64,7 +64,7 @@ class BunqMeTabList extends React.Component {
 
         return (
             <List style={styles.left}>
-                <ListSubHeader>
+                <ListSubheader>
                     bunq.me requests - {bunqMeTabs.length}
                     <ListItemSecondaryAction>
                         <IconButton
@@ -79,7 +79,7 @@ class BunqMeTabList extends React.Component {
                         </IconButton>
                         {this.props.secondaryActions}
                     </ListItemSecondaryAction>
-                </ListSubHeader>
+                </ListSubheader>
                 {loadingContent}
                 <List>{bunqMeTabs}</List>
             </List>
