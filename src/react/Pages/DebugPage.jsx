@@ -37,7 +37,7 @@ class DebugPage extends React.Component {
         return (
             <Grid container spacing={24} justify={"center"}>
                 <Helmet>
-                    <title>{`BunqDesktop - Debug page`}</title>
+                    <title>{`bunqDesktop - Debug page`}</title>
                 </Helmet>
 
                 <Grid item xs={12}>
@@ -50,7 +50,7 @@ class DebugPage extends React.Component {
                     <ReactJsonWrapper
                         style={styles.paper}
                         data={modifiedState}
-                        name="BunqDesktopState"
+                        name="bunqDesktopState"
                     />
                 </Grid>
             </Grid>

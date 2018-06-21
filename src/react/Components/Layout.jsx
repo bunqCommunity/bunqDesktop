@@ -309,7 +309,7 @@ class Layout extends React.Component {
     ) => {
         const t = this.props.t;
         const errorTitle = t("Something went wrong");
-        const error1 = t("We failed to setup BunqDesktop properly");
+        const error1 = t("We failed to setup bunqDesktop properly");
 
         const statusMessage1 = t("Registering our encryption keys");
         const statusMessage2 = t("Installing this device");

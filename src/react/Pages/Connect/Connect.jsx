@@ -392,7 +392,7 @@ class Connect extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - Connect`}</title>
+                    <title>{`bunqDesktop - Connect`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={3} lg={4}>

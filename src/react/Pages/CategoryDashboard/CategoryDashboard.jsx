@@ -101,7 +101,7 @@ class CategoryDashboard extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Category Editor")}`}</title>
+                    <title>{`bunqDesktop - ${t("Category Editor")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} md={8}>

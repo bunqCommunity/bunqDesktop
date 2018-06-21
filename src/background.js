@@ -140,7 +140,7 @@ app.on("ready", () => {
             }
         ]);
         tray.setContextMenu(contextMenu);
-        tray.setToolTip("BunqDesktop");
+        tray.setToolTip("bunqDesktop");
 
         // Event handlers
         tray.on("click", () => {

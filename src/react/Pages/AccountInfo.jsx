@@ -425,7 +425,7 @@ class AccountInfo extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Account Info")}`}</title>
+                    <title>{`bunqDesktop - ${t("Account Info")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={2}>

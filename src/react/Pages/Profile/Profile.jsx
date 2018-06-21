@@ -257,7 +257,7 @@ class Profile extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Profile")}`}</title>
+                    <title>{`bunqDesktop - ${t("Profile")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={2}>

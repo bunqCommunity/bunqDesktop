@@ -101,7 +101,7 @@ class SwitchApiKeys extends React.Component {
         return (
             <Grid container spacing={16} style={styles.wrapperContainer}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Switch API keys")}`}</title>
+                    <title>{`bunqDesktop - ${t("Switch API keys")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={2} md={3}>

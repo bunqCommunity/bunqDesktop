@@ -621,7 +621,7 @@ class Login extends React.Component {
                 style={styles.wrapperContainer}
             >
                 <Helmet>
-                    <title>{`BunqDesktop - Login`}</title>
+                    <title>{`bunqDesktop - Login`}</title>
                 </Helmet>
 
                 <Grid

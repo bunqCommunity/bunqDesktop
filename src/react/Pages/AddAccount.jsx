@@ -119,7 +119,7 @@ class AddAccount extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Add an account")}`}</title>
+                    <title>{`bunqDesktop - ${t("Add an account")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={3} md={4}>

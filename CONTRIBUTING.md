@@ -12,7 +12,7 @@ Before you start working on something please **let us know** what you are planni
 ## Project setup
 
 You're going to need [`git`](https://git-scm.com/) to get the project, and [`node`](https://nodejs.org/en/) and
-[`yarn`](https://yarnpkg.com/) to install dependencies and run scripts. Check out the [Development](https://github.com/BunqCommunity/BunqDesktop#development) section on the readme for more details
+[`yarn`](https://yarnpkg.com/) to install dependencies and run scripts. Check out the [Development](https://github.com/bunqCommunity/bunqDesktop#development) section on the readme for more details
 
 1. Fork and clone the repo
 2. Install the required dependencies

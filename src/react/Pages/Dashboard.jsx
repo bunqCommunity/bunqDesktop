@@ -140,7 +140,7 @@ class Dashboard extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Dashboard")}`}</title>
+                    <title>{`bunqDesktop - ${t("Dashboard")}`}</title>
                 </Helmet>
 
                 <Hidden mdDown>

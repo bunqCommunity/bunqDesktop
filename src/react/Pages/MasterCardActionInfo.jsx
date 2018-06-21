@@ -288,7 +288,7 @@ class MasterCardActionInfo extends React.Component {
         return (
             <Grid container spacing={24}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Mastercard Info")}`}</title>
+                    <title>{`bunqDesktop - ${t("Mastercard Info")}`}</title>
                 </Helmet>
 
                 <ExportDialog

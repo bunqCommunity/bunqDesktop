@@ -14,7 +14,7 @@ const moduleOptions = { BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT };
 
 let config = {
     entry: {
-        BunqDesktop: `${SRC_DIR}/react-app.jsx`
+        bunqDesktop: `${SRC_DIR}/react-app.jsx`
     },
     target: "electron-renderer",
     output: {

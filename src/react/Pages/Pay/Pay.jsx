@@ -717,7 +717,7 @@ class Pay extends React.Component {
         return (
             <Grid container spacing={24} align={"center"} justify={"center"}>
                 <Helmet>
-                    <title>{`BunqDesktop - Pay`}</title>
+                    <title>{`bunqDesktop - Pay`}</title>
                 </Helmet>
                 <MuiPickersUtilsProvider
                     utils={DateFnsUtils}

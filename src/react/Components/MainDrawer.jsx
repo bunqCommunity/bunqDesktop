@@ -183,7 +183,7 @@ class MainDrawer extends React.Component {
                             />
                         </ListItemIcon>
                         <ListItemText
-                            primary="BunqDesktop"
+                            primary="bunqDesktop"
                             secondary={`${t("Version")} ${process.env
                                 .CURRENT_VERSION}`}
                         />

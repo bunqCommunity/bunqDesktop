@@ -80,14 +80,14 @@ class Disclaimer extends React.Component {
                 style={styles.wrapperContainer}
             >
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Disclaimer")}`}</title>
+                    <title>{`bunqDesktop - ${t("Disclaimer")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={8} md={6} lg={4}>
                     <Card style={styles.warningCard}>
                         <CardContent>
                             <Typography variant="headline">
-                                <DesktopIcon /> BunqDesktop
+                                <DesktopIcon /> bunqDesktop
                             </Typography>
                             <Typography variant="body2">
                                 {t("LoginBunqDesktopWarning")}

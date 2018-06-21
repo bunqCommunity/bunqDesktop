@@ -1,11 +1,11 @@
 {
     "name": "bunqdesktop",
     "description": "The unofficial, free and open source desktop application for the bunq API",
-    "productName": "BunqDesktop",
+    "productName": "bunqDesktop",
     "homepage": "https://bunqdesk.top/",
     "version": "0.8.9",
     "author": {
-        "name": "BunqCommunity",
+        "name": "bunqCommunity",
         "email": "bunqcommunity@gmail.com"
     },
     "license": "MIT",

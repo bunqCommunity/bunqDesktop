@@ -93,7 +93,7 @@ class ApplicationInfo extends React.Component {
         return (
             <Grid container spacing={24} justify={"center"}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t(
+                    <title>{`bunqDesktop - ${t(
                         "Application Information"
                     )}`}</title>
                 </Helmet>
@@ -106,7 +106,7 @@ class ApplicationInfo extends React.Component {
                                     <a
                                         className="js-external-link"
                                         rel="noopener"
-                                        href="https://github.com/BunqCommunity/BunqDesktop"
+                                        href="https://github.com/bunqCommunity/bunqDesktop"
                                     >
                                         <Avatar
                                             style={styles.avatar}
@@ -117,7 +117,7 @@ class ApplicationInfo extends React.Component {
 
                                 <div style={{ flexGrow: 1, marginTop: 4 }}>
                                     <Typography variant={"headline"}>
-                                        BunqDesktop
+                                        bunqDesktop
                                     </Typography>
                                     <Typography variant={"body2"}>
                                         {`${t("Version")}: ${process.env

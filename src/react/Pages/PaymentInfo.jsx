@@ -267,7 +267,7 @@ class PaymentInfo extends React.Component {
         return (
             <Grid container spacing={24}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Payment Info")}`}</title>
+                    <title>{`bunqDesktop - ${t("Payment Info")}`}</title>
                 </Helmet>
 
                 <ExportDialog

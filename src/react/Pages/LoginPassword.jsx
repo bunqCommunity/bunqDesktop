@@ -239,7 +239,7 @@ class LoginPassword extends React.Component {
                 style={styles.wrapperContainer}
             >
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Password Setup")}`}</title>
+                    <title>{`bunqDesktop - ${t("Password Setup")}`}</title>
                 </Helmet>
 
                 <Grid
