@@ -3,17 +3,23 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
+import EmailValidator from "email-validator";
+
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import TextField from "@material-ui/core/TextField";
+import Radio from "@material-ui/core/Radio";
 import FormControl from "@material-ui/core/FormControl";
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Switch from "@material-ui/core/Switch";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 import ConnectListItem from "./ConnectListItem";
+import AccountListItem from "../../Components/AccountList/AccountListItem";
+import TargetSelection from "../../Components/FormFields/TargetSelection";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
 import TypographyTranslate from "../../Components/TranslationHelpers/Typography";
 import {
@@ -25,6 +31,13 @@ import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_b
 import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiry";
 import { accountsUpdate } from "../../Actions/accounts";
 import { openSnackbar } from "../../Actions/snackbar";
+import FullAccess from "../../Components/ListItems/ShareInviteBankTypes/FullAccess";
+import ParentChild from "../../Components/ListItems/ShareInviteBankTypes/ParentChild";
+import ShowOnly from "../../Components/ListItems/ShareInviteBankTypes/ShowOnly";
+import {
+    getInternationalFormat,
+    isValidPhonenumber
+} from "../../Helpers/PhoneLib";
 
 const styles = {
     bigAvatar: {
@@ -50,12 +63,26 @@ class Connect extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            color: "#2196f3",
-            description: "",
-            descriptionError: false,
+            // access level selection from the radio buttons
+            accessLevel: "full",
+
+            // budget enabled/disabled and the actual value
+            setBudget: false,
             budget: 1000,
             budgetError: false,
-            validForm: false
+
+            // valid form status after checking all options
+            validForm: false,
+
+            // default target field
+            targetError: false,
+            target: "",
+
+            // a list with all the targets
+            targets: [],
+
+            // defines which type is used
+            targetType: "CONTACT"
         };
     }
 
@@ -101,6 +128,14 @@ class Connect extends React.Component {
             }
         );
     };
+    handleChangeDirect = name => value => {
+        this.setState(
+            {
+                [name]: value
+            },
+            this.validateForm
+        );
+    };
     handleChangeFormatted = valueObject => {
         this.setState(
             {
@@ -115,17 +150,140 @@ class Connect extends React.Component {
         );
     };
 
+    // add a target from the current text inputs to the target list
+    addTarget = () => {
+        const duplicateTargetMessage = this.props.t(
+            "This target seems to be added already"
+        );
+        this.validateTargetInput(valid => {
+            // target is valid, add it to the list
+            if (valid) {
+                const currentTargets = [...this.state.targets];
+
+                let foundDuplicate = false;
+                let targetValue = this.state.target.trim();
+
+                if (isValidPhonenumber(targetValue)) {
+                    // valid phone number, we must format as international
+                    targetValue = getInternationalFormat(targetValue);
+                }
+
+                // check for duplicates in existing target list
+                currentTargets.map(newTarget => {
+                    if (newTarget.type === this.state.targetType) {
+                        if (newTarget.value === targetValue) {
+                            foundDuplicate = true;
+                        }
+                    }
+                });
+
+                if (!foundDuplicate) {
+                    currentTargets.push({
+                        type: this.state.targetType,
+                        value: targetValue,
+                        name: ""
+                    });
+                } else {
+                    this.props.openSnackbar(duplicateTargetMessage);
+                }
+
+                this.setState(
+                    {
+                        // set the new target list
+                        targets: currentTargets,
+                        // reset the input
+                        target: ""
+                    },
+                    () => {
+                        this.validateForm();
+                        this.validateTargetInput();
+                    }
+                );
+            }
+        });
+    };
+
+    // remove a key from the target list
+    removeTarget = key => {
+        const newTargets = [...this.state.targets];
+        if (newTargets[key]) {
+            newTargets.splice(key, 1);
+            this.setState(
+                {
+                    targets: newTargets
+                },
+                () => {
+                    this.validateForm();
+                    this.validateTargetInput();
+                }
+            );
+        }
+    };
+
+    // validate only the taret inputs
+    validateTargetInput = (callback = () => {}) => {
+        const { target, targetType } = this.state;
+
+        // check if the target is valid based onthe targetType
+        let targetErrorCondition = false;
+        switch (targetType) {
+            case "CONTACT":
+                const validEmail = EmailValidator.validate(target);
+                const validPhone = isValidPhonenumber(target);
+
+                // only error if both are false
+                targetErrorCondition = !validEmail && !validPhone;
+                break;
+        }
+
+        this.setState(
+            {
+                targetError: targetErrorCondition
+            },
+            () => callback(!targetErrorCondition)
+        );
+    };
+
+    // callbacks for input fields and selectors
+    setTargetType = type => event => {
+        this.setState(
+            {
+                targetType: type,
+                target: ""
+            },
+            () => {
+                this.setState({
+                    amountError: false,
+                    redurectUrlError: false,
+                    descriptionError: false,
+                    targetError: false,
+                    validForm: false
+                });
+            }
+        );
+    };
+
     validateForm = () => {
-        const { description, budget } = this.state;
+        const { budget, target, targets, targetType } = this.state;
 
         const budgetErrorCondition = budget < 0.01 || budget > 10000;
-        const descriptionErrorCondition =
-            description.length < 1 || description.length > 140;
+
+        // check if the target is valid based onthe targetType
+        let targetErrorCondition = false;
+        switch (targetType) {
+            case "CONTACT":
+                const validEmail = EmailValidator.validate(target);
+                const validPhone = isValidPhonenumber(target);
+
+                // only error if both are false
+                targetErrorCondition = !validEmail && !validPhone;
+                break;
+            default:
+        }
 
         this.setState({
             budgetError: budgetErrorCondition,
-            descriptionError: descriptionErrorCondition,
-            validForm: !budgetErrorCondition && !descriptionErrorCondition
+            validForm: !budgetErrorCondition && targets.length > 0
         });
     };
 
@@ -181,12 +339,11 @@ class Connect extends React.Component {
             shareInviteBankInquiries,
             t
         } = this.props;
-        const accountId = parseFloat(this.props.match.params.accountId);
 
+        const accountId = parseFloat(this.props.match.params.accountId);
         if (!accountId) return <Redirect to="/" />;
 
         const accountInfo = accounts.find(account => account.id === accountId);
-
         if (!accountInfo) return <Redirect to="/" />;
 
         const filteredInviteResponses = shareInviteBankResponses.filter(
@@ -196,13 +353,49 @@ class Connect extends React.Component {
             filterShareInviteBankInquiries(accountInfo.id)
         );
 
+        const accessLevelForm = (
+            <List>
+                <ListSubheader>Access level</ListSubheader>
+                <FullAccess
+                    t={t}
+                    secondaryActions={
+                        <Radio
+                            value={"full"}
+                            onChange={this.handleChange("accessLevel")}
+                            checked={this.state.accessLevel === "full"}
+                        />
+                    }
+                />
+                <ParentChild
+                    t={t}
+                    secondaryActions={
+                        <Radio
+                            value={"draft"}
+                            onChange={this.handleChange("accessLevel")}
+                            checked={this.state.accessLevel === "draft"}
+                        />
+                    }
+                />
+                <ShowOnly
+                    t={t}
+                    secondaryActions={
+                        <Radio
+                            value={"showOnly"}
+                            onChange={this.handleChange("accessLevel")}
+                            checked={this.state.accessLevel === "showOnly"}
+                        />
+                    }
+                />
+            </List>
+        );
+
         return (
             <Grid container spacing={16}>
                 <Helmet>
                     <title>{`BunqDesktop - Connect`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={3} md={4}>
+                <Grid item xs={12} sm={3} lg={4}>
                     <Button
                         onClick={this.props.history.goBack}
                         style={styles.btn}
@@ -211,35 +404,68 @@ class Connect extends React.Component {
                     </Button>
                 </Grid>
 
-                <Grid item xs={12} sm={6} md={4}>
+                <Grid item xs={12} sm={6} lg={4}>
                     <Paper style={styles.paper}>
                         <TypographyTranslate
-                            type="headline"
+                            variant="headline"
                             style={{ marginBottom: "25px" }}
                         >
-                            Add an account
+                            Send a Connect request
                         </TypographyTranslate>
 
-                        <TextField
-                            fullWidth
-                            error={this.state.descriptionError}
-                            id="description"
-                            label={t("Description")}
-                            onChange={this.handleChange("description")}
-                            value={this.state.description}
-                            margin="normal"
+                        <List dense>
+                            <AccountListItem
+                                account={accountInfo}
+                                clickable={false}
+                            />
+                        </List>
+
+                        <TargetSelection
+                            targetType={this.state.targetType}
+                            targets={this.state.targets}
+                            target={this.state.target}
+                            targetError={this.state.targetError}
+                            validForm={this.state.validForm}
+                            handleChangeDirect={this.handleChangeDirect}
+                            handleChange={this.handleChange}
+                            setTargetType={this.setTargetType}
+                            removeTarget={this.removeTarget}
+                            addTarget={this.addTarget}
+                            disabledTypes={["IBAN", "TRANSFER"]}
                         />
 
-                        <FormControl error={this.state.budgetError}>
-                            <TypographyTranslate type="body2">
-                                Budget
-                            </TypographyTranslate>
-                            <MoneyFormatInput
-                                id="budget"
-                                onValueChange={this.handleChangeFormatted}
-                                value={this.state.budget}
-                            />
-                        </FormControl>
+                        {accessLevelForm}
+
+                        {this.state.accessLevel === "full" ? (
+                            <React.Fragment>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={this.state.setBudget}
+                                            onChange={e =>
+                                                this.setState({
+                                                    setBudget: !this.state
+                                                        .setBudget
+                                                })}
+                                            value="setBudget"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Set a budget"
+                                />
+                                {this.state.setBudget ? (
+                                    <FormControl error={this.state.budgetError}>
+                                        <MoneyFormatInput
+                                            id="budget"
+                                            onValueChange={
+                                                this.handleChangeFormatted
+                                            }
+                                            value={this.state.budget}
+                                        />
+                                    </FormControl>
+                                ) : null}
+                            </React.Fragment>
+                        ) : null}
 
                         {/*<ButtonTranslate*/}
                         {/*variant="raised"*/}
@@ -262,9 +488,9 @@ class Connect extends React.Component {
                 </Grid>
 
                 <Grid item xs={12} />
-                <Grid item xs={12} md={3} />
+                <Grid item xs={12} sm={3} />
 
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} sm={6}>
                     {filteredInviteResponses.length > 0 ||
                     filteredInviteInquiries.length > 0 ? (
                         <Grid container spacing={8}>

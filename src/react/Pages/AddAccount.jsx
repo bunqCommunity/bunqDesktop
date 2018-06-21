@@ -134,7 +134,7 @@ class AddAccount extends React.Component {
                 <Grid item xs={12} sm={6} md={4}>
                     <Paper style={styles.paper}>
                         <TypographyTranslate
-                            type="headline"
+                            variant="headline"
                             style={{ marginBottom: "25px" }}
                         >
                             Add an account
