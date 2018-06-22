@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
 import EmailValidator from "email-validator";
+import DateTimePicker from "material-ui-pickers/DateTimePicker";
 
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
@@ -22,6 +23,7 @@ import AccountListItem from "../../Components/AccountList/AccountListItem";
 import TargetSelection from "../../Components/FormFields/TargetSelection";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
 import TypographyTranslate from "../../Components/TranslationHelpers/Typography";
+import ButtonTranslate from "../../Components/TranslationHelpers/Button";
 import {
     filterShareInviteBankInquiries,
     filterShareInviteBankResponses
@@ -68,8 +70,12 @@ class Connect extends React.Component {
 
             // budget enabled/disabled and the actual value
             setBudget: false,
-            budget: 1000,
+            budget: 100,
             budgetError: false,
+
+            // time limit enabled status and actual value
+            setTimeLimit: false,
+            timeLimit: null,
 
             // valid form status after checking all options
             validForm: false,
@@ -332,6 +338,31 @@ class Connect extends React.Component {
             .catch(console.error);
     };
 
+    sendConnectRequest = event => {
+        this.props.BunqJSClient.api.shareInviteBankInquiry
+            .post(
+                457,
+                602,
+                {
+                    type: "EMAIL",
+                    value: "cass.eireann-beaufort@bunq.bar"
+                },
+                {
+                    ShareDetailReadOnly: {
+                        view_balance: true,
+                        view_old_events: false,
+                        view_new_events: true
+                    }
+                },
+                "PENDING",
+                {
+                    share_type: "STANDARD"
+                }
+            )
+            .then(console.log)
+            .catch(console.error);
+    };
+
     render() {
         const {
             accounts,
@@ -436,54 +467,107 @@ class Connect extends React.Component {
 
                         {accessLevelForm}
 
-                        {this.state.accessLevel === "full" ? (
-                            <React.Fragment>
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={this.state.setBudget}
-                                            onChange={e =>
-                                                this.setState({
-                                                    setBudget: !this.state
-                                                        .setBudget
-                                                })}
-                                            value="setBudget"
-                                            color="primary"
-                                        />
-                                    }
-                                    label="Set a budget"
-                                />
-                                {this.state.setBudget ? (
-                                    <FormControl error={this.state.budgetError}>
-                                        <MoneyFormatInput
-                                            id="budget"
-                                            onValueChange={
-                                                this.handleChangeFormatted
-                                            }
-                                            value={this.state.budget}
-                                        />
-                                    </FormControl>
-                                ) : null}
-                            </React.Fragment>
-                        ) : null}
+                        <Grid container spacing={8}>
+                            {this.state.accessLevel === "full" ? (
+                                <Grid item xs={12}>
+                                    <FormControlLabel
+                                        control={
+                                            <Switch
+                                                checked={this.state.setBudget}
+                                                onChange={e =>
+                                                    this.setState({
+                                                        setBudget: !this.state
+                                                            .setBudget
+                                                    })}
+                                                value="setBudget"
+                                                color="primary"
+                                            />
+                                        }
+                                        label="Set a budget"
+                                    />
+                                    {this.state.setBudget ? (
+                                        <FormControl
+                                            error={this.state.budgetError}
+                                        >
+                                            <MoneyFormatInput
+                                                id="budget"
+                                                onValueChange={
+                                                    this.handleChangeFormatted
+                                                }
+                                                value={this.state.budget}
+                                            />
+                                        </FormControl>
+                                    ) : null}
+                                </Grid>
+                            ) : null}
 
-                        {/*<ButtonTranslate*/}
-                        {/*variant="raised"*/}
-                        {/*color="primary"*/}
-                        {/*disabled={!this.state.validForm}*/}
-                        {/*onClick={this.createAccount}*/}
-                        {/*style={styles.btn}*/}
-                        {/*>*/}
-                        {/*Create account*/}
-                        {/*</ButtonTranslate>*/}
+                            {this.state.accessLevel === "full" ||
+                            this.state.accessLevel === "showOnly" ? (
+                                <Grid item xs={12}>
+                                    <FormControlLabel
+                                        control={
+                                            <Switch
+                                                checked={
+                                                    this.state.setTimeLimit
+                                                }
+                                                onChange={e =>
+                                                    this.setState({
+                                                        setTimeLimit: !this
+                                                            .state.setTimeLimit
+                                                    })}
+                                                value="setTimeLimit"
+                                                color="primary"
+                                            />
+                                        }
+                                        label="Set a time limit"
+                                    />
+                                    <br />
+                                    {this.state.setTimeLimit ? (
+                                        <DateTimePicker
+                                            helperText={t("Time limit")}
+                                            format="MMMM DD, YYYY HH:mm"
+                                            style={styles.textField}
+                                            value={this.state.timeLimit}
+                                            onChange={this.handleChangeDirect(
+                                                "timeLimit"
+                                            )}
+                                            onChange={date => {
+                                                // reset to current time if no date or in the past
+                                                if (
+                                                    !date ||
+                                                    date > new Date()
+                                                ) {
+                                                    this.handleChangeDirect(
+                                                        "timeLimit"
+                                                    )(date);
+                                                } else {
+                                                    this.handleChangeDirect(
+                                                        "timeLimit"
+                                                    )(new Date());
+                                                }
+                                            }}
+                                            ampm={false}
+                                            cancelLabel={t("Cancel")}
+                                            clearLabel={t("Clear")}
+                                            okLabel={t("Ok")}
+                                            todayLabel={t("Today")}
+                                        />
+                                    ) : null}
+                                </Grid>
+                            ) : null}
 
-                        <Button
-                            variant="raised"
-                            color="primary"
-                            onClick={this.connectTest}
-                        >
-                            Lydia pls
-                        </Button>
+                            <Grid item xs={12}>
+                                <ButtonTranslate
+                                    variant="raised"
+                                    color="primary"
+                                    disabled={!this.state.validForm}
+                                    onClick={this.sendConnectRequest}
+                                    style={styles.btn}
+                                >
+                                    Connect your account
+                                </ButtonTranslate>
+                            </Grid>
+                        </Grid>
                     </Paper>
                 </Grid>
 
