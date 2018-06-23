@@ -4,24 +4,21 @@ import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
 import EmailValidator from "email-validator";
-import DateTimePicker from "material-ui-pickers/DateTimePicker";
 
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Radio from "@material-ui/core/Radio";
-import FormControl from "@material-ui/core/FormControl";
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
+import BudgetFields from "./BudgetFields";
+import TimeLimitFields from "./TimeLimitFields";
 import ConnectListItem from "./ConnectListItem";
 import AccountListItem from "../../Components/AccountList/AccountListItem";
 import TargetSelection from "../../Components/FormFields/TargetSelection";
-import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
 import TypographyTranslate from "../../Components/TranslationHelpers/Typography";
 import ButtonTranslate from "../../Components/TranslationHelpers/Button";
 import {
@@ -72,6 +69,7 @@ class Connect extends React.Component {
             setBudget: false,
             budget: 100,
             budgetError: false,
+            budgetFrequency: "ONCE",
 
             // time limit enabled status and actual value
             setTimeLimit: false,
@@ -252,21 +250,10 @@ class Connect extends React.Component {
 
     // callbacks for input fields and selectors
     setTargetType = type => event => {
-        this.setState(
-            {
-                targetType: type,
-                target: ""
-            },
-            () => {
-                this.setState({
-                    amountError: false,
-                    redurectUrlError: false,
-                    descriptionError: false,
-                    targetError: false,
-                    validForm: false
-                });
-            }
-        );
+        this.setState({
+            targetType: type,
+            target: ""
+        });
     };
 
     validateForm = () => {
@@ -303,31 +290,7 @@ class Connect extends React.Component {
                     value: "cass.eireann-beaufort@bunq.bar"
                 },
                 {
-                    ShareDetailReadOnly: {
-                        view_balance: true,
-                        view_old_events: false,
-                        view_new_events: true
-                    }
-                    // ShareDetailPayment: {
-                    //     make_payments: true,
-                    //     make_draft_payments: true,
-                    //     view_balance: true,
-                    //     view_old_events: true,
-                    //     view_new_events: true,
-                    //     budget: {
-                    //         amount: {
-                    //             value: "25.00",
-                    //             currency: "EUR"
-                    //         },
-                    //         frequency: "DAILY"
-                    //     }
-                    // },
-                    // ShareDetailDraftPayment: {
-                    //     make_draft_payments: true,
-                    //     view_balance: true,
-                    //     view_old_events: true,
-                    //     view_new_events: true
-                    // }
+                    ShareDetailReadOnly: {}
                 },
                 "PENDING",
                 {
@@ -339,6 +302,53 @@ class Connect extends React.Component {
     };
 
     sendConnectRequest = event => {
+        let shareDetail;
+        switch (this.state.accessLevel) {
+            case "full":
+                shareDetail = {
+                    ShareDetailPayment: {
+                        make_payments: true,
+                        make_draft_payments: true,
+                        view_balance: true,
+                        view_old_events: true,
+                        view_new_events: true
+                        // budget: {
+
+                        // }
+                    }
+                };
+
+                if (this.state.setBudget) {
+                    shareDetail.ShareDetailPayment.budget = {
+                        amount: {
+                            value: "25.00",
+                            currency: "EUR"
+                        },
+                        frequency: "DAILY"
+                    };
+                }
+                break;
+            case "draft":
+                shareDetail = {
+                    ShareDetailDraftPayment: {
+                        make_draft_payments: true,
+                        view_balance: true,
+                        view_old_events: true,
+                        view_new_events: true
+                    }
+                };
+                break;
+            case "showOnly":
+                shareDetail = {
+                    ShareDetailReadOnly: {
+                        view_balance: true,
+                        view_old_events: false,
+                        view_new_events: true
+                    }
+                };
+                break;
+        }
+
         this.props.BunqJSClient.api.shareInviteBankInquiry
             .post(
                 457,
@@ -469,91 +479,28 @@ class Connect extends React.Component {
 
                         <Grid container spacing={8}>
                             {this.state.accessLevel === "full" ? (
-                                <Grid item xs={12}>
-                                    <FormControlLabel
-                                        control={
-                                            <Switch
-                                                checked={this.state.setBudget}
-                                                onChange={e =>
-                                                    this.setState({
-                                                        setBudget: !this.state
-                                                            .setBudget
-                                                    })}
-                                                value="setBudget"
-                                                color="primary"
-                                            />
-                                        }
-                                        label="Set a budget"
-                                    />
-                                    {this.state.setBudget ? (
-                                        <FormControl
-                                            error={this.state.budgetError}
-                                        >
-                                            <MoneyFormatInput
-                                                id="budget"
-                                                onValueChange={
-                                                    this.handleChangeFormatted
-                                                }
-                                                value={this.state.budget}
-                                            />
-                                        </FormControl>
-                                    ) : null}
-                                </Grid>
+                                <BudgetFields
+                                    t={t}
+                                    handleChangeFormatted={
+                                        this.handleChangeFormatted
+                                    }
+                                    handleChangeDirect={this.handleChangeDirect}
+                                    handleChange={this.handleChange}
+                                    budgetFrequency={this.state.budgetFrequency}
+                                    budgetError={this.state.budgetError}
+                                    setBudget={this.state.setBudget}
+                                    budget={this.state.budget}
+                                />
                             ) : null}
 
                             {this.state.accessLevel === "full" ||
                             this.state.accessLevel === "showOnly" ? (
-                                <Grid item xs={12}>
-                                    <FormControlLabel
-                                        control={
-                                            <Switch
-                                                checked={
-                                                    this.state.setTimeLimit
-                                                }
-                                                onChange={e =>
-                                                    this.setState({
-                                                        setTimeLimit: !this
-                                                            .state.setTimeLimit
-                                                    })}
-                                                value="setTimeLimit"
-                                                color="primary"
-                                            />
-                                        }
-                                        label="Set a time limit"
-                                    />
-                                    <br />
-                                    {this.state.setTimeLimit ? (
-                                        <DateTimePicker
-                                            helperText={t("Time limit")}
-                                            format="MMMM DD, YYYY HH:mm"
-                                            style={styles.textField}
-                                            value={this.state.timeLimit}
-                                            onChange={this.handleChangeDirect(
-                                                "timeLimit"
-                                            )}
-                                            onChange={date => {
-                                                // reset to current time if no date or in the past
-                                                if (
-                                                    !date ||
-                                                    date > new Date()
-                                                ) {
-                                                    this.handleChangeDirect(
-                                                        "timeLimit"
-                                                    )(date);
-                                                } else {
-                                                    this.handleChangeDirect(
-                                                        "timeLimit"
-                                                    )(new Date());
-                                                }
-                                            }}
-                                            ampm={false}
-                                            cancelLabel={t("Cancel")}
-                                            clearLabel={t("Clear")}
-                                            okLabel={t("Ok")}
-                                            todayLabel={t("Today")}
-                                        />
-                                    ) : null}
-                                </Grid>
+                                <TimeLimitFields
+                                    t={t}
+                                    handleChangeDirect={this.handleChangeDirect}
+                                    setTimeLimit={this.state.setTimeLimit}
+                                    timeLimit={this.state.timeLimit}
+                                />
                             ) : null}
 
                             <Grid item xs={12}>
