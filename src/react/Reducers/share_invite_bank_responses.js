@@ -1,4 +1,4 @@
-import { STORED_SHARE_INVITE_BANK_RESPONSES } from "../Actions/share_invite_bank_response";
+import { STORED_SHARE_INVITE_BANK_RESPONSES } from "../Actions/share_invite_bank_responses";
 
 export const defaultState = {
     share_invite_bank_responses: [],

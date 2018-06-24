@@ -57,8 +57,8 @@ import {
     setAutomaticThemeChange
 } from "../Actions/options";
 import { loadStoredContacts } from "../Actions/contacts";
-import { loadStoredShareInviteBankResponses } from "../Actions/share_invite_bank_response";
-import { loadStoredShareInviteBankInquiries } from "../Actions/share_invite_bank_inquiry";
+import { loadStoredShareInviteBankResponses } from "../Actions/share_invite_bank_responses";
+import { loadStoredShareInviteBankInquiries } from "../Actions/share_invite_bank_inquiries";
 
 const styles = theme => ({
     contentContainer: {

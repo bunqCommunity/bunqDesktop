@@ -26,8 +26,8 @@ import {
     filterShareInviteBankResponses
 } from "../../Helpers/DataFilters";
 
-import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_response";
-import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiry";
+import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_responses";
+import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiries";
 import { accountsUpdate } from "../../Actions/accounts";
 import { openSnackbar } from "../../Actions/snackbar";
 import FullAccess from "../../Components/ListItems/ShareInviteBankTypes/FullAccess";

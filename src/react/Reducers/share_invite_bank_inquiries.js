@@ -1,4 +1,4 @@
-import { STORED_SHARE_INVITE_BANK_INQUIRIES } from "../Actions/share_invite_bank_inquiry";
+import { STORED_SHARE_INVITE_BANK_INQUIRIES } from "../Actions/share_invite_bank_inquiries";
 
 export const defaultState = {
     share_invite_bank_inquiries: [],

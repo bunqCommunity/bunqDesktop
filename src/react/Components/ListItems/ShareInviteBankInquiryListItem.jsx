@@ -14,7 +14,7 @@ import TranslateButton from "../TranslationHelpers/Button";
 import ShowOnly from "./ShareInviteBankTypes/ShowOnly";
 import FullAccess from "./ShareInviteBankTypes/FullAccess";
 import ParentChild from "./ShareInviteBankTypes/ParentChild";
-import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiry";
+import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiries";
 
 const styles = {
     smallAvatar: {

@@ -22,8 +22,8 @@ import { requestResponsesUpdate } from "../../Actions/request_responses";
 import { bunqMeTabsUpdate } from "../../Actions/bunq_me_tabs";
 import { masterCardActionsUpdate } from "../../Actions/master_card_actions";
 import { requestInquiriesUpdate } from "../../Actions/request_inquiries";
-import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_response";
-import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiry";
+import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_responses";
+import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiries";
 
 const styles = {
     list: {
