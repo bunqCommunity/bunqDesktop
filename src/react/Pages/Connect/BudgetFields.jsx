@@ -7,7 +7,7 @@ import Switch from "@material-ui/core/Switch";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
-import MoneyFormatInputDefault from "../../Components/FormFields/MoneyFormatInputDefault";
+import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
 import TranslateMenuItem from "../../Components/TranslationHelpers/MenuItem";
 
 const styles = {
@@ -27,7 +27,7 @@ export default props => {
     return (
         <Grid item xs={12}>
             <Grid container spacing={8}>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} sm={4}>
                     <FormControlLabel
                         style={styles.formControl}
                         control={
@@ -47,21 +47,7 @@ export default props => {
 
                 {props.setBudget ? (
                     <React.Fragment>
-                        <Grid item xs={12} sm={6} md={4}>
-                            <FormControl
-                                style={styles.formControl}
-                                error={props.budgetError}
-                            >
-                                <MoneyFormatInputDefault
-                                    id="budget"
-                                    onChange={e => console.log(e.target.value)}
-                                    onValueChange={e => console.log(e)}
-                                    value={props.budget}
-                                />
-                                {/*handleChangeFormatted("budget")*/}
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4}>
+                        <Grid item xs={12} sm={8}>
                             <FormControl style={styles.formControl}>
                                 <Select
                                     value={props.budgetFrequency}
@@ -86,6 +72,18 @@ export default props => {
                                         Yearly
                                     </TranslateMenuItem>
                                 </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FormControl
+                                style={styles.formControl}
+                                error={props.budgetError}
+                            >
+                                <MoneyFormatInput
+                                    id="budget"
+                                    value={props.budget}
+                                    onValueChange={handleChangeFormatted("budget")}
+                                />
                             </FormControl>
                         </Grid>
                     </React.Fragment>
