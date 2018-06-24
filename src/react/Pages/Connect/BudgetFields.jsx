@@ -10,7 +10,11 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import MoneyFormatInputDefault from "../../Components/FormFields/MoneyFormatInputDefault";
 import TranslateMenuItem from "../../Components/TranslationHelpers/MenuItem";
 
-const styles = {};
+const styles = {
+    formControl: {
+        width: "100%"
+    }
+};
 
 export default props => {
     const {
@@ -22,52 +26,71 @@ export default props => {
 
     return (
         <Grid item xs={12}>
-            <FormControlLabel
-                control={
-                    <Switch
-                        checked={props.setBudget}
-                        onChange={e =>
-                            handleChangeDirect("setBudget")(!props.setBudget)}
-                        value="setBudget"
-                        color="primary"
+            <Grid container spacing={8}>
+                <Grid item xs={12} md={4}>
+                    <FormControlLabel
+                        style={styles.formControl}
+                        control={
+                            <Switch
+                                checked={props.setBudget}
+                                onChange={e =>
+                                    handleChangeDirect("setBudget")(
+                                        !props.setBudget
+                                    )}
+                                value="setBudget"
+                                color="primary"
+                            />
+                        }
+                        label={t("Set a budget")}
                     />
-                }
-                label={t("Set a budget")}
-            />
-            {props.setBudget ? (
-                <React.Fragment>
-                    <FormControl error={props.budgetError}>
-                        <MoneyFormatInputDefault
-                            id="budget"
-                            onChange={handleChangeFormatted("budget")}
-                            value={props.budget}
-                        />
-                    </FormControl>
-                    <FormControl>
-                        <Select
-                            value={props.budgetFrequency}
-                            input={<Input name="field" id="field-helper" />}
-                            onChange={handleChange("budgetFrequency")}
-                        >
-                            <TranslateMenuItem value={"ONCE"}>
-                                Once
-                            </TranslateMenuItem>
-                            <TranslateMenuItem value={"DAILY"}>
-                                Daily
-                            </TranslateMenuItem>
-                            <TranslateMenuItem value={"WEEKLY"}>
-                                Weekly
-                            </TranslateMenuItem>
-                            <TranslateMenuItem value={"MONTHLY"}>
-                                Monthly
-                            </TranslateMenuItem>
-                            <TranslateMenuItem value={"YEARLY"}>
-                                Yearly
-                            </TranslateMenuItem>
-                        </Select>
-                    </FormControl>
-                </React.Fragment>
-            ) : null}
+                </Grid>
+
+                {props.setBudget ? (
+                    <React.Fragment>
+                        <Grid item xs={12} sm={6} md={4}>
+                            <FormControl
+                                style={styles.formControl}
+                                error={props.budgetError}
+                            >
+                                <MoneyFormatInputDefault
+                                    id="budget"
+                                    onChange={e => console.log(e.target.value)}
+                                    onValueChange={e => console.log(e)}
+                                    value={props.budget}
+                                />
+                                {/*handleChangeFormatted("budget")*/}
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4}>
+                            <FormControl style={styles.formControl}>
+                                <Select
+                                    value={props.budgetFrequency}
+                                    input={
+                                        <Input name="field" id="field-helper" />
+                                    }
+                                    onChange={handleChange("budgetFrequency")}
+                                >
+                                    <TranslateMenuItem value={"ONCE"}>
+                                        Once
+                                    </TranslateMenuItem>
+                                    <TranslateMenuItem value={"DAILY"}>
+                                        Daily
+                                    </TranslateMenuItem>
+                                    <TranslateMenuItem value={"WEEKLY"}>
+                                        Weekly
+                                    </TranslateMenuItem>
+                                    <TranslateMenuItem value={"MONTHLY"}>
+                                        Monthly
+                                    </TranslateMenuItem>
+                                    <TranslateMenuItem value={"YEARLY"}>
+                                        Yearly
+                                    </TranslateMenuItem>
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                    </React.Fragment>
+                ) : null}
+            </Grid>
         </Grid>
     );
 };

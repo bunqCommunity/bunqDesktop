@@ -21,22 +21,24 @@ import AccountListItem from "../../Components/AccountList/AccountListItem";
 import TargetSelection from "../../Components/FormFields/TargetSelection";
 import TypographyTranslate from "../../Components/TranslationHelpers/Typography";
 import ButtonTranslate from "../../Components/TranslationHelpers/Button";
+import FullAccess from "../../Components/ListItems/ShareInviteBankTypes/FullAccess";
+import ParentChild from "../../Components/ListItems/ShareInviteBankTypes/ParentChild";
+import ShowOnly from "../../Components/ListItems/ShareInviteBankTypes/ShowOnly";
+
 import {
     filterShareInviteBankInquiries,
     filterShareInviteBankResponses
 } from "../../Helpers/DataFilters";
-
-import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_responses";
-import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiries";
-import { accountsUpdate } from "../../Actions/accounts";
-import { openSnackbar } from "../../Actions/snackbar";
-import FullAccess from "../../Components/ListItems/ShareInviteBankTypes/FullAccess";
-import ParentChild from "../../Components/ListItems/ShareInviteBankTypes/ParentChild";
-import ShowOnly from "../../Components/ListItems/ShareInviteBankTypes/ShowOnly";
 import {
     getInternationalFormat,
     isValidPhonenumber
 } from "../../Helpers/PhoneLib";
+
+import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_responses";
+import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiries";
+import { shareInviteBankInquirySend } from "../../Actions/share_invite_bank_inquiry";
+import { accountsUpdate } from "../../Actions/accounts";
+import { openSnackbar } from "../../Actions/snackbar";
 
 const styles = {
     bigAvatar: {
@@ -129,6 +131,7 @@ class Connect extends React.Component {
             },
             () => {
                 this.validateForm();
+                this.validateTargetInput();
             }
         );
     };
@@ -137,34 +140,32 @@ class Connect extends React.Component {
             {
                 [name]: value
             },
-            this.validateForm
+            () => {
+                this.validateForm();
+                this.validateTargetInput();
+            }
         );
     };
-    handleChangeFormatted = valueObject => {
+    handleChangeFormatted = name => valueObject => {
         this.setState(
             {
-                limit:
+                [name]:
                     valueObject.formattedValue.length > 0
                         ? valueObject.floatValue
                         : ""
             },
             () => {
                 this.validateForm();
+                this.validateTargetInput();
             }
         );
     };
 
     // add a target from the current text inputs to the target list
     addTarget = () => {
-        const duplicateTargetMessage = this.props.t(
-            "This target seems to be added already"
-        );
         this.validateTargetInput(valid => {
             // target is valid, add it to the list
             if (valid) {
-                const currentTargets = [...this.state.targets];
-
-                let foundDuplicate = false;
                 let targetValue = this.state.target.trim();
 
                 if (isValidPhonenumber(targetValue)) {
@@ -172,29 +173,16 @@ class Connect extends React.Component {
                     targetValue = getInternationalFormat(targetValue);
                 }
 
-                // check for duplicates in existing target list
-                currentTargets.map(newTarget => {
-                    if (newTarget.type === this.state.targetType) {
-                        if (newTarget.value === targetValue) {
-                            foundDuplicate = true;
-                        }
-                    }
-                });
-
-                if (!foundDuplicate) {
-                    currentTargets.push({
-                        type: this.state.targetType,
-                        value: targetValue,
-                        name: ""
-                    });
-                } else {
-                    this.props.openSnackbar(duplicateTargetMessage);
-                }
-
                 this.setState(
                     {
                         // set the new target list
-                        targets: currentTargets,
+                        targets: [
+                            {
+                                type: this.state.targetType,
+                                value: targetValue,
+                                name: ""
+                            }
+                        ],
                         // reset the input
                         target: ""
                     },
@@ -280,97 +268,97 @@ class Connect extends React.Component {
         });
     };
 
-    connectTest = event => {
-        this.props.BunqJSClient.api.shareInviteBankInquiry
-            .post(
-                457,
-                602,
-                {
-                    type: "EMAIL",
-                    value: "cass.eireann-beaufort@bunq.bar"
-                },
-                {
-                    ShareDetailReadOnly: {}
-                },
-                "PENDING",
-                {
-                    share_type: "STANDARD"
-                }
-            )
-            .then(console.log)
-            .catch(console.error);
-    };
-
     sendConnectRequest = event => {
-        let shareDetail;
-        switch (this.state.accessLevel) {
-            case "full":
-                shareDetail = {
-                    ShareDetailPayment: {
-                        make_payments: true,
-                        make_draft_payments: true,
-                        view_balance: true,
-                        view_old_events: true,
-                        view_new_events: true
-                        // budget: {
+        if (!this.props.shareInviteBankInquiryLoading) {
+            let shareDetail;
+            let shareOptions;
 
-                        // }
-                    }
+            // set timelimit if set
+            if (this.state.accessLevel !== "draft" && this.state.setTimeLimit) {
+                shareOptions = {
+                    end_date: this.state.timeLimit
                 };
+            }
 
-                if (this.state.setBudget) {
-                    shareDetail.ShareDetailPayment.budget = {
-                        amount: {
-                            value: "25.00",
-                            currency: "EUR"
-                        },
-                        frequency: "DAILY"
+            switch (this.state.accessLevel) {
+                case "full":
+                    shareDetail = {
+                        ShareDetailPayment: {
+                            make_payments: true,
+                            make_draft_payments: true,
+                            view_balance: true,
+                            view_old_events: true,
+                            view_new_events: true
+                        }
                     };
-                }
-                break;
-            case "draft":
-                shareDetail = {
-                    ShareDetailDraftPayment: {
-                        make_draft_payments: true,
-                        view_balance: true,
-                        view_old_events: true,
-                        view_new_events: true
-                    }
-                };
-                break;
-            case "showOnly":
-                shareDetail = {
-                    ShareDetailReadOnly: {
-                        view_balance: true,
-                        view_old_events: false,
-                        view_new_events: true
-                    }
-                };
-                break;
-        }
 
-        this.props.BunqJSClient.api.shareInviteBankInquiry
-            .post(
-                457,
-                602,
-                {
-                    type: "EMAIL",
-                    value: "cass.eireann-beaufort@bunq.bar"
-                },
-                {
-                    ShareDetailReadOnly: {
-                        view_balance: true,
-                        view_old_events: false,
-                        view_new_events: true
+                    if (this.state.setBudget) {
+                        // set the budget
+                        shareDetail.ShareDetailPayment.budget = {
+                            amount: {
+                                value: this.state.budget.toFixed(2) + "",
+                                currency: "EUR"
+                            }
+                        };
+
+                        // setup frequency for the budget if not once
+                        if (this.state.budgetFrequency !== "ONCE") {
+                            shareDetail.ShareDetailPayment.budget.frequency = this.state.budgetFrequency;
+                        }
                     }
-                },
-                "PENDING",
-                {
-                    share_type: "STANDARD"
+                    break;
+                case "draft":
+                    shareDetail = {
+                        ShareDetailDraftPayment: {
+                            make_draft_payments: true,
+                            view_balance: true,
+                            view_old_events: true,
+                            view_new_events: true
+                        }
+                    };
+                    break;
+                case "showOnly":
+                    shareDetail = {
+                        ShareDetailReadOnly: {
+                            view_balance: true,
+                            view_old_events: false,
+                            view_new_events: true
+                        }
+                    };
+                    break;
+            }
+
+            let targetInfo = false;
+            if (this.state.targets.length <= 0) {
+                const validEmail = EmailValidator.validate(target.value);
+                const validPhone = isValidPhonenumber(target.value);
+
+                if (validEmail) {
+                    targetInfo = {
+                        type: "EMAIL",
+                        value: target.value.trim()
+                    };
+                } else if (validPhone) {
+                    const formattedNumber = getInternationalFormat(
+                        target.value
+                    );
+                    if (formattedNumber) {
+                        targetInfo = {
+                            type: "PHONE_NUMBER",
+                            value: formattedNumber
+                        };
+                    }
                 }
-            )
-            .then(console.log)
-            .catch(console.error);
+            }
+
+            this.props.shareInviteBankInquirySend(
+                this.props.user.id,
+                this.props.selectedAccountId,
+                targetInfo,
+                shareDetail,
+                shareOptions
+            );
+        }
     };
 
     render() {
@@ -507,7 +495,10 @@ class Connect extends React.Component {
                                 <ButtonTranslate
                                     variant="raised"
                                     color="primary"
-                                    disabled={!this.state.validForm}
+                                    disabled={
+                                        !this.state.validForm ||
+                                        this.props.shareInviteBankInquiryLoading
+                                    }
                                     onClick={this.sendConnectRequest}
                                     style={styles.btn}
                                 >
@@ -593,7 +584,10 @@ const mapStateToProps = state => {
             state.share_invite_bank_inquiries.loading,
 
         accounts: state.accounts.accounts,
-        accountsLoading: state.accounts.loading
+        accountsLoading: state.accounts.loading,
+        selectedAccountId: state.accounts.selectedAccount,
+
+        shareInviteBankInquiryLoading: state.share_invite_bank_inquiry.loading
     };
 };
 
@@ -614,7 +608,27 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                 )
             ),
         shareInviteBankResponsesInfoUpdate: (userId, accountId) =>
-            dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId))
+            dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId)),
+
+        shareInviteBankInquirySend: (
+            userId,
+            accountId,
+            counterparty,
+            shareDetail,
+            shareOptions,
+            shareStatus
+        ) =>
+            dispatch(
+                shareInviteBankInquirySend(
+                    BunqJSClient,
+                    userId,
+                    accountId,
+                    counterparty,
+                    shareDetail,
+                    shareOptions,
+                    shareStatus
+                )
+            )
     };
 };
 

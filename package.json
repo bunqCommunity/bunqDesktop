@@ -123,7 +123,7 @@
     "devDependencies": {
         "@bunq-community/bunq-js-client": "^0.21.3",
         "@google-cloud/translate": "^1.1.0",
-        "@material-ui/core": "^1.0.0",
+        "@material-ui/core": "^1.2.3",
         "@material-ui/icons": "^1.0.0",
         "@material-ui/lab": "^1.0.0-alpha.2",
         "@types/axios": "^0.14.0",
@@ -193,7 +193,7 @@
         "react-i18next": "^7.5.1",
         "react-json-view": "^1.16.1",
         "react-loadable": "^5.3.1",
-        "react-number-format": "^v3.0.0-beta3",
+        "react-number-format": "^3.4.2",
         "react-redux": "^5.0.7",
         "react-router": "^4.2.0",
         "react-router-dom": "^4.2.0",
