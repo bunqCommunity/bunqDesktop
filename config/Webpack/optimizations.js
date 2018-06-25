@@ -1,4 +1,3 @@
-const packageInfo = require("../../package.json");
 const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 
 module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {

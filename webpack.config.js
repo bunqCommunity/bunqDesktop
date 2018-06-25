@@ -2,6 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 const plugins = require("./config/Webpack/plugins");
 const rules = require("./config/Webpack/rules");
+const optimizations = require("./config/Webpack/optimizations");
 
 const PRODUCTION = process.env.NODE_ENV === "production";
 const DEVELOPMENT = !PRODUCTION;
@@ -24,10 +25,11 @@ let config = {
         chunkFilename: OUTPUT_DIR + "[name].bundle.js"
     },
     resolve: {
-        extensions: [".jsx", ".js", ".tsx", ".ts", ".json"],
+        extensions: [".tsx", ".ts", ".jsx", ".js", ".json"],
         modules: ["node_modules", path.resolve(__dirname, "./src")]
     },
-    devtool: DEVELOPMENT ? "eval" : "source-map",
+    mode: DEVELOPMENT ? "development" : "production",
+    devtool: DEVELOPMENT ? "cheap-module-eval-source-map" : "source-map",
     cache: DEVELOPMENT,
     performance: PRODUCTION
         ? {
@@ -35,6 +37,7 @@ let config = {
           }
         : false,
     plugins: plugins(moduleOptions),
+    optimization: optimizations(moduleOptions),
     module: {
         rules: rules(moduleOptions),
         unsafeCache: DEVELOPMENT
