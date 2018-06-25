@@ -101,7 +101,6 @@ class Profile extends React.Component {
     }
 
     calculateTotalBalance = () => {
-        return 6530001;
         return this.props.accounts.reduce((total, account) => {
             return total + account.getBalance();
         }, 0);
@@ -192,7 +191,6 @@ class Profile extends React.Component {
         if (userLoading === false && this.state.loading === false) {
             let businessInfo = null;
             if (userType !== "UserCompany") {
-                const formattedAmount = formatMoney(totalBalance);
                 const hasSafeKeepingFee = totalBalance > 100000;
 
                 let costsTable = null;
