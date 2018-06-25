@@ -646,7 +646,7 @@ class Login extends React.Component {
                 />
 
                 <span className="bunqdesktop-text-wrapper">
-                    <span className="bunqdesktop-text-first">Bunq</span>
+                    <span className="bunqdesktop-text-first">bunq</span>
                     <span className="bunqdesktop-text-second">Desktop</span>
                 </span>
             </Grid>

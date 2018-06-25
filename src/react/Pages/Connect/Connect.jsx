@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
 import EmailValidator from "email-validator";
+import format from "date-fns/format";
 
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
@@ -33,6 +34,7 @@ import {
     getInternationalFormat,
     isValidPhonenumber
 } from "../../Helpers/PhoneLib";
+import { getUTCDate } from "../../Helpers/Utils";
 
 import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_responses";
 import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiries";
@@ -245,9 +247,17 @@ class Connect extends React.Component {
     };
 
     validateForm = () => {
-        const { budget, target, targets, targetType } = this.state;
+        const {
+            budget,
+            target,
+            targets,
+            targetType,
+            timeLimit,
+            setTimeLimit
+        } = this.state;
 
         const budgetErrorCondition = budget < 0.01 || budget > 10000;
+        const timeLimitError = setTimeLimit === true && timeLimit === null;
 
         // check if the target is valid based onthe targetType
         let targetErrorCondition = false;
@@ -259,12 +269,12 @@ class Connect extends React.Component {
                 // only error if both are false
                 targetErrorCondition = !validEmail && !validPhone;
                 break;
-            default:
         }
 
         this.setState({
             budgetError: budgetErrorCondition,
-            validForm: !budgetErrorCondition && targets.length > 0
+            validForm:
+                !budgetErrorCondition && !timeLimitError && targets.length > 0
         });
     };
 
@@ -275,8 +285,12 @@ class Connect extends React.Component {
 
             // set timelimit if set
             if (this.state.accessLevel !== "draft" && this.state.setTimeLimit) {
+                const timeFormatted = format(
+                    getUTCDate(this.state.timeLimit),
+                    "YYYY-MM-DD HH:mm:ss"
+                );
                 shareOptions = {
-                    end_date: this.state.timeLimit
+                    end_date: timeFormatted
                 };
             }
 
@@ -329,7 +343,8 @@ class Connect extends React.Component {
             }
 
             let targetInfo = false;
-            if (this.state.targets.length <= 0) {
+            if (this.state.targets.length > 0) {
+                const target = this.state.targets.pop();
                 const validEmail = EmailValidator.validate(target.value);
                 const validPhone = isValidPhonenumber(target.value);
 
@@ -350,6 +365,9 @@ class Connect extends React.Component {
                     }
                 }
             }
+
+            // no correct target, do nothing
+            if (!targetInfo) return null;
 
             this.props.shareInviteBankInquirySend(
                 this.props.user.id,
@@ -419,12 +437,12 @@ class Connect extends React.Component {
         );
 
         return (
-            <Grid container spacing={16}>
+            <Grid container spacing={16} justify="center">
                 <Helmet>
                     <title>{`bunqDesktop - Connect`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={3} lg={4}>
+                <Grid item xs={12} sm={3} md={2}>
                     <Button
                         onClick={this.props.history.goBack}
                         style={styles.btn}
@@ -433,7 +451,7 @@ class Connect extends React.Component {
                     </Button>
                 </Grid>
 
-                <Grid item xs={12} sm={6} lg={4}>
+                <Grid item xs={12} sm={6} md={5}>
                     <Paper style={styles.paper}>
                         <TypographyTranslate
                             variant="headline"
@@ -509,61 +527,66 @@ class Connect extends React.Component {
                     </Paper>
                 </Grid>
 
-                <Grid item xs={12} />
-                <Grid item xs={12} sm={3} />
-
-                <Grid item xs={12} sm={6}>
-                    {filteredInviteResponses.length > 0 ||
-                    filteredInviteInquiries.length > 0 ? (
+                {filteredInviteResponses.length > 0 ||
+                filteredInviteInquiries.length > 0 ? (
+                    <Grid item xs={12} sm={6} md={5}>
                         <Grid container spacing={8}>
-                            <Grid item xs={12} sm={6}>
-                                <Paper style={styles.paperList}>
-                                    <List dense>
-                                        <ListSubheader>
-                                            Shared With:
-                                        </ListSubheader>
-                                        {filteredInviteInquiries.map(
-                                            filteredInviteInquiry => (
-                                                <ConnectListItem
-                                                    t={t}
-                                                    connectInfo={
-                                                        filteredInviteInquiry.ShareInviteBankInquiry
-                                                    }
-                                                    BunqJSClient={
-                                                        this.props.BunqJSClient
-                                                    }
-                                                />
-                                            )
-                                        )}
-                                    </List>
-                                </Paper>
-                            </Grid>
+                            {filteredInviteInquiries.length > 0 ? (
+                                <Grid item xs={12} sm={12}>
+                                    <Paper style={styles.paperList}>
+                                        <List dense>
+                                            <ListSubheader>
+                                                Shared With:
+                                            </ListSubheader>
+                                            {filteredInviteInquiries.map(
+                                                filteredInviteInquiry => (
+                                                    <ConnectListItem
+                                                        t={t}
+                                                        connectInfo={
+                                                            filteredInviteInquiry.ShareInviteBankInquiry
+                                                        }
+                                                        BunqJSClient={
+                                                            this.props
+                                                                .BunqJSClient
+                                                        }
+                                                    />
+                                                )
+                                            )}
+                                        </List>
+                                    </Paper>
+                                </Grid>
+                            ) : null}
 
-                            <Grid item xs={12} sm={6}>
-                                <Paper style={styles.paperList}>
-                                    <List dense>
-                                        <ListSubheader>
-                                            Shared By:
-                                        </ListSubheader>
-                                        {filteredInviteResponses.map(
-                                            filteredInviteResponse => (
-                                                <ConnectListItem
-                                                    t={t}
-                                                    connectInfo={
-                                                        filteredInviteResponse.ShareInviteBankResponse
-                                                    }
-                                                    BunqJSClient={
-                                                        this.props.BunqJSClient
-                                                    }
-                                                />
-                                            )
-                                        )}
-                                    </List>
-                                </Paper>
-                            </Grid>
+                            {filteredInviteResponses.length > 0 ? (
+                                <Grid item xs={12} sm={12}>
+                                    <Paper style={styles.paperList}>
+                                        <List dense>
+                                            <ListSubheader>
+                                                Shared By:
+                                            </ListSubheader>
+                                            {filteredInviteResponses.map(
+                                                filteredInviteResponse => (
+                                                    <ConnectListItem
+                                                        t={t}
+                                                        connectInfo={
+                                                            filteredInviteResponse.ShareInviteBankResponse
+                                                        }
+                                                        BunqJSClient={
+                                                            this.props
+                                                                .BunqJSClient
+                                                        }
+                                                    />
+                                                )
+                                            )}
+                                        </List>
+                                    </Paper>
+                                </Grid>
+                            ) : null}
                         </Grid>
-                    ) : null}
-                </Grid>
+                    </Grid>
+                ) : (
+                    <Grid item xs={12} sm={3} md={2} />
+                )}
             </Grid>
         );
     }

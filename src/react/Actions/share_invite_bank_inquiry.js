@@ -12,7 +12,7 @@ export function shareInviteBankInquirySend(
     shareStatus = "PENDING"
 ) {
     const failedMessage = window.t(
-        "We received the following error while sending your payment"
+        "We received the following error while sending your connect request"
     );
     const successMessage = window.t("Connect request was sent successfully!");
 
