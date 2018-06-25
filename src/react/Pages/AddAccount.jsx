@@ -182,7 +182,7 @@ class AddAccount extends React.Component {
                         <ButtonTranslate
                             variant="raised"
                             color="primary"
-                            disabled={!this.state.validForm}
+                            disabled={!this.state.validForm || this.props.accountsLoading}
                             onClick={this.createAccount}
                             style={styles.btn}
                         >
@@ -214,6 +214,7 @@ class AddAccount extends React.Component {
 const mapStateToProps = state => {
     return {
         accounts: state.accounts.accounts,
+        accountsLoading: state.accounts.loading,
 
         user: state.user.user
     };
