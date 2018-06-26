@@ -82,6 +82,8 @@ export const masterCardActionText = (masterCardAction, t) => {
             return `${t(
                 "Payment was refunded due to "
             )}${masterCardAction.decision_description}`;
+        case "REVERSED":
+            return t("The payment was reversed");
         default:
             return `${t(
                 "The payment currently has the status "

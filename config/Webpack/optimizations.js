@@ -12,9 +12,8 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
                 default: false,
                 commons: {
                     chunks: "initial",
-                    minChunks: 2,
-                    maxInitialRequests: 3, // The default limit is too small to showcase the effect
-                    minSize: 10000 // This is example is too small to create commons chunks
+                    minChunks: 3,
+                    minSize: 25000
                 },
                 vendor: {
                     test: /node_modules/,

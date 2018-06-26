@@ -31,10 +31,6 @@ class PaymentListItem extends React.Component {
         };
     }
 
-    // shouldComponentUpdate(nextProps) {
-    //     return nextProps.payment.id !== this.props.payment.id;
-    // }
-
     render() {
         const { payment } = this.props;
 
@@ -45,7 +41,7 @@ class PaymentListItem extends React.Component {
                     .attachment_public_uuid;
         }
         const displayName = payment.counterparty_alias.display_name;
-        const paymentAmount = payment.getAmount();
+        const paymentAmount = parseFloat(payment.amount.value);
         const formattedPaymentAmount = formatMoney(paymentAmount);
         const paymentTypeLabel = paymentText(payment, this.props.t);
 

@@ -11,8 +11,10 @@ import Login from "./Pages/Login/Login";
 const NotFound = CL(() =>
     import(/* webpackChunkName: "notfound" */ "./Pages/NotFound")
 );
-const Pay = CL(() => import(/* webpackChunkName: "pay" */ "./Pages/Pay/Pay"));
-const ScheduledPayments = CL(() => import(/* webpackChunkName: "pay" */ "./Pages/ScheduledPayments/ScheduledPayments"));
+const Pay = CL(() => import(/* webpackChunkName: "pay" */ "./Pages/Pay"));
+const ScheduledPayments = CL(() =>
+    import(/* webpackChunkName: "scheduled_payments" */ "./Pages/ScheduledPayments/ScheduledPayments")
+);
 const BunqMeTab = CL(() =>
     import(/* webpackChunkName: "bunqmetab" */ "./Pages/BunqMeTab/BunqMeTab")
 );
@@ -125,7 +127,10 @@ export default class Routes extends React.Component {
                             userType={this.props.userType}
                             derivedPassword={this.props.derivedPassword}
                             render={props => (
-                                <ScheduledPayments {...props} {...this.props.childProps} />
+                                <ScheduledPayments
+                                    {...props}
+                                    {...this.props.childProps}
+                                />
                             )}
                         />
 
