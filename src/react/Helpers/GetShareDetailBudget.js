@@ -16,9 +16,9 @@ export default shareInviteBankResponses => {
             const budgetInfo =
                 shareInviteResponse.share_detail.ShareDetailPayment.budget;
 
-            if(budgetInfo){
+            if (budgetInfo) {
                 // get the available balance for this budget
-                return budgetInfo.amount_available.value;
+                return parseFloat(budgetInfo.amount_available.value);
             }
         }
     }

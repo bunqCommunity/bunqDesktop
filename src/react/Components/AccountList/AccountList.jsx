@@ -14,6 +14,7 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import AccountListItem from "./AccountListItem";
 import AddAccount from "./AddAccount";
 import { formatMoney } from "../../Helpers/Utils";
+import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
 import { filterShareInviteBankResponses } from "../../Helpers/DataFilters";
 
 import { accountsSelectAccount, accountsUpdate } from "../../Actions/accounts";
@@ -192,6 +193,20 @@ class AccountList extends React.Component {
 
         const totalBalance = this.props.accounts.reduce((total, account) => {
             if (account.balance) {
+                // get responses for this account
+                const filteredResponses = shareInviteBankResponses.filter(
+                    filterShareInviteBankResponses(account.id)
+                );
+
+                // get budget from this response
+                if (filteredResponses.length > 0) {
+                    const connectBudget = GetShareDetailBudget(
+                        filteredResponses
+                    );
+
+                    if (connectBudget) return total + parseFloat(connectBudget);
+                }
+
                 return total + parseFloat(account.balance.value);
             }
             return total;
