@@ -146,7 +146,7 @@
 	"Loading user accounts": "Accounts ophalen",
 	"Login": "Log in",
 	"LoginActiveDevelopmentWarning": "Dit project is nog steeds in actieve ontwikkeling en we zijn niet verantwoordelijk als er iets misgaat.",
-	"LoginBunqDesktopWarning": "BunqDesktop is een onofficieel, gratis en open-source project en is op geen enkele manier geassocieerd met of ondersteund door bunq!",
+	"LoginBunqDesktopWarning": "bunqDesktop is een onofficieel, gratis en open-source project en is op geen enkele manier geassocieerd met of ondersteund door bunq!",
 	"LoginPasswordWarningPart1": "Om je gegevens veilig te houden, wordt alles gecodeerd met het wachtwoord dat u invoert. Als u dit wachtwoord bent vergeten, worden alle persoonlijke gegevens binnen bunqDesktop gereset en moet u opnieuw inloggen.",
 	"LoginPasswordWarningPart2": "Als u besluit een leeg wachtwoord te gebruiken, kan iedereen met de vereiste kennis je gegevens bekijken als ze toegang krijgen tot je fysieke apparaat!",
 	"Logout": "Uitloggen",

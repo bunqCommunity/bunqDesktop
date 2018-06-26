@@ -10,4 +10,4 @@ For example:
 - Which page is the error dispalyed on
 - Include the error displayed on the error screen if possible
 - Provide screenshots if a visual bug is involved
-- List which versions you are using. For example `Windows 10 and BunqDesktop 0.6.4`.
+- List which versions you are using. For example `Windows 10 and bunqDesktop 0.6.4`.

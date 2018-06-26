@@ -10,15 +10,15 @@
 
     <!-- == SOFTWARE SPECIFIC SECTION == -->
     <!-- This section is about the software itself -->
-    <title>bunqDesktop</title>
+    <title>BunqDesktop</title>
     <authors>bunqCommunity</authors>
     <!-- projectUrl is required for the community feed -->
-    <projectUrl>https://github.com/bunqCommunity/bunqDesktop</projectUrl>
-    <iconUrl>https://rawgit.com/bunqCommunity/bunqDesktop/master/app/images/256x256.png</iconUrl>
+    <projectUrl>https://github.com/bunqCommunity/BunqDesktop</projectUrl>
+    <iconUrl>https://rawgit.com/bunqCommunity/BunqDesktop/master/app/images/256x256.png</iconUrl>
 
-    <projectSourceUrl>https://github.com/bunqCommunity/bunqDesktop</projectSourceUrl>
-    <docsUrl>https://github.com/bunqCommunity/bunqDesktop</docsUrl>
-    <bugTrackerUrl>https://github.com/bunqCommunity/bunqDesktop/issues</bugTrackerUrl>
+    <projectSourceUrl>https://github.com/bunqCommunity/BunqDesktop</projectSourceUrl>
+    <docsUrl>https://github.com/bunqCommunity/BunqDesktop</docsUrl>
+    <bugTrackerUrl>https://github.com/bunqCommunity/BunqDesktop/issues</bugTrackerUrl>
 
     <tags>bunqdesktop finance desktop bunq api</tags>
     <summary>The unofficial, free and open source desktop application for the bunq API</summary>
