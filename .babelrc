@@ -33,6 +33,9 @@
             "plugins": [
                 "babel-plugin-dynamic-import-node"
             ]
+        },
+        "development": {
+            "compact": false
         }
     }
 }
