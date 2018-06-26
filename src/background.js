@@ -13,6 +13,8 @@ import changePage from "./helpers/react_navigate";
 import settingsHelper from "./helpers/settings";
 import oauth from "./helpers/oauth";
 
+import sentry from "./sentry";
+
 // import i18n from "./i18n-background";
 import env from "./env";
 
