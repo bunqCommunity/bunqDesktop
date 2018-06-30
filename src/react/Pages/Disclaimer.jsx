@@ -14,6 +14,7 @@ import Typography from "@material-ui/core/Typography";
 import LockIcon from "@material-ui/icons/Lock";
 import DesktopIcon from "@material-ui/icons/DesktopMac";
 import BuildIcon from "@material-ui/icons/Edit";
+import LiveHelpIcon from "@material-ui/icons/LiveHelp";
 
 import TranslateButton from "../Components/TranslationHelpers/Button";
 
@@ -34,14 +35,14 @@ class Disclaimer extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            hasReadWarning: !!store.get("HAS_READ_DEV_WARNING"),
+            hasReadWarning: !!store.get("HAS_READ_DEV_WARNING2"),
 
             clicked: false
         };
     }
 
     ignoreWarning = event => {
-        store.set("HAS_READ_DEV_WARNING", true);
+        store.set("HAS_READ_DEV_WARNING2", true);
         this.setState({ hasReadWarning: true, clicked: true });
 
         const analyticsEnabled = this.props.analyticsEnabled !== false;
@@ -90,7 +91,7 @@ class Disclaimer extends React.Component {
                                 <DesktopIcon /> bunqDesktop
                             </Typography>
                             <Typography variant="body2">
-                                {t("LoginBunqDesktopWarning")}
+                                {t("DisclaimerBunqDesktopExplanation")}
                             </Typography>
                             <br />
 
@@ -98,7 +99,15 @@ class Disclaimer extends React.Component {
                                 <BuildIcon /> Development
                             </Typography>
                             <Typography variant="body2">
-                                {t("LoginActiveDevelopmentWarning")}
+                                {t("DisclaimerActiveDevelopmentWarning")}
+                            </Typography>
+                            <br />
+
+                            <Typography variant="headline">
+                                <LiveHelpIcon /> Error logging
+                            </Typography>
+                            <Typography variant="body2">
+                                {t("DisclaimerErrorLoggingWarning")}
                             </Typography>
                             <br />
 
@@ -106,10 +115,10 @@ class Disclaimer extends React.Component {
                                 <LockIcon /> Password
                             </Typography>
                             <Typography variant="body2">
-                                {t("LoginPasswordWarningPart1")}
+                                {t("DisclaimerPasswordWarningPart1")}
                             </Typography>
                             <Typography variant="body2">
-                                {t("LoginPasswordWarningPart2")}
+                                {t("DisclaimerPasswordWarningPart2")}
                             </Typography>
 
                             <FormControlLabel

@@ -66,7 +66,7 @@ class LoginPassword extends React.Component {
             password: "",
             passwordValid: false,
 
-            hasReadWarning: !!store.get("HAS_READ_DEV_WARNING")
+            hasReadWarning: !!store.get("HAS_READ_DEV_WARNING2")
         };
     }
 
