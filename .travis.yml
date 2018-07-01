@@ -63,36 +63,37 @@ before_cache:
 before_deploy:
   - |
     if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-      sudo tar -cvzf ./dist/linux-unpacked-$TRAVIS_TAG.tar.gz ./dist/linux-unpacked/*
+      sudo tar -cvzf ./dist/linux-unpacked.tar.gz ./dist/linux-unpacked/*
     fi
 
 deploy:
   - provider: releases
     overwrite: true
-    tag_name: $TRAVIS_TAG
-    name: $TRAVIS_TAG
+    tag_name: travis_build
+    name: travis_build
     api_key:
       secure: fuXvloxR1qV4Xj8PecoF8gmQHCPukRF3nR7+szuHsoumUusyko0N5QbItdIfYTwpV9pIGwujV5mB0Ya/CKQzILkdlXo+cJzpCvFGJ1Q9wKk9hwLnouOiyF3wsagia8dpX4iLzVEATu4+LM3jol+KlXLGl8OxkGIy5Vifbd5GTbEiSrTxT9cF48/0ubgf/9rjjJyo5exuE30pRLs+m9cqnCSwgwcH6368OfYOlbRSgtGtzR9eEoGlqiNk2UHGmZUwy8dqOhid+meM7IGXwPjua8hrp1/nc/k8+UcwQxxly8xjp8bib6ier+2GbfbwxHiPWUtKFHoNzJlGWfj6xahz6fPL412HGeWVCrbVJcI3bTb/Ed1EjsjQyr4rUwvFnGitzRQAYqg/s2tpl4mVFPYyLgVMnlqiGNMkAaGfqYgErwdCkaYTtWGmLdIUkDsPMCSc4hOlajWNlb2n/ArYHOCmD+KC1KJ8hsJTxXQWD9Tfv5JBKd8g+63YIS+YEifUsxa9W4UhtODsPwBBcot/m4EH1FJS7wsticqB7rbkVq2iiMLWWMOImX47FSBqFG/0ioeWFayLIuDz+Ulvska/Nz4+R0tCQc4t1l1FDT56WI54H4KE2oYIQ8Y3U304mS6URhVRN+561HwzxVJA4halN30H4aOQjhjm5LW1e4PcSRiRalo=
     file_glob: true
     file:
-      - dist/BunqDesktop Setup *.exe
-      - dist/BunqDesktop-*.dmg
+      - dist/bunqDesktop Setup *.exe
+      - dist/bunqDesktop-*.dmg
       - dist/bunqdesktop_*_amd64.deb
       - dist/bunqdesktop_*_i386.deb
       - dist/bunqdesktop_*_amd64.snap
       - dist/bunqdesktop-*-x86_64.AppImage
       - dist/bunqdesktop-*-i386.AppImage
-      - dist/linux-unpacked-*.tar.gz
+      - dist/linux-unpacked.tar.gz
     draft: true
     skip_cleanup: true
     on:
-      tags: true
+      all_branches: true
+      condition: $TRAVIS_TAG || $TRAVIS_BRANCH == 'release'
   - provider: script
-    script: docker run -v $(pwd):$(pwd) -w $(pwd) snapcore/snapcraft sh -c "apt update && snapcraft push dist/bunqdesktop_*_amd64.snap --release stable"
+    script: docker run -v $(pwd):$(pwd) -w $(pwd) snapcore/snapcraft sh -c "apt update && snapcraft push dist/bunqdesktop_*_amd64.snap --release edge"
     skip_cleanup: true
     on:
-      condition: $TRAVIS_OS_NAME == 'linux' && $TRAVIS_BRANCH == 'master'
-      tags: true
+      branch: release
+      condition: $TRAVIS_OS_NAME == 'linux'
 
 after_success:
   - openssl aes-256-cbc -K $encrypted_6a955bf10c5f_key -iv $encrypted_6a955bf10c5f_iv -in .snapcraft/travis_snapcraft.cfg -out .snapcraft/snapcraft.cfg -d

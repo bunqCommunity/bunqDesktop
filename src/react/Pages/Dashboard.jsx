@@ -3,12 +3,13 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import StickyBox from "react-sticky-box";
-import Paper from "material-ui/Paper";
-import Button from "material-ui/Button";
-import Grid from "material-ui/Grid";
-import IconButton from "material-ui/IconButton";
-import Typography from "material-ui/Typography";
-import Tooltip from "material-ui/Tooltip";
+import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
+import Hidden from "@material-ui/core/Hidden";
+import IconButton from "@material-ui/core/IconButton";
+import Typography from "@material-ui/core/Typography";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import MoneyIcon from "@material-ui/icons/AttachMoney";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
@@ -94,12 +95,14 @@ class Dashboard extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Dashboard")}`}</title>
+                    <title>{`bunqDesktop - ${t("Dashboard")}`}</title>
                 </Helmet>
 
-                <Grid item hidden={{ mdDown: true }} lg={2} />
+                <Hidden mdDown>
+                    <Grid item lg={1} xl={2} />
+                </Hidden>
 
-                <Grid item xs={12} lg={8}>
+                <Grid item xs={12} md={12} lg={10} xl={8}>
                     <Grid container spacing={16}>
                         <Grid item xs={6} style={styles.titleWrapper}>
                             <IconButton
@@ -136,17 +139,24 @@ class Dashboard extends React.Component {
                                     <KeyIcon />
                                 </IconButton>
                             </Tooltip>
+
                             <Tooltip id="tooltip-fab" title="Logout of account">
                                 <IconButton
                                     style={styles.iconButton}
-                                    onClick={() => location.reload()}
+                                    onClick={() => {
+                                        if (this.props.useNoPassword) {
+                                            // if no password is set
+                                            this.props.registrationLogOut();
+                                        }
+                                        location.reload();
+                                    }}
                                 >
                                     <ExitToAppIcon />
                                 </IconButton>
                             </Tooltip>
                         </Grid>
 
-                        <Grid item xs={12} md={4}>
+                        <Grid item xs={12} sm={5} md={4}>
                             <StickyBox className={"sticky-container"}>
                                 <Paper>
                                     <AccountList
@@ -188,7 +198,7 @@ class Dashboard extends React.Component {
                             </StickyBox>
                         </Grid>
 
-                        <Grid item xs={12} md={8}>
+                        <Grid item xs={12} sm={7} md={8}>
                             <Paper>
                                 <CombinedList
                                     BunqJSClient={this.props.BunqJSClient}
@@ -216,6 +226,7 @@ const mapStateToProps = state => {
         requestInquiryLoading: state.request_inquiry.loading,
         selectedAccount: state.accounts.selectedAccount,
 
+        useNoPassword: state.registration.use_no_password,
         storedApiKeys: state.registration.stored_api_keys,
         environment: state.registration.environment
     };

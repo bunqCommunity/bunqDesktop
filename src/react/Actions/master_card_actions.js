@@ -57,7 +57,7 @@ export function masterCardActionsUpdate(
     }
 ) {
     const failedMessage = window.t(
-        "We received the following error while loading your master card payments"
+        "We received the following error while loading your mastercard payments"
     );
 
     return dispatch => {

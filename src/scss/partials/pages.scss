@@ -1,27 +1,43 @@
-@-webkit-keyframes AnimatedRainbow {
-    0%{background-position:1% 0%}
-    50%{background-position:99% 100%}
-    100%{background-position:1% 0%}
+#login-background-image{
+    position: fixed;
+    top: 50px;
+    left: 0px;
+    width: 100vw;
+    height: calc(100vh - 50px);
+    z-index: 0;
 }
-@keyframes AnimatedRainbow {
-    0%{background-position:1% 0%}
-    50%{background-position:99% 100%}
-    100%{background-position:1% 0%}
+
+.login-wrapper{
+    z-index: 1;
 }
 
 .login-page,
 .password-page {
-    background-color: black !important;
-
-    //background: linear-gradient(133deg, #70e145, #3b8bd9, #b7159c);
-    //background-size: 600% 600%;
-    //-webkit-animation: AnimatedRainbow 25s ease infinite;
-    //animation: AnimatedRainbow 25s ease infinite;
+    //background-image: url("../images/svg/login-bg2.svg") !important;
+    //background-size: cover;
+    //background-repeat: no-repeat;
+    //background-position: center center;
 
     .text-input {
         &:before {
-            background-color: grey !important;
+            border-color: grey !important;
         }
+    }
+
+    .bunqdesktop-text-wrapper {
+        z-index: 1;
+        position: fixed;
+        right: 30px;
+        bottom: 30px;
+        height: 24px;
+        font-size: 24px;
+        color: #ffffff;
+    }
+    .bunqdesktop-text-first {
+        font-weight: 700
+    }
+    .bunqdesktop-text-second {
+        font-weight: 200
     }
 
     .black-button {

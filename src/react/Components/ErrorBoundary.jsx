@@ -1,7 +1,8 @@
 import React from "react";
-import Typography from "material-ui/Typography";
-import Logger from "../Helpers/Logger";
+import Typography from "@material-ui/core/Typography";
+import * as Sentry from "@sentry/electron";
 
+import Logger from "../Helpers/Logger";
 import TranslateButton from "./TranslationHelpers/Button";
 import TranslateTypography from "./TranslationHelpers/Typography";
 
@@ -15,7 +16,7 @@ export default class ErrorBoundary extends React.Component {
         Logger.error(error.stack);
 
         // Display fallback UI
-        this.setState({ hasError: true, error, errorInfo });
+        this.setState({ hasError: true, error: error, errorInfo: errorInfo });
     }
 
     clearError = () => {

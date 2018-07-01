@@ -6,10 +6,10 @@ import settings from "../ImportWrappers/electronSettings";
 // configure the localforage instance
 localforage.config({
     driver: localforage.INDEXEDDB,
-    name: "BunqDesktop",
+    name: "bunqDesktop",
     version: 1.0,
     storeName: "bunq_desktop_images",
-    description: "Image cache for BunqDesktop in IndexedDB"
+    description: "Image cache for bunqDesktop in IndexedDB"
 });
 
 export const THEME_LOCATION = "BUNQDESKTOP_THEME";

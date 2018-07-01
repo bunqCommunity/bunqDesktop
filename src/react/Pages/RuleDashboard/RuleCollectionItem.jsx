@@ -1,10 +1,8 @@
 import React from "react";
-import {
-    ListItem,
-    ListItemText,
-    ListItemSecondaryAction
-} from "material-ui/List";
-import Divider from "material-ui/Divider";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import Divider from "@material-ui/core/Divider";
 
 import NavLink from "../../Components/Routing/NavLink";
 import CategoryIcon from "../../Components/Categories/CategoryIcon";

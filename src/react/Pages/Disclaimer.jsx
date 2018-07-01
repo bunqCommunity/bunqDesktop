@@ -4,16 +4,17 @@ import { connect } from "react-redux";
 import Redirect from "react-router-dom/Redirect";
 import Helmet from "react-helmet";
 import store from "store";
-import Grid from "material-ui/Grid";
-import { FormControlLabel } from "material-ui/Form";
-import Card, { CardContent } from "material-ui/Card";
-import Checkbox from "material-ui/Checkbox";
-import Typography from "material-ui/Typography";
-import IconButton from "material-ui/IconButton";
+import Grid from "@material-ui/core/Grid";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Card  from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import Checkbox from "@material-ui/core/Checkbox";
+import Typography from "@material-ui/core/Typography";
 
-import WarningIcon from "@material-ui/icons/Warning";
 import LockIcon from "@material-ui/icons/Lock";
-import HelpIcon from "@material-ui/icons/Help";
+import DesktopIcon from "@material-ui/icons/DesktopMac";
+import BuildIcon from "@material-ui/icons/Edit";
+import LiveHelpIcon from "@material-ui/icons/LiveHelp";
 
 import TranslateButton from "../Components/TranslationHelpers/Button";
 
@@ -34,14 +35,14 @@ class Disclaimer extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            hasReadWarning: !!store.get("HAS_READ_DEV_WARNING"),
+            hasReadWarning: !!store.get("HAS_READ_DEV_WARNING2"),
 
             clicked: false
         };
     }
 
     ignoreWarning = event => {
-        store.set("HAS_READ_DEV_WARNING", true);
+        store.set("HAS_READ_DEV_WARNING2", true);
         this.setState({ hasReadWarning: true, clicked: true });
 
         const analyticsEnabled = this.props.analyticsEnabled !== false;
@@ -80,54 +81,69 @@ class Disclaimer extends React.Component {
                 style={styles.wrapperContainer}
             >
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Disclaimer")}`}</title>
+                    <title>{`bunqDesktop - ${t("Disclaimer")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={8} md={6} lg={4}>
-                    <Card>
-                        <Card style={styles.warningCard}>
-                            <CardContent>
-                                <Typography variant="headline">
-                                    <WarningIcon /> Caution!
-                                </Typography>
-                                <Typography variant="body2">
-                                    {t("ActiveDevelopmentWarning")}
-                                </Typography>
-                                <br />
-                                <Typography variant="headline">
-                                    <LockIcon /> Password
-                                </Typography>
-                                <Typography variant="body2">
-                                    {t("PasswordWarningPart1")}
-                                </Typography>
-                                <Typography variant="body2">
-                                    {t("PasswordWarningPart2")}
-                                </Typography>
+                    <Card style={styles.warningCard}>
+                        <CardContent>
+                            <Typography variant="headline">
+                                <DesktopIcon /> bunqDesktop
+                            </Typography>
+                            <Typography variant="body2">
+                                {t("DisclaimerBunqDesktopExplanation")}
+                            </Typography>
+                            <br />
 
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={analyticsEnabled !== false}
-                                            onChange={this.toggleAnalytics}
-                                        />
-                                    }
-                                    label={t(
-                                        "Allow basic and anonymous Google Analytics tracking"
-                                    )}
-                                />
+                            <Typography variant="headline">
+                                <BuildIcon /> Development
+                            </Typography>
+                            <Typography variant="body2">
+                                {t("DisclaimerActiveDevelopmentWarning")}
+                            </Typography>
+                            <br />
 
-                                <div style={{ textAlign: "center" }}>
-                                    <TranslateButton
-                                        variant={"raised"}
-                                        color={"primary"}
-                                        style={styles.buttons}
-                                        onClick={this.ignoreWarning}
-                                    >
-                                        Get started
-                                    </TranslateButton>
-                                </div>
-                            </CardContent>
-                        </Card>
+                            <Typography variant="headline">
+                                <LiveHelpIcon /> Error logging
+                            </Typography>
+                            <Typography variant="body2">
+                                {t("DisclaimerErrorLoggingWarning")}
+                            </Typography>
+                            <br />
+
+                            <Typography variant="headline">
+                                <LockIcon /> Password
+                            </Typography>
+                            <Typography variant="body2">
+                                {t("DisclaimerPasswordWarningPart1")}
+                            </Typography>
+                            <Typography variant="body2">
+                                {t("DisclaimerPasswordWarningPart2")}
+                            </Typography>
+
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={analyticsEnabled !== false}
+                                        onChange={this.toggleAnalytics}
+                                    />
+                                }
+                                label={t(
+                                    "Allow basic and anonymous Google Analytics tracking"
+                                )}
+                            />
+
+                            <div style={{ textAlign: "center" }}>
+                                <TranslateButton
+                                    variant={"raised"}
+                                    color={"primary"}
+                                    style={styles.buttons}
+                                    onClick={this.ignoreWarning}
+                                >
+                                    Get started
+                                </TranslateButton>
+                            </div>
+                        </CardContent>
                     </Card>
                 </Grid>
             </Grid>

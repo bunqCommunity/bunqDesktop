@@ -4,23 +4,30 @@ import Redirect from "react-router-dom/Redirect";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import CirclePicker from "react-color/lib/Circle";
-import Grid from "material-ui/Grid";
-import Paper from "material-ui/Paper";
-import Button from "material-ui/Button";
-import TextField from "material-ui/TextField";
-import { CircularProgress } from "material-ui/Progress";
-import Dialog, {
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle
-} from "material-ui/Dialog";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
+import NavLink from "../Components/Routing/NavLink";
 import CombinedList from "../Components/CombinedList/CombinedList";
 import AccountCard from "../Components/AccountCard";
 import ButtonTranslate from "../Components/TranslationHelpers/Button";
+import {
+    filterShareInviteBankResponses,
+    filterShareInviteBankInquiries
+} from "../Helpers/DataFilters";
 
 import { openSnackbar } from "../Actions/snackbar";
 import {
@@ -33,6 +40,8 @@ import { requestResponsesUpdate } from "../Actions/request_responses";
 import { bunqMeTabsUpdate } from "../Actions/bunq_me_tabs";
 import { masterCardActionsUpdate } from "../Actions/master_card_actions";
 import { requestInquiriesUpdate } from "../Actions/request_inquiries";
+import { shareInviteBankInquiriesInfoUpdate } from "../Actions/share_invite_bank_inquiries";
+import { shareInviteBankResponsesInfoUpdate } from "../Actions/share_invite_bank_responses";
 
 const styles = {
     textField: {
@@ -79,6 +88,8 @@ class AccountInfo extends React.Component {
             const userId = this.props.user.id;
             const accountId = parseFloat(this.props.match.params.accountId);
 
+            this.props.shareInviteBankInquiriesInfoUpdate(userId, accountId);
+            this.props.shareInviteBankResponsesInfoUpdate(userId);
             this.props.paymentsUpdate(userId, accountId);
             this.props.bunqMeTabsUpdate(userId, accountId);
             this.props.requestResponsesUpdate(userId, accountId);
@@ -102,13 +113,22 @@ class AccountInfo extends React.Component {
     }
 
     componentWillUpdate(nextProps, nextState) {
-        const { initialBunqConnect, user } = nextProps;
+        const { initialBunqConnect, accountsLoading, user } = nextProps;
         const accountId = parseFloat(this.props.match.params.accountId);
         const nextAccountId = parseFloat(nextProps.match.params.accountId);
 
-        if (initialBunqConnect && nextAccountId !== accountId) {
+        if (
+            accountsLoading === false &&
+            initialBunqConnect &&
+            nextAccountId !== accountId
+        ) {
             this.props.accountsUpdate(user.id);
 
+            this.props.shareInviteBankInquiriesInfoUpdate(
+                user.id,
+                nextAccountId
+            );
+            this.props.shareInviteBankResponsesInfoUpdate(user.id);
             this.props.paymentsUpdate(user.id, nextAccountId);
             this.props.bunqMeTabsUpdate(user.id, nextAccountId);
             this.props.requestResponsesUpdate(user.id, nextAccountId);
@@ -145,10 +165,10 @@ class AccountInfo extends React.Component {
         this.setState({ settingsDescription: event.target.value });
     handleDailyLimitChange = event => {
         let inputLimit = event.target.value;
-        if (inputLimit > 10000) inputLimit = 10000;
-        if (inputLimit < 1) inputLimit = 1;
+        if (inputLimit > 50000) inputLimit = 50000;
+        if (inputLimit < 0) inputLimit = 0;
 
-        this.setState({ settingsDailyLimit: inputLimit });
+        this.setState({ settingsDailyLimit: parseFloat(inputLimit) });
     };
 
     editAccount = event => {
@@ -163,11 +183,16 @@ class AccountInfo extends React.Component {
             account => account.id === accountId
         );
 
+        // fix daily limit if required
+        let settingsDailyLimit = this.state.settingsDailyLimit;
+        if (settingsDailyLimit > 50000) settingsDailyLimit = 50000;
+        if (settingsDailyLimit <= 0) settingsDailyLimit = 0;
+
         // update settings
         this.props.updateSettings(this.props.user.id, accountInfo.id, {
             description: this.state.settingsDescription,
             daily_limit: {
-                value: "" + this.state.settingsDailyLimit.toFixed(2),
+                value: "" + settingsDailyLimit.toFixed(2),
                 currency: "EUR"
             },
             setting: {
@@ -177,8 +202,17 @@ class AccountInfo extends React.Component {
     };
 
     render() {
-        const { accounts, t } = this.props;
+        const {
+            accounts,
+            shareInviteBankResponses,
+            shareInviteBankInquiries,
+            t
+        } = this.props;
         const accountId = parseFloat(this.props.match.params.accountId);
+
+        const noneText = t("None");
+        const sharedWithText = t("Shared with");
+        const sharedByText = t("Shared by");
 
         if (this.state.deactivateActivated) return <Redirect to="/" />;
 
@@ -186,6 +220,44 @@ class AccountInfo extends React.Component {
 
         let content = null;
         if (accountInfo !== false) {
+            const filteredInviteResponses = shareInviteBankResponses.filter(
+                filterShareInviteBankResponses(accountInfo.id)
+            );
+            const filteredShareInquiries = shareInviteBankInquiries.filter(
+                filterShareInviteBankInquiries(accountInfo.id)
+            );
+
+            let primaryConnectText = sharedWithText;
+            let secondaryConnectText = noneText;
+            let displayNameList = [];
+            let allowConnectSettings = true;
+
+            if (filteredInviteResponses.length > 0) {
+                // this account was shared by someone
+                primaryConnectText = sharedByText;
+                allowConnectSettings = false;
+
+                displayNameList = filteredInviteResponses.map(
+                    filteredInviteResponse => {
+                        return filteredInviteResponse.ShareInviteBankResponse
+                            .counter_alias.display_name;
+                    }
+                );
+            } else if (filteredShareInquiries.length > 0) {
+                // this account was shared with someone
+                primaryConnectText = sharedWithText;
+
+                displayNameList = filteredShareInquiries.map(
+                    filteredShareInquiry => {
+                        return filteredShareInquiry.ShareInviteBankInquiry
+                            .counter_user_alias.display_name;
+                    }
+                );
+            }
+            if (displayNameList.length > 0) {
+                secondaryConnectText = displayNameList.join(", ");
+            }
+
             content = (
                 <React.Fragment>
                     <Dialog
@@ -261,10 +333,10 @@ class AccountInfo extends React.Component {
                                 value={this.state.settingsDailyLimit}
                                 onChange={this.handleDailyLimitChange}
                                 type={"number"}
-                                placeholder={t("Daily limit")}
+                                label={t("Daily limit")}
                                 inputProps={{
                                     min: 0,
-                                    max: 10000
+                                    max: 50000
                                 }}
                             />
                         </DialogContent>
@@ -298,13 +370,39 @@ class AccountInfo extends React.Component {
                         hideBalance={this.props.hideBalance}
                         toggleSettingsDialog={this.toggleSettingsDialog}
                         toggleDeactivateDialog={this.toggleDeactivateDialog}
+                        shareInviteBankResponses={filteredInviteResponses}
                         account={accountInfo}
                     />
+
+                    <Paper style={styles.paperList}>
+                        <List>
+                            {allowConnectSettings ? (
+                                <ListItem
+                                    to={`/connect/${accountId}`}
+                                    component={NavLink}
+                                    button
+                                >
+                                    <ListItemText
+                                        primary={`${primaryConnectText}: `}
+                                        secondary={secondaryConnectText}
+                                    />
+                                </ListItem>
+                            ) : (
+                                <ListItem>
+                                    <ListItemText
+                                        primary={`${primaryConnectText}: `}
+                                        secondary={secondaryConnectText}
+                                    />
+                                </ListItem>
+                            )}
+                        </List>
+                    </Paper>
 
                     <Paper style={styles.paperList}>
                         <CombinedList
                             BunqJSClient={this.props.BunqJSClient}
                             initialBunqConnect={this.props.initialBunqConnect}
+                            hiddenTypes={["ShareInviteBankInquiry"]}
                         />
                     </Paper>
                 </React.Fragment>
@@ -326,7 +424,7 @@ class AccountInfo extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Account Info")}`}</title>
+                    <title>{`bunqDesktop - ${t("Account Info")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={2}>
@@ -346,6 +444,16 @@ class AccountInfo extends React.Component {
 const mapStateToProps = state => {
     return {
         hideBalance: state.options.hide_balance,
+
+        shareInviteBankResponses:
+            state.share_invite_bank_responses.share_invite_bank_responses,
+        shareInviteBankResponsesLoading:
+            state.share_invite_bank_responses.loading,
+
+        shareInviteBankInquiries:
+            state.share_invite_bank_inquiries.share_invite_bank_inquiries,
+        shareInviteBankInquiriesLoading:
+            state.share_invite_bank_inquiries.loading,
 
         user: state.user.user,
         accounts: state.accounts.accounts,
@@ -374,6 +482,16 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                 )
             ),
 
+        shareInviteBankInquiriesInfoUpdate: (userId, accountId) =>
+            dispatch(
+                shareInviteBankInquiriesInfoUpdate(
+                    BunqJSClient,
+                    userId,
+                    accountId
+                )
+            ),
+        shareInviteBankResponsesInfoUpdate: (userId, accountId) =>
+            dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId)),
         paymentsUpdate: (userId, accountId) =>
             dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId)),
         requestInquiriesUpdate: (userId, accountId) =>

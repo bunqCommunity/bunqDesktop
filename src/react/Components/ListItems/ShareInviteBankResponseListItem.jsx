@@ -1,0 +1,195 @@
+import React from "react";
+import { connect } from "react-redux";
+import { translate } from "react-i18next";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import Avatar from "@material-ui/core/Avatar";
+import Divider from "@material-ui/core/Divider";
+import Collapse from "@material-ui/core/Collapse";
+
+import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
+import TranslateButton from "../TranslationHelpers/Button";
+
+import ShowOnly from "./ShareInviteBankTypes/ShowOnly";
+import FullAccess from "./ShareInviteBankTypes/FullAccess";
+import ParentChild from "./ShareInviteBankTypes/ParentChild";
+import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_responses";
+
+const styles = {
+    smallAvatar: {
+        width: 50,
+        height: 50
+    },
+    buttons: {
+        marginRight: 8
+    }
+};
+
+class ShareInviteBankResponseListItem extends React.Component {
+    constructor(props, context) {
+        super(props, context);
+        this.state = {
+            loading: false,
+            open: false
+        };
+    }
+
+    accept = event => {
+        const { t, BunqJSClient, user, shareInviteBankResponse } = this.props;
+
+        const success = t("The share request was successfully accepted");
+        const failed = t("Failed to accept the share request");
+
+        if (!this.state.loading) {
+            this.setState({ loading: true });
+
+            BunqJSClient.api.shareInviteBankResponse
+                .put(user.id, shareInviteBankResponse.id, "ACCEPTED")
+                .then(response => {
+                    // trigger an update
+                    this.props.shareInviteBankResponsesInfoUpdate(user.id);
+
+                    this.setState({ loading: false });
+                    this.props.openSnackbar(success);
+                })
+                .catch(error => {
+                    this.setState({ loading: false });
+                    this.props.openSnackbar(failed);
+                });
+        }
+    };
+
+    reject = event => {
+        const { t, BunqJSClient, user, shareInviteBankResponse } = this.props;
+
+        const success = t("The share request was successfully cancelled");
+        const failed = t("Failed to reject the share request");
+
+        if (!this.state.loading) {
+            this.setState({ loading: true });
+
+            BunqJSClient.api.shareInviteBankResponse
+                .put(user.id, shareInviteBankResponse.id, "CANCELLED")
+                .then(response => {
+                    // trigger an update
+                    this.props.shareInviteBankResponsesInfoUpdate(user.id);
+
+                    this.setState({ loading: false });
+                    this.props.openSnackbar(success);
+                })
+                .catch(error => {
+                    this.setState({ loading: false });
+                    this.props.openSnackbar(failed);
+                });
+        }
+    };
+
+    render() {
+        const { t, shareInviteBankResponse } = this.props;
+        if (!shareInviteBankResponse) return null;
+
+        let aliasInfo = shareInviteBankResponse.counter_alias;
+        if (!aliasInfo) return null;
+
+        let imageUUID = false;
+        if (aliasInfo.avatar) {
+            imageUUID = aliasInfo.avatar.image[0].attachment_public_uuid;
+        }
+        const displayName = aliasInfo.display_name;
+
+        const connectActions = (
+            <React.Fragment>
+                <TranslateButton
+                    style={styles.buttons}
+                    variant="raised"
+                    color="primary"
+                    onClick={this.accept}
+                    disabled={this.state.loading}
+                >
+                    Accept
+                </TranslateButton>
+                <TranslateButton
+                    style={styles.buttons}
+                    variant="raised"
+                    color="secondary"
+                    onClick={this.reject}
+                    disabled={this.state.loading}
+                >
+                    Reject
+                </TranslateButton>
+            </React.Fragment>
+        );
+
+        const shareDetailTypes = Object.keys(
+            shareInviteBankResponse.share_detail
+        );
+        const shareDetailType = shareDetailTypes[0];
+
+        let shareTypeObject = null;
+        switch (shareDetailType) {
+            case "ShareDetailPayment":
+                shareTypeObject = (
+                    <FullAccess t={t} secondaryActions={connectActions} />
+                );
+                break;
+            case "ShareDetailDraftPayment":
+                shareTypeObject = (
+                    <ParentChild t={t} secondaryActions={connectActions} />
+                );
+                break;
+            case "ShareDetailReadOnly":
+                shareTypeObject = (
+                    <ShowOnly t={t} secondaryActions={connectActions} />
+                );
+                break;
+        }
+
+        return [
+            <ListItem
+                button
+                onClick={e => this.setState({ open: !this.state.open })}
+            >
+                <Avatar style={styles.smallAvatar}>
+                    <LazyAttachmentImage
+                        width={50}
+                        BunqJSClient={this.props.BunqJSClient}
+                        imageUUID={imageUUID}
+                    />
+                </Avatar>
+                <ListItemText
+                    primary={displayName}
+                    secondary={t("Connect invite received")}
+                />
+                <ListItemSecondaryAction />
+            </ListItem>,
+            <Collapse in={this.state.open} unmountOnExit>
+                {shareTypeObject}
+            </Collapse>,
+            <Divider />
+        ];
+    }
+}
+
+ShareInviteBankResponseListItem.defaultProps = {
+    displayAcceptedRequests: true,
+    minimalDisplay: false
+};
+
+const mapStateToProps = state => {
+    return {
+        user: state.user.user,
+        accountsSelectedId: state.accounts.selectedAccount
+    };
+};
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    const { BunqJSClient } = ownProps;
+    return {
+        shareInviteBankResponsesInfoUpdate: userId =>
+            dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId))
+    };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(ShareInviteBankResponseListItem)
+);

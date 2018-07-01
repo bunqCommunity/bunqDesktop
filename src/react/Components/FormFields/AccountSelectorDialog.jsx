@@ -2,13 +2,19 @@ import React from "react";
 import { connect } from "react-redux";
 import { translate } from "react-i18next";
 import PropTypes from "prop-types";
-import Avatar from "material-ui/Avatar";
-import { FormControl } from "material-ui/Form";
-import List, { ListItem, ListItemText } from "material-ui/List";
-import Dialog, { DialogContent, DialogTitle } from "material-ui/Dialog";
+import Avatar from "@material-ui/core/Avatar";
+import FormControl from "@material-ui/core/FormControl";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Dialog from "@material-ui/core/Dialog";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 import { formatMoney } from "../../Helpers/Utils";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
+import { filterShareInviteBankResponses } from "../../Helpers/DataFilters";
+import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
 
 const styles = {
     formControl: {
@@ -23,11 +29,31 @@ const styles = {
     }
 };
 
-const AccountItem = ({ account, onClick, BunqJSClient, hideBalance }) => {
-    const formattedBalance = formatMoney(
-        account.balance ? account.balance.value : 0,
-        true
+const AccountItem = ({
+    account,
+    onClick,
+    BunqJSClient,
+    hideBalance,
+    shareInviteBankResponses
+}) => {
+    // format default balance
+    let formattedBalance = account.balance ? account.balance.value : 0;
+
+    const filteredInviteResponses = shareInviteBankResponses.filter(
+        filterShareInviteBankResponses(account.id)
     );
+
+    // attempt to get connect budget if possible
+    if (filteredInviteResponses.length > 0) {
+        const connectBudget = GetShareDetailBudget(filteredInviteResponses);
+        if(connectBudget){
+            formattedBalance = connectBudget;
+        }
+    }
+
+    // hide balance if used
+    formattedBalance = hideBalance ? "" : formatMoney(formattedBalance, true);
+
     return (
         <ListItem button onClick={onClick}>
             <Avatar style={styles.bigAvatar}>
@@ -79,6 +105,9 @@ class AccountSelectorDialog extends React.Component {
             }
             return (
                 <AccountItem
+                    shareInviteBankResponses={
+                        this.props.shareInviteBankResponses
+                    }
                     account={account}
                     onClick={this.onClickHandler(accountKey)}
                     hideBalance={this.props.hideBalance}
@@ -91,6 +120,9 @@ class AccountSelectorDialog extends React.Component {
         if (value !== "" && accounts[value]) {
             selectedAccountItem = (
                 <AccountItem
+                    shareInviteBankResponses={
+                        this.props.shareInviteBankResponses
+                    }
                     account={accounts[value]}
                     onClick={this.openDialog}
                     BunqJSClient={BunqJSClient}
@@ -132,9 +164,12 @@ AccountSelectorDialog.defaultProps = {
     selectStyle: styles.selectField
 };
 
-const mapStateToProps = store => {
+const mapStateToProps = state => {
     return {
-        hideBalance: store.options.hide_balance
+        shareInviteBankResponses:
+            state.share_invite_bank_responses.share_invite_bank_responses,
+
+        hideBalance: state.options.hide_balance
     };
 };
 

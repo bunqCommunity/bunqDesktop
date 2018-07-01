@@ -2,11 +2,11 @@ import React from "react";
 import { connect } from "react-redux";
 import { translate } from "react-i18next";
 import Helmet from "react-helmet";
-import Grid from "material-ui/Grid";
-import Divider from "material-ui/Divider";
-import Paper from "material-ui/Paper";
-import Button from "material-ui/Button";
-import List from "material-ui/List";
+import Grid from "@material-ui/core/Grid";
+import Divider from "@material-ui/core/Divider";
+import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
+import List from "@material-ui/core/List";
 
 import FileDownloadIcon from "@material-ui/icons/FileDownload";
 import AddIcon from "@material-ui/icons/Add";
@@ -91,7 +91,7 @@ class RuleDashboard extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Rule Dashboard")}`}</title>
+                    <title>{`bunqDesktop - ${t("Rule Dashboard")}`}</title>
                 </Helmet>
 
                 <ImportDialog

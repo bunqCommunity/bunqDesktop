@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
-import Grid from "material-ui/Grid";
-import Paper from "material-ui/Paper";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
 
 import CategoryEditor from "../../Components/Categories/CategoryEditor";
 import CategoryChip from "../../Components/Categories/CategoryChip";
@@ -101,7 +101,7 @@ class CategoryDashboard extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Category Editor")}`}</title>
+                    <title>{`bunqDesktop - ${t("Category Editor")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} md={8}>

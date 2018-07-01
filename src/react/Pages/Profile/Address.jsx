@@ -1,6 +1,6 @@
 import React from "react";
-import Grid from "material-ui/Grid";
-import TextField from "material-ui/TextField";
+import Grid from "@material-ui/core/Grid";
+import TextField from "@material-ui/core/TextField";
 
 const styles = {
     textField: {
@@ -17,7 +17,7 @@ export default props => {
                 <TextField
                     style={styles.textField}
                     label={t("City")}
-                    value={address.city}
+                    value={address.city ? address.city : ""}
                     onChange={props.onChange("city")}
                 />
             </Grid>
@@ -25,7 +25,7 @@ export default props => {
                 <TextField
                     style={styles.textField}
                     label={t("Country")}
-                    value={address.country}
+                    value={address.country ? address.country : ""}
                     onChange={props.onChange("country")}
                 />
             </Grid>
@@ -33,7 +33,7 @@ export default props => {
                 <TextField
                     style={styles.textField}
                     label={t("House number")}
-                    value={address.house_number}
+                    value={address.house_number ? address.house_number : ""}
                     onChange={props.onChange("house_number")}
                 />
             </Grid>
@@ -41,7 +41,7 @@ export default props => {
                 <TextField
                     style={styles.textField}
                     label={t("Postal code")}
-                    value={address.postal_code}
+                    value={address.postal_code ? address.postal_code : ""}
                     onChange={props.onChange("postal_code")}
                 />
             </Grid>
@@ -49,7 +49,7 @@ export default props => {
                 <TextField
                     style={styles.textField}
                     label={t("PO box")}
-                    value={address.po_box}
+                    value={address.po_box ? address.po_box : ""}
                     onChange={props.onChange("po_box")}
                 />
             </Grid>
@@ -57,7 +57,7 @@ export default props => {
                 <TextField
                     style={styles.textField}
                     label={t("Street")}
-                    value={address.street}
+                    value={address.street ? address.street : ""}
                     onChange={props.onChange("street")}
                 />
             </Grid>

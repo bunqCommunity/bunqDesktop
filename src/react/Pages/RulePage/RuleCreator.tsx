@@ -1,19 +1,23 @@
 import * as React from "react";
 import { translate } from "react-i18next";
 import Redirect from "react-router-dom/Redirect";
-import Grid from "material-ui/Grid";
-import Paper from "material-ui/Paper";
-import Input from "material-ui/Input";
-import Select from "material-ui/Select";
-import Button from "material-ui/Button";
-import Switch from "material-ui/Switch";
-import Divider from "material-ui/Divider";
-import { MenuItem } from "material-ui/Menu";
-import TextField from "material-ui/TextField";
-import { InputLabel } from "material-ui/Input";
-import Typography from "material-ui/Typography";
-import { FormControl, FormControlLabel } from "material-ui/Form";
-import Table, { TableCell, TableHead, TableRow } from "material-ui/Table";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Select from "@material-ui/core/Select";
+import Button from "@material-ui/core/Button";
+import Switch from "@material-ui/core/Switch";
+import Divider from "@material-ui/core/Divider";
+import MenuItemObj from "@material-ui/core/MenuItem";
+import TextField from "@material-ui/core/TextField";
+import InputLabel from "@material-ui/core/InputLabel";
+import Typography from "@material-ui/core/Typography";
+import FormControl from "@material-ui/core/FormControl";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
 
 import CategoryChip from "../../Components/Categories/CategoryChip";
 import ExportDialog from "../../Components/ExportDialog";
@@ -21,6 +25,7 @@ import ImportDialog from "../../Components/ImportDialog";
 import NewRuleItemMenu from "./NewRuleItemMenu";
 import RuleCollectionMenu2 from "./RuleCollectionMenu";
 const RuleCollectionMenu: any = RuleCollectionMenu2;
+const MenuItem: any = MenuItemObj;
 
 import ValueRuleItem from "./RuleTypeItems/ValueRuleItem";
 import TransactionAmountRuleItem from "./RuleTypeItems/TransactionAmountRuleItem";
@@ -406,9 +411,6 @@ class RuleCreator extends React.Component<any, any> {
                                 <Select
                                     value={this.state.matchType}
                                     onChange={this.handleMatchTypeChange}
-                                    input={
-                                        <Input name="field" id="field-helper" />
-                                    }
                                 >
                                     <MenuItem value={"AND"}>
                                         {t("Require all rules to match")}
@@ -461,7 +463,7 @@ class RuleCreator extends React.Component<any, any> {
                                 </TableCell>
                             </TableRow>
                         </TableHead>
-                        {ruleItems}
+                        <TableBody>{ruleItems}</TableBody>
                     </Table>
                 </Paper>
 

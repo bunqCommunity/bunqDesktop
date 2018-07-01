@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1440px" height="1024px" viewBox="0 0 1440 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>Desktop HD</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <radialGradient cx="50%" cy="6.43234253%" fx="50%" fy="6.43234253%" r="47.202301%"
+                        gradientTransform="translate(0.500000,0.064323),scale(0.711111,1.000000),rotate(90.000000),scale(1.000000,3.428514),translate(-0.500000,-0.064323)"
+                        id="radialGradient-1">
+            <stop stop-color="#000000" stop-opacity="0.15" offset="0%"></stop>
+            <stop stop-color="#000000" offset="83.0124941%"></stop>
+            <stop stop-color="#000000" offset="100%"></stop>
+        </radialGradient>
+    </defs>
+    <g id="Desktop-HD" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle" fill="#818181" x="0" y="0" width="1440" height="64"></rect>
+        <rect id="Rectangle-2" fill="#238647" x="0" y="0" width="120" height="1024"></rect>
+        <rect id="Rectangle-2" fill="#2F9B47" x="120" y="0" width="120" height="1024"></rect>
+        <rect id="Rectangle-2" fill="#62B64F" x="240" y="0" width="120" height="1024"></rect>
+        <rect id="Rectangle-2" fill="#3DB8AD" x="480" y="0" width="120" height="1024"></rect>
+        <rect id="Rectangle-2" fill="#3394D7" x="600" y="0" width="120" height="1024"></rect>
+        <rect id="Rectangle-2" fill="#2872BC" x="720" y="0" width="120" height="1024"></rect>
+        <rect id="Rectangle-2" fill="#1D5C84" x="840" y="0" width="120" height="1024"></rect>
+        <rect id="Rectangle-2" fill="#993233" x="960" y="0" width="120" height="1024"></rect>
+        <rect id="Rectangle-2" fill="#E13030" x="1080" y="0" width="120" height="1024"></rect>
+        <rect id="Rectangle-2" fill="#F28825" x="1200" y="0" width="120" height="1024"></rect>
+        <rect id="Rectangle-2" fill="#89CC53" x="360" y="0" width="120" height="1024"></rect>
+        <rect id="Rectangle-2" fill="#F5C836" x="1320" y="0" width="120" height="1024"></rect>
+        <rect id="Rectangle-3" fill="url(#radialGradient-1)" x="0" y="0" width="1440" height="1024"></rect>
+    </g>
+</svg>

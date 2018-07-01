@@ -2,8 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import ReactJson from "react-json-view";
-import Grid from "material-ui/Grid";
-import Button from "material-ui/Button";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
 
 import ReactJsonWrapper from "../Components/ReactJsonWrapper"
 
@@ -37,7 +37,7 @@ class DebugPage extends React.Component {
         return (
             <Grid container spacing={24} justify={"center"}>
                 <Helmet>
-                    <title>{`BunqDesktop - Debug page`}</title>
+                    <title>{`bunqDesktop - Debug page`}</title>
                 </Helmet>
 
                 <Grid item xs={12}>
@@ -50,7 +50,7 @@ class DebugPage extends React.Component {
                     <ReactJsonWrapper
                         style={styles.paper}
                         data={modifiedState}
-                        name="BunqDesktopState"
+                        name="bunqDesktopState"
                     />
                 </Grid>
             </Grid>

@@ -3,13 +3,15 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
-import Grid from "material-ui/Grid";
-import Paper from "material-ui/Paper";
-import Button from "material-ui/Button";
-import List, { ListItem, ListItemText } from "material-ui/List";
-import Divider from "material-ui/Divider";
-import CircularProgress from "material-ui/Progress/CircularProgress";
-import Typography from "material-ui/Typography";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Divider from "@material-ui/core/Divider";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Typography from "@material-ui/core/Typography";
 
 import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
@@ -135,7 +137,7 @@ class PaymentInfo extends React.Component {
             const payment = paymentInfo.Payment;
             const paymentDescription = payment.description;
             const paymentDate = humanReadableDate(payment.updated);
-            const paymentAmount = payment.amount.value;
+            const paymentAmount = payment.getAmount();
             const formattedPaymentAmount = formatMoney(paymentAmount);
             const paymentLabel = paymentText(payment, t);
             const counterPartyIban = payment.counterparty_alias.iban;
@@ -257,10 +259,15 @@ class PaymentInfo extends React.Component {
             );
         }
 
+        const exportData =
+            this.props.paymentInfo && this.props.paymentInfo._rawData
+                ? this.props.paymentInfo._rawData.Payment
+                : {};
+
         return (
             <Grid container spacing={24}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Payment Info")}`}</title>
+                    <title>{`bunqDesktop - ${t("Payment Info")}`}</title>
                 </Helmet>
 
                 <ExportDialog
@@ -268,10 +275,10 @@ class PaymentInfo extends React.Component {
                         this.setState({ displayExport: false })}
                     title={t("Export info")}
                     open={this.state.displayExport}
-                    object={this.props.paymentInfo}
+                    object={exportData}
                 />
 
-                <Grid item xs={12} sm={2}>
+                <Grid item xs={12} sm={2} lg={3}>
                     <Button
                         onClick={this.props.history.goBack}
                         style={styles.btn}
@@ -280,7 +287,7 @@ class PaymentInfo extends React.Component {
                     </Button>
                 </Grid>
 
-                <Grid item xs={12} sm={8}>
+                <Grid item xs={12} sm={8} lg={6}>
                     <Paper style={styles.paper}>{content}</Paper>
                 </Grid>
             </Grid>

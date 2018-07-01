@@ -21,7 +21,7 @@ Write-Host " = Created an ./appx input folder"
 New-Item -ItemType Directory -Force -Path "./dist/appx" | Out-Null
 Write-Host " = Created an ./dist/appx folder"
 
-Copy-Item "./dist/BunqDesktop Setup *.exe" "./appx/BunqDesktopSetup.exe"
+Copy-Item "./dist/bunqDesktop Setup *.exe" "./appx/bunqDesktopSetup.exe"
 Write-Host " = Copy latest installer to new folder"
 
 Set-ExecutionPolicy Bypass
@@ -29,10 +29,10 @@ Write-Host " = Ensured execution policy"
 
 Write-Host " = Starting converter"
 DesktopAppConverter.exe `
- -Installer "./appx/BunqDesktopSetup.exe" `
+ -Installer "./appx/bunqDesktopSetup.exe" `
  -InstallerArguments "/S" `
  -Destination "./dist/appx" `
- -PackageName "BunqDesktop" `
- -Publisher "CN=BunqCommunity" `
+ -PackageName "bunqDesktop" `
+ -Publisher "CN=bunqCommunity" `
  -Version "$version" `
  -MakeAppx -Sign -Verbose -Verify

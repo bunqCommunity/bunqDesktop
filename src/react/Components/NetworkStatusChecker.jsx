@@ -2,9 +2,9 @@ import React from "react";
 import axios from "axios";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
-import Snackbar from "material-ui/Snackbar";
-import IconButton from "material-ui/IconButton";
-import Slide from "material-ui/transitions/Slide";
+import Snackbar from "@material-ui/core/Snackbar";
+import IconButton from "@material-ui/core/IconButton";
+import Slide from "@material-ui/core/Slide";
 
 import RefreshIcon from "@material-ui/icons/Refresh";
 

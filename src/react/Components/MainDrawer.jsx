@@ -1,13 +1,16 @@
 import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
-import { withStyles } from "material-ui/styles";
+import { withStyles } from "@material-ui/core/styles";
 import PropTypes from "prop-types";
-import Drawer from "material-ui/Drawer";
-import Hidden from "material-ui/Hidden";
-import Avatar from "material-ui/Avatar";
-import Divider from "material-ui/Divider";
-import List, { ListItem, ListItemText, ListItemIcon } from "material-ui/List";
+import Drawer from "@material-ui/core/Drawer";
+import Hidden from "@material-ui/core/Hidden";
+import Avatar from "@material-ui/core/Avatar";
+import Divider from "@material-ui/core/Divider";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import List from "@material-ui/core/List";
 
 import ContactsIcon from "@material-ui/icons/Contacts";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
@@ -180,7 +183,7 @@ class MainDrawer extends React.Component {
                             />
                         </ListItemIcon>
                         <ListItemText
-                            primary="BunqDesktop"
+                            primary="bunqDesktop"
                             secondary={`${t("Version")} ${process.env
                                 .CURRENT_VERSION}`}
                         />

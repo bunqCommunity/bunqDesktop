@@ -1,12 +1,10 @@
 import React from "react";
 import { translate } from "react-i18next";
-import {
-    ListItem,
-    ListItemText,
-    ListItemSecondaryAction
-} from "material-ui/List";
-import Avatar from "material-ui/Avatar";
-import Divider from "material-ui/Divider";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import Avatar from "@material-ui/core/Avatar";
+import Divider from "@material-ui/core/Divider";
 
 import { formatMoney } from "../../Helpers/Utils";
 import { paymentText } from "../../Helpers/StatusTexts";
@@ -33,10 +31,6 @@ class PaymentListItem extends React.Component {
         };
     }
 
-    // shouldComponentUpdate(nextProps) {
-    //     return nextProps.payment.id !== this.props.payment.id;
-    // }
-
     render() {
         const { payment } = this.props;
 
@@ -47,7 +41,7 @@ class PaymentListItem extends React.Component {
                     .attachment_public_uuid;
         }
         const displayName = payment.counterparty_alias.display_name;
-        const paymentAmount = payment.amount.value;
+        const paymentAmount = parseFloat(payment.amount.value);
         const formattedPaymentAmount = formatMoney(paymentAmount);
         const paymentTypeLabel = paymentText(payment, this.props.t);
 

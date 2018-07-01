@@ -310,3 +310,103 @@ export const requestInquiryFilter = options => requestInquiry => {
         requestInquiry.RequestInquiry.updated
     );
 };
+
+export const shareInviteBankResponseFilter = options => shareInviteBankResponse => {
+    const shareInviteBankResponseInfo =
+        shareInviteBankResponse.ShareInviteBankResponse;
+
+    if (shareInviteBankResponseInfo.status !== "PENDING") {
+        return false;
+    }
+
+    // hide these if any type of filter is set
+    if (options.searchTerm && options.searchTerm.length > 0) {
+        return false;
+    }
+    if (
+        options.selectedCategories &&
+        options.categories &&
+        options.categoryConnections &&
+        options.selectedCategories.length > 0
+    ) {
+        return false;
+    }
+    if (
+        options.bunqMeTabType !== "active" ||
+        options.paymentType !== "default" ||
+        options.requestType !== "default"
+    ) {
+        return false;
+    }
+
+    return checkDateRange(
+        options.dateFromFilter,
+        options.dateToFilter,
+        shareInviteBankResponseInfo.updated
+    );
+};
+
+export const shareInviteBankInquiryFilter = options => shareInviteBankInquiry => {
+    const shareInviteBankInquiryInfo = shareInviteBankInquiry.ShareInviteBankInquiry
+        ? shareInviteBankInquiry.ShareInviteBankInquiry
+        : shareInviteBankInquiry.ShareInviteBankResponse;
+
+    if (shareInviteBankInquiryInfo.status !== "PENDING") {
+        return false;
+    }
+
+    // hide these if any type of filter is set
+    if (options.searchTerm && options.searchTerm.length > 0) {
+        return false;
+    }
+    if (
+        options.selectedCategories &&
+        options.categories &&
+        options.categoryConnections &&
+        options.selectedCategories.length > 0
+    ) {
+        return false;
+    }
+    if (
+        options.bunqMeTabType !== "active" ||
+        options.paymentType !== "default" ||
+        options.requestType !== "default"
+    ) {
+        return false;
+    }
+
+    return checkDateRange(
+        options.dateFromFilter,
+        options.dateToFilter,
+        shareInviteBankInquiryInfo.updated
+    );
+};
+
+export const filterShareInviteBankResponses = accountId => shareInviteBankResponse => {
+    if (!shareInviteBankResponse.ShareInviteBankResponse) return false;
+
+    return (
+        shareInviteBankResponse.ShareInviteBankResponse.status === "ACCEPTED" &&
+        shareInviteBankResponse.ShareInviteBankResponse.monetary_account_id ===
+            accountId
+    );
+};
+
+export const filterShareInviteBankInquiries = accountId => shareInviteBankInquiry => {
+    if (shareInviteBankInquiry.ShareInviteBankInquiry) {
+        return (
+            shareInviteBankInquiry.ShareInviteBankInquiry.status ===
+                "ACCEPTED" &&
+            shareInviteBankInquiry.ShareInviteBankInquiry
+                .monetary_account_id === accountId
+        );
+    } else if (shareInviteBankInquiry.ShareInviteBankResponse) {
+        return (
+            shareInviteBankInquiry.ShareInviteBankResponse.status ===
+                "ACCEPTED" &&
+            shareInviteBankInquiry.ShareInviteBankResponse
+                .monetary_account_id === accountId
+        );
+    }
+    return false;
+};

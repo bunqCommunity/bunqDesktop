@@ -1,9 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
 import { translate } from "react-i18next";
-import Grid from "material-ui/Grid";
-import Divider from "material-ui/Divider";
-import Collapse from "material-ui/transitions/Collapse";
+import Grid from "@material-ui/core/Grid";
+import Divider from "@material-ui/core/Divider";
+import Collapse from "@material-ui/core/Collapse";
 
 import TranslateButton from "../TranslationHelpers/Button";
 
@@ -92,7 +92,7 @@ class CategorySelector extends React.Component {
                 <Grid item xs={12}>
                     <Divider />
                 </Grid>
-                
+
                 <Grid item xs={12}>
                     <Collapse in={this.state.open}>
                         <CategoryChips

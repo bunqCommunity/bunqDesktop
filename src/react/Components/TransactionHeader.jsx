@@ -1,21 +1,30 @@
 import React from "react";
-import withTheme from "material-ui/styles/withTheme";
-import Grid from "material-ui/Grid";
+import withTheme from "@material-ui/core/styles/withTheme";
+import Grid from "@material-ui/core/Grid";
+import Hidden from "@material-ui/core/Hidden";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
-import Typography from "material-ui/Typography";
+import Typography from "@material-ui/core/Typography";
+import Avatar from "@material-ui/core/Avatar";
 
 import LazyAttachmentImage from "./AttachmentImage/LazyAttachmentImage";
 
 const styles = {
-    textCenter: {
-        textAlign: "center"
+    targetWrapper: {
+        display: "flex",
+        alignItems: "center",
+        flexDirection: "column"
     },
     arrow: {
         textAlign: "center",
         display: "flex",
         justifyContent: "center",
         alignItems: "center"
+    },
+    avatar: {
+        width: 90,
+        height: 90,
+        marginBottom: 8
     }
 };
 
@@ -75,45 +84,59 @@ const TransactionHeader = props => {
     }
 
     const components = [
-        <Grid item xs={12} md={5} style={styles.textCenter}>
-            <LazyAttachmentImage
-                width={90}
-                BunqJSClient={props.BunqJSClient}
-                imageUUID={fromAvatar}
-                onClick={() => {
-                    if (fromIsCounterparty && props.startPaymentIban) {
-                        props.startPaymentIban(fromAlias);
-                    }
-                }}
-                style={{
-                    cursor: fromIsCounterparty ? "pointer" : "default"
-                }}
-            />
+        <Grid item xs={12} md={5} style={styles.targetWrapper}>
+            <Avatar style={styles.avatar}>
+                <LazyAttachmentImage
+                    width={90}
+                    BunqJSClient={props.BunqJSClient}
+                    imageUUID={fromAvatar}
+                    onClick={() => {
+                        if (fromIsCounterparty && props.startPaymentIban) {
+                            props.startPaymentIban(fromAlias);
+                        }
+                    }}
+                    style={{
+                        cursor: fromIsCounterparty ? "pointer" : "default"
+                    }}
+                />
+            </Avatar>
             <Typography variant="subheading">{fromLabelName}</Typography>
         </Grid>,
 
-        <Grid item md={2} hidden={{ smDown: true }} style={styles.arrow}>
-            <ArrowForwardIcon style={{ color: arrowColor }} color={"inherit"} />
-        </Grid>,
+        <Hidden smDown>
+            <Grid item md={2} style={styles.arrow}>
+                <ArrowForwardIcon
+                    style={{ color: arrowColor }}
+                    color={"inherit"}
+                />
+            </Grid>
+        </Hidden>,
 
-        <Grid item xs={12} hidden={{ mdUp: true }} style={styles.arrow}>
-            <ArrowDownIcon style={{ color: arrowColor }} color={"inherit"} />
-        </Grid>,
+        <Hidden mdUp>
+            <Grid item xs={12} style={styles.arrow}>
+                <ArrowDownIcon
+                    style={{ color: arrowColor }}
+                    color={"inherit"}
+                />
+            </Grid>
+        </Hidden>,
 
-        <Grid item xs={12} md={5} style={styles.textCenter}>
-            <LazyAttachmentImage
-                width={90}
-                BunqJSClient={props.BunqJSClient}
-                imageUUID={toAvatar}
-                onClick={() => {
-                    if (toIsCounterparty && props.startPaymentIban) {
-                        props.startPaymentIban(fromAlias);
-                    }
-                }}
-                style={{
-                    cursor: toIsCounterparty ? "pointer" : "default"
-                }}
-            />
+        <Grid item xs={12} md={5} style={styles.targetWrapper}>
+            <Avatar style={styles.avatar}>
+                <LazyAttachmentImage
+                    width={90}
+                    BunqJSClient={props.BunqJSClient}
+                    imageUUID={toAvatar}
+                    onClick={() => {
+                        if (toIsCounterparty && props.startPaymentIban) {
+                            props.startPaymentIban(toAlias);
+                        }
+                    }}
+                    style={{
+                        cursor: toIsCounterparty ? "pointer" : "default"
+                    }}
+                />
+            </Avatar>
 
             <Typography variant="subheading">{toLabelName}</Typography>
         </Grid>

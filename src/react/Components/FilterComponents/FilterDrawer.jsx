@@ -2,21 +2,21 @@ import React from "react";
 import { connect } from "react-redux";
 import { translate } from "react-i18next";
 import DatePicker from "material-ui-pickers/DatePicker/index.js";
-import { withTheme } from "material-ui/styles";
-import IconButton from "material-ui/IconButton";
-import Icon from "material-ui/Icon";
-import Button from "material-ui/Button";
-import Drawer from "material-ui/Drawer";
-import Divider from "material-ui/Divider";
-import InputAdornment from "material-ui/Input/InputAdornment";
-import Typography from "material-ui/Typography";
-import Radio, { RadioGroup } from "material-ui/Radio";
-import List, {
-    ListItem,
-    ListSubheader,
-    ListItemIcon,
-    ListItemSecondaryAction
-} from "material-ui/List";
+import { withTheme } from "@material-ui/core/styles";
+import IconButton from "@material-ui/core/IconButton";
+import Icon from "@material-ui/core/Icon";
+import Button from "@material-ui/core/Button";
+import Drawer from "@material-ui/core/Drawer";
+import Divider from "@material-ui/core/Divider";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import Typography from "@material-ui/core/Typography";
+import Radio  from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import ListItem from "@material-ui/core/ListItem";
+import ListSubheader from "@material-ui/core/ListSubheader";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import List from "@material-ui/core/List";
 
 import FilterListIcon from "@material-ui/icons/FilterList";
 import CompareArrowsIcon from "@material-ui/icons/CompareArrows";
@@ -171,7 +171,7 @@ class FilterDrawer extends React.Component {
                     <SearchFilter style={styles.textField} t={t} />
                 </ListItem>
 
-                {/* filters for both normal payments and master card actions */}
+                {/* filters for both normal payments and mastercard actions */}
                 <ListSubheader style={styles.subheaderTitle}>
                     {t("Payments")}
                     <ListItemSecondaryAction>

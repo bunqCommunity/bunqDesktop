@@ -2,13 +2,14 @@ import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import Grid from "material-ui/Grid";
-import { withStyles } from "material-ui/styles";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import createMuiTheme from "material-ui/styles/createMuiTheme";
+import Grid from "@material-ui/core/Grid";
+import { withStyles } from "@material-ui/core/styles";
+import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
+import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import { ipcRenderer } from "electron";
 
 // custom components
+import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import Logger from "../Helpers/Logger";
 import VersionChecker from "../Helpers/VersionChecker";
 import NetworkStatusChecker from "./NetworkStatusChecker";
@@ -38,7 +39,10 @@ import { loadStoredPayments } from "../Actions/payments";
 import { loadStoredAccounts } from "../Actions/accounts";
 import { loadStoredBunqMeTabs } from "../Actions/bunq_me_tabs";
 import { applicationSetStatus } from "../Actions/application.js";
-import { registrationClearUserInfo } from "../Actions/registration";
+import {
+    registrationClearUserInfo,
+    registrationResetToApiScreenSoft
+} from "../Actions/registration";
 import { loadStoredMasterCardActions } from "../Actions/master_card_actions";
 import { loadStoredRequestInquiries } from "../Actions/request_inquiries";
 import { loadStoredRequestResponses } from "../Actions/request_responses";
@@ -53,6 +57,8 @@ import {
     setAutomaticThemeChange
 } from "../Actions/options";
 import { loadStoredContacts } from "../Actions/contacts";
+import { loadStoredShareInviteBankResponses } from "../Actions/share_invite_bank_responses";
+import { loadStoredShareInviteBankInquiries } from "../Actions/share_invite_bank_inquiries";
 
 const styles = theme => ({
     contentContainer: {
@@ -238,6 +244,15 @@ class Layout extends React.Component {
         if (nextProps === false) {
             nextProps = this.props;
         }
+
+        if (
+            nextProps.apiKey === false &&
+            this.state.initialBunqConnect === true
+        ) {
+            // api key not set but bunq connect is true so we reset it
+            this.setState({ initialBunqConnect: true });
+        }
+
         // run only if apikey is not false or first setup AND the registration isnt already loading
         if (
             (this.state.initialBunqConnect === false ||
@@ -270,7 +285,7 @@ class Layout extends React.Component {
                 .catch(setupError => {
                     Logger.error(setupError);
                     // installation failed so we reset the api key
-                    nextProps.registrationResetToApiScreen();
+                    nextProps.registrationResetToApiScreenSoft();
                     nextProps.registrationNotLoading();
                 });
         }
@@ -294,15 +309,7 @@ class Layout extends React.Component {
     ) => {
         const t = this.props.t;
         const errorTitle = t("Something went wrong");
-        const error1 = t("We failed to setup BunqDesktop properly");
-        const error2 = t("We failed to install a new application");
-        const error3 = t(
-            "The API key or IP you are currently on is not valid for the selected bunq environment"
-        );
-        const error4 = t(
-            "We failed to register this device on the bunq servers Are you sure you entered a valid API key? And are you sure that this key is meant for the selected bunq environment?"
-        );
-        const error5 = t("We failed to create a new session");
+        const error1 = t("We failed to setup bunqDesktop properly");
 
         const statusMessage1 = t("Registering our encryption keys");
         const statusMessage2 = t("Installing this device");
@@ -329,7 +336,11 @@ class Layout extends React.Component {
         try {
             await this.props.BunqJSClient.install();
         } catch (exception) {
-            this.props.openModal(error2, errorTitle);
+            this.props.BunqErrorHandler(
+                exception,
+                false,
+                this.props.BunqJSClient
+            );
             throw exception;
         }
 
@@ -337,17 +348,11 @@ class Layout extends React.Component {
         try {
             await this.props.BunqJSClient.registerDevice(deviceName);
         } catch (exception) {
-            if (exception.response && exception.response.data.Error[0]) {
-                const responseError = exception.response.data.Error[0];
-                if (
-                    responseError.error_description ===
-                    "User credentials are incorrect. Incorrect API key or IP address."
-                ) {
-                    this.props.openModal(error3, errorTitle);
-                    throw exception;
-                }
-            }
-            this.props.openModal(error4, errorTitle);
+            this.props.BunqErrorHandler(
+                exception,
+                false,
+                this.props.BunqJSClient
+            );
             throw exception;
         }
 
@@ -355,19 +360,17 @@ class Layout extends React.Component {
         try {
             await this.props.BunqJSClient.registerSession();
         } catch (exception) {
-            this.props.openModal(error5, errorTitle);
+            this.props.BunqErrorHandler(exception);
 
             // custom error handling to prevent
             if (exception.errorCode) {
                 switch (exception.errorCode) {
-                    case BunqJSClient.errorCodes.INSTALLATION_HAS_SESSION:
-                        Logger.error(
-                            `Error while creating a new session: ${exception.errorCode}`
-                        );
-
+                    case this.props.BunqJSClient.errorCodes
+                        .INSTALLATION_HAS_SESSION:
                         if (allowReRun) {
                             // this might be solved by reseting the bunq client
-                            await BunqJSClient.destroySession();
+                            await BunqJSClient.destroyApiSession();
+
                             // try one re-run but with allowReRun false this time
                             await this.setupBunqClient(
                                 apiKey,
@@ -396,6 +399,8 @@ class Layout extends React.Component {
         this.props.loadStoredMasterCardActions();
         this.props.loadStoredRequestInquiries();
         this.props.loadStoredRequestResponses();
+        this.props.loadStoredShareInviteBankResponses();
+        this.props.loadStoredShareInviteBankInquiries();
 
         // setup finished with no errors
         this.props.applicationSetStatus("");
@@ -540,6 +545,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         openSnackbar: (message, duration = 4000) =>
             dispatch(openSnackbar(message, duration)),
         openModal: (message, title) => dispatch(openModal(message, title)),
+        BunqErrorHandler: (error, customError = false) =>
+            BunqErrorHandler(dispatch, error, customError),
 
         // options
         setAutomaticThemeChange: automaticThemeChange =>
@@ -555,6 +562,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         registrationNotLoading: () => dispatch(registrationNotLoading()),
         registrationResetToApiScreen: () =>
             dispatch(registrationResetToApiScreen(BunqJSClient)),
+        registrationResetToApiScreenSoft: () =>
+            dispatch(registrationResetToApiScreenSoft(BunqJSClient)),
 
         // get latest user list from BunqJSClient
         usersUpdate: (updated = false) =>
@@ -574,6 +583,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         loadStoredAccounts: () => dispatch(loadStoredAccounts(BunqJSClient)),
         loadStoredRequestResponses: () =>
             dispatch(loadStoredRequestResponses(BunqJSClient)),
+        loadStoredShareInviteBankResponses: () =>
+            dispatch(loadStoredShareInviteBankResponses(BunqJSClient)),
+        loadStoredShareInviteBankInquiries: () =>
+            dispatch(loadStoredShareInviteBankInquiries(BunqJSClient)),
 
         // functions to clear user data
         registrationClearUserInfo: () => dispatch(registrationClearUserInfo())

@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import { translate } from "react-i18next";
 import { ipcRenderer } from "electron";
-import Grid from "material-ui/Grid";
-import Paper from "material-ui/Paper";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
 import ContactHeader from "./ContactHeader";
@@ -138,7 +138,7 @@ class Contacts extends React.Component {
         return (
             <Grid container spacing={8} justify={"center"}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Contacts")}`}</title>
+                    <title>{`bunqDesktop - ${t("Contacts")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={10} md={6} lg={4}>

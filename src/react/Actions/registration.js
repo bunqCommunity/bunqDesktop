@@ -288,6 +288,22 @@ export function registrationResetToApiScreen(BunqJSClient) {
 }
 
 /**
+ * Log out without removing the stored apikey and password
+ * and keep the api Installation and Device installation
+ * @param BunqJSClient
+ * @returns {function(*)}
+ */
+export function registrationResetToApiScreenSoft(BunqJSClient) {
+    return dispatch => {
+        BunqJSClient.destroyApiSession(true).then(_ => {
+            dispatch({
+                type: "REGISTRATION_RESET_TO_API_SCREEN"
+            });
+        });
+    };
+}
+
+/**
  * Log out without removing the stored apikey
  * @param BunqJSClient
  * @param resetPassword
@@ -295,7 +311,7 @@ export function registrationResetToApiScreen(BunqJSClient) {
  */
 export function registrationLogOut(BunqJSClient, resetPassword = false) {
     return dispatch => {
-        BunqJSClient.destroySession().then(_ => {
+        BunqJSClient.destroyApiSession().then(_ => {
             dispatch({
                 type: "REGISTRATION_LOG_OUT",
                 payload: {
@@ -354,7 +370,6 @@ export function registrationSetEnvironment(environment) {
 
 /**
  * Clear the password
- * @param bool resetNoPassword - set to false when something else is going wrong
  * @returns {{type: string}}
  */
 export function registrationClearPassword() {
@@ -393,10 +408,17 @@ export function registrationSetDerivedPassword(derivedPassword, identifier) {
  */
 export function registrationUseNoPassword() {
     return dispatch => {
-        dispatch({
-            type: "REGISTRATION_USE_NO_PASSWORD"
-        });
+        dispatch(registrationSetUseNoPassword());
         dispatch(registrationDerivePassword("SOME_DEFAULT_PASSWORD"));
+    };
+}
+
+/**
+ * @returns {function(*)}
+ */
+export function registrationSetUseNoPassword() {
+    return {
+        type: "REGISTRATION_USE_NO_PASSWORD"
     };
 }
 
@@ -406,10 +428,17 @@ export function registrationUseNoPassword() {
  */
 export function registrationUsePassword(password) {
     return dispatch => {
-        dispatch({
-            type: "REGISTRATION_USE_PASSWORD"
-        });
+        dispatch(registrationSetUsePassword());
         dispatch(registrationDerivePassword(password));
+    };
+}
+
+/**
+ * @returns {function(*)}
+ */
+export function registrationSetUsePassword() {
+    return {
+        type: "REGISTRATION_USE_PASSWORD"
     };
 }
 

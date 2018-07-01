@@ -3,13 +3,15 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
-import Grid from "material-ui/Grid";
-import Paper from "material-ui/Paper";
-import Button from "material-ui/Button";
-import List, { ListItem, ListItemText } from "material-ui/List";
-import Divider from "material-ui/Divider";
-import CircularProgress from "material-ui/Progress/CircularProgress";
-import Typography from "material-ui/Typography";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Divider from "@material-ui/core/Divider";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Typography from "@material-ui/core/Typography";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import HelpIcon from "@material-ui/icons/Help";
@@ -220,13 +222,19 @@ class RequestInquiryInfo extends React.Component {
             );
         }
 
+        const exportData =
+            this.props.requestInquiryInfo &&
+            this.props.requestInquiryInfo._rawData
+                ? this.props.requestInquiryInfo._rawData.RequestInquiry
+                : {};
+
         return (
             <Grid container spacing={24}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Request Info")}`}</title>
+                    <title>{`bunqDesktop - ${t("Request Info")}`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={2}>
+                <Grid item xs={12} sm={2} lg={3}>
                     <Button
                         onClick={this.props.history.goBack}
                         style={styles.btn}
@@ -235,17 +243,17 @@ class RequestInquiryInfo extends React.Component {
                     </Button>
                 </Grid>
 
-                <Grid item xs={12} sm={8}>
+                <Grid item xs={12} sm={8} lg={6}>
                     <Paper style={styles.paper}>{content}</Paper>
                 </Grid>
 
-                <Grid item xs={12} sm={2} style={{ textAlign: "right" }}>
+                <Grid item xs={12} sm={2} lg={3} style={{ textAlign: "right" }}>
                     <ExportDialog
                         closeModal={event =>
                             this.setState({ displayExport: false })}
                         title={t("Export info")}
                         open={this.state.displayExport}
-                        object={this.props.requestInquiryInfo}
+                        object={exportData}
                     />
 
                     <Button

@@ -4,11 +4,12 @@ import { connect } from "react-redux";
 import Redirect from "react-router-dom/Redirect";
 import Helmet from "react-helmet";
 import store from "store";
-import Grid from "material-ui/Grid";
-import Input from "material-ui/Input";
-import Typography from "material-ui/Typography";
-import { CardContent } from "material-ui/Card";
-import { CircularProgress } from "material-ui/Progress";
+import Grid from "@material-ui/core/Grid";
+import Input from "@material-ui/core/Input";
+import Typography from "@material-ui/core/Typography";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import TranslateButton from "../Components/TranslationHelpers/Button";
 
@@ -53,14 +54,6 @@ const styles = {
         textAlign: "center",
         backgroundColor: "#ffffff"
     },
-    girlSvg: {
-        zIndex: 0,
-        position: "fixed",
-        right: 0,
-        bottom: 0,
-        height: "50%",
-        maxWidth: "35%"
-    },
     text: {
         color: "#000000"
     }
@@ -73,7 +66,7 @@ class LoginPassword extends React.Component {
             password: "",
             passwordValid: false,
 
-            hasReadWarning: !!store.get("HAS_READ_DEV_WARNING")
+            hasReadWarning: !!store.get("HAS_READ_DEV_WARNING2")
         };
     }
 
@@ -154,7 +147,11 @@ class LoginPassword extends React.Component {
             </CardContent>
         ) : (
             <CardContent style={styles.cardContent}>
-                <Typography variant="headline" component="h2" style={styles.text}>
+                <Typography
+                    variant="headline"
+                    component="h2"
+                    style={styles.text}
+                >
                     {hasStoredApiKey ? (
                         t("Enter your password")
                     ) : (
@@ -185,7 +182,6 @@ class LoginPassword extends React.Component {
                     justify="center"
                     style={{ marginTop: 16 }}
                 >
-
                     {hasStoredApiKey ? (
                         <Grid item xs={6} sm={4}>
                             <TranslateButton
@@ -243,7 +239,7 @@ class LoginPassword extends React.Component {
                 style={styles.wrapperContainer}
             >
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Password Setup")}`}</title>
+                    <title>{`bunqDesktop - ${t("Password Setup")}`}</title>
                 </Helmet>
 
                 <Grid
@@ -253,16 +249,20 @@ class LoginPassword extends React.Component {
                     md={5}
                     lg={4}
                     style={{ zIndex: 1 }}
-                    className="animated zoomIn"
+                    className="animated zoomIn login-wrapper"
                 >
-                    <div>{cardContent}</div>
+                    <Card>{cardContent}</Card>
                 </Grid>
 
-                {/*<img*/}
-                    {/*className="animated fadeInRight"*/}
-                    {/*src="images/svg/girl.svg"*/}
-                    {/*style={styles.girlSvg}*/}
-                {/*/>*/}
+                <img
+                    src="./images/svg/login-bg2.svg"
+                    id="login-background-image"
+                />
+
+                <span className="bunqdesktop-text-wrapper">
+                    <span className="bunqdesktop-text-first">bunq</span>
+                    <span className="bunqdesktop-text-second">Desktop</span>
+                </span>
             </Grid>
         );
     }

@@ -1,5 +1,4 @@
 import React from "react";
-import iban from "iban";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
@@ -10,36 +9,42 @@ import format from "date-fns/format";
 import enLocale from "date-fns/locale/en-US";
 import deLocale from "date-fns/locale/de";
 import nlLocale from "date-fns/locale/nl";
+import iban from "iban";
 
-import Grid from "material-ui/Grid";
-import Button from "material-ui/Button";
-import Paper from "material-ui/Paper";
-import Switch from "material-ui/Switch";
-import Divider from "material-ui/Divider";
-import TextField from "material-ui/TextField";
-import { InputLabel } from "material-ui/Input";
-import Typography from "material-ui/Typography";
-import List, { ListItem, ListItemText } from "material-ui/List";
-import { FormControl, FormControlLabel } from "material-ui/Form";
-import Dialog, {
-    DialogActions,
-    DialogContent,
-    DialogTitle
-} from "material-ui/Dialog";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
+import Paper from "@material-ui/core/Paper";
+import Switch from "@material-ui/core/Switch";
+import Divider from "@material-ui/core/Divider";
+import TextField from "@material-ui/core/TextField";
+import InputLabel from "@material-ui/core/InputLabel";
+import Typography from "@material-ui/core/Typography";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import FormControl from "@material-ui/core/FormControl";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
-import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
-import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
-import TargetSelection from "../../Components/FormFields/TargetSelection";
-import SchedulePaymentForm from "../../Components/FormFields/SchedulePaymentForm";
+import AccountSelectorDialog from "../Components/FormFields/AccountSelectorDialog";
+import MoneyFormatInput from "../Components/FormFields/MoneyFormatInput";
+import TargetSelection from "../Components/FormFields/TargetSelection";
+import SchedulePaymentForm from "../Components/FormFields/SchedulePaymentForm";
 
-import { openSnackbar } from "../../Actions/snackbar";
-import { paySchedule, paySend } from "../../Actions/pay";
-import scheduleTexts from "../../Helpers/ScheduleTexts";
+import { openSnackbar } from "../Actions/snackbar";
+import { paySchedule, paySend } from "../Actions/pay";
+
+import scheduleTexts from "../Helpers/ScheduleTexts";
 import {
     getInternationalFormat,
     isValidPhonenumber
-} from "../../Helpers/PhoneLib";
-import { getUTCDate } from "../../Helpers/Utils";
+} from "../Helpers/PhoneLib";
+import { formatMoney, getUTCDate } from "../Helpers/Utils";
+import { filterShareInviteBankResponses } from "../Helpers/DataFilters";
+import GetShareDetailBudget from "../Helpers/GetShareDetailBudget";
 
 const styles = {
     payButton: {
@@ -370,12 +375,27 @@ class Pay extends React.Component {
 
         const account = this.props.accounts[selectedAccount];
 
+        // check if this account item has connect details
+        const filteredInviteResponses = this.props.shareInviteBankResponses.filter(
+            filterShareInviteBankResponses(account.id)
+        );
+
+        // regular balance value
+        let accountBalance = account.balance ? account.balance.value : 0;
+
+        // get budget if atleast one connect
+        if (filteredInviteResponses.length > 0) {
+            const connectBudget = GetShareDetailBudget(filteredInviteResponses);
+            if (connectBudget) {
+                accountBalance = connectBudget;
+            }
+        }
+
         const noTargetsCondition = targets.length < 0;
         const insufficientFundsCondition =
             amount !== "" &&
             // enough funds or draft enabled
-            (amount > (account.balance ? account.balance.value : 0) &&
-                sendDraftPayment === false);
+            (amount > accountBalance && sendDraftPayment === false);
         const amountErrorCondition = amount < 0.01 || amount > 10000;
         const descriptionErrorCondition = description.length > 140;
         const ibanNameErrorCondition =
@@ -387,11 +407,11 @@ class Pay extends React.Component {
             descriptionError: descriptionErrorCondition,
             ibanNameError: ibanNameErrorCondition,
             validForm:
-                !noTargetsCondition &&
-                !insufficientFundsCondition &&
-                !amountErrorCondition &&
-                !descriptionErrorCondition &&
-                targets.length > 0
+            !noTargetsCondition &&
+            !insufficientFundsCondition &&
+            !amountErrorCondition &&
+            !descriptionErrorCondition &&
+            targets.length > 0
         });
     };
 
@@ -535,6 +555,26 @@ class Pay extends React.Component {
             amount,
             targets
         } = this.state;
+        const account = this.props.accounts[selectedAccount];
+
+        let accountBalance = 0;
+        if (account) {
+            // check if this account item has connect details
+            const filteredInviteResponses = this.props.shareInviteBankResponses.filter(
+                filterShareInviteBankResponses(account.id)
+            );
+            // regular balance value
+            accountBalance = account.balance ? account.balance.value : 0;
+            if (filteredInviteResponses.length > 0) {
+                const connectBudget = GetShareDetailBudget(
+                    filteredInviteResponses
+                );
+                if (connectBudget) {
+                    accountBalance = connectBudget;
+                }
+            }
+        }
+        accountBalance = formatMoney(accountBalance, true);
 
         let scheduledPaymentText = null;
         if (this.state.schedulePayment) {
@@ -558,8 +598,6 @@ class Pay extends React.Component {
 
         let confirmationModal = null;
         if (this.state.confirmModalOpen) {
-            const account = this.props.accounts[selectedAccount];
-
             // create a list of ListItems with our targets
             const confirmationModelTargets = targets.map(targetItem => {
                 let primaryText = "";
@@ -583,12 +621,12 @@ class Pay extends React.Component {
                         secondaryText = `${t("Name")}: ${targetItem.name}`;
                         break;
                     case "TRANSFER":
-                        const account = this.props.accounts[
-                            selectedTargetAccount
-                        ];
+                        const targetAccountInfo = this.props.accounts[
+                            targetItem.value
+                            ];
                         primaryText = `${t(
                             "Transfer"
-                        )}: ${account.description}`;
+                        )}: ${targetAccountInfo.description}`;
                         break;
                 }
 
@@ -615,8 +653,7 @@ class Pay extends React.Component {
                             <ListItem>
                                 <ListItemText
                                     primary={t("From")}
-                                    secondary={`${account.description} ${account
-                                        .balance.value}`}
+                                    secondary={`${account.description} ${accountBalance}`}
                                 />
                             </ListItem>
                             <ListItem>
@@ -634,8 +671,7 @@ class Pay extends React.Component {
                             <ListItem>
                                 <ListItemText
                                     primary={t("Amount")}
-                                    secondary={`${amount.toFixed(2)} ${account
-                                        .balance.currency}`}
+                                    secondary={formatMoney(amount)}
                                 />
                             </ListItem>
                             <ListItem>
@@ -684,13 +720,13 @@ class Pay extends React.Component {
         return (
             <Grid container spacing={24} align={"center"} justify={"center"}>
                 <Helmet>
-                    <title>{`BunqDesktop - Pay`}</title>
+                    <title>{`bunqDesktop - Pay`}</title>
                 </Helmet>
                 <MuiPickersUtilsProvider
                     utils={DateFnsUtils}
                     locale={localeData}
                 >
-                    <Grid item xs={12} sm={10} md={6} lg={4}>
+                    <Grid item xs={12} sm={8} lg={6} xl={4}>
                         <Paper style={styles.paper}>
                             <Typography variant="headline">
                                 {t("New Payment")}
@@ -837,6 +873,10 @@ const mapStateToProps = state => {
         accounts: state.accounts.accounts,
         selectedAccount: state.accounts.selectedAccount,
         language: state.options.language,
+
+        shareInviteBankResponses:
+        state.share_invite_bank_responses.share_invite_bank_responses,
+
         user: state.user.user
     };
 };

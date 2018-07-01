@@ -2,10 +2,11 @@ import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
-import Grid from "material-ui/Grid";
-import Paper from "material-ui/Paper";
-import Collapse from "material-ui/transitions/Collapse";
-import IconButton from "material-ui/IconButton";
+import Grid from "@material-ui/core/Grid";
+import Hidden from "@material-ui/core/Hidden";
+import Paper from "@material-ui/core/Paper";
+import Collapse from "@material-ui/core/Collapse";
+import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import AddIcon from "@material-ui/icons/Add";
 
@@ -51,10 +52,14 @@ class BunqMeTab extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("bunqme Requests")}`}</title>
+                    <title>{`bunqDesktop - ${t("bunqme Requests")}`}</title>
                 </Helmet>
 
-                <Grid item xs={12} md={4}>
+                <Hidden mdDown>
+                    <Grid item lg={2} />
+                </Hidden>
+
+                <Grid item xs={12} md={4} lg={3}>
                     <Paper style={styles.paper}>
                         <AccountList
                             BunqJSClient={this.props.BunqJSClient}
@@ -64,7 +69,7 @@ class BunqMeTab extends React.Component {
                     </Paper>
                 </Grid>
 
-                <Grid item xs={12} md={8}>
+                <Grid item xs={12} md={8} lg={6}>
                     <Collapse
                         in={this.state.showForm}
                         unmountOnExit

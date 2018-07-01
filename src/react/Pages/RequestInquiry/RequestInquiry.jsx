@@ -4,12 +4,13 @@ import Helmet from "react-helmet";
 import { translate } from "react-i18next";
 import EmailValidator from "email-validator";
 
-import Grid from "material-ui/Grid";
-import TextField from "material-ui/TextField";
-import Paper from "material-ui/Paper";
-import Collapse from "material-ui/transitions/Collapse";
-import Switch from "material-ui/Switch";
-import { FormControl, FormControlLabel } from "material-ui/Form";
+import Grid from "@material-ui/core/Grid";
+import TextField from "@material-ui/core/TextField";
+import Paper from "@material-ui/core/Paper";
+import Collapse from "@material-ui/core/Collapse";
+import Switch from "@material-ui/core/Switch";
+import FormControl from "@material-ui/core/FormControl";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
 import TargetSelection from "../../Components/FormFields/TargetSelection";
@@ -23,7 +24,10 @@ import AllowBunqMe from "./Options/AllowBunqMe";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { requestInquirySend } from "../../Actions/request_inquiry";
-import {getInternationalFormat, isValidPhonenumber} from "../../Helpers/PhoneLib";
+import {
+    getInternationalFormat,
+    isValidPhonenumber
+} from "../../Helpers/PhoneLib";
 
 const styles = {
     payButton: {
@@ -76,7 +80,7 @@ class RequestInquiry extends React.Component {
             targetError: false,
             target: "",
 
-            //
+            // a list with all the targets
             targets: [],
 
             // defines which type is used
@@ -358,7 +362,9 @@ class RequestInquiry extends React.Component {
                             value: target.value.trim()
                         };
                     } else if (validPhone) {
-                        const formattedNumber = getInternationalFormat(target.value);
+                        const formattedNumber = getInternationalFormat(
+                            target.value
+                        );
                         if (formattedNumber) {
                             targetInfo = {
                                 type: "PHONE_NUMBER",
@@ -410,10 +416,10 @@ class RequestInquiry extends React.Component {
         return (
             <Grid container spacing={24} align={"center"} justify={"center"}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Pay")}`}</title>
+                    <title>{`bunqDesktop - ${t("Pay")}`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={10} md={6} lg={4}>
+                <Grid item xs={12} sm={8} lg={6} xl={4}>
                     <Paper style={styles.paper}>
                         <TypographyTranslate variant="headline">
                             Request Payment

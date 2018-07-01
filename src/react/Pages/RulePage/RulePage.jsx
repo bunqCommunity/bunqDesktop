@@ -2,9 +2,9 @@ import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
-import Grid from "material-ui/Grid";
-import Button from "material-ui/Button";
-import Typography from "material-ui/Typography";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 import RuleCreator from "./RuleCreator.tsx";
@@ -62,7 +62,7 @@ class RulesPage extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Rule Editor")}`}</title>
+                    <title>{`bunqDesktop - ${t("Rule Editor")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12}>

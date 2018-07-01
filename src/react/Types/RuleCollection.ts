@@ -279,7 +279,7 @@ export default class RuleCollection {
             switch (rule.matchType) {
                 case "REGEX":
                     // create a regexp so we can directly use the input value
-                    const regex = new RegExp(rule.value);
+                    const regex = new RegExp(rule.value, "igm");
                     // test the data with the regex pattern
                     matchedItem = regex.test(valueToCheck);
                     break;

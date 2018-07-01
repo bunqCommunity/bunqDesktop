@@ -3,18 +3,18 @@ import { translate } from "react-i18next";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
-import Grid from "material-ui/Grid";
-import IconButton from "material-ui/IconButton";
-import Input from "material-ui/Input";
-import Button from "material-ui/Button";
-import Switch from "material-ui/Switch";
-import Collapse from "material-ui/transitions/Collapse";
-import { FormControlLabel } from "material-ui/Form";
-import Card, { CardContent } from "material-ui/Card";
-import { CircularProgress } from "material-ui/Progress";
+import Grid from "@material-ui/core/Grid";
+import IconButton from "@material-ui/core/IconButton";
+import Input from "@material-ui/core/Input";
+import Button from "@material-ui/core/Button";
+import Switch from "@material-ui/core/Switch";
+import Collapse from "@material-ui/core/Collapse";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import KeyIcon from "@material-ui/icons/VpnKey";
-import VpnKeyIcon from "@material-ui/icons/VpnKey";
 
 import QRSvg from "../../Components/QR/QRSvg";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
@@ -83,14 +83,6 @@ const styles = {
     },
     text: {
         color: "#000000"
-    },
-    girlSvg: {
-        zIndex: 0,
-        position: "fixed",
-        right: 0,
-        bottom: 0,
-        height: "50%",
-        maxWidth: "35%"
     }
 };
 
@@ -574,6 +566,7 @@ class Login extends React.Component {
                         component={NavLink}
                         style={styles.switchKeyButton}
                         className={"white-button"}
+                        variant={"raised"}
                     >
                         Switch keys <KeyIcon style={styles.switchKeyIcon} />
                     </Button>
@@ -628,7 +621,7 @@ class Login extends React.Component {
                 style={styles.wrapperContainer}
             >
                 <Helmet>
-                    <title>{`BunqDesktop - Login`}</title>
+                    <title>{`bunqDesktop - Login`}</title>
                 </Helmet>
 
                 <Grid
@@ -637,6 +630,7 @@ class Login extends React.Component {
                     sm={10}
                     md={6}
                     lg={4}
+                    className="login-wrapper"
                     style={{
                         display: "flex",
                         justifyContent: "center"
@@ -646,7 +640,15 @@ class Login extends React.Component {
                 </Grid>
                 {userItems}
 
-                {/*<img src="images/svg/girl.svg" style={styles.girlSvg} />*/}
+                <img
+                    src="./images/svg/login-bg2.svg"
+                    id="login-background-image"
+                />
+
+                <span className="bunqdesktop-text-wrapper">
+                    <span className="bunqdesktop-text-first">bunq</span>
+                    <span className="bunqdesktop-text-second">Desktop</span>
+                </span>
             </Grid>
         );
     }

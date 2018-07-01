@@ -1,7 +1,7 @@
 import React from "react";
-import Avatar from "material-ui/Avatar";
-import Chip from "material-ui/Chip";
-import Icon from "material-ui/Icon";
+import Avatar from "@material-ui/core/Avatar";
+import Chip from "@material-ui/core/Chip";
+import Icon from "@material-ui/core/Icon";
 
 export default props => {
     const {

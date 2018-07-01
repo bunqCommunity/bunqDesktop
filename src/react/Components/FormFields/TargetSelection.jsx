@@ -4,13 +4,13 @@ import PropTypes from "prop-types";
 import { translate } from "react-i18next";
 import CopyToClipboard from "react-copy-to-clipboard";
 
-import Grid from "material-ui/Grid";
-import Radio from "material-ui/Radio";
-import Avatar from "material-ui/Avatar";
-import Chip from "material-ui/Chip";
-import TextField from "material-ui/TextField";
-import Button from "material-ui/Button";
-import { FormControlLabel } from "material-ui/Form";
+import Grid from "@material-ui/core/Grid";
+import Radio from "@material-ui/core/Radio";
+import Avatar from "@material-ui/core/Avatar";
+import Chip from "@material-ui/core/Chip";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import FormControlLabel  from "@material-ui/core/FormControlLabel";
 
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import CompareArrowsIcon from "@material-ui/icons/CompareArrows";

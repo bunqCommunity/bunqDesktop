@@ -5,6 +5,9 @@ import BunqJSClient from "@bunq-community/bunq-js-client";
 
 import App from "./App";
 import "../scss/main.scss";
+import "animate.css";
+
+require("../sentry.js");
 
 import Logger from "./Helpers/Logger";
 import Analytics from "./Helpers/Analytics";

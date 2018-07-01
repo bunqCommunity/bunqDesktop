@@ -1,7 +1,7 @@
 import React from "react";
 import Helmet from "react-helmet";
 import { translate } from "react-i18next";
-import Typography from "material-ui/Typography";
+import Typography from "@material-ui/core/Typography";
 
 import TypographyTranslate from "../Components/TranslationHelpers/Typography";
 
@@ -15,7 +15,7 @@ class NotFound extends React.Component {
         return (
             <div style={{ textAlign: "center", marginTop: 40 }}>
                 <Helmet>
-                    <title>{`BunqDesktop - 404 ${this.props.t(
+                    <title>{`bunqDesktop - 404 ${this.props.t(
                         "Not Found"
                     )}`}</title>
                 </Helmet>

@@ -5,28 +5,28 @@
     <version>${VERSION}</version>
     <!-- <packageSourceUrl>Where is this Chocolatey package located (think GitHub)? packageSourceUrl is highly recommended for the community feed</packageSourceUrl>-->
     <!-- owners is a poor name for maintainers of the package. It sticks around by this name for compatibility reasons. It basically means you. -->
-    <owners>BunqCommunity</owners>
+    <owners>bunqCommunity</owners>
     <!-- ============================== -->
 
     <!-- == SOFTWARE SPECIFIC SECTION == -->
     <!-- This section is about the software itself -->
-    <title>BunqDesktop</title>
-    <authors>BunqCommunity</authors>
+    <title>bunqDesktop</title>
+    <authors>bunqCommunity</authors>
     <!-- projectUrl is required for the community feed -->
-    <projectUrl>https://github.com/BunqCommunity/BunqDesktop</projectUrl>
-    <iconUrl>https://rawgit.com/BunqCommunity/BunqDesktop/master/app/images/256x256.png</iconUrl>
+    <projectUrl>https://github.com/bunqCommunity/bunqDesktop</projectUrl>
+    <iconUrl>https://rawgit.com/bunqCommunity/bunqDesktop/master/app/images/256x256.png</iconUrl>
 
-    <projectSourceUrl>https://github.com/BunqCommunity/BunqDesktop</projectSourceUrl>
-    <docsUrl>https://github.com/BunqCommunity/BunqDesktop</docsUrl>
-    <bugTrackerUrl>https://github.com/BunqCommunity/BunqDesktop/issues</bugTrackerUrl>
+    <projectSourceUrl>https://github.com/bunqCommunity/bunqDesktop</projectSourceUrl>
+    <docsUrl>https://github.com/bunqCommunity/bunqDesktop</docsUrl>
+    <bugTrackerUrl>https://github.com/bunqCommunity/bunqDesktop/issues</bugTrackerUrl>
 
     <tags>bunqdesktop finance desktop bunq api</tags>
-    <summary>A desktop implementation for the bunq API</summary>
+    <summary>The unofficial, free and open source desktop application for the bunq API</summary>
     <description>A desktop implementation for bunq's API. This app does everything within the application so you don't  have to worry about sharing your API key with anyone else!</description>
   </metadata>
   <files>
     <!-- this section controls what actually gets packaged into the Chocolatey package -->
-    <file src="dist/BunqDesktop Setup *.exe" target="tools" />
+    <file src="dist/bunqDesktop Setup *.exe" target="tools" />
     <file src="chocolatey/**" target="tools" />
   </files>
 </package>

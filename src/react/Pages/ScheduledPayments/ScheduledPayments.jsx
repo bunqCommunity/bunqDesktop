@@ -2,12 +2,13 @@ import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
-import Grid from "material-ui/Grid";
-import List from "material-ui/List";
-import Paper from "material-ui/Paper";
-import Typography from "material-ui/Typography";
-import IconButton from "material-ui/IconButton";
-import { LinearProgress, CircularProgress } from "material-ui/Progress";
+import Grid from "@material-ui/core/Grid";
+import List from "@material-ui/core/List";
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
+import LinearProgress from "@material-ui/core/LinearProgress";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import RefreshIcon from "@material-ui/icons/Refresh";
 import InvisibleIcon from "@material-ui/icons/VisibilityOff";
@@ -132,7 +133,7 @@ class ScheduledPayments extends React.Component {
         return (
             <Grid container spacing={24}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Scheduled payments")}`}</title>
+                    <title>{`bunqDesktop - ${t("Scheduled payments")}`}</title>
                 </Helmet>
 
                 <ScheduledPaymentsEditDialog

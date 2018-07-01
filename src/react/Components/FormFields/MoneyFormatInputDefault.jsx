@@ -1,12 +1,13 @@
 import React from "react";
 import NumberFormat from "react-number-format";
-import TextField from "material-ui/TextField";
+import Input from "@material-ui/core/Input";
+import FormControl from "@material-ui/core/FormControl";
 import {
     preferedThousandSeparator,
     preferedDecimalSeparator
 } from "../../Helpers/Utils";
 
-import { withTheme } from "material-ui/styles";
+import { withTheme } from "@material-ui/core/styles";
 
 class MoneyFormatInputDefault extends React.Component {
     NumberFormatCustom = props => {
@@ -18,12 +19,12 @@ class MoneyFormatInputDefault extends React.Component {
                 required
                 margin="normal"
                 placeholder="€ 0.00"
+                decimalScale={2}
+                fixedDecimalScale={true}
                 style={{
                     ...this.props.theme.styles.moneyInput,
                     fontSize: fontSize
                 }}
-                decimalScale={2}
-                fixedDecimalScale={true}
                 decimalSeparator={preferedDecimalSeparator}
                 thousandSeparator={preferedThousandSeparator}
                 {...other}
@@ -33,18 +34,18 @@ class MoneyFormatInputDefault extends React.Component {
 
     render() {
         return (
-            <TextField
-                InputProps={{
-                    inputComponent: this.NumberFormatCustom
-                }}
-                {...this.props}
-            />
+            <FormControl>
+                <Input
+                    inputComponent={this.NumberFormatCustom}
+                    {...this.props}
+                />
+            </FormControl>
         );
     }
 }
 
 MoneyFormatInputDefault.defaultProps = {
     fontSize: 24
-}
+};
 
 export default withTheme()(MoneyFormatInputDefault);

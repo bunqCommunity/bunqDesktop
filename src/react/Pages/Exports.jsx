@@ -5,21 +5,26 @@ import format from "date-fns/format/index.js";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import DatePicker from "material-ui-pickers/DatePicker/index.js";
-import Grid from "material-ui/Grid";
-import Avatar from "material-ui/Avatar";
-import AppBar from "material-ui/AppBar";
-import Typography from "material-ui/Typography";
-import IconButton from "material-ui/IconButton";
-import { MenuItem } from "material-ui/Menu";
-import { FormControl } from "material-ui/Form";
-import Icon from "material-ui/Icon";
-import Paper from "material-ui/Paper";
-import Select from "material-ui/Select";
-import { LinearProgress, CircularProgress } from "material-ui/Progress";
-import Input, { InputLabel } from "material-ui/Input";
-import List, { ListItem, ListItemText } from "material-ui/List";
-import Tabs, { Tab } from "material-ui/Tabs";
-import InputAdornment from "material-ui/Input/InputAdornment";
+import Grid from "@material-ui/core/Grid";
+import Avatar from "@material-ui/core/Avatar";
+import AppBar from "@material-ui/core/AppBar";
+import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import Icon from "@material-ui/core/Icon";
+import Paper from "@material-ui/core/Paper";
+import Select from "@material-ui/core/Select";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import LinearProgress from "@material-ui/core/LinearProgress";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import InputAdornment from "@material-ui/core/InputAdornment";
 
 import FolderIcon from "@material-ui/icons/Folder";
 import RefreshIcon from "@material-ui/icons/Refresh";
@@ -392,7 +397,7 @@ class Exports extends React.Component {
         return (
             <Grid container spacing={24}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Exports")}`}</title>
+                    <title>{`bunqDesktop - ${t("Exports")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} md={4}>
@@ -646,7 +651,8 @@ class Exports extends React.Component {
                                     hiddenTypes={[
                                         "BunqMeTab",
                                         "RequestInquiry",
-                                        "RequestResponse"
+                                        "RequestResponse",
+                                        "ShareInviteBankInquiry"
                                     ]}
                                 />
                             </Paper>
