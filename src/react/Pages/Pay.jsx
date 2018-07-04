@@ -3,12 +3,7 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import EmailValidator from "email-validator";
-import DateFnsUtils from "material-ui-pickers/utils/date-fns-utils";
-import MuiPickersUtilsProvider from "material-ui-pickers/utils/MuiPickersUtilsProvider";
 import format from "date-fns/format";
-import enLocale from "date-fns/locale/en-US";
-import deLocale from "date-fns/locale/de";
-import nlLocale from "date-fns/locale/nl";
 import iban from "iban";
 
 import Grid from "@material-ui/core/Grid";
@@ -407,11 +402,11 @@ class Pay extends React.Component {
             descriptionError: descriptionErrorCondition,
             ibanNameError: ibanNameErrorCondition,
             validForm:
-            !noTargetsCondition &&
-            !insufficientFundsCondition &&
-            !amountErrorCondition &&
-            !descriptionErrorCondition &&
-            targets.length > 0
+                !noTargetsCondition &&
+                !insufficientFundsCondition &&
+                !amountErrorCondition &&
+                !descriptionErrorCondition &&
+                targets.length > 0
         });
     };
 
@@ -623,7 +618,7 @@ class Pay extends React.Component {
                     case "TRANSFER":
                         const targetAccountInfo = this.props.accounts[
                             targetItem.value
-                            ];
+                        ];
                         primaryText = `${t(
                             "Transfer"
                         )}: ${targetAccountInfo.description}`;
@@ -703,29 +698,12 @@ class Pay extends React.Component {
             );
         }
 
-        let localeData;
-        switch (this.props.language) {
-            case "nl":
-                localeData = nlLocale;
-                break;
-            case "de":
-                localeData = deLocale;
-                break;
-            case "en":
-            default:
-                localeData = enLocale;
-                break;
-        }
-
         return (
             <Grid container spacing={24} align={"center"} justify={"center"}>
                 <Helmet>
                     <title>{`bunqDesktop - Pay`}</title>
                 </Helmet>
-                <MuiPickersUtilsProvider
-                    utils={DateFnsUtils}
-                    locale={localeData}
-                >
+
                     <Grid item xs={12} sm={8} lg={6} xl={4}>
                         <Paper style={styles.paper}>
                             <Typography variant="headline">
@@ -861,7 +839,6 @@ class Pay extends React.Component {
 
                         {confirmationModal}
                     </Grid>
-                </MuiPickersUtilsProvider>
             </Grid>
         );
     }
@@ -875,7 +852,7 @@ const mapStateToProps = state => {
         language: state.options.language,
 
         shareInviteBankResponses:
-        state.share_invite_bank_responses.share_invite_bank_responses,
+            state.share_invite_bank_responses.share_invite_bank_responses,
 
         user: state.user.user
     };
