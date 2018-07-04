@@ -15,7 +15,6 @@ import Tooltip from "@material-ui/core/Tooltip";
 import MoneyIcon from "@material-ui/icons/AttachMoney";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import KeyIcon from "@material-ui/icons/VpnKey";
-import ProfileIcon from "@material-ui/icons/Person";
 
 import CombinedList from "../Components/CombinedList/CombinedList";
 import AccountList from "../Components/AccountList/AccountList";
