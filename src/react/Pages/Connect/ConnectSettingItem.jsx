@@ -15,7 +15,7 @@ export default props => {
     // hide when access level is included in hidden array
     if (hidden && accessLevel) {
         if (hidden.includes(accessLevel)) {
-            return false;
+            return null;
         }
     }
 
