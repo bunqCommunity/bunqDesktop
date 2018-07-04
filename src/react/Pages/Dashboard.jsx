@@ -9,6 +9,7 @@ import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
+import Avatar from "@material-ui/core/Avatar";
 import Tooltip from "@material-ui/core/Tooltip";
 
 import MoneyIcon from "@material-ui/icons/AttachMoney";
@@ -20,6 +21,7 @@ import CombinedList from "../Components/CombinedList/CombinedList";
 import AccountList from "../Components/AccountList/AccountList";
 import LoadOlderButton from "../Components/LoadOlderButton";
 import NavLink from "../Components/Routing/NavLink";
+import AttachmentImage from "../Components/AttachmentImage/AttachmentImage";
 
 import { userLogin, userLogout } from "../Actions/user";
 import { requestInquirySend } from "../Actions/request_inquiry";
@@ -28,6 +30,10 @@ import { registrationLogOut } from "../Actions/registration";
 const styles = {
     btn: {
         width: "100%"
+    },
+    bigAvatar: {
+        width: 50,
+        height: 50
     },
     iconButton: {
         marginLeft: 16
@@ -86,6 +92,7 @@ class Dashboard extends React.Component {
 
     render() {
         const t = this.props.t;
+        const user = this.props.user;
         const userTypes = Object.keys(this.props.users);
 
         const displayName = this.props.user.display_name
@@ -105,13 +112,23 @@ class Dashboard extends React.Component {
                 <Grid item xs={12} md={12} lg={10} xl={8}>
                     <Grid container spacing={16}>
                         <Grid item xs={6} style={styles.titleWrapper}>
-                            <IconButton
-                                style={styles.iconButton}
-                                component={NavLink}
-                                to={"/profile"}
-                            >
-                                <ProfileIcon />
-                            </IconButton>
+                            <NavLink to={"/profile"}>
+                                {user ? (
+                                    <Avatar style={styles.bigAvatar}>
+                                        <AttachmentImage
+                                            width={50}
+                                            BunqJSClient={
+                                                this.props.BunqJSClient
+                                            }
+                                            imageUUID={
+                                                user.avatar.image[0]
+                                                    .attachment_public_uuid
+                                            }
+                                        />
+                                    </Avatar>
+                                ) : null}
+                            </NavLink>
+
                             <Typography
                                 variant="title"
                                 gutterBottom

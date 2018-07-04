@@ -108,6 +108,9 @@ export const masterCardActionParser = (masterCardAction, t) => {
 
         switch (masterCardAction.label_card.type) {
             case "MAESTRO_MOBILE_NFC":
+                if (masterCardAction.wallet_provider_id === null) {
+                    return defaultMessage;
+                }
                 return "Tap & Pay " + secondaryText;
             case "MASTERCARD":
                 return "Mastercard " + secondaryText;
