@@ -82,7 +82,9 @@ export default props => {
                                 <MoneyFormatInput
                                     id="budget"
                                     value={props.budget}
-                                    onValueChange={handleChangeFormatted("budget")}
+                                    onValueChange={handleChangeFormatted(
+                                        "budget"
+                                    )}
                                 />
                             </FormControl>
                         </Grid>

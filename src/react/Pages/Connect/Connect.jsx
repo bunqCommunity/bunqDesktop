@@ -18,12 +18,13 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import BudgetFields from "./BudgetFields";
 import TimeLimitFields from "./TimeLimitFields";
 import ConnectListItem from "./ConnectListItem";
+import ConnectSettingItem from "./ConnectSettingItem";
 import AccountListItem from "../../Components/AccountList/AccountListItem";
 import TargetSelection from "../../Components/FormFields/TargetSelection";
 import TypographyTranslate from "../../Components/TranslationHelpers/Typography";
 import ButtonTranslate from "../../Components/TranslationHelpers/Button";
 import FullAccess from "../../Components/ListItems/ShareInviteBankTypes/FullAccess";
-import ParentChild from "../../Components/ListItems/ShareInviteBankTypes/ParentChild";
+import DraftAccess from "../../Components/ListItems/ShareInviteBankTypes/DraftAccess";
 import ShowOnly from "../../Components/ListItems/ShareInviteBankTypes/ShowOnly";
 
 import {
@@ -74,6 +75,14 @@ class Connect extends React.Component {
             budget: 100,
             budgetError: false,
             budgetFrequency: "ONCE",
+
+            // connect settings
+            displaySettings: false,
+            make_payments: true,
+            make_draft_payments: true,
+            view_balance: true,
+            view_new_events: true,
+            view_old_events: false,
 
             // time limit enabled status and actual value
             setTimeLimit: false,
@@ -298,11 +307,11 @@ class Connect extends React.Component {
                 case "full":
                     shareDetail = {
                         ShareDetailPayment: {
-                            make_payments: true,
-                            make_draft_payments: true,
-                            view_balance: true,
-                            view_old_events: true,
-                            view_new_events: true
+                            make_payments: this.state.make_payments,
+                            make_draft_payments: this.state.make_draft_payments,
+                            view_balance: this.state.view_balance,
+                            view_old_events: this.state.view_old_events,
+                            view_new_events: this.state.view_new_events
                         }
                     };
 
@@ -324,19 +333,19 @@ class Connect extends React.Component {
                 case "draft":
                     shareDetail = {
                         ShareDetailDraftPayment: {
-                            make_draft_payments: true,
-                            view_balance: true,
-                            view_old_events: true,
-                            view_new_events: true
+                            make_draft_payments: this.state.make_draft_payments,
+                            view_balance: this.state.view_balance,
+                            view_old_events: this.state.view_old_events,
+                            view_new_events: this.state.view_new_events
                         }
                     };
                     break;
                 case "showOnly":
                     shareDetail = {
                         ShareDetailReadOnly: {
-                            view_balance: true,
-                            view_old_events: false,
-                            view_new_events: true
+                            view_balance: this.state.view_balance,
+                            view_old_events: this.state.view_old_events,
+                            view_new_events: this.state.view_new_events
                         }
                     };
                     break;
@@ -413,7 +422,7 @@ class Connect extends React.Component {
                         />
                     }
                 />
-                <ParentChild
+                <DraftAccess
                     t={t}
                     secondaryActions={
                         <Radio
@@ -442,7 +451,7 @@ class Connect extends React.Component {
                     <title>{`bunqDesktop - Connect`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={3} md={2}>
+                <Grid item xs={12} sm={12} md={2} lg={3}>
                     <Button
                         onClick={this.props.history.goBack}
                         style={styles.btn}
@@ -451,7 +460,7 @@ class Connect extends React.Component {
                     </Button>
                 </Grid>
 
-                <Grid item xs={12} sm={6} md={5}>
+                <Grid item xs={12} sm={12} md={5} lg={6}>
                     <Paper style={styles.paper}>
                         <TypographyTranslate
                             variant="headline"
@@ -484,6 +493,17 @@ class Connect extends React.Component {
                         {accessLevelForm}
 
                         <Grid container spacing={8}>
+                            {this.state.accessLevel !== "draft" ? (
+                                <Grid item xs={12}>
+                                    <TypographyTranslate
+                                        variant="subheading"
+                                        style={{ marginBottom: 8 }}
+                                    >
+                                        Settings
+                                    </TypographyTranslate>
+                                </Grid>
+                            ) : null}
+
                             {this.state.accessLevel === "full" ? (
                                 <BudgetFields
                                     t={t}
@@ -510,6 +530,55 @@ class Connect extends React.Component {
                             ) : null}
 
                             <Grid item xs={12}>
+                                <TypographyTranslate
+                                    variant="subheading"
+                                    style={{ marginBottom: 8 }}
+                                >
+                                    Advanced settings
+                                </TypographyTranslate>
+                            </Grid>
+
+                            <ConnectSettingItem
+                                t={t}
+                                type="make_payments"
+                                label="Make payments"
+                                accessLevel={this.state.accessLevel}
+                                checked={this.state.make_payments}
+                                handleChangeDirect={this.handleChangeDirect}
+                                hidden={["showOnly", "draft"]}
+                            />
+                            <ConnectSettingItem
+                                t={t}
+                                type="make_draft_payments"
+                                label="Make draft payments"
+                                accessLevel={this.state.accessLevel}
+                                checked={this.state.make_draft_payments}
+                                handleChangeDirect={this.handleChangeDirect}
+                                hidden={["showOnly"]}
+                            />
+                            <ConnectSettingItem
+                                t={t}
+                                type="view_balance"
+                                label="View account balance"
+                                checked={this.state.view_balance}
+                                handleChangeDirect={this.handleChangeDirect}
+                            />
+                            <ConnectSettingItem
+                                t={t}
+                                type="view_old_events"
+                                label="View old events"
+                                checked={this.state.view_old_events}
+                                handleChangeDirect={this.handleChangeDirect}
+                            />
+                            <ConnectSettingItem
+                                t={t}
+                                type="view_new_events"
+                                label="View new events"
+                                checked={this.state.view_new_events}
+                                handleChangeDirect={this.handleChangeDirect}
+                            />
+
+                            <Grid item xs={12}>
                                 <ButtonTranslate
                                     variant="raised"
                                     color="primary"
@@ -529,7 +598,7 @@ class Connect extends React.Component {
 
                 {filteredInviteResponses.length > 0 ||
                 filteredInviteInquiries.length > 0 ? (
-                    <Grid item xs={12} sm={6} md={5}>
+                    <Grid item xs={12} sm={12} md={5} lg={3}>
                         <Grid container spacing={8}>
                             {filteredInviteInquiries.length > 0 ? (
                                 <Grid item xs={12} sm={12}>

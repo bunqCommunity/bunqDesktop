@@ -14,7 +14,7 @@ const styles = {
     }
 };
 
-const ParentChild = props => {
+const DraftAccess = props => {
     return (
         <ListItem>
             <Avatar style={styles.smallAvatar}>
@@ -22,8 +22,8 @@ const ParentChild = props => {
             </Avatar>
 
             <ListItemText
-                primary={props.t("Parent / Child")}
-                secondary={props.t("Others can make and view new transactions")}
+                primary={props.t("Draft only")}
+                secondary={props.t("Others can prepare payments")}
             />
 
             <ListItemSecondaryAction>
@@ -33,12 +33,12 @@ const ParentChild = props => {
     );
 };
 
-ParentChild.defaultProps = {
+DraftAccess.defaultProps = {
     secondaryActions: null
 };
 
-ParentChild.requiredProps = {
+DraftAccess.requiredProps = {
     t: PropTypes.any.isRequired
 };
 
-export default ParentChild;
+export default DraftAccess;
