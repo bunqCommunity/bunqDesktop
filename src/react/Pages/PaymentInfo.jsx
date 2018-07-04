@@ -137,7 +137,7 @@ class PaymentInfo extends React.Component {
             const payment = paymentInfo.Payment;
             const paymentDescription = payment.description;
             const paymentDate = humanReadableDate(payment.updated);
-            const paymentAmount = payment.amount.value;
+            const paymentAmount = payment.getAmount();
             const formattedPaymentAmount = formatMoney(paymentAmount);
             const paymentLabel = paymentText(payment, t);
             const counterPartyIban = payment.counterparty_alias.iban;
@@ -267,7 +267,7 @@ class PaymentInfo extends React.Component {
         return (
             <Grid container spacing={24}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Payment Info")}`}</title>
+                    <title>{`bunqDesktop - ${t("Payment Info")}`}</title>
                 </Helmet>
 
                 <ExportDialog

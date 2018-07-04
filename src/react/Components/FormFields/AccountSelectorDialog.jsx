@@ -13,7 +13,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 
 import { formatMoney } from "../../Helpers/Utils";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
-import { filterShareInviteBankResponses } from "../../Helpers/Filters";
+import { filterShareInviteBankResponses } from "../../Helpers/DataFilters";
 import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
 
 const styles = {
@@ -45,7 +45,10 @@ const AccountItem = ({
 
     // attempt to get connect budget if possible
     if (filteredInviteResponses.length > 0) {
-        formattedBalance = GetShareDetailBudget(filteredInviteResponses);
+        const connectBudget = GetShareDetailBudget(filteredInviteResponses);
+        if(connectBudget){
+            formattedBalance = connectBudget;
+        }
     }
 
     // hide balance if used

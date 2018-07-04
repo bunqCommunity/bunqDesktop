@@ -52,7 +52,7 @@ class BunqMeTab extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("bunqme Requests")}`}</title>
+                    <title>{`bunqDesktop - ${t("bunqme Requests")}`}</title>
                 </Helmet>
 
                 <Hidden mdDown>

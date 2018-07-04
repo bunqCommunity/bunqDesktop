@@ -13,7 +13,7 @@ import Avatar from "@material-ui/core/Avatar";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
 import { formatMoney } from "../../Helpers/Utils";
-import { filterShareInviteBankResponses } from "../../Helpers/Filters";
+import { filterShareInviteBankResponses } from "../../Helpers/DataFilters";
 
 const styles = {
     formControl: {
@@ -52,7 +52,12 @@ class AccountSelector extends React.Component {
 
             // get budget if atleast one connect
             if (filteredInviteResponses.length > 0) {
-                balance = GetShareDetailBudget(filteredInviteResponses);
+                const connectBudget = GetShareDetailBudget(
+                    filteredInviteResponses
+                );
+                if (connectBudget) {
+                    balance = connectBudget;
+                }
             }
 
             balance = formatMoney(balance);
@@ -79,9 +84,13 @@ class AccountSelector extends React.Component {
                 const filteredInviteResponses = this.props.shareInviteBankResponses.filter(
                     filterShareInviteBankResponses(account.id)
                 );
-                formattedBalance = GetShareDetailBudget(
+
+                const connectBudget = GetShareDetailBudget(
                     filteredInviteResponses
                 );
+                if (connectBudget) {
+                    formattedBalance = connectBudget;
+                }
             }
 
             // hide balance if used or format it

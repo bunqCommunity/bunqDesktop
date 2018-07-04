@@ -24,7 +24,10 @@ import AllowBunqMe from "./Options/AllowBunqMe";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { requestInquirySend } from "../../Actions/request_inquiry";
-import {getInternationalFormat, isValidPhonenumber} from "../../Helpers/PhoneLib";
+import {
+    getInternationalFormat,
+    isValidPhonenumber
+} from "../../Helpers/PhoneLib";
 
 const styles = {
     payButton: {
@@ -77,7 +80,7 @@ class RequestInquiry extends React.Component {
             targetError: false,
             target: "",
 
-            //
+            // a list with all the targets
             targets: [],
 
             // defines which type is used
@@ -359,7 +362,9 @@ class RequestInquiry extends React.Component {
                             value: target.value.trim()
                         };
                     } else if (validPhone) {
-                        const formattedNumber = getInternationalFormat(target.value);
+                        const formattedNumber = getInternationalFormat(
+                            target.value
+                        );
                         if (formattedNumber) {
                             targetInfo = {
                                 type: "PHONE_NUMBER",
@@ -411,7 +416,7 @@ class RequestInquiry extends React.Component {
         return (
             <Grid container spacing={24} align={"center"} justify={"center"}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Pay")}`}</title>
+                    <title>{`bunqDesktop - ${t("Pay")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={8} lg={6} xl={4}>

@@ -1,7 +1,7 @@
 const webpack = require("webpack");
 const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
     .BundleAnalyzerPlugin;
 
@@ -23,15 +23,9 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
             /(en|de|fr)$/
         ),
         // extract css to file
-        new ExtractTextPlugin({
-            filename: OUTPUT_DIR + "[name].css",
-            disable: false,
-            allChunks: true
-        }),
-        // split common chunks
-        new webpack.optimize.CommonsChunkPlugin({
-            children: true,
-            minChunks: 2
+        new MiniCssExtractPlugin({
+            filename: "[name].css",
+            chunkFilename: "[id].css"
         }),
         // analyze bundle
         new BundleAnalyzerPlugin({
@@ -52,15 +46,9 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
             new UglifyJSPlugin({
                 sourceMap: true,
                 uglifyOptions: {
-                    compress: { warnings: false },
-                    ecma: 8,
-                    ie8: false,
-                    minimize: true,
-                    output: {
-                        comments: false,
-                        beautify: false
-                    },
-                    warnings: false
+                    compress: {
+                        inline: false
+                    }
                 }
             })
         );

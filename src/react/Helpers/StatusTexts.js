@@ -55,6 +55,8 @@ export const paymentTypeParser = (paymentType, t) => {
     switch (paymentType) {
         case "BUNQ":
             return "bunq";
+        case "BUNQME":
+            return "bunq.me";
         case "IDEAL":
             return "iDEAL";
         case "EBA_SCT":
@@ -76,6 +78,12 @@ export const masterCardActionText = (masterCardAction, t) => {
             return `${t(
                 "The payment was blocked due to "
             )}${masterCardAction.decision_description}`;
+        case "CLEARING_REFUND":
+            return `${t(
+                "Payment was refunded due to "
+            )}${masterCardAction.decision_description}`;
+        case "REVERSED":
+            return t("The payment was reversed");
         default:
             return `${t(
                 "The payment currently has the status "
@@ -84,21 +92,31 @@ export const masterCardActionText = (masterCardAction, t) => {
 };
 
 export const masterCardActionParser = (masterCardAction, t) => {
+    const defaultMessage = t("Card payment");
     const paymentText = t("Payment");
+    const refundText = t("Refund");
+
+    let secondaryText = paymentText;
+    if (masterCardAction.authorisation_status === "CLEARING_REFUND") {
+        secondaryText = refundText;
+    }
 
     if (masterCardAction.label_card) {
-        if(masterCardAction.wallet_provider_id === "103"){
-            return "Apple Pay " + paymentText;
+        if (masterCardAction.wallet_provider_id === "103") {
+            return "Apple Pay " + secondaryText;
         }
 
         switch (masterCardAction.label_card.type) {
             case "MAESTRO_MOBILE_NFC":
-                return "Tap & Pay " + paymentText;
+                if (masterCardAction.wallet_provider_id === null) {
+                    return defaultMessage;
+                }
+                return "Tap & Pay " + secondaryText;
             case "MASTERCARD":
-                return "Mastercard " + paymentText;
+                return "Mastercard " + secondaryText;
             case "MAESTRO":
-                return "Maestro " + paymentText;
+                return "Maestro " + secondaryText;
         }
     }
-    return "Card payment";
+    return defaultMessage;
 };

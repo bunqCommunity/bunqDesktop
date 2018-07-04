@@ -397,7 +397,7 @@ class Exports extends React.Component {
         return (
             <Grid container spacing={24}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Exports")}`}</title>
+                    <title>{`bunqDesktop - ${t("Exports")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} md={4}>
@@ -651,7 +651,8 @@ class Exports extends React.Component {
                                     hiddenTypes={[
                                         "BunqMeTab",
                                         "RequestInquiry",
-                                        "RequestResponse"
+                                        "RequestResponse",
+                                        "ShareInviteBankInquiry"
                                     ]}
                                 />
                             </Paper>

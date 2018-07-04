@@ -621,7 +621,7 @@ class Login extends React.Component {
                 style={styles.wrapperContainer}
             >
                 <Helmet>
-                    <title>{`BunqDesktop - Login`}</title>
+                    <title>{`bunqDesktop - Login`}</title>
                 </Helmet>
 
                 <Grid
@@ -630,6 +630,7 @@ class Login extends React.Component {
                     sm={10}
                     md={6}
                     lg={4}
+                    className="login-wrapper"
                     style={{
                         display: "flex",
                         justifyContent: "center"
@@ -639,8 +640,13 @@ class Login extends React.Component {
                 </Grid>
                 {userItems}
 
+                <img
+                    src="./images/svg/login-bg2.svg"
+                    id="login-background-image"
+                />
+
                 <span className="bunqdesktop-text-wrapper">
-                    <span className="bunqdesktop-text-first">Bunq</span>
+                    <span className="bunqdesktop-text-first">bunq</span>
                     <span className="bunqdesktop-text-second">Desktop</span>
                 </span>
             </Grid>

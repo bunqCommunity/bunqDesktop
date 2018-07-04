@@ -51,7 +51,7 @@ class RequestInquiryListItem extends React.Component {
                     .attachment_public_uuid;
         }
         const displayName = requestInquiry.counterparty_alias.display_name;
-        const paymentAmount = requestInquiry.amount_inquired.value;
+        const paymentAmount = requestInquiry.getAmount();
         const formattedPaymentAmount = formatMoney(paymentAmount);
         let paymentLabel = requestInquiryText(requestInquiry, t);
 

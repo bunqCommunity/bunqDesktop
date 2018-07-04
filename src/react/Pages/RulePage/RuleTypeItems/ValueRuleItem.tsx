@@ -3,7 +3,6 @@ import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
 import Input from "@material-ui/core/Input";
 import FormControl from "@material-ui/core/FormControl";
-import TableBody from "@material-ui/core/Table";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 
@@ -95,93 +94,89 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
     render() {
         const rule: ValueRule = this.props.rule;
 
-        return [
-            <TableBody key={"tableBody"}>
-                <TableRow>
-                    <TableCell style={styles.tableCell}>
+        return (
+            <TableRow>
+                <TableCell style={styles.tableCell}>
+                    <FormControl style={styles.textField}>
+                        <Select
+                            value={rule.field}
+                            onChange={this.handleFieldChange}
+                            input={<Input name="field" id="field-helper" />}
+                        >
+                            <TranslateMenuItem value={"IBAN"}>
+                                IBAN number
+                            </TranslateMenuItem>
+                            <TranslateMenuItem value={"DESCRIPTION"}>
+                                Description
+                            </TranslateMenuItem>
+                            <TranslateMenuItem value={"COUNTERPARTY_NAME"}>
+                                Display name
+                            </TranslateMenuItem>
+                            <TranslateMenuItem value={"CUSTOM"}>
+                                Other
+                            </TranslateMenuItem>
+                        </Select>
+                    </FormControl>
+
+                    {rule.field === "CUSTOM" ? (
                         <FormControl style={styles.textField}>
-                            <Select
-                                value={rule.field}
-                                onChange={this.handleFieldChange}
-                                input={<Input name="field" id="field-helper" />}
-                            >
-                                <TranslateMenuItem value={"IBAN"}>
-                                    IBAN number
-                                </TranslateMenuItem>
-                                <TranslateMenuItem value={"DESCRIPTION"}>
-                                    Description
-                                </TranslateMenuItem>
-                                <TranslateMenuItem value={"COUNTERPARTY_NAME"}>
-                                    Display name
-                                </TranslateMenuItem>
-                                <TranslateMenuItem value={"CUSTOM"}>
-                                    Other
-                                </TranslateMenuItem>
-                            </Select>
+                            <TextField
+                                name="custom-field"
+                                value={rule.customField}
+                                onChange={this.handleCustomFieldChange}
+                            />
                         </FormControl>
+                    ) : null}
+                </TableCell>
 
-                        {rule.field === "CUSTOM" ? (
-                            <FormControl style={styles.textField}>
-                                <TextField
-                                    name="custom-field"
-                                    value={rule.customField}
-                                    onChange={this.handleCustomFieldChange}
-                                />
-                            </FormControl>
-                        ) : null}
-                    </TableCell>
+                <TableCell style={styles.tableCell}>
+                    <FormControl style={styles.textField}>
+                        <Select
+                            value={rule.matchType}
+                            onChange={this.handleMatchTypeChange}
+                            input={<Input name="age" id="match-type-helper" />}
+                        >
+                            <TranslateMenuItem value={"CONTAINS"}>
+                                Contains text
+                            </TranslateMenuItem>
+                            <TranslateMenuItem value={"EXACT"}>
+                                Matches exactly
+                            </TranslateMenuItem>
+                            <TranslateMenuItem value={"STARTS_WITH"}>
+                                Starts with
+                            </TranslateMenuItem>
+                            <TranslateMenuItem value={"ENDS_WITH"}>
+                                Ends with
+                            </TranslateMenuItem>
+                            <TranslateMenuItem value={"REGEX"}>
+                                Regex
+                            </TranslateMenuItem>
+                        </Select>
+                        {/*<FormHelperText>*/}
+                        {/*How to check the field*/}
+                        {/*</FormHelperText>*/}
+                    </FormControl>
+                </TableCell>
 
-                    <TableCell style={styles.tableCell}>
-                        <FormControl style={styles.textField}>
-                            <Select
-                                value={rule.matchType}
-                                onChange={this.handleMatchTypeChange}
-                                input={
-                                    <Input name="age" id="match-type-helper" />
-                                }
-                            >
-                                <TranslateMenuItem value={"CONTAINS"}>
-                                    Contains text
-                                </TranslateMenuItem>
-                                <TranslateMenuItem value={"EXACT"}>
-                                    Matches exactly
-                                </TranslateMenuItem>
-                                <TranslateMenuItem value={"STARTS_WITH"}>
-                                    Starts with
-                                </TranslateMenuItem>
-                                <TranslateMenuItem value={"ENDS_WITH"}>
-                                    Ends with
-                                </TranslateMenuItem>
-                                <TranslateMenuItem value={"REGEX"}>
-                                    Regex
-                                </TranslateMenuItem>
-                            </Select>
-                            {/*<FormHelperText>*/}
-                            {/*How to check the field*/}
-                            {/*</FormHelperText>*/}
-                        </FormControl>
-                    </TableCell>
+                <TableCell style={styles.tableCell}>
+                    <TextField
+                        error={this.state.textFieldError}
+                        style={styles.textField}
+                        value={rule.value}
+                        onChange={this.handleValueChange}
+                    />
+                </TableCell>
+                {/*helperText={"Value to check for"}*/}
 
-                    <TableCell style={styles.tableCell}>
-                        <TextField
-                            error={this.state.textFieldError}
-                            style={styles.textField}
-                            value={rule.value}
-                            onChange={this.handleValueChange}
-                        />
-                    </TableCell>
-                    {/*helperText={"Value to check for"}*/}
-
-                    <TableCell style={styles.tableIconCell}>
-                        <RuleItemMenu
-                            removeRule={this.props.removeRule}
-                            rule={this.state.rule}
-                            openExportDialog={this.props.openExportDialog}
-                        />
-                    </TableCell>
-                </TableRow>
-            </TableBody>
-        ];
+                <TableCell style={styles.tableIconCell}>
+                    <RuleItemMenu
+                        removeRule={this.props.removeRule}
+                        rule={this.state.rule}
+                        openExportDialog={this.props.openExportDialog}
+                    />
+                </TableCell>
+            </TableRow>
+        );
     }
 }
 

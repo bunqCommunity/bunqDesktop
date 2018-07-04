@@ -116,10 +116,20 @@ class AddAccount extends React.Component {
     render() {
         const t = this.props.t;
 
+        const accountsAmount = this.props.accounts.reduce(
+            (accumulator, account) => {
+                if (account.status === "ACTIVE") {
+                    return accumulator + 1;
+                }
+                return accumulator;
+            },
+            0
+        );
+
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Add an account")}`}</title>
+                    <title>{`bunqDesktop - ${t("Add an account")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={3} md={4}>
@@ -134,7 +144,7 @@ class AddAccount extends React.Component {
                 <Grid item xs={12} sm={6} md={4}>
                     <Paper style={styles.paper}>
                         <TypographyTranslate
-                            type="headline"
+                            variant="headline"
                             style={{ marginBottom: "25px" }}
                         >
                             Add an account
@@ -172,7 +182,7 @@ class AddAccount extends React.Component {
                         <ButtonTranslate
                             variant="raised"
                             color="primary"
-                            disabled={!this.state.validForm}
+                            disabled={!this.state.validForm || this.props.accountsLoading}
                             onClick={this.createAccount}
                             style={styles.btn}
                         >
@@ -180,6 +190,22 @@ class AddAccount extends React.Component {
                         </ButtonTranslate>
                     </Paper>
                 </Grid>
+
+                {accountsAmount === 25 ? (
+                    <Grid item xs={12} sm={6} md={4}>
+                        <Paper style={{ padding: 8 }}>
+                            <TypographyTranslate variant="subheading">
+                                Attention!
+                            </TypographyTranslate>
+                            <TypographyTranslate variant="body2">
+                                Creating a new account when you've reached the
+                                limit of 25 accounts comes at additional costs
+                                You may have to create the new account using the
+                                official bunq app to approve these
+                            </TypographyTranslate>
+                        </Paper>
+                    </Grid>
+                ) : null}
             </Grid>
         );
     }
@@ -187,6 +213,9 @@ class AddAccount extends React.Component {
 
 const mapStateToProps = state => {
     return {
+        accounts: state.accounts.accounts,
+        accountsLoading: state.accounts.loading,
+
         user: state.user.user
     };
 };

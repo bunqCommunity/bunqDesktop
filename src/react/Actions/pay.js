@@ -2,8 +2,8 @@ import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { openSnackbar } from "./snackbar";
 import { paymentInfoUpdate } from "./payments";
 import { accountsUpdate } from "./accounts";
-import {shareInviteBankInquiriesInfoUpdate} from "./share_invite_bank_inquiry";
-import {shareInviteBankResponsesInfoUpdate} from "./share_invite_bank_response";
+import {shareInviteBankInquiriesInfoUpdate} from "./share_invite_bank_inquiries";
+import {shareInviteBankResponsesInfoUpdate} from "./share_invite_bank_responses";
 
 export function paySend(
     BunqJSClient,

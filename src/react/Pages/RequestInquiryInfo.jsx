@@ -231,7 +231,7 @@ class RequestInquiryInfo extends React.Component {
         return (
             <Grid container spacing={24}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Request Info")}`}</title>
+                    <title>{`bunqDesktop - ${t("Request Info")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={2} lg={3}>

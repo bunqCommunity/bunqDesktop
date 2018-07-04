@@ -66,7 +66,7 @@ class LoginPassword extends React.Component {
             password: "",
             passwordValid: false,
 
-            hasReadWarning: !!store.get("HAS_READ_DEV_WARNING")
+            hasReadWarning: !!store.get("HAS_READ_DEV_WARNING2")
         };
     }
 
@@ -239,7 +239,7 @@ class LoginPassword extends React.Component {
                 style={styles.wrapperContainer}
             >
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Password Setup")}`}</title>
+                    <title>{`bunqDesktop - ${t("Password Setup")}`}</title>
                 </Helmet>
 
                 <Grid
@@ -249,13 +249,18 @@ class LoginPassword extends React.Component {
                     md={5}
                     lg={4}
                     style={{ zIndex: 1 }}
-                    className="animated zoomIn"
+                    className="animated zoomIn login-wrapper"
                 >
                     <Card>{cardContent}</Card>
                 </Grid>
 
+                <img
+                    src="./images/svg/login-bg2.svg"
+                    id="login-background-image"
+                />
+
                 <span className="bunqdesktop-text-wrapper">
-                    <span className="bunqdesktop-text-first">Bunq</span>
+                    <span className="bunqdesktop-text-first">bunq</span>
                     <span className="bunqdesktop-text-second">Desktop</span>
                 </span>
             </Grid>

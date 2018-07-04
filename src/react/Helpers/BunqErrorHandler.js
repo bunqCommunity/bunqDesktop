@@ -1,12 +1,18 @@
+import Logger from "./Logger";
+
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
-import Logger from "./Logger";
 import { applicationSetOffline } from "../Actions/application";
+import { registrationResetToApiScreenSoft } from "../Actions/registration";
 
-const defaultErrorMessage = dispatch => {
+import ErrorCodes from "@bunq-community/bunq-js-client/dist/Helpers/ErrorCodes";
+
+const defaultErrorMessage = (dispatch, customError = false) => {
     dispatch(
         openModal(
-            "Something went wrong while trying to send a request",
+            customError
+                ? customError
+                : "Something went wrong while trying to send a request",
             "Something went wrong"
         )
     );
@@ -15,11 +21,22 @@ const defaultErrorMessage = dispatch => {
 /**
  * @param dispatch
  * @param error
- * @param customError
+ * @param {boolean|string} customError
+ * @param {boolean|BunqJSClient} BunqJSClient
  * @returns {*}
  */
-export default (dispatch, error, customError = false) => {
+export default (dispatch, error, customError = false, BunqJSClient = false) => {
     const response = error.response;
+
+    const offlineError = window.t(
+        "We received a network error while trying to send a request! You might be offline"
+    );
+    const invalidResponseError = window.t(
+        "We couldn't validate the response given by bunq!"
+    );
+    const invalidAuthenticationError = window.t(
+        "The API key or IP you are currently on is not valid for the selected bunq environment"
+    );
 
     // log to logger
     Logger.error(response ? response.data : error.message);
@@ -27,20 +44,24 @@ export default (dispatch, error, customError = false) => {
     // check if a network error occured
     if (error.toString() === "Error: Network Error") {
         // show a less intrusive error using the snackbar
-        dispatch(
-            openSnackbar(
-                "We received a network error while trying to send a request! You might be offline"
-            )
-        );
+        dispatch(openSnackbar(offlineError));
 
         // enable offline mode
         dispatch(applicationSetOffline());
         return;
     }
 
+    if (error.errorCode) {
+        switch (error.errorCode) {
+            // invalid response or it couldn't be verified
+            case ErrorCodes.INVALID_RESPONSE_RECEIVED:
+                return defaultErrorMessage(dispatch, invalidResponseError);
+        }
+    }
+
     // fallback to a default message
     if (!response) {
-        return defaultErrorMessage(dispatch);
+        return defaultErrorMessage(dispatch, customError);
     }
 
     // check if we can display a bunq error
@@ -66,14 +87,29 @@ export default (dispatch, error, customError = false) => {
                 ? `\n\nResponse-Id: ${responseId}`
                 : "";
 
+            // specific message based on api error description
+            let errorMessage = errorObject.error_description;
+
+            switch (errorObject.error_description) {
+                case "User credentials are incorrect. Incorrect API key or IP address.":
+                    errorMessage = invalidAuthenticationError;
+
+                    // reset to api screen if possible
+                    if (BunqJSClient)
+                        dispatch(
+                            registrationResetToApiScreenSoft(BunqJSClient)
+                        );
+                    break;
+            }
+
             return dispatch(
                 openModal(
-                    `${message}:\n ${errorObject.error_description}${responseIdText}`,
+                    `${message}:\n ${errorMessage}${responseIdText}`,
                     "Something went wrong"
                 )
             );
         }
     }
 
-    return defaultErrorMessage(dispatch);
+    return defaultErrorMessage(dispatch, customError);
 };

@@ -6,16 +6,23 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import Address from "./Address";
 
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-
 import { openSnackbar } from "../../Actions/snackbar";
 import { userLogin } from "../../Actions/user";
+
 import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
+import { formatMoney } from "../../Helpers/Utils";
 
 const styles = {
     title: {
@@ -62,19 +69,42 @@ class Profile extends React.Component {
                 postal_code: "",
                 po_box: "",
                 street: ""
-            }
+            },
+
+            totalBalance: 0
         };
     }
 
     componentDidMount() {
         this.userToState();
+
+        const totalBalance = this.calculateTotalBalance();
+        this.setState({
+            totalBalance: totalBalance
+        });
     }
 
     componentDidUpdate(oldProps) {
         if (oldProps.userLoading === true && this.props.userLoading === false) {
             this.userToState();
         }
+
+        if (
+            oldProps.accountsLoading === true &&
+            this.props.accountsLoading === false
+        ) {
+            const totalBalance = this.calculateTotalBalance();
+            this.setState({
+                totalBalance: totalBalance
+            });
+        }
     }
+
+    calculateTotalBalance = () => {
+        return this.props.accounts.reduce((total, account) => {
+            return total + account.getBalance();
+        }, 0);
+    };
 
     userToState = () => {
         const user = this.props.user;
@@ -154,10 +184,110 @@ class Profile extends React.Component {
     };
 
     render() {
-        const { t, user, userLoading } = this.props;
+        const { t, userType, userLoading } = this.props;
+        const { totalBalance } = this.state;
 
         let content = null;
         if (userLoading === false && this.state.loading === false) {
+            let businessInfo = null;
+            if (userType !== "UserCompany") {
+                const hasSafeKeepingFee = totalBalance > 100000;
+
+                let costsTable = null;
+                if (hasSafeKeepingFee) {
+                    costsTable = (
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>{t("Days")}</TableCell>
+                                    <TableCell numeric>
+                                        {t("Estimated total cost")}
+                                    </TableCell>
+                                    <TableCell numeric>
+                                        {t("Balance after payments")}
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {[1, 7, 30, 90, 365].map(days => {
+                                    // to keep track of the amount across the dates
+                                    let accountBalance = totalBalance;
+                                    let totalPayment = 0;
+
+                                    // go through the days to calculate historic change
+                                    for (let day = 0; day < days; day++) {
+                                        const thousands = accountBalance / 1000;
+                                        let nextPayment = thousands * 2.4 / 100;
+
+                                        // update balance
+                                        accountBalance =
+                                            accountBalance - nextPayment;
+                                        totalPayment =
+                                            totalPayment + nextPayment;
+                                    }
+
+                                    return (
+                                        <TableRow key={`days${days}`}>
+                                            <TableCell
+                                                component="th"
+                                                scope="row"
+                                            >
+                                                {days}
+                                            </TableCell>
+                                            <TableCell numeric>
+                                                {formatMoney(totalPayment)}
+                                            </TableCell>
+                                            <TableCell numeric>
+                                                {formatMoney(accountBalance)}
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                            </TableBody>
+                        </Table>
+                    );
+                }
+
+                businessInfo = (
+                    <Paper style={styles.paper}>
+                        <Grid container spacing={16} justify="center">
+                            <Grid item xs={12}>
+                                <TranslateTypography variant="subheading">
+                                    Company information
+                                </TranslateTypography>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <TextField
+                                    min={0}
+                                    step={0.01}
+                                    type="number"
+                                    label="Total account balance"
+                                    value={parseFloat(
+                                        totalBalance
+                                            ? totalBalance
+                                            : 0
+                                    )}
+                                    onChange={this.onChange(
+                                        "totalBalance"
+                                    )}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                {hasSafeKeepingFee ? (
+                                    costsTable
+                                ) : (
+                                    <TranslateTypography variant="subheading">
+                                        No safekeeping fee
+                                    </TranslateTypography>
+                                )}
+                            </Grid>
+                        </Grid>
+                    </Paper>
+                );
+            }
+
             content = (
                 <React.Fragment>
                     <Paper style={styles.paper}>
@@ -215,6 +345,8 @@ class Profile extends React.Component {
                             </Grid>
                         </Grid>
                     </Paper>
+
+                    {businessInfo}
                 </React.Fragment>
             );
         } else {
@@ -234,7 +366,7 @@ class Profile extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Profile")}`}</title>
+                    <title>{`bunqDesktop - ${t("Profile")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={2}>
@@ -255,7 +387,10 @@ const mapStateToProps = state => {
     return {
         user: state.user.user,
         userType: state.user.user_type,
-        userLoading: state.user.loading
+        userType: state.user.user_type,
+        userLoading: state.user.loading,
+        accounts: state.accounts.accounts,
+        accountsLoading: state.accounts.loading
     };
 };
 

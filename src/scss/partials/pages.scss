@@ -1,9 +1,22 @@
+#login-background-image{
+    position: fixed;
+    top: 50px;
+    left: 0px;
+    width: 100vw;
+    height: calc(100vh - 50px);
+    z-index: 0;
+}
+
+.login-wrapper{
+    z-index: 1;
+}
+
 .login-page,
 .password-page {
-    background-image: url("../images/svg/login-bg2.svg") !important;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
+    //background-image: url("../images/svg/login-bg2.svg") !important;
+    //background-size: cover;
+    //background-repeat: no-repeat;
+    //background-position: center center;
 
     .text-input {
         &:before {
@@ -12,7 +25,7 @@
     }
 
     .bunqdesktop-text-wrapper {
-        z-index: 0;
+        z-index: 1;
         position: fixed;
         right: 30px;
         bottom: 30px;

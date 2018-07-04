@@ -94,6 +94,14 @@ class MasterCardActionInfo extends React.Component {
 
     toggleCategoryDialog = event =>
         this.setState({ displayCategories: !this.state.displayCategories });
+    startPayment = event => {
+        const paymentInfo = this.props.masterCardActionInfo;
+        this.props.history.push(`/pay?amount=${paymentInfo.getAmount()}`);
+    };
+    startRequest = event => {
+        const paymentInfo = this.props.masterCardActionInfo;
+        this.props.history.push(`/request?amount=${paymentInfo.getAmount()}`);
+    };
 
     render() {
         const {
@@ -280,7 +288,7 @@ class MasterCardActionInfo extends React.Component {
         return (
             <Grid container spacing={24}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Mastercard Info")}`}</title>
+                    <title>{`bunqDesktop - ${t("Mastercard Info")}`}</title>
                 </Helmet>
 
                 <ExportDialog

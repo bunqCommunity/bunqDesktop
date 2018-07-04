@@ -91,7 +91,7 @@ class RuleDashboard extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Rule Dashboard")}`}</title>
+                    <title>{`bunqDesktop - ${t("Rule Dashboard")}`}</title>
                 </Helmet>
 
                 <ImportDialog

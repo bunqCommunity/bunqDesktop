@@ -52,7 +52,7 @@ class RequestResponseListItem extends React.Component {
                     .attachment_public_uuid;
         }
         const displayName = requestResponse.counterparty_alias.display_name;
-        const paymentAmount = requestResponse.amount_inquired.value;
+        const paymentAmount = requestResponse.getAmount();
         const formattedPaymentAmount = formatMoney(paymentAmount);
         let paymentLabel = requestResponseText(requestResponse, t);
 

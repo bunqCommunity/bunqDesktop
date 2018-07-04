@@ -2,7 +2,6 @@ import * as React from "react";
 import Select from "@material-ui/core/Select";
 import Input from "@material-ui/core/Input";
 import FormControl from "@material-ui/core/FormControl";
-import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 
@@ -61,74 +60,72 @@ class TransactionAmountRuleItem extends React.Component<IPropTypes, any> {
     render() {
         const rule: TransactionAmountRule = this.props.rule;
 
-        return [
-            <TableBody key={"tableBody"}>
-                <TableRow>
-                    <TableCell>
-                        <TranslateTypography variant="subheading">
-                            Transaction amount
-                        </TranslateTypography>
-                    </TableCell>
+        return (
+            <TableRow>
+                <TableCell>
+                    <TranslateTypography variant="subheading">
+                        Transaction amount
+                    </TranslateTypography>
+                </TableCell>
 
-                    <TableCell style={styles.tableCell}>
-                        <FormControl style={styles.textField}>
-                            <Select
-                                value={rule.matchType}
-                                onChange={this.handleMatchTypeChange}
-                                input={
-                                    <Input
-                                        name="match-type"
-                                        id="match-type-helper"
-                                    />
-                                }
-                            >
-                                <TranslateMenuItem value={"MORE"}>
-                                    More than
-                                </TranslateMenuItem>
-                                <TranslateMenuItem value={"MORE_EQUALS"}>
-                                    Equals or more than
-                                </TranslateMenuItem>
-                                <TranslateMenuItem value={"LESS"}>
-                                    Less than
-                                </TranslateMenuItem>
-                                <TranslateMenuItem value={"LESS_EQUALS"}>
-                                    Equals or less than
-                                </TranslateMenuItem>
-                            </Select>
-                            {/*<FormHelperText>*/}
-                            {/*How to check the amount*/}
-                            {/*</FormHelperText>*/}
-                        </FormControl>
-                    </TableCell>
+                <TableCell style={styles.tableCell}>
+                    <FormControl style={styles.textField}>
+                        <Select
+                            value={rule.matchType}
+                            onChange={this.handleMatchTypeChange}
+                            input={
+                                <Input
+                                    name="match-type"
+                                    id="match-type-helper"
+                                />
+                            }
+                        >
+                            <TranslateMenuItem value={"MORE"}>
+                                More than
+                            </TranslateMenuItem>
+                            <TranslateMenuItem value={"MORE_EQUALS"}>
+                                Equals or more than
+                            </TranslateMenuItem>
+                            <TranslateMenuItem value={"LESS"}>
+                                Less than
+                            </TranslateMenuItem>
+                            <TranslateMenuItem value={"LESS_EQUALS"}>
+                                Equals or less than
+                            </TranslateMenuItem>
+                        </Select>
+                        {/*<FormHelperText>*/}
+                        {/*How to check the amount*/}
+                        {/*</FormHelperText>*/}
+                    </FormControl>
+                </TableCell>
 
-                    <TableCell style={styles.tableCell}>
-                        {/*<TextField*/}
-                        {/*style={styles.textField}*/}
-                        {/*value={rule.amount}*/}
-                        {/*type={"number"}*/}
-                        {/*onChange={this.handleValueChange}*/}
-                        {/*/>*/}
-                        <FormControl error={this.state.amountError} fullWidth>
-                            <MoneyFormatInputDefault
-                                id="amount"
-                                fontSize={16}
-                                style={styles.textField}
-                                value={rule.amount}
-                                onChange={this.handleValueChange}
-                            />
-                        </FormControl>
-                    </TableCell>
-
-                    <TableCell style={styles.tableIconCell}>
-                        <RuleItemMenu
-                            removeRule={this.props.removeRule}
-                            rule={this.state.rule}
-                            openExportDialog={this.props.openExportDialog}
+                <TableCell style={styles.tableCell}>
+                    {/*<TextField*/}
+                    {/*style={styles.textField}*/}
+                    {/*value={rule.amount}*/}
+                    {/*type={"number"}*/}
+                    {/*onChange={this.handleValueChange}*/}
+                    {/*/>*/}
+                    <FormControl error={this.state.amountError} fullWidth>
+                        <MoneyFormatInputDefault
+                            id="amount"
+                            fontSize={16}
+                            style={styles.textField}
+                            value={rule.amount}
+                            onChange={this.handleValueChange}
                         />
-                    </TableCell>
-                </TableRow>
-            </TableBody>
-        ];
+                    </FormControl>
+                </TableCell>
+
+                <TableCell style={styles.tableIconCell}>
+                    <RuleItemMenu
+                        removeRule={this.props.removeRule}
+                        rule={this.state.rule}
+                        openExportDialog={this.props.openExportDialog}
+                    />
+                </TableCell>
+            </TableRow>
+        );
     }
 }
 

@@ -41,7 +41,7 @@ export default async () => {
     try {
         const response = await axios
             .get(
-                "https://api.github.com/repos/BunqCommunity/BunqDesktop/releases/latest"
+                "https://api.github.com/repos/bunqCommunity/bunqDesktop/releases/latest"
             )
             .then(response => response.data);
         const latestVersion = response.tag_name;
@@ -64,5 +64,5 @@ export default async () => {
 
 export const allReleases = () =>
     axios
-        .get("https://api.github.com/repos/BunqCommunity/BunqDesktop/releases")
+        .get("https://api.github.com/repos/bunqCommunity/bunqDesktop/releases")
         .then(response => response.data);

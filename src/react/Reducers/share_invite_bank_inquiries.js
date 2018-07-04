@@ -1,8 +1,7 @@
-import { STORED_SHARE_INVITE_BANK_INQUIRIES } from "../Actions/share_invite_bank_inquiry";
+import { STORED_SHARE_INVITE_BANK_INQUIRIES } from "../Actions/share_invite_bank_inquiries";
 
 export const defaultState = {
     share_invite_bank_inquiries: [],
-    user_id: false,
     account_id: false,
     loading: false
 };
@@ -28,8 +27,7 @@ export default (state = defaultState, action) => {
                 ...state,
                 share_invite_bank_inquiries:
                     action.payload.share_invite_bank_inquiries,
-                account_id: action.payload.account_id,
-                user_id: action.payload.user_id
+                account_id: action.payload.account_id
             };
 
         case "SHARE_INVITE_INQUIRIES_IS_LOADING":

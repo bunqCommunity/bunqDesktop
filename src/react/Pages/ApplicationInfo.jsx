@@ -93,7 +93,7 @@ class ApplicationInfo extends React.Component {
         return (
             <Grid container spacing={24} justify={"center"}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t(
+                    <title>{`bunqDesktop - ${t(
                         "Application Information"
                     )}`}</title>
                 </Helmet>
@@ -101,40 +101,46 @@ class ApplicationInfo extends React.Component {
                 <Grid item xs={12} sm={8}>
                     <Paper style={styles.paper}>
                         <Grid container spacing={24} justify={"center"}>
-                            <Grid item xs={2} md={1}>
-                                <a
-                                    className="js-external-link"
-                                    rel="noopener"
-                                    href="https://github.com/BunqCommunity/BunqDesktop"
-                                >
-                                    <Avatar
-                                        style={styles.avatar}
-                                        src="./images/512x512.png"
-                                    />
-                                </a>
-                            </Grid>
+                            <Grid item xs={12} style={{ display: "flex" }}>
+                                <div style={{ marginRight: 8 }}>
+                                    <a
+                                        className="js-external-link"
+                                        rel="noopener"
+                                        href="https://github.com/bunqCommunity/bunqDesktop"
+                                    >
+                                        <Avatar
+                                            style={styles.avatar}
+                                            src="./images/512x512.png"
+                                        />
+                                    </a>
+                                </div>
 
-                            <Grid item xs={8} md={10}>
-                                <Typography variant={"headline"}>
-                                    BunqDesktop
-                                </Typography>
-                                <Typography variant={"body2"}>
-                                    {`${t("Version")}: ${process.env.CURRENT_VERSION}`}
-                                </Typography>
-                            </Grid>
+                                <div style={{ flexGrow: 1, marginTop: 4 }}>
+                                    <Typography variant={"headline"}>
+                                        bunqDesktop
+                                    </Typography>
+                                    <Typography variant={"body2"}>
+                                        {`${t("Version")}: ${process.env
+                                            .CURRENT_VERSION}`}
+                                    </Typography>
+                                </div>
 
-                            <Grid item xs={2} md={1}>
-                                <IconButton
-                                    onClick={() =>
-                                        shell.openItem(app.getPath("userData"))}
-                                >
-                                    <FolderIcon />
-                                </IconButton>
+                                <div>
+                                    <IconButton
+                                        onClick={() =>
+                                            shell.openItem(
+                                                app.getPath("userData")
+                                            )}
+                                    >
+                                        <FolderIcon />
+                                    </IconButton>
+                                </div>
                             </Grid>
 
                             <Grid item xs={12}>
                                 <Typography variant={"body2"}>
-                                    {t("Application data")}: {app.getPath("userData")}
+                                    {t("Application data")}:{" "}
+                                    {app.getPath("userData")}
                                 </Typography>
                             </Grid>
 

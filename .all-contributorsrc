@@ -1,19 +1,19 @@
 {
-  "projectName": "BunqDesktop",
-  "projectOwner": "BunqCommunity",
+  "projectName": "bunqDesktop",
+  "projectOwner": "bunqCommunity",
   "repoType": "github",
   "repoHost": "https://github.com",
   "files": [
     "README.md"
   ],
   "imageSize": 80,
-  "commit": true,
+  "commit": false,
   "contributors": [
     {
       "login": "Crecket",
       "name": "Gregory Goijaerts",
       "avatar_url": "https://avatars2.githubusercontent.com/u/7481136?v=4",
-      "profile": "https://www.masterypoints.com",
+      "profile": "https://github.com/Crecket",
       "contributions": [
         "code",
         "design",
@@ -90,7 +90,8 @@
       "profile": "https://www.linkedin.com/in/kevin-hellemun-9b3ab8130",
       "contributions": [
         "question",
-        "ideas"
+        "ideas",
+        "bug"
       ]
     },
     {

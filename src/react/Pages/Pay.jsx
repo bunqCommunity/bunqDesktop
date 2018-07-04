@@ -1,5 +1,4 @@
 import React from "react";
-import iban from "iban";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
@@ -10,6 +9,7 @@ import format from "date-fns/format";
 import enLocale from "date-fns/locale/en-US";
 import deLocale from "date-fns/locale/de";
 import nlLocale from "date-fns/locale/nl";
+import iban from "iban";
 
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
@@ -29,21 +29,22 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
-import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
-import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
-import TargetSelection from "../../Components/FormFields/TargetSelection";
-import SchedulePaymentForm from "../../Components/FormFields/SchedulePaymentForm";
+import AccountSelectorDialog from "../Components/FormFields/AccountSelectorDialog";
+import MoneyFormatInput from "../Components/FormFields/MoneyFormatInput";
+import TargetSelection from "../Components/FormFields/TargetSelection";
+import SchedulePaymentForm from "../Components/FormFields/SchedulePaymentForm";
 
-import { openSnackbar } from "../../Actions/snackbar";
-import { paySchedule, paySend } from "../../Actions/pay";
-import scheduleTexts from "../../Helpers/ScheduleTexts";
+import { openSnackbar } from "../Actions/snackbar";
+import { paySchedule, paySend } from "../Actions/pay";
+
+import scheduleTexts from "../Helpers/ScheduleTexts";
 import {
     getInternationalFormat,
     isValidPhonenumber
-} from "../../Helpers/PhoneLib";
-import { formatMoney, getUTCDate } from "../../Helpers/Utils";
-import { filterShareInviteBankResponses } from "../../Helpers/Filters";
-import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
+} from "../Helpers/PhoneLib";
+import { formatMoney, getUTCDate } from "../Helpers/Utils";
+import { filterShareInviteBankResponses } from "../Helpers/DataFilters";
+import GetShareDetailBudget from "../Helpers/GetShareDetailBudget";
 
 const styles = {
     payButton: {
@@ -384,7 +385,10 @@ class Pay extends React.Component {
 
         // get budget if atleast one connect
         if (filteredInviteResponses.length > 0) {
-            accountBalance = GetShareDetailBudget(filteredInviteResponses);
+            const connectBudget = GetShareDetailBudget(filteredInviteResponses);
+            if (connectBudget) {
+                accountBalance = connectBudget;
+            }
         }
 
         const noTargetsCondition = targets.length < 0;
@@ -403,11 +407,11 @@ class Pay extends React.Component {
             descriptionError: descriptionErrorCondition,
             ibanNameError: ibanNameErrorCondition,
             validForm:
-                !noTargetsCondition &&
-                !insufficientFundsCondition &&
-                !amountErrorCondition &&
-                !descriptionErrorCondition &&
-                targets.length > 0
+            !noTargetsCondition &&
+            !insufficientFundsCondition &&
+            !amountErrorCondition &&
+            !descriptionErrorCondition &&
+            targets.length > 0
         });
     };
 
@@ -562,7 +566,12 @@ class Pay extends React.Component {
             // regular balance value
             accountBalance = account.balance ? account.balance.value : 0;
             if (filteredInviteResponses.length > 0) {
-                accountBalance = GetShareDetailBudget(filteredInviteResponses);
+                const connectBudget = GetShareDetailBudget(
+                    filteredInviteResponses
+                );
+                if (connectBudget) {
+                    accountBalance = connectBudget;
+                }
             }
         }
         accountBalance = formatMoney(accountBalance, true);
@@ -614,7 +623,7 @@ class Pay extends React.Component {
                     case "TRANSFER":
                         const targetAccountInfo = this.props.accounts[
                             targetItem.value
-                        ];
+                            ];
                         primaryText = `${t(
                             "Transfer"
                         )}: ${targetAccountInfo.description}`;
@@ -711,7 +720,7 @@ class Pay extends React.Component {
         return (
             <Grid container spacing={24} align={"center"} justify={"center"}>
                 <Helmet>
-                    <title>{`BunqDesktop - Pay`}</title>
+                    <title>{`bunqDesktop - Pay`}</title>
                 </Helmet>
                 <MuiPickersUtilsProvider
                     utils={DateFnsUtils}
@@ -866,7 +875,7 @@ const mapStateToProps = state => {
         language: state.options.language,
 
         shareInviteBankResponses:
-            state.share_invite_bank_responses.share_invite_bank_responses,
+        state.share_invite_bank_responses.share_invite_bank_responses,
 
         user: state.user.user
     };

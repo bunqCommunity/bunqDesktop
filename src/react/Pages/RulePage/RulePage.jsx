@@ -62,7 +62,7 @@ class RulesPage extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Rule Editor")}`}</title>
+                    <title>{`bunqDesktop - ${t("Rule Editor")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12}>

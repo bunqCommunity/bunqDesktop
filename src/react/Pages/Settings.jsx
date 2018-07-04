@@ -201,7 +201,7 @@ class Settings extends React.Component {
         const t = this.props.t;
 
         const clearBunqDesktopText1 = t("Are you absolutely sure");
-        const clearBunqDesktopTex2 = t("Reset BunqDesktop");
+        const clearBunqDesktopTex2 = t("Reset bunqDesktop");
         const clearBunqDesktopText = this.state.clearConfirmation
             ? clearBunqDesktopText1
             : clearBunqDesktopTex2;
@@ -209,7 +209,7 @@ class Settings extends React.Component {
         return (
             <Grid container spacing={24}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Settings")}`}</title>
+                    <title>{`bunqDesktop - ${t("Settings")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={2}>
@@ -527,7 +527,7 @@ class Settings extends React.Component {
                             </DialogContentText>
                             <DialogContentText>
                                 Would you like to import the settings file or
-                                overwrite the settings currently in BunqDesktop?
+                                overwrite the settings currently in bunqDesktop?
                             </DialogContentText>
                         </DialogContent>
 

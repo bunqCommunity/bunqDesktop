@@ -487,7 +487,7 @@ class Stats extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Stats")}`}</title>
+                    <title>{`bunqDesktop - ${t("Stats")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={4} md={3}>

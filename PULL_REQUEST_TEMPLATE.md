@@ -2,5 +2,5 @@
         This helps us keep track of all the changes when when we release a new version)
 
 [//]: # (Add the correct issue number so it can be closed automatically when required)        
- - Closes BunqCommunity/BunqDesktop#<issue_number>
+ - Closes bunqCommunity/bunqDesktop#<issue_number>
  

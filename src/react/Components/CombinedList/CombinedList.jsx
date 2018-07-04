@@ -22,6 +22,8 @@ import PaymentListItem from "../ListItems/PaymentListItem";
 import MasterCardActionListItem from "../ListItems/MasterCardActionListItem";
 import RequestResponseListItem from "../ListItems/RequestResponseListItem";
 import RequestInquiryListItem from "../ListItems/RequestInquiryListItem";
+import ShareInviteBankInquiryListItem from "../ListItems/ShareInviteBankInquiryListItem";
+import ShareInviteBankResponseListItem from "../ListItems/ShareInviteBankResponseListItem";
 import ClearBtn from "../FilterComponents/ClearFilter";
 import FilterDrawer from "../FilterComponents/FilterDrawer";
 import EventData from "./EventData";
@@ -42,7 +44,9 @@ import {
     bunqMeTabsFilter,
     masterCardActionFilter,
     requestInquiryFilter,
-    requestResponseFilter
+    requestResponseFilter,
+    shareInviteBankInquiryFilter,
+    shareInviteBankResponseFilter
 } from "../../Helpers/DataFilters";
 
 const styles = {
@@ -202,10 +206,21 @@ class CombinedList extends React.Component {
             });
     };
 
-    requestResponseMapper = () => {
+    requestResponseMapper = (onlyPending = false, onlyNonPending = false) => {
         if (this.props.hiddenTypes.includes("RequestResponse")) return [];
 
         return this.props.requestResponses
+            .filter(requestResponse => {
+                if (onlyPending === true) {
+                    return requestResponse.RequestResponse.status === "PENDING";
+                }
+
+                if (onlyNonPending === true) {
+                    return requestResponse.RequestResponse.status !== "PENDING";
+                }
+
+                return true;
+            })
             .filter(
                 requestResponseFilter({
                     categories: this.props.categories,
@@ -264,6 +279,80 @@ class CombinedList extends React.Component {
             });
     };
 
+    shareInviteBankInquiryMapper = () => {
+        if (this.props.hiddenTypes.includes("ShareInviteBankInquiry"))
+            return [];
+
+        return this.props.shareInviteBankInquiries
+            .filter(
+                shareInviteBankInquiryFilter({
+                    categories: this.props.categories,
+                    categoryConnections: this.props.categoryConnections,
+                    selectedCategories: this.props.selectedCategories,
+
+                    bunqMeTabType: this.props.bunqMeTabType,
+                    paymentType: this.props.paymentType,
+                    requestType: this.props.requestType,
+
+                    searchTerm: this.props.searchTerm,
+                    dateFromFilter: this.props.dateFromFilter,
+                    dateToFilter: this.props.dateToFilter
+                })
+            )
+            .map(shareInviteBankInquiry => {
+                const shareInviteBankInquiryInfo = shareInviteBankInquiry.ShareInviteBankInquiry
+                    ? shareInviteBankInquiry.ShareInviteBankInquiry
+                    : shareInviteBankInquiry.ShareInviteBankResponse;
+
+                return {
+                    component: (
+                        <ShareInviteBankInquiryListItem
+                            BunqJSClient={this.props.BunqJSClient}
+                            shareInviteBankInquiry={shareInviteBankInquiryInfo}
+                            openSnackbar={this.props.openSnackbar}
+                            user={this.props.user}
+                        />
+                    ),
+                    filterDate: shareInviteBankInquiryInfo.created,
+                    info: shareInviteBankInquiry
+                };
+            });
+    };
+
+    shareInviteBankResponseMapper = () => {
+        if (this.props.hiddenTypes.includes("ShareInviteBankResponse"))
+            return [];
+
+        return this.props.shareInviteBankResponses
+            .filter(
+                shareInviteBankResponseFilter({
+                    categories: this.props.categories,
+                    categoryConnections: this.props.categoryConnections,
+                    selectedCategories: this.props.selectedCategories,
+
+                    bunqMeTabType: this.props.bunqMeTabType,
+                    paymentType: this.props.paymentType,
+                    requestType: this.props.requestType,
+
+                    searchTerm: this.props.searchTerm,
+                    dateFromFilter: this.props.dateFromFilter,
+                    dateToFilter: this.props.dateToFilter
+                })
+            )
+            .map(shareInviteBankResponse => {
+                return (
+                    <ShareInviteBankResponseListItem
+                        BunqJSClient={this.props.BunqJSClient}
+                        shareInviteBankResponse={
+                            shareInviteBankResponse.ShareInviteBankResponse
+                        }
+                        openSnackbar={this.props.openSnackbar}
+                        user={this.props.user}
+                    />
+                );
+            });
+    };
+
     lastPage = page => () => {
         this.props.setPage(page);
     };
@@ -288,6 +377,7 @@ class CombinedList extends React.Component {
             this.props.paymentsLoading ||
             this.props.requestResponsesLoading ||
             this.props.requestInquiriesLoading ||
+            this.props.shareInviteBankInquiriesLoading ||
             this.props.masterCardActionsLoading ? (
                 <LinearProgress />
             ) : (
@@ -298,10 +388,18 @@ class CombinedList extends React.Component {
         const bunqMeTabs = this.bunqMeTabsMapper();
         const payments = this.paymentMapper();
         const masterCardActions = this.masterCardActionMapper();
-        const requestResponses = this.requestResponseMapper();
+        const requestResponses = this.requestResponseMapper(false, true);
+        const requestResponsesPending = this.requestResponseMapper(true);
         const requestInquiries = this.requestInquiryMapper();
+        const shareInviteBankInquiries = this.shareInviteBankInquiryMapper();
+        const shareInviteBankResponses = this.shareInviteBankResponseMapper();
 
         let groupedItems = {};
+
+        // directly create a list for the pending requests
+        const pendingRequestResponseComponents = requestResponsesPending.map(
+            requestResponsesPendingItem => requestResponsesPendingItem.component
+        );
 
         // combine the list, order by date and group by day
         const events = [
@@ -309,6 +407,7 @@ class CombinedList extends React.Component {
             ...requestResponses,
             ...masterCardActions,
             ...requestInquiries,
+            ...shareInviteBankInquiries,
             ...payments
         ].sort(function(a, b) {
             return new Date(b.filterDate) - new Date(a.filterDate);
@@ -316,17 +415,20 @@ class CombinedList extends React.Component {
 
         // check if all pages is set (pageSize = 0)
         const usedPageSize = pageSize === 0 ? events.length : pageSize;
+
         // calculate last page
         const unRoundedPageCount = events.length / usedPageSize;
         const pageCount = unRoundedPageCount
             ? Math.ceil(unRoundedPageCount)
             : 1;
+
         // create a smaller list based on the page and pageSize
         const slicedEvents = events.slice(
             page * usedPageSize,
             (page + 1) * usedPageSize
         );
 
+        // group by date
         slicedEvents.map(item => {
             const dateFull = new Date(item.filterDate);
             const date = new Date(
@@ -348,6 +450,7 @@ class CombinedList extends React.Component {
             groupedItems[date.getTime()].components.push(item.component);
         });
 
+        // turn the array of arrays back into a single list
         const combinedComponentList = [];
         Object.keys(groupedItems).map(dateLabel => {
             const groupedItem = groupedItems[dateLabel];
@@ -369,6 +472,10 @@ class CombinedList extends React.Component {
                 combinedComponentList.push(component)
             );
         });
+
+        // add the connect requests and pending request responses to the top
+        combinedComponentList.unshift(...shareInviteBankResponses);
+        combinedComponentList.unshift(...pendingRequestResponseComponents);
 
         return (
             <List style={styles.left}>
@@ -507,7 +614,17 @@ const mapStateToProps = state => {
         requestResponsesLoading: state.request_responses.loading,
 
         payments: state.payments.payments,
-        paymentsLoading: state.payments.loading
+        paymentsLoading: state.payments.loading,
+
+        shareInviteBankInquiries:
+            state.share_invite_bank_inquiries.share_invite_bank_inquiries,
+        shareInviteBankInquiriesLoading:
+            state.share_invite_bank_inquiries.loading,
+
+        shareInviteBankResponses:
+            state.share_invite_bank_responses.share_invite_bank_responses,
+        shareInviteBankResponsesLoading:
+            state.share_invite_bank_responses.loading
     };
 };
 

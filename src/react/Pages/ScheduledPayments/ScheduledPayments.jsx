@@ -133,7 +133,7 @@ class ScheduledPayments extends React.Component {
         return (
             <Grid container spacing={24}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Scheduled payments")}`}</title>
+                    <title>{`bunqDesktop - ${t("Scheduled payments")}`}</title>
                 </Helmet>
 
                 <ScheduledPaymentsEditDialog

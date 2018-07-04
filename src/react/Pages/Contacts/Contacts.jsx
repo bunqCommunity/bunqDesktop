@@ -138,7 +138,7 @@ class Contacts extends React.Component {
         return (
             <Grid container spacing={8} justify={"center"}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Contacts")}`}</title>
+                    <title>{`bunqDesktop - ${t("Contacts")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={10} md={6} lg={4}>

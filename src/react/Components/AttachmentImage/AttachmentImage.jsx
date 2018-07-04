@@ -39,7 +39,7 @@ class AttachmentImage extends React.PureComponent {
         // configure the localforage instance
         localforage.config({
             driver: localforage.INDEXEDDB,
-            name: "BunqDesktop",
+            name: "bunqDesktop",
             version: 1.0,
             storeName: "bunq_desktop_images",
             description: "Image cache for bunq desktop in indexed db"

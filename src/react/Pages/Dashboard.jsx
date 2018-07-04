@@ -9,6 +9,7 @@ import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
+import Avatar from "@material-ui/core/Avatar";
 import Tooltip from "@material-ui/core/Tooltip";
 
 import MoneyIcon from "@material-ui/icons/AttachMoney";
@@ -20,6 +21,7 @@ import CombinedList from "../Components/CombinedList/CombinedList";
 import AccountList from "../Components/AccountList/AccountList";
 import LoadOlderButton from "../Components/LoadOlderButton";
 import NavLink from "../Components/Routing/NavLink";
+import AttachmentImage from "../Components/AttachmentImage/AttachmentImage";
 
 import { userLogin, userLogout } from "../Actions/user";
 import { requestInquirySend } from "../Actions/request_inquiry";
@@ -28,6 +30,10 @@ import { registrationLogOut } from "../Actions/registration";
 const styles = {
     btn: {
         width: "100%"
+    },
+    bigAvatar: {
+        width: 50,
+        height: 50
     },
     iconButton: {
         marginLeft: 16
@@ -86,6 +92,7 @@ class Dashboard extends React.Component {
 
     render() {
         const t = this.props.t;
+        const user = this.props.user;
         const userTypes = Object.keys(this.props.users);
 
         const displayName = this.props.user.display_name
@@ -95,23 +102,33 @@ class Dashboard extends React.Component {
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`BunqDesktop - ${t("Dashboard")}`}</title>
+                    <title>{`bunqDesktop - ${t("Dashboard")}`}</title>
                 </Helmet>
 
                 <Hidden mdDown>
-                    <Grid item lg={2} />
+                    <Grid item lg={1} xl={2} />
                 </Hidden>
 
-                <Grid item xs={12} md={12} lg={8}>
+                <Grid item xs={12} md={12} lg={10} xl={8}>
                     <Grid container spacing={16}>
                         <Grid item xs={6} style={styles.titleWrapper}>
-                            <IconButton
-                                style={styles.iconButton}
-                                component={NavLink}
-                                to={"/profile"}
-                            >
-                                <ProfileIcon />
-                            </IconButton>
+                            <NavLink to={"/profile"}>
+                                {user ? (
+                                    <Avatar style={styles.bigAvatar}>
+                                        <AttachmentImage
+                                            width={50}
+                                            BunqJSClient={
+                                                this.props.BunqJSClient
+                                            }
+                                            imageUUID={
+                                                user.avatar.image[0]
+                                                    .attachment_public_uuid
+                                            }
+                                        />
+                                    </Avatar>
+                                ) : null}
+                            </NavLink>
+
                             <Typography
                                 variant="title"
                                 gutterBottom
@@ -139,17 +156,24 @@ class Dashboard extends React.Component {
                                     <KeyIcon />
                                 </IconButton>
                             </Tooltip>
+
                             <Tooltip id="tooltip-fab" title="Logout of account">
                                 <IconButton
                                     style={styles.iconButton}
-                                    onClick={() => location.reload()}
+                                    onClick={() => {
+                                        if (this.props.useNoPassword) {
+                                            // if no password is set
+                                            this.props.registrationLogOut();
+                                        }
+                                        location.reload();
+                                    }}
                                 >
                                     <ExitToAppIcon />
                                 </IconButton>
                             </Tooltip>
                         </Grid>
 
-                        <Grid item xs={12} md={4}>
+                        <Grid item xs={12} sm={5} md={4}>
                             <StickyBox className={"sticky-container"}>
                                 <Paper>
                                     <AccountList
@@ -191,7 +215,7 @@ class Dashboard extends React.Component {
                             </StickyBox>
                         </Grid>
 
-                        <Grid item xs={12} md={8}>
+                        <Grid item xs={12} sm={7} md={8}>
                             <Paper>
                                 <CombinedList
                                     BunqJSClient={this.props.BunqJSClient}
@@ -219,6 +243,7 @@ const mapStateToProps = state => {
         requestInquiryLoading: state.request_inquiry.loading,
         selectedAccount: state.accounts.selectedAccount,
 
+        useNoPassword: state.registration.use_no_password,
         storedApiKeys: state.registration.stored_api_keys,
         environment: state.registration.environment
     };
