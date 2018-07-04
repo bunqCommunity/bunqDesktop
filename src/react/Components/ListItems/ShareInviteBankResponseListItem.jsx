@@ -13,7 +13,7 @@ import TranslateButton from "../TranslationHelpers/Button";
 
 import ShowOnly from "./ShareInviteBankTypes/ShowOnly";
 import FullAccess from "./ShareInviteBankTypes/FullAccess";
-import ParentChild from "./ShareInviteBankTypes/ParentChild";
+import DraftAccess from "./ShareInviteBankTypes/DraftAccess";
 import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_responses";
 
 const styles = {
@@ -135,7 +135,7 @@ class ShareInviteBankResponseListItem extends React.Component {
                 break;
             case "ShareDetailDraftPayment":
                 shareTypeObject = (
-                    <ParentChild t={t} secondaryActions={connectActions} />
+                    <DraftAccess t={t} secondaryActions={connectActions} />
                 );
                 break;
             case "ShareDetailReadOnly":
