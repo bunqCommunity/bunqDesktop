@@ -5,6 +5,11 @@ import Helmet from "react-helmet";
 import EmailValidator from "email-validator";
 import format from "date-fns/format";
 import iban from "iban";
+import DateFnsUtils from "material-ui-pickers/utils/date-fns-utils";
+import MuiPickersUtilsProvider from "material-ui-pickers/utils/MuiPickersUtilsProvider";
+import enLocale from "date-fns/locale/en-US";
+import deLocale from "date-fns/locale/de";
+import nlLocale from "date-fns/locale/nl";
 
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
@@ -698,12 +703,29 @@ class Pay extends React.Component {
             );
         }
 
+        let localeData;
+        switch (this.props.language) {
+            case "nl":
+                localeData = nlLocale;
+                break;
+            case "de":
+                localeData = deLocale;
+                break;
+            case "en":
+            default:
+                localeData = enLocale;
+                break;
+        }
+
         return (
             <Grid container spacing={24} align={"center"} justify={"center"}>
                 <Helmet>
                     <title>{`bunqDesktop - Pay`}</title>
                 </Helmet>
-
+                <MuiPickersUtilsProvider
+                    utils={DateFnsUtils}
+                    locale={localeData}
+                >
                     <Grid item xs={12} sm={8} lg={6} xl={4}>
                         <Paper style={styles.paper}>
                             <Typography variant="headline">
@@ -839,6 +861,7 @@ class Pay extends React.Component {
 
                         {confirmationModal}
                     </Grid>
+                </MuiPickersUtilsProvider>
             </Grid>
         );
     }
