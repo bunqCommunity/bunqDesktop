@@ -1,6 +1,7 @@
 {
     "name": "bunqdesktop",
-    "description": "The unofficial, free and open source desktop application for the bunq API",
+    "description":
+        "The unofficial, free and open source desktop application for the bunq API",
     "productName": "bunqDesktop",
     "homepage": "https://bunqdesk.top/",
     "version": "0.8.11",
@@ -10,67 +11,19 @@
     },
     "license": "MIT",
     "main": "app/background.js",
-    "supported_languages": [
-        "en",
-        "nl",
-        "de"
-    ],
-    "build": {
-        "appId": "com.bunqdesktop",
-        "files": [
-            "app/**/*",
-            "node_modules/**/*",
-            "package.json"
-        ],
-        "linux": {
-            "category": "Office",
-            "target": [
-                {
-                    "target": "AppImage",
-                    "arch": [
-                        "x64",
-                        "ia32"
-                    ]
-                },
-                {
-                    "target": "deb",
-                    "arch": [
-                        "x64",
-                        "ia32"
-                    ]
-                },
-                {
-                    "target": "snap",
-                    "arch": [
-                        "x64"
-                    ]
-                }
-            ]
-        },
-        "win": {
-            "target": [
-                {
-                    "target": "nsis",
-                    "arch": [
-                        "x64",
-                        "ia32"
-                    ]
-                }
-            ]
-        },
-        "mac": {
-            "category": "public.app-category.finance"
-        },
-        "publish": null
-    },
+    "supported_languages": ["en", "nl", "de"],
     "scripts": {
         "webpack": "cross-env NODE_ENV=production webpack --progress --colors",
-        "webpack:dev-original": "cross-env NODE_ENV=development webpack --debug --watch --progress --colors",
-        "webpack:dev": "cross-env NODE_ENV=development node --max_old_space_size=4092 ./node_modules/webpack/bin/webpack.js --debug --watch --progress --colors",
-        "prerelease": "npm run update-release-files && gulp build --env=production && yarn run webpack",
+        "webpack:dev-original":
+            "cross-env NODE_ENV=development webpack --debug --watch --progress --colors",
+        "webpack:dev":
+            "cross-env NODE_ENV=development node --max_old_space_size=4092 ./node_modules/webpack/bin/webpack.js --debug --watch --progress --colors",
+        "prerelease":
+            "npm run update-release-files && gulp build --env=production && yarn run webpack",
         "release": "build",
         "start": "gulp start --env=development",
-        "start:dev": "cross-env NODE_ENV=development gulp start --env=development",
+        "start:dev":
+            "cross-env NODE_ENV=development gulp start --env=development",
         "test": "cross-env JEST=true jest --coverage --verbose",
         "test:dev": "cross-env JEST=true jest --watch --coverage",
         "postinstall": "install-app-deps",
@@ -81,6 +34,49 @@
         "update-release-files": "node tasks/update_release_files.js",
         "add-contributer": "all-contributors add"
     },
+    "build": {
+        "appId": "com.bunqdesktop",
+        "files": ["app/**/*", "node_modules/**/*", "package.json"],
+        "linux": {
+            "category": "Office",
+            "target": [
+                {
+                    "target": "AppImage",
+                    "arch": ["x64", "ia32"]
+                },
+                {
+                    "target": "deb",
+                    "arch": ["x64", "ia32"]
+                },
+                {
+                    "target": "snap",
+                    "arch": ["x64"]
+                }
+            ]
+        },
+        "win": {
+            "target": [
+                {
+                    "target": "nsis",
+                    "arch": ["x64", "ia32"]
+                },
+                {
+                    "target": "appx"
+                }
+            ]
+        },
+        "appx": {
+            "applicationId": "bunqDesktop",
+            "identityName": "48566bunqCommunity.bunqDesktop",
+            "languages": ["en-US", "nl", "de"],
+            "publisherDisplayName": "bunqCommunity",
+            "publisher": "CN=3407C75B-E8E9-4429-AE58-DECF35DAB82D"
+        },
+        "mac": {
+            "category": "public.app-category.finance"
+        },
+        "publish": null
+    },
     "publish": null,
     "jest": {
         "globals": {
@@ -88,10 +84,7 @@
                 "useBabelrc": true
             }
         },
-        "modulePathIgnorePatterns": [
-            "/app",
-            "/dist"
-        ],
+        "modulePathIgnorePatterns": ["/app", "/dist"],
         "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
         "testPathIgnorePatterns": [
             "/node_modules/",
@@ -103,14 +96,7 @@
             "^.+\\.jsx?$": "<rootDir>/node_modules/babel-jest",
             "^.+\\.tsx?$": "ts-jest"
         },
-        "moduleFileExtensions": [
-            "ts",
-            "tsx",
-            "js",
-            "jsx",
-            "json",
-            "node"
-        ]
+        "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"]
     },
     "dependencies": {
         "@sentry/electron": "^0.5.5",
