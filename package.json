@@ -21,6 +21,7 @@
         "prerelease":
             "npm run update-release-files && gulp build --env=production && yarn run webpack",
         "release": "build",
+        "release:appx": "build -w appx",
         "start": "gulp start --env=development",
         "start:dev":
             "cross-env NODE_ENV=development gulp start --env=development",
@@ -59,9 +60,6 @@
                 {
                     "target": "nsis",
                     "arch": ["x64", "ia32"]
-                },
-                {
-                    "target": "appx"
                 }
             ]
         },
