@@ -43,9 +43,9 @@
     core-js "^2.5.7"
     regenerator-runtime "^0.11.1"
 
-"@bunq-community/bunq-js-client@^0.22.2":
-  version "0.22.2"
-  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.22.2.tgz#d9fe5f2f38e3cad57d7f58f702209eb8656f7eca"
+"@bunq-community/bunq-js-client@^0.22.3":
+  version "0.22.3"
+  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.22.3.tgz#06c26397b626bee4d4813dac7661bb29402f9a73"
   dependencies:
     "@types/jest" "^21.1.8"
     "@types/moxios" "^0.4.8"
