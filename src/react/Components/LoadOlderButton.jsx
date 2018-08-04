@@ -151,35 +151,35 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(
                 paymentInfoUpdate(BunqJSClient, userId, accountId, {
                     older_id: older_id,
-                    count: 50
+                    count: 200
                 })
             ),
         requestInquiriesUpdate: (userId, accountId, older_id) =>
             dispatch(
                 requestInquiriesUpdate(BunqJSClient, userId, accountId, {
                     older_id: older_id,
-                    count: 50
+                    count: 200
                 })
             ),
         requestResponsesUpdate: (userId, accountId, older_id) =>
             dispatch(
                 requestResponsesUpdate(BunqJSClient, userId, accountId, {
                     older_id: older_id,
-                    count: 50
+                    count: 200
                 })
             ),
         masterCardActionsUpdate: (userId, accountId, older_id) =>
             dispatch(
                 masterCardActionsUpdate(BunqJSClient, userId, accountId, {
                     older_id: older_id,
-                    count: 50
+                    count: 200
                 })
             ),
         bunqMeTabsUpdate: (userId, accountId, older_id) =>
             dispatch(
                 bunqMeTabsUpdate(BunqJSClient, userId, accountId, {
                     older_id: older_id,
-                    count: 50
+                    count: 200
                 })
             )
     };

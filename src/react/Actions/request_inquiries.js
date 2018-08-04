@@ -49,7 +49,7 @@ export function requestInquiriesUpdate(
     userId,
     accountId,
     options = {
-        count: 50,
+        count: 200,
         newer_id: false,
         older_id: false
     }

@@ -35,7 +35,7 @@ export function shareInviteBankInquiriesInfoUpdate(
     user_id,
     account_id,
     options = {
-        count: 50,
+        count: 200,
         newer_id: false,
         older_id: false
     }
