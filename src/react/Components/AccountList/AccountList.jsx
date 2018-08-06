@@ -31,7 +31,7 @@ const styles = {
         textAlign: "left",
         overflowY: "auto",
         overflowX: "hidden",
-        maxHeight: "90vh"
+        maxHeight: "calc(90vh - 150px)"
     }
 };
 
