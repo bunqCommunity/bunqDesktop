@@ -17,9 +17,10 @@ export default (state = defaultState, action) => {
         case "BUNQ_ME_TABS_UPDATE_INFO":
         case "BUNQ_ME_TABS_SET_INFO":
             // with a set info event or if account id changes we ignore the currently stored items
-            const ignoreOldItems =
-                action.type === "BUNQ_ME_TABS_SET_INFO" ||
-                state.account_id !== action.payload.account_id;
+            // const ignoreOldItems =
+            //     action.type === "BUNQ_ME_TABS_SET_INFO" ||
+            //     state.account_id !== action.payload.account_id;
+            const ignoreOldItems = false;
 
             const mergedInfo = MergeApiObjects(
                 action.payload.bunqMeTabs,

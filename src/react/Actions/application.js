@@ -18,3 +18,9 @@ export function applicationSetOnline() {
         type: "APPLICATION_SET_ONLINE"
     };
 }
+
+export function applicationSetLastAutoUpdate() {
+    return {
+        type: "APPLICATION_SET_LAST_AUTO_UPDATE"
+    };
+}

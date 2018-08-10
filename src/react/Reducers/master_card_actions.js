@@ -18,9 +18,10 @@ export default (state = defaultState, action) => {
         case "MASTER_CARD_ACTIONS_UPDATE_INFO":
         case "MASTER_CARD_ACTIONS_SET_INFO":
             // with a set info event or if account id changes we ignore the currently stored items
-            const ignoreOldItems =
-                action.type === "MASTER_CARD_ACTIONS_SET_INFO" ||
-                state.account_id !== action.payload.account_id;
+            // const ignoreOldItems =
+            //     action.type === "MASTER_CARD_ACTIONS_SET_INFO" ||
+            //     state.account_id !== action.payload.account_id;
+            const ignoreOldItems = false;
 
             const mergedInfo = MergeApiObjects(
                 action.payload.masterCardActions,

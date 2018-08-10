@@ -25,6 +25,7 @@ import { masterCardActionsUpdate } from "../../Actions/master_card_actions";
 import { requestInquiriesUpdate } from "../../Actions/request_inquiries";
 import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_responses";
 import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiries";
+import { applicationSetLastAutoUpdate } from "../../Actions/application";
 
 const styles = {
     list: {
@@ -82,15 +83,22 @@ class AccountList extends React.Component {
         if (this.props.updateExternal) {
             this.props.updateExternal(userId, accountId);
         } else {
+            // update the last updated timestamp
+            this.props.applicationSetLastAutoUpdate();
+
+            // update all the accounts and events
             if (!this.props.accountsLoading) this.props.accountsUpdate(userId);
 
             if (!this.props.paymentsLoading)
                 this.props.paymentsUpdate(userId, accountId);
-
-            this.props.bunqMeTabsUpdate(userId, accountId);
-            this.props.requestResponsesUpdate(userId, accountId);
-            this.props.requestInquiriesUpdate(userId, accountId);
-            this.props.masterCardActionsUpdate(userId, accountId);
+            if (!this.props.bunqMeTabsLoading)
+                this.props.bunqMeTabsUpdate(userId, accountId);
+            if (!this.props.requestResponsesLoading)
+                this.props.requestResponsesUpdate(userId, accountId);
+            if (!this.props.requestInquiriesLoading)
+                this.props.requestInquiriesUpdate(userId, accountId);
+            if (!this.props.masterCardActionsLoading)
+                this.props.masterCardActionsUpdate(userId, accountId);
 
             if (!this.props.shareInviteBankInquiriesLoading)
                 this.props.shareInviteBankInquiriesInfoUpdate(
@@ -136,6 +144,15 @@ class AccountList extends React.Component {
             this.state.fetchedExternal === false
         ) {
             this.setState({ fetchedExternal: true });
+
+            // check if the list was updated in the last 60 seconds
+            if (
+                this.props.applicationLastAutoUpdate !== false &&
+                this.props.applicationLastAutoUpdate.getTime() >
+                    new Date(new Date().getTime() - 300000).getTime()
+            ) {
+                return false;
+            }
 
             // delay the initial loading by 1000ms to improve startup ui performance
             if (this.delayedUpdate) clearTimeout(this.delayedUpdate);
@@ -258,6 +275,7 @@ AccountList.defaultProps = {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+        applicationLastAutoUpdate: state.application.last_auto_update,
 
         hideBalance: state.options.hide_balance,
 
@@ -275,7 +293,11 @@ const mapStateToProps = state => {
         shareInviteBankInquiriesLoading:
             state.share_invite_bank_inquiries.loading,
 
-        paymentsLoading: state.payments.loading
+        paymentsLoading: state.payments.loading,
+        bunqMeTabsLoading: state.bunq_me_tabs.loading,
+        requestResponsesLoading: state.request_responses.loading,
+        requestInquiriesLoading: state.request_inquiries.loading,
+        masterCardActionsLoading: state.master_card_actions.loading
     };
 };
 
@@ -306,7 +328,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                     accountId
                 )
             ),
-        selectAccount: acountId => dispatch(accountsSelectAccount(acountId))
+        selectAccount: acountId => dispatch(accountsSelectAccount(acountId)),
+
+        applicationSetLastAutoUpdate: () =>
+            dispatch(applicationSetLastAutoUpdate())
     };
 };
 
