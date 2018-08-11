@@ -11,6 +11,10 @@ export default function reducer(state = defaultState, action) {
         case "DATE_FILTER_FROM_CLEAR":
         case "DATE_FILTER_TO_CLEAR":
 
+        case "ACCOUNT_ID_FILTER_TOGGLE":
+        case "ACCOUNT_ID_FILTER_REMOVE":
+        case "ACCOUNT_ID_FILTER_ADD":
+
         case "BUNQ_ME_TAB_FILTER_SET_TYPE":
         case "BUNQ_ME_TAB_FILTER_TOGGLE_VISIBILITY":
         case "BUNQ_ME_TAB_FILTER_CLEAR":

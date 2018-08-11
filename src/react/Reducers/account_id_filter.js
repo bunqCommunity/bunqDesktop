@@ -1,5 +1,6 @@
 export const defaultState = {
-    selected_account_ids: []
+    selected_account_ids: [],
+    toggle: false
 };
 
 export default function reducer(state = defaultState, action) {
@@ -30,6 +31,12 @@ export default function reducer(state = defaultState, action) {
             return {
                 ...state,
                 selected_account_ids: currentAccountIds2
+            };
+
+        case "ACCOUNT_ID_FILTER_TOGGLE":
+            return {
+                ...state,
+                toggle: !state.toggle
             };
 
         case "ACCOUNT_ID_FILTER_CLEAR":

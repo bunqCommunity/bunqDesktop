@@ -149,19 +149,25 @@ class Stats extends React.Component {
                 paymentVisibility: props.paymentVisibility,
                 paymentType: props.paymentType,
                 dateFromFilter: props.dateFromFilter,
-                dateToFilter: props.dateToFilter
+                dateToFilter: props.dateToFilter,
+                selectedAccountIds: this.props.selectedAccountIds,
+                toggleAccountIds: this.props.toggleAccountIds
             },
             bunqMeTabFilterSettings: {
                 bunqMeTabVisibility: props.bunqMeTabVisibility,
                 bunqMeTabType: props.bunqMeTabType,
                 dateFromFilter: props.dateFromFilter,
-                dateToFilter: props.dateToFilter
+                dateToFilter: props.dateToFilter,
+                selectedAccountIds: this.props.selectedAccountIds,
+                toggleAccountIds: this.props.toggleAccountIds
             },
             requestFilterSettings: {
                 requestVisibility: props.requestVisibility,
                 requestType: props.requestType,
                 dateFromFilter: props.dateFromFilter,
-                dateToFilter: props.dateToFilter
+                dateToFilter: props.dateToFilter,
+                selectedAccountIds: this.props.selectedAccountIds,
+                toggleAccountIds: this.props.toggleAccountIds
             },
 
             // category data
@@ -181,6 +187,7 @@ class Stats extends React.Component {
 
     render() {
         const { t, theme } = this.props;
+        console.log("update");
 
         const data =
             this.state.parsedData !== false
@@ -739,7 +746,9 @@ const mapStateToProps = state => {
         requestVisibility: state.request_filter.visible,
         dateFromFilter: state.date_filter.from_date,
         dateToFilter: state.date_filter.to_date,
-        generalFilterDate: state.general_filter.date
+        generalFilterDate: state.general_filter.date,
+        selectedAccountIds: state.account_id_filter.selected_account_ids,
+        toggleAccountIds: state.account_id_filter.toggle
     };
 };
 

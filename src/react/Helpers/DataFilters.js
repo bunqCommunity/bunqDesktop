@@ -83,6 +83,21 @@ export const paymentFilter = options => payment => {
         }
     }
 
+    if (options.selectedAccountIds) {
+        if (options.selectedAccountIds.length > 0) {
+            // check if the payment is connected to a selected account
+            const foundIndex = options.selectedAccountIds.findIndex(
+                selectedAccountId =>
+                    selectedAccountId === payment.monetary_account_id
+            );
+
+            // if true only return true if account id is in the filter, else return false
+            return options.toggleAccountIds === false
+                ? foundIndex > -1
+                : foundIndex === -1;
+        }
+    }
+
     return checkDateRange(
         options.dateFromFilter,
         options.dateToFilter,
@@ -132,6 +147,21 @@ export const bunqMeTabsFilter = options => bunqMeTab => {
                 });
             });
             if (!categoryMatches) return false;
+        }
+    }
+
+    if (options.selectedAccountIds) {
+        if (options.selectedAccountIds.length > 0) {
+            // check if the payment is connected to a selected account
+            const foundIndex = options.selectedAccountIds.findIndex(
+                selectedAccountId =>
+                    selectedAccountId === bunqMeTab.monetary_account_id
+            );
+
+            // if true only return true if account id is in the filter, else return false
+            return options.toggleAccountIds === false
+                ? foundIndex > -1
+                : foundIndex === -1;
         }
     }
 
@@ -191,6 +221,21 @@ export const masterCardActionFilter = options => masterCardAction => {
         }
     }
 
+    if (options.selectedAccountIds) {
+        if (options.selectedAccountIds.length > 0) {
+            // check if the payment is connected to a selected account
+            const foundIndex = options.selectedAccountIds.findIndex(
+                selectedAccountId =>
+                    selectedAccountId === masterCardAction.monetary_account_id
+            );
+
+            // if true only return true if account id is in the filter, else return false
+            return options.toggleAccountIds === false
+                ? foundIndex > -1
+                : foundIndex === -1;
+        }
+    }
+
     return checkDateRange(
         options.dateFromFilter,
         options.dateToFilter,
@@ -244,6 +289,21 @@ export const requestResponseFilter = options => requestResponse => {
                 });
             });
             if (!categoryMatches) return false;
+        }
+    }
+
+    if (options.selectedAccountIds) {
+        if (options.selectedAccountIds.length > 0) {
+            // check if the payment is connected to a selected account
+            const foundIndex = options.selectedAccountIds.findIndex(
+                selectedAccountId =>
+                    selectedAccountId === requestResponse.monetary_account_id
+            );
+
+            // if true only return true if account id is in the filter, else return false
+            return options.toggleAccountIds === false
+                ? foundIndex > -1
+                : foundIndex === -1;
         }
     }
 
@@ -301,6 +361,21 @@ export const requestInquiryFilter = options => requestInquiry => {
                 });
             });
             if (!categoryMatches) return false;
+        }
+    }
+
+    if (options.selectedAccountIds) {
+        if (options.selectedAccountIds.length > 0) {
+            // check if the payment is connected to a selected account
+            const foundIndex = options.selectedAccountIds.findIndex(
+                selectedAccountId =>
+                    selectedAccountId === requestInquiry.monetary_account_id
+            );
+
+            // if true only return true if account id is in the filter, else return false
+            return options.toggleAccountIds === false
+                ? foundIndex > -1
+                : foundIndex === -1;
         }
     }
 

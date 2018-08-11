@@ -14,6 +14,7 @@ class ClearFilter extends React.Component {
 
     render() {
         if (
+            this.props.selectedAccountIds.length <= 0 &&
             this.props.selectedCategories.length <= 0 &&
             this.props.searchTerm.length <= 0 &&
             this.props.paymentType === "default" &&
@@ -65,7 +66,8 @@ const mapStateToProps = state => {
         requestType: state.request_filter.type,
         requestVisibility: state.request_filter.visible,
 
-        selectedCategories: state.category_filter.selected_categories
+        selectedCategories: state.category_filter.selected_categories,
+        selectedAccountIds: state.account_id_filter.selected_account_ids
     };
 };
 

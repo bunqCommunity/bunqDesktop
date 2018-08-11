@@ -147,6 +147,12 @@ export function removeAccountIdFilter(accountId) {
     };
 }
 
+export function toggleAccountIdFilter() {
+    return {
+        type: "ACCOUNT_ID_FILTER_TOGGLE"
+    };
+}
+
 export function clearAccountIdFilter() {
     return {
         type: "ACCOUNT_ID_FILTER_CLEAR"

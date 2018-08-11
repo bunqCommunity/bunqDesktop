@@ -118,6 +118,9 @@ class CombinedList extends React.Component {
                     categoryConnections: this.props.categoryConnections,
                     selectedCategories: this.props.selectedCategories,
 
+                    selectedAccountIds: this.props.selectedAccountIds,
+                    toggleAccountIds: this.props.toggleAccountIds,
+
                     searchTerm: this.props.searchTerm,
                     paymentVisibility: this.props.paymentVisibility,
                     paymentType: this.props.paymentType,
@@ -148,6 +151,9 @@ class CombinedList extends React.Component {
                     categories: this.props.categories,
                     categoryConnections: this.props.categoryConnections,
                     selectedCategories: this.props.selectedCategories,
+
+                    selectedAccountIds: this.props.selectedAccountIds,
+                    toggleAccountIds: this.props.toggleAccountIds,
 
                     searchTerm: this.props.searchTerm,
                     bunqMeTabVisibility: this.props.bunqMeTabVisibility,
@@ -184,6 +190,9 @@ class CombinedList extends React.Component {
                     categories: this.props.categories,
                     categoryConnections: this.props.categoryConnections,
                     selectedCategories: this.props.selectedCategories,
+
+                    selectedAccountIds: this.props.selectedAccountIds,
+                    toggleAccountIds: this.props.toggleAccountIds,
 
                     searchTerm: this.props.searchTerm,
                     paymentVisibility: this.props.paymentVisibility,
@@ -227,6 +236,9 @@ class CombinedList extends React.Component {
                     categoryConnections: this.props.categoryConnections,
                     selectedCategories: this.props.selectedCategories,
 
+                    selectedAccountIds: this.props.selectedAccountIds,
+                    toggleAccountIds: this.props.toggleAccountIds,
+
                     searchTerm: this.props.searchTerm,
                     requestVisibility: this.props.requestVisibility,
                     requestType: this.props.requestType,
@@ -257,6 +269,9 @@ class CombinedList extends React.Component {
                     categories: this.props.categories,
                     categoryConnections: this.props.categoryConnections,
                     selectedCategories: this.props.selectedCategories,
+
+                    selectedAccountIds: this.props.selectedAccountIds,
+                    toggleAccountIds: this.props.toggleAccountIds,
 
                     searchTerm: this.props.searchTerm,
                     requestVisibility: this.props.requestVisibility,
@@ -289,6 +304,9 @@ class CombinedList extends React.Component {
                     categories: this.props.categories,
                     categoryConnections: this.props.categoryConnections,
                     selectedCategories: this.props.selectedCategories,
+
+                    selectedAccountIds: this.props.selectedAccountIds,
+                    toggleAccountIds: this.props.toggleAccountIds,
 
                     bunqMeTabType: this.props.bunqMeTabType,
                     paymentType: this.props.paymentType,
@@ -329,6 +347,9 @@ class CombinedList extends React.Component {
                     categories: this.props.categories,
                     categoryConnections: this.props.categoryConnections,
                     selectedCategories: this.props.selectedCategories,
+
+                    selectedAccountIds: this.props.selectedAccountIds,
+                    toggleAccountIds: this.props.toggleAccountIds,
 
                     bunqMeTabType: this.props.bunqMeTabType,
                     paymentType: this.props.paymentType,
@@ -596,6 +617,8 @@ const mapStateToProps = state => {
         dateFromFilter: state.date_filter.from_date,
         dateToFilter: state.date_filter.to_date,
         selectedCategories: state.category_filter.selected_categories,
+        selectedAccountIds: state.account_id_filter.selected_account_ids,
+        toggleAccountIds: state.account_id_filter.toggle,
 
         categories: state.categories.categories,
         categoryConnections: state.categories.category_connections,

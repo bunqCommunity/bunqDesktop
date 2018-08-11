@@ -485,17 +485,14 @@ const mapDispatchToProps = dispatch => {
     return {
         resetFilters: () => dispatch(resetFilters()),
 
-        clearPaymentFilterType: () => dispatch(clearPaymentFilterType()),
         setPaymentFilterType: type => dispatch(setPaymentFilterType(type)),
         togglePaymentFilterVisibility: () =>
             dispatch(togglePaymentFilterVisibility()),
 
-        clearRequestFilterType: () => dispatch(clearRequestFilterType()),
         setRequestFilterType: type => dispatch(setRequestFilterType(type)),
         toggleRequestFilterVisibility: () =>
             dispatch(toggleRequestFilterVisibility()),
 
-        clearBunqMeTabFilterType: () => dispatch(clearBunqMeTabFilterType()),
         setBunqMeTabFilterType: type => dispatch(setBunqMeTabFilterType(type)),
         toggleBunqMeTabFilterVisibility: () =>
             dispatch(toggleBunqMeTabFilterVisibility()),

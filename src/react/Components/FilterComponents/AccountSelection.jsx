@@ -1,6 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import Icon from "@material-ui/core/Icon";
 import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
 import ListItem from "@material-ui/core/ListItem";
@@ -10,6 +9,8 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 
+import ArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
+import ArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import AddIcon from "@material-ui/icons/Add";
 
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
@@ -17,7 +18,8 @@ import AccountListItemChip from "../AccountList/AccountListItemChip";
 
 import {
     addAccountIdFilter,
-    removeAccountIdFilter
+    removeAccountIdFilter,
+    toggleAccountIdFilter
 } from "../../Actions/filters";
 
 const styles = {
@@ -125,6 +127,16 @@ class AccountSelection extends React.Component {
                     <ListItemSecondaryAction>
                         <IconButton
                             aria-haspopup="true"
+                            onClick={this.props.toggleAccountIdFilter}
+                        >
+                            {this.props.toggleAccountIds ? (
+                                <ArrowUpIcon />
+                            ) : (
+                                <ArrowDownIcon />
+                            )}
+                        </IconButton>
+                        <IconButton
+                            aria-haspopup="true"
                             onClick={this.handleClick}
                         >
                             <AddIcon />
@@ -150,7 +162,8 @@ const mapStateToProps = state => {
     return {
         accounts: state.accounts.accounts,
 
-        selectedAccountIds: state.account_id_filter.selected_account_ids
+        selectedAccountIds: state.account_id_filter.selected_account_ids,
+        toggleAccountIds: state.account_id_filter.toggle
     };
 };
 
@@ -158,7 +171,8 @@ const mapDispatchToProps = dispatch => {
     return {
         addAccountIdFilter: accountId =>
             dispatch(addAccountIdFilter(accountId)),
-        removeAccountIdFilter: index => dispatch(removeAccountIdFilter(index))
+        removeAccountIdFilter: index => dispatch(removeAccountIdFilter(index)),
+        toggleAccountIdFilter: () => dispatch(toggleAccountIdFilter())
     };
 };
 
