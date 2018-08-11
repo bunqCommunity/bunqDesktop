@@ -109,6 +109,9 @@ class Exports extends React.Component {
                     categoryConnections: this.props.categoryConnections,
                     selectedCategories: this.props.selectedCategories,
 
+                    selectedAccountIds: this.props.selectedAccountIds,
+                    toggleAccountIds: this.props.toggleAccountIds,
+
                     searchTerm: this.props.searchTerm,
                     paymentVisibility: this.props.paymentVisibility,
                     paymentType: this.props.paymentType,
@@ -139,6 +142,9 @@ class Exports extends React.Component {
                     categories: this.props.categories,
                     categoryConnections: this.props.categoryConnections,
                     selectedCategories: this.props.selectedCategories,
+
+                    selectedAccountIds: this.props.selectedAccountIds,
+                    toggleAccountIds: this.props.toggleAccountIds,
 
                     searchTerm: this.props.searchTerm,
                     paymentVisibility: this.props.paymentVisibility,
@@ -676,6 +682,9 @@ const mapStateToProps = state => {
         searchTerm: state.search_filter.search_term,
         dateFromFilter: state.date_filter.from_date,
         dateToFilter: state.date_filter.to_date,
+
+        selectedAccountIds: state.account_id_filter.selected_account_ids,
+        toggleAccountIds: state.account_id_filter.toggle,
 
         categories: state.categories.categories,
         categoryConnections: state.categories.category_connections,
