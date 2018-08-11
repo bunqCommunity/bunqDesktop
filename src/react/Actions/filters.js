@@ -128,3 +128,27 @@ export function clearToDateFilter() {
         type: "DATE_FILTER_TO_CLEAR"
     };
 }
+
+export function addAccountIdFilter(accountId) {
+    return {
+        type: "ACCOUNT_ID_FILTER_ADD",
+        payload: {
+            account_id: accountId
+        }
+    };
+}
+
+export function removeAccountIdFilter(accountId) {
+    return {
+        type: "ACCOUNT_ID_FILTER_REMOVE",
+        payload: {
+            account_id: accountId
+        }
+    };
+}
+
+export function clearAccountIdFilter() {
+    return {
+        type: "ACCOUNT_ID_FILTER_CLEAR"
+    };
+}

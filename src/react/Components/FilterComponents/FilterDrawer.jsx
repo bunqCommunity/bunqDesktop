@@ -10,7 +10,7 @@ import Drawer from "@material-ui/core/Drawer";
 import Divider from "@material-ui/core/Divider";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Typography from "@material-ui/core/Typography";
-import Radio  from "@material-ui/core/Radio";
+import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import ListItem from "@material-ui/core/ListItem";
 import ListSubheader from "@material-ui/core/ListSubheader";
@@ -43,10 +43,14 @@ import {
     setToDateFilter,
     clearFromDateFilter,
     clearToDateFilter,
-    resetFilters
+    resetFilters,
+    addAccountIdFilter,
+    removeAccountIdFilter,
+    clearAccountIdFilter
 } from "../../Actions/filters";
 
 import SearchFilter from "./SearchFilter";
+import AccountSelection from "./AccountSelection";
 import CategorySelection from "./CategorySelection";
 
 const styles = {
@@ -398,6 +402,11 @@ class FilterDrawer extends React.Component {
                 </ListItem>
 
                 <CategorySelection t={t} />
+
+                <AccountSelection
+                    BunqJSClient={this.props.BunqJSClient}
+                    t={t}
+                />
 
                 <ListItem style={styles.listFiller} />
 

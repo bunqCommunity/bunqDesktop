@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
 
+import account_id_filter from "./account_id_filter";
 import accounts from "./accounts";
 import application from "./application";
 import bunq_me_tabs from "./bunq_me_tabs";
@@ -44,6 +45,7 @@ import share_invite_bank_responses from "./share_invite_bank_responses";
 import search_filter from "./search_filter";
 
 export default combineReducers({
+    account_id_filter,
     accounts,
     application,
     bunq_me_tab,
