@@ -184,7 +184,7 @@ class PaymentInfo extends React.Component {
                                     <Divider />,
                                     <ListItem>
                                         <ListItemText
-                                            primary={"Description"}
+                                            primary={t("Description")}
                                             secondary={paymentDescription}
                                         />
                                     </ListItem>
