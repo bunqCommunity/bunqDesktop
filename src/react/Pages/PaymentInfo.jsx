@@ -70,7 +70,7 @@ class PaymentInfo extends React.Component {
         }
     }
 
-    componentWillUpdate(nextProps, nextState) {
+    getSnapshotBeforeUpdate(nextProps, nextState) {
         if (
             nextProps.user &&
             nextProps.user.id &&
@@ -87,7 +87,9 @@ class PaymentInfo extends React.Component {
                 paymentId
             );
         }
+        return null
     }
+    componentDidUpdate() {}
 
     toggleCategoryDialog = event =>
         this.setState({ displayCategories: !this.state.displayCategories });

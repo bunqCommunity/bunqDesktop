@@ -70,7 +70,7 @@ class RequestResponseInfo extends React.Component {
         }
     }
 
-    componentWillUpdate(nextProps, nextState) {
+    getSnapshotBeforeUpdate(nextProps, nextState) {
         if (
             nextProps.user &&
             nextProps.user.id &&
@@ -87,7 +87,9 @@ class RequestResponseInfo extends React.Component {
                 requestResponseId
             );
         }
+        return null
     }
+    componentDidUpdate() {}
 
     rejectRequest = () => {
         const { requestResponseId, accountId } = this.props.match.params;

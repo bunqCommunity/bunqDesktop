@@ -29,10 +29,9 @@ class RuleCollectionPreview extends React.Component<any, any> {
         eventResults: [],
         showAll: false
     };
-    worker: any;
+    worker: any = new RuleCollectionCheckWorker();
 
-    componentWillMount() {
-        this.worker = new RuleCollectionCheckWorker();
+    componentDidMount() {
         this.worker.onmessage = this.handleWorkerEvent;
     }
 

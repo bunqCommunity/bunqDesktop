@@ -112,7 +112,7 @@ class AccountInfo extends React.Component {
         }
     }
 
-    componentWillUpdate(nextProps, nextState) {
+    getSnapshotBeforeUpdate(nextProps, nextState) {
         const { initialBunqConnect, accountsLoading, user } = nextProps;
         const accountId = parseFloat(this.props.match.params.accountId);
         const nextAccountId = parseFloat(nextProps.match.params.accountId);
@@ -135,7 +135,9 @@ class AccountInfo extends React.Component {
             this.props.requestInquiriesUpdate(user.id, nextAccountId);
             this.props.masterCardActionsUpdate(user.id, nextAccountId);
         }
+        return null
     }
+    componentDidUpdate() {}
 
     toggleDeactivateDialog = () =>
         this.setState({ openDialog: !this.state.openDialog });

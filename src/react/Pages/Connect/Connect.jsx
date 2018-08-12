@@ -115,7 +115,7 @@ class Connect extends React.Component {
         }
     }
 
-    componentWillUpdate(nextProps, nextState) {
+    getSnapshotBeforeUpdate(nextProps, nextState) {
         const { initialBunqConnect, accountsLoading, user } = nextProps;
         const accountId = parseFloat(this.props.match.params.accountId);
         const nextAccountId = parseFloat(nextProps.match.params.accountId);
@@ -133,7 +133,9 @@ class Connect extends React.Component {
             );
             this.props.shareInviteBankResponsesInfoUpdate(user.id);
         }
+        return null
     }
+    componentDidUpdate() {}
 
     handleChange = name => event => {
         this.setState(

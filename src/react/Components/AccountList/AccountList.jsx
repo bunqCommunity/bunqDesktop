@@ -51,9 +51,11 @@ class AccountList extends React.Component {
         this.checkUpdateRequirement();
     }
 
-    componentWillUpdate(nextprops) {
+    getSnapshotBeforeUpdate(nextprops) {
         this.checkUpdateRequirement(nextprops);
+        return null;
     }
+    componentDidUpdate() {}
 
     componentWillUnmount() {
         // prevent data from being loaded after we unmount

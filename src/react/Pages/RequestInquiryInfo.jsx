@@ -62,7 +62,7 @@ class RequestInquiryInfo extends React.Component {
         }
     }
 
-    componentWillUpdate(nextProps, nextState) {
+    getSnapshotBeforeUpdate(nextProps, nextState) {
         if (
             nextProps.user &&
             nextProps.user.id &&
@@ -79,7 +79,9 @@ class RequestInquiryInfo extends React.Component {
                 requestInquiryId
             );
         }
+        return null
     }
+    componentDidUpdate() {}
 
     cancelInquiry = () => {
         const { requestInquiryId, accountId } = this.props.match.params;

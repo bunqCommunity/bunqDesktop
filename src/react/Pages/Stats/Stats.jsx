@@ -10,7 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import Radio  from "@material-ui/core/Radio";
+import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
@@ -62,9 +62,6 @@ class Stats extends React.Component {
             // total, sent or received amount setting
             categoryTransactionType: "total"
         };
-    }
-
-    componentWillMount() {
         this.worker = new StatsWorker();
         this.worker.onmessage = this.handleWorkerEvent;
     }
@@ -73,13 +70,15 @@ class Stats extends React.Component {
         this.worker.terminate();
     }
 
-    componentWillUpdate(nextProps, nextState) {
+    getSnapshotBeforeUpdate(nextProps, nextState) {
         let triggerWorker = false;
         const { timescale } = this.state;
         const { generalFilterDate } = this.props;
 
-        // if any of these values changed we should always update
+        // check if timescale changed
         if (timescale !== nextState.timescale) triggerWorker = true;
+
+        // check if filter changed
         if (generalFilterDate !== nextProps.generalFilterDate)
             triggerWorker = true;
 
@@ -105,7 +104,9 @@ class Stats extends React.Component {
             // trigger an update with the next changed props
             this.triggerWorker(nextProps, nextState);
         }
+        return null
     }
+    componentDidUpdate() {}
 
     shouldComponentUpdate(nextProps) {
         const nextPropsLoading =
@@ -187,7 +188,6 @@ class Stats extends React.Component {
 
     render() {
         const { t, theme } = this.props;
-        console.log("update");
 
         const data =
             this.state.parsedData !== false

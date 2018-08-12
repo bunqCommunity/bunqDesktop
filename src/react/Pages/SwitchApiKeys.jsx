@@ -45,7 +45,7 @@ class SwitchApiKeys extends React.Component {
         this.state = {};
     }
 
-    componentWillMount() {
+    componentDidMount() {
         if (this.props.apiKey) {
             this.props.history.push("/");
         }

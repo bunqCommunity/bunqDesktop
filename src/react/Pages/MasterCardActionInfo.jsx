@@ -73,7 +73,7 @@ class MasterCardActionInfo extends React.Component {
         }
     }
 
-    componentWillUpdate(nextProps, nextState) {
+    getSnapshotBeforeUpdate(nextProps, nextState) {
         if (
             nextProps.user &&
             nextProps.user.id &&
@@ -90,7 +90,9 @@ class MasterCardActionInfo extends React.Component {
                 masterCardActionId
             );
         }
+        return null
     }
+    componentDidUpdate() {}
 
     toggleCategoryDialog = event =>
         this.setState({ displayCategories: !this.state.displayCategories });
