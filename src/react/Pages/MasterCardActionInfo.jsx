@@ -73,24 +73,24 @@ class MasterCardActionInfo extends React.Component {
         }
     }
 
-    getSnapshotBeforeUpdate(nextProps, nextState) {
+    getSnapshotBeforeUpdate(previousProps, previousState) {
         if (
-            nextProps.user &&
-            nextProps.user.id &&
+            this.props.user &&
+            this.props.user.id &&
             this.props.initialBunqConnect &&
             this.props.match.params.masterCardActionId !==
-                nextProps.match.params.masterCardActionId
+                this.props.match.params.masterCardActionId
         ) {
-            const { masterCardActionId, accountId } = nextProps.match.params;
+            const { masterCardActionId, accountId } = this.props.match.params;
             this.props.masterCardActionInfoUpdate(
-                nextProps.user.id,
+                this.props.user.id,
                 accountId === undefined
-                    ? nextProps.accountsSelectedAccount
+                    ? this.props.accountsSelectedAccount
                     : accountId,
                 masterCardActionId
             );
         }
-        return null
+        return null;
     }
     componentDidUpdate() {}
 

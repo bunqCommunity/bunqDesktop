@@ -70,24 +70,24 @@ class RequestResponseInfo extends React.Component {
         }
     }
 
-    getSnapshotBeforeUpdate(nextProps, nextState) {
+    getSnapshotBeforeUpdate(previousProps, previousState) {
         if (
-            nextProps.user &&
-            nextProps.user.id &&
+            this.props.user &&
+            this.props.user.id &&
             this.props.initialBunqConnect &&
             this.props.match.params.requestResponseId !==
-                nextProps.match.params.requestResponseId
+                this.props.match.params.requestResponseId
         ) {
-            const { requestResponseId, accountId } = nextProps.match.params;
+            const { requestResponseId, accountId } = this.props.match.params;
             this.props.requestResponseUpdate(
-                nextProps.user.id,
+                this.props.user.id,
                 accountId === undefined
-                    ? nextProps.accountsSelectedAccount
+                    ? this.props.accountsSelectedAccount
                     : accountId,
                 requestResponseId
             );
         }
-        return null
+        return null;
     }
     componentDidUpdate() {}
 

@@ -115,10 +115,10 @@ class Connect extends React.Component {
         }
     }
 
-    getSnapshotBeforeUpdate(nextProps, nextState) {
-        const { initialBunqConnect, accountsLoading, user } = nextProps;
-        const accountId = parseFloat(this.props.match.params.accountId);
-        const nextAccountId = parseFloat(nextProps.match.params.accountId);
+    getSnapshotBeforeUpdate(previousProps, previousState) {
+        const { initialBunqConnect, accountsLoading, user } = this.props;
+        const accountId = parseFloat(previousProps.match.params.accountId);
+        const nextAccountId = parseFloat(this.props.match.params.accountId);
 
         if (
             accountsLoading === false &&
@@ -133,7 +133,7 @@ class Connect extends React.Component {
             );
             this.props.shareInviteBankResponsesInfoUpdate(user.id);
         }
-        return null
+        return null;
     }
     componentDidUpdate() {}
 

@@ -70,30 +70,30 @@ class Stats extends React.Component {
         this.worker.terminate();
     }
 
-    getSnapshotBeforeUpdate(nextProps, nextState) {
+    getSnapshotBeforeUpdate(previousProps, previousState) {
         let triggerWorker = false;
-        const { timescale } = this.state;
-        const { generalFilterDate } = this.props;
+        const { timescale } = previousState;
+        const { generalFilterDate } = previousProps;
 
         // check if timescale changed
-        if (timescale !== nextState.timescale) triggerWorker = true;
+        if (timescale !== this.state.timescale) triggerWorker = true;
 
         // check if filter changed
-        if (generalFilterDate !== nextProps.generalFilterDate)
+        if (generalFilterDate !== this.props.generalFilterDate)
             triggerWorker = true;
 
         const isCurrentlyLoading =
+            previousProps.bunqMeTabsLoading ||
+            previousProps.paymentsLoading ||
+            previousProps.requestResponsesLoading ||
+            previousProps.requestInquiriesLoading ||
+            previousProps.masterCardActionsLoading;
+        const willBeLoading =
             this.props.bunqMeTabsLoading ||
             this.props.paymentsLoading ||
             this.props.requestResponsesLoading ||
             this.props.requestInquiriesLoading ||
             this.props.masterCardActionsLoading;
-        const willBeLoading =
-            nextProps.bunqMeTabsLoading ||
-            nextProps.paymentsLoading ||
-            nextProps.requestResponsesLoading ||
-            nextProps.requestInquiriesLoading ||
-            nextProps.masterCardActionsLoading;
 
         if (isCurrentlyLoading === true && willBeLoading === false) {
             // items are no longer loading so we can update trhe worker here
@@ -102,9 +102,9 @@ class Stats extends React.Component {
 
         if (triggerWorker) {
             // trigger an update with the next changed props
-            this.triggerWorker(nextProps, nextState);
+            this.triggerWorker(this.props, this.state);
         }
-        return null
+        return null;
     }
     componentDidUpdate() {}
 
@@ -131,6 +131,24 @@ class Stats extends React.Component {
     };
 
     triggerWorker = (props = this.props, state = this.state) => {
+        // common values used for the different filter types
+        const filterCommonValues = {
+            // date filter
+            dateFromFilter: props.dateFromFilter,
+            dateToFilter: props.dateToFilter,
+
+            // by account id
+            selectedAccountIds: props.selectedAccountIds,
+            toggleAccountIds: props.toggleAccountIds,
+            // by selected categories
+            selectedCategories: props.selectedCategories,
+            toggleCategoryFilter: props.toggleCategoryFilter,
+
+            // category data
+            categories: props.categories,
+            categoryConnections: props.categoryConnections
+        };
+
         this.worker.postMessage({
             // all endpoints
             payments: props.payments.map(item => item.toJSON()),
@@ -149,26 +167,17 @@ class Stats extends React.Component {
             paymentFilterSettings: {
                 paymentVisibility: props.paymentVisibility,
                 paymentType: props.paymentType,
-                dateFromFilter: props.dateFromFilter,
-                dateToFilter: props.dateToFilter,
-                selectedAccountIds: this.props.selectedAccountIds,
-                toggleAccountIds: this.props.toggleAccountIds
+                ...filterCommonValues
             },
             bunqMeTabFilterSettings: {
                 bunqMeTabVisibility: props.bunqMeTabVisibility,
                 bunqMeTabType: props.bunqMeTabType,
-                dateFromFilter: props.dateFromFilter,
-                dateToFilter: props.dateToFilter,
-                selectedAccountIds: this.props.selectedAccountIds,
-                toggleAccountIds: this.props.toggleAccountIds
+                ...filterCommonValues
             },
             requestFilterSettings: {
                 requestVisibility: props.requestVisibility,
                 requestType: props.requestType,
-                dateFromFilter: props.dateFromFilter,
-                dateToFilter: props.dateToFilter,
-                selectedAccountIds: this.props.selectedAccountIds,
-                toggleAccountIds: this.props.toggleAccountIds
+                ...filterCommonValues
             },
 
             // category data
@@ -740,15 +749,22 @@ const mapStateToProps = state => {
 
         paymentType: state.payment_filter.type,
         paymentVisibility: state.payment_filter.visible,
+
         bunqMeTabType: state.bunq_me_tab_filter.type,
         bunqMeTabVisibility: state.bunq_me_tab_filter.visible,
+
         requestType: state.request_filter.type,
         requestVisibility: state.request_filter.visible,
+
         dateFromFilter: state.date_filter.from_date,
         dateToFilter: state.date_filter.to_date,
         generalFilterDate: state.general_filter.date,
+
         selectedAccountIds: state.account_id_filter.selected_account_ids,
-        toggleAccountIds: state.account_id_filter.toggle
+        toggleAccountIds: state.account_id_filter.toggle,
+
+        selectedCategories: state.category_filter.selected_categories,
+        toggleCategoryFilter: state.category_filter.toggle
     };
 };
 

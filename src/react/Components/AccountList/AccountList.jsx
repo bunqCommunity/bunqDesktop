@@ -51,8 +51,8 @@ class AccountList extends React.Component {
         this.checkUpdateRequirement();
     }
 
-    getSnapshotBeforeUpdate(nextprops) {
-        this.checkUpdateRequirement(nextprops);
+    getSnapshotBeforeUpdate(previousProps, previousState) {
+        this.checkUpdateRequirement(this.props);
         return null;
     }
     componentDidUpdate() {}
@@ -246,13 +246,12 @@ class AccountList extends React.Component {
                         }
                     />
                     <ListItemSecondaryAction>
-                        {this.props.accountsLoading ? (
-                            <CircularProgress />
-                        ) : (
-                            <IconButton onClick={this.updateAccounts}>
-                                <RefreshIcon />
-                            </IconButton>
-                        )}
+                        <IconButton
+                            onClick={this.updateAccounts}
+                            disabled={this.props.accountsLoading}
+                        >
+                            <RefreshIcon />
+                        </IconButton>
                     </ListItemSecondaryAction>
                 </ListItem>
                 {this.props.accountsLoading ? <LinearProgress /> : <Divider />}

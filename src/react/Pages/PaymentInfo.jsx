@@ -70,24 +70,24 @@ class PaymentInfo extends React.Component {
         }
     }
 
-    getSnapshotBeforeUpdate(nextProps, nextState) {
+    getSnapshotBeforeUpdate(previousProps, previousState) {
         if (
-            nextProps.user &&
-            nextProps.user.id &&
+            this.props.user &&
+            this.props.user.id &&
             this.props.initialBunqConnect &&
             this.props.match.params.paymentId !==
-                nextProps.match.params.paymentId
+                this.props.match.params.paymentId
         ) {
-            const { paymentId, accountId } = nextProps.match.params;
+            const { paymentId, accountId } = this.props.match.params;
             this.props.updatePayment(
-                nextProps.user.id,
+                this.props.user.id,
                 accountId === undefined
-                    ? nextProps.accountsSelectedAccount
+                    ? this.props.accountsSelectedAccount
                     : accountId,
                 paymentId
             );
         }
-        return null
+        return null;
     }
     componentDidUpdate() {}
 
