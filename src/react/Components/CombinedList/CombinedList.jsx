@@ -117,6 +117,7 @@ class CombinedList extends React.Component {
                     categories: this.props.categories,
                     categoryConnections: this.props.categoryConnections,
                     selectedCategories: this.props.selectedCategories,
+                    toggleCategoryFilter: this.props.toggleCategoryFilter,
 
                     selectedAccountIds: this.props.selectedAccountIds,
                     toggleAccountIds: this.props.toggleAccountIds,
@@ -151,6 +152,7 @@ class CombinedList extends React.Component {
                     categories: this.props.categories,
                     categoryConnections: this.props.categoryConnections,
                     selectedCategories: this.props.selectedCategories,
+                    toggleCategoryFilter: this.props.toggleCategoryFilter,
 
                     selectedAccountIds: this.props.selectedAccountIds,
                     toggleAccountIds: this.props.toggleAccountIds,
@@ -190,6 +192,7 @@ class CombinedList extends React.Component {
                     categories: this.props.categories,
                     categoryConnections: this.props.categoryConnections,
                     selectedCategories: this.props.selectedCategories,
+                    toggleCategoryFilter: this.props.toggleCategoryFilter,
 
                     selectedAccountIds: this.props.selectedAccountIds,
                     toggleAccountIds: this.props.toggleAccountIds,
@@ -235,6 +238,7 @@ class CombinedList extends React.Component {
                     categories: this.props.categories,
                     categoryConnections: this.props.categoryConnections,
                     selectedCategories: this.props.selectedCategories,
+                    toggleCategoryFilter: this.props.toggleCategoryFilter,
 
                     selectedAccountIds: this.props.selectedAccountIds,
                     toggleAccountIds: this.props.toggleAccountIds,
@@ -269,6 +273,7 @@ class CombinedList extends React.Component {
                     categories: this.props.categories,
                     categoryConnections: this.props.categoryConnections,
                     selectedCategories: this.props.selectedCategories,
+                    toggleCategoryFilter: this.props.toggleCategoryFilter,
 
                     selectedAccountIds: this.props.selectedAccountIds,
                     toggleAccountIds: this.props.toggleAccountIds,
@@ -304,6 +309,7 @@ class CombinedList extends React.Component {
                     categories: this.props.categories,
                     categoryConnections: this.props.categoryConnections,
                     selectedCategories: this.props.selectedCategories,
+                    toggleCategoryFilter: this.props.toggleCategoryFilter,
 
                     selectedAccountIds: this.props.selectedAccountIds,
                     toggleAccountIds: this.props.toggleAccountIds,
@@ -347,6 +353,7 @@ class CombinedList extends React.Component {
                     categories: this.props.categories,
                     categoryConnections: this.props.categoryConnections,
                     selectedCategories: this.props.selectedCategories,
+                    toggleCategoryFilter: this.props.toggleCategoryFilter,
 
                     selectedAccountIds: this.props.selectedAccountIds,
                     toggleAccountIds: this.props.toggleAccountIds,
@@ -616,7 +623,10 @@ const mapStateToProps = state => {
         requestVisibility: state.request_filter.visible,
         dateFromFilter: state.date_filter.from_date,
         dateToFilter: state.date_filter.to_date,
+
         selectedCategories: state.category_filter.selected_categories,
+        toggleCategoryFilter: state.category_filter.toggle,
+
         selectedAccountIds: state.account_id_filter.selected_account_ids,
         toggleAccountIds: state.account_id_filter.toggle,
 

@@ -71,7 +71,7 @@ export const paymentFilter = options => payment => {
             );
 
             // no categories linked so always unmatched
-            if (categories.length === 0) return false;
+            if (categories.length === 0) return options.toggleCategoryFilter;
 
             // go through the connected categories and selected categories to see if one matches
             const categoryMatches = categories.some(category => {
@@ -79,7 +79,7 @@ export const paymentFilter = options => payment => {
                     return category.id === selectedCategory;
                 });
             });
-            if (!categoryMatches) return false;
+            if (!categoryMatches) return options.toggleCategoryFilter;
         }
     }
 
@@ -138,7 +138,7 @@ export const bunqMeTabsFilter = options => bunqMeTab => {
             );
 
             // no categories linked so always unmatched
-            if (categories.length === 0) return false;
+            if (categories.length === 0) return options.toggleCategoryFilter;
 
             // go through the connected categories and selected categories to see if one matches
             const categoryMatches = categories.some(category => {
@@ -146,7 +146,7 @@ export const bunqMeTabsFilter = options => bunqMeTab => {
                     return category.id === selectedCategory;
                 });
             });
-            if (!categoryMatches) return false;
+            if (!categoryMatches) return options.toggleCategoryFilter;
         }
     }
 
@@ -209,7 +209,7 @@ export const masterCardActionFilter = options => masterCardAction => {
             );
 
             // no categories linked so always unmatched
-            if (categories.length === 0) return false;
+            if (categories.length === 0) return options.toggleCategoryFilter;
 
             // go through the connected categories and selected categories to see if one matches
             const categoryMatches = categories.some(category => {
@@ -217,7 +217,7 @@ export const masterCardActionFilter = options => masterCardAction => {
                     return category.id === selectedCategory;
                 });
             });
-            if (!categoryMatches) return false;
+            if (!categoryMatches) return options.toggleCategoryFilter;
         }
     }
 
@@ -280,7 +280,7 @@ export const requestResponseFilter = options => requestResponse => {
             );
 
             // no categories linked so always unmatched
-            if (categories.length === 0) return false;
+            if (categories.length === 0) return options.toggleCategoryFilter;
 
             // go through the connected categories and selected categories to see if one matches
             const categoryMatches = categories.some(category => {
@@ -288,7 +288,7 @@ export const requestResponseFilter = options => requestResponse => {
                     return category.id === selectedCategory;
                 });
             });
-            if (!categoryMatches) return false;
+            if (!categoryMatches) return options.toggleCategoryFilter;
         }
     }
 
@@ -352,7 +352,7 @@ export const requestInquiryFilter = options => requestInquiry => {
             );
 
             // no categories linked so always unmatched
-            if (categories.length === 0) return false;
+            if (categories.length === 0) return options.toggleCategoryFilter;
 
             // go through the connected categories and selected categories to see if one matches
             const categoryMatches = categories.some(category => {
@@ -360,7 +360,7 @@ export const requestInquiryFilter = options => requestInquiry => {
                     return category.id === selectedCategory;
                 });
             });
-            if (!categoryMatches) return false;
+            if (!categoryMatches) return options.toggleCategoryFilter;
         }
     }
 

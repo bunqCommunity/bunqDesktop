@@ -8,10 +8,10 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
+import Tooltip from "@material-ui/core/Tooltip";
 
-import ArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
-import ArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import AddIcon from "@material-ui/icons/Add";
+import FilterListIcon from "@material-ui/icons/FilterList";
 
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 import AccountListItemChip from "../AccountList/AccountListItemChip";
@@ -125,16 +125,26 @@ class AccountSelection extends React.Component {
                     {t("Account filter")}
 
                     <ListItemSecondaryAction>
-                        <IconButton
-                            aria-haspopup="true"
-                            onClick={this.props.toggleAccountIdFilter}
-                        >
-                            {this.props.toggleAccountIds ? (
-                                <ArrowUpIcon />
-                            ) : (
-                                <ArrowDownIcon />
+                        <Tooltip
+                            placement="left"
+                            title={t(
+                                `Click to ${this.props.toggleAccountIds
+                                    ? "include"
+                                    : "exclude"} the selected accounts`
                             )}
-                        </IconButton>
+                        >
+                            <IconButton
+                                aria-haspopup="true"
+                                onClick={this.props.toggleAccountIdFilter}
+                            >
+                                {this.props.toggleAccountIds ? (
+                                    <FilterListIcon className="icon-rotate-180" />
+                                ) : (
+                                    <FilterListIcon />
+                                )}
+                            </IconButton>
+                        </Tooltip>
+
                         <IconButton
                             aria-haspopup="true"
                             onClick={this.handleClick}

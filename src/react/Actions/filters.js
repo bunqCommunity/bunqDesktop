@@ -117,6 +117,12 @@ export function removeCategoryIdFilter(index) {
     };
 }
 
+export function toggleCategoryIdFilter() {
+    return {
+        type: "CATEGORY_FILTER_TOGGLE_CATEGORY_ID"
+    };
+}
+
 export function clearFromDateFilter() {
     return {
         type: "DATE_FILTER_FROM_CLEAR"

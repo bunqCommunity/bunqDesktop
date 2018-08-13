@@ -7,16 +7,19 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Menu from "@material-ui/core/Menu";
-import MenuItem  from "@material-ui/core/MenuItem";
+import MenuItem from "@material-ui/core/MenuItem";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import AddIcon from "@material-ui/icons/Add";
+import FilterListIcon from "@material-ui/icons/FilterList";
 
 import CategoryIcon from "../Categories/CategoryIcon";
 import CategoryChip from "../Categories/CategoryChip";
 
 import {
     addCategoryIdFilter,
-    removeCategoryIdFilter
+    removeCategoryIdFilter,
+    toggleCategoryIdFilter
 } from "../../Actions/filters";
 
 const styles = {
@@ -113,6 +116,26 @@ class CategorySelection extends React.Component {
                     {t("Category filter")}
 
                     <ListItemSecondaryAction>
+                        <Tooltip
+                            placement="left"
+                            title={t(
+                                `Click to ${this.props.toggleCategoryFilter
+                                    ? "include"
+                                    : "exclude"} the selected categories`
+                            )}
+                        >
+                            <IconButton
+                                aria-haspopup="true"
+                                onClick={this.props.toggleCategoryIdFilter}
+                            >
+                                {this.props.toggleCategoryFilter ? (
+                                    <FilterListIcon className="icon-rotate-180" />
+                                ) : (
+                                    <FilterListIcon />
+                                )}
+                            </IconButton>
+                        </Tooltip>
+
                         <IconButton
                             aria-haspopup="true"
                             onClick={this.handleClick}
@@ -138,12 +161,14 @@ const mapStateToProps = state => {
     return {
         categories: state.categories.categories,
 
+        toggleCategoryFilter: state.category_filter.toggle,
         selectedCategories: state.category_filter.selected_categories
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
+        toggleCategoryIdFilter: () => dispatch(toggleCategoryIdFilter()),
         addCategoryId: categoryId => dispatch(addCategoryIdFilter(categoryId)),
         removeCategoryId: index => dispatch(removeCategoryIdFilter(index))
     };
