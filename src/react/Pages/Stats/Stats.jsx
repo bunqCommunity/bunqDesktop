@@ -140,6 +140,7 @@ class Stats extends React.Component {
             // by account id
             selectedAccountIds: props.selectedAccountIds,
             toggleAccountIds: props.toggleAccountIds,
+
             // by selected categories
             selectedCategories: props.selectedCategories,
             toggleCategoryFilter: props.toggleCategoryFilter,

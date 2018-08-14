@@ -108,25 +108,31 @@ class CombinedList extends React.Component {
     toggleEventData = event =>
         this.setState({ displayEventData: !this.state.displayEventData });
 
+    getCommonFilters = () => {
+        return {
+            dateFromFilter: this.props.dateFromFilter,
+            dateToFilter: this.props.dateToFilter,
+            searchTerm: this.props.searchTerm,
+
+            categories: this.props.categories,
+            categoryConnections: this.props.categoryConnections,
+            selectedCategories: this.props.selectedCategories,
+            toggleCategoryFilter: this.props.toggleCategoryFilter,
+
+            selectedAccountIds: this.props.selectedAccountIds,
+            toggleAccountIds: this.props.toggleAccountIds
+        };
+    }
+
     paymentMapper = () => {
         if (this.props.hiddenTypes.includes("Payment")) return [];
 
         return this.props.payments
             .filter(
                 paymentFilter({
-                    categories: this.props.categories,
-                    categoryConnections: this.props.categoryConnections,
-                    selectedCategories: this.props.selectedCategories,
-                    toggleCategoryFilter: this.props.toggleCategoryFilter,
-
-                    selectedAccountIds: this.props.selectedAccountIds,
-                    toggleAccountIds: this.props.toggleAccountIds,
-
-                    searchTerm: this.props.searchTerm,
                     paymentVisibility: this.props.paymentVisibility,
                     paymentType: this.props.paymentType,
-                    dateFromFilter: this.props.dateFromFilter,
-                    dateToFilter: this.props.dateToFilter
+                    ...this.getCommonFilters()
                 })
             )
             .map(payment => {
@@ -149,19 +155,9 @@ class CombinedList extends React.Component {
         return this.props.bunqMeTabs
             .filter(
                 bunqMeTabsFilter({
-                    categories: this.props.categories,
-                    categoryConnections: this.props.categoryConnections,
-                    selectedCategories: this.props.selectedCategories,
-                    toggleCategoryFilter: this.props.toggleCategoryFilter,
-
-                    selectedAccountIds: this.props.selectedAccountIds,
-                    toggleAccountIds: this.props.toggleAccountIds,
-
-                    searchTerm: this.props.searchTerm,
                     bunqMeTabVisibility: this.props.bunqMeTabVisibility,
                     bunqMeTabType: this.props.bunqMeTabType,
-                    dateFromFilter: this.props.dateFromFilter,
-                    dateToFilter: this.props.dateToFilter
+                    ...this.getCommonFilters()
                 })
             )
             .map(bunqMeTab => {
@@ -189,19 +185,9 @@ class CombinedList extends React.Component {
         return this.props.masterCardActions
             .filter(
                 masterCardActionFilter({
-                    categories: this.props.categories,
-                    categoryConnections: this.props.categoryConnections,
-                    selectedCategories: this.props.selectedCategories,
-                    toggleCategoryFilter: this.props.toggleCategoryFilter,
-
-                    selectedAccountIds: this.props.selectedAccountIds,
-                    toggleAccountIds: this.props.toggleAccountIds,
-
-                    searchTerm: this.props.searchTerm,
                     paymentVisibility: this.props.paymentVisibility,
                     paymentType: this.props.paymentType,
-                    dateFromFilter: this.props.dateFromFilter,
-                    dateToFilter: this.props.dateToFilter
+                    ...this.getCommonFilters()
                 })
             )
             .map(masterCardAction => {
@@ -235,19 +221,9 @@ class CombinedList extends React.Component {
             })
             .filter(
                 requestResponseFilter({
-                    categories: this.props.categories,
-                    categoryConnections: this.props.categoryConnections,
-                    selectedCategories: this.props.selectedCategories,
-                    toggleCategoryFilter: this.props.toggleCategoryFilter,
-
-                    selectedAccountIds: this.props.selectedAccountIds,
-                    toggleAccountIds: this.props.toggleAccountIds,
-
-                    searchTerm: this.props.searchTerm,
                     requestVisibility: this.props.requestVisibility,
                     requestType: this.props.requestType,
-                    dateFromFilter: this.props.dateFromFilter,
-                    dateToFilter: this.props.dateToFilter
+                    ...this.getCommonFilters()
                 })
             )
             .map(requestResponse => {
@@ -270,19 +246,9 @@ class CombinedList extends React.Component {
         return this.props.requestInquiries
             .filter(
                 requestInquiryFilter({
-                    categories: this.props.categories,
-                    categoryConnections: this.props.categoryConnections,
-                    selectedCategories: this.props.selectedCategories,
-                    toggleCategoryFilter: this.props.toggleCategoryFilter,
-
-                    selectedAccountIds: this.props.selectedAccountIds,
-                    toggleAccountIds: this.props.toggleAccountIds,
-
-                    searchTerm: this.props.searchTerm,
                     requestVisibility: this.props.requestVisibility,
                     requestType: this.props.requestType,
-                    dateFromFilter: this.props.dateFromFilter,
-                    dateToFilter: this.props.dateToFilter
+                    ...this.getCommonFilters()
                 })
             )
             .map(requestInquiry => {
@@ -306,21 +272,10 @@ class CombinedList extends React.Component {
         return this.props.shareInviteBankInquiries
             .filter(
                 shareInviteBankInquiryFilter({
-                    categories: this.props.categories,
-                    categoryConnections: this.props.categoryConnections,
-                    selectedCategories: this.props.selectedCategories,
-                    toggleCategoryFilter: this.props.toggleCategoryFilter,
-
-                    selectedAccountIds: this.props.selectedAccountIds,
-                    toggleAccountIds: this.props.toggleAccountIds,
-
                     bunqMeTabType: this.props.bunqMeTabType,
                     paymentType: this.props.paymentType,
                     requestType: this.props.requestType,
-
-                    searchTerm: this.props.searchTerm,
-                    dateFromFilter: this.props.dateFromFilter,
-                    dateToFilter: this.props.dateToFilter
+                    ...this.getCommonFilters()
                 })
             )
             .map(shareInviteBankInquiry => {
@@ -350,21 +305,10 @@ class CombinedList extends React.Component {
         return this.props.shareInviteBankResponses
             .filter(
                 shareInviteBankResponseFilter({
-                    categories: this.props.categories,
-                    categoryConnections: this.props.categoryConnections,
-                    selectedCategories: this.props.selectedCategories,
-                    toggleCategoryFilter: this.props.toggleCategoryFilter,
-
-                    selectedAccountIds: this.props.selectedAccountIds,
-                    toggleAccountIds: this.props.toggleAccountIds,
-
                     bunqMeTabType: this.props.bunqMeTabType,
                     paymentType: this.props.paymentType,
                     requestType: this.props.requestType,
-
-                    searchTerm: this.props.searchTerm,
-                    dateFromFilter: this.props.dateFromFilter,
-                    dateToFilter: this.props.dateToFilter
+                    ...this.getCommonFilters()
                 })
             )
             .map(shareInviteBankResponse => {
