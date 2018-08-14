@@ -164,3 +164,18 @@ export function clearAccountIdFilter() {
         type: "ACCOUNT_ID_FILTER_CLEAR"
     };
 }
+
+export function setAmountFilter(amount = null) {
+    return {
+        type: "AMOUNT_FILTER_SET",
+        payload: {
+            amount: amount
+        }
+    };
+}
+
+export function clearAmountFilter() {
+    return {
+        type: "AMOUNT_FILTER_CLEAR"
+    };
+}
