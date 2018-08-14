@@ -79,7 +79,12 @@ export const paymentFilter = options => payment => {
                     return category.id === selectedCategory;
                 });
             });
-            if (!categoryMatches) return options.toggleCategoryFilter;
+
+            // if reversed and we got matches, return false
+            if (options.toggleCategoryFilter && categoryMatches) return false;
+
+            // no matches and not reversed so return false
+            if (!categoryMatches) return false;
         }
     }
 
@@ -146,7 +151,12 @@ export const bunqMeTabsFilter = options => bunqMeTab => {
                     return category.id === selectedCategory;
                 });
             });
-            if (!categoryMatches) return options.toggleCategoryFilter;
+
+            // if reversed and we got matches, return false
+            if (options.toggleCategoryFilter && categoryMatches) return false;
+
+            // no matches and not reversed so return false
+            if (!categoryMatches) return false;
         }
     }
 
@@ -217,7 +227,12 @@ export const masterCardActionFilter = options => masterCardAction => {
                     return category.id === selectedCategory;
                 });
             });
-            if (!categoryMatches) return options.toggleCategoryFilter;
+
+            // if reversed and we got matches, return false
+            if (options.toggleCategoryFilter && categoryMatches) return false;
+
+            // no matches and not reversed so return false
+            if (!categoryMatches) return false;
         }
     }
 
@@ -288,7 +303,12 @@ export const requestResponseFilter = options => requestResponse => {
                     return category.id === selectedCategory;
                 });
             });
-            if (!categoryMatches) return options.toggleCategoryFilter;
+
+            // if reversed and we got matches, return false
+            if (options.toggleCategoryFilter && categoryMatches) return false;
+
+            // no matches and not reversed so return false
+            if (!categoryMatches) return false;
         }
     }
 
@@ -360,7 +380,12 @@ export const requestInquiryFilter = options => requestInquiry => {
                     return category.id === selectedCategory;
                 });
             });
-            if (!categoryMatches) return options.toggleCategoryFilter;
+
+            // if reversed and we got matches, return false
+            if (options.toggleCategoryFilter && categoryMatches) return false;
+
+            // no matches and not reversed so return false
+            if (!categoryMatches) return false;
         }
     }
 
