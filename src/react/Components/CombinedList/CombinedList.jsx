@@ -120,7 +120,10 @@ class CombinedList extends React.Component {
             toggleCategoryFilter: this.props.toggleCategoryFilter,
 
             selectedAccountIds: this.props.selectedAccountIds,
-            toggleAccountIds: this.props.toggleAccountIds
+            toggleAccountIds: this.props.toggleAccountIds,
+
+            amountFilterAmount: this.props.amountFilterAmount,
+            amountFilterType: this.props.amountFilterType
         };
     }
 
@@ -567,6 +570,9 @@ const mapStateToProps = state => {
         requestVisibility: state.request_filter.visible,
         dateFromFilter: state.date_filter.from_date,
         dateToFilter: state.date_filter.to_date,
+
+        amountFilterAmount: state.amount_filter.amount,
+        amountFilterType: state.amount_filter.type,
 
         selectedCategories: state.category_filter.selected_categories,
         toggleCategoryFilter: state.category_filter.toggle,
