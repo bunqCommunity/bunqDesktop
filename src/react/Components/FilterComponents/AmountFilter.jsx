@@ -1,12 +1,16 @@
 import React from "react";
 import { connect } from "react-redux";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
-import IconButton from "@material-ui/core/IconButton";
-import InputAdornment from "@material-ui/core/InputAdornment";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@material-ui/core/FormControl";
 
-import ClearIcon from "@material-ui/icons/Clear";
-
-import { setAmountFilter, clearAmountFilter } from "../../Actions/filters";
+import {
+    setAmountFilterAmount,
+    setAmountFilterType,
+    clearAmountFilter
+} from "../../Actions/filters";
 
 class AmountFilter extends React.Component {
     constructor(props, context) {
@@ -14,63 +18,52 @@ class AmountFilter extends React.Component {
         this.state = {};
     }
 
-    handleChange = event => {
-        this.props.setAmountFilter(event.target.value);
+    handleAmountChange = event => {
+        this.props.setAmountFilterAmount(event.target.value);
+    };
+    handleTypeChange = event => {
+        this.props.setAmountFilterType(event.target.value);
     };
 
     render() {
         const t = this.props.t;
-        return [
-            <TextField
-                label={t("Filter by amount")}
-                style={this.props.style}
-                value={this.props.amountFilter}
-                onChange={this.handleChange}
-                type="number"
-                InputProps={{
-                    endAdornment: (
-                        <InputAdornment position="end">
-                            <IconButton onClick={this.props.clearSearchFilter}>
-                                <ClearIcon />
-                            </IconButton>
-                        </InputAdornment>
-                    )
-                }}
-            />,
-            <TextField
-                label={t("Filter by amount")}
-                style={this.props.style}
-                value={this.props.amountFilter}
-                onChange={this.handleChange}
-                type="number"
-                InputProps={{
-                    endAdornment: (
-                        <InputAdornment position="end">
-                            <IconButton onClick={this.props.clearAmountFilter}>
-                                <ClearIcon />
-                            </IconButton>
-                        </InputAdornment>
-                    )
-                }}
-            />
-        ];
+        return (
+            <React.Fragment>
+                <TextField
+                    label={t("Filter by amount")}
+                    style={this.props.style}
+                    value={this.props.amountFilterAmount}
+                    onChange={this.handleAmountChange}
+                    type="number"
+                />
+                <FormControl>
+                    <InputLabel>Type</InputLabel>
+                    <Select
+                        value={this.props.amountFilterType}
+                        onChange={this.handleTypeChange}
+                    >
+                        <MenuItem value="EQUALS">{`=`}</MenuItem>
+                        <MenuItem value="LESS">{`<`}</MenuItem>
+                        <MenuItem value="MORE">{`>`}</MenuItem>
+                    </Select>
+                </FormControl>
+            </React.Fragment>
+        );
     }
 }
 
-AmountFilter.defaultProps = {
-    style: {}
-};
-
 const mapStateToProps = state => {
     return {
-        amountFilter: state.amount_filter.amount,
-        amountFilterType: state.amount_filter.type,
+        amountFilterAmount: state.amount_filter.amount,
+        amountFilterType: state.amount_filter.type
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        setAmountFilter: amount => dispatch(setAmountFilter(amount)),
+        setAmountFilterAmount: amount =>
+            dispatch(setAmountFilterAmount(amount)),
+        setAmountFilterType: amount => dispatch(setAmountFilterType(amount)),
         clearAmountFilter: () => dispatch(clearAmountFilter())
     };
 };

@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
 
+import amount_filter from "./amount_filter";
 import account_id_filter from "./account_id_filter";
 import accounts from "./accounts";
 import application from "./application";
@@ -45,6 +46,7 @@ import share_invite_bank_responses from "./share_invite_bank_responses";
 import search_filter from "./search_filter";
 
 export default combineReducers({
+    amount_filter,
     account_id_filter,
     accounts,
     application,
