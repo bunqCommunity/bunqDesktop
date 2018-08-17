@@ -223,8 +223,12 @@ class RuleCreator extends React.Component<any, any> {
         const ruleCollection = this.createRuleCollection();
         // get the new ID so we can update instead of creating infinite clones
         this.setState({ id: ruleCollection.getId() }, this.updatePreview);
+
         // send the updated class to the parent
         this.props.saveRuleCollection(ruleCollection);
+
+        // display a confirmation message
+        this.props.openSnackbar(this.props.t("Changes were saved!"));
     };
     createRuleCollection = (): RuleCollection => {
         const ruleCollection = new RuleCollection();
