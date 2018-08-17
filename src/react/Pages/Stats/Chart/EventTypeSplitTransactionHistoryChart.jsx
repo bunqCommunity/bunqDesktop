@@ -12,6 +12,7 @@ import {
     requestInquiryColor,
     requestResponseColor
 } from "../Colors";
+import { moneyTemplate } from "../../../Helpers/StatsFormattingTemplates";
 
 export default props => {
     const defaultOptions = {
@@ -133,7 +134,16 @@ export default props => {
         responsive: true,
         tooltips: {
             enabled: true,
-            mode: "index"
+            mode: "index",
+            callbacks: {
+                label: function(tooltipItem, chart) {
+                    const datasetLabel =
+                        chart.datasets[tooltipItem.datasetIndex].label || "";
+                    return `${datasetLabel}: ${moneyTemplate(
+                        tooltipItem.yLabel
+                    )}`;
+                }
+            }
         },
         legend: {
             labels: {
