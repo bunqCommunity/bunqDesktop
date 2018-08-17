@@ -241,6 +241,39 @@ class Stats extends React.Component {
                       applePayPaymentTransactionHistory: []
                   };
 
+        const categoryTransactionTypeSelector = this.state
+            .displayTransactionAmount ? (
+            <RadioGroup
+                aria-label="View the total, sent or received amount for each category"
+                style={{
+                    flexDirection: "row",
+                    justifyContent: "center"
+                }}
+                name="categoryTransactionType"
+                value={this.state.categoryTransactionType}
+                onChange={event =>
+                    this.setState({
+                        categoryTransactionType: event.target.value
+                    })}
+            >
+                <FormControlLabel
+                    value="total"
+                    control={<Radio />}
+                    label="Total amount"
+                />
+                <FormControlLabel
+                    value="sent"
+                    control={<Radio />}
+                    label="Sent"
+                />
+                <FormControlLabel
+                    value="received"
+                    control={<Radio />}
+                    label="Received"
+                />
+            </RadioGroup>
+        ) : null;
+
         const eventCountStats = (
             <Grid item xs={12}>
                 <Grid container spacing={16}>
@@ -404,7 +437,7 @@ class Stats extends React.Component {
 
                             {this.state.displayTransactionAmount ? (
                                 <CategoryTransactionPieChart
-                                    height={500}
+                                    height={400}
                                     theme={theme}
                                     categories={this.props.categories}
                                     categoryTransactionHistory={
@@ -424,6 +457,7 @@ class Stats extends React.Component {
                                     }
                                 />
                             )}
+                            {categoryTransactionTypeSelector}
                         </Paper>
                     </Grid>
                 </Grid>
@@ -711,40 +745,7 @@ class Stats extends React.Component {
                                         />
                                     )}
                                 </div>
-                                {this.state.displayTransactionAmount ? (
-                                    <RadioGroup
-                                        aria-label="View the total, sent or received amount for each category"
-                                        style={{
-                                            flexDirection: "row",
-                                            justifyContent: "center"
-                                        }}
-                                        name="categoryTransactionType"
-                                        value={
-                                            this.state.categoryTransactionType
-                                        }
-                                        onChange={event =>
-                                            this.setState({
-                                                categoryTransactionType:
-                                                    event.target.value
-                                            })}
-                                    >
-                                        <FormControlLabel
-                                            value="total"
-                                            control={<Radio />}
-                                            label="Total amount"
-                                        />
-                                        <FormControlLabel
-                                            value="sent"
-                                            control={<Radio />}
-                                            label="Sent"
-                                        />
-                                        <FormControlLabel
-                                            value="received"
-                                            control={<Radio />}
-                                            label="Received"
-                                        />
-                                    </RadioGroup>
-                                ) : null}
+                                {categoryTransactionTypeSelector}
                             </Paper>
                         </Grid>
 

@@ -10,6 +10,8 @@ import {
     tapAndPayPaymentColor
 } from "../Colors";
 
+const countReducer = (a, b) => a + b;
+
 export default props => {
     const defaultOptions = {
         height: 350,
@@ -33,23 +35,14 @@ export default props => {
         datasets: [
             {
                 data: [
-                    props.paymentHistory.reduce((a, b) => a + b, 0),
-                    props.masterCardPaymentCountHistory.reduce(
-                        (a, b) => a + b,
-                        0
-                    ),
-                    props.maestroPaymentCountHistory.reduce((a, b) => a + b, 0),
-                    props.tapAndPayPaymentCountHistory.reduce(
-                        (a, b) => a + b,
-                        0
-                    ),
-                    props.applePayPaymentCountHistory.reduce(
-                        (a, b) => a + b,
-                        0
-                    ),
-                    props.requestInquiryHistory.reduce((a, b) => a + b, 0),
-                    props.requestResponseHistory.reduce((a, b) => a + b, 0),
-                    props.bunqMeTabHistory.reduce((a, b) => a + b, 0)
+                    props.paymentHistory.reduce(countReducer, 0),
+                    props.masterCardPaymentCountHistory.reduce(countReducer, 0),
+                    props.maestroPaymentCountHistory.reduce(countReducer, 0),
+                    props.tapAndPayPaymentCountHistory.reduce(countReducer, 0),
+                    props.applePayPaymentCountHistory.reduce(countReducer, 0),
+                    props.requestInquiryHistory.reduce(countReducer, 0),
+                    props.requestResponseHistory.reduce(countReducer, 0),
+                    props.bunqMeTabHistory.reduce(countReducer, 0)
                 ],
                 backgroundColor: [
                     paymentColor,
