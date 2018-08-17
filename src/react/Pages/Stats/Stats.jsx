@@ -25,6 +25,7 @@ import EventSplitCountPieChart from "./Chart/EventSplitCountPieChart";
 import CategoryCountPieChart from "./Chart/CategoryCountPieChart";
 import CategoryCountHistoryChart from "./Chart/CategoryCountHistoryChart";
 
+import CategoryTransactionPieChart from "./Chart/CategoryTransactionPieChart";
 import CategoryTransactionHistoryChart from "./Chart/CategoryTransactionHistoryChart";
 
 import EventTypeTransactionHistoryChart from "./Chart/EventTypeTransactionHistoryChart";
@@ -72,7 +73,7 @@ class Stats extends React.Component {
 
     getSnapshotBeforeUpdate(previousProps, previousState) {
         let triggerWorker = false;
-        const { timescale } = previousState;
+        const { timescale, categoryTransactionType } = previousState;
         const { generalFilterDate } = previousProps;
 
         // check if timescale changed
@@ -80,6 +81,10 @@ class Stats extends React.Component {
 
         // check if filter changed
         if (generalFilterDate !== this.props.generalFilterDate)
+            triggerWorker = true;
+
+        // check if category transaction type changed
+        if (categoryTransactionType !== this.state.categoryTransactionType)
             triggerWorker = true;
 
         const isCurrentlyLoading =
@@ -388,14 +393,37 @@ class Stats extends React.Component {
                                 padding: 12
                             }}
                         >
-                            <ChartTitle>Category count</ChartTitle>
+                            <ChartTitle>
+                                {this.state.displayTransactionAmount ? (
+                                    `Category ${this.state
+                                        .categoryTransactionType}`
+                                ) : (
+                                    "Category count"
+                                )}
+                            </ChartTitle>
 
-                            <CategoryCountPieChart
-                                height={500}
-                                theme={theme}
-                                categories={this.props.categories}
-                                categoryCountHistory={data.categoryCountHistory}
-                            />
+                            {this.state.displayTransactionAmount ? (
+                                <CategoryTransactionPieChart
+                                    height={500}
+                                    theme={theme}
+                                    categories={this.props.categories}
+                                    categoryTransactionHistory={
+                                        data.categoryTransactionHistory
+                                    }
+                                    categoryTransactionType={
+                                        this.state.categoryTransactionType
+                                    }
+                                />
+                            ) : (
+                                <CategoryCountPieChart
+                                    height={500}
+                                    theme={theme}
+                                    categories={this.props.categories}
+                                    categoryCountHistory={
+                                        data.categoryCountHistory
+                                    }
+                                />
+                            )}
                         </Paper>
                     </Grid>
                 </Grid>
@@ -684,41 +712,38 @@ class Stats extends React.Component {
                                     )}
                                 </div>
                                 {this.state.displayTransactionAmount ? (
-                                    <React.Fragment>
-                                        <RadioGroup
-                                            aria-label="View the total, sent or received amount for each category"
-                                            style={{
-                                                flexDirection: "row",
-                                                justifyContent: "center"
-                                            }}
-                                            name="categoryTransactionType"
-                                            value={
-                                                this.state
-                                                    .categoryTransactionType
-                                            }
-                                            onChange={event =>
-                                                this.setState({
-                                                    categoryTransactionType:
-                                                        event.target.value
-                                                })}
-                                        >
-                                            <FormControlLabel
-                                                value="total"
-                                                control={<Radio />}
-                                                label="Total amount"
-                                            />
-                                            <FormControlLabel
-                                                value="sent"
-                                                control={<Radio />}
-                                                label="Sent"
-                                            />
-                                            <FormControlLabel
-                                                value="received"
-                                                control={<Radio />}
-                                                label="Received"
-                                            />
-                                        </RadioGroup>
-                                    </React.Fragment>
+                                    <RadioGroup
+                                        aria-label="View the total, sent or received amount for each category"
+                                        style={{
+                                            flexDirection: "row",
+                                            justifyContent: "center"
+                                        }}
+                                        name="categoryTransactionType"
+                                        value={
+                                            this.state.categoryTransactionType
+                                        }
+                                        onChange={event =>
+                                            this.setState({
+                                                categoryTransactionType:
+                                                    event.target.value
+                                            })}
+                                    >
+                                        <FormControlLabel
+                                            value="total"
+                                            control={<Radio />}
+                                            label="Total amount"
+                                        />
+                                        <FormControlLabel
+                                            value="sent"
+                                            control={<Radio />}
+                                            label="Sent"
+                                        />
+                                        <FormControlLabel
+                                            value="received"
+                                            control={<Radio />}
+                                            label="Received"
+                                        />
+                                    </RadioGroup>
                                 ) : null}
                             </Paper>
                         </Grid>

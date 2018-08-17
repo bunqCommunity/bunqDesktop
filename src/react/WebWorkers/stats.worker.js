@@ -343,6 +343,7 @@ const getData = (
     let categoryCountHistory = {};
     // total category transaction history
     let categoryTransactionHistory = {};
+
     // individual count history
     let paymentCountHistory = [];
     let requestInquiryCountHistory = [];
@@ -623,6 +624,7 @@ const getData = (
         // total category count
         categoryCountHistory: categoryCountHistory,
         categoryTransactionHistory: categoryTransactionHistory,
+
         // individual history count
         requestResponseHistory: requestResponseCountHistory.reverse(),
         requestInquiryHistory: requestInquiryCountHistory.reverse(),
