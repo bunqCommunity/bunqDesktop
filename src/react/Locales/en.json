@@ -146,6 +146,7 @@
 	"Failed to store the export file at ": "Failed to store the export file at ",
 	"Failed to validate the authentication tokens": "Failed to validate the authentication tokens",
 	"Filter": "Filter",
+	"Filter by amount": "Filter by amount",
 	"Filter by keyword": "Filter by keyword",
 	"From": "From",
 	"From date": "From date",

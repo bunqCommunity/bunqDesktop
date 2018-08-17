@@ -1,5 +1,8 @@
 import CategoryHelper from "./CategoryHelper";
 
+// amountFilterAmount
+// amountFilterType
+
 const checkDateRange = (fromDate, toDate, date) => {
     // nothing to check so always valid
     if (fromDate === null && toDate === null) return true;
@@ -28,20 +31,18 @@ export const paymentFilter = options => payment => {
     if (options.paymentVisibility === false) {
         return false;
     }
-    const paymentInfo = payment.Payment;
-
     // hide mastercard payments
-    if (paymentInfo.type === "MASTERCARD") {
+    if (payment.type === "MASTERCARD") {
         return false;
     }
 
     if (options.paymentType) {
         if (options.paymentType === "received") {
-            if (paymentInfo.amount.value <= 0) {
+            if (payment.amount.value <= 0) {
                 return false;
             }
         } else if (options.paymentType === "sent") {
-            if (paymentInfo.amount.value >= 0) {
+            if (payment.amount.value >= 0) {
                 return false;
             }
         }
@@ -55,6 +56,20 @@ export const paymentFilter = options => payment => {
             payment.counterparty_alias.display_name.toLowerCase()
         ].some(text => text.includes(options.searchTerm));
         if (!searchMatches) return false;
+    }
+
+    if (options.amountFilterAmount !== "") {
+        let amountValue = payment.getAmount();
+        if (amountValue < 0) amountValue = amountValue * -1;
+
+        switch (options.amountFilterType) {
+            case "EQUALS":
+                return amountValue == options.amountFilterAmount;
+            case "MORE":
+                return amountValue > options.amountFilterAmount;
+            case "LESS":
+                return amountValue < options.amountFilterAmount;
+        }
     }
 
     if (
@@ -79,7 +94,12 @@ export const paymentFilter = options => payment => {
                     return category.id === selectedCategory;
                 });
             });
-            if (!categoryMatches) return options.toggleCategoryFilter;
+
+            // if reversed and we got matches, return false
+            if (options.toggleCategoryFilter && categoryMatches) return false;
+
+            // no matches and not reversed so return false
+            if (!categoryMatches) return false;
         }
     }
 
@@ -101,7 +121,7 @@ export const paymentFilter = options => payment => {
     return checkDateRange(
         options.dateFromFilter,
         options.dateToFilter,
-        paymentInfo.created
+        payment.created
     );
 };
 
@@ -123,6 +143,9 @@ export const bunqMeTabsFilter = options => bunqMeTab => {
         ].some(text => text.includes(options.searchTerm));
         if (!searchMatches) return false;
     }
+
+    // don't show bunqme requests if amount filter is set
+    if (options.amountFilterAmount !== "") return false;
 
     if (
         options.selectedCategories &&
@@ -146,7 +169,12 @@ export const bunqMeTabsFilter = options => bunqMeTab => {
                     return category.id === selectedCategory;
                 });
             });
-            if (!categoryMatches) return options.toggleCategoryFilter;
+
+            // if reversed and we got matches, return false
+            if (options.toggleCategoryFilter && categoryMatches) return false;
+
+            // no matches and not reversed so return false
+            if (!categoryMatches) return false;
         }
     }
 
@@ -195,6 +223,18 @@ export const masterCardActionFilter = options => masterCardAction => {
         if (!searchMatches) return false;
     }
 
+    if (options.amountFilterAmount !== "") {
+        const amountValue = masterCardAction.getAmount();
+        switch (options.amountFilterType) {
+            case "EQUALS":
+                return amountValue == options.amountFilterAmount;
+            case "MORE":
+                return amountValue > options.amountFilterAmount;
+            case "LESS":
+                return amountValue < options.amountFilterAmount;
+        }
+    }
+
     if (
         options.selectedCategories &&
         options.categories &&
@@ -217,7 +257,12 @@ export const masterCardActionFilter = options => masterCardAction => {
                     return category.id === selectedCategory;
                 });
             });
-            if (!categoryMatches) return options.toggleCategoryFilter;
+
+            // if reversed and we got matches, return false
+            if (options.toggleCategoryFilter && categoryMatches) return false;
+
+            // no matches and not reversed so return false
+            if (!categoryMatches) return false;
         }
     }
 
@@ -266,6 +311,9 @@ export const requestResponseFilter = options => requestResponse => {
         if (!searchMatches) return false;
     }
 
+    // don't show requests if amount filter is set
+    if (options.amountFilterAmount !== "") return false;
+
     if (
         options.selectedCategories &&
         options.categories &&
@@ -288,7 +336,12 @@ export const requestResponseFilter = options => requestResponse => {
                     return category.id === selectedCategory;
                 });
             });
-            if (!categoryMatches) return options.toggleCategoryFilter;
+
+            // if reversed and we got matches, return false
+            if (options.toggleCategoryFilter && categoryMatches) return false;
+
+            // no matches and not reversed so return false
+            if (!categoryMatches) return false;
         }
     }
 
@@ -338,6 +391,9 @@ export const requestInquiryFilter = options => requestInquiry => {
         if (!searchMatches) return false;
     }
 
+    // don't show requests if amount filter is set
+    if (options.amountFilterAmount !== "") return false;
+
     if (
         options.selectedCategories &&
         options.categories &&
@@ -360,7 +416,12 @@ export const requestInquiryFilter = options => requestInquiry => {
                     return category.id === selectedCategory;
                 });
             });
-            if (!categoryMatches) return options.toggleCategoryFilter;
+
+            // if reversed and we got matches, return false
+            if (options.toggleCategoryFilter && categoryMatches) return false;
+
+            // no matches and not reversed so return false
+            if (!categoryMatches) return false;
         }
     }
 
@@ -393,6 +454,9 @@ export const shareInviteBankResponseFilter = options => shareInviteBankResponse 
     if (shareInviteBankResponseInfo.status !== "PENDING") {
         return false;
     }
+
+    // don't show share invites if amount filter is set
+    if (options.amountFilterAmount !== "") return false;
 
     // hide these if any type of filter is set
     if (options.searchTerm && options.searchTerm.length > 0) {
@@ -434,6 +498,10 @@ export const shareInviteBankInquiryFilter = options => shareInviteBankInquiry =>
     if (options.searchTerm && options.searchTerm.length > 0) {
         return false;
     }
+
+    // don't show share invites if amount filter is set
+    if (options.amountFilterAmount !== "") return false;
+
     if (
         options.selectedCategories &&
         options.categories &&

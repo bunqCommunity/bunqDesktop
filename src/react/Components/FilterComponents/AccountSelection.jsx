@@ -14,7 +14,6 @@ import AddIcon from "@material-ui/icons/Add";
 import FilterListIcon from "@material-ui/icons/FilterList";
 
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
-import AccountListItemChip from "../AccountList/AccountListItemChip";
 
 import {
     addAccountIdFilter,
@@ -51,16 +50,13 @@ class AccountSelection extends React.Component {
     addAccountId = accountId => event => {
         this.props.addAccountIdFilter(accountId);
     };
-    removeAccountId = index => event => {
-        this.props.removeAccountIdFilter(index);
+    removeAccountId = accountId => event => {
+        this.props.removeAccountIdFilter(accountId);
     };
 
     render() {
         const { anchorEl } = this.state;
         const { accounts, selectedAccountIds } = this.props;
-
-        // limit size if a lot of accounts are selected
-        const bigChips = selectedAccountIds.length <= 6;
 
         const selectedAccountChipItems = selectedAccountIds.map(
             (accountId, key) => {
@@ -72,14 +68,19 @@ class AccountSelection extends React.Component {
                 if (!account) return null;
 
                 // display big chip or smaller icon
-                return bigChips ? (
-                    <AccountListItemChip
-                        key={key}
-                        account={account}
-                        onDelete={this.removeAccountId(account.id)}
-                    />
-                ) : (
-                    <IconButton>btn icon</IconButton>
+                return (
+                    <IconButton onClick={this.removeAccountId(account.id)}>
+                        <Avatar>
+                            <LazyAttachmentImage
+                                BunqJSClient={this.props.BunqJSClient}
+                                imageUUID={
+                                    account.avatar.image[0]
+                                        .attachment_public_uuid
+                                }
+                                style={{ width: 40, height: 40 }}
+                            />
+                        </Avatar>
+                    </IconButton>
                 );
             }
         );

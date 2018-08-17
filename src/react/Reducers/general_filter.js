@@ -11,6 +11,9 @@ export default function reducer(state = defaultState, action) {
         case "DATE_FILTER_FROM_CLEAR":
         case "DATE_FILTER_TO_CLEAR":
 
+        case "AMOUNT_FILTER_SET_AMOUNT":
+        case "AMOUNT_FILTER_SET_TYPE":
+
         case "ACCOUNT_ID_FILTER_TOGGLE":
         case "ACCOUNT_ID_FILTER_REMOVE":
         case "ACCOUNT_ID_FILTER_ADD":

@@ -30,28 +30,23 @@ import TimerOff from "@material-ui/icons/TimerOff";
 import Cancel from "@material-ui/icons/Cancel";
 
 import {
-    clearPaymentFilterType,
     togglePaymentFilterVisibility,
     setPaymentFilterType,
-    clearRequestFilterType,
     toggleRequestFilterVisibility,
     setRequestFilterType,
-    clearBunqMeTabFilterType,
     toggleBunqMeTabFilterVisibility,
     setBunqMeTabFilterType,
     setFromDateFilter,
     setToDateFilter,
     clearFromDateFilter,
     clearToDateFilter,
-    resetFilters,
-    addAccountIdFilter,
-    removeAccountIdFilter,
-    clearAccountIdFilter
+    resetFilters
 } from "../../Actions/filters";
 
 import SearchFilter from "./SearchFilter";
 import AccountSelection from "./AccountSelection";
 import CategorySelection from "./CategorySelection";
+import AmountFilter from "./AmountFilter";
 
 const styles = {
     list: {
@@ -173,6 +168,10 @@ class FilterDrawer extends React.Component {
             <List style={styles.list}>
                 <ListItem style={styles.textFieldListItem}>
                     <SearchFilter style={styles.textField} t={t} />
+                </ListItem>
+
+                <ListItem style={styles.textFieldListItem}>
+                    <AmountFilter style={styles.textField} t={t} />
                 </ListItem>
 
                 {/* filters for both normal payments and mastercard actions */}

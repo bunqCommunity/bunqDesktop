@@ -60,7 +60,7 @@ class CategorySelection extends React.Component {
         const { categories, selectedCategories } = this.props;
 
         // limit size if a lot of categories are selected
-        const bigChips = selectedCategories.length <= 8;
+        const bigChips = selectedCategories.length <= 4;
 
         const categoryItems = selectedCategories.map((categoryId, key) => {
             const category = categories[categoryId];

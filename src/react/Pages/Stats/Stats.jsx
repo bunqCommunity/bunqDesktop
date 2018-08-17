@@ -137,9 +137,14 @@ class Stats extends React.Component {
             dateFromFilter: props.dateFromFilter,
             dateToFilter: props.dateToFilter,
 
+            // amount filters
+            amountFilterAmount: this.props.amountFilterAmount,
+            amountFilterType: this.props.amountFilterType,
+
             // by account id
             selectedAccountIds: props.selectedAccountIds,
             toggleAccountIds: props.toggleAccountIds,
+
             // by selected categories
             selectedCategories: props.selectedCategories,
             toggleCategoryFilter: props.toggleCategoryFilter,
@@ -764,7 +769,10 @@ const mapStateToProps = state => {
         toggleAccountIds: state.account_id_filter.toggle,
 
         selectedCategories: state.category_filter.selected_categories,
-        toggleCategoryFilter: state.category_filter.toggle
+        toggleCategoryFilter: state.category_filter.toggle,
+
+        amountFilterAmount: state.amount_filter.amount,
+        amountFilterType: state.amount_filter.type
     };
 };
 
