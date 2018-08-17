@@ -1,12 +1,16 @@
 import React from "react";
 import { Pie } from "react-chartjs-2";
 import {
+    applePayPaymentColor,
     bunqMeTabColor,
-    masterCardActionColor,
+    masterCardPaymentColor,
     paymentColor,
     requestInquiryColor,
-    requestResponseColor
-} from "../Colors";
+    requestResponseColor,
+    tapAndPayPaymentColor
+} from "../../Colors";
+
+const countReducer = (a, b) => a + b;
 
 export default props => {
     const defaultOptions = {
@@ -20,7 +24,10 @@ export default props => {
     const pieChartData = {
         labels: [
             "Payments",
-            "Card payments",
+            "Mastercard",
+            "Maestro",
+            "Tap & Pay",
+            "Apple Pay",
             "Requests sent",
             "Requests received",
             "bunq.me requests"
@@ -28,22 +35,31 @@ export default props => {
         datasets: [
             {
                 data: [
-                    props.payments.length,
-                    props.masterCardActions.length,
-                    props.requestInquiries.length,
-                    props.requestResponses.length,
-                    props.bunqMeTabs.length
+                    props.paymentHistory.reduce(countReducer, 0),
+                    props.masterCardPaymentCountHistory.reduce(countReducer, 0),
+                    props.maestroPaymentCountHistory.reduce(countReducer, 0),
+                    props.tapAndPayPaymentCountHistory.reduce(countReducer, 0),
+                    props.applePayPaymentCountHistory.reduce(countReducer, 0),
+                    props.requestInquiryHistory.reduce(countReducer, 0),
+                    props.requestResponseHistory.reduce(countReducer, 0),
+                    props.bunqMeTabHistory.reduce(countReducer, 0)
                 ],
                 backgroundColor: [
                     paymentColor,
-                    masterCardActionColor,
+                    masterCardPaymentColor,
+                    requestInquiryColor,
+                    tapAndPayPaymentColor,
+                    applePayPaymentColor,
                     requestInquiryColor,
                     requestResponseColor,
                     bunqMeTabColor
                 ],
                 hoverBackgroundColor: [
                     paymentColor,
-                    masterCardActionColor,
+                    masterCardPaymentColor,
+                    requestInquiryColor,
+                    tapAndPayPaymentColor,
+                    applePayPaymentColor,
                     requestInquiryColor,
                     requestResponseColor,
                     bunqMeTabColor

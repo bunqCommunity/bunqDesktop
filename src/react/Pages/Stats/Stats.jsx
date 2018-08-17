@@ -19,30 +19,33 @@ import LoadOlderButton from "../../Components/LoadOlderButton";
 import ClearBtn from "../../Components/FilterComponents/ClearFilter";
 import FilterDrawer from "../../Components/FilterComponents/FilterDrawer";
 
-import EventCountPieChart from "./Chart/EventCountPieChart";
-import EventSplitCountPieChart from "./Chart/EventSplitCountPieChart";
+import EventCountPieChart from "./Chart/PieChart/EventCountPieChart";
+import EventSplitTransactionPieChart from "./Chart/PieChart/EventSplitTransactionPieChart";
 
-import CategoryCountPieChart from "./Chart/CategoryCountPieChart";
-import CategoryCountHistoryChart from "./Chart/CategoryCountHistoryChart";
+import EventSplitCountPieChart from "./Chart/PieChart/EventSplitCountPieChart";
+import EventTransactionPieChart from "./Chart/PieChart/EventTransactionPieChart";
 
-import CategoryTransactionPieChart from "./Chart/CategoryTransactionPieChart";
-import CategoryTransactionHistoryChart from "./Chart/CategoryTransactionHistoryChart";
+import CategoryCountPieChart from "./Chart/PieChart/CategoryCountPieChart";
+import CategoryCountHistoryChart from "./Chart/Timeline/CategoryCountHistoryChart";
 
-import EventTypeTransactionHistoryChart from "./Chart/EventTypeTransactionHistoryChart";
-import EventTypeSplitTransactionHistoryChart from "./Chart/EventTypeSplitTransactionHistoryChart";
-import EventTypeHistoryChart from "./Chart/EventTypeHistoryChart";
-import EventTypeSplitHistoryChart from "./Chart/EventTypeSplitHistoryChart";
+import CategoryTransactionPieChart from "./Chart/PieChart/CategoryTransactionPieChart";
+import CategoryTransactionHistoryChart from "./Chart/Timeline/CategoryTransactionHistoryChart";
+
+import EventTypeTransactionHistoryChart from "./Chart/Timeline/EventTypeTransactionHistoryChart";
+import EventTypeSplitTransactionHistoryChart from "./Chart/Timeline/EventTypeSplitTransactionHistoryChart";
+import EventTypeHistoryChart from "./Chart/Timeline/EventTypeHistoryChart";
+import EventTypeSplitHistoryChart from "./Chart/Timeline/EventTypeSplitHistoryChart";
 
 const StatsWorker = require("../../WebWorkers/stats.worker.js");
 
-const ChartTitle = ({ children, ...rest }) => {
+const ChartTitle = ({ children, t, ...rest }) => {
     return (
         <Typography
             variant="title"
             style={{ textAlign: "center", padding: 8 }}
             {...rest}
         >
-            {children}
+            {t(children)}
         </Typography>
     );
 };
@@ -373,9 +376,66 @@ class Stats extends React.Component {
                                 padding: 12
                             }}
                         >
-                            <ChartTitle>Event count</ChartTitle>
+                            <ChartTitle t={t}>
+                                {this.state.displayTransactionAmount ? (
+                                    "Transaction amount"
+                                ) : (
+                                    "Event count"
+                                )}
+                            </ChartTitle>
 
-                            {this.state.splitCardTypes ? (
+                            {this.state.displayTransactionAmount ? this.state
+                                .splitCardTypes ? (
+                                <EventSplitTransactionPieChart
+                                    height={500}
+                                    theme={theme}
+                                    requestInquiryTransactionHistory={
+                                        data.requestInquiryTransactionHistory
+                                    }
+                                    requestResponseTransactionHistory={
+                                        data.requestResponseTransactionHistory
+                                    }
+                                    bunqMeTabTransactionHistory={
+                                        data.bunqMeTabTransactionHistory
+                                    }
+                                    paymentTransactionHistory={
+                                        data.paymentTransactionHistory
+                                    }
+                                    masterCardPaymentTransactionHistory={
+                                        data.masterCardPaymentTransactionHistory
+                                    }
+                                    maestroPaymentTransactionHistory={
+                                        data.maestroPaymentTransactionHistory
+                                    }
+                                    tapAndPayPaymentTransactionHistory={
+                                        data.tapAndPayPaymentTransactionHistory
+                                    }
+                                    applePayPaymentTransactionHistory={
+                                        data.applePayPaymentTransactionHistory
+                                    }
+                                />
+                            ) : (
+                                <EventTransactionPieChart
+                                    height={500}
+                                    theme={theme}
+                                    payments={this.props.payments}
+                                    requestInquiryTransactionHistory={
+                                        data.requestInquiryTransactionHistory
+                                    }
+                                    requestResponseTransactionHistory={
+                                        data.requestResponseTransactionHistory
+                                    }
+                                    bunqMeTabTransactionHistory={
+                                        data.bunqMeTabTransactionHistory
+                                    }
+                                    paymentTransactionHistory={
+                                        data.paymentTransactionHistory
+                                    }
+                                    masterCardActionTransactionHistory={
+                                        data.masterCardActionTransactionHistory
+                                    }
+                                />
+                            ) : this.state.splitCardTypes ? (
                                 <EventSplitCountPieChart
                                     height={500}
                                     theme={theme}
@@ -426,7 +486,7 @@ class Stats extends React.Component {
                                 padding: 12
                             }}
                         >
-                            <ChartTitle>
+                            <ChartTitle t={t}>
                                 {this.state.displayTransactionAmount ? (
                                     `Category ${this.state
                                         .categoryTransactionType}`
@@ -466,7 +526,7 @@ class Stats extends React.Component {
 
         const eventHistoryCharts = (
             <Paper>
-                <ChartTitle>
+                <ChartTitle t={t}>
                     {this.state.displayTransactionAmount ? (
                         "Event transaction history"
                     ) : (
@@ -710,7 +770,7 @@ class Stats extends React.Component {
 
                         <Grid item xs={12}>
                             <Paper>
-                                <ChartTitle>
+                                <ChartTitle t={t}>
                                     {this.state.displayTransactionAmount ? (
                                         "Category transaction history"
                                     ) : (

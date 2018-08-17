@@ -1,6 +1,6 @@
 import React from "react";
 import { Pie } from "react-chartjs-2";
-import { moneyTemplate } from "../../../Helpers/StatsFormattingTemplates";
+import { moneyTemplate } from "../../../../Helpers/StatsFormattingTemplates";
 
 const ensurePositive = value => {
     return value < 0 ? value * -1 : value;

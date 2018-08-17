@@ -11,8 +11,8 @@ import {
     paymentColor,
     requestInquiryColor,
     requestResponseColor
-} from "../Colors";
-import { moneyTemplate } from "../../../Helpers/StatsFormattingTemplates";
+} from "../../Colors";
+import { moneyTemplate } from "../../../../Helpers/StatsFormattingTemplates";
 
 export default props => {
     const defaultOptions = {

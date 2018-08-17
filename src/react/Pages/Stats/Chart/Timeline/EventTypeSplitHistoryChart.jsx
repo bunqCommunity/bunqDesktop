@@ -11,7 +11,7 @@ import {
     paymentColor,
     requestInquiryColor,
     requestResponseColor
-} from "../Colors";
+} from "../../Colors";
 
 export default props => {
     const defaultOptions = {

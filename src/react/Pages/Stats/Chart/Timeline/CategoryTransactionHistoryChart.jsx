@@ -1,6 +1,6 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
-import { moneyTemplate } from "../../../Helpers/StatsFormattingTemplates";
+import { moneyTemplate } from "../../../../Helpers/StatsFormattingTemplates";
 
 export default props => {
     const defaultOptions = {
