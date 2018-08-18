@@ -2,13 +2,12 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { translate } from "react-i18next";
-
 import Chip from "@material-ui/core/Chip";
-import Icon from "@material-ui/core/Icon";
 import Grid from "@material-ui/core/Grid";
 import Avatar from "@material-ui/core/Avatar";
 import TextField from "@material-ui/core/TextField";
 
+import CustomIcon from "../CustomIcon";
 import IconPicker from "../FormFields/IconPicker";
 import ColorPicker from "../FormFields/ColorPicker";
 import TranslateButton from "../TranslationHelpers/Button";
@@ -121,7 +120,7 @@ class CategoryEditor extends React.Component {
     };
 
     render() {
-        const t= this.props.t;
+        const t = this.props.t;
         return (
             <Grid container spacing={16} style={styles.newCategoryContainer}>
                 <Grid item xs={12}>
@@ -141,21 +140,21 @@ class CategoryEditor extends React.Component {
                                     backgroundColor: this.state.color
                                 }}
                             >
-                                <Icon
+                                <CustomIcon
                                     style={{
                                         height: 24,
                                         width: 24
                                     }}
                                 >
                                     {this.state.icon}
-                                </Icon>
+                                </CustomIcon>
                             </Avatar>
                         }
                     />
 
-                    <Icon style={{ color: this.state.color }}>
+                    <CustomIcon style={{ color: this.state.color }}>
                         {this.state.icon}
-                    </Icon>
+                    </CustomIcon>
                 </Grid>
 
                 <Grid item xs={12}>

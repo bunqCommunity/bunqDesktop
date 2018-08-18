@@ -1,15 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { translate } from "react-i18next";
 import WindowedList from "react-windowed-list";
-import Icon from "@material-ui/core/Icon";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import TextField from "@material-ui/core/TextField";
-import Dialog  from "@material-ui/core/Dialog";
+import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
 import Icons from "../../Helpers/Icons";
-import {translate} from "react-i18next";
+import CustomIcon from "../CustomIcon";
 
 const styles = {
     iconContainer: {
@@ -28,9 +28,9 @@ class IconPicker extends React.Component {
         super(props, context);
         this.state = {
             open: false,
-            searchTerm: "",
-            icons: Icons.icons
+            searchTerm: ""
         };
+        this.icons = Icons.icons;
     }
 
     handleClose = () => {
@@ -70,10 +70,10 @@ class IconPicker extends React.Component {
     };
 
     itemRenderer = (index, key) => {
-        const icon = this.state.icons[index];
+        const icon = this.icons[index];
         return (
             <IconButton key={key} onClick={this.selectIcon(icon)}>
-                <Icon>{icon}</Icon>
+                <CustomIcon>{icon}</CustomIcon>
             </IconButton>
         );
     };
@@ -107,7 +107,7 @@ class IconPicker extends React.Component {
                         <WindowedList
                             isLazy
                             itemRenderer={this.itemRenderer}
-                            length={this.state.icons.length}
+                            length={this.icons.length}
                             type="uniform"
                         />
                     </div>
