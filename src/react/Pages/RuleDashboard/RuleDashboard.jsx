@@ -47,9 +47,36 @@ class RuleDashboard extends React.Component {
     closeImportDialog = event => {
         this.setState({ openImportDialog: false });
     };
-    importData = ruleCollectionObject => {
+    importData = ruleCollectionsReceived => {
         this.closeImportDialog();
 
+        // check if ruleCollection info is an arrray
+        if (
+            ruleCollectionsReceived &&
+            typeof ruleCollectionsReceived === "object" &&
+            ruleCollectionsReceived.constructor === Array
+        ) {
+            // received object is an array so attempt to loop through them
+            ruleCollectionsReceived.forEach(ruleCollectionObject => {
+                // parse a single category rule
+                this.importSingleRuleCollection(ruleCollectionObject);
+            });
+
+        } else if (ruleCollectionsReceived["category-rules"]) {
+            // parse array inside category-rules key and loop through them
+            ruleCollectionsReceived[
+                "category-rules"
+            ].forEach(ruleCollectionObject => {
+                // parse a single category rule
+                this.importSingleRuleCollection(ruleCollectionObject);
+            });
+
+        } else {
+            // parse a single category rule
+            this.importSingleRuleCollection(ruleCollectionsReceived);
+        }
+    };
+    importSingleRuleCollection = ruleCollectionObject => {
         const isValid = RuleCollection.validateRuleCollection(
             ruleCollectionObject
         );
@@ -152,7 +179,6 @@ class RuleDashboard extends React.Component {
                         </Grid>
                     </Paper>
                 </Grid>
-
             </Grid>
         );
     }

@@ -86,7 +86,7 @@ export default class RuleCollection {
      * Ensure a valid ID is set and generate a new one if not
      */
     public ensureId(): void {
-        if (this.id === null || this.id.length === 0) {
+        if (!this.id || this.id === null || this.id.length === 0) {
             this.generateId();
         }
     }
