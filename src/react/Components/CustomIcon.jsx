@@ -5,7 +5,7 @@ export default ({ children, style = {}, ...props }) => {
     if (children.startsWith("fa")) {
         return (
             <Icon
-                style={{ ...style, width: 24, height: 24, fontSize: 22 }}
+                style={{ width: "auto", height: 24, fontSize: 22, ...style }}
                 {...props}
                 className={children}
             />
@@ -13,7 +13,7 @@ export default ({ children, style = {}, ...props }) => {
     }
 
     return (
-        <Icon {...props} style={style}>
+        <Icon {...props} style={{ width: 24, height: 24, ...style }}>
             {children}
         </Icon>
     );

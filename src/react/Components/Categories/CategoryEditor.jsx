@@ -142,8 +142,7 @@ class CategoryEditor extends React.Component {
                             >
                                 <CustomIcon
                                     style={{
-                                        height: 24,
-                                        width: 24
+                                        height: 24
                                     }}
                                 >
                                     {this.state.icon}

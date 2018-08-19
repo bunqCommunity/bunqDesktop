@@ -45,8 +45,7 @@ export default props => {
                 >
                     <CustomIcon
                         style={{
-                            height: 24,
-                            width: 24
+                            height: 24
                         }}
                     >
                         {category.icon}
