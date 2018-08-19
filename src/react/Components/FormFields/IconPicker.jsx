@@ -28,9 +28,9 @@ class IconPicker extends React.Component {
         super(props, context);
         this.state = {
             open: false,
-            searchTerm: ""
+            searchTerm: "",
+            icons: Icons.icons
         };
-        this.icons = Icons.icons;
     }
 
     handleClose = () => {
@@ -47,7 +47,7 @@ class IconPicker extends React.Component {
         // only filter if search term isn't empty
         if (searchTerm.length > 0) {
             // loop through items and match
-            let iconList = Icons.icons.filter(icon => {
+            let iconList = this.state.icons.filter(icon => {
                 const alternateIcon = icon.replace("_", " ");
                 return (
                     icon.includes(searchTerm) ||
@@ -70,7 +70,7 @@ class IconPicker extends React.Component {
     };
 
     itemRenderer = (index, key) => {
-        const icon = this.icons[index];
+        const icon = this.state.icons[index];
         return (
             <IconButton key={key} onClick={this.selectIcon(icon)}>
                 <CustomIcon>{icon}</CustomIcon>
@@ -107,7 +107,7 @@ class IconPicker extends React.Component {
                         <WindowedList
                             isLazy
                             itemRenderer={this.itemRenderer}
-                            length={this.icons.length}
+                            length={this.state.icons.length}
                             type="uniform"
                         />
                     </div>
