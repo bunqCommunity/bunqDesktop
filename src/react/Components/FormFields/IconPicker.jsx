@@ -1,15 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { translate } from "react-i18next";
 import WindowedList from "react-windowed-list";
-import Icon from "@material-ui/core/Icon";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import TextField from "@material-ui/core/TextField";
-import Dialog  from "@material-ui/core/Dialog";
+import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
 import Icons from "../../Helpers/Icons";
-import {translate} from "react-i18next";
+import CustomIcon from "../CustomIcon";
 
 const styles = {
     iconContainer: {
@@ -47,7 +47,7 @@ class IconPicker extends React.Component {
         // only filter if search term isn't empty
         if (searchTerm.length > 0) {
             // loop through items and match
-            let iconList = Icons.icons.filter(icon => {
+            let iconList = this.state.icons.filter(icon => {
                 const alternateIcon = icon.replace("_", " ");
                 return (
                     icon.includes(searchTerm) ||
@@ -73,7 +73,7 @@ class IconPicker extends React.Component {
         const icon = this.state.icons[index];
         return (
             <IconButton key={key} onClick={this.selectIcon(icon)}>
-                <Icon>{icon}</Icon>
+                <CustomIcon>{icon}</CustomIcon>
             </IconButton>
         );
     };

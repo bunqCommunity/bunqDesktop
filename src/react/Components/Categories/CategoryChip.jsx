@@ -1,7 +1,7 @@
 import React from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
-import Icon from "@material-ui/core/Icon";
+import CustomIcon from "../CustomIcon";
 
 export default props => {
     const {
@@ -43,14 +43,14 @@ export default props => {
                         backgroundColor: category.color
                     }}
                 >
-                    <Icon
+                    <CustomIcon
                         style={{
                             height: 24,
                             width: 24
                         }}
                     >
                         {category.icon}
-                    </Icon>
+                    </CustomIcon>
                 </Avatar>
             }
         />

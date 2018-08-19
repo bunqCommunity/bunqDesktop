@@ -29,7 +29,7 @@
         "postinstall": "install-app-deps",
         "build": "gulp build",
         "dist": "build",
-        "update-icons": "node tasks/generate_material_icons.js",
+        "update-icons": "node tasks/generate_icons.js",
         "update-translations": "node tasks/update_translations.js",
         "update-release-files": "node tasks/update_release_files.js",
         "add-contributer": "all-contributors add"
@@ -130,12 +130,14 @@
         "electron-log": "^2.2.9",
         "electron-settings": "^3.1.3",
         "fs-jetpack": "^1.0.0",
+        "glob": "^7.1.2",
         "i18next": "^10.6.0",
         "i18next-xhr-backend": "^1.5.1",
         "upath": "1.0.5"
     },
     "devDependencies": {
         "@bunq-community/bunq-js-client": "^0.22.4",
+        "@fortawesome/fontawesome-free": "^5.2.0",
         "@google-cloud/translate": "^1.1.0",
         "@material-ui/core": "^1.4.3",
         "@material-ui/icons": "^1",

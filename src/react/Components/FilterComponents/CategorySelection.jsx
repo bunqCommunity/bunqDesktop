@@ -1,6 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import Icon from "@material-ui/core/Icon";
 import IconButton from "@material-ui/core/IconButton";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -13,6 +12,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import AddIcon from "@material-ui/icons/Add";
 import FilterListIcon from "@material-ui/icons/FilterList";
 
+import CustomIcon from "../CustomIcon";
 import CategoryIcon from "../Categories/CategoryIcon";
 import CategoryChip from "../Categories/CategoryChip";
 
@@ -95,7 +95,7 @@ class CategorySelection extends React.Component {
             return (
                 <MenuItem key={key} onClick={this.addCategory(categoryId)}>
                     <ListItemIcon>
-                        <Icon
+                        <CustomIcon
                             style={{
                                 height: 24,
                                 width: 24,
@@ -103,7 +103,7 @@ class CategorySelection extends React.Component {
                             }}
                         >
                             {category.icon}
-                        </Icon>
+                        </CustomIcon>
                     </ListItemIcon>
                     {category.label}
                 </MenuItem>
