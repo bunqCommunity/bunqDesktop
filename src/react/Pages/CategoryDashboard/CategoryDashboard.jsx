@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
+import axios from "axios";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 
@@ -23,6 +24,10 @@ const styles = {
         display: "flex",
         justifyContent: "center",
         flexWrap: "wrap"
+    },
+    buttons: {
+        width: "100%",
+        marginBottom: 8
     }
 };
 
@@ -32,7 +37,9 @@ class CategoryDashboard extends React.Component {
         this.state = {
             selectedCategoryId: false,
             openExportDialog: false,
-            openImportDialog: false
+            openImportDialog: false,
+
+            defaultCategories: false
         };
     }
 
@@ -85,6 +92,19 @@ class CategoryDashboard extends React.Component {
         });
     };
 
+    loadDefaultCategories = () => {
+        axios
+            .get(
+                "https://raw.githubusercontent.com/BunqCommunity/bunqDesktopTemplates/master/categories.json"
+            )
+            .then(response => {
+                this.setState({ defaultCategories: response.data });
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    };
+
     render() {
         const t = this.props.t;
         const chips = Object.keys(this.props.categories).map(categoryId => {
@@ -97,6 +117,19 @@ class CategoryDashboard extends React.Component {
                 />
             );
         });
+
+        const defaultCategoryChips = this.state.defaultCategories ? (
+            <Paper style={{ padding: 8 }}>
+                {Object.keys(this.state.defaultCategories).map(categoryId => {
+                    return (
+                        <CategoryChip
+                            category={this.state.defaultCategories[categoryId]}
+                            style={this.props.chipStyle}
+                        />
+                    );
+                })}
+            </Paper>
+        ) : null;
 
         return (
             <Grid container spacing={16}>
@@ -164,6 +197,39 @@ class CategoryDashboard extends React.Component {
 
                         <Grid item xs={12} md={8} style={{ marginTop: -8 }}>
                             <Paper style={styles.chipWrapper}>{chips}</Paper>
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                <Grid item xs={12}>
+                    <Grid container spacing={16}>
+                        <Grid item xs={12} md={4}>
+                            <Paper style={{ padding: 8 }}>
+                                <ButtonTranslate
+                                    variant="raised"
+                                    color="primary"
+                                    style={styles.buttons}
+                                    onClick={this.loadDefaultCategories}
+                                >
+                                    Load default categories
+                                </ButtonTranslate>
+
+                                <ButtonTranslate
+                                    variant="raised"
+                                    color="primary"
+                                    style={styles.buttons}
+                                    onClick={e =>
+                                        this.importCategories(
+                                            this.state.defaultCategories
+                                        )}
+                                    disabled={!this.state.defaultCategories}
+                                >
+                                    Import default categories
+                                </ButtonTranslate>
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12} md={8}>
+                            {defaultCategoryChips}
                         </Grid>
                     </Grid>
                 </Grid>
