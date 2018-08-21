@@ -75,6 +75,10 @@
     ts-jest "^21.2.4"
     typescript "^2.5.3"
 
+"@bunq-community/bunqdesktop-templates@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@bunq-community/bunqdesktop-templates/-/bunqdesktop-templates-1.0.0.tgz#369e0a70a832c0ef4a0ccf3b44826bda579c43cf"
+
 "@fortawesome/fontawesome-free@^5.2.0":
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free/-/fontawesome-free-5.2.0.tgz#50cd9856774351c56c0b1b0db4efe122d7913e58"

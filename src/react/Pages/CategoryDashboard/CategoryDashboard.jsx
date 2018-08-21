@@ -1,7 +1,8 @@
 import React from "react";
-import { connect } from "react-redux";
-import Helmet from "react-helmet";
 import axios from "axios";
+import Helmet from "react-helmet";
+import { connect } from "react-redux";
+import { translate } from "react-i18next";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 
@@ -17,7 +18,7 @@ import {
     removeCategoryConnection,
     setCategory
 } from "../../Actions/categories";
-import { translate } from "react-i18next";
+import { openSnackbar } from "../../Actions/snackbar";
 
 const styles = {
     chipWrapper: {
@@ -95,13 +96,13 @@ class CategoryDashboard extends React.Component {
     loadDefaultCategories = () => {
         axios
             .get(
-                "https://raw.githubusercontent.com/BunqCommunity/bunqDesktopTemplates/master/categories.json"
+                "https://raw.githubusercontent.com/bunqCommunity/bunqDesktopTemplates/master/categories.json"
             )
             .then(response => {
                 this.setState({ defaultCategories: response.data });
             })
             .catch(error => {
-                console.error(error);
+                this.props.openSnackbar("Failed to load default categories");
             });
     };
 
@@ -248,6 +249,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        openSnackbar: message => dispatch(openSnackbar(message)),
         removeCategory: (...params) => dispatch(removeCategory(...params)),
         removeCategoryConnection: (...params) =>
             dispatch(removeCategoryConnection(...params)),
