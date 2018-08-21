@@ -50,6 +50,13 @@ const ChartTitle = ({ children, t, ...rest }) => {
     );
 };
 
+const styles = {
+    sideBarPaper: {
+        padding: 16,
+        marginBottom: 16
+    }
+};
+
 class Stats extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -280,97 +287,7 @@ class Stats extends React.Component {
         const eventCountStats = (
             <Grid item xs={12}>
                 <Grid container spacing={16}>
-                    <Grid item xs={12} sm={6} md={4}>
-                        <Paper>
-                            <List dense component="nav">
-                                <ListItem>
-                                    <ListItemText
-                                        primary={t("Payments")}
-                                        secondary={this.props.payments.length}
-                                    />
-                                </ListItem>
-                                {this.state.splitCardTypes ? (
-                                    <React.Fragment>
-                                        <ListItem>
-                                            <ListItemText
-                                                primary={t(
-                                                    "MasterCard payments"
-                                                )}
-                                                secondary={data.masterCardPaymentCountHistory.reduce(
-                                                    (a, b) => a + b,
-                                                    0
-                                                )}
-                                            />
-                                        </ListItem>
-                                        <ListItem>
-                                            <ListItemText
-                                                primary={t("Maestro payments")}
-                                                secondary={data.maestroPaymentCountHistory.reduce(
-                                                    (a, b) => a + b,
-                                                    0
-                                                )}
-                                            />
-                                        </ListItem>
-                                        <ListItem>
-                                            <ListItemText
-                                                primary={t(
-                                                    "Tap & Pay payments"
-                                                )}
-                                                secondary={data.tapAndPayPaymentCountHistory.reduce(
-                                                    (a, b) => a + b,
-                                                    0
-                                                )}
-                                            />
-                                        </ListItem>
-                                        <ListItem>
-                                            <ListItemText
-                                                primary={t(
-                                                    "Apple Pay payments"
-                                                )}
-                                                secondary={data.applePayPaymentCountHistory.reduce(
-                                                    (a, b) => a + b,
-                                                    0
-                                                )}
-                                            />
-                                        </ListItem>
-                                    </React.Fragment>
-                                ) : (
-                                    <ListItem>
-                                        <ListItemText
-                                            primary={t("Card payments")}
-                                            secondary={
-                                                this.props.masterCardActions
-                                                    .length
-                                            }
-                                        />
-                                    </ListItem>
-                                )}
-                                <ListItem>
-                                    <ListItemText
-                                        primary={t("Requests sent")}
-                                        secondary={
-                                            this.props.requestInquiries.length
-                                        }
-                                    />
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemText
-                                        primary={t("Requests received")}
-                                        secondary={
-                                            this.props.requestResponses.length
-                                        }
-                                    />
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemText
-                                        primary={t("bunqme Requests")}
-                                        secondary={this.props.bunqMeTabs.length}
-                                    />
-                                </ListItem>
-                            </List>
-                        </Paper>
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={4}>
+                    <Grid item xs={12} sm={6}>
                         <Paper
                             style={{
                                 padding: 12
@@ -387,7 +304,6 @@ class Stats extends React.Component {
                             {this.state.displayTransactionAmount ? this.state
                                 .splitCardTypes ? (
                                 <EventSplitTransactionPieChart
-                                    height={500}
                                     theme={theme}
                                     requestInquiryTransactionHistory={
                                         data.requestInquiryTransactionHistory
@@ -416,7 +332,6 @@ class Stats extends React.Component {
                                 />
                             ) : (
                                 <EventTransactionPieChart
-                                    height={500}
                                     theme={theme}
                                     payments={this.props.payments}
                                     requestInquiryTransactionHistory={
@@ -437,7 +352,6 @@ class Stats extends React.Component {
                                 />
                             ) : this.state.splitCardTypes ? (
                                 <EventSplitCountPieChart
-                                    height={500}
                                     theme={theme}
                                     payments={this.props.payments}
                                     requestInquiryHistory={
@@ -463,7 +377,6 @@ class Stats extends React.Component {
                                 />
                             ) : (
                                 <EventCountPieChart
-                                    height={500}
                                     theme={theme}
                                     payments={this.props.payments}
                                     masterCardActions={
@@ -480,7 +393,7 @@ class Stats extends React.Component {
                             )}
                         </Paper>
                     </Grid>
-                    <Grid item xs={12} sm={6} md={4}>
+                    <Grid item xs={12} sm={6}>
                         <Paper
                             style={{
                                 padding: 12
@@ -497,7 +410,6 @@ class Stats extends React.Component {
 
                             {this.state.displayTransactionAmount ? (
                                 <CategoryTransactionPieChart
-                                    height={400}
                                     theme={theme}
                                     categories={this.props.categories}
                                     categoryTransactionHistory={
@@ -509,7 +421,6 @@ class Stats extends React.Component {
                                 />
                             ) : (
                                 <CategoryCountPieChart
-                                    height={500}
                                     theme={theme}
                                     categories={this.props.categories}
                                     categoryCountHistory={
@@ -634,12 +545,7 @@ class Stats extends React.Component {
                 </Helmet>
 
                 <Grid item xs={12} sm={4} md={3}>
-                    <Paper
-                        style={{
-                            padding: 16,
-                            marginBottom: 16
-                        }}
-                    >
+                    <Paper style={styles.sideBarPaper}>
                         <Grid container spacing={16}>
                             <Grid
                                 item
@@ -749,16 +655,94 @@ class Stats extends React.Component {
                         </Grid>
                     </Paper>
 
-                    <Paper
-                        style={{
-                            padding: 16
-                        }}
-                    >
+                    <Paper style={styles.sideBarPaper}>
                         <AccountList
                             BunqJSClient={this.props.BunqJSClient}
                             initialBunqConnect={this.props.initialBunqConnect}
                             denseMode={true}
                         />
+                    </Paper>
+
+                    <Paper style={styles.sideBarPaper}>
+                        <List dense component="nav">
+                            <ListItem>
+                                <ListItemText
+                                    primary={t("Payments")}
+                                    secondary={this.props.payments.length}
+                                />
+                            </ListItem>
+                            {this.state.splitCardTypes ? (
+                                <React.Fragment>
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={t("MasterCard payments")}
+                                            secondary={data.masterCardPaymentCountHistory.reduce(
+                                                (a, b) => a + b,
+                                                0
+                                            )}
+                                        />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={t("Maestro payments")}
+                                            secondary={data.maestroPaymentCountHistory.reduce(
+                                                (a, b) => a + b,
+                                                0
+                                            )}
+                                        />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={t("Tap & Pay payments")}
+                                            secondary={data.tapAndPayPaymentCountHistory.reduce(
+                                                (a, b) => a + b,
+                                                0
+                                            )}
+                                        />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={t("Apple Pay payments")}
+                                            secondary={data.applePayPaymentCountHistory.reduce(
+                                                (a, b) => a + b,
+                                                0
+                                            )}
+                                        />
+                                    </ListItem>
+                                </React.Fragment>
+                            ) : (
+                                <ListItem>
+                                    <ListItemText
+                                        primary={t("Card payments")}
+                                        secondary={
+                                            this.props.masterCardActions.length
+                                        }
+                                    />
+                                </ListItem>
+                            )}
+                            <ListItem>
+                                <ListItemText
+                                    primary={t("Requests sent")}
+                                    secondary={
+                                        this.props.requestInquiries.length
+                                    }
+                                />
+                            </ListItem>
+                            <ListItem>
+                                <ListItemText
+                                    primary={t("Requests received")}
+                                    secondary={
+                                        this.props.requestResponses.length
+                                    }
+                                />
+                            </ListItem>
+                            <ListItem>
+                                <ListItemText
+                                    primary={t("bunqme Requests")}
+                                    secondary={this.props.bunqMeTabs.length}
+                                />
+                            </ListItem>
+                        </List>
                     </Paper>
                 </Grid>
 
