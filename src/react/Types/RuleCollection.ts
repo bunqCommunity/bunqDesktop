@@ -2,6 +2,7 @@ import { Rule } from "./Rules/Rule";
 import TransactionAmountRule from "./Rules/TransactionAmountRule";
 import ValueRule from "./Rules/ValueRule";
 import TypeRule from "./Rules/TypeRule";
+import AccountRule from "./Rules/AccountRule";
 import { generateGUID } from "../Helpers/Utils";
 import { RuleTypes, EventObject, EventTypes } from "./Types";
 
@@ -184,6 +185,8 @@ export default class RuleCollection {
                 return this.checkTransactionAmountRule(rule, event);
             case "ITEM_TYPE":
                 return this.checkItemTypeRule(rule, event);
+            case "ACCOUNT_TYPE":
+                return this.checkAccountTypeRule(rule, event);
         }
         return false;
     }
@@ -357,6 +360,47 @@ export default class RuleCollection {
                 return rule.amount > amount;
             case "LESS_EQUALS":
                 return rule.amount >= amount;
+        }
+    }
+
+    /**
+     * aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+     * @param {AccountRule} rule
+     * @param {EventObject} event
+     * @returns {boolean}
+     */
+    private checkAccountTypeRule(
+        rule: AccountRule,
+        event: EventObject
+    ): boolean {
+        if (event.item.monetary_account_id !== rule.accountId) {
+            return false;
+        }
+
+        if (rule.paymentType === "ALL") {
+            return true;
+        }
+
+        // let amount: number = 0;
+        switch (event.type) {
+            case "Payment":
+                if (rule.paymentType === "SENDS") {
+                    // send type and amount is negative
+                    return event.item.amount.value < 0;
+                } else if (rule.paymentType === "RECEIVES") {
+                    // receive type and amount is positive
+                    return event.item.amount.value > 0;
+                }
+                return false;
+            case "MasterCardAction":
+                if (rule.paymentType === "SENDS") {
+                    return true;
+                }
+                return false;
+            case "BunqMeTab":
+            case "RequestInquiry":
+            case "RequestResponse":
+                return false;
         }
     }
 

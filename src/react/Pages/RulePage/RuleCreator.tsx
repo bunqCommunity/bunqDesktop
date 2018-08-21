@@ -27,6 +27,7 @@ import RuleCollectionMenu2 from "./RuleCollectionMenu";
 const RuleCollectionMenu: any = RuleCollectionMenu2;
 const MenuItem: any = MenuItemObj;
 
+import AccountRuleItem from "./RuleTypeItems/AccountRuleItem";
 import ValueRuleItem from "./RuleTypeItems/ValueRuleItem";
 import TransactionAmountRuleItem from "./RuleTypeItems/TransactionAmountRuleItem";
 import ItemTypeRuleItem from "./RuleTypeItems/ItemTypeRuleItem";
@@ -172,6 +173,13 @@ class RuleCreator extends React.Component<any, any> {
                 newRule = {
                     ruleType: "ITEM_TYPE",
                     matchType: "PAYMENT"
+                };
+                break;
+            case "ACCOUNT_TYPE":
+                newRule = {
+                    ruleType: "ACCOUNT_TYPE",
+                    paymentType: "ALL",
+                    accountId: 0
                 };
                 break;
             default:
@@ -355,6 +363,18 @@ class RuleCreator extends React.Component<any, any> {
                             openExportDialog={this.openExportDialog}
                             removeRule={this.removeRule(ruleKey)}
                             updateRule={this.updateRule(ruleKey)}
+                            rule={rule}
+                            key={ruleKey}
+                        />
+                    );
+                case "ACCOUNT_TYPE":
+                    return (
+                        <AccountRuleItem
+                            BunqJSClient={this.props.BunqJSClient}
+                            openExportDialog={this.openExportDialog}
+                            removeRule={this.removeRule(ruleKey)}
+                            updateRule={this.updateRule(ruleKey)}
+                            accounts={this.props.accounts}
                             rule={rule}
                             key={ruleKey}
                         />

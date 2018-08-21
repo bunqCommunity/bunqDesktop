@@ -46,7 +46,7 @@ const AccountItem = ({
     // attempt to get connect budget if possible
     if (filteredInviteResponses.length > 0) {
         const connectBudget = GetShareDetailBudget(filteredInviteResponses);
-        if(connectBudget){
+        if (connectBudget) {
             formattedBalance = connectBudget;
         }
     }
@@ -131,7 +131,7 @@ class AccountSelectorDialog extends React.Component {
             );
         } else {
             selectedAccountItem = (
-                <ListItem button onClick={this.displaySelectDialog}>
+                <ListItem button onClick={this.openDialog}>
                     <ListItemText primary={t("Select an account")} />
                 </ListItem>
             );

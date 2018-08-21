@@ -61,6 +61,9 @@ class NewRuleItemMenu extends React.Component<any, any> {
                     <MenuItem onClick={this.addRule("ITEM_TYPE")}>
                         Event type
                     </MenuItem>
+                    <MenuItem onClick={this.addRule("ACCOUNT_TYPE")}>
+                        Account
+                    </MenuItem>
                     <Divider />
 
                     <MenuItem onClick={this.openImportDialog}>
