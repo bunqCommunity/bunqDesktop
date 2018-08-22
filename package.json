@@ -31,8 +31,7 @@
         "dist": "build",
         "update-icons": "node tasks/generate_icons.js",
         "update-translations": "node tasks/update_translations.js",
-        "update-release-files": "node tasks/update_release_files.js",
-        "add-contributer": "all-contributors add"
+        "update-release-files": "node tasks/update_release_files.js"
     },
     "build": {
         "appId": "com.bunqdesktop",
@@ -148,7 +147,6 @@
         "@types/moxios": "^0.4.8",
         "@types/node": "^9.4.6",
         "@types/react-i18next": "^7.3.2",
-        "all-contributors-cli": "^4.11.1",
         "animate.css": "^3.6.1",
         "awaiting": "^2.0.1",
         "axios": "^0.18.0",
