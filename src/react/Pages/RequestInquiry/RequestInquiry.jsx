@@ -19,6 +19,7 @@ import RedirectUrl from "../../Components/FormFields/RedirectUrl";
 import TypographyTranslate from "../../Components/TranslationHelpers/Typography";
 import ButtonTranslate from "../../Components/TranslationHelpers/Button";
 import ConfirmationDialog from "./ConfirmationDialog";
+import SplitAmountForm from "./SplitAmountForm";
 import MinimumAge from "./Options/MinimumAge";
 import AllowBunqMe from "./Options/AllowBunqMe";
 
@@ -31,7 +32,8 @@ import {
 
 const styles = {
     payButton: {
-        width: "100%"
+        width: "100%",
+        marginTop: 16
     },
     formControlAlt: {
         marginBottom: 10
@@ -82,6 +84,9 @@ class RequestInquiry extends React.Component {
 
             // a list with all the targets
             targets: [],
+
+            // split amounts for targets
+            splitAmounts: {},
 
             // defines which type is used
             targetType: "CONTACT"
@@ -185,6 +190,15 @@ class RequestInquiry extends React.Component {
                 }
             );
         }
+    };
+
+    setSplitCount = (key, amount) => {
+        const splitAmounts = this.state.splitAmounts;
+        splitAmounts[key] = amount;
+
+        this.setState({
+            splitAmounts: splitAmounts
+        });
     };
 
     // add a target from the current text inputs to the target list
@@ -476,6 +490,16 @@ class RequestInquiry extends React.Component {
                             />
                         </FormControl>
 
+                        <SplitAmountForm
+                            t={t}
+                            BunqJSClient={this.props.BunqJSClient}
+                            account={account}
+                            targets={this.state.targets}
+                            splitAmounts={this.state.splitAmounts}
+                            amount={this.state.amount}
+                            setSplitCount={this.setSplitCount}
+                        />
+
                         <FormControlLabel
                             control={
                                 <Switch
@@ -486,7 +510,6 @@ class RequestInquiry extends React.Component {
                             }
                             label={t("Advanced options")}
                         />
-
                         <Collapse
                             in={this.state.expandedCollapse}
                             unmountOnExit
