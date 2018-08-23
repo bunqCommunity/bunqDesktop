@@ -29,6 +29,10 @@ const styles = {
     },
     previewAmountLabel: {
         fontSize: 15
+    },
+    percentageLabel: {
+        fontSize: 13,
+        marginLeft: 6
     }
 };
 
@@ -57,8 +61,11 @@ class SplitAmountItem extends React.Component {
         // default to 1
         splitAmount = typeof splitAmount !== "undefined" ? splitAmount : 1;
 
+        // if personal account, share can be 0 else it has to be atleast 1
+        const minimumSplit = account ? 0 : 1;
+
         // prevent negative values
-        splitAmount = splitAmount - 1 <= 0 ? 0 : splitAmount - 1;
+        splitAmount = splitAmount - 1 <= 0 ? minimumSplit : splitAmount - 1;
 
         if (account) {
             this.props.setSplitCount("account", splitAmount);
@@ -118,16 +125,20 @@ class SplitAmountItem extends React.Component {
             );
         }
 
-        const percentage = splitAmountValue / totalSplit;
+        const percentage = totalSplit > 0 ? splitAmountValue / totalSplit : 0;
+        const prettyPercentage = (percentage * 100).toFixed(2);
         const moneyAmount = amount * percentage;
 
         return (
             <TableRow style={styles.tableRow}>
                 <TableCell>{targetInfo}</TableCell>
                 <TableCell>
-                    <p style={styles.previewAmountLabel}>
+                    <span style={styles.previewAmountLabel}>
                         {formatMoney(moneyAmount)}
-                    </p>
+                    </span>
+                    <span style={styles.percentageLabel}>
+                        {prettyPercentage}%
+                    </span>
                 </TableCell>
                 <TableCell style={styles.buttons}>
                     <IconButton onClick={this.removeSplit}>

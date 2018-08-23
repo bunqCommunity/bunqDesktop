@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import { translate } from "react-i18next";
 import EmailValidator from "email-validator";
-
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
@@ -25,10 +24,12 @@ import AllowBunqMe from "./Options/AllowBunqMe";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { requestInquirySend } from "../../Actions/request_inquiry";
+
 import {
     getInternationalFormat,
     isValidPhonenumber
 } from "../../Helpers/PhoneLib";
+import TotalSplitHelper from "./TotalSplitHelper";
 
 const styles = {
     payButton: {
@@ -89,6 +90,7 @@ class RequestInquiry extends React.Component {
 
             // split amounts for targets
             splitAmounts: {},
+            splitRequest: true,
 
             // defines which type is used
             targetType: "CONTACT"
@@ -417,11 +419,15 @@ class RequestInquiry extends React.Component {
         const {
             selectedAccount,
             description,
+            descriptionError,
             targetType,
             allowBunqMe,
             amount,
             target,
-            targets
+            targetError,
+            targets,
+            splitAmounts,
+            splitRequest
         } = this.state;
         const t = this.props.t;
         if (!this.props.accounts[selectedAccount]) {
@@ -429,13 +435,15 @@ class RequestInquiry extends React.Component {
         }
         const account = this.props.accounts[selectedAccount];
 
+        const totalSplit = TotalSplitHelper(targets, splitAmounts);
+
         return (
             <Grid container spacing={24} align={"center"} justify={"center"}>
                 <Helmet>
                     <title>{`bunqDesktop - ${t("Pay")}`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={8} lg={6} xl={4}>
+                <Grid item xs={12} sm={10} lg={6} xl={4}>
                     <Paper style={styles.paper}>
                         <TypographyTranslate variant="headline">
                             Request Payment
@@ -449,10 +457,10 @@ class RequestInquiry extends React.Component {
                         />
 
                         <TargetSelection
-                            targetType={this.state.targetType}
-                            targets={this.state.targets}
-                            target={this.state.target}
-                            targetError={this.state.targetError}
+                            targetType={targetType}
+                            targets={targets}
+                            target={target}
+                            targetError={targetError}
                             validForm={this.state.validForm}
                             handleChangeDirect={this.handleChangeDirect}
                             handleChange={this.handleChange}
@@ -464,10 +472,10 @@ class RequestInquiry extends React.Component {
 
                         <TextField
                             fullWidth
-                            error={this.state.descriptionError}
+                            error={descriptionError}
                             id="description"
                             label={t("Description")}
-                            value={this.state.description}
+                            value={description}
                             onChange={this.handleChange("description")}
                         />
 
@@ -493,6 +501,7 @@ class RequestInquiry extends React.Component {
                         </FormControl>
                     </Paper>
 
+                    {this.state.splitRequest ? "split" : "don't split"}
                     <SplitAmountForm
                         t={t}
                         BunqJSClient={this.props.BunqJSClient}
@@ -554,7 +563,8 @@ class RequestInquiry extends React.Component {
                             color="primary"
                             disabled={
                                 !this.state.validForm ||
-                                this.props.requestInquiryLoading
+                                (this.props.requestInquiryLoading ||
+                                    (totalSplit <= 0 && splitRequest === true))
                             }
                             style={styles.payButton}
                             onClick={this.openModal}
@@ -573,8 +583,10 @@ class RequestInquiry extends React.Component {
                         allowBunqMe={allowBunqMe}
                         account={account}
                         amount={amount}
-                        target={target}
                         targets={targets}
+                        totalSplit={totalSplit}
+                        splitAmounts={splitAmounts}
+                        splitRequest={splitRequest}
                     />
                 </Grid>
             </Grid>
