@@ -15,6 +15,8 @@ class RuleCollectionItem extends React.Component {
 
     render() {
         const { ruleCollection, categories, t } = this.props;
+        if(!ruleCollection) return null;
+
         const categoryIds = ruleCollection.getCategories();
 
         // create a list of icons

@@ -36,10 +36,12 @@ const styles = {
         marginTop: 16
     },
     formControlAlt: {
-        marginBottom: 10
+        marginBottom: 10,
+        marginTop: 10
     },
     paper: {
         padding: 24,
+        marginBottom: 8,
         textAlign: "left"
     }
 };
@@ -489,17 +491,19 @@ class RequestInquiry extends React.Component {
                                 }}
                             />
                         </FormControl>
+                    </Paper>
 
-                        <SplitAmountForm
-                            t={t}
-                            BunqJSClient={this.props.BunqJSClient}
-                            account={account}
-                            targets={this.state.targets}
-                            splitAmounts={this.state.splitAmounts}
-                            amount={this.state.amount}
-                            setSplitCount={this.setSplitCount}
-                        />
+                    <SplitAmountForm
+                        t={t}
+                        BunqJSClient={this.props.BunqJSClient}
+                        account={account}
+                        targets={this.state.targets}
+                        splitAmounts={this.state.splitAmounts}
+                        amount={this.state.amount}
+                        setSplitCount={this.setSplitCount}
+                    />
 
+                    <Paper style={styles.paper}>
                         <FormControlLabel
                             control={
                                 <Switch
