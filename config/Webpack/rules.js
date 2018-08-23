@@ -30,15 +30,15 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
                 "sass-loader"
             ]
         },
-        {
-            test: /\.worker\.js$/,
-            use: [
-                "babel-loader",
-                {
-                    loader: "worker-loader",
-                    options: { inline: true, fallback: false }
-                }
-            ]
-        }
+        // {
+        //     test: /\.worker\.js$/,
+        //     use: [
+        //         "babel-loader",
+        //         {
+        //             loader: "worker-loader",
+        //             options: { inline: true, fallback: false }
+        //         }
+        //     ]
+        // }
     ];
 };

@@ -11,7 +11,7 @@ import RuleCollection, { EventObjectResult } from "../../Types/RuleCollection";
 import RuleCollectionPreviewItem from "./RuleCollectionPreviewItem";
 
 // import typed worker
-const RuleCollectionCheckWorker: any = require("../../WebWorkers/rule_collection_check.worker.js");
+const RuleCollectionCheckWorker: any = require("worker-loader!../../WebWorkers/rule_collection_check.worker.js");
 
 const styles = {
     toggleVisibilityButton: {
