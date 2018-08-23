@@ -2,7 +2,6 @@ import React from "react";
 import { connect } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
 import Hidden from "@material-ui/core/Hidden";
-const remote = require("electron").remote;
 import MenuIcon from "@material-ui/icons/Menu";
 import CloseIcon from "@material-ui/icons/Close";
 import RestoreIcon from "./CustomSVG/Restore";
@@ -11,6 +10,9 @@ import MinimizeIcon from "./CustomSVG/Minimize";
 
 import IsDarwin from "../Helpers/IsDarwin";
 import { openMainDrawer } from "../Actions/main_drawer";
+import Typography from "@material-ui/core/Typography/Typography";
+
+const remote = require("electron").remote;
 
 const buttonDefaultStyles = {
     color: "white",
@@ -48,7 +50,6 @@ const styles = {
         position: "fixed",
         width: "100%",
         top: 0,
-        zIndex: 10000,
         height: 50,
         zIndex: 1000,
         backgroundSize: "cover",
@@ -141,9 +142,25 @@ class Header extends React.Component {
             </React.Fragment>
         ) : null;
 
+        const developmentEnvWarning =
+            this.props.environment === "SANDBOX" ? (
+                <Typography
+                    style={{
+                        marginLeft: 53 + "px",
+                        lineHeight: styles.header.height + "px",
+                        fontSize: 11 + "pt"
+                    }}
+                >
+                    {t("Sandbox mode active")}
+                </Typography>
+            ) : (
+                ""
+            );
+
         return (
             <header style={styles.header}>
                 {wrappedButton}
+                {developmentEnvWarning}
                 {windowControls}
             </header>
         );
@@ -154,7 +171,8 @@ const mapStateToProps = store => {
     return {
         stickyMenu: store.options.sticky_menu,
         nativeFrame: store.options.native_frame,
-        minimizeToTray: store.options.minimize_to_tray
+        minimizeToTray: store.options.minimize_to_tray,
+        environment: store.registration.environment
     };
 };
 
@@ -165,4 +183,7 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Header);
