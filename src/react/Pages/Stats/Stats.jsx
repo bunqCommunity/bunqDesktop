@@ -36,7 +36,7 @@ import EventTypeSplitTransactionHistoryChart from "./Chart/Timeline/EventTypeSpl
 import EventTypeHistoryChart from "./Chart/Timeline/EventTypeHistoryChart";
 import EventTypeSplitHistoryChart from "./Chart/Timeline/EventTypeSplitHistoryChart";
 
-const StatsWorker = require("../../WebWorkers/stats.worker.js");
+const StatsWorker = require("worker-loader!../../WebWorkers/stats.worker.js");
 
 const ChartTitle = ({ children, t, ...rest }) => {
     return (
