@@ -2,7 +2,7 @@
 
 
 # bunqDesktop 
-![build status for master branch](https://api.travis-ci.org/bunqCommunity/bunqDesktop.svg?branch=master) 
+![build status for master branch](https://api.travis-ci.org/BunqCommunity/bunqDesktop.svg?branch=master) 
 [![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors)
 [![MIT License](https://img.shields.io/npm/l/all-contributors-cli.svg?style=flat-square)](https://github.com/bunqCommunity/bunqDesktop/blob/master/LICENSE)
 
