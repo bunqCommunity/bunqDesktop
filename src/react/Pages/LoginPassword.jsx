@@ -56,6 +56,9 @@ const styles = {
     },
     text: {
         color: "#000000"
+    },
+    capslockWarning: {
+        color: "#FF0000"
     }
 };
 
@@ -65,6 +68,7 @@ class LoginPassword extends React.Component {
         this.state = {
             password: "",
             passwordValid: false,
+            capslockWarningDisplay: "none",
 
             hasReadWarning: !!store.get("HAS_READ_DEV_WARNING2")
         };
@@ -100,6 +104,26 @@ class LoginPassword extends React.Component {
             password: targetValue
         });
         this.validateInputs(targetValue);
+    };
+
+    handleKeyEvent = event => {
+        if (this.isCapslockEnabled(event) === true) {
+            this.setState({ capslockWarningDisplay: "inline" });
+        } else {
+            this.setState({ capslockWarningDisplay: "none" });
+        }
+    };
+
+    isCapslockEnabled = event => {
+        return event.getModifierState("CapsLock");
+        // Code below if for some reason the getModifierState is not supported.
+        //
+        //        let keyCode = event.keyCode ? event.keyCode : event.which;
+        //        let shiftKey = event.shiftKey ? event.shiftKey : keyCode === 16;
+        //        return (
+        //            (keyCode >= 65 && keyCode <= 90 && !shiftKey) ||
+        //            (keyCode >= 97 && keyCode <= 122 && shiftKey)
+        //        );
     };
 
     validateInputs = password => {
@@ -152,11 +176,9 @@ class LoginPassword extends React.Component {
                     component="h2"
                     style={styles.text}
                 >
-                    {hasStoredApiKey ? (
-                        t("Enter your password")
-                    ) : (
-                        t("Enter a password")
-                    )}
+                    {hasStoredApiKey
+                        ? t("Enter your password")
+                        : t("Enter a password")}
                 </Typography>
 
                 <Input
@@ -168,6 +190,7 @@ class LoginPassword extends React.Component {
                     hint="A secure 7+ character password"
                     onChange={this.handlePasswordChange}
                     onKeyPress={ev => {
+                        this.handleKeyEvent(ev);
                         if (ev.key === "Enter" && buttonDisabled === false) {
                             this.setRegistration();
                             ev.preventDefault();
@@ -175,7 +198,14 @@ class LoginPassword extends React.Component {
                     }}
                     value={this.state.password}
                 />
-
+                <Typography
+                    style={{
+                        color: styles.capslockWarning.color,
+                        display: this.state.capslockWarningDisplay
+                    }}
+                >
+                    {t("Capslock active")}
+                </Typography>
                 <Grid
                     container
                     spacing={16}
@@ -304,6 +334,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(LoginPassword)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(LoginPassword));
