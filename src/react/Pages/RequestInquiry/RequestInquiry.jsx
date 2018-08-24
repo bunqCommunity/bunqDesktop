@@ -477,6 +477,7 @@ class RequestInquiry extends React.Component {
                             label={t("Description")}
                             value={description}
                             onChange={this.handleChange("description")}
+                            multiline={true}
                         />
 
                         <FormControl
