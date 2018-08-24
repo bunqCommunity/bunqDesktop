@@ -10,6 +10,13 @@ import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import IconButton from "@material-ui/core/IconButton";
+import InputLabel from "@material-ui/core/InputLabel";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import FormControl from "@material-ui/core/FormControl";
+
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
 import TranslateButton from "../Components/TranslationHelpers/Button";
 
@@ -56,6 +63,9 @@ const styles = {
     },
     text: {
         color: "#000000"
+    },
+    capslockWarning: {
+        color: "#FF0000"
     }
 };
 
@@ -65,6 +75,8 @@ class LoginPassword extends React.Component {
         this.state = {
             password: "",
             passwordValid: false,
+            showPassword: false,
+            capslockWarningDisplay: false,
 
             hasReadWarning: !!store.get("HAS_READ_DEV_WARNING2")
         };
@@ -100,6 +112,24 @@ class LoginPassword extends React.Component {
             password: targetValue
         });
         this.validateInputs(targetValue);
+    };
+
+    handleKeyEvent = event => {
+        if (this.isCapslockEnabled(event) === true) {
+            this.setState({ capslockWarningDisplay: true });
+        } else {
+            if (this.state.capslockWarningDisplay) {
+                this.setState({ capslockWarningDisplay: false });
+            }
+        }
+    };
+
+    isCapslockEnabled = event => {
+        return event.getModifierState("CapsLock");
+    };
+
+    toggleShowPassword = event => {
+        this.setState({ showPassword: !this.state.showPassword });
     };
 
     validateInputs = password => {
@@ -167,14 +197,41 @@ class LoginPassword extends React.Component {
                     label="Password"
                     hint="A secure 7+ character password"
                     onChange={this.handlePasswordChange}
+                    value={this.state.password}
                     onKeyPress={ev => {
+                        this.handleKeyEvent(ev);
                         if (ev.key === "Enter" && buttonDisabled === false) {
                             this.setRegistration();
                             ev.preventDefault();
                         }
                     }}
-                    value={this.state.password}
+                    type={this.state.showPassword ? "text" : "password"}
+                    endAdornment={
+                        <InputAdornment position="end">
+                            <IconButton
+                                aria-label="Toggle password visibility"
+                                onClick={this.toggleShowPassword}
+                                onMouseDown={this.toggleShowPassword}
+                            >
+                                {this.state.showPassword ? (
+                                    <VisibilityOff />
+                                ) : (
+                                    <Visibility />
+                                )}
+                            </IconButton>
+                        </InputAdornment>
+                    }
                 />
+
+                {this.state.capslockWarningDisplay ? (
+                    <Typography
+                        style={{
+                            color: styles.capslockWarning.color
+                        }}
+                    >
+                        {t("Capslock active")}
+                    </Typography>
+                ) : null}
 
                 <Grid
                     container
