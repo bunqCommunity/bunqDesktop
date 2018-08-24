@@ -52,11 +52,11 @@ after_script:
   - ls dist
   - |
     if [ "$TRAVIS_OS_NAME" == "osx" ]; then
-      find dist/bunqDesktop-*.* -type f -maxdepth 1 -print0  | xargs -0 shasum -a 256
       find dist/bunqDesktop-*.* -type f -maxdepth 1 -print0  | xargs -0 shasum -a 256 >> dist/CHECKSUMS_OSX.sha256
+      cat dist/CHECKSUMS_OSX.sha256
     else
-      sha256sum dist/bunqDesktop-*.*
       sha256sum dist/bunqDesktop-*.* >> dist/CHECKSUMS.sha256
+      cat dist/CHECKSUMS.sha256
     fi
 before_cache:
   - rm -rf $HOME/.cache/electron-builder/wine
