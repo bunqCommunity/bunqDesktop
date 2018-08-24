@@ -10,6 +10,13 @@ import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import IconButton from "@material-ui/core/IconButton";
+import InputLabel from "@material-ui/core/InputLabel";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import FormControl from "@material-ui/core/FormControl";
+
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
 import TranslateButton from "../Components/TranslationHelpers/Button";
 
@@ -68,7 +75,8 @@ class LoginPassword extends React.Component {
         this.state = {
             password: "",
             passwordValid: false,
-            capslockWarningDisplay: "none",
+            showPassword: false,
+            capslockWarningDisplay: false,
 
             hasReadWarning: !!store.get("HAS_READ_DEV_WARNING2")
         };
@@ -108,22 +116,20 @@ class LoginPassword extends React.Component {
 
     handleKeyEvent = event => {
         if (this.isCapslockEnabled(event) === true) {
-            this.setState({ capslockWarningDisplay: "inline" });
+            this.setState({ capslockWarningDisplay: true });
         } else {
-            this.setState({ capslockWarningDisplay: "none" });
+            if (this.state.capslockWarningDisplay) {
+                this.setState({ capslockWarningDisplay: false });
+            }
         }
     };
 
     isCapslockEnabled = event => {
         return event.getModifierState("CapsLock");
-        // Code below if for some reason the getModifierState is not supported.
-        //
-        //        let keyCode = event.keyCode ? event.keyCode : event.which;
-        //        let shiftKey = event.shiftKey ? event.shiftKey : keyCode === 16;
-        //        return (
-        //            (keyCode >= 65 && keyCode <= 90 && !shiftKey) ||
-        //            (keyCode >= 97 && keyCode <= 122 && shiftKey)
-        //        );
+    };
+
+    toggleShowPassword = event => {
+        this.setState({ showPassword: !this.state.showPassword });
     };
 
     validateInputs = password => {
@@ -176,9 +182,11 @@ class LoginPassword extends React.Component {
                     component="h2"
                     style={styles.text}
                 >
-                    {hasStoredApiKey
-                        ? t("Enter your password")
-                        : t("Enter a password")}
+                    {hasStoredApiKey ? (
+                        t("Enter your password")
+                    ) : (
+                        t("Enter a password")
+                    )}
                 </Typography>
 
                 <Input
@@ -189,6 +197,7 @@ class LoginPassword extends React.Component {
                     label="Password"
                     hint="A secure 7+ character password"
                     onChange={this.handlePasswordChange}
+                    value={this.state.password}
                     onKeyPress={ev => {
                         this.handleKeyEvent(ev);
                         if (ev.key === "Enter" && buttonDisabled === false) {
@@ -196,16 +205,34 @@ class LoginPassword extends React.Component {
                             ev.preventDefault();
                         }
                     }}
-                    value={this.state.password}
+                    type={this.state.showPassword ? "text" : "password"}
+                    endAdornment={
+                        <InputAdornment position="end">
+                            <IconButton
+                                aria-label="Toggle password visibility"
+                                onClick={this.toggleShowPassword}
+                                onMouseDown={this.toggleShowPassword}
+                            >
+                                {this.state.showPassword ? (
+                                    <VisibilityOff />
+                                ) : (
+                                    <Visibility />
+                                )}
+                            </IconButton>
+                        </InputAdornment>
+                    }
                 />
-                <Typography
-                    style={{
-                        color: styles.capslockWarning.color,
-                        display: this.state.capslockWarningDisplay
-                    }}
-                >
-                    {t("Capslock active")}
-                </Typography>
+
+                {this.state.capslockWarningDisplay ? (
+                    <Typography
+                        style={{
+                            color: styles.capslockWarning.color
+                        }}
+                    >
+                        {t("Capslock active")}
+                    </Typography>
+                ) : null}
+
                 <Grid
                     container
                     spacing={16}
@@ -334,7 +361,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(LoginPassword));
+export default connect(mapStateToProps, mapDispatchToProps)(
+    translate("translations")(LoginPassword)
+);
