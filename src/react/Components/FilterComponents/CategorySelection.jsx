@@ -82,32 +82,32 @@ class CategorySelection extends React.Component {
             );
         });
 
-        const categoryMenuItems = Object.keys(
-            categories
-        ).map((categoryId, key) => {
-            const category = categories[categoryId];
+        const categoryMenuItems = Object.keys(categories).map(
+            (categoryId, key) => {
+                const category = categories[categoryId];
 
-            // don't display already selected items
-            if (selectedCategories.includes(categoryId)) {
-                return null;
+                // don't display already selected items
+                if (selectedCategories.includes(categoryId)) {
+                    return null;
+                }
+
+                return (
+                    <MenuItem key={key} onClick={this.addCategory(categoryId)}>
+                        <ListItemIcon>
+                            <CustomIcon
+                                style={{
+                                    height: 24,
+                                    color: category.color
+                                }}
+                            >
+                                {category.icon}
+                            </CustomIcon>
+                        </ListItemIcon>
+                        {category.label}
+                    </MenuItem>
+                );
             }
-
-            return (
-                <MenuItem key={key} onClick={this.addCategory(categoryId)}>
-                    <ListItemIcon>
-                        <CustomIcon
-                            style={{
-                                height: 24,
-                                color: category.color
-                            }}
-                        >
-                            {category.icon}
-                        </CustomIcon>
-                    </ListItemIcon>
-                    {category.label}
-                </MenuItem>
-            );
-        });
+        );
 
         return (
             <React.Fragment>
@@ -118,9 +118,11 @@ class CategorySelection extends React.Component {
                         <Tooltip
                             placement="left"
                             title={t(
-                                `Click to ${this.props.toggleCategoryFilter
-                                    ? "include"
-                                    : "exclude"} the selected categories`
+                                `Click to ${
+                                    this.props.toggleCategoryFilter
+                                        ? "include"
+                                        : "exclude"
+                                } the selected categories`
                             )}
                         >
                             <IconButton
@@ -173,4 +175,7 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CategorySelection);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(CategorySelection);

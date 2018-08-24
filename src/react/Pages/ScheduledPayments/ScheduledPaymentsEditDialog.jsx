@@ -285,6 +285,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    ScheduledPaymentsEditDialog
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ScheduledPaymentsEditDialog);

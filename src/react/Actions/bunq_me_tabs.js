@@ -25,8 +25,7 @@ export function bunqMeTabsSetInfo(
 
 export function loadStoredBunqMeTabs(BunqJSClient) {
     return dispatch => {
-        BunqJSClient.Session
-            .loadEncryptedData(STORED_BUNQ_ME_TABS)
+        BunqJSClient.Session.loadEncryptedData(STORED_BUNQ_ME_TABS)
             .then(data => {
                 if (data && data.items) {
                     const bunqMeTabsNew = data.items.map(
@@ -35,8 +34,7 @@ export function loadStoredBunqMeTabs(BunqJSClient) {
                     dispatch(bunqMeTabsSetInfo(bunqMeTabsNew, data.account_id));
                 }
             })
-            .catch(error => {
-            });
+            .catch(error => {});
     };
 }
 
@@ -50,7 +48,9 @@ export function bunqMeTabsUpdate(
         older_id: false
     }
 ) {
-    const failedMessage = window.t("We failed to load the bunqme requests for this monetary account");
+    const failedMessage = window.t(
+        "We failed to load the bunqme requests for this monetary account"
+    );
 
     return dispatch => {
         dispatch(bunqMeTabsLoading());
@@ -72,11 +72,7 @@ export function bunqMeTabsUpdate(
             })
             .catch(error => {
                 dispatch(bunqMeTabsNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    failedMessage
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

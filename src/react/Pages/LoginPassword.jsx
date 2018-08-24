@@ -182,11 +182,9 @@ class LoginPassword extends React.Component {
                     component="h2"
                     style={styles.text}
                 >
-                    {hasStoredApiKey ? (
-                        t("Enter your password")
-                    ) : (
-                        t("Enter a password")
-                    )}
+                    {hasStoredApiKey
+                        ? t("Enter your password")
+                        : t("Enter a password")}
                 </Typography>
 
                 <Input
@@ -361,6 +359,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(LoginPassword)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(LoginPassword));

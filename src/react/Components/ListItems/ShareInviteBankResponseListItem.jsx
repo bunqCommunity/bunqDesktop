@@ -190,6 +190,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId))
     };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(ShareInviteBankResponseListItem)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(ShareInviteBankResponseListItem));

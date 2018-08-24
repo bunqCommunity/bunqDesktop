@@ -10,9 +10,11 @@ export default (
     let scheduledPaymentPrimary;
     const scheduledPaymentSecondary = `${t("From")}: ${humanReadableDate(
         scheduleStartDate
-    )} ${scheduleEndDate
-        ? ` - ${t("Until")}: ${humanReadableDate(scheduleEndDate)}`
-        : ""}`;
+    )} ${
+        scheduleEndDate
+            ? ` - ${t("Until")}: ${humanReadableDate(scheduleEndDate)}`
+            : ""
+    }`;
 
     const paymentDone = t("Payment will be done");
     const recurrenceMore = recurrenceSize > 1;
@@ -22,29 +24,29 @@ export default (
             scheduledPaymentPrimary = `${paymentDone} once`;
             break;
         case "HOURLY":
-            scheduledPaymentPrimary = `${paymentDone} every ${recurrenceMore
-                ? `${recurrenceSize} ${t("hours")}`
-                : t("hour")}`;
+            scheduledPaymentPrimary = `${paymentDone} every ${
+                recurrenceMore ? `${recurrenceSize} ${t("hours")}` : t("hour")
+            }`;
             break;
         case "DAILY":
-            scheduledPaymentPrimary = `${paymentDone} every ${recurrenceMore
-                ? `${recurrenceSize} ${t("days")}`
-                : t("day")}`;
+            scheduledPaymentPrimary = `${paymentDone} every ${
+                recurrenceMore ? `${recurrenceSize} ${t("days")}` : t("day")
+            }`;
             break;
         case "WEEKLY":
-            scheduledPaymentPrimary = `${paymentDone} every ${recurrenceMore
-                ? `${recurrenceSize} ${t("weeks")}`
-                : t("week")}`;
+            scheduledPaymentPrimary = `${paymentDone} every ${
+                recurrenceMore ? `${recurrenceSize} ${t("weeks")}` : t("week")
+            }`;
             break;
         case "MONTHLY":
-            scheduledPaymentPrimary = `${paymentDone} every ${recurrenceMore
-                ? `${recurrenceSize} ${t("months")}`
-                : t("month")}`;
+            scheduledPaymentPrimary = `${paymentDone} every ${
+                recurrenceMore ? `${recurrenceSize} ${t("months")}` : t("month")
+            }`;
             break;
         case "YEARLY":
-            scheduledPaymentPrimary = `${paymentDone} every ${recurrenceMore
-                ? `${recurrenceSize} ${t("years")}`
-                : t("year")}`;
+            scheduledPaymentPrimary = `${paymentDone} every ${
+                recurrenceMore ? `${recurrenceSize} ${t("years")}` : t("year")
+            }`;
             break;
     }
 

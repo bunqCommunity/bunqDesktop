@@ -185,4 +185,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoadOlderButton);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(LoadOlderButton);

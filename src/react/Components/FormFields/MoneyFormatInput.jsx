@@ -17,7 +17,7 @@ class MoneyFormatInput extends React.Component {
                 min={0}
                 style={{
                     fontSize: 30,
-                    ...this.props.theme.styles.moneyInput,
+                    ...this.props.theme.styles.moneyInput
                 }}
                 className="money-input"
                 decimalScale={2}

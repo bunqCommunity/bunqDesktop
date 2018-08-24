@@ -82,11 +82,9 @@ class SwitchApiKeys extends React.Component {
                     <ListItemText
                         primary={storedApiKey.device_name}
                         secondary={
-                            storedApiKey.environment === "SANDBOX" ? (
-                                t("Sandbox key")
-                            ) : (
-                                t("Production key")
-                            )
+                            storedApiKey.environment === "SANDBOX"
+                                ? t("Sandbox key")
+                                : t("Production key")
                         }
                     />
                     <ListItemSecondaryAction>
@@ -187,6 +185,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(SwitchApiKeys)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(SwitchApiKeys));

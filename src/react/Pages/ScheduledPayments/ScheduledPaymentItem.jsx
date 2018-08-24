@@ -103,7 +103,11 @@ class ScheduledPaymentItem extends React.Component {
                 </ListItem>
 
                 <ListItem>
-                    <ListItemText inset primary={nextPaymentText} secondary={description}/>
+                    <ListItemText
+                        inset
+                        primary={nextPaymentText}
+                        secondary={description}
+                    />
 
                     <ListItemSecondaryAction>
                         <IconButton

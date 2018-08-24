@@ -12,7 +12,7 @@ export function cardCvc2SetInfo(cvc2_codes, user_id, card_id) {
 }
 
 export function cardUpdateCvc2Codes(BunqJSClient, user_id, card_id) {
-    const failedMessage = window.t( "We failed to load the CVC codes");
+    const failedMessage = window.t("We failed to load the CVC codes");
 
     return dispatch => {
         dispatch(cardCvc2Loading());
@@ -26,20 +26,16 @@ export function cardUpdateCvc2Codes(BunqJSClient, user_id, card_id) {
                         ...cardCvc2Info,
                         created: new Date(cardCvc2Info.created),
                         updated: new Date(cardCvc2Info.updated),
-                        expiry_time: new Date(cardCvc2Info.expiry_time),
-                    }
+                        expiry_time: new Date(cardCvc2Info.expiry_time)
+                    };
                 });
 
-                dispatch(cardCvc2SetInfo(cardsCvc2Codes, user_id,card_id));
+                dispatch(cardCvc2SetInfo(cardsCvc2Codes, user_id, card_id));
                 dispatch(cardCvc2NotLoading());
             })
             .catch(error => {
                 dispatch(cardCvc2NotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    failedMessage
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

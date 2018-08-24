@@ -1,9 +1,7 @@
 export default (targets, splitAmounts) => {
     // get split from the personal account
     const accountSplit =
-        typeof splitAmounts.account !== "undefined"
-            ? splitAmounts.account
-            : 1;
+        typeof splitAmounts.account !== "undefined" ? splitAmounts.account : 1;
 
     // get the total split amount from all other targets
     const splitAmountsTotal = targets.reduce((accumulator, target) => {
@@ -16,4 +14,4 @@ export default (targets, splitAmounts) => {
     }, 0);
 
     return splitAmountsTotal + accountSplit;
-}
+};

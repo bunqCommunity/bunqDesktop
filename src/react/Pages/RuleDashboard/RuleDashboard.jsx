@@ -61,16 +61,14 @@ class RuleDashboard extends React.Component {
                 // parse a single category rule
                 this.importSingleRuleCollection(ruleCollectionObject);
             });
-
         } else if (ruleCollectionsReceived["category-rules"]) {
             // parse array inside category-rules key and loop through them
-            ruleCollectionsReceived[
-                "category-rules"
-            ].forEach(ruleCollectionObject => {
-                // parse a single category rule
-                this.importSingleRuleCollection(ruleCollectionObject);
-            });
-
+            ruleCollectionsReceived["category-rules"].forEach(
+                ruleCollectionObject => {
+                    // parse a single category rule
+                    this.importSingleRuleCollection(ruleCollectionObject);
+                }
+            );
         } else {
             // parse a single category rule
             this.importSingleRuleCollection(ruleCollectionsReceived);
@@ -105,15 +103,15 @@ class RuleDashboard extends React.Component {
     render() {
         const { categoryRules, categories, t } = this.props;
 
-        const categoryRulesList = Object.keys(
-            categoryRules
-        ).map(categoryRuleId => (
-            <RuleCollectionItem
-                ruleCollection={categoryRules[categoryRuleId]}
-                categories={categories}
-                t={t}
-            />
-        ));
+        const categoryRulesList = Object.keys(categoryRules).map(
+            categoryRuleId => (
+                <RuleCollectionItem
+                    ruleCollection={categoryRules[categoryRuleId]}
+                    categories={categories}
+                    t={t}
+                />
+            )
+        );
 
         return (
             <Grid container spacing={16}>
@@ -201,6 +199,7 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(RuleDashboard)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(RuleDashboard));

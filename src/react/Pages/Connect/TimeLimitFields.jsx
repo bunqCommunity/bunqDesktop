@@ -29,7 +29,8 @@ export default props => {
                                 onChange={e =>
                                     handleChangeDirect("setTimeLimit")(
                                         !props.setTimeLimit
-                                    )}
+                                    )
+                                }
                                 value="setBudget"
                                 color="primary"
                             />

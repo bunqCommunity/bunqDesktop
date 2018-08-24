@@ -1,6 +1,6 @@
 import store from "store";
 import localforage from "../ImportWrappers/localforage";
-import {ipcRenderer} from "electron";
+import { ipcRenderer } from "electron";
 import settings from "../ImportWrappers/electronSettings";
 
 // configure the localforage instance

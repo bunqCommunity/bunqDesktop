@@ -7,7 +7,6 @@ export default ({ style, data, name = null, ...rest }) => {
             style={style}
             src={data}
             name={name}
-
             theme="monokai"
             iconStyle="square"
             enableEdit={false}

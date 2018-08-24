@@ -65,7 +65,9 @@ log.transports.file.appName = "BunqDesktop";
 log.transports.file.level = "debug";
 log.transports.file.maxSize = 512 * 1024;
 log.transports.file.format = "{h}:{i}:{s}:{ms} {text}";
-log.transports.file.file = `${userDataPath}${path.sep}BunqDesktop.${env.name}.log.txt`;
+log.transports.file.file = `${userDataPath}${path.sep}BunqDesktop.${
+    env.name
+}.log.txt`;
 
 // hot reloading
 if (process.env.NODE_ENV === "development") {

@@ -151,4 +151,7 @@ AccountListItem.defaultProps = {
     shareInviteBankResponses: []
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AccountListItem);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AccountListItem);

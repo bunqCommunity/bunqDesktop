@@ -11,14 +11,13 @@ export default (state = defaultState, action) => {
         case "SHARE_INVITE_INQUIRIES_SET_INFO":
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
-                action.payload.BunqJSClient.Session
-                    .storeEncryptedData(
-                        {
-                            items: action.payload.share_invite_bank_inquiries,
-                            account_id: action.payload.account_id
-                        },
-                        STORED_SHARE_INVITE_BANK_INQUIRIES
-                    )
+                action.payload.BunqJSClient.Session.storeEncryptedData(
+                    {
+                        items: action.payload.share_invite_bank_inquiries,
+                        account_id: action.payload.account_id
+                    },
+                    STORED_SHARE_INVITE_BANK_INQUIRIES
+                )
                     .then(() => {})
                     .catch(() => {});
             }

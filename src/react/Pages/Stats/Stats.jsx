@@ -264,7 +264,8 @@ class Stats extends React.Component {
                 onChange={event =>
                     this.setState({
                         categoryTransactionType: event.target.value
-                    })}
+                    })
+                }
             >
                 <FormControlLabel
                     value="total"
@@ -294,62 +295,61 @@ class Stats extends React.Component {
                             }}
                         >
                             <ChartTitle t={t}>
-                                {this.state.displayTransactionAmount ? (
-                                    "Transaction amount"
-                                ) : (
-                                    "Event count"
-                                )}
+                                {this.state.displayTransactionAmount
+                                    ? "Transaction amount"
+                                    : "Event count"}
                             </ChartTitle>
 
-                            {this.state.displayTransactionAmount ? this.state
-                                .splitCardTypes ? (
-                                <EventSplitTransactionPieChart
-                                    theme={theme}
-                                    requestInquiryTransactionHistory={
-                                        data.requestInquiryTransactionHistory
-                                    }
-                                    requestResponseTransactionHistory={
-                                        data.requestResponseTransactionHistory
-                                    }
-                                    bunqMeTabTransactionHistory={
-                                        data.bunqMeTabTransactionHistory
-                                    }
-                                    paymentTransactionHistory={
-                                        data.paymentTransactionHistory
-                                    }
-                                    masterCardPaymentTransactionHistory={
-                                        data.masterCardPaymentTransactionHistory
-                                    }
-                                    maestroPaymentTransactionHistory={
-                                        data.maestroPaymentTransactionHistory
-                                    }
-                                    tapAndPayPaymentTransactionHistory={
-                                        data.tapAndPayPaymentTransactionHistory
-                                    }
-                                    applePayPaymentTransactionHistory={
-                                        data.applePayPaymentTransactionHistory
-                                    }
-                                />
-                            ) : (
-                                <EventTransactionPieChart
-                                    theme={theme}
-                                    payments={this.props.payments}
-                                    requestInquiryTransactionHistory={
-                                        data.requestInquiryTransactionHistory
-                                    }
-                                    requestResponseTransactionHistory={
-                                        data.requestResponseTransactionHistory
-                                    }
-                                    bunqMeTabTransactionHistory={
-                                        data.bunqMeTabTransactionHistory
-                                    }
-                                    paymentTransactionHistory={
-                                        data.paymentTransactionHistory
-                                    }
-                                    masterCardActionTransactionHistory={
-                                        data.masterCardActionTransactionHistory
-                                    }
-                                />
+                            {this.state.displayTransactionAmount ? (
+                                this.state.splitCardTypes ? (
+                                    <EventSplitTransactionPieChart
+                                        theme={theme}
+                                        requestInquiryTransactionHistory={
+                                            data.requestInquiryTransactionHistory
+                                        }
+                                        requestResponseTransactionHistory={
+                                            data.requestResponseTransactionHistory
+                                        }
+                                        bunqMeTabTransactionHistory={
+                                            data.bunqMeTabTransactionHistory
+                                        }
+                                        paymentTransactionHistory={
+                                            data.paymentTransactionHistory
+                                        }
+                                        masterCardPaymentTransactionHistory={
+                                            data.masterCardPaymentTransactionHistory
+                                        }
+                                        maestroPaymentTransactionHistory={
+                                            data.maestroPaymentTransactionHistory
+                                        }
+                                        tapAndPayPaymentTransactionHistory={
+                                            data.tapAndPayPaymentTransactionHistory
+                                        }
+                                        applePayPaymentTransactionHistory={
+                                            data.applePayPaymentTransactionHistory
+                                        }
+                                    />
+                                ) : (
+                                    <EventTransactionPieChart
+                                        theme={theme}
+                                        payments={this.props.payments}
+                                        requestInquiryTransactionHistory={
+                                            data.requestInquiryTransactionHistory
+                                        }
+                                        requestResponseTransactionHistory={
+                                            data.requestResponseTransactionHistory
+                                        }
+                                        bunqMeTabTransactionHistory={
+                                            data.bunqMeTabTransactionHistory
+                                        }
+                                        paymentTransactionHistory={
+                                            data.paymentTransactionHistory
+                                        }
+                                        masterCardActionTransactionHistory={
+                                            data.masterCardActionTransactionHistory
+                                        }
+                                    />
+                                )
                             ) : this.state.splitCardTypes ? (
                                 <EventSplitCountPieChart
                                     theme={theme}
@@ -400,12 +400,11 @@ class Stats extends React.Component {
                             }}
                         >
                             <ChartTitle t={t}>
-                                {this.state.displayTransactionAmount ? (
-                                    `Category ${this.state
-                                        .categoryTransactionType}`
-                                ) : (
-                                    "Category count"
-                                )}
+                                {this.state.displayTransactionAmount
+                                    ? `Category ${
+                                          this.state.categoryTransactionType
+                                      }`
+                                    : "Category count"}
                             </ChartTitle>
 
                             {this.state.displayTransactionAmount ? (
@@ -438,67 +437,70 @@ class Stats extends React.Component {
         const eventHistoryCharts = (
             <Paper>
                 <ChartTitle t={t}>
-                    {this.state.displayTransactionAmount ? (
-                        "Event transaction history"
-                    ) : (
-                        "Event history count"
-                    )}
+                    {this.state.displayTransactionAmount
+                        ? "Event transaction history"
+                        : "Event history count"}
                 </ChartTitle>
 
                 <div>
-                    {this.state.splitCardTypes ? this.state
-                        .displayTransactionAmount ? (
-                        <EventTypeSplitTransactionHistoryChart
-                            height={500}
-                            theme={theme}
-                            labels={data.labels}
-                            requestInquiryTransactionHistory={
-                                data.requestInquiryTransactionHistory
-                            }
-                            requestResponseTransactionHistory={
-                                data.requestResponseTransactionHistory
-                            }
-                            bunqMeTabTransactionHistory={
-                                data.bunqMeTabTransactionHistory
-                            }
-                            paymentTransactionHistory={
-                                data.paymentTransactionHistory
-                            }
-                            masterCardPaymentTransactionHistory={
-                                data.masterCardPaymentTransactionHistory
-                            }
-                            maestroPaymentTransactionHistory={
-                                data.maestroPaymentTransactionHistory
-                            }
-                            tapAndPayPaymentTransactionHistory={
-                                data.tapAndPayPaymentTransactionHistory
-                            }
-                            applePayPaymentTransactionHistory={
-                                data.applePayPaymentTransactionHistory
-                            }
-                        />
-                    ) : (
-                        <EventTypeSplitHistoryChart
-                            height={500}
-                            theme={theme}
-                            labels={data.labels}
-                            requestInquiryHistory={data.requestInquiryHistory}
-                            requestResponseHistory={data.requestResponseHistory}
-                            bunqMeTabHistory={data.bunqMeTabHistory}
-                            paymentHistory={data.paymentHistory}
-                            masterCardPaymentCountHistory={
-                                data.masterCardPaymentCountHistory
-                            }
-                            maestroPaymentCountHistory={
-                                data.maestroPaymentCountHistory
-                            }
-                            tapAndPayPaymentCountHistory={
-                                data.tapAndPayPaymentCountHistory
-                            }
-                            applePayPaymentCountHistory={
-                                data.applePayPaymentCountHistory
-                            }
-                        />
+                    {this.state.splitCardTypes ? (
+                        this.state.displayTransactionAmount ? (
+                            <EventTypeSplitTransactionHistoryChart
+                                height={500}
+                                theme={theme}
+                                labels={data.labels}
+                                requestInquiryTransactionHistory={
+                                    data.requestInquiryTransactionHistory
+                                }
+                                requestResponseTransactionHistory={
+                                    data.requestResponseTransactionHistory
+                                }
+                                bunqMeTabTransactionHistory={
+                                    data.bunqMeTabTransactionHistory
+                                }
+                                paymentTransactionHistory={
+                                    data.paymentTransactionHistory
+                                }
+                                masterCardPaymentTransactionHistory={
+                                    data.masterCardPaymentTransactionHistory
+                                }
+                                maestroPaymentTransactionHistory={
+                                    data.maestroPaymentTransactionHistory
+                                }
+                                tapAndPayPaymentTransactionHistory={
+                                    data.tapAndPayPaymentTransactionHistory
+                                }
+                                applePayPaymentTransactionHistory={
+                                    data.applePayPaymentTransactionHistory
+                                }
+                            />
+                        ) : (
+                            <EventTypeSplitHistoryChart
+                                height={500}
+                                theme={theme}
+                                labels={data.labels}
+                                requestInquiryHistory={
+                                    data.requestInquiryHistory
+                                }
+                                requestResponseHistory={
+                                    data.requestResponseHistory
+                                }
+                                bunqMeTabHistory={data.bunqMeTabHistory}
+                                paymentHistory={data.paymentHistory}
+                                masterCardPaymentCountHistory={
+                                    data.masterCardPaymentCountHistory
+                                }
+                                maestroPaymentCountHistory={
+                                    data.maestroPaymentCountHistory
+                                }
+                                tapAndPayPaymentCountHistory={
+                                    data.tapAndPayPaymentCountHistory
+                                }
+                                applePayPaymentCountHistory={
+                                    data.applePayPaymentCountHistory
+                                }
+                            />
+                        )
                     ) : this.state.displayTransactionAmount ? (
                         <EventTypeTransactionHistoryChart
                             height={500}
@@ -592,7 +594,8 @@ class Stats extends React.Component {
                                                 this.setState({
                                                     splitCardTypes:
                                                         event.target.checked
-                                                })}
+                                                })
+                                            }
                                         />
                                     }
                                     label="Split card types"
@@ -611,7 +614,8 @@ class Stats extends React.Component {
                                                 this.setState({
                                                     displayTransactionAmount:
                                                         event.target.checked
-                                                })}
+                                                })
+                                            }
                                         />
                                     }
                                     label="Transaction amount vs. event count"
@@ -755,11 +759,9 @@ class Stats extends React.Component {
                         <Grid item xs={12}>
                             <Paper>
                                 <ChartTitle t={t}>
-                                    {this.state.displayTransactionAmount ? (
-                                        "Category transaction history"
-                                    ) : (
-                                        "Category count history"
-                                    )}
+                                    {this.state.displayTransactionAmount
+                                        ? "Category transaction history"
+                                        : "Category count history"}
                                 </ChartTitle>
 
                                 <div>
@@ -850,6 +852,7 @@ const mapDispatchToProps = dispatch => {
     return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    withTheme()(translate("translations")(Stats))
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(withTheme()(translate("translations")(Stats)));

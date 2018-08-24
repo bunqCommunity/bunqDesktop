@@ -59,7 +59,9 @@ class RequestInquiryListItem extends React.Component {
             <ListItem
                 button
                 component={NavLink}
-                to={`/request-inquiry-info/${requestInquiry.id}/${requestInquiry.monetary_account_id}`}
+                to={`/request-inquiry-info/${requestInquiry.id}/${
+                    requestInquiry.monetary_account_id
+                }`}
             >
                 <Avatar style={styles.smallAvatar}>
                     <LazyAttachmentImage

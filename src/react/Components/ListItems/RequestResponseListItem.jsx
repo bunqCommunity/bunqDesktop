@@ -60,7 +60,9 @@ class RequestResponseListItem extends React.Component {
             <ListItem
                 button
                 component={NavLink}
-                to={`/request-response-info/${requestResponse.id}/${requestResponse.monetary_account_id}`}
+                to={`/request-response-info/${requestResponse.id}/${
+                    requestResponse.monetary_account_id
+                }`}
             >
                 <Avatar style={styles.smallAvatar}>
                     <LazyAttachmentImage

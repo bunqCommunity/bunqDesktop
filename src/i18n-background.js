@@ -53,7 +53,9 @@ const loadLocales = (url, options, callback, data) => {
 
     if (action === "LOAD") {
         try {
-            const locale = require("../src/react/Locales/" + language + ".json");
+            const locale = require("../src/react/Locales/" +
+                language +
+                ".json");
             callback(locale, { status: "200" });
         } catch (e) {
             console.error(e);
@@ -69,35 +71,33 @@ const loadLocales = (url, options, callback, data) => {
     }
 };
 
-i18n
-    .use(Backend)
-    .init({
-        // fallback to english
-        fallbackLng: "en",
+i18n.use(Backend).init({
+    // fallback to english
+    fallbackLng: "en",
 
-        // trigger save missing event only in dev mode
-        saveMissing: process.env.NODE_ENV === "development",
+    // trigger save missing event only in dev mode
+    saveMissing: process.env.NODE_ENV === "development",
 
-        // have a common namespace used around the full app
-        ns: ["translations"],
-        defaultNS: "translations",
+    // have a common namespace used around the full app
+    ns: ["translations"],
+    defaultNS: "translations",
 
-        // debug mode
-        debug: process.env.NODE_ENV === "development",
+    // debug mode
+    debug: process.env.NODE_ENV === "development",
 
-        backend: {
-            loadPath: "LOAD|{{lng}}",
-            addPath: "ADD|{{ns}}",
-            parse: data => data,
-            ajax: loadLocales
-        },
+    backend: {
+        loadPath: "LOAD|{{lng}}",
+        addPath: "ADD|{{ns}}",
+        parse: data => data,
+        ajax: loadLocales
+    },
 
-        interpolation: {
-            escapeValue: false // not needed for react!!
-        },
-        react: {
-            wait: true
-        }
-    });
+    interpolation: {
+        escapeValue: false // not needed for react!!
+    },
+    react: {
+        wait: true
+    }
+});
 
 export default i18n;

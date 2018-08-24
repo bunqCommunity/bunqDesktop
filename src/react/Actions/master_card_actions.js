@@ -26,8 +26,7 @@ export function masterCardActionsSetInfo(
 
 export function loadStoredMasterCardActions(BunqJSClient) {
     return dispatch => {
-        BunqJSClient.Session
-            .loadEncryptedData(STORED_MASTER_CARD_ACTIONS)
+        BunqJSClient.Session.loadEncryptedData(STORED_MASTER_CARD_ACTIONS)
             .then(data => {
                 if (data && data.items) {
                     // turn plain objects into Model objects

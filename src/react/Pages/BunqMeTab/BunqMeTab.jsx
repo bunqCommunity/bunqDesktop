@@ -48,7 +48,7 @@ class BunqMeTab extends React.Component {
     toggleForm = () => this.setState({ showForm: !this.state.showForm });
 
     render() {
-        const t=this.props.t;
+        const t = this.props.t;
         return (
             <Grid container spacing={16}>
                 <Helmet>
@@ -70,10 +70,7 @@ class BunqMeTab extends React.Component {
                 </Grid>
 
                 <Grid item xs={12} md={8} lg={6}>
-                    <Collapse
-                        in={this.state.showForm}
-                        unmountOnExit
-                    >
+                    <Collapse in={this.state.showForm} unmountOnExit>
                         <Paper style={styles.paper}>
                             <BunqMeTabForm
                                 BunqJSClient={this.props.BunqJSClient}
@@ -120,6 +117,7 @@ const mapDispatchToProps = (dispatch, props) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(BunqMeTab)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(BunqMeTab));

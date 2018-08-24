@@ -619,6 +619,7 @@ const mapDispatchToProps = (dispatch, props) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(RequestInquiry)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(RequestInquiry));

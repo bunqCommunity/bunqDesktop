@@ -31,8 +31,7 @@ export function contactsSetInfo(contacts, BunqJSClient = false) {
 
 export function loadStoredContacts(BunqJSClient) {
     return dispatch => {
-        BunqJSClient.Session
-            .loadEncryptedData(STORED_CONTACTS)
+        BunqJSClient.Session.loadEncryptedData(STORED_CONTACTS)
             .then(data => {
                 if (data && data.items) {
                     // turn plain objects into Model objects

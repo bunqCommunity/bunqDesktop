@@ -147,7 +147,8 @@ class CategoryDashboard extends React.Component {
                 <ExportDialog
                     title={t("Export categories")}
                     closeModal={() =>
-                        this.setState({ openExportDialog: false })}
+                        this.setState({ openExportDialog: false })
+                    }
                     open={this.state.openExportDialog}
                     object={this.props.categories}
                 />
@@ -155,7 +156,8 @@ class CategoryDashboard extends React.Component {
                 <ImportDialog
                     title={t("Import categories")}
                     closeModal={() =>
-                        this.setState({ openImportDialog: false })}
+                        this.setState({ openImportDialog: false })
+                    }
                     importData={this.importCategories}
                     open={this.state.openImportDialog}
                 />
@@ -166,7 +168,8 @@ class CategoryDashboard extends React.Component {
                         color="primary"
                         style={{ width: "100%" }}
                         onClick={() =>
-                            this.setState({ openExportDialog: true })}
+                            this.setState({ openExportDialog: true })
+                        }
                     >
                         Export
                     </ButtonTranslate>
@@ -177,7 +180,8 @@ class CategoryDashboard extends React.Component {
                         color="primary"
                         style={{ width: "100%" }}
                         onClick={() =>
-                            this.setState({ openImportDialog: true })}
+                            this.setState({ openImportDialog: true })
+                        }
                     >
                         Import
                     </ButtonTranslate>
@@ -222,7 +226,8 @@ class CategoryDashboard extends React.Component {
                                     onClick={e =>
                                         this.importCategories(
                                             this.state.defaultCategories
-                                        )}
+                                        )
+                                    }
                                     disabled={!this.state.defaultCategories}
                                 >
                                     Import default categories
@@ -257,6 +262,7 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(CategoryDashboard)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(CategoryDashboard));

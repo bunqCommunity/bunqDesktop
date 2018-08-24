@@ -181,7 +181,8 @@ class ScheduledPayments extends React.Component {
                                 ) : (
                                     <IconButton
                                         onClick={() =>
-                                            this.updateScheduledPayments()}
+                                            this.updateScheduledPayments()
+                                        }
                                     >
                                         <RefreshIcon />
                                     </IconButton>
@@ -234,6 +235,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(ScheduledPayments)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(ScheduledPayments));

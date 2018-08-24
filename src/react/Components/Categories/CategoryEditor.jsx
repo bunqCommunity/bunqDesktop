@@ -214,11 +214,9 @@ class CategoryEditor extends React.Component {
                         style={styles.button}
                         onClick={this.saveCategory}
                     >
-                        {this.props.selectedCategoryId ? (
-                            t("Update category")
-                        ) : (
-                            t("Add new category")
-                        )}
+                        {this.props.selectedCategoryId
+                            ? t("Update category")
+                            : t("Add new category")}
                     </TranslateButton>
                 </Grid>
             </Grid>
@@ -250,6 +248,7 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(CategoryEditor)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(CategoryEditor));

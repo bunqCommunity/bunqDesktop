@@ -35,7 +35,7 @@ export default function reducer(state = defaultState, action) {
                 });
 
                 // no existing found so we just push it to the end instead
-                if(foundExisting === false){
+                if (foundExisting === false) {
                     currentContacts.push(newContact);
                 }
             });
@@ -56,13 +56,12 @@ export default function reducer(state = defaultState, action) {
 
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
-                action.payload.BunqJSClient.Session
-                    .storeEncryptedData(
-                        {
-                            items: state.contacts
-                        },
-                        STORED_CONTACTS
-                    )
+                action.payload.BunqJSClient.Session.storeEncryptedData(
+                    {
+                        items: state.contacts
+                    },
+                    STORED_CONTACTS
+                )
                     .then(() => {})
                     .catch(() => {});
             }
@@ -78,13 +77,12 @@ export default function reducer(state = defaultState, action) {
 
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
-                action.payload.BunqJSClient.Session
-                    .storeEncryptedData(
-                        {
-                            items: contacts2
-                        },
-                        STORED_CONTACTS
-                    )
+                action.payload.BunqJSClient.Session.storeEncryptedData(
+                    {
+                        items: contacts2
+                    },
+                    STORED_CONTACTS
+                )
                     .then(() => {})
                     .catch(() => {});
             }
@@ -115,13 +113,12 @@ export default function reducer(state = defaultState, action) {
 
                 // store the data if we have access to the bunqjsclient
                 if (action.payload.BunqJSClient) {
-                    action.payload.BunqJSClient.Session
-                        .storeEncryptedData(
-                            {
-                                items: newState.contacts
-                            },
-                            STORED_CONTACTS
-                        )
+                    action.payload.BunqJSClient.Session.storeEncryptedData(
+                        {
+                            items: newState.contacts
+                        },
+                        STORED_CONTACTS
+                    )
                         .then(() => {})
                         .catch(() => {});
                 }
@@ -130,8 +127,9 @@ export default function reducer(state = defaultState, action) {
 
                 // remove the data completely
                 if (action.payload.BunqJSClient) {
-                    action.payload.BunqJSClient.Session
-                        .asyncStorageRemove(STORED_CONTACTS)
+                    action.payload.BunqJSClient.Session.asyncStorageRemove(
+                        STORED_CONTACTS
+                    )
                         .then(() => {})
                         .catch(() => {});
                 }

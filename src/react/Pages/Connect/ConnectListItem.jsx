@@ -66,30 +66,30 @@ export default class ConnectListItem extends React.Component {
                     ) : null}
                     <ListItem>
                         <ListItemText
-                            primary={`${paymentsText}: ${shareDetails.make_payments
-                                ? yesText
-                                : noText}`}
+                            primary={`${paymentsText}: ${
+                                shareDetails.make_payments ? yesText : noText
+                            }`}
                         />
                     </ListItem>
                     <ListItem>
                         <ListItemText
-                            primary={`${viewBalanceText}: ${shareDetails.view_balance
-                                ? yesText
-                                : noText}`}
+                            primary={`${viewBalanceText}: ${
+                                shareDetails.view_balance ? yesText : noText
+                            }`}
                         />
                     </ListItem>
                     <ListItem>
                         <ListItemText
-                            primary={`${viewNewEventsText}: ${shareDetails.view_new_events
-                                ? yesText
-                                : noText}`}
+                            primary={`${viewNewEventsText}: ${
+                                shareDetails.view_new_events ? yesText : noText
+                            }`}
                         />
                     </ListItem>
                     <ListItem>
                         <ListItemText
-                            primary={`${viewOldEventsText}: ${shareDetails.view_old_events
-                                ? yesText
-                                : noText}`}
+                            primary={`${viewOldEventsText}: ${
+                                shareDetails.view_old_events ? yesText : noText
+                            }`}
                         />
                     </ListItem>
                 </Collapse>
@@ -101,57 +101,58 @@ export default class ConnectListItem extends React.Component {
                 <Collapse in={this.state.open}>
                     <ListItem>
                         <ListItemText
-                            primary={`${paymentsText}: ${shareDetails.make_payments
-                                ? yesText
-                                : noText}`}
+                            primary={`${paymentsText}: ${
+                                shareDetails.make_payments ? yesText : noText
+                            }`}
                         />
                     </ListItem>
                     <ListItem>
                         <ListItemText
-                            primary={`${viewBalanceText}: ${shareDetails.view_balance
-                                ? yesText
-                                : noText}`}
+                            primary={`${viewBalanceText}: ${
+                                shareDetails.view_balance ? yesText : noText
+                            }`}
                         />
                     </ListItem>
                     <ListItem>
                         <ListItemText
-                            primary={`${viewNewEventsText}: ${shareDetails.view_new_events
-                                ? yesText
-                                : noText}`}
+                            primary={`${viewNewEventsText}: ${
+                                shareDetails.view_new_events ? yesText : noText
+                            }`}
                         />
                     </ListItem>
                 </Collapse>
             );
         } else if (connectInfo.share_detail.ShareDetailDraftPayment) {
-            const shareDetails = connectInfo.share_detail.ShareDetailDraftPayment;
+            const shareDetails =
+                connectInfo.share_detail.ShareDetailDraftPayment;
             detailItem = (
                 <Collapse in={this.state.open}>
                     <ListItem>
                         <ListItemText
-                            primary={`${makeDraftText}: ${shareDetails.make_payments
-                                ? yesText
-                                : noText}`}
+                            primary={`${makeDraftText}: ${
+                                shareDetails.make_payments ? yesText : noText
+                            }`}
                         />
                     </ListItem>
                     <ListItem>
                         <ListItemText
-                            primary={`${viewBalanceText}: ${shareDetails.view_balance
-                                ? yesText
-                                : noText}`}
+                            primary={`${viewBalanceText}: ${
+                                shareDetails.view_balance ? yesText : noText
+                            }`}
                         />
                     </ListItem>
                     <ListItem>
                         <ListItemText
-                            primary={`${viewNewEventsText}: ${shareDetails.view_new_events
-                                ? yesText
-                                : noText}`}
+                            primary={`${viewNewEventsText}: ${
+                                shareDetails.view_new_events ? yesText : noText
+                            }`}
                         />
                     </ListItem>
                     <ListItem>
                         <ListItemText
-                            primary={`${viewOldEventsText}: ${shareDetails.view_old_events
-                                ? yesText
-                                : noText}`}
+                            primary={`${viewOldEventsText}: ${
+                                shareDetails.view_old_events ? yesText : noText
+                            }`}
                         />
                     </ListItem>
                 </Collapse>

@@ -71,19 +71,18 @@ export default class ConfirmationDialog extends React.Component {
                         <ListItem>
                             <ListItemText
                                 primary={t("To") + ":"}
-                                secondary={`${account.description} ${account
-                                    .balance.value}`}
+                                secondary={`${account.description} ${
+                                    account.balance.value
+                                }`}
                             />
                         </ListItem>
                         <ListItem>
                             <ListItemText
                                 primary={t("Description")}
                                 secondary={
-                                    description.length <= 0 ? (
-                                        t("None")
-                                    ) : (
-                                        description
-                                    )
+                                    description.length <= 0
+                                        ? t("None")
+                                        : description
                                 }
                             />
                         </ListItem>

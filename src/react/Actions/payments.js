@@ -23,8 +23,7 @@ export function paymentsSetInfo(
 
 export function loadStoredPayments(BunqJSClient) {
     return dispatch => {
-        BunqJSClient.Session
-            .loadEncryptedData(STORED_PAYMENTS)
+        BunqJSClient.Session.loadEncryptedData(STORED_PAYMENTS)
             .then(data => {
                 if (data && data.items) {
                     // turn plain objects into Model objects

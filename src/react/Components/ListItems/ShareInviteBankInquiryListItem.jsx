@@ -79,12 +79,9 @@ class ShareInviteBankInquiryListItem extends React.Component {
 
         let imageUUID = false;
         if (aliasInfo.avatar) {
-            imageUUID =
-                aliasInfo.avatar.image[0]
-                    .attachment_public_uuid;
+            imageUUID = aliasInfo.avatar.image[0].attachment_public_uuid;
         }
-        const displayName =
-            aliasInfo.display_name;
+        const displayName = aliasInfo.display_name;
 
         const connectActions = (
             <React.Fragment>
@@ -169,6 +166,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId))
     };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(ShareInviteBankInquiryListItem)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(ShareInviteBankInquiryListItem));

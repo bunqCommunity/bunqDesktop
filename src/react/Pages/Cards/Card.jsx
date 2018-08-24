@@ -10,7 +10,7 @@ import Divider from "@material-ui/core/Divider";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListSubheader from "@material-ui/core/ListSubheader";
-import ListItemText  from "@material-ui/core/ListItemText";
+import ListItemText from "@material-ui/core/ListItemText";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
@@ -302,11 +302,9 @@ class Card extends React.Component {
                         onClick={this.cardUpdateCvc2Codes}
                         disabled={this.props.cvcLoading}
                     >
-                        {cvc2CodeList !== null ? (
-                            t("Update CVC Codes")
-                        ) : (
-                            t("View CVC Codes")
-                        )}
+                        {cvc2CodeList !== null
+                            ? t("Update CVC Codes")
+                            : t("View CVC Codes")}
                     </Button>
                     <TypographyTranslate
                         variant="caption"
@@ -406,6 +404,7 @@ const mapDispatchToProps = (dispatch, props) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(Card)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(Card));

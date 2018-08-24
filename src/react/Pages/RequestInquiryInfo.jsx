@@ -163,19 +163,19 @@ class RequestInquiryInfo extends React.Component {
                         </Typography>
 
                         <List style={styles.list}>
-                            {requestInquiry.description.length > 0 ? (
-                                [
-                                    <Divider />,
-                                    <ListItem>
-                                        <ListItemText
-                                            primary={"Description"}
-                                            secondary={
-                                                requestInquiry.description
-                                            }
-                                        />
-                                    </ListItem>
-                                ]
-                            ) : null}
+                            {requestInquiry.description.length > 0
+                                ? [
+                                      <Divider />,
+                                      <ListItem>
+                                          <ListItemText
+                                              primary={"Description"}
+                                              secondary={
+                                                  requestInquiry.description
+                                              }
+                                          />
+                                      </ListItem>
+                                  ]
+                                : null}
 
                             <Divider />
                             <ListItem>
@@ -252,7 +252,8 @@ class RequestInquiryInfo extends React.Component {
                 <Grid item xs={12} sm={2} lg={3} style={{ textAlign: "right" }}>
                     <ExportDialog
                         closeModal={event =>
-                            this.setState({ displayExport: false })}
+                            this.setState({ displayExport: false })
+                        }
                         title={t("Export info")}
                         open={this.state.displayExport}
                         object={exportData}
@@ -261,7 +262,8 @@ class RequestInquiryInfo extends React.Component {
                     <Button
                         style={styles.button}
                         onClick={event =>
-                            this.setState({ displayExport: true })}
+                            this.setState({ displayExport: true })
+                        }
                     >
                         <HelpIcon />
                     </Button>
@@ -305,6 +307,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(RequestInquiryInfo)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(RequestInquiryInfo));

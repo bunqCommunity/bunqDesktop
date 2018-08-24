@@ -118,7 +118,9 @@ export function registrationLoadApiKey(derivedPassword) {
                     dispatch(registrationClearPassword());
                     dispatch(openSnackbar(failedMessage));
                     Logger.error(
-                        `Failed to load API key: with length: ${decryptedString.length}`
+                        `Failed to load API key: with length: ${
+                            decryptedString.length
+                        }`
                     );
 
                     return;
@@ -185,7 +187,9 @@ export function registrationLoadStoredApiKey(
                     dispatch(registrationClearPassword());
                     dispatch(openSnackbar(failedMessage));
                     Logger.error(
-                        `Failed to load API key: with length: ${decryptedString.length}`
+                        `Failed to load API key: with length: ${
+                            decryptedString.length
+                        }`
                     );
 
                     return;

@@ -10,7 +10,7 @@ import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import FormControlLabel  from "@material-ui/core/FormControlLabel";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import CompareArrowsIcon from "@material-ui/icons/CompareArrows";
@@ -189,8 +189,12 @@ class TargetSelection extends React.Component {
                                     icon={<PersonIcon />}
                                     checkedIcon={<PersonIcon />}
                                     color={"secondary"}
-                                    checked={this.props.targetType === "CONTACT"}
-                                    onChange={this.props.setTargetType("CONTACT")}
+                                    checked={
+                                        this.props.targetType === "CONTACT"
+                                    }
+                                    onChange={this.props.setTargetType(
+                                        "CONTACT"
+                                    )}
                                     value="CONTACT"
                                     name="target-type-phone"
                                 />
@@ -291,6 +295,7 @@ TargetSelection.defaultProps = {
     disabledTypes: []
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(TargetSelection)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(TargetSelection));

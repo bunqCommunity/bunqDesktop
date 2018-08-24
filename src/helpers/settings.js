@@ -10,8 +10,7 @@ const settingsStoreFile = `SETTINGS_LOCATION`;
 // ensure bunqdesktop directory exists
 try {
     userDataDir.dir("./");
-} catch (err) {
-}
+} catch (err) {}
 
 const loadPath = () => {
     try {

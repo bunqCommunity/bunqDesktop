@@ -125,7 +125,7 @@ class CombinedList extends React.Component {
             amountFilterAmount: this.props.amountFilterAmount,
             amountFilterType: this.props.amountFilterType
         };
-    }
+    };
 
     paymentMapper = () => {
         if (this.props.hiddenTypes.includes("Payment")) return [];
@@ -631,6 +631,7 @@ CombinedList.defaultProps = {
     hiddenTypes: []
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(CombinedList)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(CombinedList));

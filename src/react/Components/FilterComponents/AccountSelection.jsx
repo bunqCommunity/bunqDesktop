@@ -129,9 +129,11 @@ class AccountSelection extends React.Component {
                         <Tooltip
                             placement="left"
                             title={t(
-                                `Click to ${this.props.toggleAccountIds
-                                    ? "include"
-                                    : "exclude"} the selected accounts`
+                                `Click to ${
+                                    this.props.toggleAccountIds
+                                        ? "include"
+                                        : "exclude"
+                                } the selected accounts`
                             )}
                         >
                             <IconButton
@@ -187,4 +189,7 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AccountSelection);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AccountSelection);

@@ -4,8 +4,8 @@ import { translate } from "react-i18next";
 import Helmet from "react-helmet";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
-import Input  from "@material-ui/core/Input";
-import InputLabel  from "@material-ui/core/InputLabel";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -180,7 +180,9 @@ class Settings extends React.Component {
 
     displayImportDialog = newPath => {
         this.setState({
-            importTargetLocation: `${newPath}${path.sep}BunqDesktopSettings.json`,
+            importTargetLocation: `${newPath}${
+                path.sep
+            }BunqDesktopSettings.json`,
             openImportDialog: true
         });
     };
@@ -269,13 +271,17 @@ class Settings extends React.Component {
                                         input={<Input id="theme-selection" />}
                                         style={styles.selectField}
                                     >
-                                        {Object.keys(
-                                            this.props.themeList
-                                        ).map(themeKey => (
-                                            <MenuItem value={themeKey}>
-                                                {humanReadableThemes[themeKey]}
-                                            </MenuItem>
-                                        ))}
+                                        {Object.keys(this.props.themeList).map(
+                                            themeKey => (
+                                                <MenuItem value={themeKey}>
+                                                    {
+                                                        humanReadableThemes[
+                                                            themeKey
+                                                        ]
+                                                    }
+                                                </MenuItem>
+                                            )
+                                        )}
                                     </Select>
                                 </FormControl>
                             </Grid>
@@ -535,7 +541,8 @@ class Settings extends React.Component {
                             <ButtonTranslate
                                 variant="raised"
                                 onClick={() =>
-                                    this.setState({ openImportDialog: false })}
+                                    this.setState({ openImportDialog: false })
+                                }
                             >
                                 Cancel
                             </ButtonTranslate>
@@ -615,6 +622,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(Settings)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(Settings));

@@ -1,4 +1,11 @@
-export const setCategory = (id = false, label, color, icon, priority = 5, options = {}) => {
+export const setCategory = (
+    id = false,
+    label,
+    color,
+    icon,
+    priority = 5,
+    options = {}
+) => {
     return {
         type: "CATEGORIES_SET_CATEGORY",
         payload: {
@@ -23,7 +30,7 @@ export const setCategoryConnection = (categoryId, itemType, itemId) => {
     };
 };
 
-export const setCategoryConnectionMultiple = (categoryConnections) => {
+export const setCategoryConnectionMultiple = categoryConnections => {
     return {
         type: "CATEGORIES_SET_CATEGORY_CONNECTION_MULTIPLE",
         payload: {
@@ -41,7 +48,11 @@ export const removeCategory = categoryId => {
     };
 };
 
-export const removeCategoryConnection = (categoryId, itemType = false, itemId = false) => {
+export const removeCategoryConnection = (
+    categoryId,
+    itemType = false,
+    itemId = false
+) => {
     return {
         type: "CATEGORIES_REMOVE_CATEGORY_CONNECTION",
         payload: {

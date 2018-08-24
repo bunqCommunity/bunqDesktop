@@ -31,7 +31,8 @@ export default ({
                     />
                 ) : (
                     componentHandler(props)
-                )}
+                )
+            }
         />
     );
 };

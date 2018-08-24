@@ -220,8 +220,7 @@ class Login extends React.Component {
         if (this.state.loadingQrCode === false) {
             this.setState({ loadingQrCode: true });
 
-            this.props.BunqJSClient
-                .createCredentials()
+            this.props.BunqJSClient.createCredentials()
                 .then(({ uuid, status, qr_base64 }) => {
                     this.setState({
                         loadingQrCode: false,
@@ -272,8 +271,9 @@ class Login extends React.Component {
     checkForScanEvent = () => {
         this.checkerInterval = setInterval(() => {
             if (this.state.requestUuid !== false) {
-                this.props.BunqJSClient
-                    .checkCredentialStatus(this.state.requestUuid)
+                this.props.BunqJSClient.checkCredentialStatus(
+                    this.state.requestUuid
+                )
                     .then(result => {
                         if (result.status === "ACCEPTED") {
                             this.setState(
@@ -418,9 +418,9 @@ class Login extends React.Component {
             // registration is loading
             this.props.registrationLoading === true;
 
-        const setApiKeyClassname = `black-button ${buttonDisabled
-            ? "disabled"
-            : ""}`;
+        const setApiKeyClassname = `black-button ${
+            buttonDisabled ? "disabled" : ""
+        }`;
 
         const sandboxButtonDisabled =
             // user info is already being loaded
@@ -443,8 +443,9 @@ class Login extends React.Component {
                         ) : (
                             <img
                                 className="animated fadeIn"
-                                src={`data:image/png;base64, ${this.state
-                                    .requestQrCodeBase64}`}
+                                src={`data:image/png;base64, ${
+                                    this.state.requestQrCodeBase64
+                                }`}
                                 style={styles.qrCode}
                             />
                         )}
@@ -485,11 +486,9 @@ class Login extends React.Component {
                         onClick={this.toggleOptionVisibility}
                         style={styles.optionsButton}
                     >
-                        {this.state.openOptions ? (
-                            t("Less options")
-                        ) : (
-                            t("More options")
-                        )}
+                        {this.state.openOptions
+                            ? t("Less options")
+                            : t("More options")}
                     </Button>
 
                     <Collapse in={this.state.openOptions}>
@@ -699,6 +698,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(Login)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(Login));

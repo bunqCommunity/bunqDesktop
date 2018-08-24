@@ -33,8 +33,9 @@ class AccountQRCode extends React.Component {
 
         if (currentAccount === false) return null;
 
-        const value = `https://qr.bunq.com/2/8/${currentAccount.avatar
-            .anchor_uuid}`;
+        const value = `https://qr.bunq.com/2/8/${
+            currentAccount.avatar.anchor_uuid
+        }`;
 
         return (
             <QRCode

@@ -92,7 +92,7 @@ const mapStateToProps = state => {
         user: state.user.user,
         bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
         bunqMeTabLoading: state.bunq_me_tab.loading,
-        bunqMeTabsLoading: state.bunq_me_tabs.loading,
+        bunqMeTabsLoading: state.bunq_me_tabs.loading
     };
 };
 
@@ -111,4 +111,7 @@ BunqMeTabList.defaultProps = {
     secondaryActions: null
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(BunqMeTabList);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(BunqMeTabList);

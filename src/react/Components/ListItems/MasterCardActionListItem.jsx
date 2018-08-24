@@ -55,7 +55,9 @@ class MasterCardActionListItem extends React.Component {
             <ListItem
                 button
                 component={NavLink}
-                to={`/mastercard-action-info/${masterCardAction.id}/${masterCardAction.monetary_account_id}`}
+                to={`/mastercard-action-info/${masterCardAction.id}/${
+                    masterCardAction.monetary_account_id
+                }`}
             >
                 <Avatar style={styles.smallAvatar}>
                     <LazyAttachmentImage

@@ -624,9 +624,9 @@ class Pay extends React.Component {
                         const targetAccountInfo = this.props.accounts[
                             targetItem.value
                         ];
-                        primaryText = `${t(
-                            "Transfer"
-                        )}: ${targetAccountInfo.description}`;
+                        primaryText = `${t("Transfer")}: ${
+                            targetAccountInfo.description
+                        }`;
                         break;
                 }
 
@@ -653,18 +653,18 @@ class Pay extends React.Component {
                             <ListItem>
                                 <ListItemText
                                     primary={t("From")}
-                                    secondary={`${account.description} ${accountBalance}`}
+                                    secondary={`${
+                                        account.description
+                                    } ${accountBalance}`}
                                 />
                             </ListItem>
                             <ListItem>
                                 <ListItemText
                                     primary={t("Description")}
                                     secondary={
-                                        description.length <= 0 ? (
-                                            "None"
-                                        ) : (
-                                            description
-                                        )
+                                        description.length <= 0
+                                            ? "None"
+                                            : description
                                     }
                                 />
                             </ListItem>
@@ -928,6 +928,7 @@ const mapDispatchToProps = (dispatch, props) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(Pay)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(Pay));

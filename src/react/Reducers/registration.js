@@ -3,7 +3,7 @@ import {
     SALT_LOCATION,
     API_KEY_IV_LOCATION,
     API_KEY_LOCATION,
-    API_KEYS_LOCATION,
+    API_KEYS_LOCATION
 } from "../Actions/registration";
 
 export const USE_NO_PASSWORD_LOCATION = "USE_NO_PASSWORD_LOCATION";

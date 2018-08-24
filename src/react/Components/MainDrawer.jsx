@@ -184,8 +184,9 @@ class MainDrawer extends React.Component {
                         </ListItemIcon>
                         <ListItemText
                             primary="bunqDesktop"
-                            secondary={`${t("Version")} ${process.env
-                                .CURRENT_VERSION}`}
+                            secondary={`${t("Version")} ${
+                                process.env.CURRENT_VERSION
+                            }`}
                         />
                     </ListItem>
                 </NavLink>
@@ -283,7 +284,8 @@ MainDrawer.propTypes = {
 };
 
 export default withStyles(styles, { withTheme: true })(
-    connect(mapStateToProps, mapDispatchToProps)(
-        translate("translations")(MainDrawer)
-    )
+    connect(
+        mapStateToProps,
+        mapDispatchToProps
+    )(translate("translations")(MainDrawer))
 );

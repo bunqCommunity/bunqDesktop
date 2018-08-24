@@ -39,7 +39,7 @@ class SplitAmountForm extends React.Component {
         if (targets.length === 0) return null;
         if (!amount) return null;
 
-        const totalSplit = TotalSplitHelper(targets,splitAmounts);
+        const totalSplit = TotalSplitHelper(targets, splitAmounts);
 
         const splitAmountItems = targets.map(target => {
             return (

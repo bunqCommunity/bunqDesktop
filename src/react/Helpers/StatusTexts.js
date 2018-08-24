@@ -75,19 +75,19 @@ export const masterCardActionText = (masterCardAction, t) => {
                 t
             )}`;
         case "BLOCKED":
-            return `${t(
-                "The payment was blocked due to "
-            )}${masterCardAction.decision_description}`;
+            return `${t("The payment was blocked due to ")}${
+                masterCardAction.decision_description
+            }`;
         case "CLEARING_REFUND":
-            return `${t(
-                "Payment was refunded due to "
-            )}${masterCardAction.decision_description}`;
+            return `${t("Payment was refunded due to ")}${
+                masterCardAction.decision_description
+            }`;
         case "REVERSED":
             return t("The payment was reversed");
         default:
-            return `${t(
-                "The payment currently has the status "
-            )}${masterCardAction.authorisation_status} - ${masterCardAction.authorisation_type}`;
+            return `${t("The payment currently has the status ")}${
+                masterCardAction.authorisation_status
+            } - ${masterCardAction.authorisation_type}`;
     }
 };
 

@@ -238,11 +238,9 @@ class AccountList extends React.Component {
                     <ListItemText
                         primary={`${t("Accounts")}: ${accounts.length}`}
                         secondary={
-                            this.props.hideBalance ? (
-                                ""
-                            ) : (
-                                `${t("Balance")}: ${formattedTotalBalance}`
-                            )
+                            this.props.hideBalance
+                                ? ""
+                                : `${t("Balance")}: ${formattedTotalBalance}`
                         }
                     />
                     <ListItemSecondaryAction>
@@ -336,6 +334,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(AccountList)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(AccountList));

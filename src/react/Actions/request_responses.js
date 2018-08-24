@@ -25,8 +25,7 @@ export function requestResponsesSetInfo(
 
 export function loadStoredRequestResponses(BunqJSClient) {
     return dispatch => {
-        BunqJSClient.Session
-            .loadEncryptedData(STORED_REQUEST_RESPONSES)
+        BunqJSClient.Session.loadEncryptedData(STORED_REQUEST_RESPONSES)
             .then(data => {
                 if (data && data.items) {
                     const newRequestResponses = data.items.map(

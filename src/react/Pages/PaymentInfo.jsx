@@ -179,17 +179,17 @@ class PaymentInfo extends React.Component {
                         </Typography>
 
                         <List style={styles.list}>
-                            {paymentDescription.length > 0 ? (
-                                [
-                                    <Divider />,
-                                    <ListItem>
-                                        <ListItemText
-                                            primary={t("Description")}
-                                            secondary={paymentDescription}
-                                        />
-                                    </ListItem>
-                                ]
-                            ) : null}
+                            {paymentDescription.length > 0
+                                ? [
+                                      <Divider />,
+                                      <ListItem>
+                                          <ListItemText
+                                              primary={t("Description")}
+                                              secondary={paymentDescription}
+                                          />
+                                      </ListItem>
+                                  ]
+                                : null}
 
                             <Divider />
                             <ListItem>
@@ -274,7 +274,8 @@ class PaymentInfo extends React.Component {
 
                 <ExportDialog
                     closeModal={event =>
-                        this.setState({ displayExport: false })}
+                        this.setState({ displayExport: false })
+                    }
                     title={t("Export info")}
                     open={this.state.displayExport}
                     object={exportData}
@@ -318,6 +319,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(PaymentInfo)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(PaymentInfo));

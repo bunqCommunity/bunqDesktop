@@ -271,6 +271,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(userLogin(BunqJSClient, type, updated))
     };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(Dashboard)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(Dashboard));

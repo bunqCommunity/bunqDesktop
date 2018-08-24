@@ -29,14 +29,13 @@ export default (state = defaultState, action) => {
 
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
-                action.payload.BunqJSClient.Session
-                    .storeEncryptedData(
-                        {
-                            items: mergedInfo.items,
-                            account_id: action.payload.account_id
-                        },
-                        STORED_REQUEST_RESPONSES
-                    )
+                action.payload.BunqJSClient.Session.storeEncryptedData(
+                    {
+                        items: mergedInfo.items,
+                        account_id: action.payload.account_id
+                    },
+                    STORED_REQUEST_RESPONSES
+                )
                     .then(() => {})
                     .catch(() => {});
             }

@@ -2,8 +2,7 @@ import React from "react";
 import localforage from "../../ImportWrappers/localforage";
 import Logger from "../../Helpers/Logger";
 
-const defaultImageUrl =
-    "./images/default-avatar.svg";
+const defaultImageUrl = "./images/default-avatar.svg";
 
 class AttachmentImage extends React.PureComponent {
     constructor(props, context) {

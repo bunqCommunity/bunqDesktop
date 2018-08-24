@@ -25,8 +25,7 @@ export function requestInquiriesSetInfo(
 
 export function loadStoredRequestInquiries(BunqJSClient) {
     return dispatch => {
-        BunqJSClient.Session
-            .loadEncryptedData(STORED_REQUEST_INQUIRIES)
+        BunqJSClient.Session.loadEncryptedData(STORED_REQUEST_INQUIRIES)
             .then(data => {
                 if (data && data.items) {
                     const newRequestInquiries = data.items.map(
