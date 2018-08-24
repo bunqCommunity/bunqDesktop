@@ -52,9 +52,11 @@ after_script:
   - ls dist
   - |
     if [ "$TRAVIS_OS_NAME" == "osx" ]; then
-      find dist -type f -maxdepth 1 -print0  | xargs -0 shasum -a 256
+      find dist/bunqDesktop-*.* -type f -maxdepth 1 -print0  | xargs -0 shasum -a 256
+      find dist/bunqDesktop-*.* -type f -maxdepth 1 -print0  | xargs -0 shasum -a 256 >> dist/CHECKSUMS_OSX.sha256
     else
-      sha256sum dist/*
+      sha256sum dist/bunqDesktop-*.*
+      sha256sum dist/bunqDesktop-*.* >> dist/CHECKSUMS.sha256
     fi
 before_cache:
   - rm -rf $HOME/.cache/electron-builder/wine
@@ -77,17 +79,16 @@ deploy:
       secure: fuXvloxR1qV4Xj8PecoF8gmQHCPukRF3nR7+szuHsoumUusyko0N5QbItdIfYTwpV9pIGwujV5mB0Ya/CKQzILkdlXo+cJzpCvFGJ1Q9wKk9hwLnouOiyF3wsagia8dpX4iLzVEATu4+LM3jol+KlXLGl8OxkGIy5Vifbd5GTbEiSrTxT9cF48/0ubgf/9rjjJyo5exuE30pRLs+m9cqnCSwgwcH6368OfYOlbRSgtGtzR9eEoGlqiNk2UHGmZUwy8dqOhid+meM7IGXwPjua8hrp1/nc/k8+UcwQxxly8xjp8bib6ier+2GbfbwxHiPWUtKFHoNzJlGWfj6xahz6fPL412HGeWVCrbVJcI3bTb/Ed1EjsjQyr4rUwvFnGitzRQAYqg/s2tpl4mVFPYyLgVMnlqiGNMkAaGfqYgErwdCkaYTtWGmLdIUkDsPMCSc4hOlajWNlb2n/ArYHOCmD+KC1KJ8hsJTxXQWD9Tfv5JBKd8g+63YIS+YEifUsxa9W4UhtODsPwBBcot/m4EH1FJS7wsticqB7rbkVq2iiMLWWMOImX47FSBqFG/0ioeWFayLIuDz+Ulvska/Nz4+R0tCQc4t1l1FDT56WI54H4KE2oYIQ8Y3U304mS6URhVRN+561HwzxVJA4halN30H4aOQjhjm5LW1e4PcSRiRalo=
     file_glob: true
     file:
-      - dist/bunqDesktop Setup *.exe
+      - dist/bunqDesktop-*.exe
       - dist/bunqDesktop-*.dmg
-      - dist/bunqdesktop_*_amd64.deb
-      - dist/bunqdesktop_*_i386.deb
-      - dist/bunqdesktop_*_amd64.snap
-      - dist/bunqdesktop-*-x86_64.AppImage
-      - dist/bunqdesktop-*-i386.AppImage
+      - dist/bunqdesktop-*.deb
+      - dist/bunqdesktop-*.snap
+      - dist/bunqdesktop-*.AppImage
       - dist/linux-unpacked.tar.gz
+      - dist/CHECKSUMS*.sha256
     on:
       all_branches: true
-      condition: $TRAVIS_TAG || $TRAVIS_BRANCH == 'release'
+      condition: $TRAVIS_BRANCH == 'release'
   - provider: releases
     overwrite: true
     tag_name: snapshot
@@ -98,14 +99,13 @@ deploy:
       secure: fuXvloxR1qV4Xj8PecoF8gmQHCPukRF3nR7+szuHsoumUusyko0N5QbItdIfYTwpV9pIGwujV5mB0Ya/CKQzILkdlXo+cJzpCvFGJ1Q9wKk9hwLnouOiyF3wsagia8dpX4iLzVEATu4+LM3jol+KlXLGl8OxkGIy5Vifbd5GTbEiSrTxT9cF48/0ubgf/9rjjJyo5exuE30pRLs+m9cqnCSwgwcH6368OfYOlbRSgtGtzR9eEoGlqiNk2UHGmZUwy8dqOhid+meM7IGXwPjua8hrp1/nc/k8+UcwQxxly8xjp8bib6ier+2GbfbwxHiPWUtKFHoNzJlGWfj6xahz6fPL412HGeWVCrbVJcI3bTb/Ed1EjsjQyr4rUwvFnGitzRQAYqg/s2tpl4mVFPYyLgVMnlqiGNMkAaGfqYgErwdCkaYTtWGmLdIUkDsPMCSc4hOlajWNlb2n/ArYHOCmD+KC1KJ8hsJTxXQWD9Tfv5JBKd8g+63YIS+YEifUsxa9W4UhtODsPwBBcot/m4EH1FJS7wsticqB7rbkVq2iiMLWWMOImX47FSBqFG/0ioeWFayLIuDz+Ulvska/Nz4+R0tCQc4t1l1FDT56WI54H4KE2oYIQ8Y3U304mS6URhVRN+561HwzxVJA4halN30H4aOQjhjm5LW1e4PcSRiRalo=
     file_glob: true
     file:
-      - dist/bunqDesktop Setup *.exe
+      - dist/bunqDesktop-*.exe
       - dist/bunqDesktop-*.dmg
-      - dist/bunqdesktop_*_amd64.deb
-      - dist/bunqdesktop_*_i386.deb
-      - dist/bunqdesktop_*_amd64.snap
-      - dist/bunqdesktop-*-x86_64.AppImage
-      - dist/bunqdesktop-*-i386.AppImage
+      - dist/bunqdesktop-*.deb
+      - dist/bunqdesktop-*.snap
+      - dist/bunqdesktop-*.AppImage
       - dist/linux-unpacked.tar.gz
+      - dist/CHECKSUMS*.sha256
     on:
       all_branches: true
       condition: $TRAVIS_EVENT_TYPE == 'cron'

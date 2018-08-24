@@ -34,6 +34,7 @@
         "update-release-files": "node tasks/update_release_files.js"
     },
     "build": {
+        "artifactName": "${productName}-${version}-${arch}.${ext}",
         "appId": "com.bunqdesktop",
         "files": [
             "app/**/*",
