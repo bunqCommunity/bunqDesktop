@@ -2,15 +2,16 @@ import React from "react";
 import { connect } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
 import Hidden from "@material-ui/core/Hidden";
+
 import MenuIcon from "@material-ui/icons/Menu";
 import CloseIcon from "@material-ui/icons/Close";
 import RestoreIcon from "./CustomSVG/Restore";
 import MaximizeIcon from "./CustomSVG/Maximize";
 import MinimizeIcon from "./CustomSVG/Minimize";
+import TranslateTypography from "./TranslationHelpers/Typography";
 
 import IsDarwin from "../Helpers/IsDarwin";
 import { openMainDrawer } from "../Actions/main_drawer";
-import Typography from "@material-ui/core/Typography/Typography";
 
 const remote = require("electron").remote;
 
@@ -144,18 +145,16 @@ class Header extends React.Component {
 
         const developmentEnvWarning =
             this.props.environment === "SANDBOX" ? (
-                <Typography
+                <TranslateTypography
                     style={{
-                        marginLeft: 53 + "px",
-                        lineHeight: styles.header.height + "px",
-                        fontSize: 11 + "pt"
+                        marginLeft: 53,
+                        lineHeight: `${styles.header.height}px`,
+                        fontSize: "11pt"
                     }}
                 >
-                    {t("Sandbox mode active")}
-                </Typography>
-            ) : (
-                ""
-            );
+                    Sandbox mode active
+                </TranslateTypography>
+            ) : null;
 
         return (
             <header style={styles.header}>
