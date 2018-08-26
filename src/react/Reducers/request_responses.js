@@ -1,3 +1,4 @@
+import store from "store";
 import MergeApiObjects from "../Helpers/MergeApiObjects";
 
 import { STORED_REQUEST_RESPONSES } from "../Actions/request_responses";
@@ -64,6 +65,7 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_LOG_OUT":
         case "REGISTRATION_CLEAR_PRIVATE_DATA":
         case "REGISTRATION_CLEAR_USER_INFO":
+            store.remove(STORED_REQUEST_RESPONSES);
             return {
                 request_responses: [],
                 account_id: false,

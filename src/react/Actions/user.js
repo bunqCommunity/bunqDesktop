@@ -1,3 +1,4 @@
+import store from "store";
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { accountsClear } from "./accounts";
 import { paymentInfoClear } from "./payment_info";
@@ -5,14 +6,29 @@ import { paymentsClear } from "./payments";
 import { requestResponseClear } from "./request_response_info";
 import { requestInquiryClear } from "./request_inquiry_info";
 import { bunqMeTabsClear } from "./bunq_me_tabs";
+import { registrationClearUserInfo } from "./registration";
+
+const USER_ID_LOCATION = "BUNQDESKTOP_USER_ID";
 
 export function userSetInfo(user, type) {
-    return {
-        type: "USER_SET_INFO",
-        payload: {
-            user: user,
-            user_type: type
+    return dispatch => {
+        const storedUserId = store.get(USER_ID_LOCATION);
+
+        // check if a previous id was stored and check if id is different
+        if (storedUserId && user.id !== storedUserId) {
+            dispatch(registrationClearUserInfo());
         }
+
+        // set new user id in localStorage
+        store.set(USER_ID_LOCATION, user.id);
+
+        dispatch({
+            type: "USER_SET_INFO",
+            payload: {
+                user: user,
+                user_type: type
+            }
+        });
     };
 }
 

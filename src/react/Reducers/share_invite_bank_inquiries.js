@@ -1,3 +1,4 @@
+import store from "store";
 import { STORED_SHARE_INVITE_BANK_INQUIRIES } from "../Actions/share_invite_bank_inquiries";
 
 export const defaultState = {
@@ -45,6 +46,7 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_CLEAR_PRIVATE_DATA":
         case "REGISTRATION_LOG_OUT":
         case "REGISTRATION_CLEAR_USER_INFO":
+            store.remove(STORED_SHARE_INVITE_BANK_INQUIRIES);
             return {
                 ...defaultState
             };
