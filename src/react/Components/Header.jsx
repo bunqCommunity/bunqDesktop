@@ -149,7 +149,8 @@ class Header extends React.Component {
                     style={{
                         marginLeft: 53,
                         lineHeight: `${styles.header.height}px`,
-                        fontSize: "11pt"
+                        fontSize: "11pt",
+                        textAlign: "center"
                     }}
                 >
                     Sandbox mode active

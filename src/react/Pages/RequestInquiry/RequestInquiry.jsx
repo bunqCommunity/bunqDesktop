@@ -9,8 +9,8 @@ import Paper from "@material-ui/core/Paper";
 import Collapse from "@material-ui/core/Collapse";
 import Switch from "@material-ui/core/Switch";
 import FormControl from "@material-ui/core/FormControl";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 
+import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
 import TargetSelection from "../../Components/FormFields/TargetSelection";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
@@ -18,6 +18,7 @@ import RedirectUrl from "../../Components/FormFields/RedirectUrl";
 import TypographyTranslate from "../../Components/TranslationHelpers/Typography";
 import ButtonTranslate from "../../Components/TranslationHelpers/Button";
 import ConfirmationDialog from "./ConfirmationDialog";
+
 import SplitAmountForm from "./SplitAmountForm";
 import MinimumAge from "./Options/MinimumAge";
 import AllowBunqMe from "./Options/AllowBunqMe";
@@ -33,8 +34,7 @@ import TotalSplitHelper from "./TotalSplitHelper";
 
 const styles = {
     payButton: {
-        width: "100%",
-        marginTop: 16
+        width: "100%"
     },
     formControlAlt: {
         marginBottom: 10,
@@ -44,7 +44,8 @@ const styles = {
         padding: 24,
         marginBottom: 8,
         textAlign: "left"
-    }
+    },
+    titleGrid: { display: "flex", alignItems: "center" }
 };
 
 class RequestInquiry extends React.Component {
@@ -204,6 +205,11 @@ class RequestInquiry extends React.Component {
             splitAmounts: splitAmounts
         });
     };
+    toggleSplitRequest = event => {
+        this.setState({
+            splitRequest: !this.state.splitRequest
+        });
+    };
 
     // add a target from the current text inputs to the target list
     addTarget = () => {
@@ -350,7 +356,9 @@ class RequestInquiry extends React.Component {
             minimumAge,
             setRedirectUrl,
             redirectUrl,
-            allowBunqMe
+            allowBunqMe,
+            splitAmounts,
+            splitRequest
         } = this.state;
         const minimumAgeInt = parseInt(minimumAge);
 
@@ -359,11 +367,8 @@ class RequestInquiry extends React.Component {
         // our user id
         const userId = user.id;
 
-        // amount inquired for all the requestInquiries
-        const amountInfo = {
-            value: amount + "", // sigh, number has to be sent as a string
-            currency: "EUR"
-        };
+        // calculate total split count
+        const totalSplit = TotalSplitHelper(targets, splitAmounts);
 
         const requestInquiries = [];
         targets.map(target => {
@@ -394,6 +399,33 @@ class RequestInquiry extends React.Component {
                 default:
                     // invalid type
                     break;
+            }
+
+            // amount inquired for all the requestInquiries
+            let amountInfo = {
+                value: amount + "", // sigh, number has to be sent as a string
+                currency: "EUR"
+            };
+
+            if (splitRequest) {
+                // default to 1 if split is enabled
+                const splitAmountValue =
+                    typeof splitAmounts[target.value] !== "undefined"
+                        ? splitAmounts[target.value]
+                        : 1;
+
+                // calculate the percentage for this split vs total
+                const percentage =
+                    totalSplit > 0 ? splitAmountValue / totalSplit : 0;
+
+                // calculate the actual amount
+                const moneyAmount = amount * percentage;
+
+                // set correct amount
+                amountInfo = {
+                    value: moneyAmount.toFixed(2) + "", // sigh, number has to be sent as a string
+                    currency: "EUR"
+                };
             }
 
             const requestInquiry = {
@@ -436,6 +468,56 @@ class RequestInquiry extends React.Component {
         const account = this.props.accounts[selectedAccount];
 
         const totalSplit = TotalSplitHelper(targets, splitAmounts);
+
+        const advancedOptionsForm = (
+            <Paper style={styles.paper}>
+                <Grid container spacing={8}>
+                    <Grid item xs={12} style={styles.titleGrid}>
+                        <Switch
+                            color="primary"
+                            checked={this.state.expandedCollapse}
+                            onClick={this.toggleExpanded}
+                        />
+                        <TranslateTypography variant={"title"}>
+                            Advanced options
+                        </TranslateTypography>
+                    </Grid>
+                    <Collapse in={this.state.expandedCollapse} unmountOnExit>
+                        <Grid item xs={12}>
+                            <MinimumAge
+                                t={t}
+                                targetType={this.state.targetType}
+                                minimumAge={this.state.minimumAge}
+                                setMinimumAge={this.state.setMinimumAge}
+                                minimumAgeError={this.state.minimumAgeError}
+                                handleToggle={this.handleToggle(
+                                    "setMinimumAge"
+                                )}
+                                handleChange={this.handleChange("minimumAge")}
+                            />
+
+                            <RedirectUrl
+                                targetType={this.state.targetType}
+                                redirectUrl={this.state.redirectUrl}
+                                setRedirectUrl={this.state.setRedirectUrl}
+                                redirectUrlError={this.state.redirectUrlError}
+                                handleToggle={this.handleToggle(
+                                    "setRedirectUrl"
+                                )}
+                                handleChange={this.handleChange("redirectUrl")}
+                            />
+
+                            <AllowBunqMe
+                                t={t}
+                                targetType={this.state.targetType}
+                                allowBunqMe={this.state.allowBunqMe}
+                                handleToggle={this.handleToggle("allowBunqMe")}
+                            />
+                        </Grid>
+                    </Collapse>
+                </Grid>
+            </Paper>
+        );
 
         return (
             <Grid container spacing={24} align={"center"} justify={"center"}>
@@ -502,63 +584,21 @@ class RequestInquiry extends React.Component {
                         </FormControl>
                     </Paper>
 
-                    {this.state.splitRequest ? "split" : "don't split"}
                     <SplitAmountForm
                         t={t}
                         BunqJSClient={this.props.BunqJSClient}
                         account={account}
                         targets={this.state.targets}
-                        splitAmounts={this.state.splitAmounts}
                         amount={this.state.amount}
+                        splitAmounts={this.state.splitAmounts}
                         setSplitCount={this.setSplitCount}
+                        splitRequest={this.state.splitRequest}
+                        toggleSplitRequest={this.toggleSplitRequest}
                     />
 
+                    {advancedOptionsForm}
+
                     <Paper style={styles.paper}>
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    color="primary"
-                                    checked={this.state.expandedCollapse}
-                                    onClick={this.toggleExpanded}
-                                />
-                            }
-                            label={t("Advanced options")}
-                        />
-                        <Collapse
-                            in={this.state.expandedCollapse}
-                            unmountOnExit
-                        >
-                            <MinimumAge
-                                t={t}
-                                targetType={this.state.targetType}
-                                minimumAge={this.state.minimumAge}
-                                setMinimumAge={this.state.setMinimumAge}
-                                minimumAgeError={this.state.minimumAgeError}
-                                handleToggle={this.handleToggle(
-                                    "setMinimumAge"
-                                )}
-                                handleChange={this.handleChange("minimumAge")}
-                            />
-
-                            <RedirectUrl
-                                targetType={this.state.targetType}
-                                redirectUrl={this.state.redirectUrl}
-                                setRedirectUrl={this.state.setRedirectUrl}
-                                redirectUrlError={this.state.redirectUrlError}
-                                handleToggle={this.handleToggle(
-                                    "setRedirectUrl"
-                                )}
-                                handleChange={this.handleChange("redirectUrl")}
-                            />
-
-                            <AllowBunqMe
-                                t={t}
-                                targetType={this.state.targetType}
-                                allowBunqMe={this.state.allowBunqMe}
-                                handleToggle={this.handleToggle("allowBunqMe")}
-                            />
-                        </Collapse>
-
                         <ButtonTranslate
                             variant="raised"
                             color="primary"

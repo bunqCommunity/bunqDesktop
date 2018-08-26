@@ -2,6 +2,7 @@ import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Divider from "@material-ui/core/Divider";
+import Switch from "@material-ui/core/Switch";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 
@@ -18,7 +19,8 @@ const styles = {
         marginBottom: 8,
         textAlign: "left",
         overflowX: "auto"
-    }
+    },
+    titleGrid: { display: "flex", alignItems: "center" }
 };
 
 class SplitAmountForm extends React.Component {
@@ -33,6 +35,8 @@ class SplitAmountForm extends React.Component {
             account,
             targets,
             splitAmounts,
+            splitRequest,
+            toggleSplitRequest,
             amount
         } = this.props;
 
@@ -56,27 +60,34 @@ class SplitAmountForm extends React.Component {
         return (
             <Paper style={styles.paper}>
                 <Grid container spacing={8}>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} style={styles.titleGrid}>
+                        <Switch
+                            checked={splitRequest}
+                            onChange={toggleSplitRequest}
+                        />
+
                         <TranslateTypography variant={"title"}>
-                            Define shares
+                            Split request
                         </TranslateTypography>
                     </Grid>
-                    <Grid item xs={12}>
-                        <Divider />
-                        <Table style={styles.table}>
-                            <TableBody>
-                                <SplitAmountItem
-                                    BunqJSClient={BunqJSClient}
-                                    account={account}
-                                    amount={amount}
-                                    totalSplit={totalSplit}
-                                    splitAmount={splitAmounts.account}
-                                    setSplitCount={this.props.setSplitCount}
-                                />
-                                {splitAmountItems}
-                            </TableBody>
-                        </Table>
-                    </Grid>
+                    {splitRequest ? (
+                        <Grid item xs={12}>
+                            <Divider />
+                            <Table style={styles.table}>
+                                <TableBody>
+                                    <SplitAmountItem
+                                        BunqJSClient={BunqJSClient}
+                                        account={account}
+                                        amount={amount}
+                                        totalSplit={totalSplit}
+                                        splitAmount={splitAmounts.account}
+                                        setSplitCount={this.props.setSplitCount}
+                                    />
+                                    {splitAmountItems}
+                                </TableBody>
+                            </Table>
+                        </Grid>
+                    ) : null}
                 </Grid>
             </Paper>
         );
