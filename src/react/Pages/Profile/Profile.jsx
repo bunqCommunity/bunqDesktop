@@ -190,7 +190,7 @@ class Profile extends React.Component {
         let content = null;
         if (userLoading === false && this.state.loading === false) {
             let businessInfo = null;
-            if (userType !== "UserCompany") {
+            if (userType === "UserCompany") {
                 const hasSafeKeepingFee = totalBalance > 100000;
 
                 let costsTable = null;
@@ -254,7 +254,7 @@ class Profile extends React.Component {
                         <Grid container spacing={16} justify="center">
                             <Grid item xs={12}>
                                 <TranslateTypography variant="subheading">
-                                    Company information
+                                    Safekeeping fee calculator
                                 </TranslateTypography>
                             </Grid>
 
@@ -266,7 +266,7 @@ class Profile extends React.Component {
                                     label="Total account balance"
                                     value={parseFloat(
                                         totalBalance ? totalBalance : 0
-                                    )}
+                                    ).toFixed(2)}
                                     onChange={this.onChange("totalBalance")}
                                 />
                             </Grid>
