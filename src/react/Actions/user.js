@@ -15,7 +15,7 @@ export function userSetInfo(user, type) {
         const storedUserId = store.get(USER_ID_LOCATION);
 
         // check if a previous id was stored and check if id is different
-        if (storedUserId && user.id !== storedUserId) {
+        if (!storedUserId || user.id !== storedUserId) {
             dispatch(registrationClearUserInfo());
         }
 

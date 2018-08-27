@@ -5,12 +5,14 @@ import Redirect from "react-router-dom/Redirect";
 import Helmet from "react-helmet";
 import store from "store";
 import Grid from "@material-ui/core/Grid";
-import Input from "@material-ui/core/Input";
 import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import IconButton from "@material-ui/core/IconButton";
+import FormControl from "@material-ui/core/FormControl";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
 import InputAdornment from "@material-ui/core/InputAdornment";
 
 import Visibility from "@material-ui/icons/Visibility";
@@ -61,6 +63,9 @@ const styles = {
     cardContent: {
         textAlign: "center",
         backgroundColor: "#ffffff"
+    },
+    formControl: {
+        width: "100%"
     },
     text: {
         color: "#000000"
@@ -234,51 +239,16 @@ class LoginPassword extends React.Component {
                         : t("Enter a password")}
                 </Typography>
 
-                <Input
-                    autoFocus
-                    style={styles.passwordInput}
-                    error={!this.state.passwordValid}
-                    type="password"
-                    onChange={this.handlePasswordChange}
-                    value={this.state.password}
-                    type={this.state.showPassword ? "text" : "password"}
-                    onKeyPress={ev => {
-                        this.handleKeyEvent(ev);
-                        if (ev.key === "Enter" && buttonDisabled === false) {
-                            this.setRegistration();
-                            ev.preventDefault();
-                        }
-                    }}
-                    endAdornment={
-                        <InputAdornment position="end">
-                            <IconButton
-                                aria-label="Toggle password visibility"
-                                onClick={this.toggleShowPassword}
-                                onMouseDown={this.toggleShowPassword}
-                            >
-                                {this.state.showPassword ? (
-                                    <VisibilityOff
-                                        style={styles.passwordVisibilityIcon}
-                                    />
-                                ) : (
-                                    <Visibility
-                                        style={styles.passwordVisibilityIcon}
-                                    />
-                                )}
-                            </IconButton>
-                        </InputAdornment>
-                    }
-                />
-
-                {isExistingInstallation ? null : (
+                <FormControl style={styles.formControl}>
+                    <InputLabel>Password</InputLabel>
                     <Input
+                        autoFocus
                         style={styles.passwordInput}
-                        error={!this.state.passwordRepeatValid}
-                        type={
-                            this.state.showPasswordRepeat ? "text" : "password"
-                        }
-                        onChange={this.handlePasswordChangeRepeat}
-                        value={this.state.passwordRepeat}
+                        error={!this.state.passwordValid}
+                        type="password"
+                        onChange={this.handlePasswordChange}
+                        value={this.state.password}
+                        type={this.state.showPassword ? "text" : "password"}
                         onKeyPress={ev => {
                             this.handleKeyEvent(ev);
                             if (
@@ -293,10 +263,10 @@ class LoginPassword extends React.Component {
                             <InputAdornment position="end">
                                 <IconButton
                                     aria-label="Toggle password visibility"
-                                    onClick={this.toggleShowPasswordRepeat}
-                                    onMouseDown={this.toggleShowPasswordRepeat}
+                                    onClick={this.toggleShowPassword}
+                                    onMouseDown={this.toggleShowPassword}
                                 >
-                                    {this.state.showPasswordRepeat ? (
+                                    {this.state.showPassword ? (
                                         <VisibilityOff
                                             style={
                                                 styles.passwordVisibilityIcon
@@ -313,6 +283,58 @@ class LoginPassword extends React.Component {
                             </InputAdornment>
                         }
                     />
+                </FormControl>
+
+                {isExistingInstallation ? null : (
+                    <FormControl style={styles.formControl}>
+                        <InputLabel>Password repeat</InputLabel>
+                        <Input
+                            style={styles.passwordInput}
+                            error={!this.state.passwordRepeatValid}
+                            type={
+                                this.state.showPasswordRepeat
+                                    ? "text"
+                                    : "password"
+                            }
+                            onChange={this.handlePasswordChangeRepeat}
+                            value={this.state.passwordRepeat}
+                            onKeyPress={ev => {
+                                this.handleKeyEvent(ev);
+                                if (
+                                    ev.key === "Enter" &&
+                                    buttonDisabled === false
+                                ) {
+                                    this.setRegistration();
+                                    ev.preventDefault();
+                                }
+                            }}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="Toggle password visibility"
+                                        onClick={this.toggleShowPasswordRepeat}
+                                        onMouseDown={
+                                            this.toggleShowPasswordRepeat
+                                        }
+                                    >
+                                        {this.state.showPasswordRepeat ? (
+                                            <VisibilityOff
+                                                style={
+                                                    styles.passwordVisibilityIcon
+                                                }
+                                            />
+                                        ) : (
+                                            <Visibility
+                                                style={
+                                                    styles.passwordVisibilityIcon
+                                                }
+                                            />
+                                        )}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        />
+                    </FormControl>
                 )}
                 {this.state.capslockWarningDisplay ? (
                     <Typography
