@@ -52,7 +52,7 @@ const styles = {
         width: "100%",
         top: 0,
         height: 50,
-        zIndex: 1000,
+        zIndex: 2000,
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center center"
