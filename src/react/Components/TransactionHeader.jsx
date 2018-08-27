@@ -87,7 +87,7 @@ const TransactionHeader = props => {
         <Grid item xs={12} md={5} style={styles.targetWrapper}>
             <Avatar style={styles.avatar}>
                 <LazyAttachmentImage
-                    width={90}
+                    height={90}
                     BunqJSClient={props.BunqJSClient}
                     imageUUID={fromAvatar}
                     onClick={() => {
@@ -124,7 +124,7 @@ const TransactionHeader = props => {
         <Grid item xs={12} md={5} style={styles.targetWrapper}>
             <Avatar style={styles.avatar}>
                 <LazyAttachmentImage
-                    width={90}
+                    height={90}
                     BunqJSClient={props.BunqJSClient}
                     imageUUID={toAvatar}
                     onClick={() => {

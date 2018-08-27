@@ -166,7 +166,7 @@ export default class ConnectListItem extends React.Component {
                 <ListItem button onClick={this.toggleOpen}>
                     <Avatar style={styles.smallAvatar}>
                         <LazyAttachmentImage
-                            width={50}
+                            height={50}
                             BunqJSClient={BunqJSClient}
                             imageUUID={imageUUID}
                         />

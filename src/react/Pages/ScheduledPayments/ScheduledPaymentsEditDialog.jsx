@@ -194,7 +194,7 @@ class ScheduledPaymentsEditDialog extends React.Component {
                     <ListItem>
                         <Avatar style={styles.smallAvatar}>
                             <AttachmentImage
-                                width={60}
+                                height={60}
                                 BunqJSClient={BunqJSClient}
                                 imageUUID={imageUUID}
                             />

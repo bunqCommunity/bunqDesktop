@@ -128,7 +128,7 @@ class ShareInviteBankInquiryListItem extends React.Component {
             >
                 <Avatar style={styles.smallAvatar}>
                     <LazyAttachmentImage
-                        width={50}
+                        height={50}
                         BunqJSClient={this.props.BunqJSClient}
                         imageUUID={imageUUID}
                     />

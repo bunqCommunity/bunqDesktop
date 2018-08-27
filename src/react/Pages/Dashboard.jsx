@@ -115,7 +115,7 @@ class Dashboard extends React.Component {
                                 {user ? (
                                     <Avatar style={styles.bigAvatar}>
                                         <AttachmentImage
-                                            width={50}
+                                            height={50}
                                             BunqJSClient={
                                                 this.props.BunqJSClient
                                             }

@@ -106,7 +106,7 @@ class AccountSelection extends React.Component {
                         <ListItemIcon>
                             <Avatar style={styles.bigAvatar}>
                                 <LazyAttachmentImage
-                                    width={40}
+                                    height={40}
                                     BunqJSClient={this.props.BunqJSClient}
                                     imageUUID={
                                         account.avatar.image[0]

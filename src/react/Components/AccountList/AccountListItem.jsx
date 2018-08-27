@@ -97,7 +97,7 @@ class AccountListItem extends React.Component {
             <ListItem divider {...listItemProps}>
                 <Avatar style={styles.bigAvatar}>
                     <LazyAttachmentImage
-                        width={60}
+                        height={60}
                         BunqJSClient={this.props.BunqJSClient}
                         imageUUID={
                             account.avatar.image[0].attachment_public_uuid

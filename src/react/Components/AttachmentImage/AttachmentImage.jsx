@@ -108,10 +108,20 @@ class AttachmentImage extends React.PureComponent {
         // exclude custom props
         const { BunqJSClient, imageUUID, ...props } = this.props;
 
+        const defaultSizes = {
+            width: "auto",
+            height: 50
+        };
+
         return this.imageUrl === false ? (
-            <div {...props} />
+            <div {...defaultSizes} {...props} />
         ) : (
-            <img src={this.state.imageUrl} {...props} />
+            <img
+                {...defaultSizes}
+                src={this.state.imageUrl}
+                style={{ backgroundColor: "white" }}
+                {...props}
+            />
         );
     }
 }

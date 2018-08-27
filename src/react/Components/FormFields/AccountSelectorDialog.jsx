@@ -58,7 +58,7 @@ const AccountItem = ({
         <ListItem button onClick={onClick}>
             <Avatar style={styles.bigAvatar}>
                 <LazyAttachmentImage
-                    width={50}
+                    height={50}
                     BunqJSClient={BunqJSClient}
                     imageUUID={account.avatar.image[0].attachment_public_uuid}
                 />

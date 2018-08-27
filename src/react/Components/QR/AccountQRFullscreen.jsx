@@ -83,7 +83,7 @@ class AccountQRFullscreen extends React.PureComponent {
                         <ListItem className={classes.listItem}>
                             <Avatar className={classes.bigAvatar}>
                                 <LazyAttachmentImage
-                                    width={45}
+                                    height={45}
                                     BunqJSClient={this.props.BunqJSClient}
                                     imageUUID={
                                         accountInfo.avatar.image[0]

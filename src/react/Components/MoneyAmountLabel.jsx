@@ -97,11 +97,18 @@ class MoneyAmountLabel extends React.Component {
 
     checkPayment = () => {
         const { theme, style, info } = this.props;
-        const paymentColor =
-            info.amount.value < 0
-                ? theme.palette.common.sentPayment
-                : theme.palette.common.receivedPayment;
-        return { color: paymentColor, ...style };
+
+        const isNegative = info.amount.value < 0;
+
+        // switch between incoming/outgoing colors
+        const paymentColor = isNegative
+            ? theme.palette.common.sentPayment
+            : theme.palette.common.receivedPayment;
+
+        return {
+            style: { color: paymentColor, ...style },
+            isNegative: isNegative
+        };
     };
 
     checkMasterCardAction = () => {
@@ -110,35 +117,42 @@ class MoneyAmountLabel extends React.Component {
         switch (info.authorisation_status) {
             case "AUTHORISED":
                 return {
-                    color: theme.palette.masterCardAction.authorized,
-                    ...style
+                    style: {
+                        color: theme.palette.masterCardAction.authorized,
+                        ...style
+                    },
+                    isNegative: true
                 };
             case "BLOCKED":
                 return {
-                    color: theme.palette.masterCardAction.blocked,
-                    ...theme.styles.masterCardAction.blocked,
-                    ...style
+                    style: {
+                        color: theme.palette.masterCardAction.blocked,
+                        ...theme.styles.masterCardAction.blocked,
+                        ...style
+                    }
                 };
             case "CLEARING_REFUND":
                 return {
-                    color: theme.palette.masterCardAction.refunded,
-                    ...theme.styles.masterCardAction.refunded,
-                    ...style
+                    style: {
+                        color: theme.palette.masterCardAction.refunded,
+                        ...theme.styles.masterCardAction.refunded,
+                        ...style
+                    }
                 };
             default:
             case "PENDING":
                 return {
-                    color: theme.palette.masterCardAction.pending,
-                    ...style
+                    style: {
+                        color: theme.palette.masterCardAction.pending,
+                        ...style
+                    }
                 };
         }
-
-        const paymentColor = theme.palette.common.sentPayment;
-        return { color: paymentColor, ...style };
     };
 
     render() {
         let finalStyle = {};
+        let finalClassname = "";
         switch (this.props.type) {
             case "requestResponse":
                 finalStyle = this.checkRequestResponse();
@@ -147,16 +161,30 @@ class MoneyAmountLabel extends React.Component {
                 finalStyle = this.checkRequestInquiry();
                 break;
             case "payment":
-                finalStyle = this.checkPayment();
+                const paymentSettings = this.checkPayment();
+
+                finalClassname = paymentSettings.isNegative
+                    ? "minus-character-content"
+                    : "";
+                finalStyle = paymentSettings.style;
                 break;
             case "masterCardAction":
-                finalStyle = this.checkMasterCardAction();
+                const masterCardSettings = this.checkMasterCardAction();
+
+                finalClassname = paymentSettings.isNegative
+                    ? "minus-character-content"
+                    : "";
+                finalStyle = masterCardSettings.style;
                 break;
         }
 
         const Component = this.props.component;
 
-        return <Component style={finalStyle}>{this.props.children}</Component>;
+        return (
+            <Component className={finalClassname} style={finalStyle}>
+                {this.props.children}
+            </Component>
+        );
     }
 }
 
