@@ -1,13 +1,13 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
 import {
-    balanceColor,
     bunqMeTabColor,
     masterCardActionColor,
     paymentColor,
     requestInquiryColor,
     requestResponseColor
 } from "../../Colors";
+import { sortLinearChartTooltips } from "../../../../Helpers/StatsFormattingTemplates";
 
 export default props => {
     const defaultOptions = {
@@ -92,7 +92,9 @@ export default props => {
         responsive: true,
         tooltips: {
             enabled: true,
-            mode: "index"
+            mode: "index",
+            intersect: false,
+            itemSort: sortLinearChartTooltips
         },
         legend: {
             labels: {

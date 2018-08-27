@@ -171,7 +171,7 @@ class MoneyAmountLabel extends React.Component {
             case "masterCardAction":
                 const masterCardSettings = this.checkMasterCardAction();
 
-                finalClassname = paymentSettings.isNegative
+                finalClassname = masterCardSettings.isNegative
                     ? "minus-character-content"
                     : "";
                 finalStyle = masterCardSettings.style;
