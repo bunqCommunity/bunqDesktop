@@ -80,10 +80,9 @@ class BunqMeTabListItem extends React.Component {
         const updatedDate = humanReadableDate(bunqMeTab.updated);
         const expiryDate = humanReadableDate(bunqMeTab.time_expiry);
         const numberOfPayments = bunqMeTab.result_inquiries.length;
-
-        const primaryText = `${formatMoney(
+        const formattedMoney = formatMoney(
             bunqMeTab.bunqme_tab_entry.amount_inquired.value
-        )} ${bunqMeTab.bunqme_tab_entry.amount_inquired.currency}`;
+        );
 
         const merchantList = bunqMeTab.bunqme_tab_entry.merchant_available
             .filter(merchant => merchant.available)
@@ -98,7 +97,7 @@ class BunqMeTabListItem extends React.Component {
                     <Share color={"inherit"} style={{ color: iconColor }} />
                 </Avatar>
                 <ListItemText
-                    primary={primaryText}
+                    primary={formattedMoney}
                     secondary={bunqMeTab.bunqme_tab_entry.description}
                 />
                 <ListItemSecondaryAction style={{ marginTop: -16 }}>
