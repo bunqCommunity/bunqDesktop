@@ -3,18 +3,22 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
+import CopyToClipboard from "react-copy-to-clipboard";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Divider from "@material-ui/core/Divider";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import HelpIcon from "@material-ui/icons/Help";
+import CopyIcon from "@material-ui/icons/ContentCopy";
 
 import ExportDialog from "../Components/ExportDialog";
 import TranslateButton from "../Components/TranslationHelpers/Button";
@@ -184,15 +188,44 @@ class RequestInquiryInfo extends React.Component {
                                     secondary={paymentDate}
                                 />
                             </ListItem>
-                            <Divider />
-                            <ListItem>
-                                <ListItemText
-                                    primary={"IBAN"}
-                                    secondary={
-                                        requestInquiry.counterparty_alias.iban
-                                    }
-                                />
-                            </ListItem>
+                            {requestInquiry.bunqme_share_url ? (
+                                <React.Fragment>
+                                    <Divider />
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={"bunq.me Url"}
+                                            secondary={
+                                                requestInquiry.bunqme_share_url
+                                            }
+                                        />
+                                        <ListItemSecondaryAction>
+                                            <CopyToClipboard
+                                                text={
+                                                    requestInquiry.bunqme_share_url
+                                                }
+                                            >
+                                                <IconButton>
+                                                    <CopyIcon />
+                                                </IconButton>
+                                            </CopyToClipboard>
+                                        </ListItemSecondaryAction>
+                                    </ListItem>
+                                </React.Fragment>
+                            ) : null}
+                            {requestInquiry.counterparty_alias.iban ? (
+                                <React.Fragment>
+                                    <Divider />
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={"IBAN"}
+                                            secondary={
+                                                requestInquiry
+                                                    .counterparty_alias.iban
+                                            }
+                                        />
+                                    </ListItem>
+                                </React.Fragment>
+                            ) : null}
                             <Divider />
                         </List>
 
