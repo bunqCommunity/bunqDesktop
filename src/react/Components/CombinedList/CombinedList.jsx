@@ -78,28 +78,59 @@ class CombinedList extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            displayEventData: false
+            displayEventData: false,
+            totalEvents: 0,
+            events: []
         };
     }
 
-    shouldComponentUpdate(nextProps) {
-        const isCurrentlyLoading =
+    componentDidUpdate(prevProps) {
+        const isLoading =
             this.props.bunqMeTabsLoading ||
             this.props.paymentsLoading ||
             this.props.requestResponsesLoading ||
             this.props.requestInquiriesLoading ||
             this.props.masterCardActionsLoading;
-        const willBeLoading =
-            nextProps.bunqMeTabsLoading ||
-            nextProps.paymentsLoading ||
-            nextProps.requestResponsesLoading ||
-            nextProps.requestInquiriesLoading ||
-            nextProps.masterCardActionsLoading;
+        const wasLoading =
+            prevProps.bunqMeTabsLoading ||
+            prevProps.paymentsLoading ||
+            prevProps.requestResponsesLoading ||
+            prevProps.requestInquiriesLoading ||
+            prevProps.masterCardActionsLoading;
 
-        // don't update the components if we are loading now and will be loading in the next update
-        if (isCurrentlyLoading && willBeLoading) return false;
+        // no longer loading or filter changed
+        if (
+            (isLoading == false && wasLoading) ||
+            this.props.generalFilterDate !== prevProps.generalFilterDate
+        ) {
+            // create arrays of the different endpoint types
+            const bunqMeTabs = this.bunqMeTabsMapper();
+            const payments = this.paymentMapper();
+            const masterCardActions = this.masterCardActionMapper();
+            const requestResponses = this.requestResponseMapper(false, true);
+            const requestInquiries = this.requestInquiryMapper();
+            const shareInviteBankInquiries = this.shareInviteBankInquiryMapper();
 
-        return true;
+            // combine the list, order by date and group by day
+            const events = [
+                ...bunqMeTabs,
+                ...requestResponses,
+                ...masterCardActions,
+                ...requestInquiries,
+                ...shareInviteBankInquiries,
+                ...payments
+            ].sort(function(a, b) {
+                return new Date(b.filterDate) - new Date(a.filterDate);
+            });
+
+            this.setState({
+                totalEvents:
+                    this.state.totalEvents < events.length
+                        ? events.length
+                        : this.state.totalEvents,
+                events: events
+            });
+        }
     }
 
     copiedValue = type => callback => {
@@ -348,9 +379,9 @@ class CombinedList extends React.Component {
 
     render() {
         const {
+            t,
             page,
             pageSize,
-            t,
             selectedAccountIds,
             selectedCategories,
             searchTerm,
@@ -361,6 +392,25 @@ class CombinedList extends React.Component {
             bunqMeTabVisibility,
             requestVisibility
         } = this.props;
+        const { events } = this.state;
+
+        // check if a filter is set
+        const filterIsDisabled = FilterDisabledChecker({
+            selectedAccountIds,
+            selectedCategories,
+            searchTerm,
+            paymentType,
+            bunqMeTabType,
+            requestType,
+            paymentVisibility,
+            bunqMeTabVisibility,
+            requestVisibility
+        });
+
+        // set a total amount
+        const filterEnabledText = filterIsDisabled
+            ? ""
+            : ` of ${this.state.totalEvents}`;
 
         let loadingContent =
             this.props.bunqMeTabsLoading ||
@@ -374,47 +424,15 @@ class CombinedList extends React.Component {
                 <Divider />
             );
 
-        const filterIsEnabled = FilterDisabledChecker({
-            selectedAccountIds,
-            selectedCategories,
-            searchTerm,
-            paymentType,
-            bunqMeTabType,
-            requestType,
-            paymentVisibility,
-            bunqMeTabVisibility,
-            requestVisibility
-        });
-        // const filterEnabledText = t("Filtered items");
-
-        // create arrays of the different endpoint types
-        const bunqMeTabs = this.bunqMeTabsMapper();
-        const payments = this.paymentMapper();
-        const masterCardActions = this.masterCardActionMapper();
-        const requestResponses = this.requestResponseMapper(false, true);
         const requestResponsesPending = this.requestResponseMapper(true);
-        const requestInquiries = this.requestInquiryMapper();
-        const shareInviteBankInquiries = this.shareInviteBankInquiryMapper();
         const shareInviteBankResponses = this.shareInviteBankResponseMapper();
-
-        let groupedItems = {};
 
         // directly create a list for the pending requests
         const pendingRequestResponseComponents = requestResponsesPending.map(
             requestResponsesPendingItem => requestResponsesPendingItem.component
         );
 
-        // combine the list, order by date and group by day
-        const events = [
-            ...bunqMeTabs,
-            ...requestResponses,
-            ...masterCardActions,
-            ...requestInquiries,
-            ...shareInviteBankInquiries,
-            ...payments
-        ].sort(function(a, b) {
-            return new Date(b.filterDate) - new Date(a.filterDate);
-        });
+        let groupedItems = {};
 
         // check if all pages is set (pageSize = 0)
         const usedPageSize = pageSize === 0 ? events.length : pageSize;
@@ -484,6 +502,7 @@ class CombinedList extends React.Component {
             <List style={styles.left}>
                 <ListSubheader>
                     {t("Payments and requests")}: {events.length}
+                    {filterEnabledText}
                     <ListItemSecondaryAction>
                         <ClearBtn />
                         <IconButton onClick={this.toggleEventData}>
@@ -598,6 +617,7 @@ const mapStateToProps = state => {
         requestVisibility: state.request_filter.visible,
         dateFromFilter: state.date_filter.from_date,
         dateToFilter: state.date_filter.to_date,
+        generalFilterDate: state.general_filter.date,
 
         amountFilterAmount: state.amount_filter.amount,
         amountFilterType: state.amount_filter.type,
@@ -611,6 +631,9 @@ const mapStateToProps = state => {
         categories: state.categories.categories,
         categoryConnections: state.categories.category_connections,
 
+        payments: state.payments.payments,
+        paymentsLoading: state.payments.loading,
+
         bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
         bunqMeTabsLoading: state.bunq_me_tabs.loading,
         bunqMeTabLoading: state.bunq_me_tab.loading,
@@ -623,9 +646,6 @@ const mapStateToProps = state => {
 
         requestResponses: state.request_responses.request_responses,
         requestResponsesLoading: state.request_responses.loading,
-
-        payments: state.payments.payments,
-        paymentsLoading: state.payments.loading,
 
         shareInviteBankInquiries:
             state.share_invite_bank_inquiries.share_invite_bank_inquiries,

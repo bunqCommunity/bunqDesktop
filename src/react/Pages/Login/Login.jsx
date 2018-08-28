@@ -603,7 +603,7 @@ class Login extends React.Component {
                     Loading
                 </TranslateTypography>
                 <CircularProgress size={50} />
-                <TranslateTypography variant="subheading">
+                <TranslateTypography variant="subheading" style={styles.text}>
                     {status_message}
                 </TranslateTypography>
             </CardContent>
