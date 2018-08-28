@@ -6,6 +6,10 @@ import settings from "electron-settings";
 import { app, Menu, Tray, nativeImage, ipcMain, BrowserWindow } from "electron";
 import { devMenuTemplate } from "./menu/dev_menu_template";
 import { editMenuTemplate } from "./menu/edit_menu_template";
+import { helpMenuTemplate } from "./menu/help_menu_template";
+import { viewMenuTemplate } from "./menu/view_menu_template";
+import { windowMenuTemplate } from "./menu/window_menu_template";
+import darwinMenuTemplates from "./menu/darwin_menu_templates";
 import createWindow from "./helpers/window";
 import registerShortcuts from "./helpers/shortcuts";
 import registerTouchBar from "./helpers/touchbar";
@@ -38,7 +42,16 @@ const userDataPath = app.getPath("userData");
 
 // hide/show different native menus based on env
 const setApplicationMenu = () => {
-    const menus = [editMenuTemplate];
+    let menus = [
+        editMenuTemplate,
+        viewMenuTemplate,
+        windowMenuTemplate,
+        helpMenuTemplate
+    ];
+
+    // modify templates if on darwin
+    menus = darwinMenuTemplates(menus);
+
     if (env.name === "development") {
         menus.push(devMenuTemplate);
     }

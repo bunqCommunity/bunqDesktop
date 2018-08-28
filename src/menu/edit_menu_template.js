@@ -1,16 +1,14 @@
 export const editMenuTemplate = {
     label: "Edit",
     submenu: [
-        { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
-        { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
+        { role: "undo" },
+        { role: "redo" },
         { type: "separator" },
-        { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
-        { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
-        { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
-        {
-            label: "Select All",
-            accelerator: "CmdOrCtrl+A",
-            selector: "selectAll:"
-        }
+        { role: "cut" },
+        { role: "copy" },
+        { role: "paste" },
+        { role: "pasteandmatchstyle" },
+        { role: "delete" },
+        { role: "selectall" }
     ]
 };
