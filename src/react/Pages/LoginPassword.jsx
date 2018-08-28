@@ -89,6 +89,9 @@ class LoginPassword extends React.Component {
 
             hasReadWarning: !!store.get("HAS_READ_DEV_WARNING2")
         };
+
+        this.passwordInput = React.createRef();
+        this.passwordRepeatInput = React.createRef();
     }
 
     componentDidMount() {
@@ -159,9 +162,19 @@ class LoginPassword extends React.Component {
 
     toggleShowPassword = event => {
         this.setState({ showPassword: !this.state.showPassword });
+        setTimeout(() => {
+            this.passwordInput.focus();
+            this.passwordInput.selectionStart = 1000;
+            this.passwordInput.selectionEnd = 1000;
+        }, 300);
     };
     toggleShowPasswordRepeat = event => {
         this.setState({ showPasswordRepeat: !this.state.showPasswordRepeat });
+        setTimeout(() => {
+            this.passwordRepeatInput.focus();
+            this.passwordRepeatInput.selectionStart = 1000;
+            this.passwordRepeatInput.selectionEnd = 1000;
+        }, 300);
     };
 
     validateInputs = () => {
@@ -240,13 +253,14 @@ class LoginPassword extends React.Component {
                 </Typography>
 
                 <FormControl style={styles.formControl}>
-                    <InputLabel>Password</InputLabel>
+                    <InputLabel style={styles.text}>Password</InputLabel>
                     <Input
                         autoFocus
+                        className={"text-input"}
+                        inputRef={ref => (this.passwordInput = ref)}
                         style={styles.passwordInput}
-                        error={!this.state.passwordValid}
-                        type="password"
                         onChange={this.handlePasswordChange}
+                        error={!this.state.passwordValid}
                         value={this.state.password}
                         type={this.state.showPassword ? "text" : "password"}
                         onKeyPress={ev => {
@@ -289,6 +303,8 @@ class LoginPassword extends React.Component {
                     <FormControl style={styles.formControl}>
                         <InputLabel>Password repeat</InputLabel>
                         <Input
+                            className={"text-input"}
+                            inputRef={ref => (this.passwordRepeatInput = ref)}
                             style={styles.passwordInput}
                             error={!this.state.passwordRepeatValid}
                             type={
