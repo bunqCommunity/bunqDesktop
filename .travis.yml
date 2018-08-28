@@ -30,15 +30,6 @@ before_install:
       mkdir -p /tmp/git-lfs && curl -L https://github.com/github/git-lfs/releases/download/v2.3.1/git-lfs-$([ "$TRAVIS_OS_NAME" == "linux" ] && echo "linux" || echo "darwin")-amd64-2.3.1.tar.gz | tar -xz -C /tmp/git-lfs --strip-components 1
       export PATH="/tmp/git-lfs:$PATH"
     fi
-#  install JQ for curl handling
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install jq; else brew install jq; fi
-#  Install latest version of Go with snap
-  - eval "$(curl -sL https://raw.githubusercontent.com/travis-ci/gimme/master/gimme | GIMME_GO_VERSION=master bash)"
-#  get the GHR go library
-  - go version
-  - export GOPATH="$HOME/go"
-  - export PATH="$PATH:$GOPATH/bin"
-  - go get -u github.com/tcnksm/ghr
 
 before_script:
   - git lfs pull
@@ -76,6 +67,15 @@ before_deploy:
       sha256sum dist/bunqDesktop-*.* >> dist/CHECKSUMS.sha256
       cat dist/CHECKSUMS.sha256
     fi
+#  install JQ for curl handling
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install jq; else brew install jq; fi
+#  Install latest version of Go with snap
+  - eval "$(curl -sL https://raw.githubusercontent.com/travis-ci/gimme/master/gimme | GIMME_GO_VERSION=master bash)"
+#  get the GHR go library
+  - go version
+  - export GOPATH="$HOME/go"
+  - export PATH="$PATH:$GOPATH/bin"
+  - go get -u github.com/tcnksm/ghr
 
 deploy:
   - provider: releases
