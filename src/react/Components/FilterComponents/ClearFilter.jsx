@@ -4,6 +4,8 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import ClearIcon from "@material-ui/icons/Clear";
 
+import FilterDisabledChecker from "../../Helpers/FilterDisabledChecker";
+
 import { resetFilters } from "../../Actions/filters";
 
 class ClearFilter extends React.Component {
@@ -13,16 +15,30 @@ class ClearFilter extends React.Component {
     }
 
     render() {
+        const {
+            selectedAccountIds,
+            selectedCategories,
+            searchTerm,
+            paymentType,
+            bunqMeTabType,
+            requestType,
+            paymentVisibility,
+            bunqMeTabVisibility,
+            requestVisibility
+        } = this.props;
+
         if (
-            this.props.selectedAccountIds.length <= 0 &&
-            this.props.selectedCategories.length <= 0 &&
-            this.props.searchTerm.length <= 0 &&
-            this.props.paymentType === "default" &&
-            this.props.bunqMeTabType === "active" &&
-            this.props.requestType === "default" &&
-            this.props.paymentVisibility === true &&
-            this.props.bunqMeTabVisibility === true &&
-            this.props.requestVisibility === true
+            FilterDisabledChecker({
+                selectedAccountIds,
+                selectedCategories,
+                searchTerm,
+                paymentType,
+                bunqMeTabType,
+                requestType,
+                paymentVisibility,
+                bunqMeTabVisibility,
+                requestVisibility
+            })
         ) {
             return null;
         }

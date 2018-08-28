@@ -1,4 +1,5 @@
 import * as React from "react";
+import { translate } from "react-i18next";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
@@ -6,10 +7,10 @@ import MenuItem from "@material-ui/core/MenuItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 
+import FileUploadIcon from "../../Components/CustomSVG/FileUpload";
+
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import DeleteIcon from "@material-ui/icons/Delete";
-import FileUploadIcon from "@material-ui/icons/FileUpload";
-import { translate } from "react-i18next";
 
 class RuleCollectionMenu extends React.Component<any, any> {
     state = {

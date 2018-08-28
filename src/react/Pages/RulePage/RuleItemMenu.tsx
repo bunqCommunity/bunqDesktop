@@ -7,7 +7,8 @@ import MenuItem  from "@material-ui/core/MenuItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 
-import FileUploadIcon from "@material-ui/icons/FileUpload";
+import FileUploadIcon from "../../Components/CustomSVG/FileUpload";
+
 import DeleteIcon from "@material-ui/icons/Delete";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 

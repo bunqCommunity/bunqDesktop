@@ -48,6 +48,7 @@ import {
     shareInviteBankInquiryFilter,
     shareInviteBankResponseFilter
 } from "../../Helpers/DataFilters";
+import FilterDisabledChecker from "../../Helpers/FilterDisabledChecker";
 
 const styles = {
     button: {
@@ -346,7 +347,21 @@ class CombinedList extends React.Component {
     };
 
     render() {
-        const { page, pageSize, t } = this.props;
+        const {
+            page,
+            pageSize,
+            t,
+            selectedAccountIds,
+            selectedCategories,
+            searchTerm,
+            paymentType,
+            bunqMeTabType,
+            requestType,
+            paymentVisibility,
+            bunqMeTabVisibility,
+            requestVisibility
+        } = this.props;
+
         let loadingContent =
             this.props.bunqMeTabsLoading ||
             this.props.paymentsLoading ||
@@ -358,6 +373,19 @@ class CombinedList extends React.Component {
             ) : (
                 <Divider />
             );
+
+        const filterIsEnabled = FilterDisabledChecker({
+            selectedAccountIds,
+            selectedCategories,
+            searchTerm,
+            paymentType,
+            bunqMeTabType,
+            requestType,
+            paymentVisibility,
+            bunqMeTabVisibility,
+            requestVisibility
+        });
+        // const filterEnabledText = t("Filtered items");
 
         // create arrays of the different endpoint types
         const bunqMeTabs = this.bunqMeTabsMapper();

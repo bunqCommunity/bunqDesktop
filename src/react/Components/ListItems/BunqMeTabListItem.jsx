@@ -10,7 +10,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Divider from "@material-ui/core/Divider";
 import Avatar from "@material-ui/core/Avatar";
 
-import CopyIcon from "@material-ui/icons/ContentCopy";
+import CopyIcon from "@material-ui/icons/FileCopy";
 import Share from "@material-ui/icons/Share";
 
 import PaymentListItem from "./PaymentListItem";

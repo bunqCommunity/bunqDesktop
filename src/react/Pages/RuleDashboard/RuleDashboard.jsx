@@ -8,7 +8,7 @@ import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 
-import FileDownloadIcon from "@material-ui/icons/FileDownload";
+import FileDownloadIcon from "../../Components/CustomSVG/FileDownload";
 import AddIcon from "@material-ui/icons/Add";
 
 import RuleCollectionItem from "./RuleCollectionItem";

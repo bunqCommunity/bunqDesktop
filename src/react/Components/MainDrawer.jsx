@@ -22,9 +22,10 @@ import TimeLineIcon from "@material-ui/icons/Timeline";
 import CardIcon from "@material-ui/icons/CreditCard";
 import Bookmark from "@material-ui/icons/Bookmark";
 import CreateIcon from "@material-ui/icons/Create";
-import FileUpload from "@material-ui/icons/FileUpload";
+
 import EventIcon from "@material-ui/icons/Event";
 
+import FileUploadIcon from "./CustomSVG/FileUpload";
 import NavLink from "./Routing/NavLink";
 import ListItemWrapper from "./ListItemWrapper";
 import { closeMainDrawer } from "../Actions/main_drawer";
@@ -141,7 +142,7 @@ class MainDrawer extends React.Component {
                   />,
                   <ListItemWrapper
                       to="/exports"
-                      icon={FileUpload}
+                      icon={FileUploadIcon}
                       text={"Exports"}
                       location={this.props.location}
                   />,

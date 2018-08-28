@@ -7,16 +7,17 @@ import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
 
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
-import InfoIcon from "@material-ui/icons/InfoOutline";
+import InfoIcon from "@material-ui/icons/InfoOutlined";
 import LinkIcon from "@material-ui/icons/Link";
 import PeopleIcon from "@material-ui/icons/People";
 
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 import NavLink from "../../Components/Routing/NavLink";
+
 import { formatMoney } from "../../Helpers/Utils";
+import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
 
 import { accountsSelectAccount } from "../../Actions/accounts.js";
-import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
 
 const styles = {
     bigAvatar: {

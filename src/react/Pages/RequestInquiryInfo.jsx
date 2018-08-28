@@ -18,7 +18,7 @@ import Typography from "@material-ui/core/Typography";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import HelpIcon from "@material-ui/icons/Help";
-import CopyIcon from "@material-ui/icons/ContentCopy";
+import CopyIcon from "@material-ui/icons/FileCopy";
 
 import ExportDialog from "../Components/ExportDialog";
 import TranslateButton from "../Components/TranslationHelpers/Button";
