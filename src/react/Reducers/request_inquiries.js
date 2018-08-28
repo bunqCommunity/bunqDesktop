@@ -7,8 +7,8 @@ export const defaultState = {
     request_inquiries: [],
     account_id: false,
     loading: false,
-    newer_id: false,
-    older_id: false
+    newer_ids: [],
+    older_ids: []
 };
 
 export default (state = defaultState, action) => {
@@ -24,6 +24,7 @@ export default (state = defaultState, action) => {
             const ignoreOldItems = false;
 
             const mergedInfo = MergeApiObjects(
+                action.payload.account_id,
                 action.payload.requestInquiries,
                 ignoreOldItems ? [] : request_inquiries
             );
@@ -41,12 +42,22 @@ export default (state = defaultState, action) => {
                     .catch(() => {});
             }
 
+            // update newer and older id for this monetary account
+            const newerIds = {
+                ...state.newer_ids,
+                [action.payload.account_id]: mergedInfo.newer_id
+            }
+            const olderIds = {
+                ...state.older_ids,
+                [action.payload.account_id]: mergedInfo.older_id
+            }
+
             return {
                 ...state,
                 request_inquiries: mergedInfo.items,
                 account_id: action.payload.account_id,
-                newer_id: mergedInfo.newer_id,
-                older_id: mergedInfo.older_id
+                newer_ids: newerIds,
+                older_ids: olderIds
             };
 
         case "REQUEST_INQUIRIES_IS_LOADING":

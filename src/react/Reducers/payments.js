@@ -7,8 +7,8 @@ export const defaultState = {
     payments: [],
     account_id: false,
     loading: false,
-    newer_id: false,
-    older_id: false
+    newer_ids: [],
+    older_ids: []
 };
 
 export default (state = defaultState, action) => {
@@ -17,13 +17,10 @@ export default (state = defaultState, action) => {
     switch (action.type) {
         case "PAYMENTS_UPDATE_INFO":
         case "PAYMENTS_SET_INFO":
-            // with a set info event or if account id changes we ignore the currently stored items
-            // const ignoreOldItems =
-            //     action.type === "PAYMENTS_SET_INFO" ||
-            //     state.account_id !== action.payload.account_id;
             const ignoreOldItems = false;
 
             const mergedInfo = MergeApiObjects(
+                action.payload.account_id,
                 action.payload.payments,
                 ignoreOldItems ? [] : payments
             );
@@ -41,13 +38,28 @@ export default (state = defaultState, action) => {
                     .catch(() => {});
             }
 
+            // update newer and older id for this monetary account
+            const newerIds = {
+                ...state.newer_ids,
+                [action.payload.account_id]: mergedInfo.newer_id
+            }
+            const olderIds = {
+                ...state.older_ids,
+                [action.payload.account_id]: mergedInfo.older_id
+            }
+
             return {
                 ...state,
                 payments: mergedInfo.items,
                 account_id: action.payload.account_id,
-                newer_id: mergedInfo.newer_id,
-                older_id: mergedInfo.older_id
+                newer_ids: newerIds,
+                older_ids: olderIds
             };
+
+        case "ACCOUNTS_SELECT_ACCOUNT":
+            return {
+                ...state
+            }
 
         case "PAYMENTS_IS_LOADING":
             return {
