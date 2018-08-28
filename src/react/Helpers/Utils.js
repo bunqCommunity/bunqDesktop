@@ -21,7 +21,7 @@ export const formatMoney = (value, stayNegative = false) => {
             ? parsedValue * -1
             : parsedValue;
 
-    return parsedValue.toLocaleString(undefined, {
+    return parsedValue.toLocaleString("nl", {
         currency: "EUR",
         style: "currency",
         currencyDisplay: "symbol",

@@ -98,16 +98,15 @@ class MoneyAmountLabel extends React.Component {
     checkPayment = () => {
         const { theme, style, info } = this.props;
 
-        const isNegative = info.amount.value < 0;
-
         // switch between incoming/outgoing colors
-        const paymentColor = isNegative
-            ? theme.palette.common.sentPayment
-            : theme.palette.common.receivedPayment;
+        const paymentColor =
+            info.amount.value < 0
+                ? theme.palette.common.sentPayment
+                : theme.palette.common.receivedPayment;
 
         return {
-            style: { color: paymentColor, ...style },
-            isNegative: isNegative
+            color: paymentColor,
+            ...style
         };
     };
 
@@ -117,42 +116,32 @@ class MoneyAmountLabel extends React.Component {
         switch (info.authorisation_status) {
             case "AUTHORISED":
                 return {
-                    style: {
-                        color: theme.palette.masterCardAction.authorized,
-                        ...style
-                    },
-                    isNegative: true
+                    color: theme.palette.masterCardAction.authorized,
+                    ...style
                 };
             case "BLOCKED":
                 return {
-                    style: {
-                        color: theme.palette.masterCardAction.blocked,
-                        ...theme.styles.masterCardAction.blocked,
-                        ...style
-                    }
+                    color: theme.palette.masterCardAction.blocked,
+                    ...theme.styles.masterCardAction.blocked,
+                    ...style
                 };
             case "CLEARING_REFUND":
                 return {
-                    style: {
-                        color: theme.palette.masterCardAction.refunded,
-                        ...theme.styles.masterCardAction.refunded,
-                        ...style
-                    }
+                    color: theme.palette.masterCardAction.refunded,
+                    ...theme.styles.masterCardAction.refunded,
+                    ...style
                 };
             default:
             case "PENDING":
                 return {
-                    style: {
-                        color: theme.palette.masterCardAction.pending,
-                        ...style
-                    }
+                    color: theme.palette.masterCardAction.pending,
+                    ...style
                 };
         }
     };
 
     render() {
         let finalStyle = {};
-        let finalClassname = "";
         switch (this.props.type) {
             case "requestResponse":
                 finalStyle = this.checkRequestResponse();
@@ -161,27 +150,17 @@ class MoneyAmountLabel extends React.Component {
                 finalStyle = this.checkRequestInquiry();
                 break;
             case "payment":
-                const paymentSettings = this.checkPayment();
-
-                finalClassname = paymentSettings.isNegative
-                    ? "minus-character-content"
-                    : "";
-                finalStyle = paymentSettings.style;
+                finalStyle = this.checkPayment();
                 break;
             case "masterCardAction":
-                const masterCardSettings = this.checkMasterCardAction();
-
-                finalClassname = masterCardSettings.isNegative
-                    ? "minus-character-content"
-                    : "";
-                finalStyle = masterCardSettings.style;
+                finalStyle = this.checkMasterCardAction();
                 break;
         }
 
         const Component = this.props.component;
 
         return (
-            <Component className={finalClassname} style={finalStyle}>
+            <Component style={finalStyle}>
                 {this.props.children}
             </Component>
         );

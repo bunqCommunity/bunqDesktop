@@ -42,7 +42,7 @@ class PaymentListItem extends React.Component {
         }
         const displayName = payment.counterparty_alias.display_name;
         const paymentAmount = parseFloat(payment.amount.value);
-        const formattedPaymentAmount = formatMoney(paymentAmount);
+        const formattedPaymentAmount = formatMoney(paymentAmount, true);
         const paymentTypeLabel = paymentText(payment, this.props.t);
 
         return [

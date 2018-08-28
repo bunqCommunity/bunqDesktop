@@ -47,8 +47,8 @@ class MasterCardActionListItem extends React.Component {
                     .attachment_public_uuid;
         }
         const displayName = masterCardAction.counterparty_alias.display_name;
-        const paymentAmount = masterCardAction.getAmount();
-        const formattedPaymentAmount = formatMoney(paymentAmount);
+        const paymentAmount = masterCardAction.getDelta();
+        const formattedPaymentAmount = formatMoney(paymentAmount, true);
         const secondaryText = masterCardActionParser(masterCardAction, t);
 
         return [
