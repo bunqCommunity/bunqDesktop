@@ -215,6 +215,7 @@ class AccountInfo extends React.Component {
         const noneText = t("None");
         const sharedWithText = t("Shared with");
         const sharedByText = t("Shared by");
+        const coOwnersText = t("Co-owners");
 
         if (this.state.deactivateActivated) return <Redirect to="/" />;
 
@@ -229,39 +230,45 @@ class AccountInfo extends React.Component {
                 filterShareInviteBankInquiries(accountInfo.id)
             );
 
+            const isJointAccount =
+                accountInfo.accountType === "MonetaryAccountJoint";
+
             let primaryConnectText = sharedWithText;
             let secondaryConnectText = noneText;
             let displayNameList = [];
             let allowConnectSettings = true;
 
-            if (filteredInviteResponses.length > 0) {
-                // this account was shared by someone
-                primaryConnectText = sharedByText;
-                allowConnectSettings = false;
+            // don't render if on a joint account
+            if (isJointAccount) {
+// coOwnersText
+            }else{
+                if (filteredInviteResponses.length > 0) {
+                    // this account was shared by someone
+                    primaryConnectText = sharedByText;
+                    allowConnectSettings = false;
 
-                displayNameList = filteredInviteResponses.map(
-                    filteredInviteResponse => {
-                        return filteredInviteResponse.ShareInviteBankResponse
-                            .counter_alias.display_name;
-                    }
-                );
-            } else if (filteredShareInquiries.length > 0) {
-                // this account was shared with someone
-                primaryConnectText = sharedWithText;
+                    displayNameList = filteredInviteResponses.map(
+                        filteredInviteResponse => {
+                            return filteredInviteResponse
+                                .ShareInviteBankResponse.counter_alias
+                                .display_name;
+                        }
+                    );
+                } else if (filteredShareInquiries.length > 0) {
+                    // this account was shared with someone
+                    primaryConnectText = sharedWithText;
 
-                displayNameList = filteredShareInquiries.map(
-                    filteredShareInquiry => {
-                        return filteredShareInquiry.ShareInviteBankInquiry
-                            .counter_user_alias.display_name;
-                    }
-                );
+                    displayNameList = filteredShareInquiries.map(
+                        filteredShareInquiry => {
+                            return filteredShareInquiry.ShareInviteBankInquiry
+                                .counter_user_alias.display_name;
+                        }
+                    );
+                }
+                if (displayNameList.length > 0) {
+                    secondaryConnectText = displayNameList.join(", ");
+                }
             }
-            if (displayNameList.length > 0) {
-                secondaryConnectText = displayNameList.join(", ");
-            }
-
-            const isJointAccount =
-                accountInfo.accountType === "MonetaryAccountJoint";
 
             content = (
                 <React.Fragment>
@@ -385,29 +392,31 @@ class AccountInfo extends React.Component {
                         account={accountInfo}
                     />
 
-                    <Paper style={styles.paperList}>
-                        <List>
-                            {allowConnectSettings ? (
-                                <ListItem
-                                    to={`/connect/${accountId}`}
-                                    component={NavLink}
-                                    button
-                                >
-                                    <ListItemText
-                                        primary={`${primaryConnectText}: `}
-                                        secondary={secondaryConnectText}
-                                    />
-                                </ListItem>
-                            ) : (
-                                <ListItem>
-                                    <ListItemText
-                                        primary={`${primaryConnectText}: `}
-                                        secondary={secondaryConnectText}
-                                    />
-                                </ListItem>
-                            )}
-                        </List>
-                    </Paper>
+                    {isJointAccount ? null : (
+                        <Paper style={styles.paperList}>
+                            <List>
+                                {allowConnectSettings ? (
+                                    <ListItem
+                                        to={`/connect/${accountId}`}
+                                        component={NavLink}
+                                        button
+                                    >
+                                        <ListItemText
+                                            primary={`${primaryConnectText}: `}
+                                            secondary={secondaryConnectText}
+                                        />
+                                    </ListItem>
+                                ) : (
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={`${primaryConnectText}: `}
+                                            secondary={secondaryConnectText}
+                                        />
+                                    </ListItem>
+                                )}
+                            </List>
+                        </Paper>
+                    )}
 
                     <Paper style={styles.paperList}>
                         <CombinedList
