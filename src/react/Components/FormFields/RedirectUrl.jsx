@@ -12,7 +12,7 @@ import NotInterested from "@material-ui/icons/NotInterested";
 const styles = theme => ({
     formControl: {
         margin: theme.spacing.unit,
-        width: "100%"
+        width: "calc(100% - 16px)"
     },
     withoutLabel: {
         marginTop: theme.spacing.unit * 3
