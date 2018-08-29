@@ -405,6 +405,7 @@ class AccountInfo extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                             initialBunqConnect={this.props.initialBunqConnect}
                             hiddenTypes={["ShareInviteBankInquiry"]}
+                            accountId={accountId}
                         />
                     </Paper>
                 </React.Fragment>

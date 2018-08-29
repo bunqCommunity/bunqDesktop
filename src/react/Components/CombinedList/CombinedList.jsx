@@ -178,6 +178,14 @@ class CombinedList extends React.Component {
                     ...this.getCommonFilters()
                 })
             )
+            .filter(event => {
+                if (this.props.accountId) {
+                    if (event.monetary_account_id !== this.props.accountId) {
+                        return false;
+                    }
+                }
+                return true;
+            })
             .map(payment => {
                 return {
                     component: (
@@ -203,6 +211,14 @@ class CombinedList extends React.Component {
                     ...this.getCommonFilters()
                 })
             )
+            .filter(event => {
+                if (this.props.accountId) {
+                    if (event.monetary_account_id !== this.props.accountId) {
+                        return false;
+                    }
+                }
+                return true;
+            })
             .map(bunqMeTab => {
                 return {
                     component: (
@@ -233,6 +249,14 @@ class CombinedList extends React.Component {
                     ...this.getCommonFilters()
                 })
             )
+            .filter(event => {
+                if (this.props.accountId) {
+                    if (event.monetary_account_id !== this.props.accountId) {
+                        return false;
+                    }
+                }
+                return true;
+            })
             .map(masterCardAction => {
                 return {
                     component: (
@@ -269,6 +293,14 @@ class CombinedList extends React.Component {
                     ...this.getCommonFilters()
                 })
             )
+            .filter(event => {
+                if (this.props.accountId) {
+                    if (event.monetary_account_id !== this.props.accountId) {
+                        return false;
+                    }
+                }
+                return true;
+            })
             .map(requestResponse => {
                 return {
                     component: (
@@ -294,6 +326,14 @@ class CombinedList extends React.Component {
                     ...this.getCommonFilters()
                 })
             )
+            .filter(event => {
+                if (this.props.accountId) {
+                    if (event.monetary_account_id !== this.props.accountId) {
+                        return false;
+                    }
+                }
+                return true;
+            })
             .map(requestInquiry => {
                 return {
                     component: (
