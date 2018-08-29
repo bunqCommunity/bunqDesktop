@@ -191,6 +191,7 @@ class CombinedList extends React.Component {
                     component: (
                         <PaymentListItem
                             payment={payment}
+                            displayRequestPayments={false}
                             accounts={this.props.accounts}
                             BunqJSClient={this.props.BunqJSClient}
                         />

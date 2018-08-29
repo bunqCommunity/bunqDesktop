@@ -54,7 +54,7 @@ class RequestResponseListItem extends React.Component {
         const displayName = requestResponse.counterparty_alias.display_name;
         let paymentAmount = requestResponse.getAmount();
         paymentAmount = paymentAmount > 0 ? paymentAmount * -1 : paymentAmount;
-        const formattedPaymentAmount = formatMoney(paymentAmount);
+        const formattedPaymentAmount = formatMoney(paymentAmount, true);
         let paymentLabel = requestResponseText(requestResponse, t);
 
         return [
