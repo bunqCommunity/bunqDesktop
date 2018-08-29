@@ -84,6 +84,10 @@ class CombinedList extends React.Component {
         };
     }
 
+    componentDidMount() {
+        this.loadEvents();
+    }
+
     componentDidUpdate(prevProps) {
         const isLoading =
             this.props.bunqMeTabsLoading ||
@@ -103,35 +107,39 @@ class CombinedList extends React.Component {
             (isLoading == false && wasLoading) ||
             this.props.generalFilterDate !== prevProps.generalFilterDate
         ) {
-            // create arrays of the different endpoint types
-            const bunqMeTabs = this.bunqMeTabsMapper();
-            const payments = this.paymentMapper();
-            const masterCardActions = this.masterCardActionMapper();
-            const requestResponses = this.requestResponseMapper(false, true);
-            const requestInquiries = this.requestInquiryMapper();
-            const shareInviteBankInquiries = this.shareInviteBankInquiryMapper();
-
-            // combine the list, order by date and group by day
-            const events = [
-                ...bunqMeTabs,
-                ...requestResponses,
-                ...masterCardActions,
-                ...requestInquiries,
-                ...shareInviteBankInquiries,
-                ...payments
-            ].sort(function(a, b) {
-                return new Date(b.filterDate) - new Date(a.filterDate);
-            });
-
-            this.setState({
-                totalEvents:
-                    this.state.totalEvents < events.length
-                        ? events.length
-                        : this.state.totalEvents,
-                events: events
-            });
+            this.loadEvents();
         }
     }
+
+    loadEvents = () => {
+        // create arrays of the different endpoint types
+        const bunqMeTabs = this.bunqMeTabsMapper();
+        const payments = this.paymentMapper();
+        const masterCardActions = this.masterCardActionMapper();
+        const requestResponses = this.requestResponseMapper(false, true);
+        const requestInquiries = this.requestInquiryMapper();
+        const shareInviteBankInquiries = this.shareInviteBankInquiryMapper();
+
+        // combine the list, order by date and group by day
+        const events = [
+            ...bunqMeTabs,
+            ...requestResponses,
+            ...masterCardActions,
+            ...requestInquiries,
+            ...shareInviteBankInquiries,
+            ...payments
+        ].sort(function(a, b) {
+            return new Date(b.filterDate) - new Date(a.filterDate);
+        });
+
+        this.setState({
+            totalEvents:
+                this.state.totalEvents < events.length
+                    ? events.length
+                    : this.state.totalEvents,
+            events: events
+        });
+    };
 
     copiedValue = type => callback => {
         this.props.openSnackbar(`Copied ${type} to your clipboard`);
