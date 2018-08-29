@@ -39,7 +39,7 @@ class RequestInquiryListItem extends React.Component {
         const { requestInquiry, t } = this.props;
         if (requestInquiry.status === "ACCEPTED") {
             if (this.props.displayAcceptedRequests === false) {
-                // hide the request-response becuase a payment item exists
+                // hide the request-response because a payment item exists
                 return null;
             }
         }

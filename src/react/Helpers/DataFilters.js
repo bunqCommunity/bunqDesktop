@@ -294,7 +294,10 @@ export const requestResponseFilter = options => requestResponse => {
     }
 
     // hide accepted payments
-    if (requestResponse.RequestResponse.status === "ACCEPTED") {
+    if (
+        requestResponse.RequestResponse.status === "ACCEPTED" &&
+        !options.displayAcceptedRequests
+    ) {
         return false;
     }
 

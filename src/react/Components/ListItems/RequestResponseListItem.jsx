@@ -40,7 +40,7 @@ class RequestResponseListItem extends React.Component {
         const { requestResponse, t } = this.props;
         if (requestResponse.status === "ACCEPTED") {
             if (this.props.displayAcceptedRequests === false) {
-                // hide the request-response becuase a payment item exists
+                // hide the request-response because a payment item exists
                 return null;
             }
         }
@@ -52,7 +52,8 @@ class RequestResponseListItem extends React.Component {
                     .attachment_public_uuid;
         }
         const displayName = requestResponse.counterparty_alias.display_name;
-        const paymentAmount = requestResponse.getAmount();
+        let paymentAmount = requestResponse.getAmount();
+        paymentAmount = paymentAmount > 0 ? paymentAmount * -1 : paymentAmount;
         const formattedPaymentAmount = formatMoney(paymentAmount);
         let paymentLabel = requestResponseText(requestResponse, t);
 

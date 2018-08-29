@@ -189,7 +189,7 @@ class RuleCreator extends React.Component<any, any> {
         // add the new rule to the list
         rules.push(newRule);
 
-        // put the item_type first becuase these are checked the fastest
+        // put the item_type first because these are checked the fastest
         rules = rules.sort((ruleA: Rule, ruleB: Rule) => {
             if (
                 ruleA.ruleType === "ITEM_TYPE" &&

@@ -1,9 +1,26 @@
 export const requestResponseText = (requestResponse, t) => {
-    const ACCEPTED = t("You paid the request");
-    const PENDING = t("Received a request");
-    const REJECTED = t("You denied the request");
-    const REVOKED = t("Request was cancelled");
-    const EXPIRED = t("Request has expired");
+    let requestType = t("Request");
+    switch (requestResponse.type) {
+        case "DIRECT_DEBIT":
+        case "DIRECT_DEBIT_B2B":
+            requestType = "direct debit";
+            break;
+        case "SOFORT":
+            requestType = "SOFORT";
+            break;
+        case "IDEAL":
+            requestType = "iDEAL";
+            break;
+        case "INTERNAL":
+        default:
+            break;
+    }
+
+    const ACCEPTED = `${requestType} ${t(`payment accepted`)}`;
+    const PENDING = `${requestType} ${t(`payment is pending`)} `;
+    const REJECTED = `${t(`You denied the`)} ${requestType} ${t(`payment`)}`;
+    const REVOKED = `${t(`The`)} ${requestType} ${t(`payment was cancelled`)}`;
+    const EXPIRED = `${t(`The`)} ${requestType} ${t(`payment has expired`)}`;
     switch (requestResponse.status) {
         case "ACCEPTED":
             return ACCEPTED;
@@ -19,6 +36,9 @@ export const requestResponseText = (requestResponse, t) => {
             return requestResponse.status;
     }
 };
+
+// type	= DIRECT_DEBIT, DIRECT_DEBIT_B2B, IDEAL, SOFORT or INTERNAL.
+// sub_type	= ONCE or RECURRING for DIRECT_DEBIT RequestInquiries and NONE
 
 export const requestInquiryText = (requestInquiry, t) => {
     const ACCEPTED = t("Your request was accepted");

@@ -291,6 +291,7 @@ class CombinedList extends React.Component {
                 requestResponseFilter({
                     requestVisibility: this.props.requestVisibility,
                     requestType: this.props.requestType,
+                    displayAcceptedRequests: true,
                     ...this.getCommonFilters()
                 })
             )
@@ -306,6 +307,7 @@ class CombinedList extends React.Component {
                 return {
                     component: (
                         <RequestResponseListItem
+                            displayAcceptedRequests={true}
                             requestResponse={requestResponse}
                             BunqJSClient={this.props.BunqJSClient}
                         />

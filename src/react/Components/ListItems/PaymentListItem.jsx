@@ -33,6 +33,12 @@ class PaymentListItem extends React.Component {
 
     render() {
         const { t, payment, accounts } = this.props;
+        if (payment.sub_type === "REQUEST") {
+            if (this.props.displayRequestPayments === false) {
+                // hide the payments because a request response exists
+                return null;
+            }
+        }
 
         let imageUUID = false;
         if (payment.counterparty_alias.avatar) {
@@ -121,6 +127,7 @@ class PaymentListItem extends React.Component {
 }
 
 PaymentListItem.defaultProps = {
+    displayRequestPayments: true,
     minimalDisplay: false
 };
 
