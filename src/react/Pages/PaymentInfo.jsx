@@ -139,8 +139,8 @@ class PaymentInfo extends React.Component {
             const payment = paymentInfo.Payment;
             const paymentDescription = payment.description;
             const paymentDate = humanReadableDate(payment.updated);
-            const paymentAmount = payment.getAmount();
-            const formattedPaymentAmount = formatMoney(paymentAmount);
+            const paymentAmount = parseFloat(payment.amount.value);
+            const formattedPaymentAmount = formatMoney(paymentAmount, true);
             const paymentLabel = paymentText(payment, t);
             const counterPartyIban = payment.counterparty_alias.iban;
 
