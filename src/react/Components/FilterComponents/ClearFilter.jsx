@@ -24,7 +24,8 @@ class ClearFilter extends React.Component {
             requestType,
             paymentVisibility,
             bunqMeTabVisibility,
-            requestVisibility
+            requestVisibility,
+            amountFilterAmount
         } = this.props;
 
         if (
@@ -37,7 +38,8 @@ class ClearFilter extends React.Component {
                 requestType,
                 paymentVisibility,
                 bunqMeTabVisibility,
-                requestVisibility
+                requestVisibility,
+                amountFilterAmount
             })
         ) {
             return null;
@@ -83,7 +85,9 @@ const mapStateToProps = state => {
         requestVisibility: state.request_filter.visible,
 
         selectedCategories: state.category_filter.selected_categories,
-        selectedAccountIds: state.account_id_filter.selected_account_ids
+        selectedAccountIds: state.account_id_filter.selected_account_ids,
+
+        amountFilterAmount: state.amount_filter.amount
     };
 };
 

@@ -191,6 +191,7 @@ class CombinedList extends React.Component {
                     component: (
                         <PaymentListItem
                             payment={payment}
+                            accounts={this.props.accounts}
                             BunqJSClient={this.props.BunqJSClient}
                         />
                     ),
@@ -438,7 +439,8 @@ class CombinedList extends React.Component {
             requestType,
             paymentVisibility,
             bunqMeTabVisibility,
-            requestVisibility
+            requestVisibility,
+            amountFilterAmount
         } = this.props;
         const { events } = this.state;
 
@@ -452,7 +454,8 @@ class CombinedList extends React.Component {
             requestType,
             paymentVisibility,
             bunqMeTabVisibility,
-            requestVisibility
+            requestVisibility,
+            amountFilterAmount
         });
 
         // set a total amount
@@ -651,6 +654,8 @@ class CombinedList extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+
+        accounts: state.accounts.accounts,
         accountsAccountId: state.accounts.selectedAccount,
 
         page: state.pagination.page,

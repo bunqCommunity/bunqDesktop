@@ -7,7 +7,8 @@ export default ({
     requestType,
     paymentVisibility,
     bunqMeTabVisibility,
-    requestVisibility
+    requestVisibility,
+    amountFilterAmount
 }) => {
     return (
         selectedAccountIds.length <= 0 &&
@@ -18,6 +19,7 @@ export default ({
         requestType === "default" &&
         paymentVisibility === true &&
         bunqMeTabVisibility === true &&
-        requestVisibility === true
+        requestVisibility === true &&
+        amountFilterAmount === ""
     );
 };

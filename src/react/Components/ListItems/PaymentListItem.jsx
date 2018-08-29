@@ -32,7 +32,7 @@ class PaymentListItem extends React.Component {
     }
 
     render() {
-        const { payment } = this.props;
+        const { t, payment, accounts } = this.props;
 
         let imageUUID = false;
         if (payment.counterparty_alias.avatar) {
@@ -44,6 +44,47 @@ class PaymentListItem extends React.Component {
         const paymentAmount = parseFloat(payment.amount.value);
         const formattedPaymentAmount = formatMoney(paymentAmount, true);
         const paymentTypeLabel = paymentText(payment, this.props.t);
+        const counterPartyIban = payment.counterparty_alias.iban;
+
+        let accountInfo = false;
+        let counterpartyAccountInfo = false;
+        if (counterPartyIban) {
+            accounts.forEach(account => {
+                // check alias values for this account
+                const matchesCounterparty = account.alias.some(alias => {
+                    if (alias.type === "IBAN") {
+                        if (alias.value === counterPartyIban) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+                if (matchesCounterparty) {
+                    counterpartyAccountInfo = account;
+                }
+
+                if (account.id === payment.monetary_account_id) {
+                    accountInfo = account;
+                }
+            });
+        }
+
+        let primaryText = displayName;
+        let secondaryText = paymentTypeLabel;
+
+        const fromText = t("from");
+        const toText = t("to");
+
+        // if transfer between personal accounts
+        if (counterpartyAccountInfo) {
+            primaryText = counterpartyAccountInfo.description;
+
+            // format secondary text
+            const connectWord = paymentAmount > 0 ? fromText : toText;
+            secondaryText = `${t("Transfered")} ${connectWord} ${
+                accountInfo.description
+            }`;
+        }
 
         return [
             <ListItem
@@ -58,10 +99,7 @@ class PaymentListItem extends React.Component {
                         imageUUID={imageUUID}
                     />
                 </Avatar>
-                <ListItemText
-                    primary={displayName}
-                    secondary={paymentTypeLabel}
-                />
+                <ListItemText primary={primaryText} secondary={secondaryText} />
                 <ListItemSecondaryAction style={{ marginTop: -16 }}>
                     <MoneyAmountLabel
                         style={styles.moneyAmountLabel}

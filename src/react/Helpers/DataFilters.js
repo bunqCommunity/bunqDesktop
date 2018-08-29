@@ -64,11 +64,11 @@ export const paymentFilter = options => payment => {
 
         switch (options.amountFilterType) {
             case "EQUALS":
-                return amountValue == options.amountFilterAmount;
+                if (amountValue != options.amountFilterAmount) return false;
             case "MORE":
-                return amountValue > options.amountFilterAmount;
+                if (amountValue < options.amountFilterAmount) return false;
             case "LESS":
-                return amountValue < options.amountFilterAmount;
+                if (amountValue > options.amountFilterAmount) return false;
         }
     }
 
@@ -227,11 +227,11 @@ export const masterCardActionFilter = options => masterCardAction => {
         const amountValue = masterCardAction.getAmount();
         switch (options.amountFilterType) {
             case "EQUALS":
-                return amountValue == options.amountFilterAmount;
+                if (amountValue != options.amountFilterAmount) return false;
             case "MORE":
-                return amountValue > options.amountFilterAmount;
+                if (amountValue < options.amountFilterAmount) return false;
             case "LESS":
-                return amountValue < options.amountFilterAmount;
+                if (amountValue > options.amountFilterAmount) return false;
         }
     }
 
