@@ -63,6 +63,7 @@ class AccountCard extends React.Component {
                         <Avatar style={styles.avatar}>
                             <LazyAttachmentImage
                                 BunqJSClient={this.props.BunqJSClient}
+                                height={60}
                                 imageUUID={
                                     account.avatar.image[0]
                                         .attachment_public_uuid
