@@ -260,6 +260,9 @@ class AccountInfo extends React.Component {
                 secondaryConnectText = displayNameList.join(", ");
             }
 
+            const isJointAccount =
+                accountInfo.accountType === "MonetaryAccountJoint";
+
             content = (
                 <React.Fragment>
                     <Dialog
@@ -270,15 +273,20 @@ class AccountInfo extends React.Component {
 
                         <DialogContent>
                             <DialogContentText>
-                                {t(
-                                    "Are you sure you wish to cancel this account?"
-                                )}
+                                {isJointAccount
+                                    ? t(
+                                          "It is not possible to delete a Joint or Connect account using bunqDesktop"
+                                      )
+                                    : t(
+                                          "Are you sure you wish to cancel this account?"
+                                      )}
                             </DialogContentText>
                             <TextField
                                 style={styles.textField}
                                 value={this.state.deactivateReason}
                                 onChange={this.handleReasonChange}
                                 error={this.state.deactivateReason.length === 0}
+                                disabled={isJointAccount}
                                 helperText={t(
                                     "Why are you closing the account?"
                                 )}
@@ -301,7 +309,8 @@ class AccountInfo extends React.Component {
                                 color="secondary"
                                 disabled={
                                     this.props.accountsLoading ||
-                                    this.state.deactivateReason.length === 0
+                                    this.state.deactivateReason.length === 0 ||
+                                    isJointAccount
                                 }
                             >
                                 Agree

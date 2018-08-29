@@ -238,7 +238,9 @@ class LoginPassword extends React.Component {
                     Loading
                 </Typography>
                 <CircularProgress size={50} />
-                <Typography variant="subheading">{statusMessage}</Typography>
+                <Typography variant="subheading" style={styles.text}>
+                    {statusMessage}
+                </Typography>
             </CardContent>
         ) : (
             <CardContent style={styles.cardContent}>
