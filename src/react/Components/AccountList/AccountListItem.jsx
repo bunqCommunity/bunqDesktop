@@ -45,9 +45,9 @@ class AccountListItem extends React.Component {
                 this.props.selectAccount(accountId);
 
                 // check if we have a load callback for click events
-                if (this.props.updateExternal) {
+                if (this.props.onClick) {
                     // fetch all payments for the account
-                    this.props.updateExternal(this.props.user.id, accountId);
+                    this.props.onClick(this.props.user.id, accountId);
                 }
             }
         };
@@ -113,16 +113,20 @@ class AccountListItem extends React.Component {
                     secondary={formattedBalance}
                 />
                 <ListItemSecondaryAction>
-                    <IconButton
-                        to={`/account-info/${account.id}`}
-                        component={NavLink}
-                    >
-                        {this.props.accountsAccountId === account.id ? (
-                            <KeyboardArrowRightIcon />
-                        ) : (
-                            <InfoIcon />
-                        )}
-                    </IconButton>
+                    {this.props.secondaryAction ? (
+                        this.props.secondaryAction
+                    ) : (
+                        <IconButton
+                            to={`/account-info/${account.id}`}
+                            component={NavLink}
+                        >
+                            {this.props.accountsAccountId === account.id ? (
+                                <KeyboardArrowRightIcon />
+                            ) : (
+                                <InfoIcon />
+                            )}
+                        </IconButton>
+                    )}
                 </ListItemSecondaryAction>
             </ListItem>
         );
@@ -149,7 +153,8 @@ AccountListItem.defaultProps = {
     clickable: true,
     denseMode: false,
     isJoint: false,
-    shareInviteBankResponses: []
+    shareInviteBankResponses: [],
+    secondaryAction: false
 };
 
 export default connect(

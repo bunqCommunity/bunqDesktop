@@ -155,6 +155,23 @@ export function accountsSelectAccount(account_id) {
     };
 }
 
+export function accountExcludeFromTotal(accountId) {
+    return {
+        type: "ACCOUNTS_EXCLUDE_FROM_TOTAL",
+        payload: {
+            account_id: accountId
+        }
+    };
+}
+export function accountIncludeInTotal(accountId) {
+    return {
+        type: "ACCOUNTS_INCLUDE_IN_TOTAL",
+        payload: {
+            account_id: accountId
+        }
+    };
+}
+
 export function accountsNotLoading() {
     return { type: "ACCOUNTS_IS_NOT_LOADING" };
 }
