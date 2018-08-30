@@ -86,7 +86,9 @@ export const paymentFilter = options => payment => {
             );
 
             // no categories linked so always unmatched
-            if (categories.length === 0) return options.toggleCategoryFilter;
+            if (categories.length === 0) {
+                if (!options.toggleCategoryFilter) return false;
+            }
 
             // go through the connected categories and selected categories to see if one matches
             const categoryMatches = categories.some(category => {
@@ -99,7 +101,9 @@ export const paymentFilter = options => payment => {
             if (options.toggleCategoryFilter && categoryMatches) return false;
 
             // no matches and not reversed so return false
-            if (!categoryMatches) return false;
+            if (!categoryMatches) {
+                if (!options.toggleCategoryFilter) return false;
+            }
         }
     }
 
@@ -161,7 +165,9 @@ export const bunqMeTabsFilter = options => bunqMeTab => {
             );
 
             // no categories linked so always unmatched
-            if (categories.length === 0) return options.toggleCategoryFilter;
+            if (categories.length === 0) {
+                if (!options.toggleCategoryFilter) return false;
+            }
 
             // go through the connected categories and selected categories to see if one matches
             const categoryMatches = categories.some(category => {
@@ -174,7 +180,9 @@ export const bunqMeTabsFilter = options => bunqMeTab => {
             if (options.toggleCategoryFilter && categoryMatches) return false;
 
             // no matches and not reversed so return false
-            if (!categoryMatches) return false;
+            if (!categoryMatches) {
+                if (!options.toggleCategoryFilter) return false;
+            }
         }
     }
 
@@ -259,10 +267,14 @@ export const masterCardActionFilter = options => masterCardAction => {
             });
 
             // if reversed and we got matches, return false
-            if (options.toggleCategoryFilter && categoryMatches) return false;
+            if (categories.length === 0) {
+                if (!options.toggleCategoryFilter) return false;
+            }
 
             // no matches and not reversed so return false
-            if (!categoryMatches) return false;
+            if (!categoryMatches) {
+                if (!options.toggleCategoryFilter) return false;
+            }
         }
     }
 
@@ -331,7 +343,9 @@ export const requestResponseFilter = options => requestResponse => {
             );
 
             // no categories linked so always unmatched
-            if (categories.length === 0) return options.toggleCategoryFilter;
+            if (categories.length === 0) {
+                if (!options.toggleCategoryFilter) return false;
+            }
 
             // go through the connected categories and selected categories to see if one matches
             const categoryMatches = categories.some(category => {
@@ -344,7 +358,9 @@ export const requestResponseFilter = options => requestResponse => {
             if (options.toggleCategoryFilter && categoryMatches) return false;
 
             // no matches and not reversed so return false
-            if (!categoryMatches) return false;
+            if (!categoryMatches) {
+                if (!options.toggleCategoryFilter) return false;
+            }
         }
     }
 
@@ -411,7 +427,9 @@ export const requestInquiryFilter = options => requestInquiry => {
             );
 
             // no categories linked so always unmatched
-            if (categories.length === 0) return options.toggleCategoryFilter;
+            if (categories.length === 0) {
+                if (!options.toggleCategoryFilter) return false;
+            }
 
             // go through the connected categories and selected categories to see if one matches
             const categoryMatches = categories.some(category => {
@@ -424,7 +442,9 @@ export const requestInquiryFilter = options => requestInquiry => {
             if (options.toggleCategoryFilter && categoryMatches) return false;
 
             // no matches and not reversed so return false
-            if (!categoryMatches) return false;
+            if (!categoryMatches) {
+                if (!options.toggleCategoryFilter) return false;
+            }
         }
     }
 
