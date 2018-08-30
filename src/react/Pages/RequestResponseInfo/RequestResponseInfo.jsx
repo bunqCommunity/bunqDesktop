@@ -24,7 +24,10 @@ import TransactionHeader from "../../Components/TransactionHeader";
 import CategorySelector from "../../Components/Categories/CategorySelector";
 
 import { formatMoney, humanReadableDate } from "../../Helpers/Utils";
-import { requestResponseText } from "../../Helpers/StatusTexts";
+import {
+    requestResponseText,
+    requestResponseTypeParser
+} from "../../Helpers/StatusTexts";
 import { requestResponseUpdate } from "../../Actions/request_response_info";
 import {
     requestResponseReject,
@@ -157,8 +160,16 @@ class RequestResponseInfo extends React.Component {
             );
         } else {
             const requestResponse = requestResponseInfo.RequestResponse;
-            const paymentDate = humanReadableDate(requestResponse.updated);
-            const paymentAmount = requestResponse.amount_inquired.value;
+            const createdDate = humanReadableDate(requestResponse.created);
+            const timeRespondedDate = humanReadableDate(
+                requestResponse.time_responded
+            );
+            let paymentAmount = requestResponse.amount_inquired.value;
+            paymentAmount =
+                requestResponse.status === "ACCEPTED"
+                    ? paymentAmount * -1
+                    : paymentAmount;
+
             const formattedPaymentAmount = formatMoney(paymentAmount);
             const requestResponseLabel = requestResponseText(
                 requestResponse,
@@ -178,6 +189,7 @@ class RequestResponseInfo extends React.Component {
                             to={requestResponse.alias}
                             from={requestResponse.counterparty_alias}
                             user={this.props.user}
+                            swap={requestResponse.status === "ACCEPTED"}
                         />
 
                         <Grid item xs={12}>
@@ -215,10 +227,23 @@ class RequestResponseInfo extends React.Component {
                                 <Divider />
                                 <ListItem>
                                     <ListItemText
-                                        primary={t("Date")}
-                                        secondary={paymentDate}
+                                        primary={t("Received")}
+                                        secondary={createdDate}
                                     />
                                 </ListItem>
+
+                                {timeRespondedDate ? (
+                                    <React.Fragment>
+                                        <Divider />
+                                        <ListItem>
+                                            <ListItemText
+                                                primary={t("Paid")}
+                                                secondary={timeRespondedDate}
+                                            />
+                                        </ListItem>
+                                    </React.Fragment>
+                                ) : null}
+
                                 {requestResponse.counterparty_alias &&
                                 requestResponse.counterparty_alias.iban ? (
                                     <React.Fragment>
@@ -234,6 +259,34 @@ class RequestResponseInfo extends React.Component {
                                         </ListItem>
                                     </React.Fragment>
                                 ) : null}
+
+                                <Divider />
+                                <ListItem>
+                                    <ListItemText
+                                        primary={t("Type")}
+                                        secondary={requestResponseTypeParser(
+                                            requestResponse,
+                                            t
+                                        )}
+                                    />
+                                </ListItem>
+
+                                <Divider />
+                                <ListItem>
+                                    <ListItemText
+                                        primary={t("Status")}
+                                        secondary={requestResponse.status}
+                                    />
+                                </ListItem>
+
+                                <Divider />
+                                <ListItem>
+                                    <ListItemText
+                                        primary={t("Sub type")}
+                                        secondary={requestResponse.sub_type}
+                                    />
+                                </ListItem>
+
                                 <Divider />
                             </List>
 

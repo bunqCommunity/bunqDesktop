@@ -1,20 +1,8 @@
+// type	= DIRECT_DEBIT, DIRECT_DEBIT_B2B, IDEAL, SOFORT or INTERNAL.
+// sub_type	= ONCE or RECURRING for DIRECT_DEBIT RequestInquiries and NONE
+
 export const requestResponseText = (requestResponse, t) => {
-    let requestType = t("Request");
-    switch (requestResponse.type) {
-        case "DIRECT_DEBIT":
-        case "DIRECT_DEBIT_B2B":
-            requestType = "direct debit";
-            break;
-        case "SOFORT":
-            requestType = "SOFORT";
-            break;
-        case "IDEAL":
-            requestType = "iDEAL";
-            break;
-        case "INTERNAL":
-        default:
-            break;
-    }
+    let requestType = requestResponseTypeParser(requestResponse, t);
 
     const ACCEPTED = `${requestType} ${t(`payment accepted`)}`;
     const PENDING = `${requestType} ${t(`payment is pending`)} `;
@@ -37,8 +25,20 @@ export const requestResponseText = (requestResponse, t) => {
     }
 };
 
-// type	= DIRECT_DEBIT, DIRECT_DEBIT_B2B, IDEAL, SOFORT or INTERNAL.
-// sub_type	= ONCE or RECURRING for DIRECT_DEBIT RequestInquiries and NONE
+export const requestResponseTypeParser = (requestResponse, t) => {
+    switch (requestResponse.type) {
+        case "DIRECT_DEBIT":
+        case "DIRECT_DEBIT_B2B":
+            return "direct debit";
+        case "SOFORT":
+            return "SOFORT";
+        case "IDEAL":
+            return "iDEAL";
+        case "INTERNAL":
+        default:
+            return t("request");
+    }
+};
 
 export const requestInquiryText = (requestInquiry, t) => {
     const ACCEPTED = t("Your request was accepted");

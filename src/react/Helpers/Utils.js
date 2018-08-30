@@ -87,7 +87,7 @@ export const humanReadableDate = (
 
     // hide hours:minutes:seconds if disabled
     const hoursMinutes = displayHoursMins
-        ? createDate.toLocaleTimeString()
+        ? createDate.toLocaleTimeString(localization)
         : "";
 
     // different year, add it to the label

@@ -313,7 +313,10 @@ class CombinedList extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                         />
                     ),
-                    filterDate: requestResponse.created,
+                    filterDate:
+                        requestResponse.status === "ACCEPTED"
+                            ? requestResponse.time_responded
+                            : requestResponse.created,
                     info: requestResponse
                 };
             });

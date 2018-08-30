@@ -97,7 +97,8 @@ class CategorySelection extends React.Component {
                             <CustomIcon
                                 style={{
                                     height: 24,
-                                    color: category.color
+                                    color: category.color,
+                                    marginRight: 16
                                 }}
                             >
                                 {category.icon}
