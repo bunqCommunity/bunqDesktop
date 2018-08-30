@@ -561,13 +561,13 @@ const getData = (
                     timescaleTransactionInfo.masterCardAction
                 );
                 masterCardPaymentTransactionHistory.push(
-                    timescaleTransactionInfo.maestroPayment
+                    timescaleTransactionInfo.masterCardPayment
                 );
                 tapAndPayPaymentTransactionHistory.push(
                     timescaleTransactionInfo.tapAndPayPayment
                 );
                 maestroPaymentTransactionHistory.push(
-                    timescaleTransactionInfo.masterCardPayment
+                    timescaleTransactionInfo.maestroPayment
                 );
                 applePayPaymentTransactionHistory.push(
                     timescaleTransactionInfo.applePayPayment

@@ -75,7 +75,7 @@ export const UTCDateToLocalDate = date => {
 export const humanReadableDate = (
     date,
     displayHoursMins = true,
-    localization = "en-us"
+    localization = "nl"
 ) => {
     let currentDate = new Date();
     let createDate = date;
