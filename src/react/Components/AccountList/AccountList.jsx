@@ -221,7 +221,7 @@ class AccountList extends React.Component {
 
                     let onClickHandler = this.updateExternal;
                     let secondaryAction = false;
-                    if (accountTotalSelectionMode) {
+                    if (accountTotalSelectionMode && excludedAccountIds) {
                         const excluded = excludedAccountIds.some(
                             excludedAccountId =>
                                 account.id === excludedAccountId
