@@ -136,7 +136,7 @@
         "upath": "1.0.5"
     },
     "devDependencies": {
-        "@bunq-community/bunq-js-client": "^0.22.6",
+        "@bunq-community/bunq-js-client": "^0.23.0",
         "@bunq-community/bunqdesktop-templates": "^1.2.0",
         "@fortawesome/fontawesome-free": "^5.2.0",
         "@google-cloud/translate": "^1.1.0",

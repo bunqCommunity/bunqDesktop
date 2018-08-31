@@ -16,6 +16,7 @@ Analytics();
 
 // create a new bunq js client and inject into the app
 const BunqJSClientInstance = new BunqJSClient(store, Logger);
+BunqJSClientInstance.setKeepAlive(false);
 
 ReactDOM.render(
     <App BunqJSClient={BunqJSClientInstance} />,
