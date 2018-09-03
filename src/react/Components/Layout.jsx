@@ -35,6 +35,7 @@ import { userLogin } from "../Actions/user.js";
 import { usersUpdate } from "../Actions/users";
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
+import { loadOAuthDetails } from "../Actions/oauth";
 import { loadStoredPayments } from "../Actions/payments";
 import { loadStoredAccounts } from "../Actions/accounts";
 import { loadStoredBunqMeTabs } from "../Actions/bunq_me_tabs";
@@ -576,6 +577,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         userLogin: (userType, updated = false) =>
             dispatch(userLogin(BunqJSClient, userType, updated)),
 
+        loadOAuthDetails: () => dispatch(loadOAuthDetails(BunqJSClient)),
         loadStoredPayments: () => dispatch(loadStoredPayments(BunqJSClient)),
         loadStoredContacts: () => dispatch(loadStoredContacts(BunqJSClient)),
         loadStoredBunqMeTabs: () =>
