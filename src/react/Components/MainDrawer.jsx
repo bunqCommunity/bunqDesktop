@@ -269,6 +269,8 @@ const mapStateToProps = state => {
         // used to determine if we need to disable certain items in the menu
         derivedPassword: state.registration.derivedPassword,
         apiKey: state.registration.api_key,
+
+        limitedPermissions: state.user.limited_permissions,
         userType: state.user.user_type
     };
 };

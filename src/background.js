@@ -103,7 +103,7 @@ app.on("ready", () => {
     // setup the main window
     const mainWindow = createWindow("main", {
         frame: USE_NATIVE_FRAME,
-        webPreferences: { webSecurity: false },
+        webPreferences: { webSecurity: false, nodeIntegration: true },
         width: 1000,
         height: 800
     });

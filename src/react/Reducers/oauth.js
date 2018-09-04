@@ -1,27 +1,30 @@
 import store from "store";
 
-import { OAUTH_CLIENT_DETAILS } from "../Actions/oauth";
+import {
+    OAUTH_CLIENT_DETAILS_ID,
+    OAUTH_CLIENT_DETAILS_SECRET
+} from "../Actions/oauth";
+
+const storedClientId = store.get(OAUTH_CLIENT_DETAILS_ID);
+const storedClientSecret = store.get(OAUTH_CLIENT_DETAILS_SECRET);
+
+const defaultClientId = storedClientId !== undefined ? storedClientId : false;
+const defaultClientSecret =
+    storedClientSecret !== undefined ? storedClientSecret : false;
 
 export const defaultState = {
-    client_id: false,
-    client_secret: false
+    client_id: defaultClientId,
+    client_secret: defaultClientSecret
 };
 
 export default (state = defaultState, action) => {
     switch (action.type) {
         case "OAUTH_SET_DETAILS":
-            // store the data if we have access to the bunqjsclient
-            if (action.payload.BunqJSClient) {
-                action.payload.BunqJSClient.Session.storeEncryptedData(
-                    {
-                        client_id: action.payload.client_id,
-                        client_secret: action.payload.client_secret
-                    },
-                    OAUTH_CLIENT_DETAILS
-                )
-                    .then(() => {})
-                    .catch(() => {});
-            }
+            store.set(OAUTH_CLIENT_DETAILS_ID, action.payload.client_id);
+            store.set(
+                OAUTH_CLIENT_DETAILS_SECRET,
+                action.payload.client_secret
+            );
 
             return {
                 ...state,
@@ -30,10 +33,8 @@ export default (state = defaultState, action) => {
             };
 
         case "OAUTH_CLEAR":
-        case "REGISTRATION_LOG_OUT":
-        case "REGISTRATION_CLEAR_PRIVATE_DATA":
-        case "REGISTRATION_CLEAR_USER_INFO":
-            store.remove(OAUTH_CLIENT_DETAILS);
+            store.remove(OAUTH_CLIENT_DETAILS_ID);
+            store.remove(OAUTH_CLIENT_DETAILS_SECRET);
             return {
                 ...defaultState
             };

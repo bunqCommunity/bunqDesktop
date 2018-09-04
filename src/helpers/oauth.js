@@ -25,7 +25,7 @@ const oauthGoogleUrl = url.format({
     }
 });
 
-// google oauth settings
+// office oauth settings
 const officeClientId = "47c12ea7-5625-46a5-a9ad-5c1313fa263e";
 const officeResponseType = "id_token token";
 const officeRedirectUrl = "http://localhost:1234/oauth2/callback";
@@ -55,7 +55,11 @@ const createOauthWindow = (window, url) => {
         height: 750,
         show: false,
         modal: true,
-        parent: window
+        parent: window,
+        webPreferences: {
+            nodeIntegration: false,
+            nodeIntegrationInWorker: false
+        }
     });
     consentWindow.loadURL(url);
     consentWindow.show();
@@ -64,6 +68,58 @@ const createOauthWindow = (window, url) => {
 };
 
 export default window => {
+    ipcMain.on("open-bunq-oauth", (event, data) => {
+        const consentWindow = createOauthWindow(window, data.targetUrl);
+
+        const handleUrl = receivedUrl => {
+            // get url data
+            const parsedUrl = url.parse(receivedUrl);
+
+            // check if we reached callback url
+            if (parsedUrl.hostname !== "localhost") {
+                // not a callback page
+                return;
+            }
+
+            // parse the fragment params
+            const params = {};
+            const regex = /([^&=]+)=([^&]*)/g;
+            let m;
+            while ((m = regex.exec(parsedUrl.query))) {
+                params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+                // Try to exchange the param values for an access token.
+            }
+
+            // check if we received an access token
+            if (params.code) {
+                // send data to renderer view
+                window.webContents.send(
+                    "received-oauth-bunq-code",
+                    params.code
+                );
+            } else {
+                window.webContents.send("received-oauth-failed");
+            }
+            consentWindow.destroy();
+        };
+
+        // check if the page changed and we received a valid url
+        consentWindow.webContents.on("will-navigate", function(
+            event,
+            receivedUrl
+        ) {
+            handleUrl(receivedUrl);
+        });
+
+        consentWindow.webContents.on("did-get-redirect-request", function(
+            event,
+            oldUrl,
+            newUrl
+        ) {
+            handleUrl(newUrl);
+        });
+    });
+
     ipcMain.on("open-google-oauth", event => {
         const consentWindow = createOauthWindow(window, oauthGoogleUrl);
 
@@ -71,7 +127,7 @@ export default window => {
             // get url data
             const parsedUrl = url.parse(receivedUrl);
 
-            // check if we reached callbakc url
+            // check if we reached callback url
             if (parsedUrl.hostname !== "localhost") {
                 // not a callback page
                 return;
@@ -123,7 +179,7 @@ export default window => {
             // get url data
             const parsedUrl = url.parse(receivedUrl);
 
-            // check if we reached callbakc url
+            // check if we reached callback url
             if (parsedUrl.hostname !== "localhost") {
                 // not a callback page
                 return;

@@ -111,13 +111,18 @@ class AccountList extends React.Component {
             if (!this.props.masterCardActionsLoading)
                 this.props.masterCardActionsUpdate(userId, accountId);
 
-            if (!this.props.shareInviteBankInquiriesLoading)
+            if (!this.props.shareInviteBankResponsesLoading)
+                this.props.shareInviteBankResponsesInfoUpdate(userId);
+
+            if (
+                !this.props.limitedPermissions &&
+                !this.props.shareInviteBankInquiriesLoading
+            ) {
                 this.props.shareInviteBankInquiriesInfoUpdate(
                     userId,
                     accountId
                 );
-            if (!this.props.shareInviteBankResponsesLoading)
-                this.props.shareInviteBankResponsesInfoUpdate(userId);
+            }
         }
     };
 
@@ -317,9 +322,12 @@ class AccountList extends React.Component {
                         </IconButton>
                     </ListItemSecondaryAction>
                 </ListItem>
+
                 {this.props.accountsLoading ? <LinearProgress /> : <Divider />}
                 {accounts}
-                {this.props.denseMode === false ? (
+
+                {this.props.denseMode === false &&
+                this.props.limitedPermissions === false ? (
                     <React.Fragment>
                         <AddAccount
                             displayAddAccount={this.props.displayAddAccount}
@@ -339,6 +347,9 @@ AccountList.defaultProps = {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+        userType: state.user.user_type,
+        limitedPermissions: state.user.limited_permissions,
+
         applicationLastAutoUpdate: state.application.last_auto_update,
 
         hideBalance: state.options.hide_balance,

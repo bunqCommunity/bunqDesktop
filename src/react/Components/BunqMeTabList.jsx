@@ -53,6 +53,7 @@ class BunqMeTabList extends React.Component {
                 <BunqMeTabListItem
                     bunqMeTab={bunqMeTab.BunqMeTab}
                     copiedValue={this.copiedValue}
+                    limitedPermissions={this.props.limitedPermissions}
                     bunqMeTabLoading={this.props.bunqMeTabLoading}
                     bunqMeTabsLoading={this.props.bunqMeTabsLoading}
                     bunqMeTabPut={this.props.bunqMeTabPut}
@@ -90,6 +91,8 @@ class BunqMeTabList extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+        limitedPermissions: state.user.limited_permissions,
+
         bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
         bunqMeTabLoading: state.bunq_me_tab.loading,
         bunqMeTabsLoading: state.bunq_me_tabs.loading
