@@ -12,10 +12,10 @@ mv  dist/bunqDesktop-*.exe \
     -t dist/releases/
 
 echo " - Modify the existing snapshot release title and description"
-SNAPSHOT_RELEASE_ID=$(curl 'https://api.github.com/repos/BunqCommunity/bunqDesktop/releases/tags/snapshot' -u Crecket:$GITHUB_TOKEN | jq '.id')
+SNAPSHOT_RELEASE_ID=$(curl 'https://api.github.com/repos/bunqCommunity/bunqDesktop/releases/tags/snapshot' -u Crecket:$GITHUB_TOKEN | jq '.id')
 
 echo " - Modify the existing snapshot release title and description"
-curl --request PATCH https://api.github.com/repos/BunqCommunity/bunqDesktop/releases/$SNAPSHOT_RELEASE_ID \
+curl --request PATCH https://api.github.com/repos/bunqCommunity/bunqDesktop/releases/$SNAPSHOT_RELEASE_ID \
     -u Crecket:$GITHUB_TOKEN \
     --data "{\"body\": \"Automatic bunqDesktop development build of $TRAVIS_BRANCH ($TRAVIS_COMMIT) built by Travis CI on $(date +'%F %T').\", \"name\": \"Nightly build $(date +'%F %T')\"}"
 

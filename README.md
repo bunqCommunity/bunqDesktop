@@ -2,7 +2,7 @@
 
 
 # bunqDesktop 
-![build status for master branch](https://api.travis-ci.org/BunqCommunity/bunqDesktop.svg?branch=master) 
+![build status for master branch](https://api.travis-ci.org/bunqCommunity/bunqDesktop.svg?branch=master) 
 [![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors)
 [![MIT License](https://img.shields.io/npm/l/all-contributors-cli.svg?style=flat-square)](https://github.com/bunqCommunity/bunqDesktop/blob/master/LICENSE)
 
@@ -94,5 +94,5 @@ contact us through one of the above.
 
 ## Contributors
 
-[![](https://sourcerer.io/fame/crecket/BunqCommunity/bunqDesktop/images/0)](https://sourcerer.io/fame/crecket/BunqCommunity/bunqDesktop/links/0)[![](https://sourcerer.io/fame/crecket/BunqCommunity/bunqDesktop/images/1)](https://sourcerer.io/fame/crecket/BunqCommunity/bunqDesktop/links/1)[![](https://sourcerer.io/fame/crecket/BunqCommunity/bunqDesktop/images/2)](https://sourcerer.io/fame/crecket/BunqCommunity/bunqDesktop/links/2)[![](https://sourcerer.io/fame/crecket/BunqCommunity/bunqDesktop/images/3)](https://sourcerer.io/fame/crecket/BunqCommunity/bunqDesktop/links/3)[![](https://sourcerer.io/fame/crecket/BunqCommunity/bunqDesktop/images/4)](https://sourcerer.io/fame/crecket/BunqCommunity/bunqDesktop/links/4)[![](https://sourcerer.io/fame/crecket/BunqCommunity/bunqDesktop/images/5)](https://sourcerer.io/fame/crecket/BunqCommunity/bunqDesktop/links/5)[![](https://sourcerer.io/fame/crecket/BunqCommunity/bunqDesktop/images/6)](https://sourcerer.io/fame/crecket/BunqCommunity/bunqDesktop/links/6)[![](https://sourcerer.io/fame/crecket/BunqCommunity/bunqDesktop/images/7)](https://sourcerer.io/fame/crecket/BunqCommunity/bunqDesktop/links/7)
+[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/0)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/0)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/1)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/1)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/2)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/2)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/3)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/3)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/4)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/4)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/5)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/5)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/6)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/6)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/7)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/7)
 
