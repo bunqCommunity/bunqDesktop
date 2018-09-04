@@ -6,7 +6,10 @@ import { paymentsClear } from "./payments";
 import { requestResponseClear } from "./request_response_info";
 import { requestInquiryClear } from "./request_inquiry_info";
 import { bunqMeTabsClear } from "./bunq_me_tabs";
-import { registrationClearUserInfo } from "./registration";
+import {
+    registrationClearUserInfo,
+    registrationSetOAuthStoredApiKey
+} from "./registration";
 
 const USER_ID_LOCATION = "BUNQDESKTOP_USER_ID";
 
@@ -41,7 +44,12 @@ export function userLogin(BunqJSClient, type, updated = false) {
         dispatch(userLoading());
         BunqJSClient.getUser(type, updated)
             .then(user => {
-                if (user !== undefined) {
+                if (user && user !== undefined) {
+                    // if of UserApiKey type, attempt to mark this key as OAuth in the stored api keys
+                    if (type === "UserApiKey") {
+                        dispatch(registrationSetOAuthStoredApiKey());
+                    }
+
                     dispatch(userSetInfo(user, type));
                 }
                 dispatch(userInitialCheck());

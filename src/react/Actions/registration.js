@@ -16,13 +16,15 @@ export const API_KEY_IV_LOCATION = "BUNQDESKTOP_API_IV";
 /**
  * Only sets the api key without extra actions
  * @param api_key
+ * @param encrypted_api_key
  * @returns {{type: string, payload: {api_key: *}}}
  */
-export function registrationSetApiKeyBasic(api_key) {
+export function registrationSetApiKeyBasic(api_key, encrypted_api_key = false) {
     return {
         type: "REGISTRATION_SET_API_KEY",
         payload: {
-            api_key: api_key
+            api_key: api_key,
+            encrypted_api_key: encrypted_api_key
         }
     };
 }
@@ -43,9 +45,14 @@ export function registrationSetApiKey(api_key, derivedPassword) {
                 // now store the salt for the currently used password
                 store.set(SALT_LOCATION, derivedPassword.salt);
 
-                dispatch(registrationSetApiKeyBasic(api_key));
                 dispatch(
-                    registrationUpdateStoredApiKeys(
+                    registrationSetApiKeyBasic(
+                        api_key,
+                        encrypedData.encryptedString
+                    )
+                );
+                dispatch(
+                    registrationEnsureStoredApiKey(
                         encrypedData.encryptedString,
                         encrypedData.iv
                     )
@@ -61,13 +68,23 @@ export function registrationSetApiKey(api_key, derivedPassword) {
  * @param apiKeyIv
  * @returns {{type: string, payload: {api_key: *, api_key_iv: *}}}
  */
-export function registrationUpdateStoredApiKeys(apiKey, apiKeyIv) {
+export function registrationEnsureStoredApiKey(apiKey, apiKeyIv) {
     return {
-        type: "REGISTRATION_UPDATE_STORED_API_KEYS",
+        type: "REGISTRATION_ENSURE_STORED_API_KEY",
         payload: {
             api_key: apiKey,
             api_key_iv: apiKeyIv
         }
+    };
+}
+
+/**
+ *  Marks the currently used API key as OAuth type in the stored keys if possible
+ * @returns {{type: string}}
+ */
+export function registrationSetOAuthStoredApiKey() {
+    return {
+        type: "REGISTRATION_SET_OAUTH_STORED_API_KEY"
     };
 }
 
@@ -126,7 +143,9 @@ export function registrationLoadApiKey(derivedPassword) {
                     return;
                 }
 
-                dispatch(registrationSetApiKeyBasic(decryptedString));
+                dispatch(
+                    registrationSetApiKeyBasic(decryptedString, encryptedApiKey)
+                );
             })
             .catch(_ => {
                 dispatch(registrationNotLoading());
@@ -138,7 +157,7 @@ export function registrationLoadApiKey(derivedPassword) {
 }
 
 /**
- * Loads the an api key from stored api key list and decrypts it
+ * Loads an api key from stored api key list and decrypts it
  * @param BunqJSClient
  * @param storedKeyIndex
  * @param derivedPassword
@@ -211,12 +230,22 @@ export function registrationLoadStoredApiKey(
                     dispatch(applicationSetStatus(statusMessage2));
 
                     // destroy the session associated with the previous
-                    dispatch(registrationSetApiKeyBasic(decryptedString));
+                    dispatch(
+                        registrationSetApiKeyBasic(
+                            decryptedString,
+                            encryptedApiKey
+                        )
+                    );
                     dispatch(registrationNotLoading());
                 } else {
                     // nothing changes, just set the api key but do nothing else
                     dispatch(registrationNotLoading());
-                    dispatch(registrationSetApiKeyBasic(decryptedString));
+                    dispatch(
+                        registrationSetApiKeyBasic(
+                            decryptedString,
+                            encryptedApiKey
+                        )
+                    );
                 }
             })
             .catch(_ => {
