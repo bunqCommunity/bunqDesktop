@@ -547,7 +547,7 @@ class Pay extends React.Component {
     };
 
     render() {
-        const t = this.props.t;
+        const { t, limitedPermissions } = this.props;
         const {
             selectedTargetAccount,
             selectedAccount,
@@ -793,22 +793,26 @@ class Pay extends React.Component {
                                     />
                                 </Grid>
 
-                                <Grid item xs={6}>
-                                    <FormControlLabel
-                                        control={
-                                            <Switch
-                                                color="primary"
-                                                checked={
-                                                    this.state.schedulePayment
-                                                }
-                                                onChange={
-                                                    this.schedulePaymentChange
-                                                }
-                                            />
-                                        }
-                                        label={t("Schedule payment")}
-                                    />
-                                </Grid>
+                                {limitedPermissions ? null : (
+                                    <Grid item xs={6}>
+                                        <FormControlLabel
+                                            control={
+                                                <Switch
+                                                    color="primary"
+                                                    checked={
+                                                        this.state
+                                                            .schedulePayment
+                                                    }
+                                                    onChange={
+                                                        this
+                                                            .schedulePaymentChange
+                                                    }
+                                                />
+                                            }
+                                            label={t("Schedule payment")}
+                                        />
+                                    </Grid>
+                                )}
 
                                 <SchedulePaymentForm
                                     t={t}
@@ -870,14 +874,17 @@ class Pay extends React.Component {
 const mapStateToProps = state => {
     return {
         payLoading: state.pay.loading,
+
         accounts: state.accounts.accounts,
         selectedAccount: state.accounts.selectedAccount,
+
         language: state.options.language,
 
         shareInviteBankResponses:
             state.share_invite_bank_responses.share_invite_bank_responses,
 
-        user: state.user.user
+        user: state.user.user,
+        limitedPermissions: state.user.limited_permissions
     };
 };
 

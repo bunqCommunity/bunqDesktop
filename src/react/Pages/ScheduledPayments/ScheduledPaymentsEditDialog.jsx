@@ -253,16 +253,18 @@ class ScheduledPaymentsEditDialog extends React.Component {
                     >
                         Cancel
                     </ButtonTranslate>
-                    <ButtonTranslate
-                        variant="raised"
-                        onClick={this.editPayment}
-                        disabled={
-                            !isValid || this.props.scheduledPaymentsLoading
-                        }
-                        color="primary"
-                    >
-                        Update
-                    </ButtonTranslate>
+                    {this.props.limitedPermissions ? null : (
+                        <ButtonTranslate
+                            variant="raised"
+                            onClick={this.editPayment}
+                            disabled={
+                                !isValid || this.props.scheduledPaymentsLoading
+                            }
+                            color="primary"
+                        >
+                            Update
+                        </ButtonTranslate>
+                    )}
                 </DialogActions>
             </Dialog>
         );
@@ -272,6 +274,8 @@ class ScheduledPaymentsEditDialog extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+        limitedPermissions: state.user.limited_permissions,
+
         scheduledPaymentsLoading: state.scheduled_payments.loading,
         scheduledPayments: state.scheduled_payments.scheduled_payments,
         selectedAccount: state.accounts.selectedAccount

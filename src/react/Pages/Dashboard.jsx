@@ -98,6 +98,16 @@ class Dashboard extends React.Component {
             ? this.props.user.display_name
             : t("user");
 
+        const profileAvatar = user ? (
+            <Avatar style={styles.bigAvatar}>
+                <AttachmentImage
+                    height={50}
+                    BunqJSClient={this.props.BunqJSClient}
+                    imageUUID={user.avatar.image[0].attachment_public_uuid}
+                />
+            </Avatar>
+        ) : null;
+
         return (
             <Grid container spacing={16}>
                 <Helmet>
@@ -111,22 +121,13 @@ class Dashboard extends React.Component {
                 <Grid item xs={12} md={12} lg={10} xl={8}>
                     <Grid container spacing={16}>
                         <Grid item xs={6} style={styles.titleWrapper}>
-                            <NavLink to={"/profile"}>
-                                {user ? (
-                                    <Avatar style={styles.bigAvatar}>
-                                        <AttachmentImage
-                                            height={50}
-                                            BunqJSClient={
-                                                this.props.BunqJSClient
-                                            }
-                                            imageUUID={
-                                                user.avatar.image[0]
-                                                    .attachment_public_uuid
-                                            }
-                                        />
-                                    </Avatar>
-                                ) : null}
-                            </NavLink>
+                            {this.props.limitedPermissions ? (
+                                profileAvatar
+                            ) : (
+                                <NavLink to={"/profile"}>
+                                    {profileAvatar}
+                                </NavLink>
+                            )}
 
                             <Typography
                                 variant="title"
@@ -237,6 +238,7 @@ const mapStateToProps = state => {
         users: state.users.users,
         userType: state.user.user_type,
         userLoading: state.user.loading,
+        limitedPermissions: state.user.limited_permissions,
         usersLoading: state.users.loading,
 
         requestInquiryLoading: state.request_inquiry.loading,
