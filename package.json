@@ -170,7 +170,7 @@
         "cross-env": "^5.2.0",
         "css-loader": "^0.28.11",
         "date-fns": "2.0.0-alpha.7",
-        "electron": "^3.0.0-beta.8",
+        "electron": "^2.0.8",
         "electron-builder": "^20.28.2",
         "electron-reload": "^1.2.5",
         "email-validator": "^1.1.1",
