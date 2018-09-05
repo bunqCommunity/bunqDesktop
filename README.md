@@ -2,7 +2,8 @@
 
 
 # bunqDesktop 
-![build status for master branch](https://api.travis-ci.org/bunqCommunity/bunqDesktop.svg?branch=master) 
+![build status for master branch](https://api.travis-ci.org/bunqCommunity/bunqDesktop.svg?branch=master) [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FbunqCommunity%2FbunqDesktop.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FbunqCommunity%2FbunqDesktop?ref=badge_shield)
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors)
 [![MIT License](https://img.shields.io/npm/l/all-contributors-cli.svg?style=flat-square)](https://github.com/bunqCommunity/bunqDesktop/blob/master/LICENSE)
 
@@ -96,3 +97,7 @@ contact us through one of the above.
 
 [![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/0)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/0)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/1)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/1)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/2)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/2)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/3)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/3)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/4)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/4)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/5)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/5)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/6)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/6)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/7)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/7)
 
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FbunqCommunity%2FbunqDesktop.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FbunqCommunity%2FbunqDesktop?ref=badge_large)
