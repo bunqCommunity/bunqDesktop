@@ -4,17 +4,14 @@ import { connect } from "react-redux";
 import { ipcRenderer } from "electron";
 import Grid from "@material-ui/core/Grid";
 import Input from "@material-ui/core/Input";
+import Collapse from "@material-ui/core/Collapse";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
-import Button from "@material-ui/core/Button";
 import CardContent from "@material-ui/core/CardContent";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
-import KeyIcon from "@material-ui/icons/VpnKey";
-
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
-import Logger from "../../Helpers/Logger";
 import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
 
 import { oauthSetDetails } from "../../Actions/oauth";
@@ -46,6 +43,10 @@ const styles = {
     },
     text: {
         color: "#000000"
+    },
+    subHeading: {
+        color: "#000000",
+        marginBottom: 20
     }
 };
 
@@ -57,6 +58,8 @@ class OAuthManagement extends React.Component {
             clientIdValid: true,
             clientSecret: "",
             clientSecretValud: true,
+
+            showHelp: false,
 
             oauthCode: false
         };
@@ -193,6 +196,13 @@ class OAuthManagement extends React.Component {
             </Grid>
         ) : (
             <Grid item xs={12}>
+                <TranslateTypography
+                    variant="subheading"
+                    style={styles.subHeading}
+                >
+                    Login with limited permissions using OAuth
+                </TranslateTypography>
+
                 <FormControl style={styles.formControl}>
                     <InputLabel style={styles.inputLabel}>Client ID</InputLabel>
                     <Input
@@ -220,9 +230,9 @@ class OAuthManagement extends React.Component {
                     />
                 </FormControl>
 
-                <Button
-                    className="white-button"
+                <TranslateButton
                     variant="raised"
+                    className="black-button"
                     style={styles.button}
                     disabled={
                         !this.state.clientSecretValid ||
@@ -231,7 +241,17 @@ class OAuthManagement extends React.Component {
                     onClick={this.openBunqConsentScreen}
                 >
                     Authenticate
-                </Button>
+                </TranslateButton>
+
+                <TranslateButton
+                    style={styles.button}
+                    rel="noopener"
+                    variant="raised"
+                    className="js-external-link white-button"
+                    href="https://wiki.bunqdesk.top/setup/setup-oauth/"
+                >
+                    Need help?
+                </TranslateButton>
             </Grid>
         );
 
