@@ -2,16 +2,18 @@
 
 
 # bunqDesktop 
+![Github latest version](https://img.shields.io/github/release/bunqcommunity/bunqdesktop.svg) 
+![Download count for one click installers](https://img.shields.io/github/downloads/bunqCommunity/bunqDesktop/total.svg) 
 ![build status for master branch](https://api.travis-ci.org/bunqCommunity/bunqDesktop.svg?branch=master) 
-[![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors)
-[![MIT License](https://img.shields.io/npm/l/all-contributors-cli.svg?style=flat-square)](https://github.com/bunqCommunity/bunqDesktop/blob/master/LICENSE)
+[![MIT License](https://img.shields.io/npm/l/all-contributors-cli.svg?style=flat-square)](https://github.com/bunqCommunity/bunqDesktop/blob/master/LICENSE) 
 
 #### The unofficial, free and open source desktop application for the bunq API. 
 
 ___   
 
-## Download
-#### One click installers
+## Download 
+
+#### One click installers 
 Download the latest version of bunqDesktop from the [GitHub releases page.](https://github.com/bunqCommunity/bunqDesktop/releases)
 
 #### [Snapcraft](https://snapcraft.io/bunqdesktop)
@@ -20,9 +22,11 @@ You can directly search for 'bunqDesktop' in the Ubuntu store or use  the snap c
 `sudo snap install bunqdesktop`
 
 #### [Brew Cask](https://caskroom.github.io/)
+
 `brew cask install bunq`
 
-#### [Chocolatey](https://chocolatey.org/packages/bunqdesktop)
+#### [Chocolatey](https://chocolatey.org/packages/bunqdesktop) ![Download count for Chocolatey](https://img.shields.io/chocolatey/dt/bunqdesktop.svg)
+
 `choco install bunqdesktop`
 
 ## Features
@@ -84,15 +88,14 @@ $ yarn start:dev
 ```
 
 ## Contact
-We have a public [Telegram chat group](https://t.me/bunqcommunity) and a 
-topic on [bunq together](https://together.bunq.com/topic/bunqdesktop-client).
+We have a public [Telegram chat group ](https://t.me/bunqcommunity) and a topic on [bunq together](https://together.bunq.com/topic/bunqdesktop-client).
 
-If you just want a notification when a new version is released you can also join the [Telegram updates chanel](https://t.me/bunqdesktop).
+If you just want a notification when a new version is released you can also join the [Telegram updates channel](https://t.me/bunqdesktop).
 
 Feel free to create a new issue for any suggestions, bugs or general ideas you have on Github or 
 contact us through one of the above.
 
-## Contributors
+## Contributors ![Contributer count](https://img.shields.io/github/contributors/bunqcommunity/bunqdesktop.svg)
 
 [![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/0)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/0)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/1)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/1)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/2)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/2)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/3)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/3)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/4)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/4)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/5)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/5)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/6)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/6)[![](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/images/7)](https://sourcerer.io/fame/crecket/bunqCommunity/bunqDesktop/links/7)
 
