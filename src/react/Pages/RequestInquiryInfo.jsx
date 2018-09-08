@@ -25,6 +25,7 @@ import TranslateButton from "../Components/TranslationHelpers/Button";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import TransactionHeader from "../Components/TransactionHeader";
 import CategorySelector from "../Components/Categories/CategorySelector";
+import NoteTextForm from "../Components/NoteTexts/NoteTextForm";
 
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import { requestInquiryText } from "../Helpers/StatusTexts";
@@ -37,7 +38,8 @@ const styles = {
         width: "100%"
     },
     paper: {
-        padding: 24
+        padding: 24,
+        marginBottom: 16
     },
     list: {
         textAlign: "left"
@@ -50,7 +52,11 @@ const styles = {
 class RequestInquiryInfo extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = { displayExport: false };
+        this.state = {
+            displayExport: false,
+
+            initialUpdate: false
+        };
     }
 
     componentDidMount() {
@@ -63,6 +69,7 @@ class RequestInquiryInfo extends React.Component {
                     : accountId,
                 requestInquiryId
             );
+            this.setState({ initialUpdate: true });
         }
     }
 
@@ -82,6 +89,7 @@ class RequestInquiryInfo extends React.Component {
                     : accountId,
                 requestInquiryId
             );
+            this.setState({ initialUpdate: true });
         }
         return null;
     }
@@ -115,9 +123,11 @@ class RequestInquiryInfo extends React.Component {
         }
 
         let content;
+        let noteTextsForm = null;
         if (
             requestInquiryInfo === false ||
-            requestInquiryInfoLoading === true
+            requestInquiryInfoLoading === true ||
+            this.state.initialUpdate === false
         ) {
             content = (
                 <Grid container spacing={24} justify={"center"}>
@@ -134,6 +144,13 @@ class RequestInquiryInfo extends React.Component {
             const paymentAmount = requestInquiry.amount_inquired.value;
             const formattedPaymentAmount = formatMoney(paymentAmount);
             const requestInquiryLabel = requestInquiryText(requestInquiry, t);
+
+            noteTextsForm = (
+                <NoteTextForm
+                    BunqJSClient={this.props.BunqJSClient}
+                    event={requestInquiry}
+                />
+            );
 
             content = (
                 <Grid
@@ -280,6 +297,8 @@ class RequestInquiryInfo extends React.Component {
 
                 <Grid item xs={12} sm={8} lg={6}>
                     <Paper style={styles.paper}>{content}</Paper>
+
+                    {noteTextsForm}
                 </Grid>
 
                 <Grid item xs={12} sm={2} lg={3} style={{ textAlign: "right" }}>

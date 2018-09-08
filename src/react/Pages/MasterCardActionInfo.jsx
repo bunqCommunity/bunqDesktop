@@ -17,6 +17,8 @@ import Typography from "@material-ui/core/Typography";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import HelpIcon from "@material-ui/icons/Help";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
+import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
+import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 
 import ExportDialog from "../Components/ExportDialog";
 import SpeedDial from "../Components/SpeedDial";
@@ -24,6 +26,7 @@ import TransactionHeader from "../Components/TransactionHeader";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import CategorySelectorDialog from "../Components/Categories/CategorySelectorDialog";
 import CategoryChips from "../Components/Categories/CategoryChips";
+import NoteTextForm from "../Components/NoteTexts/NoteTextForm";
 
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import {
@@ -31,13 +34,12 @@ import {
     masterCardActionParser
 } from "../Helpers/StatusTexts";
 import { masterCardActionInfoUpdate } from "../Actions/master_card_action_info";
-import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
-import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 
 const styles = {
     btn: {},
     paper: {
-        padding: 24
+        padding: 24,
+        marginBottom: 16
     },
     list: {
         textAlign: "left"
@@ -52,7 +54,9 @@ class MasterCardActionInfo extends React.Component {
         super(props, context);
         this.state = {
             displayExport: false,
-            displayCategories: false
+            displayCategories: false,
+
+            initialUpdate: false
         };
     }
 
@@ -70,6 +74,7 @@ class MasterCardActionInfo extends React.Component {
                     : accountId,
                 masterCardActionId
             );
+            this.setState({ initialUpdate: true });
         }
     }
 
@@ -89,6 +94,7 @@ class MasterCardActionInfo extends React.Component {
                     : accountId,
                 masterCardActionId
             );
+            this.setState({ initialUpdate: true });
         }
         return null;
     }
@@ -122,9 +128,11 @@ class MasterCardActionInfo extends React.Component {
         }
 
         let content;
+        let noteTextsForm = null;
         if (
             masterCardActionInfo === false ||
-            masterCardActionLoading === true
+            masterCardActionLoading === true ||
+            this.state.initialUpdate === false
         ) {
             content = (
                 <Grid container spacing={24} justify={"center"}>
@@ -138,10 +146,18 @@ class MasterCardActionInfo extends React.Component {
         } else {
             const masterCardAction = masterCardActionInfo;
             let paymentAmount = masterCardAction.getAmount();
-            paymentAmount = paymentAmount > 0 ? paymentAmount * -1 : paymentAmount;
+            paymentAmount =
+                paymentAmount > 0 ? paymentAmount * -1 : paymentAmount;
             const paymentDate = humanReadableDate(masterCardAction.created);
             const formattedPaymentAmount = formatMoney(paymentAmount, true);
             const paymentLabel = masterCardActionText(masterCardAction, t);
+
+            noteTextsForm = (
+                <NoteTextForm
+                    BunqJSClient={this.props.BunqJSClient}
+                    event={masterCardAction}
+                />
+            );
 
             content = (
                 <Grid
@@ -314,6 +330,8 @@ class MasterCardActionInfo extends React.Component {
 
                 <Grid item xs={12} sm={8} lg={6}>
                     <Paper style={styles.paper}>{content}</Paper>
+
+                    {noteTextsForm}
                 </Grid>
             </Grid>
         );
