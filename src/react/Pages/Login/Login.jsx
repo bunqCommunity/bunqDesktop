@@ -13,6 +13,9 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import AppBar from "@material-ui/core/AppBar";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
 
 import KeyIcon from "@material-ui/icons/VpnKey";
 
@@ -21,6 +24,7 @@ import TranslateTypography from "../../Components/TranslationHelpers/Typography"
 import TranslateButton from "../../Components/TranslationHelpers/Button";
 import NavLink from "../../Components/Routing/NavLink";
 import UserItem from "./UserItem";
+import OAuthManagement from "./OAuthManagement";
 
 import {
     registrationLogOut,
@@ -45,6 +49,9 @@ const styles = {
     environmentToggle: {
         marginTop: 10,
         color: "#000000"
+    },
+    tab: {
+        minWidth: "auto"
     },
     wrapperContainer: {
         height: "100%"
@@ -104,7 +111,9 @@ class Login extends React.Component {
 
             loadingQrCode: false,
             requestQrCodeBase64: false,
-            requestUuid: false
+            requestUuid: false,
+
+            tabIndex: 0
         };
         this.displayQrCodeDelay = null;
         this.checkerInterval = null;
@@ -270,7 +279,8 @@ class Login extends React.Component {
     // check if the qr code has been scanned yet
     checkForScanEvent = () => {
         this.checkerInterval = setInterval(() => {
-            if (this.state.requestUuid !== false) {
+            // only continue if requestUuid isn't set yet and the qr code is open
+            if (this.state.requestUuid !== false && this.state.tabIndex === 0) {
                 this.props.BunqJSClient.checkCredentialStatus(
                     this.state.requestUuid
                 )
@@ -318,6 +328,16 @@ class Login extends React.Component {
         this.setState({ apiKey: "", apiKeyValid: false });
     };
 
+    setApiKeyState = apiKey => {
+        // set api key, set tabIndex to 0
+        this.setState(
+            { apiKey: apiKey, tabIndex: 0 },
+            this.validateInputs(apiKey, this.state.deviceName)
+        );
+        // open options
+        this.toggleOptionVisibility();
+    };
+
     handleKeyChange = event => {
         this.setState(
             {
@@ -336,6 +356,9 @@ class Login extends React.Component {
     };
     handleCheckboxChange = (event, checked) => {
         this.setState({ sandboxMode: checked });
+    };
+    handleTabChange = (event, value) => {
+        this.setState({ tabIndex: value });
     };
 
     validateInputs = (apiKey, deviceName, cb = () => {}) => {
@@ -386,15 +409,17 @@ class Login extends React.Component {
                         <CircularProgress size={50} />
                     </CardContent>
                 </Grid>
-            ) : (
-                Object.keys(users).map(userKey => (
-                    <UserItem
-                        BunqJSClient={BunqJSClient}
-                        user={users[userKey]}
-                        userKey={userKey}
-                    />
-                ))
-            );
+            ) : Object.keys(users).length > 0 ? (
+                <Grid item xs={12} md={4} style={{ zIndex: 10 }}>
+                    {Object.keys(users).map(userKey => (
+                        <UserItem
+                            BunqJSClient={BunqJSClient}
+                            user={users[userKey]}
+                            userKey={userKey}
+                        />
+                    ))}
+                </Grid>
+            ) : null;
 
         const currentSelectedEnvironmnent = this.state.sandboxMode
             ? "SANDBOX"
@@ -432,75 +457,59 @@ class Login extends React.Component {
 
         const apiKeyContent = hasNoApiKey ? (
             <React.Fragment>
-                <CardContent style={styles.cardContent}>
-                    <div style={{ textAlign: "center" }}>
-                        {this.state.requestQrCodeBase64 === false ? (
-                            <div style={styles.qrCode}>
-                                <IconButton onClick={this.displayQrCode}>
-                                    <QRSvg />
-                                </IconButton>
-                            </div>
-                        ) : (
-                            <img
-                                className="animated fadeIn"
-                                src={`data:image/png;base64, ${
-                                    this.state.requestQrCodeBase64
-                                }`}
-                                style={styles.qrCode}
-                            />
-                        )}
-                        <TranslateTypography
-                            variant="body2"
-                            style={{ ...styles.text, margin: 0 }}
-                        >
-                            Scan the QR code with the bunq app to begin!
-                        </TranslateTypography>
-                    </div>
-
-                    <Input
-                        autoFocus
-                        className={"text-input"}
-                        style={styles.apiInput}
-                        error={!this.state.deviceNameValid}
-                        placeholder={t("Device Name")}
-                        label={t("Device Name")}
-                        onChange={this.handleNameChange}
-                        value={this.state.deviceName}
-                        disabled={
-                            // unchanged api key
-                            this.state.apiKey === this.props.apiKey
-                        }
-                        onKeyPress={ev => {
-                            if (
-                                ev.key === "Enter" &&
-                                buttonDisabled === false
-                            ) {
-                                this.setRegistration();
-                                ev.preventDefault();
-                            }
-                        }}
-                    />
-
-                    <Button
-                        className="white-button"
-                        onClick={this.toggleOptionVisibility}
-                        style={styles.optionsButton}
+                <AppBar position="static" color="default">
+                    <Tabs
+                        fullWidth
+                        value={this.state.tabIndex}
+                        onChange={this.handleTabChange}
                     >
-                        {this.state.openOptions
-                            ? t("Less options")
-                            : t("More options")}
-                    </Button>
+                        <Tab style={styles.tab} label="API key" />
+                        <Tab style={styles.tab} label="OAuth" />
+                    </Tabs>
+                </AppBar>
 
-                    <Collapse in={this.state.openOptions}>
+                {this.state.tabIndex === 1 && (
+                    <OAuthManagement
+                        BunqJSClient={BunqJSClient}
+                        setApiKeyState={this.setApiKeyState}
+                    />
+                )}
+
+                {this.state.tabIndex === 0 && (
+                    <CardContent style={styles.cardContent}>
+                        <div style={{ textAlign: "center" }}>
+                            {this.state.requestQrCodeBase64 === false ? (
+                                <div style={styles.qrCode}>
+                                    <IconButton onClick={this.displayQrCode}>
+                                        <QRSvg />
+                                    </IconButton>
+                                </div>
+                            ) : (
+                                <img
+                                    className="animated fadeIn"
+                                    src={`data:image/png;base64, ${
+                                        this.state.requestQrCodeBase64
+                                    }`}
+                                    style={styles.qrCode}
+                                />
+                            )}
+                            <TranslateTypography
+                                variant="body2"
+                                style={{ ...styles.text, margin: 0 }}
+                            >
+                                Scan the QR code with the bunq app to begin!
+                            </TranslateTypography>
+                        </div>
+
                         <Input
-                            style={styles.apiInput}
+                            autoFocus
                             className={"text-input"}
-                            placeholder={t("API key")}
-                            label={t("API key")}
-                            hint={t("Your personal API key")}
-                            onChange={this.handleKeyChange}
-                            value={this.state.apiKey}
-                            error={!this.state.apiKeyValid}
+                            style={styles.apiInput}
+                            error={!this.state.deviceNameValid}
+                            placeholder={t("Device Name")}
+                            label={t("Device Name")}
+                            onChange={this.handleNameChange}
+                            value={this.state.deviceName}
                             disabled={
                                 // unchanged api key
                                 this.state.apiKey === this.props.apiKey
@@ -515,49 +524,85 @@ class Login extends React.Component {
                                 }
                             }}
                         />
-                        <FormControlLabel
-                            style={styles.environmentToggle}
-                            label={
-                                <TranslateTypography
-                                    variant="body1"
-                                    style={styles.text}
-                                >
-                                    Enable sandbox mode?
-                                </TranslateTypography>
-                            }
-                            control={
-                                <Switch
-                                    checked={this.state.sandboxMode}
-                                    onChange={this.handleCheckboxChange}
-                                    aria-label="enable or disable sandbox mode"
-                                />
-                            }
-                        />
 
-                        {this.state.sandboxMode ? (
+                        <Button
+                            className="white-button"
+                            onClick={this.toggleOptionVisibility}
+                            style={styles.optionsButton}
+                        >
+                            {this.state.openOptions
+                                ? t("Less options")
+                                : t("More options")}
+                        </Button>
+
+                        <Collapse in={this.state.openOptions}>
+                            <Input
+                                style={styles.apiInput}
+                                className={"text-input"}
+                                placeholder={t("API key")}
+                                label={t("API key")}
+                                hint={t("Your personal API key")}
+                                onChange={this.handleKeyChange}
+                                value={this.state.apiKey}
+                                error={!this.state.apiKeyValid}
+                                disabled={
+                                    // unchanged api key
+                                    this.state.apiKey === this.props.apiKey
+                                }
+                                onKeyPress={ev => {
+                                    if (
+                                        ev.key === "Enter" &&
+                                        buttonDisabled === false
+                                    ) {
+                                        this.setRegistration();
+                                        ev.preventDefault();
+                                    }
+                                }}
+                            />
+                            <FormControlLabel
+                                style={styles.environmentToggle}
+                                label={
+                                    <TranslateTypography
+                                        variant="body1"
+                                        style={styles.text}
+                                    >
+                                        Enable sandbox mode?
+                                    </TranslateTypography>
+                                }
+                                control={
+                                    <Switch
+                                        checked={this.state.sandboxMode}
+                                        onChange={this.handleCheckboxChange}
+                                        aria-label="enable or disable sandbox mode"
+                                    />
+                                }
+                            />
+
+                            {this.state.sandboxMode ? (
+                                <TranslateButton
+                                    variant="raised"
+                                    color="secondary"
+                                    disabled={sandboxButtonDisabled}
+                                    style={styles.button}
+                                    onClick={this.createSandboxUser}
+                                >
+                                    Create a sandbox account
+                                </TranslateButton>
+                            ) : null}
+
                             <TranslateButton
                                 variant="raised"
-                                color="secondary"
-                                disabled={sandboxButtonDisabled}
+                                color="primary"
+                                className={setApiKeyClassname}
+                                disabled={buttonDisabled}
                                 style={styles.button}
-                                onClick={this.createSandboxUser}
+                                onClick={this.setRegistration}
                             >
-                                Create a sandbox account
+                                Set API Key
                             </TranslateButton>
-                        ) : null}
-
-                        <TranslateButton
-                            variant="raised"
-                            color="primary"
-                            className={setApiKeyClassname}
-                            disabled={buttonDisabled}
-                            style={styles.button}
-                            onClick={this.setRegistration}
-                        >
-                            Set API Key
-                        </TranslateButton>
-                    </Collapse>
-                </CardContent>
+                        </Collapse>
+                    </CardContent>
+                )}
 
                 {this.props.storedApiKeys.length > 0 ? (
                     <Button

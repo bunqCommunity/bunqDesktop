@@ -30,6 +30,7 @@ const storedApiKeysDefault =
 export const defaultState = {
     // unencrypted api key, this should NEVER be stored elsewhere
     api_key: false,
+    encrypted_api_key: false,
 
     // if true there is a stored api key
     has_stored_api_key: store.get(API_KEY_LOCATION) !== undefined,
@@ -52,10 +53,11 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_SET_API_KEY":
             return {
                 ...state,
-                api_key: action.payload.api_key
+                api_key: action.payload.api_key,
+                encrypted_api_key: action.payload.encrypted_api_key,
             };
 
-        case "REGISTRATION_UPDATE_STORED_API_KEYS":
+        case "REGISTRATION_ENSURE_STORED_API_KEY":
             const currentApiKeys = [...state.stored_api_keys];
             const encryptedKey = action.payload.api_key;
             const encryptedKeyIv = action.payload.api_key_iv;
@@ -74,7 +76,9 @@ export default (state = defaultState, action) => {
                 // device name so we can easily recognize it
                 device_name: state.device_name,
                 // environment for this api key
-                environment: state.environment
+                environment: state.environment,
+                // helps mark keys as OAuth
+                isOAuth: false
             };
 
             if (index > -1) {
@@ -90,6 +94,30 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 stored_api_keys: currentApiKeys
+            };
+
+        // marks currently selected API key as OAuth if it is stored
+        case "REGISTRATION_SET_OAUTH_STORED_API_KEY":
+            const storedApiKeys = [...state.stored_api_keys];
+
+            // try to find the currently used API key in the stored API keys
+            const currentApiKeyIndex = storedApiKeys.findIndex(storedApiKey => {
+                // this is the same stored api key
+                return storedApiKey.api_key === state.encrypted_api_key;
+            });
+
+            // check if index was found and if the object exists
+            if (currentApiKeyIndex > -1 && storedApiKeys[currentApiKeyIndex]) {
+                // mark this stored key as OAuth type
+                storedApiKeys[currentApiKeyIndex].isOAuth = true;
+
+                // update stored api keys aswell
+                store.set(API_KEYS_LOCATION, storedApiKeys);
+            }
+
+            return {
+                ...state,
+                stored_api_keys: storedApiKeys
             };
 
         case "REGISTRATION_REMOVE_STORED_API_KEY":
@@ -130,6 +158,7 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 api_key: false,
+                encrypted_api_key: false,
                 stored_api_keys: [],
                 has_stored_api_key: false,
                 derivedPassword: false
@@ -141,6 +170,7 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 api_key: false,
+                encrypted_api_key: false,
                 has_stored_api_key: false,
                 derivedPassword: false
             };
@@ -151,6 +181,7 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 api_key: false,
+                encrypted_api_key: false,
                 has_stored_api_key: false
             };
 

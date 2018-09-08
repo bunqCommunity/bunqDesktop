@@ -14,8 +14,6 @@ const selectedAccountDefault =
 const excludedAccountIdsDefault =
     excludedAccountIdsStored !== undefined ? excludedAccountIdsStored : [];
 
-console.log(excludedAccountIdsDefault)
-
 export const defaultState = {
     accounts: [],
     loading: false,

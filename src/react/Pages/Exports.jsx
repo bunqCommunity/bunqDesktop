@@ -85,7 +85,16 @@ class Exports extends React.Component {
     }
 
     componentDidMount() {
-        this.updateExports(this.props.user.id, this.props.accountsAccountId);
+        if (!this.props.limitedPermissions) {
+            this.updateExports(
+                this.props.user.id,
+                this.props.accountsAccountId
+            );
+        } else {
+            this.setState({
+                selectedTab: 1
+            });
+        }
     }
 
     componentDidUpdate(oldProps) {
@@ -376,7 +385,7 @@ class Exports extends React.Component {
     };
 
     render() {
-        const t = this.props.t;
+        const { t, limitedPermissions } = this.props;
 
         const exportItems = this.props.exports.map((exportItem, key) => {
             const exportInfo = exportItem.CustomerStatement;
@@ -428,7 +437,9 @@ class Exports extends React.Component {
                                 this.setState({ selectedTab: value })
                             }
                         >
-                            <Tab value={0} label="bunq Exports" />
+                            {limitedPermissions ? null : (
+                                <Tab value={0} label="bunq Exports" />
+                            )}
                             <Tab value={1} label="Custom Exports" />
                         </Tabs>
                     </AppBar>
@@ -679,6 +690,8 @@ class Exports extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+        limitedPermissions: state.user.limited_permissions,
+
         accountsAccountId: state.accounts.selectedAccount,
 
         exportNewLoading: state.export_new.loading,

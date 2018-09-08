@@ -82,16 +82,18 @@ class BunqMeTab extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                             initialBunqConnect={this.props.initialBunqConnect}
                             secondaryActions={
-                                <IconButton
-                                    aria-label="Toggle the form"
-                                    onClick={this.toggleForm}
-                                >
-                                    {this.state.showForm ? (
-                                        <CloseIcon />
-                                    ) : (
-                                        <AddIcon />
-                                    )}
-                                </IconButton>
+                                this.props.limitedPermissions ? null : (
+                                    <IconButton
+                                        aria-label="Toggle the form"
+                                        onClick={this.toggleForm}
+                                    >
+                                        {this.state.showForm ? (
+                                            <CloseIcon />
+                                        ) : (
+                                            <AddIcon />
+                                        )}
+                                    </IconButton>
+                                )
                             }
                         />
                     </Paper>
@@ -103,9 +105,12 @@ class BunqMeTab extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        selectedAccount: state.accounts.selectedAccount,
         accounts: state.accounts.accounts,
-        user: state.user.user
+        selectedAccount: state.accounts.selectedAccount,
+
+        user: state.user.user,
+        userType: state.user.user_type,
+        limitedPermissions: state.user.limited_permissions
     };
 };
 

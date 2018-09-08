@@ -94,6 +94,7 @@ class MainDrawer extends React.Component {
             open,
             userType,
             derivedPassword,
+            limitedPermissions,
             apiKey
         } = this.props;
 
@@ -116,12 +117,14 @@ class MainDrawer extends React.Component {
                       text={"Pay"}
                       location={this.props.location}
                   />,
-                  <ListItemWrapper
-                      to="/request"
-                      icon={ArrowDownwardIcon}
-                      text={"Request"}
-                      location={this.props.location}
-                  />,
+                  limitedPermissions ? null : (
+                      <ListItemWrapper
+                          to="/request"
+                          icon={ArrowDownwardIcon}
+                          text={"Request"}
+                          location={this.props.location}
+                      />
+                  ),
                   <ListItemWrapper
                       to="/bunqme-tab"
                       icon={ShareIcon}
@@ -269,7 +272,9 @@ const mapStateToProps = state => {
         // used to determine if we need to disable certain items in the menu
         derivedPassword: state.registration.derivedPassword,
         apiKey: state.registration.api_key,
-        userType: state.user.user_type
+
+        userType: state.user.user_type,
+        limitedPermissions: state.user.limited_permissions
     };
 };
 

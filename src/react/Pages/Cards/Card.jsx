@@ -369,7 +369,9 @@ class Card extends React.Component {
                                     {connectedAccounts}
                                 </List>
 
-                                {displayCvcInfo}
+                                {this.props.limitedPermissions
+                                    ? null
+                                    : displayCvcInfo}
                             </Paper>
                         </Grid>
                     </Grid>
@@ -382,6 +384,8 @@ class Card extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+        limitedPermissions: state.user.limited_permissions,
+
         accounts: state.accounts.accounts,
         cards: state.cards.cards,
         cardsLoading: state.cards.loading,

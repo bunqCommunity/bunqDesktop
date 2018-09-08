@@ -4,6 +4,7 @@ import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Grid from "@material-ui/core/Grid";
+import Chip from "@material-ui/core/Chip";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
@@ -88,6 +89,7 @@ class SwitchApiKeys extends React.Component {
                         }
                     />
                     <ListItemSecondaryAction>
+                        {storedApiKey.isOAuth ? <Chip label="OAuth" /> : null}
                         <IconButton onClick={this.removeStoredApiKey(index)}>
                             <RemoveIcon />
                         </IconButton>
