@@ -661,7 +661,7 @@ class Login extends React.Component {
                 container
                 spacing={16}
                 justify={"center"}
-                alignItems={"center"}
+                alignItems={hasNoApiKey ? "center" : "baseline"}
                 style={styles.wrapperContainer}
             >
                 <Helmet>

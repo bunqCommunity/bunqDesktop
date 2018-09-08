@@ -226,6 +226,30 @@ class Pay extends React.Component {
     };
     draftChange = () => {
         const sendDraftPayment = !this.state.sendDraftPayment;
+        const outgoingPaymentsMessage = this.props.t(
+            "It is not possible to send outgoing payments without draft mode when using a OAuth API key"
+        );
+
+        // check if on oauth session
+        if (this.props.limitedPermissions) {
+            // check if outgoing payments are done
+            const hasOutGoing = this.state.targets.some(target => {
+                return target.type !== "TRANSFER";
+            });
+
+            if (hasOutGoing) {
+                // draft payment is enforced when doing outgoing payments on a oauth session
+                if (!this.state.sendDraftPayment) {
+                    this.setState({
+                        sendDraftPayment: true
+                    });
+                }
+
+                // notify the user
+                this.props.openSnackbar(outgoingPaymentsMessage);
+                return;
+            }
+        }
 
         this.setState(
             {
@@ -291,6 +315,16 @@ class Pay extends React.Component {
                 });
 
                 if (!foundDuplicate) {
+                    if (
+                        this.props.limitedPermissions &&
+                        this.state.targetType !== "TRANSFER"
+                    ) {
+                        // limited permissions and new target isn't a transfer
+                        this.setState({
+                            sendDraftPayment: true
+                        });
+                    }
+
                     currentTargets.push({
                         type: this.state.targetType,
                         value: targetValue,
@@ -777,7 +811,7 @@ class Pay extends React.Component {
                                 margin="normal"
                             />
 
-                            <Grid container justify={"center"}>
+                            <Grid container>
                                 <Grid item xs={6}>
                                     <FormControlLabel
                                         control={
