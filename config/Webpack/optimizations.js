@@ -35,7 +35,9 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
                     compress: {
                         inline: false
                     }
-                }
+                },
+                cache: true,
+                parallel: true
             })
         ];
     } else {

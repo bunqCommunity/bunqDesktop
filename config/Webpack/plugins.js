@@ -1,5 +1,6 @@
 const webpack = require("webpack");
-const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
+const HardSourceWebpackPlugin = require("hard-source-webpack-plugin");
+// const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
@@ -37,21 +38,19 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
             analyzerMode: "static",
             // output outside of the public folder
             reportFilename: "../../webpack.report.html"
+        }),
+
+        // improved caching after multiple builds
+        new HardSourceWebpackPlugin({
+            // Either an absolute path or relative to webpack's options.context.
+            cacheDirectory: "../../node_modules/.cache/hard-source/[confighash]",
+            cachePrune: {
+                sizeThreshold: 100 * 1024 * 1024
+            }
         })
     ];
 
     if (PRODUCTION) {
-        // optimize js output using uglifyjs
-        plugins.push(
-            new UglifyJSPlugin({
-                sourceMap: true,
-                uglifyOptions: {
-                    compress: {
-                        inline: false
-                    }
-                }
-            })
-        );
         // cleanup old build files from BUILD
         plugins.push(
             new CleanWebpackPlugin([`${BUILD_DIR}/${OUTPUT_DIR}/*.*`], {

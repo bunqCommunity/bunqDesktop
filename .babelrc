@@ -1,8 +1,8 @@
 {
     "presets": [
-        "react",
+        "@babel/preset-react",
         [
-            "env",
+            "@babel/preset-env",
             {
                 "targets": {
                     "browsers": [
@@ -14,19 +14,18 @@
     ],
     "plugins": [
         "react-html-attrs",
-        "transform-object-rest-spread",
+        "@babel/plugin-proposal-object-rest-spread",
         [
-            "transform-runtime",
+            "@babel/plugin-transform-runtime",
             {
                 "helpers": false,
-                "polyfill": false,
                 "regenerator": true
             }
         ],
-        "transform-class-properties",
-        "transform-react-inline-elements",
-        "transform-react-constant-elements",
-        "syntax-dynamic-import"
+        "@babel/plugin-proposal-class-properties",
+        "@babel/plugin-transform-react-inline-elements",
+        "@babel/plugin-transform-react-constant-elements",
+        "@babel/plugin-syntax-dynamic-import"
     ],
     "env": {
         "test": {

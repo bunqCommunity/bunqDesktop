@@ -21,6 +21,7 @@ let config = {
     output: {
         path: BUILD_DIR,
         filename: OUTPUT_DIR + "[name].js",
+        pathinfo: PRODUCTION,
         publicPath: "react/",
         chunkFilename: OUTPUT_DIR + "[name].bundle.js"
     },

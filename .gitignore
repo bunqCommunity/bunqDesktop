@@ -16,6 +16,7 @@ Thumbs.db
 /appx
 /dist/*
 !/dist/.gitkeep
+.cache
 
 /bunqdesktop.*.nupkg
 /webpack.report.html
