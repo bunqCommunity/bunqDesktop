@@ -409,7 +409,7 @@ class Login extends React.Component {
                         <CircularProgress size={50} />
                     </CardContent>
                 </Grid>
-            ) : (
+            ) : Object.keys(users).length > 0 ? (
                 <Grid item xs={12} md={4} style={{ zIndex: 10 }}>
                     {Object.keys(users).map(userKey => (
                         <UserItem
@@ -419,7 +419,7 @@ class Login extends React.Component {
                         />
                     ))}
                 </Grid>
-            );
+            ) : null;
 
         const currentSelectedEnvironmnent = this.state.sandboxMode
             ? "SANDBOX"
