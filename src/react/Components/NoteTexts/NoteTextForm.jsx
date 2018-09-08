@@ -61,6 +61,9 @@ class NoteTextForm extends React.Component {
         const { event, user, noteTextsLoading } = this.props;
         const parsedEventType = NoteTextTypeParser(event);
 
+        // ignore if false
+        if (parsedEventType === false) return;
+
         if (!noteTextsLoading) {
             console.log(
                 "update",
@@ -81,6 +84,9 @@ class NoteTextForm extends React.Component {
     addNote = () => {
         const { event, user, noteTextsLoading } = this.props;
         const parsedEventType = NoteTextTypeParser(event);
+
+        // ignore if false
+        if (parsedEventType === false) return;
 
         if (!noteTextsLoading && this.state.messageValid) {
             this.props.notesTextsAddNote(
@@ -119,6 +125,9 @@ class NoteTextForm extends React.Component {
             return null;
 
         const parsedEventType = NoteTextTypeParser(event);
+
+        // ignore if false
+        if (parsedEventType === false) return null;
 
         const noteTextItems = noteTexts.map(noteText => {
             return (

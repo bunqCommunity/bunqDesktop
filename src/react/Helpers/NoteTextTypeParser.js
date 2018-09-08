@@ -1,8 +1,11 @@
 export default event => {
-    console.log(event);
     const eventType = event.eventType;
 
-    if (eventType === "Payment") {
+    if (eventType === "MasterCardAction") {
+        return "mastercard-action";
+    } else if (eventType === "Payment") {
+        return false;
+
         switch (event.type) {
             case "BUNQME":
                 return "bunqme-fundraiser-result";
@@ -15,14 +18,13 @@ export default event => {
             // do nothing yet, check other properties first
         }
 
-        // was a scheduled payment
-        if (event.scheduled_id) return "schedule";
-
         // was a batched payment
         if (event.batch_id) return "payment-batch";
 
         return "payment";
     } else if (eventType === "RequestResponse") {
+        return false;
+
         switch (event.type) {
             case "SOFORT":
                 return "sofort-merchant-transaction";
@@ -36,11 +38,11 @@ export default event => {
 
         return "request-response";
     } else if (eventType === "RequestInquiry") {
+        return false;
+
         if (event.batch_id) return "request-inquiry-batch";
 
         return "request-inquiry";
-    } else if (eventType === "MasterCardAction") {
-        return "mastercard-action";
     }
 };
 
