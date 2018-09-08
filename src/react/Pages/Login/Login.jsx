@@ -410,13 +410,15 @@ class Login extends React.Component {
                     </CardContent>
                 </Grid>
             ) : (
-                Object.keys(users).map(userKey => (
-                    <UserItem
-                        BunqJSClient={BunqJSClient}
-                        user={users[userKey]}
-                        userKey={userKey}
-                    />
-                ))
+                <Grid item xs={12} md={4} style={{ zIndex: 10 }}>
+                    {Object.keys(users).map(userKey => (
+                        <UserItem
+                            BunqJSClient={BunqJSClient}
+                            user={users[userKey]}
+                            userKey={userKey}
+                        />
+                    ))}
+                </Grid>
             );
 
         const currentSelectedEnvironmnent = this.state.sandboxMode
@@ -659,7 +661,7 @@ class Login extends React.Component {
                 container
                 spacing={16}
                 justify={"center"}
-                alignItems={hasNoApiKey ? "center" : "baseline"}
+                alignItems={"center"}
                 style={styles.wrapperContainer}
             >
                 <Helmet>
