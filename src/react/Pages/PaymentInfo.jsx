@@ -30,11 +30,13 @@ import CategorySelectorDialog from "../Components/Categories/CategorySelectorDia
 import CategoryChips from "../Components/Categories/CategoryChips";
 
 import { paymentsUpdate } from "../Actions/payment_info";
+import NoteTextForm from "../Components/NoteTexts/NoteTextForm";
 
 const styles = {
     btn: {},
     paper: {
-        padding: 24
+        padding: 24,
+        marginBottom: 16
     },
     list: {
         textAlign: "left"
@@ -49,7 +51,9 @@ class PaymentInfo extends React.Component {
         super(props, context);
         this.state = {
             displayExport: false,
-            displayCategories: false
+            displayCategories: false,
+
+            initialUpdate: false
         };
     }
 
@@ -67,6 +71,7 @@ class PaymentInfo extends React.Component {
                     : accountId,
                 paymentId
             );
+            this.setState({ initialUpdate: true });
         }
     }
 
@@ -76,7 +81,7 @@ class PaymentInfo extends React.Component {
             this.props.user.id &&
             this.props.initialBunqConnect &&
             this.props.match.params.paymentId !==
-                this.props.match.params.paymentId
+                previousProps.match.params.paymentId
         ) {
             const { paymentId, accountId } = this.props.match.params;
             this.props.updatePayment(
@@ -86,6 +91,7 @@ class PaymentInfo extends React.Component {
                     : accountId,
                 paymentId
             );
+            this.setState({ initialUpdate: true });
         }
         return null;
     }
@@ -125,7 +131,12 @@ class PaymentInfo extends React.Component {
         }
 
         let content;
-        if (paymentInfo === false || paymentLoading === true) {
+        let noteTextsForm = null;
+        if (
+            paymentInfo === false ||
+            paymentLoading === true ||
+            this.state.initialUpdate === false
+        ) {
             content = (
                 <Grid container spacing={24} justify={"center"}>
                     <Grid item xs={12}>
@@ -143,6 +154,13 @@ class PaymentInfo extends React.Component {
             const formattedPaymentAmount = formatMoney(paymentAmount, true);
             const paymentLabel = paymentText(payment, t);
             const counterPartyIban = payment.counterparty_alias.iban;
+
+            noteTextsForm = (
+                <NoteTextForm
+                    BunqJSClient={this.props.BunqJSClient}
+                    event={payment}
+                />
+            );
 
             content = (
                 <Grid
@@ -292,6 +310,8 @@ class PaymentInfo extends React.Component {
 
                 <Grid item xs={12} sm={8} lg={6}>
                     <Paper style={styles.paper}>{content}</Paper>
+
+                    {noteTextsForm}
                 </Grid>
             </Grid>
         );

@@ -27,6 +27,7 @@ import theme from "./theme";
 import main_drawer from "./main_drawer";
 import master_card_actions from "./master_card_actions";
 import master_card_action_info from "./master_card_action_info";
+import note_texts from "./note_texts";
 import oauth from "./oauth";
 import options from "./options";
 import pagination from "./pagination";
@@ -68,6 +69,7 @@ export default combineReducers({
     main_drawer,
     master_card_actions,
     master_card_action_info,
+    note_texts,
     oauth,
     options,
     pagination,

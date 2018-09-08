@@ -22,6 +22,7 @@ import TranslateButton from "../../Components/TranslationHelpers/Button";
 import MoneyAmountLabel from "../../Components/MoneyAmountLabel";
 import TransactionHeader from "../../Components/TransactionHeader";
 import CategorySelector from "../../Components/Categories/CategorySelector";
+import NoteTextForm from "../../Components/NoteTexts/NoteTextForm";
 
 import { formatMoney, humanReadableDate } from "../../Helpers/Utils";
 import {
@@ -56,7 +57,9 @@ class RequestResponseInfo extends React.Component {
         super(props, context);
         this.state = {
             accepted: false,
-            displayExport: false
+            displayExport: false,
+
+            initialUpdate: false
         };
     }
 
@@ -70,6 +73,7 @@ class RequestResponseInfo extends React.Component {
                     : accountId,
                 requestResponseId
             );
+            this.setState({ initialUpdate: true });
         }
     }
 
@@ -89,6 +93,7 @@ class RequestResponseInfo extends React.Component {
                     : accountId,
                 requestResponseId
             );
+            this.setState({ initialUpdate: true });
         }
         return null;
     }
@@ -143,9 +148,11 @@ class RequestResponseInfo extends React.Component {
         }
 
         let content;
+        let noteTextsForm = null;
         if (
             requestResponseInfo === false ||
-            requestResponseInfoLoading === true
+            requestResponseInfoLoading === true ||
+            this.state.initialUpdate === false
         ) {
             content = (
                 <Paper style={styles.paper}>
@@ -174,6 +181,13 @@ class RequestResponseInfo extends React.Component {
             const requestResponseLabel = requestResponseText(
                 requestResponse,
                 t
+            );
+
+            noteTextsForm = (
+                <NoteTextForm
+                    BunqJSClient={this.props.BunqJSClient}
+                    event={requestResponse}
+                />
             );
 
             content = [
@@ -379,6 +393,8 @@ class RequestResponseInfo extends React.Component {
 
                 <Grid item xs={12} sm={8} lg={6}>
                     {content}
+
+                    {noteTextsForm}
                 </Grid>
 
                 <Grid item xs={12} sm={2} lg={3} style={{ textAlign: "right" }}>
