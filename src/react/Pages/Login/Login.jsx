@@ -9,6 +9,7 @@ import Input from "@material-ui/core/Input";
 import Button from "@material-ui/core/Button";
 import Switch from "@material-ui/core/Switch";
 import Collapse from "@material-ui/core/Collapse";
+import Typography from "@material-ui/core/Typography";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -648,9 +649,9 @@ class Login extends React.Component {
                     Loading
                 </TranslateTypography>
                 <CircularProgress size={50} />
-                <TranslateTypography variant="subheading" style={styles.text}>
+                <Typography variant="subheading" style={styles.text}>
                     {status_message}
-                </TranslateTypography>
+                </Typography>
             </CardContent>
         ) : (
             apiKeyContent

@@ -79,6 +79,9 @@ export const defaultState = {
     inactivity_check_duration: inactivityCheckDurationDefault
 };
 
+// update global variable
+window.BUNQDESKTOP_LANGUAGE_SETTING = languageDefault;
+
 export default function reducer(state = defaultState, action) {
     switch (action.type) {
         case "OPTIONS_SET_THEME":
@@ -90,6 +93,9 @@ export default function reducer(state = defaultState, action) {
 
         case "OPTIONS_SET_LANGUAGE":
             settings.set(LANGUAGE_LOCATION, action.payload.language);
+
+            // update global variable
+            window.BUNQDESKTOP_LANGUAGE_SETTING = action.payload.language;
             return {
                 ...state,
                 language: action.payload.language

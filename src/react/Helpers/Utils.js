@@ -21,7 +21,9 @@ export const formatMoney = (value, stayNegative = false) => {
             ? parsedValue * -1
             : parsedValue;
 
-    return parsedValue.toLocaleString("nl", {
+    const localeType = window.BUNQDESKTOP_LANGUAGE_SETTING || "nl";
+
+    return parsedValue.toLocaleString(localeType, {
         currency: "EUR",
         style: "currency",
         currencyDisplay: "symbol",
@@ -57,12 +59,26 @@ export const getUTCDate = dateString => {
     );
 };
 
+// turns language key into pretty human-readable text
+export const getPrettyLanguage = key => {
+    switch (key) {
+        case "en":
+            return "English";
+        case "nl":
+            return "Nederlands";
+        case "de":
+            return "Deutsch";
+        case "es":
+            return "Español";
+        case "it":
+            return "Italiano";
+    }
+    return key;
+};
+
 // transforms a date string into a date object in current timezone
 export const UTCDateToLocalDate = date => {
-    let utcDate = date;
-    if (typeof date !== "object") {
-        utcDate = new Date(date);
-    }
+    const utcDate = new Date(date);
 
     // get the timezoneOffset
     const timezoneOffset = utcDate.getTimezoneOffset();
@@ -77,17 +93,16 @@ export const humanReadableDate = (
     displayHoursMins = true,
     localization = "nl"
 ) => {
-    let currentDate = new Date();
-    let createDate = date;
-    if (typeof date !== "object") {
-        createDate = UTCDateToLocalDate(date);
-    }
+    const currentDate = new Date();
+    const createDate = UTCDateToLocalDate(date);
 
-    const month = createDate.toLocaleString(localization, { month: "long" });
+    const localeType = window.BUNQDESKTOP_LANGUAGE_SETTING || localization;
+
+    const month = createDate.toLocaleString(localeType, { month: "long" });
 
     // hide hours:minutes:seconds if disabled
     const hoursMinutes = displayHoursMins
-        ? createDate.toLocaleTimeString(localization)
+        ? createDate.toLocaleTimeString(localeType)
         : "";
 
     // different year, add it to the label

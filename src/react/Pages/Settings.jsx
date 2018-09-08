@@ -24,6 +24,7 @@ import RemoveIcon from "@material-ui/icons/Delete";
 import HomeIcon from "@material-ui/icons/Home";
 
 import path from "../ImportWrappers/path";
+import { getPrettyLanguage } from "../Helpers/Utils";
 const packageInfo = require("../../../package.json");
 const SUPPORTED_LANGUAGES = packageInfo.supported_languages;
 
@@ -75,22 +76,6 @@ const styles = {
     paper: {
         padding: 24
     }
-};
-
-const getPrettyLanguage = key => {
-    switch (key) {
-        case "en":
-            return "English";
-        case "nl":
-            return "Nederlands";
-        case "de":
-            return "Deutsch";
-        case "es":
-            return "Español";
-        case "it":
-            return "Italiano";
-    }
-    return key;
 };
 
 const humanReadableThemes = {

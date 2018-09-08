@@ -47,6 +47,10 @@ class ScheduledPayments extends React.Component {
         };
     }
 
+    componentDidMount() {
+        this.updateScheduledPayments();
+    }
+
     updateScheduledPayments = (userId, accountId) => {
         if (
             !this.props.initialBunqConnect ||

@@ -36,6 +36,8 @@ class ScheduledPaymentItem extends React.Component {
 
     render() {
         const { scheduledPayment, BunqJSClient, key, t } = this.props;
+        const nextPaymentTextTranslate = t("NextPayment");
+        const scheduleExpiredTranslate = t("Schedule expired");
 
         const scheduledPaymentInfo = scheduledPayment.ScheduledPayment;
         const schedule = scheduledPaymentInfo.schedule;
@@ -66,10 +68,10 @@ class ScheduledPaymentItem extends React.Component {
         }
 
         const nextPaymentText = scheduledPaymentInfo.schedule.time_next
-            ? `Next payment: ${humanReadableDate(
+            ? `${nextPaymentTextTranslate}: ${humanReadableDate(
                   scheduledPaymentInfo.schedule.time_next
               )}`
-            : "Schedule expired";
+            : scheduleExpiredTranslate;
 
         return (
             <React.Fragment>

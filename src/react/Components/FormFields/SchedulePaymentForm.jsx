@@ -12,6 +12,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 
 import TranslateMenuItem from "../TranslationHelpers/MenuItem";
 import scheduleTexts from "../../Helpers/ScheduleTexts";
+import { getUTCDate, UTCDateToLocalDate } from "../../Helpers/Utils";
 
 const styles = {
     textField: {
@@ -23,7 +24,7 @@ const styles = {
 };
 
 export default props => {
-    const {
+    let {
         t,
         schedulePayment,
         recurrenceUnit,
@@ -34,6 +35,8 @@ export default props => {
         handleChangeDirect,
         handleChange
     } = props;
+    scheduleEndDate = UTCDateToLocalDate(scheduleEndDate);
+    scheduleStartDate = UTCDateToLocalDate(scheduleStartDate);
 
     let scheduledPaymentText = null;
     if (schedulePayment) {

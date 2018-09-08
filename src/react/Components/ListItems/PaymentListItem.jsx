@@ -88,7 +88,7 @@ class PaymentListItem extends React.Component {
             // format secondary text
             const connectWord = paymentAmount < 0 ? fromText : toText;
             const connectWordSecondary = paymentAmount > 0 ? fromText : toText;
-            secondaryText = `${t("Transfered")} ${connectWord} ${
+            secondaryText = `${t("Transferred")} ${connectWord} ${
                 accountInfo.description
             } ${connectWordSecondary} ${counterpartyAccountInfo.description}`;
         }

@@ -327,7 +327,7 @@ export default class RuleCollection {
                 return false;
             case "RequestInquiry":
                 if (event.item.status === "ACCEPTED") {
-                    // accepted so an amount was transfered
+                    // accepted so an amount was transferred
                     amount = parseFloat(event.item.amount_responded.value);
                 } else {
                     // invalid type, just return false
@@ -336,7 +336,7 @@ export default class RuleCollection {
                 break;
             case "RequestResponse":
                 if (event.item.status === "ACCEPTED") {
-                    // accepted so an amount was transfered
+                    // accepted so an amount was transferred
                     amount = parseFloat(event.item.amount_responded.value);
                 } else {
                     // invalid type, just return false

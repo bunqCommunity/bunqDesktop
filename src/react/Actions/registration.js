@@ -111,10 +111,11 @@ export function registrationLoadApiKey(derivedPassword) {
     const failedMessage = window.t(
         "We failed to load the stored API key Try again or re-enter the key"
     );
+    const statusMessage = window.t("Attempting to load your API key")
 
     return dispatch => {
         dispatch(registrationLoading());
-        dispatch(applicationSetStatus("Attempting to load your API key"));
+        dispatch(applicationSetStatus(statusMessage));
 
         if (!store.get(API_KEY_LOCATION) || !store.get(API_KEY_IV_LOCATION)) {
             dispatch(registrationNotLoading());
