@@ -43,11 +43,15 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
         // improved caching after multiple builds
         new HardSourceWebpackPlugin({
             // Either an absolute path or relative to webpack's options.context.
-            cacheDirectory: "../../node_modules/.cache/hard-source/[confighash]",
+            cacheDirectory:
+                "../../node_modules/.cache/hard-source/[confighash]",
             cachePrune: {
                 sizeThreshold: 100 * 1024 * 1024
             }
-        })
+        }),
+
+        // fix annoying warning
+        new webpack.IgnorePlugin(/\/iconv-loader$/)
     ];
 
     if (PRODUCTION) {

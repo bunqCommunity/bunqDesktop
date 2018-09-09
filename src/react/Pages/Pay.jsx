@@ -77,7 +77,7 @@ class Pay extends React.Component {
 
             // if true the schedule payment form is shown
             schedulePayment: false,
-            scheduleStartDate: new Date(),
+            scheduleStartDate: getUTCDate(new Date()),
             scheduleEndDate: null,
             recurrenceSize: 1,
             recurrenceUnit: "ONCE",
@@ -587,7 +587,9 @@ class Pay extends React.Component {
             selectedAccount,
             description,
             amount,
-            targets
+            targets,
+            scheduleEndDate,
+            scheduleStartDate
         } = this.state;
         const account = this.props.accounts[selectedAccount];
 
@@ -853,10 +855,8 @@ class Pay extends React.Component {
                                     schedulePayment={this.state.schedulePayment}
                                     recurrenceUnit={this.state.recurrenceUnit}
                                     recurrenceSize={this.state.recurrenceSize}
-                                    scheduleEndDate={this.state.scheduleEndDate}
-                                    scheduleStartDate={
-                                        this.state.scheduleStartDate
-                                    }
+                                    scheduleEndDate={scheduleEndDate}
+                                    scheduleStartDate={scheduleStartDate}
                                     handleChangeDirect={this.handleChangeDirect}
                                     handleChange={this.handleChange}
                                 />

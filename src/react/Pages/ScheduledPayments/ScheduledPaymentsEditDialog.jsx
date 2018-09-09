@@ -15,8 +15,6 @@ import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
 import SchedulePaymentForm from "../../Components/FormFields/SchedulePaymentForm";
 import AttachmentImage from "../../Components/AttachmentImage/AttachmentImage";
 
-import { getUTCDate } from "../../Helpers/Utils";
-
 import { scheduledPaymentUpdate } from "../../Actions/scheduled_payments";
 
 const styles = {
@@ -149,14 +147,14 @@ class ScheduledPaymentsEditDialog extends React.Component {
             ),
             recurrence_unit: recurrenceUnit,
             time_start: format(
-                getUTCDate(scheduleStartDate),
-                "YYYY-MM-DD HH:mm:ss"
+                scheduleStartDate,
+                "YYYY-MM-dd HH:mm:ss"
             )
         };
         if (scheduleEndDate) {
             scheduleInfo.time_end = format(
-                getUTCDate(scheduleEndDate),
-                "YYYY-MM-DD HH:mm:ss"
+                scheduleEndDate,
+                "YYYY-MM-dd HH:mm:ss"
             );
         }
 

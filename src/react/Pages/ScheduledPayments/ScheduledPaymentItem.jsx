@@ -36,7 +36,7 @@ class ScheduledPaymentItem extends React.Component {
 
     render() {
         const { scheduledPayment, BunqJSClient, key, t } = this.props;
-        const nextPaymentTextTranslate = t("NextPayment");
+        const nextPaymentTextTranslate = t("Next payment");
         const scheduleExpiredTranslate = t("Schedule expired");
 
         const scheduledPaymentInfo = scheduledPayment.ScheduledPayment;

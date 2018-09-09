@@ -5,8 +5,10 @@ import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import CirclePicker from "react-color/lib/Circle";
 import Grid from "@material-ui/core/Grid";
+import Chip from "@material-ui/core/Chip";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
+import Avatar from "@material-ui/core/Avatar";
 import TextField from "@material-ui/core/TextField";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Dialog from "@material-ui/core/Dialog";
@@ -14,12 +16,14 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import Typography from "@material-ui/core/Typography";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
+import LazyAttachmentImage from "../Components/AttachmentImage/LazyAttachmentImage";
 import NavLink from "../Components/Routing/NavLink";
 import CombinedList from "../Components/CombinedList/CombinedList";
 import AccountCard from "../Components/AccountCard";
@@ -44,6 +48,13 @@ import { shareInviteBankInquiriesInfoUpdate } from "../Actions/share_invite_bank
 import { shareInviteBankResponsesInfoUpdate } from "../Actions/share_invite_bank_responses";
 
 const styles = {
+    chip: {
+        margin: 8
+    },
+    chipImage: {
+        width: 32,
+        height: 32
+    },
     textField: {
         width: "100%",
         marginTop: 16
@@ -51,6 +62,10 @@ const styles = {
     paper: {
         padding: 24,
         marginBottom: 16
+    },
+    paperIcons: {
+        marginTop: 16,
+        padding: 16
     },
     paperList: {
         marginTop: 16
@@ -206,6 +221,7 @@ class AccountInfo extends React.Component {
     render() {
         const {
             accounts,
+            user,
             shareInviteBankResponses,
             shareInviteBankInquiries,
             t
@@ -236,12 +252,42 @@ class AccountInfo extends React.Component {
             let primaryConnectText = sharedWithText;
             let secondaryConnectText = noneText;
             let displayNameList = [];
+            let profileIconList = [];
             let allowConnectSettings = true;
 
             // don't render if on a joint account
             if (isJointAccount) {
-// coOwnersText
-            }else{
+                primaryConnectText = coOwnersText;
+                allowConnectSettings = false;
+
+                profileIconList = accountInfo.all_co_owner
+                    .filter(coOwner => {
+                        return coOwner.alias.uuid !== user.avatar.anchor_uuid;
+                    })
+                    .map(coOwner => {
+                        return (
+                            <Chip
+                                style={styles.chip}
+                                avatar={
+                                    <Avatar>
+                                        <LazyAttachmentImage
+                                            style={styles.chipImage}
+                                            BunqJSClient={
+                                                this.props.BunqJSClient
+                                            }
+                                            height={32}
+                                            imageUUID={
+                                                coOwner.alias.avatar.image[0]
+                                                    .attachment_public_uuid
+                                            }
+                                        />
+                                    </Avatar>
+                                }
+                                label={coOwner.alias.public_nick_name}
+                            />
+                        );
+                    });
+            } else {
                 if (filteredInviteResponses.length > 0) {
                     // this account was shared by someone
                     primaryConnectText = sharedByText;
@@ -265,9 +311,9 @@ class AccountInfo extends React.Component {
                         }
                     );
                 }
-                if (displayNameList.length > 0) {
-                    secondaryConnectText = displayNameList.join(", ");
-                }
+            }
+            if (displayNameList.length > 0) {
+                secondaryConnectText = displayNameList.join(", ");
             }
 
             content = (
@@ -390,9 +436,17 @@ class AccountInfo extends React.Component {
                         toggleDeactivateDialog={this.toggleDeactivateDialog}
                         shareInviteBankResponses={filteredInviteResponses}
                         account={accountInfo}
+                        isJoint={isJointAccount}
                     />
 
-                    {isJointAccount ? null : (
+                    {isJointAccount ? (
+                        <Paper style={styles.paperIcons}>
+                            <Typography variant="subheading">
+                                {coOwnersText}
+                            </Typography>
+                            {profileIconList}
+                        </Paper>
+                    ) : (
                         <Paper style={styles.paperList}>
                             <List>
                                 {allowConnectSettings ? (
