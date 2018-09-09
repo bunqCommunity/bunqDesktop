@@ -1,13 +1,16 @@
 import React from "react";
 import { connect } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
+import Badge from "@material-ui/core/Badge";
 import Hidden from "@material-ui/core/Hidden";
 
+import ViewListIcon from "@material-ui/icons/ViewList";
 import MenuIcon from "@material-ui/icons/Menu";
 import CloseIcon from "@material-ui/icons/Close";
 import RestoreIcon from "./CustomSVG/Restore";
 import MaximizeIcon from "./CustomSVG/Maximize";
 import MinimizeIcon from "./CustomSVG/Minimize";
+
 import TranslateTypography from "./TranslationHelpers/Typography";
 
 import IsDarwin from "../Helpers/IsDarwin";
@@ -32,6 +35,15 @@ const styles = {
         ...buttonDefaultStyles,
         right: 5
     },
+    headerQueueBtn: {
+        ...buttonDefaultStyles,
+        left: 45
+    },
+    headerQueueBtnDarwin: {
+        ...buttonDefaultStyles,
+        right: 45
+    },
+
     headerRightBtn: {
         ...buttonDefaultStyles,
         right: 5
@@ -87,11 +99,15 @@ class Header extends React.Component {
         // only show buttons on windows/linux and when native frame is disabled
         const displayButtons = !IsDarwin() && this.props.nativeFrame === false;
 
-        // if not on macOS or native frame is used we display the icon on the left
+        // if not on macOS or native frame is used we display the icons on the left
         const menuIconButtonStyle =
             !IsDarwin() || this.props.nativeFrame === true
                 ? styles.headerMenuBtn
                 : styles.headerMenuBtnDarwin;
+        const queueIconButtonStyle =
+            !IsDarwin() || this.props.nativeFrame === true
+                ? styles.headerQueueBtn
+                : styles.headerQueueBtnDarwin;
 
         // the actual menu button
         const menuButton = (
@@ -101,6 +117,14 @@ class Header extends React.Component {
                 style={menuIconButtonStyle}
             >
                 <MenuIcon />
+            </IconButton>
+        );
+
+        const queueButton = (
+            <IconButton style={queueIconButtonStyle}>
+                <Badge badgeContent={17} color="primary">
+                    <ViewListIcon />
+                </Badge>
             </IconButton>
         );
 
@@ -160,6 +184,7 @@ class Header extends React.Component {
         return (
             <header style={styles.header}>
                 {wrappedButton}
+                {queueButton}
                 {developmentEnvWarning}
                 {windowControls}
             </header>
