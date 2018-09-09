@@ -16,6 +16,9 @@ import { masterCardActionParser } from "../../Helpers/StatusTexts";
 import { formatMoney } from "../../Helpers/Utils";
 
 const styles = {
+    listItemText: {
+        marginRight: 40
+    },
     smallAvatar: {
         width: 50,
         height: 50
@@ -67,7 +70,11 @@ class MasterCardActionListItem extends React.Component {
                         imageUUID={imageUUID}
                     />
                 </Avatar>
-                <ListItemText primary={displayName} secondary={secondaryText} />
+                <ListItemText
+                    style={styles.listItemText}
+                    primary={displayName}
+                    secondary={secondaryText}
+                />
                 <ListItemSecondaryAction style={{ marginTop: -16 }}>
                     <MoneyAmountLabel
                         style={styles.moneyAmountLabel}

@@ -15,6 +15,9 @@ import CategoryIcons from "../Categories/CategoryIcons";
 import MoneyAmountLabel from "../MoneyAmountLabel";
 
 const styles = {
+    listItemText: {
+        marginRight: 40
+    },
     smallAvatar: {
         width: 50,
         height: 50
@@ -72,7 +75,11 @@ class RequestResponseListItem extends React.Component {
                         imageUUID={imageUUID}
                     />
                 </Avatar>
-                <ListItemText primary={displayName} secondary={paymentLabel} />
+                <ListItemText
+                    style={styles.listItemText}
+                    primary={displayName}
+                    secondary={paymentLabel}
+                />
                 <ListItemSecondaryAction style={{ marginTop: -16 }}>
                     <MoneyAmountLabel
                         style={styles.moneyAmountLabel}

@@ -17,6 +17,9 @@ import DraftAccess from "./ShareInviteBankTypes/DraftAccess";
 import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_responses";
 
 const styles = {
+    listItemText: {
+        marginRight: 40
+    },
     smallAvatar: {
         width: 50,
         height: 50
@@ -158,6 +161,7 @@ class ShareInviteBankResponseListItem extends React.Component {
                     />
                 </Avatar>
                 <ListItemText
+                    style={styles.listItemText}
                     primary={displayName}
                     secondary={t("Connect invite received")}
                 />
