@@ -8,11 +8,13 @@ import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 
+import FileUploadIcon from "../../Components/CustomSVG/FileUpload";
 import FileDownloadIcon from "../../Components/CustomSVG/FileDownload";
 import AddIcon from "@material-ui/icons/Add";
 
 import RuleCollectionItem from "./RuleCollectionItem";
 import NavLink from "../../Components/Routing/NavLink";
+import ExportDialog from "../../Components/ExportDialog";
 import ImportDialog from "../../Components/ImportDialog";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import RuleCollection from "../../Types/RuleCollection";
@@ -37,16 +39,16 @@ class RuleDashboard extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
+            openExportDialog: false,
             openImportDialog: false
         };
     }
 
-    openImportDialog = event => {
-        this.setState({ openImportDialog: true });
-    };
-    closeImportDialog = event => {
-        this.setState({ openImportDialog: false });
-    };
+    openImportDialog = event => this.setState({ openImportDialog: true });
+    closeImportDialog = event => this.setState({ openImportDialog: false });
+    openExportDialog = event => this.setState({ openExportDialog: true });
+    closeExportDialog = event => this.setState({ openExportDialog: false });
+
     importData = ruleCollectionsReceived => {
         this.closeImportDialog();
 
@@ -113,6 +115,10 @@ class RuleDashboard extends React.Component {
             )
         );
 
+        const categoryRulesArray = Object.keys(categoryRules).map(
+            id => categoryRules[id]
+        );
+
         return (
             <Grid container spacing={16}>
                 <Helmet>
@@ -125,6 +131,13 @@ class RuleDashboard extends React.Component {
                     closeModal={this.closeImportDialog}
                     importData={this.importData}
                     open={this.state.openImportDialog}
+                />
+
+                <ExportDialog
+                    closeModal={this.closeExportDialog}
+                    title={t("Export rule collections")}
+                    open={this.state.openExportDialog}
+                    object={categoryRulesArray}
                 />
 
                 <Grid item xs={12} sm={3}>
@@ -151,6 +164,19 @@ class RuleDashboard extends React.Component {
                                 >
                                     {t("Import")}
                                     <FileDownloadIcon
+                                        style={styles.buttonIcons}
+                                    />
+                                </Button>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <Button
+                                    variant="raised"
+                                    style={styles.newRuleButton}
+                                    onClick={this.openExportDialog}
+                                >
+                                    {t("Export")}
+                                    <FileUploadIcon
                                         style={styles.buttonIcons}
                                     />
                                 </Button>
