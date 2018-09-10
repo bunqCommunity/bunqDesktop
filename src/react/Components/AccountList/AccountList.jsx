@@ -206,7 +206,7 @@ class AccountList extends React.Component {
             t,
             shareInviteBankResponses,
             shareInviteBankInquiries,
-            excludedAccountIds
+            excludedAccountIds = []
         } = this.props;
         const { accountTotalSelectionMode } = this.state;
 
@@ -226,7 +226,7 @@ class AccountList extends React.Component {
 
                     let onClickHandler = this.updateExternal;
                     let secondaryAction = false;
-                    if (accountTotalSelectionMode && excludedAccountIds) {
+                    if (accountTotalSelectionMode) {
                         const excluded = excludedAccountIds.some(
                             excludedAccountId =>
                                 account.id === excludedAccountId
@@ -355,9 +355,9 @@ const mapStateToProps = state => {
         hideBalance: state.options.hide_balance,
 
         accounts: state.accounts.accounts,
-        accountsSelectedId: state.accounts.selectedAccount,
+        accountsSelectedId: state.accounts.selected_account,
         accountsLoading: state.accounts.loading,
-        excludedAccountIds: state.accounts.excludedAccountIds,
+        excludedAccountIds: state.accounts.excluded_account_ids,
 
         shareInviteBankResponses:
             state.share_invite_bank_responses.share_invite_bank_responses,

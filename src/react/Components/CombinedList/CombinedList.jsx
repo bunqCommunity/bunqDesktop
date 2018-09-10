@@ -662,7 +662,7 @@ const mapStateToProps = state => {
         user: state.user.user,
 
         accounts: state.accounts.accounts,
-        accountsAccountId: state.accounts.selectedAccount,
+        accountsAccountId: state.accounts.selected_account,
 
         page: state.pagination.page,
         pageSize: state.pagination.page_size,

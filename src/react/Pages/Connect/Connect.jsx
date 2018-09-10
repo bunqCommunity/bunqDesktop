@@ -679,7 +679,7 @@ const mapStateToProps = state => {
 
         accounts: state.accounts.accounts,
         accountsLoading: state.accounts.loading,
-        selectedAccountId: state.accounts.selectedAccount,
+        selectedAccountId: state.accounts.selected_account,
 
         shareInviteBankInquiryLoading: state.share_invite_bank_inquiry.loading
     };

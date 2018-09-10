@@ -428,7 +428,7 @@ const mapStateToProps = state => {
         requestResponseAccountId: state.request_response_info.account_id,
         requestResponseInfoLoading: state.request_response_info.loading,
         requestResponseLoading: state.request_response.loading,
-        accountsSelectedAccount: state.accounts.selectedAccount
+        accountsSelectedAccount: state.accounts.selected_account
     };
 };
 

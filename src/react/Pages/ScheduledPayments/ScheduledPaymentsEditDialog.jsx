@@ -276,7 +276,7 @@ const mapStateToProps = state => {
 
         scheduledPaymentsLoading: state.scheduled_payments.loading,
         scheduledPayments: state.scheduled_payments.scheduled_payments,
-        selectedAccount: state.accounts.selectedAccount
+        selectedAccount: state.accounts.selected_account
     };
 };
 

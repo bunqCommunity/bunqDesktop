@@ -221,7 +221,7 @@ class ScheduledPayments extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-        accountsAccountId: state.accounts.selectedAccount,
+        accountsAccountId: state.accounts.selected_account,
 
         scheduledPaymentsLoading: state.scheduled_payments.loading,
         scheduledPayments: state.scheduled_payments.scheduled_payments

@@ -183,7 +183,7 @@ ShareInviteBankResponseListItem.defaultProps = {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-        accountsSelectedId: state.accounts.selectedAccount
+        accountsSelectedId: state.accounts.selected_account
     };
 };
 

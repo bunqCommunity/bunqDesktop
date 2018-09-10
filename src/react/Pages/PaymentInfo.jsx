@@ -324,7 +324,7 @@ const mapStateToProps = state => {
 
         paymentInfo: state.payment_info.payment,
         paymentLoading: state.payment_info.loading,
-        accountsSelectedAccount: state.accounts.selectedAccount,
+        accountsSelectedAccount: state.accounts.selected_account,
         accounts: state.accounts.accounts
     };
 };
