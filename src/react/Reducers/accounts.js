@@ -49,7 +49,6 @@ export default (state = defaultState, action) => {
             };
 
         case "ACCOUNTS_EXCLUDE_FROM_TOTAL":
-            console.log(state.excluded_account_ids);
             const currentAccountIds = [...state.excluded_account_ids];
             const existingIndex = currentAccountIds.indexOf(
                 action.payload.account_id
@@ -68,7 +67,6 @@ export default (state = defaultState, action) => {
                 excluded_account_ids: currentAccountIds
             };
         case "ACCOUNTS_INCLUDE_IN_TOTAL":
-            console.log(state.excluded_account_ids);
             const currentAccountIds2 = [...state.excluded_account_ids];
             const existingIndex2 = currentAccountIds2.indexOf(
                 action.payload.account_id

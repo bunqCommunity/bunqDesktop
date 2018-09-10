@@ -1,5 +1,11 @@
-export const nextPage = () => {
+export const queueIncreaseRequestCounter = () => {
     return {
-        type: "PAGINATION_NEXT_PAGE"
+        type: "QUEUE_INCREASE_REQUEST_COUNTER"
     };
-};
+}
+
+export const queueDecreaseRequestCounter = () => {
+    return {
+        type: "QUEUE_DECREASE_REQUEST_COUNTER"
+    };
+}

@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
 import Badge from "@material-ui/core/Badge";
 import Hidden from "@material-ui/core/Hidden";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import ViewListIcon from "@material-ui/icons/ViewList";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -56,6 +57,7 @@ const styles = {
         ...buttonDefaultStyles,
         right: 85
     },
+
     header: {
         backgroundImage: "url('images/svg/bunq_Colors.svg')",
         WebkitAppRegion: "drag",
@@ -121,9 +123,18 @@ class Header extends React.Component {
         );
 
         const queueButton = (
-            <IconButton style={queueIconButtonStyle}>
-                <Badge badgeContent={17} color="primary">
-                    <ViewListIcon />
+            <IconButton
+                style={queueIconButtonStyle}
+                disabled={this.props.queueLoading}
+            >
+                <Badge badgeContent={this.props.queueRequestCounter} color="primary">
+                    {this.props.queueLoading ? (
+                        <CircularProgress
+                            size={20}
+                        />
+                    ) : (
+                        <ViewListIcon />
+                    )}
                 </Badge>
             </IconButton>
         );
@@ -192,12 +203,16 @@ class Header extends React.Component {
     }
 }
 
-const mapStateToProps = store => {
+const mapStateToProps = state => {
     return {
-        stickyMenu: store.options.sticky_menu,
-        nativeFrame: store.options.native_frame,
-        minimizeToTray: store.options.minimize_to_tray,
-        environment: store.registration.environment
+        stickyMenu: state.options.sticky_menu,
+        nativeFrame: state.options.native_frame,
+        minimizeToTray: state.options.minimize_to_tray,
+
+        environment: state.registration.environment,
+
+        queueRequestCounter: state.queue.request_counter,
+        queueLoading: state.queue.loading
     };
 };
 
