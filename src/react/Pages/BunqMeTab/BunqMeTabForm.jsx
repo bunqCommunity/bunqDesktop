@@ -243,7 +243,7 @@ class BunqMeTabForm extends React.Component {
 const mapStateToProps = state => {
     return {
         bunqMeTabLoading: state.bunq_me_tab.loading,
-        selectedAccount: state.accounts.selectedAccount,
+        selectedAccount: state.accounts.selected_account,
         accounts: state.accounts.accounts,
         user: state.user.user
     };

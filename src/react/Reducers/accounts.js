@@ -17,8 +17,8 @@ const excludedAccountIdsDefault =
 export const defaultState = {
     accounts: [],
     loading: false,
-    selectedAccount: selectedAccountDefault,
-    excludedAccountIds: excludedAccountIdsDefault
+    selected_account: selectedAccountDefault,
+    excluded_account_ids: excludedAccountIdsDefault
 };
 
 export default (state = defaultState, action) => {
@@ -45,12 +45,13 @@ export default (state = defaultState, action) => {
             store.set(SELECTED_ACCOUNT_LOCAION, action.payload.selectedAccount);
             return {
                 ...state,
-                selectedAccount: action.payload.selectedAccount
+                selected_account: action.payload.selectedAccount
             };
 
         case "ACCOUNTS_EXCLUDE_FROM_TOTAL":
-            const currentAccountIds = [...state.excludedAccountIds];
-            const existingIndex = state.excludedAccountIds.indexOf(
+            console.log(state.excluded_account_ids);
+            const currentAccountIds = [...state.excluded_account_ids];
+            const existingIndex = currentAccountIds.indexOf(
                 action.payload.account_id
             );
 
@@ -64,11 +65,12 @@ export default (state = defaultState, action) => {
 
             return {
                 ...state,
-                excludedAccountIds: currentAccountIds
+                excluded_account_ids: currentAccountIds
             };
         case "ACCOUNTS_INCLUDE_IN_TOTAL":
-            const currentAccountIds2 = [...state.excludedAccountIds];
-            const existingIndex2 = state.excludedAccountIds.indexOf(
+            console.log(state.excluded_account_ids);
+            const currentAccountIds2 = [...state.excluded_account_ids];
+            const existingIndex2 = currentAccountIds2.indexOf(
                 action.payload.account_id
             );
 
@@ -82,7 +84,7 @@ export default (state = defaultState, action) => {
 
             return {
                 ...state,
-                excludedAccountIds: currentAccountIds2
+                excluded_account_ids: currentAccountIds2
             };
 
         case "ACCOUNTS_IS_LOADING":
@@ -108,8 +110,9 @@ export default (state = defaultState, action) => {
             store.remove(SELECTED_ACCOUNT_LOCAION);
             store.remove(STORED_ACCOUNTS);
             return {
+                ...state,
                 accounts: [],
-                selectedAccount: false,
+                selected_account: false,
                 loading: false
             };
     }

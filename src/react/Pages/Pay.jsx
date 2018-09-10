@@ -910,7 +910,7 @@ const mapStateToProps = state => {
         payLoading: state.pay.loading,
 
         accounts: state.accounts.accounts,
-        selectedAccount: state.accounts.selectedAccount,
+        selectedAccount: state.accounts.selected_account,
 
         language: state.options.language,
 

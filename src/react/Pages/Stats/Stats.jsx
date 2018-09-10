@@ -807,7 +807,7 @@ const mapStateToProps = state => {
     return {
         user: state.user.user,
         accounts: state.accounts.accounts,
-        selectedAccount: state.accounts.selectedAccount,
+        selectedAccount: state.accounts.selected_account,
 
         payments: state.payments.payments,
         bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,

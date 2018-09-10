@@ -137,7 +137,7 @@ const mapStateToProps = state => {
     return {
         user: state.user.user,
         paymentsLoading: state.payments.loading,
-        accountsAccountId: state.accounts.selectedAccount,
+        accountsAccountId: state.accounts.selected_account,
         hideBalance: state.options.hide_balance
     };
 };

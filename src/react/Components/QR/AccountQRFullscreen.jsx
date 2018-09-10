@@ -148,7 +148,7 @@ AccountQRFullscreen.defaultProps = {
 const mapStateToProps = state => {
     return {
         accounts: state.accounts.accounts,
-        selectedAccount: state.accounts.selectedAccount
+        selectedAccount: state.accounts.selected_account
     };
 };
 

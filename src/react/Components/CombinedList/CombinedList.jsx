@@ -330,6 +330,7 @@ class CombinedList extends React.Component {
                 requestInquiryFilter({
                     requestVisibility: this.props.requestVisibility,
                     requestType: this.props.requestType,
+                    displayAcceptedRequests: true,
                     ...this.getCommonFilters()
                 })
             )
@@ -662,7 +663,7 @@ const mapStateToProps = state => {
         user: state.user.user,
 
         accounts: state.accounts.accounts,
-        accountsAccountId: state.accounts.selectedAccount,
+        accountsAccountId: state.accounts.selected_account,
 
         page: state.pagination.page,
         pageSize: state.pagination.page_size,

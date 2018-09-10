@@ -692,7 +692,7 @@ const mapStateToProps = state => {
         user: state.user.user,
         limitedPermissions: state.user.limited_permissions,
 
-        accountsAccountId: state.accounts.selectedAccount,
+        accountsAccountId: state.accounts.selected_account,
 
         exportNewLoading: state.export_new.loading,
         exports: state.exports.exports,

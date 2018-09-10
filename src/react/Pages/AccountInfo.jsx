@@ -65,7 +65,7 @@ const styles = {
     },
     paperIcons: {
         marginTop: 16,
-        padding: 16
+        padding: 8
     },
     paperList: {
         marginTop: 16
@@ -79,6 +79,25 @@ const styles = {
     circlePicker: {
         padding: 8
     }
+};
+
+const PersonChip = ({ alias, BunqJSClient }) => {
+    return (
+        <Chip
+            style={styles.chip}
+            avatar={
+                <Avatar>
+                    <LazyAttachmentImage
+                        style={styles.chipImage}
+                        BunqJSClient={BunqJSClient}
+                        height={32}
+                        imageUUID={alias.avatar.image[0].attachment_public_uuid}
+                    />
+                </Avatar>
+            }
+            label={alias.display_name}
+        />
+    );
 };
 
 class AccountInfo extends React.Component {
@@ -250,8 +269,6 @@ class AccountInfo extends React.Component {
                 accountInfo.accountType === "MonetaryAccountJoint";
 
             let primaryConnectText = sharedWithText;
-            let secondaryConnectText = noneText;
-            let displayNameList = [];
             let profileIconList = [];
             let allowConnectSettings = true;
 
@@ -266,24 +283,9 @@ class AccountInfo extends React.Component {
                     })
                     .map(coOwner => {
                         return (
-                            <Chip
-                                style={styles.chip}
-                                avatar={
-                                    <Avatar>
-                                        <LazyAttachmentImage
-                                            style={styles.chipImage}
-                                            BunqJSClient={
-                                                this.props.BunqJSClient
-                                            }
-                                            height={32}
-                                            imageUUID={
-                                                coOwner.alias.avatar.image[0]
-                                                    .attachment_public_uuid
-                                            }
-                                        />
-                                    </Avatar>
-                                }
-                                label={coOwner.alias.public_nick_name}
+                            <PersonChip
+                                BunqJSClient={this.props.BunqJSClient}
+                                alias={coOwner.alias}
                             />
                         );
                     });
@@ -293,28 +295,47 @@ class AccountInfo extends React.Component {
                     primaryConnectText = sharedByText;
                     allowConnectSettings = false;
 
-                    displayNameList = filteredInviteResponses.map(
+                    profileIconList = filteredInviteResponses.map(
                         filteredInviteResponse => {
-                            return filteredInviteResponse
-                                .ShareInviteBankResponse.counter_alias
-                                .display_name;
+                            return (
+                                <PersonChip
+                                    BunqJSClient={this.props.BunqJSClient}
+                                    alias={
+                                        filteredInviteResponse
+                                            .ShareInviteBankResponse
+                                            .counter_alias
+                                    }
+                                />
+                            );
                         }
                     );
                 } else if (filteredShareInquiries.length > 0) {
                     // this account was shared with someone
                     primaryConnectText = sharedWithText;
 
-                    displayNameList = filteredShareInquiries.map(
+                    profileIconList = filteredShareInquiries.map(
                         filteredShareInquiry => {
-                            return filteredShareInquiry.ShareInviteBankInquiry
-                                .counter_user_alias.display_name;
+                            return (
+                                <PersonChip
+                                    BunqJSClient={this.props.BunqJSClient}
+                                    alias={
+                                        filteredShareInquiry
+                                            .ShareInviteBankInquiry
+                                            .counter_user_alias
+                                    }
+                                />
+                            );
                         }
                     );
                 }
             }
-            if (displayNameList.length > 0) {
-                secondaryConnectText = displayNameList.join(", ");
-            }
+
+            const connectListItemText = (
+                <ListItemText
+                    primary={`${primaryConnectText}: `}
+                    secondary={profileIconList.length === 0 ? noneText : ""}
+                />
+            );
 
             content = (
                 <React.Fragment>
@@ -439,38 +460,23 @@ class AccountInfo extends React.Component {
                         isJoint={isJointAccount}
                     />
 
-                    {isJointAccount ? (
-                        <Paper style={styles.paperIcons}>
-                            <Typography variant="subheading">
-                                {coOwnersText}
-                            </Typography>
-                            {profileIconList}
-                        </Paper>
-                    ) : (
-                        <Paper style={styles.paperList}>
-                            <List>
-                                {allowConnectSettings ? (
-                                    <ListItem
-                                        to={`/connect/${accountId}`}
-                                        component={NavLink}
-                                        button
-                                    >
-                                        <ListItemText
-                                            primary={`${primaryConnectText}: `}
-                                            secondary={secondaryConnectText}
-                                        />
-                                    </ListItem>
-                                ) : (
-                                    <ListItem>
-                                        <ListItemText
-                                            primary={`${primaryConnectText}: `}
-                                            secondary={secondaryConnectText}
-                                        />
-                                    </ListItem>
-                                )}
-                            </List>
-                        </Paper>
-                    )}
+                    <Paper style={styles.paperIcons}>
+                        <List dense={true}>
+                            {allowConnectSettings ? (
+                                <ListItem
+                                    to={`/connect/${accountId}`}
+                                    component={NavLink}
+                                    button
+                                >
+                                    {connectListItemText}
+                                </ListItem>
+                            ) : (
+                                <ListItem>{connectListItemText}</ListItem>
+                            )}
+                        </List>
+
+                        {profileIconList}
+                    </Paper>
 
                     <Paper style={styles.paperList}>
                         <CombinedList

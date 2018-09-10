@@ -332,11 +332,13 @@ class Login extends React.Component {
     setApiKeyState = apiKey => {
         // set api key, set tabIndex to 0
         this.setState(
-            { apiKey: apiKey, tabIndex: 0 },
+            {
+                apiKey: apiKey,
+                tabIndex: 0,
+                openOptions: true
+            },
             this.validateInputs(apiKey, this.state.deviceName)
         );
-        // open options
-        this.toggleOptionVisibility();
     };
 
     handleKeyChange = event => {

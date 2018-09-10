@@ -345,7 +345,7 @@ const mapStateToProps = state => {
             state.master_card_action_info.master_card_action_info,
         masterCardActionLoading: state.master_card_action_info.loading,
         accounts: state.accounts.accounts,
-        accountsSelectedAccount: state.accounts.selectedAccount
+        accountsSelectedAccount: state.accounts.selected_account
     };
 };
 

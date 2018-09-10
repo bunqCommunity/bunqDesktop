@@ -331,7 +331,7 @@ const mapStateToProps = state => {
         requestInquiryInfo: state.request_inquiry_info.request_inquiry_info,
         requestInquiryInfoLoading: state.request_inquiry_info.loading,
         requestInquiryLoading: state.request_inquiry.loading,
-        accountsSelectedAccount: state.accounts.selectedAccount
+        accountsSelectedAccount: state.accounts.selected_account
     };
 };
 
