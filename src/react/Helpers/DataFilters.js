@@ -308,7 +308,7 @@ export const requestResponseFilter = options => requestResponse => {
     // hide accepted payments
     if (
         requestResponse.RequestResponse.status === "ACCEPTED" &&
-        !options.displayAcceptedRequests
+        options.displayAcceptedRequests !== true
     ) {
         return false;
     }
@@ -391,7 +391,10 @@ export const requestInquiryFilter = options => requestInquiry => {
         return false;
     }
 
-    if (requestInquiry.RequestInquiry.status === "ACCEPTED") {
+    if (
+        requestInquiry.RequestInquiry.status === "ACCEPTED" &&
+        options.displayAcceptedRequests !== true
+    ) {
         return false;
     }
 

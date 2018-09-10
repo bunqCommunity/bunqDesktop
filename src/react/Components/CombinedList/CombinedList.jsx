@@ -330,6 +330,7 @@ class CombinedList extends React.Component {
                 requestInquiryFilter({
                     requestVisibility: this.props.requestVisibility,
                     requestType: this.props.requestType,
+                    displayAcceptedRequests: true,
                     ...this.getCommonFilters()
                 })
             )
