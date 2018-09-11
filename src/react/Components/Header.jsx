@@ -1,17 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
-import Badge from "@material-ui/core/Badge";
 import Hidden from "@material-ui/core/Hidden";
-import CircularProgress from "@material-ui/core/CircularProgress";
 
-import ViewListIcon from "@material-ui/icons/ViewList";
 import MenuIcon from "@material-ui/icons/Menu";
 import CloseIcon from "@material-ui/icons/Close";
 import RestoreIcon from "./CustomSVG/Restore";
 import MaximizeIcon from "./CustomSVG/Maximize";
 import MinimizeIcon from "./CustomSVG/Minimize";
 
+import QueueManager from "./QueueManager";
 import TranslateTypography from "./TranslationHelpers/Typography";
 
 import IsDarwin from "../Helpers/IsDarwin";
@@ -122,23 +120,6 @@ class Header extends React.Component {
             </IconButton>
         );
 
-        const queueButton = (
-            <IconButton
-                style={queueIconButtonStyle}
-                disabled={this.props.queueLoading}
-            >
-                <Badge badgeContent={this.props.queueRequestCounter} color="primary">
-                    {this.props.queueLoading ? (
-                        <CircularProgress
-                            size={20}
-                        />
-                    ) : (
-                        <ViewListIcon />
-                    )}
-                </Badge>
-            </IconButton>
-        );
-
         // wrap it in a hidden wrapper in case of sticky menu mode
         const wrappedButton = this.props.stickyMenu ? (
             <Hidden mdUp>{menuButton}</Hidden>
@@ -195,7 +176,12 @@ class Header extends React.Component {
         return (
             <header style={styles.header}>
                 {wrappedButton}
-                {queueButton}
+
+                <QueueManager
+                    BunqJSClient={this.props.BunqJSClient}
+                    style={queueIconButtonStyle}
+                />
+
                 {developmentEnvWarning}
                 {windowControls}
             </header>

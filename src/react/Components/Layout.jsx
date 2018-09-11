@@ -17,7 +17,6 @@ import RuleCollectionChecker from "./RuleCollectionChecker";
 import MainDialog from "./MainDialog";
 import MainSnackbar from "./MainSnackbar";
 import MainDrawer from "./MainDrawer";
-import QueueManager from "./QueueManager";
 import Header from "./Header";
 import ErrorBoundary from "./ErrorBoundary";
 
@@ -476,9 +475,7 @@ class Layout extends React.Component {
                     <RuleCollectionChecker updateToggle={isLoading} />
                     <NetworkStatusChecker />
 
-                    <QueueManager BunqJSClient={this.props.BunqJSClient}/>
-
-                    <Header />
+                    <Header BunqJSClient={this.props.BunqJSClient} />
                     <MainDrawer
                         BunqJSClient={this.props.BunqJSClient}
                         location={this.props.location}
