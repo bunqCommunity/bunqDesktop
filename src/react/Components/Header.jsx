@@ -8,10 +8,12 @@ import CloseIcon from "@material-ui/icons/Close";
 import RestoreIcon from "./CustomSVG/Restore";
 import MaximizeIcon from "./CustomSVG/Maximize";
 import MinimizeIcon from "./CustomSVG/Minimize";
+
+import QueueHeaderIcon from "./Queue/QueueHeaderIcon";
 import TranslateTypography from "./TranslationHelpers/Typography";
 
 import IsDarwin from "../Helpers/IsDarwin";
-import { openMainDrawer } from "../Actions/main_drawer";
+import { openSidebar } from "../Actions/sidebar";
 
 const remote = require("electron").remote;
 
@@ -32,6 +34,15 @@ const styles = {
         ...buttonDefaultStyles,
         right: 5
     },
+    headerQueueBtn: {
+        ...buttonDefaultStyles,
+        left: 52
+    },
+    headerQueueBtnDarwin: {
+        ...buttonDefaultStyles,
+        right: 52
+    },
+
     headerRightBtn: {
         ...buttonDefaultStyles,
         right: 5
@@ -44,6 +55,7 @@ const styles = {
         ...buttonDefaultStyles,
         right: 85
     },
+
     header: {
         backgroundImage: "url('images/svg/bunq_Colors.svg')",
         WebkitAppRegion: "drag",
@@ -87,11 +99,15 @@ class Header extends React.Component {
         // only show buttons on windows/linux and when native frame is disabled
         const displayButtons = !IsDarwin() && this.props.nativeFrame === false;
 
-        // if not on macOS or native frame is used we display the icon on the left
+        // if not on macOS or native frame is used we display the icons on the left
         const menuIconButtonStyle =
             !IsDarwin() || this.props.nativeFrame === true
                 ? styles.headerMenuBtn
                 : styles.headerMenuBtnDarwin;
+        const queueIconButtonStyle =
+            !IsDarwin() || this.props.nativeFrame === true
+                ? styles.headerQueueBtn
+                : styles.headerQueueBtnDarwin;
 
         // the actual menu button
         const menuButton = (
@@ -160,6 +176,9 @@ class Header extends React.Component {
         return (
             <header style={styles.header}>
                 {wrappedButton}
+
+                <QueueHeaderIcon style={queueIconButtonStyle} />
+
                 {developmentEnvWarning}
                 {windowControls}
             </header>
@@ -167,19 +186,23 @@ class Header extends React.Component {
     }
 }
 
-const mapStateToProps = store => {
+const mapStateToProps = state => {
     return {
-        stickyMenu: store.options.sticky_menu,
-        nativeFrame: store.options.native_frame,
-        minimizeToTray: store.options.minimize_to_tray,
-        environment: store.registration.environment
+        stickyMenu: state.options.sticky_menu,
+        nativeFrame: state.options.native_frame,
+        minimizeToTray: state.options.minimize_to_tray,
+
+        environment: state.registration.environment,
+
+        queueRequestCounter: state.queue.request_counter,
+        queueLoading: state.queue.loading
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
         // opens the options drawer on the left
-        openDrawer: () => dispatch(openMainDrawer())
+        openDrawer: () => dispatch(openSidebar())
     };
 };
 
