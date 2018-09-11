@@ -146,10 +146,7 @@ class ScheduledPaymentsEditDialog extends React.Component {
                 recurrenceUnit !== "ONCE" ? recurrenceSize : 1
             ),
             recurrence_unit: recurrenceUnit,
-            time_start: format(
-                scheduleStartDate,
-                "YYYY-MM-dd HH:mm:ss"
-            )
+            time_start: format(scheduleStartDate, "YYYY-MM-dd HH:mm:ss")
         };
         if (scheduleEndDate) {
             scheduleInfo.time_end = format(
@@ -180,9 +177,16 @@ class ScheduledPaymentsEditDialog extends React.Component {
         const scheduledPayment =
             scheduledPayments[selectedPaymentIndex].ScheduledPayment;
 
-        const imageUUID =
-            scheduledPayment.payment.counterparty_alias.avatar.image[0]
-                .attachment_public_uuid;
+        // check if there is a counterparty with an avatar
+        let imageUUID = false;
+        if (scheduledPayment.payment.counterparty_alias.avatar) {
+            const counterPartyAvatar =
+                scheduledPayment.payment.counterparty_alias.avatar;
+
+            if (counterPartyAvatar.image) {
+                imageUUID = counterPartyAvatar.image[0].attachment_public_uuid;
+            }
+        }
 
         return (
             <Dialog open={open} onClose={this.closeDialog}>
@@ -190,13 +194,15 @@ class ScheduledPaymentsEditDialog extends React.Component {
 
                 <DialogContent>
                     <ListItem>
-                        <Avatar style={styles.smallAvatar}>
-                            <AttachmentImage
-                                height={60}
-                                BunqJSClient={BunqJSClient}
-                                imageUUID={imageUUID}
-                            />
-                        </Avatar>
+                        {imageUUID && (
+                            <Avatar style={styles.smallAvatar}>
+                                <AttachmentImage
+                                    height={60}
+                                    BunqJSClient={BunqJSClient}
+                                    imageUUID={imageUUID}
+                                />
+                            </Avatar>
+                        )}
 
                         <ListItemText
                             primary={
