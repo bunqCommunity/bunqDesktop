@@ -586,40 +586,6 @@ class QueueManager extends React.Component {
 
     render() {
         return (
-            <div>
-                <IconButton
-                    style={this.props.style}
-                    disabled={this.props.queueLoading}
-                >
-                    {this.props.queueLoading ? (
-                        <Badge
-                            badgeContent={this.props.queueRequestCounter}
-                            color="primary"
-                        >
-                            <CircularProgress size={20} />
-                        </Badge>
-                    ) : (
-                        <SyncIcon />
-                    )}
-                </IconButton>
-                <IconButton
-                    style={this.props.style}
-                    disabled={this.props.queueLoading}
-                >
-                    {this.props.queueLoading ? (
-                        <Badge
-                            badgeContent={this.props.queueRequestCounter}
-                            color="secondary"
-                        >
-                            <CircularProgress size={20} />
-                        </Badge>
-                    ) : (
-                        <SyncIcon />
-                    )}
-                </IconButton>
-            </div>
-        );
-        return (
             <IconButton
                 style={this.props.style}
                 disabled={this.props.queueLoading}
