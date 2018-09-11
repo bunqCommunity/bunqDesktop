@@ -1,29 +1,25 @@
 import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
-import Badge from "@material-ui/core/Badge";
-import IconButton from "@material-ui/core/IconButton";
-import CircularProgress from "@material-ui/core/CircularProgress";
 
-import SyncIcon from "@material-ui/icons/Sync";
+import Payment from "../../Models/Payment";
+import BunqMeTab from "../../Models/BunqMeTab";
+import RequestResponse from "../../Models/RequestResponse";
+import RequestInquiry from "../../Models/RequestInquiry";
+import MasterCardAction from "../../Models/MasterCardAction";
 
-import Payment from "../Models/Payment";
-import BunqMeTab from "../Models/BunqMeTab";
-import RequestResponse from "../Models/RequestResponse";
-import RequestInquiry from "../Models/RequestInquiry";
-import MasterCardAction from "../Models/MasterCardAction";
-
-import { openSnackbar } from "../Actions/snackbar";
+import { openSnackbar } from "../../Actions/snackbar";
 import {
     queueDecreaseRequestCounter,
-    queueIncreaseRequestCounter
-} from "../Actions/queue";
-import { paymentsSetInfo } from "../Actions/payments";
-import { bunqMeTabsSetInfo } from "../Actions/bunq_me_tabs";
-import { masterCardActionsSetInfo } from "../Actions/master_card_actions";
-import { requestInquiriesSetInfo } from "../Actions/request_inquiries";
-import { requestResponsesSetInfo } from "../Actions/request_responses";
-import { shareInviteBankInquiriesSetInfo } from "../Actions/share_invite_bank_inquiries";
+    queueIncreaseRequestCounter,
+    queueResetSyncState
+} from "../../Actions/queue";
+import { paymentsSetInfo } from "../../Actions/payments";
+import { bunqMeTabsSetInfo } from "../../Actions/bunq_me_tabs";
+import { masterCardActionsSetInfo } from "../../Actions/master_card_actions";
+import { requestInquiriesSetInfo } from "../../Actions/request_inquiries";
+import { requestResponsesSetInfo } from "../../Actions/request_responses";
+import { shareInviteBankInquiriesSetInfo } from "../../Actions/share_invite_bank_inquiries";
 
 class QueueManager extends React.Component {
     constructor(props, context) {
@@ -50,10 +46,12 @@ class QueueManager extends React.Component {
             user,
             userLoading,
             queueLoading,
-            queueRequestCounter
+            queueRequestCounter,
+            queueTriggerSync
         } = this.props;
 
-        if (!this.state.initialSync) {
+        // no initial sync completed or manual sync was triggered
+        if (!this.state.initialSync || queueTriggerSync) {
             if (
                 user &&
                 !userLoading &&
@@ -65,7 +63,7 @@ class QueueManager extends React.Component {
                 if (this.delayedQueue) clearTimeout(this.delayedQueue);
                 // delay the queue update
                 this.delayedQueue = setTimeout(
-                    () => this.triggerQueueUpdate(false),
+                    () => this.triggerQueueUpdate(queueTriggerSync),
                     2500
                 );
             }
@@ -88,7 +86,18 @@ class QueueManager extends React.Component {
      * @param continueLoading
      */
     triggerQueueUpdate = (continueLoading = false) => {
-        const { accounts, user, limitedPermissions } = this.props;
+        const {
+            queueTriggerSync,
+            accounts,
+            user,
+            limitedPermissions
+        } = this.props;
+
+        if (queueTriggerSync) this.props.queueResetSyncState();
+
+        if (!user || !accounts) {
+            return;
+        }
 
         const userId = user.id;
         this.setState({
@@ -585,24 +594,7 @@ class QueueManager extends React.Component {
     };
 
     render() {
-        return (
-            <IconButton
-                style={this.props.style}
-                disabled={this.props.queueLoading}
-                onClick={e => this.triggerQueueUpdate(true)}
-            >
-                {this.props.queueLoading ? (
-                    <Badge
-                        badgeContent={this.props.queueRequestCounter}
-                        color="primary"
-                    >
-                        <CircularProgress size={20} />
-                    </Badge>
-                ) : (
-                    <SyncIcon />
-                )}
-            </IconButton>
-        );
+        return null;
     }
 }
 
@@ -616,6 +608,7 @@ const mapStateToProps = state => {
         accountsLoading: state.accounts.loading,
 
         queueRequestCounter: state.queue.request_counter,
+        queueTriggerSync: state.queue.trigger_sync,
         queueLoading: state.queue.loading
     };
 };
@@ -630,6 +623,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(queueDecreaseRequestCounter()),
         queueIncreaseRequestCounter: () =>
             dispatch(queueIncreaseRequestCounter()),
+        queueResetSyncState: () => dispatch(queueResetSyncState()),
 
         paymentsSetInfo: (payments, accountId) =>
             dispatch(paymentsSetInfo(payments, accountId, false, BunqJSClient)),

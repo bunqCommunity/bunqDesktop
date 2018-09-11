@@ -9,11 +9,11 @@ import RestoreIcon from "./CustomSVG/Restore";
 import MaximizeIcon from "./CustomSVG/Maximize";
 import MinimizeIcon from "./CustomSVG/Minimize";
 
-import QueueManager from "./QueueManager";
+import QueueHeaderIcon from "./Queue/QueueHeaderIcon";
 import TranslateTypography from "./TranslationHelpers/Typography";
 
 import IsDarwin from "../Helpers/IsDarwin";
-import { openMainDrawer } from "../Actions/main_drawer";
+import { openSidebar } from "../Actions/sidebar";
 
 const remote = require("electron").remote;
 
@@ -177,10 +177,7 @@ class Header extends React.Component {
             <header style={styles.header}>
                 {wrappedButton}
 
-                <QueueManager
-                    BunqJSClient={this.props.BunqJSClient}
-                    style={queueIconButtonStyle}
-                />
+                <QueueHeaderIcon style={queueIconButtonStyle} />
 
                 {developmentEnvWarning}
                 {windowControls}
@@ -205,7 +202,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         // opens the options drawer on the left
-        openDrawer: () => dispatch(openMainDrawer())
+        openDrawer: () => dispatch(openSidebar())
     };
 };
 
