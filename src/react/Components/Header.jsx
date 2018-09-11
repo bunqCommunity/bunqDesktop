@@ -36,11 +36,11 @@ const styles = {
     },
     headerQueueBtn: {
         ...buttonDefaultStyles,
-        left: 45
+        left: 52
     },
     headerQueueBtnDarwin: {
         ...buttonDefaultStyles,
-        right: 45
+        right: 52
     },
 
     headerRightBtn: {

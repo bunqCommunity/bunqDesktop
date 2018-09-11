@@ -5,7 +5,7 @@ import Badge from "@material-ui/core/Badge";
 import IconButton from "@material-ui/core/IconButton";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
-import ViewListIcon from "@material-ui/icons/ViewList";
+import SyncIcon from "@material-ui/icons/Sync";
 
 import Payment from "../Models/Payment";
 import BunqMeTab from "../Models/BunqMeTab";
@@ -135,17 +135,10 @@ class QueueManager extends React.Component {
      */
     pushQueueData = () => {
         const { accounts } = this.props;
-        console.info("Push queue data to application");
-        console.log(
-            this.state.payments,
-            this.state.bunqMeTabs,
-            this.state.requestResponses,
-            this.state.requestInquiries,
-            this.state.masterCardActions,
-            this.state.shareInviteBankInquiries
-        );
+        let eventCount = 0;
 
         accounts.forEach(account => {
+            // get events for this account and fallback to empty list
             const payments = this.state.payments[account.id] || [];
             const bunqMeTabs = this.state.bunqMeTabs[account.id] || [];
             const requestResponses =
@@ -156,6 +149,14 @@ class QueueManager extends React.Component {
                 this.state.masterCardActions[account.id] || [];
             const shareInviteBankInquiries =
                 this.state.shareInviteBankInquiries[account.id] || [];
+
+            // count the total amount of events
+            eventCount += payments.length;
+            eventCount += bunqMeTabs.length;
+            eventCount += requestResponses.length;
+            eventCount += requestInquiries.length;
+            eventCount += masterCardActions.length;
+            eventCount += shareInviteBankInquiries.length;
 
             // set the info into the application state
             if (payments.length > 0)
@@ -183,6 +184,12 @@ class QueueManager extends React.Component {
                     account.id
                 );
         });
+
+        const mainText = this.props.t("Background sync finished and loaded");
+        const eventsText = this.props.t("events");
+        const resultMessage = `${mainText} ${eventCount} ${eventsText}`;
+
+        this.props.openSnackbar(resultMessage);
 
         // reset the events in the queue state
         this.setState({
@@ -579,21 +586,55 @@ class QueueManager extends React.Component {
 
     render() {
         return (
+            <div>
+                <IconButton
+                    style={this.props.style}
+                    disabled={this.props.queueLoading}
+                >
+                    {this.props.queueLoading ? (
+                        <Badge
+                            badgeContent={this.props.queueRequestCounter}
+                            color="primary"
+                        >
+                            <CircularProgress size={20} />
+                        </Badge>
+                    ) : (
+                        <SyncIcon />
+                    )}
+                </IconButton>
+                <IconButton
+                    style={this.props.style}
+                    disabled={this.props.queueLoading}
+                >
+                    {this.props.queueLoading ? (
+                        <Badge
+                            badgeContent={this.props.queueRequestCounter}
+                            color="secondary"
+                        >
+                            <CircularProgress size={20} />
+                        </Badge>
+                    ) : (
+                        <SyncIcon />
+                    )}
+                </IconButton>
+            </div>
+        );
+        return (
             <IconButton
                 style={this.props.style}
                 disabled={this.props.queueLoading}
-                onClick={this.triggerQueueUpdate}
+                onClick={e => this.triggerQueueUpdate(true)}
             >
-                <Badge
-                    badgeContent={this.props.queueRequestCounter}
-                    color="primary"
-                >
-                    {this.props.queueLoading ? (
+                {this.props.queueLoading ? (
+                    <Badge
+                        badgeContent={this.props.queueRequestCounter}
+                        color="primary"
+                    >
                         <CircularProgress size={20} />
-                    ) : (
-                        <ViewListIcon />
-                    )}
-                </Badge>
+                    </Badge>
+                ) : (
+                    <SyncIcon />
+                )}
             </IconButton>
         );
     }
@@ -616,7 +657,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        dispatch: dispatch,
+        openSnackbar: (message, duration = 4000) =>
+            dispatch(openSnackbar(message, duration)),
 
         queueDecreaseRequestCounter: () =>
             dispatch(queueDecreaseRequestCounter()),
@@ -667,10 +709,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                     false,
                     BunqJSClient
                 )
-            ),
-
-        openSnackbar: (message, duration = 4000) =>
-            dispatch(openSnackbar(message, duration))
+            )
     };
 };
 
