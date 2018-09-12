@@ -9,7 +9,7 @@
 
 #### The unofficial, free and open source desktop application for the bunq API. 
 
-___   
+___
 
 ## Download 
 
