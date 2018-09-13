@@ -247,7 +247,6 @@ class AccountList extends React.Component {
 
                     return (
                         <AccountListItem
-                            onClick={onClickHandler}
                             BunqJSClient={this.props.BunqJSClient}
                             denseMode={this.props.denseMode}
                             account={account}

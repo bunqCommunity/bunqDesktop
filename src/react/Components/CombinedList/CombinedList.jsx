@@ -115,8 +115,6 @@ class CombinedList extends React.Component {
     }
 
     loadEvents = () => {
-        console.log("Load events ");
-
         // create arrays of the different endpoint types
         const bunqMeTabs = this.bunqMeTabsMapper();
         const payments = this.paymentMapper();

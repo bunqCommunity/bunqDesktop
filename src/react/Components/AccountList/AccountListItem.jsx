@@ -18,6 +18,11 @@ import { formatMoney } from "../../Helpers/Utils";
 import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
 
 import { accountsSelectAccount } from "../../Actions/accounts.js";
+import {
+    addAccountIdFilter,
+    removeAccountIdFilter,
+    toggleAccountIdFilter
+} from "../../Actions/filters";
 
 const styles = {
     bigAvatar: {
@@ -54,7 +59,12 @@ class AccountListItem extends React.Component {
     };
 
     render() {
-        const account = this.props.account;
+        const {
+            account,
+            shareInviteBankResponses,
+            selectedAccountIds,
+            toggleAccountIds
+        } = this.props;
 
         if (account.status !== "ACTIVE") {
             return null;
@@ -73,7 +83,7 @@ class AccountListItem extends React.Component {
                     <PeopleIcon />
                 </Avatar>
             );
-        } else if (this.props.shareInviteBankResponses.length > 0) {
+        } else if (shareInviteBankResponses.length > 0) {
             avatarSub = (
                 <Avatar style={styles.secondaryIcon}>
                     <LinkIcon />
@@ -82,9 +92,9 @@ class AccountListItem extends React.Component {
         }
 
         let formattedBalance = account.balance ? account.balance.value : 0;
-        if (this.props.shareInviteBankResponses.length > 0) {
+        if (shareInviteBankResponses.length > 0) {
             const connectBudget = GetShareDetailBudget(
-                this.props.shareInviteBankResponses
+                shareInviteBankResponses
             );
             if (connectBudget) {
                 formattedBalance = connectBudget;
@@ -94,8 +104,28 @@ class AccountListItem extends React.Component {
             ? ""
             : formatMoney(formattedBalance, true);
 
+        // check if any of the selected account ids are for this account
+        let displaySelectIcon = false;
+        let accountIsSelected = false;
+        if (selectedAccountIds.length !== 0) {
+            // check if the selected account ids list contains this account
+            accountIsSelected = selectedAccountIds.some(
+                selectedAccountId => selectedAccountId === account.id
+            );
+
+            // switch if toggle is true
+            displaySelectIcon = toggleAccountIds
+                ? !accountIsSelected
+                : accountIsSelected;
+        }
+
+        // decide which onClick event is used based on
+        const onClickHandler = accountIsSelected
+            ? e => this.props.removeAccountIdFilter(account.id)
+            : e => this.props.addAccountIdFilter(account.id);
+
         return (
-            <ListItem divider {...listItemProps}>
+            <ListItem divider button onClick={onClickHandler}>
                 <Avatar style={styles.bigAvatar}>
                     <LazyAttachmentImage
                         height={60}
@@ -120,7 +150,7 @@ class AccountListItem extends React.Component {
                             to={`/account-info/${account.id}`}
                             component={NavLink}
                         >
-                            {this.props.accountsAccountId === account.id ? (
+                            {displaySelectIcon ? (
                                 <KeyboardArrowRightIcon />
                             ) : (
                                 <InfoIcon />
@@ -136,16 +166,27 @@ class AccountListItem extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+
         paymentsLoading: state.payments.loading,
+
         accountsAccountId: state.accounts.selected_account,
-        hideBalance: state.options.hide_balance
+
+        hideBalance: state.options.hide_balance,
+
+        selectedAccountIds: state.account_id_filter.selected_account_ids,
+        toggleAccountIds: state.account_id_filter.toggle
     };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        selectAccount: acountId => dispatch(accountsSelectAccount(acountId))
+        selectAccount: acountId => dispatch(accountsSelectAccount(acountId)),
+
+        addAccountIdFilter: accountId =>
+            dispatch(addAccountIdFilter(accountId)),
+        removeAccountIdFilter: index => dispatch(removeAccountIdFilter(index)),
+        toggleAccountIdFilter: () => dispatch(toggleAccountIdFilter())
     };
 };
 
