@@ -85,45 +85,6 @@ class AccountList extends React.Component {
             this.props.shareInviteBankResponsesInfoUpdate(userId);
     };
 
-    /**
-     * By default this updates the payments list
-     */
-    updateExternal = (userId, accountId) => {
-        if (this.props.updateExternal) {
-            this.props.updateExternal(userId, accountId);
-        } else {
-            // update the last updated timestamp
-            this.props.applicationSetLastAutoUpdate();
-
-            // update all the accounts and events
-            if (!this.props.accountsLoading) this.props.accountsUpdate(userId);
-
-            if (!this.props.paymentsLoading)
-                this.props.paymentsUpdate(userId, accountId);
-            if (!this.props.bunqMeTabsLoading)
-                this.props.bunqMeTabsUpdate(userId, accountId);
-            if (!this.props.requestResponsesLoading)
-                this.props.requestResponsesUpdate(userId, accountId);
-            if (!this.props.requestInquiriesLoading)
-                this.props.requestInquiriesUpdate(userId, accountId);
-            if (!this.props.masterCardActionsLoading)
-                this.props.masterCardActionsUpdate(userId, accountId);
-
-            if (!this.props.shareInviteBankResponsesLoading)
-                this.props.shareInviteBankResponsesInfoUpdate(userId);
-
-            if (
-                !this.props.limitedPermissions &&
-                !this.props.shareInviteBankInquiriesLoading
-            ) {
-                this.props.shareInviteBankInquiriesInfoUpdate(
-                    userId,
-                    accountId
-                );
-            }
-        }
-    };
-
     checkUpdateRequirement = (props = this.props) => {
         const {
             accounts,
@@ -148,33 +109,6 @@ class AccountList extends React.Component {
             if (firstAccount && firstAccount.id)
                 this.props.selectAccount(firstAccount.id);
         }
-
-        // // check if the stored selected account isn't already loaded
-        // if (
-        //     user &&
-        //     user.id &&
-        //     accountsSelectedId !== false &&
-        //     accountsSelectedId !== paymentsAccountId &&
-        //     paymentsLoading === false &&
-        //     this.state.fetchedExternal === false
-        // ) {
-        //     this.setState({ fetchedExternal: true });
-        //
-        //     // check if the list was updated in the last 60 seconds
-        //     if (
-        //         this.props.applicationLastAutoUpdate !== false &&
-        //         this.props.applicationLastAutoUpdate.getTime() >
-        //             new Date(new Date().getTime() - 300000).getTime()
-        //     ) {
-        //         return false;
-        //     }
-        //
-        //     // delay the initial loading by 1000ms to improve startup ui performance
-        //     if (this.delayedUpdate) clearTimeout(this.delayedUpdate);
-        //     this.delayedUpdate = setTimeout(() => {
-        //         this.updateExternal(user.id, accountsSelectedId);
-        //     }, 500);
-        // }
 
         // no accounts loaded
         if (
@@ -223,7 +157,12 @@ class AccountList extends React.Component {
                         filterShareInviteBankResponses(account.id)
                     );
 
-                    let onClickHandler = this.updateExternal;
+                    // set external if added or default to false
+                    let onClickHandler = this.props.updateExternal
+                        ? (userId, accountId) =>
+                              this.props.updateExternal(userId, accountId)
+                        : false;
+
                     let secondaryAction = false;
                     if (accountTotalSelectionMode) {
                         const excluded = excludedAccountIds.some(
@@ -247,6 +186,7 @@ class AccountList extends React.Component {
 
                     return (
                         <AccountListItem
+                            onClick={onClickHandler}
                             BunqJSClient={this.props.BunqJSClient}
                             denseMode={this.props.denseMode}
                             account={account}

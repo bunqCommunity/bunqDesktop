@@ -43,23 +43,9 @@ class AccountListItem extends React.Component {
         this.state = {};
     }
 
-    fetchPaymentsHandler = accountId => {
-        return () => {
-            if (!this.props.paymentsLoading) {
-                // select this account
-                this.props.selectAccount(accountId);
-
-                // check if we have a load callback for click events
-                if (this.props.onClick) {
-                    // fetch all payments for the account
-                    this.props.onClick(this.props.user.id, accountId);
-                }
-            }
-        };
-    };
-
     render() {
         const {
+            user,
             account,
             shareInviteBankResponses,
             selectedAccountIds,
@@ -68,12 +54,6 @@ class AccountListItem extends React.Component {
 
         if (account.status !== "ACTIVE") {
             return null;
-        }
-
-        const listItemProps = {};
-        if (this.props.clickable) {
-            listItemProps.button = true;
-            listItemProps.onClick = this.fetchPaymentsHandler(account.id);
         }
 
         let avatarSub = null;
@@ -120,9 +100,14 @@ class AccountListItem extends React.Component {
         }
 
         // decide which onClick event is used based on
-        const onClickHandler = accountIsSelected
+        const defaultClickHandler = accountIsSelected
             ? e => this.props.removeAccountIdFilter(account.id)
             : e => this.props.addAccountIdFilter(account.id);
+
+        // allow overwrite by props
+        const onClickHandler = this.props.onClick
+            ? e => this.props.onClick(user.id, account.id)
+            : defaultClickHandler;
 
         return (
             <ListItem divider button onClick={onClickHandler}>
