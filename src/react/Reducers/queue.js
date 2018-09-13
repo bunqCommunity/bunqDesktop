@@ -2,11 +2,26 @@ export const defaultState = {
     loading: false,
     request_counter: 0,
     max_request_counter: 0,
-    trigger_sync: false
+    trigger_sync: false,
+    finished_queue: false
 };
 
 export default function reducer(state = defaultState, action) {
     switch (action.type) {
+        case "QUEUE_SET_REQUEST_COUNTER":
+            const setCounterValue = action.payload.counter;
+            const setCounterLoading = increasedCounter > 0;
+
+            return {
+                ...state,
+                request_counter: setCounterValue,
+                max_request_counter:
+                    state.max_request_counter > setCounterValue
+                        ? state.max_request_counter
+                        : setCounterValue,
+                loading: setCounterLoading
+            };
+
         case "QUEUE_INCREASE_REQUEST_COUNTER":
             const increasedCounter = state.request_counter + 1;
             const increasedLoading = increasedCounter > 0;
@@ -38,6 +53,11 @@ export default function reducer(state = defaultState, action) {
                 loading: decreasedLoading
             };
 
+        case "QUEUE_FINISHED_SYNC":
+            return {
+                ...state,
+                finished_queue: new Date()
+            };
         case "QUEUE_START_SYNC":
             return {
                 ...state,

@@ -49,7 +49,7 @@ class AccountList extends React.Component {
         super(props, context);
         this.state = {
             // keeps track if we already automatically did a request
-            fetchedExternal: false,
+            // fetchedExternal: false,
             fetchedAccounts: false,
             accountTotalSelectionMode: false
         };
@@ -60,11 +60,9 @@ class AccountList extends React.Component {
         this.checkUpdateRequirement();
     }
 
-    getSnapshotBeforeUpdate(previousProps, previousState) {
+    componentDidUpdate(previousProps) {
         this.checkUpdateRequirement(this.props);
-        return null;
     }
-    componentDidUpdate() {}
 
     componentWillUnmount() {
         // prevent data from being loaded after we unmount
@@ -140,6 +138,7 @@ class AccountList extends React.Component {
             return;
         }
 
+        // if no account is selected, we select one automatically
         if (accountsSelectedId === false && accounts.length > 0) {
             // get the first active account in the accounts list
             const firstAccount = accounts.find(account => {
@@ -150,32 +149,32 @@ class AccountList extends React.Component {
                 this.props.selectAccount(firstAccount.id);
         }
 
-        // check if the stored selected account isn't already loaded
-        if (
-            user &&
-            user.id &&
-            accountsSelectedId !== false &&
-            accountsSelectedId !== paymentsAccountId &&
-            paymentsLoading === false &&
-            this.state.fetchedExternal === false
-        ) {
-            this.setState({ fetchedExternal: true });
-
-            // check if the list was updated in the last 60 seconds
-            if (
-                this.props.applicationLastAutoUpdate !== false &&
-                this.props.applicationLastAutoUpdate.getTime() >
-                    new Date(new Date().getTime() - 300000).getTime()
-            ) {
-                return false;
-            }
-
-            // delay the initial loading by 1000ms to improve startup ui performance
-            if (this.delayedUpdate) clearTimeout(this.delayedUpdate);
-            this.delayedUpdate = setTimeout(() => {
-                this.updateExternal(user.id, accountsSelectedId);
-            }, 500);
-        }
+        // // check if the stored selected account isn't already loaded
+        // if (
+        //     user &&
+        //     user.id &&
+        //     accountsSelectedId !== false &&
+        //     accountsSelectedId !== paymentsAccountId &&
+        //     paymentsLoading === false &&
+        //     this.state.fetchedExternal === false
+        // ) {
+        //     this.setState({ fetchedExternal: true });
+        //
+        //     // check if the list was updated in the last 60 seconds
+        //     if (
+        //         this.props.applicationLastAutoUpdate !== false &&
+        //         this.props.applicationLastAutoUpdate.getTime() >
+        //             new Date(new Date().getTime() - 300000).getTime()
+        //     ) {
+        //         return false;
+        //     }
+        //
+        //     // delay the initial loading by 1000ms to improve startup ui performance
+        //     if (this.delayedUpdate) clearTimeout(this.delayedUpdate);
+        //     this.delayedUpdate = setTimeout(() => {
+        //         this.updateExternal(user.id, accountsSelectedId);
+        //     }, 500);
+        // }
 
         // no accounts loaded
         if (

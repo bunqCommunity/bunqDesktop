@@ -44,12 +44,12 @@ class NoteTextForm extends React.Component {
             this.updateNotes();
     }
 
-    getSnapshotBeforeUpdate(previousProps, previousState) {
+    getSnapshotBeforeUpdate(nextProps, nextState) {
         if (
             this.props.event &&
-            previousProps.event &&
+            nextProps.event &&
             this.props.noteTextsLoading &&
-            this.props.event.id !== previousProps.event.id
+            this.props.event.id !== nextProps.event.id
         ) {
             this.updateNotes();
         }

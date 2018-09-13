@@ -12,6 +12,8 @@ import { openSnackbar } from "../../Actions/snackbar";
 import {
     queueDecreaseRequestCounter,
     queueIncreaseRequestCounter,
+    queueSetRequestCounter,
+    queueFinishedSync,
     queueResetSyncState
 } from "../../Actions/queue";
 import { paymentsSetInfo } from "../../Actions/payments";
@@ -64,7 +66,7 @@ class QueueManager extends React.Component {
                 // delay the queue update
                 this.delayedQueue = setTimeout(
                     () => this.triggerQueueUpdate(queueTriggerSync),
-                    2500
+                    1000
                 );
             }
         } else {
@@ -103,6 +105,12 @@ class QueueManager extends React.Component {
         this.setState({
             initialSync: true
         });
+
+        const requestsPerAccount = limitedPermissions ? 5 : 6;
+        const bufferedCounter = accounts.length * requestsPerAccount;
+
+        // set initial request count in one go
+        this.props.queueSetRequestCounter(bufferedCounter);
 
         accounts.forEach(account => {
             const accountId = account.id;
@@ -168,37 +176,46 @@ class QueueManager extends React.Component {
             eventCount += shareInviteBankInquiries.length;
 
             // set the info into the application state
-            if (payments.length > 0)
+            if (payments.length > 0) {
                 this.props.paymentsSetInfo(payments, account.id);
-            if (bunqMeTabs.length > 0)
+            }
+            if (bunqMeTabs.length > 0) {
                 this.props.bunqMeTabsSetInfo(bunqMeTabs, account.id);
-            if (requestResponses.length > 0)
+            }
+            if (requestResponses.length > 0) {
                 this.props.requestResponsesSetInfo(
                     requestResponses,
                     account.id
                 );
-            if (requestInquiries.length > 0)
+            }
+            if (requestInquiries.length > 0) {
                 this.props.requestInquiriesSetInfo(
                     requestInquiries,
                     account.id
                 );
-            if (masterCardActions.length > 0)
+            }
+            if (masterCardActions.length > 0) {
                 this.props.masterCardActionsSetInfo(
                     masterCardActions,
                     account.id
                 );
-            if (shareInviteBankInquiries.length > 0)
+            }
+            if (shareInviteBankInquiries.length > 0) {
                 this.props.shareInviteBankInquiriesSetInfo(
                     shareInviteBankInquiries,
                     account.id
                 );
+            }
         });
 
+        // display a message to notify the user
         const mainText = this.props.t("Background sync finished and loaded");
         const eventsText = this.props.t("events");
         const resultMessage = `${mainText} ${eventCount} ${eventsText}`;
-
         this.props.openSnackbar(resultMessage);
+
+        // trigger an update by changing the finished timestamp
+        this.props.queueFinishedSync();
 
         // reset the events in the queue state
         this.setState({
@@ -219,7 +236,7 @@ class QueueManager extends React.Component {
     ) => {
         const { BunqJSClient } = this.props;
 
-        this.props.queueIncreaseRequestCounter();
+        if (olderId !== false) this.props.queueIncreaseRequestCounter();
 
         BunqJSClient.api.payment
             .list(user_id, account_id, {
@@ -270,7 +287,7 @@ class QueueManager extends React.Component {
     ) => {
         const { BunqJSClient } = this.props;
 
-        this.props.queueIncreaseRequestCounter();
+        if (olderId !== false) this.props.queueIncreaseRequestCounter();
 
         BunqJSClient.api.bunqMeTabs
             .list(user_id, account_id, {
@@ -330,7 +347,7 @@ class QueueManager extends React.Component {
     ) => {
         const { BunqJSClient } = this.props;
 
-        this.props.queueIncreaseRequestCounter();
+        if (olderId !== false) this.props.queueIncreaseRequestCounter();
 
         BunqJSClient.api.requestResponse
             .list(user_id, account_id, {
@@ -398,7 +415,7 @@ class QueueManager extends React.Component {
     ) => {
         const { BunqJSClient } = this.props;
 
-        this.props.queueIncreaseRequestCounter();
+        if (olderId !== false) this.props.queueIncreaseRequestCounter();
 
         BunqJSClient.api.requestInquiry
             .list(user_id, account_id, {
@@ -466,7 +483,7 @@ class QueueManager extends React.Component {
     ) => {
         const { BunqJSClient } = this.props;
 
-        this.props.queueIncreaseRequestCounter();
+        if (olderId !== false) this.props.queueIncreaseRequestCounter();
 
         BunqJSClient.api.masterCardAction
             .list(user_id, account_id, {
@@ -534,7 +551,7 @@ class QueueManager extends React.Component {
     ) => {
         const { BunqJSClient } = this.props;
 
-        this.props.queueIncreaseRequestCounter();
+        if (olderId !== false) this.props.queueIncreaseRequestCounter();
 
         BunqJSClient.api.shareInviteBankInquiry
             .list(user_id, account_id, {
@@ -623,6 +640,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(queueDecreaseRequestCounter()),
         queueIncreaseRequestCounter: () =>
             dispatch(queueIncreaseRequestCounter()),
+        queueSetRequestCounter: counter =>
+            dispatch(queueSetRequestCounter(counter)),
+        queueFinishedSync: () => dispatch(queueFinishedSync()),
         queueResetSyncState: () => dispatch(queueResetSyncState()),
 
         paymentsSetInfo: (payments, accountId) =>

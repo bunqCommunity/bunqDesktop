@@ -192,10 +192,7 @@ const mapStateToProps = state => {
         nativeFrame: state.options.native_frame,
         minimizeToTray: state.options.minimize_to_tray,
 
-        environment: state.registration.environment,
-
-        queueRequestCounter: state.queue.request_counter,
-        queueLoading: state.queue.loading
+        environment: state.registration.environment
     };
 };
 

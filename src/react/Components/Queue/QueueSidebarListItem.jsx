@@ -18,16 +18,49 @@ const styles = {
 class QueueSidebarListItem extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+        this.state = {
+            queueRequestCounter: 0,
+            queueMaxRequestCounter: 0
+        };
+
+        this.updateDelay = null;
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        // throttle updates by 250ms to gather up rapid redux events
+        if (
+            nextProps.queueRequestCounter !== this.state.queueRequestCounter ||
+            nextProps.queueMaxRequestCounter !==
+                this.state.queueMaxRequestCounter
+        ) {
+            if (this.updateDelay) clearTimeout(this.updateDelay);
+            this.updateDelay = setTimeout(this.setQueueRequestCounter, 250);
+        }
+
+        if (nextProps.queueLoading !== this.props.queueLoading) return true;
+        if (nextState.queueRequestCounter !== this.state.queueRequestCounter) {
+            return true;
+        }
+        if (
+            nextState.queueMaxRequestCounter !==
+            this.state.queueMaxRequestCounter
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    setQueueRequestCounter = () => {
+        this.setState({
+            queueMaxRequestCounter: this.props.queueMaxRequestCounter,
+            queueRequestCounter: this.props.queueRequestCounter
+        });
+    };
+
     render() {
-        const {
-            queueLoading,
-            queueTriggerSync,
-            queueRequestCounter,
-            queueMaxRequestCounter
-        } = this.props;
+        const { t, queueLoading, queueTriggerSync } = this.props;
+        const { queueRequestCounter, queueMaxRequestCounter } = this.state;
 
         let currentPercentage = 0;
         let secondaryQueueText = t("Queue is empty");

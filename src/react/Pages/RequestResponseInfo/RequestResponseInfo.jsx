@@ -77,7 +77,7 @@ class RequestResponseInfo extends React.Component {
         }
     }
 
-    getSnapshotBeforeUpdate(previousProps, previousState) {
+    getSnapshotBeforeUpdate(nextProps, nextState) {
         if (
             this.props.user &&
             this.props.user.id &&

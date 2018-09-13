@@ -75,13 +75,13 @@ class PaymentInfo extends React.Component {
         }
     }
 
-    getSnapshotBeforeUpdate(previousProps, previousState) {
+    getSnapshotBeforeUpdate(nextProps, nextState) {
         if (
             this.props.user &&
             this.props.user.id &&
             this.props.initialBunqConnect &&
             this.props.match.params.paymentId !==
-                previousProps.match.params.paymentId
+            nextProps.match.params.paymentId
         ) {
             const { paymentId, accountId } = this.props.match.params;
             this.props.updatePayment(

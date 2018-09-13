@@ -202,7 +202,7 @@ class Sidebar extends React.Component {
 
                 <ListItem style={styles.listFiller} />
 
-                <QueueSidebarListItem />
+                <QueueSidebarListItem t={t} />
 
                 <ListItemWrapper
                     to="/settings"
@@ -277,10 +277,6 @@ const mapStateToProps = state => {
         // used to determine if we need to disable certain items in the menu
         derivedPassword: state.registration.derivedPassword,
         apiKey: state.registration.api_key,
-
-        queueRequestCounter: state.queue.request_counter,
-        queueMaxRequestCounter: state.queue.max_request_counter,
-        queueLoading: state.queue.loading,
 
         userType: state.user.user_type,
         limitedPermissions: state.user.limited_permissions

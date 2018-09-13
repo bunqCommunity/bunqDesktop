@@ -90,12 +90,14 @@ class CombinedList extends React.Component {
 
     componentDidUpdate(prevProps) {
         const isLoading =
+            this.props.queueLoading ||
             this.props.bunqMeTabsLoading ||
             this.props.paymentsLoading ||
             this.props.requestResponsesLoading ||
             this.props.requestInquiriesLoading ||
             this.props.masterCardActionsLoading;
         const wasLoading =
+            prevProps.queueLoading ||
             prevProps.bunqMeTabsLoading ||
             prevProps.paymentsLoading ||
             prevProps.requestResponsesLoading ||
@@ -105,6 +107,7 @@ class CombinedList extends React.Component {
         // no longer loading or filter changed
         if (
             (isLoading == false && wasLoading) ||
+            this.props.queueFinishedQueue !== prevProps.queueFinishedQueue ||
             this.props.generalFilterDate !== prevProps.generalFilterDate
         ) {
             this.loadEvents();
@@ -112,6 +115,8 @@ class CombinedList extends React.Component {
     }
 
     loadEvents = () => {
+        console.log("Load events ");
+
         // create arrays of the different endpoint types
         const bunqMeTabs = this.bunqMeTabsMapper();
         const payments = this.paymentMapper();
@@ -471,6 +476,7 @@ class CombinedList extends React.Component {
             : ` of ${this.state.totalEvents}`;
 
         let loadingContent =
+            this.props.queueLoading ||
             this.props.bunqMeTabsLoading ||
             this.props.paymentsLoading ||
             this.props.requestResponsesLoading ||
@@ -661,6 +667,9 @@ class CombinedList extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+
+        queueLoading: state.queue.loading,
+        queueFinishedQueue: state.queue.finished_queue,
 
         accounts: state.accounts.accounts,
         accountsAccountId: state.accounts.selected_account,
