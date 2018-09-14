@@ -7,10 +7,10 @@ import Drawer from "@material-ui/core/Drawer";
 import Hidden from "@material-ui/core/Hidden";
 import Avatar from "@material-ui/core/Avatar";
 import Divider from "@material-ui/core/Divider";
+import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import List from "@material-ui/core/List";
 
 import ContactsIcon from "@material-ui/icons/Contacts";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
@@ -24,12 +24,14 @@ import Bookmark from "@material-ui/icons/Bookmark";
 import CreateIcon from "@material-ui/icons/Create";
 
 import EventIcon from "@material-ui/icons/Event";
-
 import FileUploadIcon from "./CustomSVG/FileUpload";
+
+import QueueSidebarListItem from "./Queue/QueueSidebarListItem";
 import NavLink from "./Routing/NavLink";
 import ListItemWrapper from "./ListItemWrapper";
-import { closeMainDrawer } from "../Actions/main_drawer";
 import IsDarwin from "../Helpers/IsDarwin";
+
+import { closeSidebar } from "../Actions/sidebar";
 
 const styles = {
     list: {
@@ -62,7 +64,7 @@ const styles = {
     }
 };
 
-class MainDrawer extends React.Component {
+class Sidebar extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -75,13 +77,13 @@ class MainDrawer extends React.Component {
 
     openOptions = () => {
         // open the options drawer and open the main drawer
-        this.props.closeMainDrawer();
+        this.props.closeSidebar();
     };
 
     componentDidUpdate(oldProps) {
         if (this.props.open) {
             if (oldProps.location.pathname !== this.props.location.pathname) {
-                this.props.closeMainDrawer();
+                this.props.closeSidebar();
             }
         }
     }
@@ -176,6 +178,7 @@ class MainDrawer extends React.Component {
                   />
               ];
 
+
         const drawerList = (
             <List style={styles.list}>
                 <NavLink to="/application-info" style={styles.bunqLink}>
@@ -198,6 +201,8 @@ class MainDrawer extends React.Component {
                 {navigationItems}
 
                 <ListItem style={styles.listFiller} />
+
+                <QueueSidebarListItem t={t} />
 
                 <ListItemWrapper
                     to="/settings"
@@ -266,7 +271,7 @@ class MainDrawer extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        open: state.main_drawer.open,
+        open: state.sidebar.open,
         stickyMenu: state.options.sticky_menu,
 
         // used to determine if we need to disable certain items in the menu
@@ -280,12 +285,12 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        closeDrawer: () => dispatch(closeMainDrawer()),
-        closeMainDrawer: () => dispatch(closeMainDrawer())
+        closeDrawer: () => dispatch(closeSidebar()),
+        closeSidebar: () => dispatch(closeSidebar())
     };
 };
 
-MainDrawer.propTypes = {
+Sidebar.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
@@ -293,5 +298,5 @@ export default withStyles(styles, { withTheme: true })(
     connect(
         mapStateToProps,
         mapDispatchToProps
-    )(translate("translations")(MainDrawer))
+    )(translate("translations")(Sidebar))
 );

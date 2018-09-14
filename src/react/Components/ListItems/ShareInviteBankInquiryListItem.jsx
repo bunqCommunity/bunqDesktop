@@ -17,6 +17,9 @@ import DraftAccess from "./ShareInviteBankTypes/DraftAccess";
 import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiries";
 
 const styles = {
+    listItemText: {
+        marginRight: 40
+    },
     smallAvatar: {
         width: 50,
         height: 50
@@ -134,6 +137,7 @@ class ShareInviteBankInquiryListItem extends React.Component {
                     />
                 </Avatar>
                 <ListItemText
+                    style={styles.listItemText}
                     primary={displayName}
                     secondary={t("Connect invite sent")}
                 />
@@ -155,7 +159,7 @@ ShareInviteBankInquiryListItem.defaultProps = {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-        accountsSelectedId: state.accounts.selectedAccount
+        accountsSelectedId: state.accounts.selected_account
     };
 };
 

@@ -37,6 +37,7 @@ import MenuItemTranslate from "../Components/TranslationHelpers/MenuItem";
 import { openSnackbar } from "../Actions/snackbar";
 import {
     resetApplication,
+    setSyncOnStartup,
     setHideBalance,
     setInactivityCheckDuration,
     setMinimizeToTray,
@@ -154,6 +155,9 @@ class Settings extends React.Component {
     };
     handleHideInactivityDurationChange = event => {
         this.props.setInactivityCheckDuration(event.target.value);
+    };
+    handleSyncOnStartupChange = event => {
+        this.props.setSyncOnStartup(!this.props.syncOnStartup);
     };
     handleResetBunqDesktop = event => {
         if (this.state.clearConfirmation === false) {
@@ -461,6 +465,22 @@ class Settings extends React.Component {
                                 ) : null}
                             </Grid>
 
+                            <Grid item xs={12} md={6}>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            id="sync-on-startup"
+                                            checked={this.props.syncOnStartup}
+                                            onChange={
+                                                this
+                                                    .handleSyncOnStartupChange
+                                            }
+                                        />
+                                    }
+                                    label={t("Run background sync on startup")}
+                                />
+                            </Grid>
+
                             <Grid item xs={12}>
                                 <FilePicker
                                     buttonContent={"Change settings location"}
@@ -555,6 +575,7 @@ class Settings extends React.Component {
 
 const mapStateToProps = state => {
     return {
+        syncOnStartup: state.options.sync_on_startup,
         theme: state.options.theme,
         language: state.options.language,
         hideBalance: state.options.hide_balance,
@@ -575,6 +596,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         openSnackbar: message => dispatch(openSnackbar(message)),
 
         // options and options_drawer handlers
+        setSyncOnStartup: syncOnStartup => dispatch(setSyncOnStartup(syncOnStartup)),
         openSnackbar: message => dispatch(openSnackbar(message)),
         setAutomaticThemeChange: automaticThemeChange =>
             dispatch(setAutomaticThemeChange(automaticThemeChange)),

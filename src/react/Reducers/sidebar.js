@@ -4,13 +4,13 @@ export const defaultState = {
 
 export default function reducer(state = defaultState, action) {
     switch (action.type) {
-        case "MAIN_DRAWER_OPEN":
+        case "SIDEBAR_OPEN":
             return {
                 ...state,
                 open: true
             };
 
-        case "MAIN_DRAWER_CLOSE":
+        case "SIDEBAR_CLOSE":
             return {
                 ...state,
                 open: false

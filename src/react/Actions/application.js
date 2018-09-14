@@ -24,3 +24,9 @@ export function applicationSetLastAutoUpdate() {
         type: "APPLICATION_SET_LAST_AUTO_UPDATE"
     };
 }
+
+export function applicationForceUpdate() {
+    return {
+        type: "APPLICATION_FORCE_UPDATE"
+    };
+}

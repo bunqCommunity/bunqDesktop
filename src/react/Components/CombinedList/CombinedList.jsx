@@ -90,12 +90,14 @@ class CombinedList extends React.Component {
 
     componentDidUpdate(prevProps) {
         const isLoading =
+            this.props.queueLoading ||
             this.props.bunqMeTabsLoading ||
             this.props.paymentsLoading ||
             this.props.requestResponsesLoading ||
             this.props.requestInquiriesLoading ||
             this.props.masterCardActionsLoading;
         const wasLoading =
+            prevProps.queueLoading ||
             prevProps.bunqMeTabsLoading ||
             prevProps.paymentsLoading ||
             prevProps.requestResponsesLoading ||
@@ -105,6 +107,11 @@ class CombinedList extends React.Component {
         // no longer loading or filter changed
         if (
             (isLoading == false && wasLoading) ||
+            // force update was triggered
+            this.props.forceUpdate !== prevProps.forceUpdate ||
+            // queue finished loading
+            this.props.queueFinishedQueue !== prevProps.queueFinishedQueue ||
+            // a filter has changed
             this.props.generalFilterDate !== prevProps.generalFilterDate
         ) {
             this.loadEvents();
@@ -330,6 +337,7 @@ class CombinedList extends React.Component {
                 requestInquiryFilter({
                     requestVisibility: this.props.requestVisibility,
                     requestType: this.props.requestType,
+                    displayAcceptedRequests: true,
                     ...this.getCommonFilters()
                 })
             )
@@ -470,6 +478,7 @@ class CombinedList extends React.Component {
             : ` of ${this.state.totalEvents}`;
 
         let loadingContent =
+            this.props.queueLoading ||
             this.props.bunqMeTabsLoading ||
             this.props.paymentsLoading ||
             this.props.requestResponsesLoading ||
@@ -661,8 +670,13 @@ const mapStateToProps = state => {
     return {
         user: state.user.user,
 
+        queueLoading: state.queue.loading,
+        queueFinishedQueue: state.queue.finished_queue,
+
         accounts: state.accounts.accounts,
-        accountsAccountId: state.accounts.selectedAccount,
+        accountsAccountId: state.accounts.selected_account,
+
+        forceUpdate: state.application.force_update,
 
         page: state.pagination.page,
         pageSize: state.pagination.page_size,

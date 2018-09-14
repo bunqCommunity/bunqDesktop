@@ -14,8 +14,12 @@ import MoneyAmountLabel from "../MoneyAmountLabel";
 
 import { masterCardActionParser } from "../../Helpers/StatusTexts";
 import { formatMoney } from "../../Helpers/Utils";
+import { defaultMastercardImage } from "../../Helpers/DefaultImageHandlers";
 
 const styles = {
+    listItemText: {
+        marginRight: 40
+    },
     smallAvatar: {
         width: 50,
         height: 50
@@ -52,6 +56,8 @@ class MasterCardActionListItem extends React.Component {
         const formattedPaymentAmount = formatMoney(paymentAmount, true);
         const secondaryText = masterCardActionParser(masterCardAction, t);
 
+        const defaultImage = defaultMastercardImage(masterCardAction);
+
         return [
             <ListItem
                 button
@@ -63,11 +69,16 @@ class MasterCardActionListItem extends React.Component {
                 <Avatar style={styles.smallAvatar}>
                     <LazyAttachmentImage
                         height={50}
+                        defaultImage={defaultImage}
                         BunqJSClient={this.props.BunqJSClient}
                         imageUUID={imageUUID}
                     />
                 </Avatar>
-                <ListItemText primary={displayName} secondary={secondaryText} />
+                <ListItemText
+                    style={styles.listItemText}
+                    primary={displayName}
+                    secondary={secondaryText}
+                />
                 <ListItemSecondaryAction style={{ marginTop: -16 }}>
                     <MoneyAmountLabel
                         style={styles.moneyAmountLabel}

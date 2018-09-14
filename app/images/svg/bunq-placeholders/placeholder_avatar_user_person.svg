@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?><svg xmlns:android="http://schemas.android.com/apk/res/android" height="120.0" width="120.0" xmlns="http://www.w3.org/2000/svg">
+    <path android:fillType="evenOdd" d="M0,0h120v120h-120z" fill="#cccccc" fill-opacity="1.0" stroke="#00000000" stroke-width="1.0"/>
+    <path android:fillType="evenOdd" d="M60,115C42.94,115 27.69,107.23 17.6,95.03C17.5,92.47 42.48,85.03 45,85.03C45,77.63 40.01,69.97 40.01,65.13C36.38,61.37 36.21,56.37 36.21,55.04C36.21,52.6 36.21,50.04 37.48,50.04C37.48,45.07 36.21,45.03 36.21,35.03C36.21,22.56 46.22,15 60,15C73.78,15 83.79,22.56 83.79,35.03C83.79,45.03 82.52,45.07 82.52,50.04C83.79,50.04 83.79,52.6 83.79,55.04C83.79,56.37 83.62,61.37 79.99,65.13C79.99,69.97 75,77.63 75,85.03C77.52,85.03 102.5,92.47 102.5,95.03C92.31,107.23 77.06,115 60,115Z" fill="#ffffff" fill-opacity="1.0" stroke="#00000000" stroke-width="1.0"/>
+</svg>

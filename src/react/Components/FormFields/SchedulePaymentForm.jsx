@@ -35,8 +35,19 @@ export default props => {
         handleChangeDirect,
         handleChange
     } = props;
-    scheduleEndDate = UTCDateToLocalDate(scheduleEndDate);
-    scheduleStartDate = UTCDateToLocalDate(scheduleStartDate);
+
+    scheduleEndDate =
+        scheduleEndDate !== null
+            ? UTCDateToLocalDate(scheduleEndDate)
+            : scheduleEndDate;
+    scheduleStartDate =
+        scheduleStartDate !== null
+            ? UTCDateToLocalDate(scheduleStartDate)
+            : scheduleStartDate;
+
+    const wrapDateChange = name => value => {
+        handleChangeDirect(name)(getUTCDate(value));
+    };
 
     let scheduledPaymentText = null;
     if (schedulePayment) {
@@ -65,25 +76,21 @@ export default props => {
                     <Grid item xs={6}>
                         <DateTimePicker
                             helperText={t("Start date")}
-                            format="MMMM DD, YYYY HH:mm"
+                            format="MMMM dd, YYYY HH:mm"
                             style={styles.textField}
                             value={scheduleStartDate}
-                            onChange={handleChangeDirect("scheduleStartDate")}
+                            onChange={wrapDateChange("scheduleStartDate")}
                             onChange={date => {
                                 // reset to current time if
                                 if (!date || date > new Date()) {
-                                    handleChangeDirect("scheduleStartDate")(
-                                        date
-                                    );
+                                    wrapDateChange("scheduleStartDate")(date);
 
                                     // if start date further than the end date, we reset the end date to start date
                                     if (date > scheduleEndDate) {
-                                        handleChangeDirect("scheduleEndDate")(
-                                            date
-                                        );
+                                        wrapDateChange("scheduleEndDate")(date);
                                     }
                                 } else {
-                                    handleChangeDirect("scheduleStartDate")(
+                                    wrapDateChange("scheduleStartDate")(
                                         new Date()
                                     );
                                 }
@@ -100,15 +107,15 @@ export default props => {
                         <DateTimePicker
                             helperText={t("End date")}
                             emptyLabel={t("No end date")}
-                            format="MMMM DD, YYYY HH:mm"
+                            format="MMMM dd, YYYY HH:mm"
                             style={styles.textField}
                             value={scheduleEndDate}
                             onChange={date => {
                                 // reset to current time if
                                 if (!date || date > scheduleStartDate) {
-                                    handleChangeDirect("scheduleEndDate")(date);
+                                    wrapDateChange("scheduleEndDate")(date);
                                 } else {
-                                    handleChangeDirect("scheduleEndDate")(
+                                    wrapDateChange("scheduleEndDate")(
                                         scheduleStartDate
                                     );
                                 }

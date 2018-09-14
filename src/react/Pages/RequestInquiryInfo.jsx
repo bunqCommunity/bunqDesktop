@@ -73,7 +73,7 @@ class RequestInquiryInfo extends React.Component {
         }
     }
 
-    getSnapshotBeforeUpdate(previousProps, previousState) {
+    getSnapshotBeforeUpdate(nextProps, nextState) {
         if (
             this.props.user &&
             this.props.user.id &&
@@ -331,7 +331,7 @@ const mapStateToProps = state => {
         requestInquiryInfo: state.request_inquiry_info.request_inquiry_info,
         requestInquiryInfoLoading: state.request_inquiry_info.loading,
         requestInquiryLoading: state.request_inquiry.loading,
-        accountsSelectedAccount: state.accounts.selectedAccount
+        accountsSelectedAccount: state.accounts.selected_account
     };
 };
 

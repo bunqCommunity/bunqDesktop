@@ -940,10 +940,10 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@bunq-community/bunq-js-client@^0.25.0":
-  version "0.25.0"
-  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.25.0.tgz#c9c39450687b6da2faad85574fe6db6e4bab98c6"
-  integrity sha512-xAdYqb2SpZpA1lQYLcS8C+mzEBcCu8gEwnyZbI4vSeEnGwzqs3CPna9ZMicNxkmT1p37Z6Wdu/IALzaDK9qJbQ==
+"@bunq-community/bunq-js-client@^0.25.3":
+  version "0.25.3"
+  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.25.3.tgz#854717b85937aac2f1be39f6778da8eea2b541bd"
+  integrity sha512-vSwtABuRZ5++k08+j/PtKedaEsiIxTR9ec6bQSIXxTo6qQ6PlCEkjlmgxUdQBoqADTko/tg8ECvjfE6QtiXD6g==
   dependencies:
     "@types/jest" "^21.1.8"
     "@types/moxios" "^0.4.8"
@@ -1013,10 +1013,10 @@
     is-html "^1.0.0"
     propprop "^0.3.0"
 
-"@material-ui/core@^3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-3.0.2.tgz#a86ec4526dd0648ee9da4fc4deabffc0276de5f0"
-  integrity sha512-fZAS1aTFlsE2FvZMB4kJFYl0SVh0n80xHquN1OwImOnL1jh7p//Vl3sM5OKBTzbpctY3g/rgVO5bAwRvs3MtrQ==
+"@material-ui/core@^3.0.3":
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-3.0.3.tgz#505499a984feb5da9c13f73e1fa601d0da1acdc3"
+  integrity sha512-xWeqqfAg8YAhEZvQhMefPvUSrVhe0RqzbOjFDbp6DELzs+88lrJP2lrsBPTuy/5+O6L+oeNyHy2XwI9C77R2dw==
   dependencies:
     "@babel/runtime" "7.0.0"
     "@types/jss" "^9.5.3"
@@ -1043,7 +1043,7 @@
     react-event-listener "^0.6.2"
     react-jss "^8.1.0"
     react-transition-group "^2.2.1"
-    recompose "^0.29.0"
+    recompose "0.28.0 - 0.30.0"
     warning "^4.0.1"
 
 "@material-ui/icons@^3.0.1":
@@ -1054,10 +1054,10 @@
     "@babel/runtime" "7.0.0"
     recompose "^0.29.0"
 
-"@material-ui/lab@^3.0.0-alpha.14":
-  version "3.0.0-alpha.14"
-  resolved "https://registry.yarnpkg.com/@material-ui/lab/-/lab-3.0.0-alpha.14.tgz#9e133cea146eb689ea4b5b5eb4ec8034a23e4271"
-  integrity sha512-OQHF+eWdCCUrnYEcubG+Ok+gcAjxzuj3UlzpbzVEy1W5Ja50MVuz1i2ZsAjOxwBDBASaMLYqHkuyT4vA746K3Q==
+"@material-ui/lab@^3.0.0-alpha.15":
+  version "3.0.0-alpha.15"
+  resolved "https://registry.yarnpkg.com/@material-ui/lab/-/lab-3.0.0-alpha.15.tgz#a7c8526e7d5cf39543d84f04f62f974a12be26b5"
+  integrity sha512-Wlbq5xWQQq5ZBSNOYAse2QFabQ0ZSUBvaDE5UMpBdNzg2hmLM19FNmVCKOtAf8hmcd4iPyzbcwQuR1savj1ngQ==
   dependencies:
     "@babel/runtime" "7.0.0"
     classnames "^2.2.5"
@@ -11044,6 +11044,18 @@ rechoir@^0.6.2:
   integrity sha1-hSBLVNuoLVdC4oyWdW70OvUOM4Q=
   dependencies:
     resolve "^1.1.6"
+
+"recompose@0.28.0 - 0.30.0":
+  version "0.30.0"
+  resolved "https://registry.yarnpkg.com/recompose/-/recompose-0.30.0.tgz#82773641b3927e8c7d24a0d87d65aeeba18aabd0"
+  integrity sha512-ZTrzzUDa9AqUIhRk4KmVFihH0rapdCSMFXjhHbNrjAWxBuUD/guYlyysMnuHjlZC/KRiOKRtB4jf96yYSkKE8w==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+    change-emitter "^0.1.2"
+    fbjs "^0.8.1"
+    hoist-non-react-statics "^2.3.1"
+    react-lifecycles-compat "^3.0.2"
+    symbol-observable "^1.0.4"
 
 recompose@^0.28.0:
   version "0.28.2"

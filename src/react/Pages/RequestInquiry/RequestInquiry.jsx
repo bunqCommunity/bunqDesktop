@@ -638,7 +638,7 @@ class RequestInquiry extends React.Component {
 const mapStateToProps = state => {
     return {
         requestInquiryLoading: state.request_inquiry.loading,
-        selectedAccount: state.accounts.selectedAccount,
+        selectedAccount: state.accounts.selected_account,
         accounts: state.accounts.accounts,
         user: state.user.user
     };

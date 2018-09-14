@@ -78,7 +78,7 @@ class MasterCardActionInfo extends React.Component {
         }
     }
 
-    getSnapshotBeforeUpdate(previousProps, previousState) {
+    getSnapshotBeforeUpdate(nextProps, nextState) {
         if (
             this.props.user &&
             this.props.user.id &&
@@ -172,6 +172,9 @@ class MasterCardActionInfo extends React.Component {
                         from={masterCardAction.alias}
                         accounts={this.props.accounts}
                         user={this.props.user}
+
+                        type="masterCardAction"
+                        event={masterCardAction}
                     />
 
                     <Grid item xs={12}>
@@ -345,7 +348,7 @@ const mapStateToProps = state => {
             state.master_card_action_info.master_card_action_info,
         masterCardActionLoading: state.master_card_action_info.loading,
         accounts: state.accounts.accounts,
-        accountsSelectedAccount: state.accounts.selectedAccount
+        accountsSelectedAccount: state.accounts.selected_account
     };
 };
 

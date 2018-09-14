@@ -81,10 +81,10 @@ class Stats extends React.Component {
         this.worker.terminate();
     }
 
-    getSnapshotBeforeUpdate(previousProps, previousState) {
+    getSnapshotBeforeUpdate(nextProps, nextState) {
         let triggerWorker = false;
-        const { timescale, categoryTransactionType } = previousState;
-        const { generalFilterDate } = previousProps;
+        const { timescale, categoryTransactionType } = nextState;
+        const { generalFilterDate } = nextProps;
 
         // check if timescale changed
         if (timescale !== this.state.timescale) triggerWorker = true;
@@ -97,13 +97,13 @@ class Stats extends React.Component {
         if (categoryTransactionType !== this.state.categoryTransactionType)
             triggerWorker = true;
 
-        const isCurrentlyLoading =
-            previousProps.bunqMeTabsLoading ||
-            previousProps.paymentsLoading ||
-            previousProps.requestResponsesLoading ||
-            previousProps.requestInquiriesLoading ||
-            previousProps.masterCardActionsLoading;
         const willBeLoading =
+            nextProps.bunqMeTabsLoading ||
+            nextProps.paymentsLoading ||
+            nextProps.requestResponsesLoading ||
+            nextProps.requestInquiriesLoading ||
+            nextProps.masterCardActionsLoading;
+        const isCurrentlyLoading =
             this.props.bunqMeTabsLoading ||
             this.props.paymentsLoading ||
             this.props.requestResponsesLoading ||
@@ -807,7 +807,7 @@ const mapStateToProps = state => {
     return {
         user: state.user.user,
         accounts: state.accounts.accounts,
-        selectedAccount: state.accounts.selectedAccount,
+        selectedAccount: state.accounts.selected_account,
 
         payments: state.payments.payments,
         bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,

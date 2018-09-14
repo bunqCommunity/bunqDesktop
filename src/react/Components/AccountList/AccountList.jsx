@@ -49,7 +49,7 @@ class AccountList extends React.Component {
         super(props, context);
         this.state = {
             // keeps track if we already automatically did a request
-            fetchedExternal: false,
+            // fetchedExternal: false,
             fetchedAccounts: false,
             accountTotalSelectionMode: false
         };
@@ -60,11 +60,9 @@ class AccountList extends React.Component {
         this.checkUpdateRequirement();
     }
 
-    getSnapshotBeforeUpdate(previousProps, previousState) {
+    componentDidUpdate(previousProps) {
         this.checkUpdateRequirement(this.props);
-        return null;
     }
-    componentDidUpdate() {}
 
     componentWillUnmount() {
         // prevent data from being loaded after we unmount
@@ -87,45 +85,6 @@ class AccountList extends React.Component {
             this.props.shareInviteBankResponsesInfoUpdate(userId);
     };
 
-    /**
-     * By default this updates the payments list
-     */
-    updateExternal = (userId, accountId) => {
-        if (this.props.updateExternal) {
-            this.props.updateExternal(userId, accountId);
-        } else {
-            // update the last updated timestamp
-            this.props.applicationSetLastAutoUpdate();
-
-            // update all the accounts and events
-            if (!this.props.accountsLoading) this.props.accountsUpdate(userId);
-
-            if (!this.props.paymentsLoading)
-                this.props.paymentsUpdate(userId, accountId);
-            if (!this.props.bunqMeTabsLoading)
-                this.props.bunqMeTabsUpdate(userId, accountId);
-            if (!this.props.requestResponsesLoading)
-                this.props.requestResponsesUpdate(userId, accountId);
-            if (!this.props.requestInquiriesLoading)
-                this.props.requestInquiriesUpdate(userId, accountId);
-            if (!this.props.masterCardActionsLoading)
-                this.props.masterCardActionsUpdate(userId, accountId);
-
-            if (!this.props.shareInviteBankResponsesLoading)
-                this.props.shareInviteBankResponsesInfoUpdate(userId);
-
-            if (
-                !this.props.limitedPermissions &&
-                !this.props.shareInviteBankInquiriesLoading
-            ) {
-                this.props.shareInviteBankInquiriesInfoUpdate(
-                    userId,
-                    accountId
-                );
-            }
-        }
-    };
-
     checkUpdateRequirement = (props = this.props) => {
         const {
             accounts,
@@ -140,6 +99,7 @@ class AccountList extends React.Component {
             return;
         }
 
+        // if no account is selected, we select one automatically
         if (accountsSelectedId === false && accounts.length > 0) {
             // get the first active account in the accounts list
             const firstAccount = accounts.find(account => {
@@ -148,33 +108,6 @@ class AccountList extends React.Component {
 
             if (firstAccount && firstAccount.id)
                 this.props.selectAccount(firstAccount.id);
-        }
-
-        // check if the stored selected account isn't already loaded
-        if (
-            user &&
-            user.id &&
-            accountsSelectedId !== false &&
-            accountsSelectedId !== paymentsAccountId &&
-            paymentsLoading === false &&
-            this.state.fetchedExternal === false
-        ) {
-            this.setState({ fetchedExternal: true });
-
-            // check if the list was updated in the last 60 seconds
-            if (
-                this.props.applicationLastAutoUpdate !== false &&
-                this.props.applicationLastAutoUpdate.getTime() >
-                    new Date(new Date().getTime() - 300000).getTime()
-            ) {
-                return false;
-            }
-
-            // delay the initial loading by 1000ms to improve startup ui performance
-            if (this.delayedUpdate) clearTimeout(this.delayedUpdate);
-            this.delayedUpdate = setTimeout(() => {
-                this.updateExternal(user.id, accountsSelectedId);
-            }, 500);
         }
 
         // no accounts loaded
@@ -206,7 +139,7 @@ class AccountList extends React.Component {
             t,
             shareInviteBankResponses,
             shareInviteBankInquiries,
-            excludedAccountIds
+            excludedAccountIds = []
         } = this.props;
         const { accountTotalSelectionMode } = this.state;
 
@@ -224,9 +157,14 @@ class AccountList extends React.Component {
                         filterShareInviteBankResponses(account.id)
                     );
 
-                    let onClickHandler = this.updateExternal;
+                    // set external if added or default to false
+                    let onClickHandler = this.props.updateExternal
+                        ? (userId, accountId) =>
+                              this.props.updateExternal(userId, accountId)
+                        : false;
+
                     let secondaryAction = false;
-                    if (accountTotalSelectionMode && excludedAccountIds) {
+                    if (accountTotalSelectionMode) {
                         const excluded = excludedAccountIds.some(
                             excludedAccountId =>
                                 account.id === excludedAccountId
@@ -355,9 +293,9 @@ const mapStateToProps = state => {
         hideBalance: state.options.hide_balance,
 
         accounts: state.accounts.accounts,
-        accountsSelectedId: state.accounts.selectedAccount,
+        accountsSelectedId: state.accounts.selected_account,
         accountsLoading: state.accounts.loading,
-        excludedAccountIds: state.accounts.excludedAccountIds,
+        excludedAccountIds: state.accounts.excluded_account_ids,
 
         shareInviteBankResponses:
             state.share_invite_bank_responses.share_invite_bank_responses,

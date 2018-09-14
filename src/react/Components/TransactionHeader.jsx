@@ -9,6 +9,8 @@ import Avatar from "@material-ui/core/Avatar";
 
 import LazyAttachmentImage from "./AttachmentImage/LazyAttachmentImage";
 
+import { defaultMastercardImage, defaultPaymentImage } from "../Helpers/DefaultImageHandlers";
+
 const styles = {
     targetWrapper: {
         display: "flex",
@@ -83,11 +85,22 @@ const TransactionHeader = props => {
         fromIsCounterparty = false;
     }
 
+    let defaultImage = false;
+    if(props.type && props.type){
+        if(props.type === "payment"){
+            defaultImage = defaultPaymentImage(props.event);
+        }
+        if(props.type === "masterCardAction"){
+            defaultImage = defaultMastercardImage(props.event);
+        }
+    }
+
     const components = [
         <Grid item xs={12} md={5} style={styles.targetWrapper}>
             <Avatar style={styles.avatar}>
                 <LazyAttachmentImage
                     height={90}
+                    defaultImage={defaultImage}
                     BunqJSClient={props.BunqJSClient}
                     imageUUID={fromAvatar}
                     onClick={() => {
@@ -125,6 +138,7 @@ const TransactionHeader = props => {
             <Avatar style={styles.avatar}>
                 <LazyAttachmentImage
                     height={90}
+                    defaultImage={defaultImage}
                     BunqJSClient={props.BunqJSClient}
                     imageUUID={toAvatar}
                     onClick={() => {

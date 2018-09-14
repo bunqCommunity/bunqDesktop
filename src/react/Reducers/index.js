@@ -18,13 +18,6 @@ import export_new from "./export_new";
 import exports from "./exports";
 import general_filter from "./general_filter";
 import modal from "./modal";
-import user from "./user";
-import users from "./users";
-import registration from "./registration";
-import request_filter from "./request_filter";
-import snackbar from "./snackbar";
-import theme from "./theme";
-import main_drawer from "./main_drawer";
 import master_card_actions from "./master_card_actions";
 import master_card_action_info from "./master_card_action_info";
 import note_texts from "./note_texts";
@@ -35,6 +28,9 @@ import pay from "./pay";
 import payments from "./payments";
 import payment_info from "./payment_info";
 import payment_filter from "./payment_filter";
+import queue from "./queue";
+import registration from "./registration";
+import request_filter from "./request_filter";
 import request_inquiries from "./request_inquiries";
 import request_inquiry from "./request_inquiry";
 import request_inquiry_info from "./request_inquiry_info";
@@ -45,7 +41,12 @@ import scheduled_payments from "./scheduled_payments";
 import share_invite_bank_inquiries from "./share_invite_bank_inquiries";
 import share_invite_bank_inquiry from "./share_invite_bank_inquiry";
 import share_invite_bank_responses from "./share_invite_bank_responses";
+import snackbar from "./snackbar";
 import search_filter from "./search_filter";
+import sidebar from "./sidebar";
+import theme from "./theme";
+import user from "./user";
+import users from "./users";
 
 export default combineReducers({
     amount_filter,
@@ -66,7 +67,6 @@ export default combineReducers({
     exports,
     general_filter,
     modal,
-    main_drawer,
     master_card_actions,
     master_card_action_info,
     note_texts,
@@ -77,6 +77,7 @@ export default combineReducers({
     payment_info,
     payment_filter,
     payments,
+    queue,
     registration,
     request_filter,
     request_inquiries,
@@ -91,6 +92,7 @@ export default combineReducers({
     share_invite_bank_inquiry,
     share_invite_bank_responses,
     snackbar,
+    sidebar,
     theme,
     user,
     users

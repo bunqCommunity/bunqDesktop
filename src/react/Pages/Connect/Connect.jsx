@@ -115,10 +115,10 @@ class Connect extends React.Component {
         }
     }
 
-    getSnapshotBeforeUpdate(previousProps, previousState) {
+    getSnapshotBeforeUpdate(nextProps, nextState) {
         const { initialBunqConnect, accountsLoading, user } = this.props;
-        const accountId = parseFloat(previousProps.match.params.accountId);
-        const nextAccountId = parseFloat(this.props.match.params.accountId);
+        const nextAccountId = parseFloat(nextProps.match.params.accountId);
+        const accountId = parseFloat(this.props.match.params.accountId);
 
         if (
             accountsLoading === false &&
@@ -679,7 +679,7 @@ const mapStateToProps = state => {
 
         accounts: state.accounts.accounts,
         accountsLoading: state.accounts.loading,
-        selectedAccountId: state.accounts.selectedAccount,
+        selectedAccountId: state.accounts.selected_account,
 
         shareInviteBankInquiryLoading: state.share_invite_bank_inquiry.loading
     };

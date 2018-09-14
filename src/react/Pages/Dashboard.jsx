@@ -242,7 +242,7 @@ const mapStateToProps = state => {
         usersLoading: state.users.loading,
 
         requestInquiryLoading: state.request_inquiry.loading,
-        selectedAccount: state.accounts.selectedAccount,
+        selectedAccount: state.accounts.selected_account,
 
         useNoPassword: state.registration.use_no_password,
         storedApiKeys: state.registration.stored_api_keys,
