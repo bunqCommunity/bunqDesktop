@@ -112,6 +112,9 @@ class OAuthManagement extends React.Component {
         const errorMessage = this.props.t(
             "Something went wrong while trying to authorize the client"
         );
+
+        if(!code || this.state.loading) return;
+
         this.setState({
             loading: true
         });
