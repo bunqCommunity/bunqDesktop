@@ -12,6 +12,7 @@ import NavLink from "../Routing/NavLink";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 import MoneyAmountLabel from "../MoneyAmountLabel";
 import CategoryIcons from "../Categories/CategoryIcons";
+import {defaultPaymentImage} from "../../Helpers/DefaultImageHandlers";
 
 const styles = {
     listItemText: {
@@ -96,6 +97,8 @@ class PaymentListItem extends React.Component {
             } ${connectWordSecondary} ${counterpartyAccountInfo.description}`;
         }
 
+        const defaultImage = defaultPaymentImage(payment);
+
         return [
             <ListItem
                 button
@@ -105,7 +108,7 @@ class PaymentListItem extends React.Component {
                 <Avatar style={styles.smallAvatar}>
                     <LazyAttachmentImage
                         height={50}
-                        defaultImage="./images/svg/bunq-placeholders/placeholder_avatar_user_person.svg"
+                        defaultImage={defaultImage}
                         BunqJSClient={this.props.BunqJSClient}
                         imageUUID={imageUUID}
                     />

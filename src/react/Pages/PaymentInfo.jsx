@@ -177,6 +177,9 @@ class PaymentInfo extends React.Component {
                         accounts={this.props.accounts}
                         startPaymentIban={this.startPaymentIban}
                         swap={paymentAmount > 0}
+
+                        type="payment"
+                        event={payment}
                     />
 
                     <Grid item xs={12}>
