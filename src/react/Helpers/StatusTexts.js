@@ -115,10 +115,15 @@ export const masterCardActionParser = (masterCardAction, t) => {
     const defaultMessage = t("Card payment");
     const paymentText = t("Payment");
     const refundText = t("Refund");
+    const atmText = t("ATM Withdrawal");
 
     let secondaryText = paymentText;
     if (masterCardAction.authorisation_status === "CLEARING_REFUND") {
         secondaryText = refundText;
+    }
+
+    if (masterCardAction.pan_entry_mode_user === "ATM") {
+        return atmText;
     }
 
     if (masterCardAction.label_card) {
