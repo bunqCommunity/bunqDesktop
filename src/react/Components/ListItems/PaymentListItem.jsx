@@ -105,6 +105,7 @@ class PaymentListItem extends React.Component {
                 <Avatar style={styles.smallAvatar}>
                     <LazyAttachmentImage
                         height={50}
+                        defaultImage="./images/svg/bunq-placeholders/placeholder_avatar_user_person.svg"
                         BunqJSClient={this.props.BunqJSClient}
                         imageUUID={imageUUID}
                     />

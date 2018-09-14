@@ -65,13 +65,13 @@ class NoteTextForm extends React.Component {
         if (parsedEventType === false) return;
 
         if (!noteTextsLoading) {
-            console.log(
-                "update",
-                parsedEventType,
-                user.id,
-                event.monetary_account_id,
-                event.id
-            );
+            // console.log(
+            //     "update",
+            //     parsedEventType,
+            //     user.id,
+            //     event.monetary_account_id,
+            //     event.id
+            // );
             this.props.noteTextsUpdate(
                 parsedEventType,
                 user.id,

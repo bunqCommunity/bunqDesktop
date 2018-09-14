@@ -13,7 +13,7 @@ export function setSyncOnStartup(syncOnStartup) {
 }
 
 export function setTheme(theme) {
-    return setGenericOption("native_frame", theme);
+    return setGenericOption("theme", theme);
 }
 
 export function setLanguage(language) {

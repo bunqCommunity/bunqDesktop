@@ -2,18 +2,24 @@ import React from "react";
 import localforage from "../../ImportWrappers/localforage";
 import Logger from "../../Helpers/Logger";
 
-const defaultImageUrl = "./images/default-avatar.svg";
-
 class AttachmentImage extends React.PureComponent {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            visible: false
+            visible: false,
+            defaultImageUrl: "./images/svg/bunq-placeholders/placeholder_avatar_user_person.svg"
         };
     }
 
     componentDidMount() {
         this._isMounted = true;
+
+        if (this.props.defaultImage) {
+            this.setState({
+                defaultImageUrl: this.props.defaultImage
+            });
+        }
+
         this.checkImage();
     }
 
@@ -31,7 +37,7 @@ class AttachmentImage extends React.PureComponent {
 
     checkImage() {
         if (this.props.imageUUID === false) {
-            this.setState({ imageUrl: defaultImageUrl });
+            this.setState({ imageUrl: this.state.defaultImageUrl });
             return;
         }
 
@@ -49,7 +55,7 @@ class AttachmentImage extends React.PureComponent {
             if (this.state.imageUrl === false) {
                 // still no image, fallback to temporary placeholder
                 this.setState({
-                    imageUrl: defaultImageUrl
+                    imageUrl: this.state.defaultImageUrl
                 });
             }
         }, 500);
@@ -67,7 +73,7 @@ class AttachmentImage extends React.PureComponent {
             // no image, fallback to default while we load the image remotely
             if (this._isMounted) {
                 this.setState({
-                    imageUrl: defaultImageUrl
+                    imageUrl: this.state.defaultImageUrl
                 });
             }
             // remove the fallback timeout
