@@ -107,7 +107,11 @@ class CombinedList extends React.Component {
         // no longer loading or filter changed
         if (
             (isLoading == false && wasLoading) ||
+            // force update was triggered
+            this.props.forceUpdate !== prevProps.forceUpdate ||
+            // queue finished loading
             this.props.queueFinishedQueue !== prevProps.queueFinishedQueue ||
+            // a filter has changed
             this.props.generalFilterDate !== prevProps.generalFilterDate
         ) {
             this.loadEvents();
@@ -671,6 +675,8 @@ const mapStateToProps = state => {
 
         accounts: state.accounts.accounts,
         accountsAccountId: state.accounts.selected_account,
+
+        forceUpdate: state.application.force_update,
 
         page: state.pagination.page,
         pageSize: state.pagination.page_size,

@@ -46,7 +46,7 @@ class AttachmentImage extends React.PureComponent {
 
         // set a timeout as a fallback incase loading the image takes too long
         this.timeout = setTimeout(() => {
-            if (this.imageUrl === false) {
+            if (this.state.imageUrl === false) {
                 // still no image, fallback to temporary placeholder
                 this.setState({
                     imageUrl: defaultImageUrl

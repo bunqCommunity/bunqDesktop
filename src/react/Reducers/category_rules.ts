@@ -105,6 +105,7 @@ export default (state = defaultState, action) => {
         // update categories in new settings location
         case "OPTIONS_OVERWRITE_SETTINGS_LOCATION":
             settings.set(STORED_CATEGORY_RULES, state.category_rules);
+            return { ...state };
 
         // load categories from new settings location
         case "OPTIONS_LOAD_SETTINGS_LOCATION":

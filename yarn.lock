@@ -940,10 +940,10 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@bunq-community/bunq-js-client@^0.25.2":
-  version "0.25.2"
-  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.25.2.tgz#4d9b750669e2918a14a308decbb839da2e8dd564"
-  integrity sha512-sNjdMdLiUHTxuar/kEsvYltdA+Lx1po1EFBDP6T7+sysv16lLZWYPYGd3NMuCe1Pct3y+9o6FIc3ZQZkoG1TUQ==
+"@bunq-community/bunq-js-client@^0.25.3":
+  version "0.25.3"
+  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.25.3.tgz#854717b85937aac2f1be39f6778da8eea2b541bd"
+  integrity sha512-vSwtABuRZ5++k08+j/PtKedaEsiIxTR9ec6bQSIXxTo6qQ6PlCEkjlmgxUdQBoqADTko/tg8ECvjfE6QtiXD6g==
   dependencies:
     "@types/jest" "^21.1.8"
     "@types/moxios" "^0.4.8"

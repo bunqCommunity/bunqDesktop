@@ -49,8 +49,14 @@ class QueueManager extends React.Component {
             userLoading,
             queueLoading,
             queueRequestCounter,
+            syncOnStartup,
             queueTriggerSync
         } = this.props;
+
+        // if sync on startup setting is false, we disable the initial sync event
+        if (syncOnStartup === false && this.state.initialSync === false) {
+            this.setState({ initialSync: true });
+        }
 
         // no initial sync completed or manual sync was triggered
         if (!this.state.initialSync || queueTriggerSync) {
@@ -623,6 +629,8 @@ const mapStateToProps = state => {
 
         accounts: state.accounts.accounts,
         accountsLoading: state.accounts.loading,
+
+        syncOnStartup: state.options.sync_on_startup,
 
         queueRequestCounter: state.queue.request_counter,
         queueTriggerSync: state.queue.trigger_sync,

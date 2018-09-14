@@ -39,18 +39,18 @@ import { openSnackbar } from "../Actions/snackbar";
 import { loadStoredPayments } from "../Actions/payments";
 import { loadStoredAccounts } from "../Actions/accounts";
 import { loadStoredBunqMeTabs } from "../Actions/bunq_me_tabs";
-import { applicationSetStatus } from "../Actions/application.js";
 import {
-    registrationClearUserInfo,
-    registrationResetToApiScreenSoft
-} from "../Actions/registration";
+    applicationSetStatus,
+    applicationForceUpdate
+} from "../Actions/application.js";
 import { loadStoredMasterCardActions } from "../Actions/master_card_actions";
 import { loadStoredRequestInquiries } from "../Actions/request_inquiries";
 import { loadStoredRequestResponses } from "../Actions/request_responses";
 import {
+    registrationClearUserInfo,
     registrationLoading,
     registrationNotLoading,
-    registrationResetToApiScreen
+    registrationResetToApiScreenSoft
 } from "../Actions/registration";
 import {
     setHideBalance,
@@ -407,6 +407,11 @@ class Layout extends React.Component {
         this.props.loadStoredShareInviteBankResponses();
         this.props.loadStoredShareInviteBankInquiries();
 
+        setTimeout(() => {
+            // force the application to update after loading stored data
+            this.props.applicationForceUpdate();
+        }, 100);
+
         // setup finished with no errors
         this.props.applicationSetStatus("");
         this.props.usersUpdate(true);
@@ -565,10 +570,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         applicationSetStatus: status_message =>
             dispatch(applicationSetStatus(status_message)),
 
+        // forces an update for certain components
+        applicationForceUpdate: () => dispatch(applicationForceUpdate()),
+
         registrationLoading: () => dispatch(registrationLoading()),
         registrationNotLoading: () => dispatch(registrationNotLoading()),
-        registrationResetToApiScreen: () =>
-            dispatch(registrationResetToApiScreen(BunqJSClient)),
         registrationResetToApiScreenSoft: () =>
             dispatch(registrationResetToApiScreenSoft(BunqJSClient)),
 

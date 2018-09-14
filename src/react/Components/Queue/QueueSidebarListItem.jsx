@@ -51,6 +51,10 @@ class QueueSidebarListItem extends React.Component {
         return false;
     }
 
+    componentWillUnmount() {
+        if (this.updateDelay) clearTimeout(this.updateDelay);
+    }
+
     setQueueRequestCounter = () => {
         this.setState({
             queueMaxRequestCounter: this.props.queueMaxRequestCounter,

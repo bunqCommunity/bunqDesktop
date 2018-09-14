@@ -1,6 +1,7 @@
 export const defaultState = {
     status_message: "",
     online: true,
+    force_update: false,
     last_auto_update: false
 };
 
@@ -25,6 +26,13 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 last_auto_update: new Date()
+            };
+
+        // can be used to force an update
+        case "APPLICATION_FORCE_UPDATE":
+            return {
+                ...state,
+                force_update: new Date()
             };
     }
     return state;

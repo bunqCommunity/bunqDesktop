@@ -225,6 +225,8 @@ export default function reducer(state = defaultState, action) {
                 BUNQDESKTOP_CATEGORY_CONNECTIONS,
                 state.category_connections
             );
+            return { ...state };
+
         // load categories from new settings location
         case "OPTIONS_LOAD_SETTINGS_LOCATION":
             const storedCategories = settings.get(BUNQDESKTOP_CATEGORIES);

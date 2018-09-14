@@ -35,6 +35,10 @@ class QueueHeaderIcon extends React.Component {
         return false;
     }
 
+    componentWillUnmount() {
+        if (this.updateDelay) clearTimeout(this.updateDelay);
+    }
+
     setQueueRequestCounter = () => {
         this.setState({
             queueRequestCounter: this.props.queueRequestCounter
