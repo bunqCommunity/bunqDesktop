@@ -123,10 +123,6 @@ class AttachmentImage extends React.PureComponent {
             height: 50
         };
 
-        if (this.state.imageUrl && this.state.imageUrl.length <= 400) {
-            console.log(this.state.imageUrl);
-        }
-
         return this.imageUrl === false ? (
             <div {...defaultSizes} {...props} />
         ) : (
