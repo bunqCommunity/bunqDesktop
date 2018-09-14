@@ -27,6 +27,7 @@ class QueueHeaderIcon extends React.Component {
             this.updateDelay = setTimeout(this.setQueueRequestCounter, 250);
         }
 
+        if (nextProps.user !== this.props.user) return true;
         if (nextProps.queueLoading !== this.props.queueLoading) return true;
         if (nextState.queueRequestCounter !== this.state.queueRequestCounter) {
             return true;
@@ -46,8 +47,11 @@ class QueueHeaderIcon extends React.Component {
     };
 
     render() {
-        const { queueLoading, queueTriggerSync } = this.props;
+        const { queueLoading, queueTriggerSync, user } = this.props;
         const { queueRequestCounter } = this.state;
+
+        // hide if no user data is set yet
+        if (!user) return null;
 
         return (
             <IconButton
@@ -69,6 +73,8 @@ class QueueHeaderIcon extends React.Component {
 
 const mapStateToProps = state => {
     return {
+        user: state.user.user,
+
         queueRequestCounter: state.queue.request_counter,
         queueTriggerSync: state.queue.trigger_sync,
         queueLoading: state.queue.loading

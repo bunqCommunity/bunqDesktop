@@ -109,7 +109,7 @@ class Header extends React.Component {
                 ? styles.headerQueueBtn
                 : styles.headerQueueBtnDarwin;
 
-        // the actual menu button
+        // the top header buttons
         const menuButton = (
             <IconButton
                 aria-label="view main drawer"
@@ -119,13 +119,23 @@ class Header extends React.Component {
                 <MenuIcon />
             </IconButton>
         );
+        const queueIconButton = (
+            <QueueHeaderIcon style={queueIconButtonStyle} />
+        );
 
-        // wrap it in a hidden wrapper in case of sticky menu mode
+        // wrap in a hidden wrapper in case of sticky menu mode
         const wrappedButton = this.props.stickyMenu ? (
             <Hidden mdUp>{menuButton}</Hidden>
         ) : (
             menuButton
         );
+        const wrappedQueueIcon = this.props.stickyMenu ? (
+            <Hidden mdUp>{queueIconButton}</Hidden>
+        ) : (
+            queueIconButton
+        );
+
+        // wrap it in a hidden wrapper in case of sticky menu mode
 
         let middleIcon = null;
         if (this.mainWindow.isMaximized()) {
@@ -176,8 +186,7 @@ class Header extends React.Component {
         return (
             <header style={styles.header}>
                 {wrappedButton}
-
-                <QueueHeaderIcon style={queueIconButtonStyle} />
+                {wrappedQueueIcon}
 
                 {developmentEnvWarning}
                 {windowControls}
