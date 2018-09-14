@@ -7,7 +7,8 @@ class AttachmentImage extends React.PureComponent {
         super(props, context);
         this.state = {
             visible: false,
-            defaultImageUrl: "./images/svg/bunq-placeholders/placeholder_avatar_user_person.svg"
+            defaultImageUrl:
+                "./images/svg/bunq-placeholders/placeholder_avatar_user_person.svg"
         };
     }
 
@@ -15,12 +16,15 @@ class AttachmentImage extends React.PureComponent {
         this._isMounted = true;
 
         if (this.props.defaultImage) {
-            this.setState({
-                defaultImageUrl: this.props.defaultImage
-            });
+            this.setState(
+                {
+                    defaultImageUrl: this.props.defaultImage
+                },
+                this.checkImage
+            );
+        } else {
+            this.checkImage();
         }
-
-        this.checkImage();
     }
 
     componentWillUnmount() {
@@ -35,7 +39,7 @@ class AttachmentImage extends React.PureComponent {
         }
     }
 
-    checkImage() {
+    checkImage = () => {
         if (this.props.imageUUID === false) {
             this.setState({ imageUrl: this.state.defaultImageUrl });
             return;
@@ -64,7 +68,7 @@ class AttachmentImage extends React.PureComponent {
             // remove the fallback timeout
             clearTimeout(this.timeout);
         });
-    }
+    };
 
     loadImage = async () => {
         const storageKey = `image_${this.props.imageUUID}`;
@@ -112,12 +116,16 @@ class AttachmentImage extends React.PureComponent {
 
     render() {
         // exclude custom props
-        const { BunqJSClient, imageUUID, ...props } = this.props;
+        const { BunqJSClient, imageUUID, defaultImage, ...props } = this.props;
 
         const defaultSizes = {
             width: "auto",
             height: 50
         };
+
+        if (this.state.imageUrl && this.state.imageUrl.length <= 400) {
+            console.log(this.state.imageUrl);
+        }
 
         return this.imageUrl === false ? (
             <div {...defaultSizes} {...props} />

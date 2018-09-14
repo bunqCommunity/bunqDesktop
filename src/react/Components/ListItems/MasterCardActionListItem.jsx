@@ -55,6 +55,26 @@ class MasterCardActionListItem extends React.Component {
         const formattedPaymentAmount = formatMoney(paymentAmount, true);
         const secondaryText = masterCardActionParser(masterCardAction, t);
 
+        let defaultImage =
+            "./images/svg/bunq-placeholders/placeholder_avatar_user_company.svg";
+
+        if (masterCardAction.label_card && masterCardAction.label_card.type) {
+            switch (masterCardAction.label_card.type) {
+                case "MAESTRO_MOBILE_NFC":
+                    // image for tap & pay and apple pay
+                    defaultImage =
+                        "./images/svg/bunq-placeholders/placeholder_avatar_card_virtual.svg";
+                    break;
+                default:
+                    // default card image
+                    defaultImage =
+                        "./images/svg/bunq-placeholders/placeholder_avatar_card_register.svg";
+                    break;
+            }
+        }
+
+        console.log(defaultImage);
+
         return [
             <ListItem
                 button
@@ -66,7 +86,7 @@ class MasterCardActionListItem extends React.Component {
                 <Avatar style={styles.smallAvatar}>
                     <LazyAttachmentImage
                         height={50}
-                        defaultImage="./images/svg/bunq-placeholders/placeholder_avatar_user_company.svg"
+                        defaultImage={defaultImage}
                         BunqJSClient={this.props.BunqJSClient}
                         imageUUID={imageUUID}
                     />
