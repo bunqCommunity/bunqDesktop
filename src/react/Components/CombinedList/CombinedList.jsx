@@ -139,8 +139,6 @@ class CombinedList extends React.Component {
         );
         const shareInviteBankInquiries = this.shareInviteBankInquiryMapper();
 
-        console.log(requestInquiryBatches);
-
         // combine the list, order by date and group by day
         const events = [
             ...bunqMeTabs,
