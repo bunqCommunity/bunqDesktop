@@ -543,7 +543,7 @@ class Pay extends React.Component {
             const schedule = {
                 time_start: format(
                     getUTCDate(scheduleStartDate),
-                    "YYYY-MM-DD HH:mm:ss"
+                    "YYYY-MM-dd HH:mm:ss"
                 ),
                 recurrence_unit: recurrenceUnit,
                 // on once size has to be 1
@@ -555,7 +555,7 @@ class Pay extends React.Component {
             if (scheduleEndDate) {
                 schedule.time_end = format(
                     getUTCDate(scheduleEndDate),
-                    "YYYY-MM-DD HH:mm:ss"
+                    "YYYY-MM-dd HH:mm:ss"
                 );
             }
 

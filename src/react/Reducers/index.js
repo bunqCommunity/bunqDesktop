@@ -33,6 +33,7 @@ import registration from "./registration";
 import request_filter from "./request_filter";
 import request_inquiries from "./request_inquiries";
 import request_inquiry from "./request_inquiry";
+import request_inquiry_batches from "./request_inquiry_batches";
 import request_inquiry_info from "./request_inquiry_info";
 import request_responses from "./request_responses";
 import request_response from "./request_response";
@@ -82,6 +83,7 @@ export default combineReducers({
     request_filter,
     request_inquiries,
     request_inquiry,
+    request_inquiry_batches,
     request_inquiry_info,
     request_responses,
     request_response,

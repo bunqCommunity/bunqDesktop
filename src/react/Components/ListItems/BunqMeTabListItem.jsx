@@ -96,17 +96,29 @@ class BunqMeTabListItem extends React.Component {
         const createdDate = humanReadableDate(bunqMeTab.created);
         const updatedDate = humanReadableDate(bunqMeTab.updated);
         const expiryDate = humanReadableDate(bunqMeTab.time_expiry);
-        const numberOfPayments = bunqMeTab.result_inquiries.length;
-        const formattedMoney = formatMoney(
+        const bunqMeTabPayments = bunqMeTab.result_inquiries;
+        const numberOfPayments = bunqMeTabPayments.length;
+
+        // calculate how much was paid to this inquiry
+        const totalPaidAmount = bunqMeTabPayments.reduce(
+            (accumulator, bunqMeTabInquiry) => {
+                const payment = bunqMeTabInquiry.payment.Payment;
+                const paidAmount = parseFloat(payment.amount.value);
+                return accumulator + paidAmount;
+            },
+            0
+        );
+
+        // format the amounts
+        const formattedInquiredAmount = formatMoney(
             bunqMeTab.bunqme_tab_entry.amount_inquired.value
         );
+        const formattedTotalPaid = formatMoney(totalPaidAmount);
 
         const merchantList = bunqMeTab.bunqme_tab_entry.merchant_available
             .filter(merchant => merchant.available)
             .map(merchant => merchant.merchant_type)
             .join(", ");
-
-        const bunqMeTabPayments = bunqMeTab.result_inquiries;
 
         const avatarStandalone = (
             <Avatar style={styles.smallAvatar}>
@@ -115,11 +127,11 @@ class BunqMeTabListItem extends React.Component {
         );
 
         const itemAvatar =
-            bunqMeTab.result_inquiries.length <= 0 ? (
+            bunqMeTabPayments.length <= 0 ? (
                 avatarStandalone
             ) : (
                 <Badge
-                    badgeContent={bunqMeTab.result_inquiries.length}
+                    badgeContent={bunqMeTabPayments.length}
                     color="primary"
                     classes={{ badge: this.props.classes.badge }}
                 >
@@ -127,11 +139,16 @@ class BunqMeTabListItem extends React.Component {
                 </Badge>
             );
 
+        const primaryText =
+            bunqMeTabPayments.length > 0
+                ? `${t("Total")}: ${formattedTotalPaid}`
+                : `${t("Requested")}: ${formattedInquiredAmount}`;
+
         return [
             <ListItem button onClick={this.toggleExtraInfo}>
                 {itemAvatar}
                 <ListItemText
-                    primary={formattedMoney}
+                    primary={primaryText}
                     secondary={bunqMeTab.bunqme_tab_entry.description}
                 />
                 <ListItemSecondaryAction style={{ marginTop: -16 }}>
@@ -210,9 +227,9 @@ class BunqMeTabListItem extends React.Component {
                     })}
                 </Collapse>
 
-                <ListItem style={styles.actionListItem}>
-                    <ListItemSecondaryAction>
-                        {canBeCanceled ? (
+                {canBeCanceled ? (
+                    <ListItem style={styles.actionListItem}>
+                        <ListItemSecondaryAction>
                             <TranslateButton
                                 variant="raised"
                                 disabled={
@@ -224,11 +241,13 @@ class BunqMeTabListItem extends React.Component {
                             >
                                 Cancel request
                             </TranslateButton>
-                        ) : null}
-                    </ListItemSecondaryAction>
-                </ListItem>
+                        </ListItemSecondaryAction>
+                    </ListItem>
+                ) : null}
             </Collapse>,
-            <Divider />
+            <Divider
+                style={{ marginBottom: this.state.paymentsOpen ? 12 : 0 }}
+            />
         ];
     }
 }
