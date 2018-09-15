@@ -138,18 +138,18 @@ class BunqMeTabListItem extends React.Component {
                     {avatarStandalone}
                 </Badge>
             );
-
-        const primaryText =
+        
+        const secondaryText =
             bunqMeTabPayments.length > 0
-                ? `${t("Total")}: ${formattedTotalPaid}`
-                : `${t("Requested")}: ${formattedInquiredAmount}`;
+                ? `${t("Received")}: ${formattedTotalPaid}`
+                : `${t("Requested amount")}: ${formattedInquiredAmount}`;
 
         return [
             <ListItem button onClick={this.toggleExtraInfo}>
                 {itemAvatar}
                 <ListItemText
-                    primary={primaryText}
-                    secondary={bunqMeTab.bunqme_tab_entry.description}
+                    primary={bunqMeTab.bunqme_tab_entry.description}
+                    secondary={secondaryText}
                 />
                 <ListItemSecondaryAction style={{ marginTop: -16 }}>
                     <AccountQRFullscreen mode="HIDDEN" text={shareUrl} />
@@ -162,11 +162,12 @@ class BunqMeTabListItem extends React.Component {
                         </IconButton>
                     </CopyToClipboard>
                 </ListItemSecondaryAction>
-                <CategoryIcons
-                    style={{ marginTop: 26 }}
-                    type={"BunqMeTab"}
-                    id={bunqMeTab.id}
-                />
+
+                {/*<CategoryIcons*/}
+                    {/*style={{ marginTop: 26 }}*/}
+                    {/*type={"BunqMeTab"}*/}
+                    {/*id={bunqMeTab.id}*/}
+                {/*/>*/}
             </ListItem>,
             <Collapse in={this.state.extraInfoOpen} unmountOnExit>
                 <ListItem dense>

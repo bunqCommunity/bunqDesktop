@@ -121,11 +121,17 @@ class RequestInquiryBatchListItem extends React.Component {
             }
         });
 
-        // get event color based on status counter
+        // get event color and font style based on status counter
+        let strikeThrough = false;
         let eventColor =
             requestItemCounts.pending > 0
                 ? theme.palette.requestInquiry.pending
                 : theme.palette.requestInquiry.expired;
+        if (requestItemCounts.pending === 0) {
+            if (requestItemCounts.rejected > 0) {
+                strikeThrough = true;
+            }
+        }
 
         // human readable money amounts
         const formattedInquiredAmount = formatMoney(
@@ -212,7 +218,10 @@ class RequestInquiryBatchListItem extends React.Component {
                     <Typography
                         style={{
                             ...styles.moneyAmountLabel,
-                            color: eventColor
+                            color: eventColor,
+                            textDecoration: strikeThrough
+                                ? "line-through"
+                                : "none"
                         }}
                         variant="body2"
                     >
