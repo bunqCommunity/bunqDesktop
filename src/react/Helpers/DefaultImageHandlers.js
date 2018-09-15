@@ -21,7 +21,7 @@ export const defaultMastercardImage = masterCardAction => {
 
     switch (panEntryMode) {
         case "ATM":
-            // no image
+            defaultImage = "./images/svg/bunq-placeholders/card_atm.png";
             break;
         case "ICC":
             defaultImage = "./images/svg/bunq-placeholders/card_virtual.svg";
