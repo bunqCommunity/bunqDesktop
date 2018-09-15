@@ -38,7 +38,7 @@ import {
     firstPage
 } from "../../Actions/pagination";
 
-import { humanReadableDate } from "../../Helpers/Utils";
+import { humanReadableDate, UTCDateToLocalDate } from "../../Helpers/Utils";
 import {
     paymentFilter,
     bunqMeTabsFilter,
@@ -203,7 +203,7 @@ class CombinedList extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                         />
                     ),
-                    filterDate: payment.created,
+                    filterDate: UTCDateToLocalDate(payment.created),
                     info: payment
                 };
             });
@@ -241,7 +241,7 @@ class CombinedList extends React.Component {
                             user={this.props.user}
                         />
                     ),
-                    filterDate: bunqMeTab.created,
+                    filterDate: UTCDateToLocalDate(bunqMeTab.created),
                     info: bunqMeTab
                 };
             });
@@ -274,7 +274,7 @@ class CombinedList extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                         />
                     ),
-                    filterDate: masterCardAction.created,
+                    filterDate: UTCDateToLocalDate(masterCardAction.created),
                     info: masterCardAction
                 };
             });
@@ -320,10 +320,11 @@ class CombinedList extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                         />
                     ),
-                    filterDate:
+                    filterDate: UTCDateToLocalDate(
                         requestResponse.status === "ACCEPTED"
                             ? requestResponse.time_responded
-                            : requestResponse.created,
+                            : requestResponse.created
+                    ),
                     info: requestResponse
                 };
             });
@@ -357,7 +358,7 @@ class CombinedList extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                         />
                     ),
-                    filterDate: requestInquiry.created,
+                    filterDate: UTCDateToLocalDate(requestInquiry.created),
                     info: requestInquiry
                 };
             });
@@ -390,7 +391,7 @@ class CombinedList extends React.Component {
                             user={this.props.user}
                         />
                     ),
-                    filterDate: shareInviteBankInquiryInfo.created,
+                    filterDate: UTCDateToLocalDate(shareInviteBankInquiryInfo.created),
                     info: shareInviteBankInquiry
                 };
             });
