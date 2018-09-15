@@ -8,6 +8,7 @@ import Divider from "@material-ui/core/Divider";
 
 import { formatMoney } from "../../Helpers/Utils";
 import { requestResponseText } from "../../Helpers/StatusTexts";
+import { defaultRequestResponseImage } from "../../Helpers/DefaultImageHandlers";
 
 import NavLink from "../../Components/Routing/NavLink";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
@@ -60,6 +61,8 @@ class RequestResponseListItem extends React.Component {
         const formattedPaymentAmount = formatMoney(paymentAmount, true);
         let paymentLabel = requestResponseText(requestResponse, t);
 
+        let defaultImage = defaultRequestResponseImage(requestResponse);
+
         return [
             <ListItem
                 button
@@ -71,6 +74,7 @@ class RequestResponseListItem extends React.Component {
                 <Avatar style={styles.smallAvatar}>
                     <LazyAttachmentImage
                         height={50}
+                        defaultImage={defaultImage}
                         BunqJSClient={this.props.BunqJSClient}
                         imageUUID={imageUUID}
                     />
