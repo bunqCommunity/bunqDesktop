@@ -6,6 +6,7 @@ import Payment from "../../Models/Payment";
 import BunqMeTab from "../../Models/BunqMeTab";
 import RequestResponse from "../../Models/RequestResponse";
 import RequestInquiry from "../../Models/RequestInquiry";
+import RequestInquiryBatch from "../../Models/RequestInquiryBatch";
 import MasterCardAction from "../../Models/MasterCardAction";
 
 import { openSnackbar } from "../../Actions/snackbar";
@@ -20,6 +21,7 @@ import { paymentsSetInfo } from "../../Actions/payments";
 import { bunqMeTabsSetInfo } from "../../Actions/bunq_me_tabs";
 import { masterCardActionsSetInfo } from "../../Actions/master_card_actions";
 import { requestInquiriesSetInfo } from "../../Actions/request_inquiries";
+import { requestInquiryBatchesSetInfo } from "../../Actions/request_inquiry_batches";
 import { requestResponsesSetInfo } from "../../Actions/request_responses";
 import { shareInviteBankInquiriesSetInfo } from "../../Actions/share_invite_bank_inquiries";
 
@@ -33,6 +35,7 @@ class QueueManager extends React.Component {
             bunqMeTabs: {},
             requestResponses: {},
             requestInquiries: {},
+            requestInquiryBatches: {},
             masterCardActions: {},
             shareInviteBankInquiries: {}
         };
@@ -72,7 +75,7 @@ class QueueManager extends React.Component {
                 // delay the queue update
                 this.delayedQueue = setTimeout(
                     () => this.triggerQueueUpdate(queueTriggerSync),
-                    1000
+                    500
                 );
             }
         } else {
@@ -112,13 +115,17 @@ class QueueManager extends React.Component {
             initialSync: true
         });
 
-        const requestsPerAccount = limitedPermissions ? 5 : 6;
-        const bufferedCounter = accounts.length * requestsPerAccount;
+        const filteredAccounts = accounts.filter(account => {
+            return account.status === "ACTIVE";
+        });
+
+        const requestsPerAccount = limitedPermissions ? 6 : 7;
+        const bufferedCounter = filteredAccounts.length * requestsPerAccount;
 
         // set initial request count in one go
         this.props.queueSetRequestCounter(bufferedCounter);
 
-        accounts.forEach(account => {
+        filteredAccounts.forEach(account => {
             const accountId = account.id;
 
             this.paymentsUpdate(userId, accountId, false, continueLoading);
@@ -130,6 +137,12 @@ class QueueManager extends React.Component {
                 continueLoading
             );
             this.requestInquiriesUpdate(
+                userId,
+                accountId,
+                false,
+                continueLoading
+            );
+            this.requestInquiryBatchesUpdate(
                 userId,
                 accountId,
                 false,
@@ -160,7 +173,11 @@ class QueueManager extends React.Component {
         const { accounts } = this.props;
         let eventCount = 0;
 
-        accounts.forEach(account => {
+        const filteredAccounts = accounts.filter(account => {
+            return account.status === "ACTIVE";
+        });
+
+        filteredAccounts.forEach(account => {
             // get events for this account and fallback to empty list
             const payments = this.state.payments[account.id] || [];
             const bunqMeTabs = this.state.bunqMeTabs[account.id] || [];
@@ -168,6 +185,8 @@ class QueueManager extends React.Component {
                 this.state.requestResponses[account.id] || [];
             const requestInquiries =
                 this.state.requestInquiries[account.id] || [];
+            const requestInquiryBatches =
+                this.state.requestInquiryBatches[account.id] || [];
             const masterCardActions =
                 this.state.masterCardActions[account.id] || [];
             const shareInviteBankInquiries =
@@ -178,6 +197,7 @@ class QueueManager extends React.Component {
             eventCount += bunqMeTabs.length;
             eventCount += requestResponses.length;
             eventCount += requestInquiries.length;
+            eventCount += requestInquiryBatches.length;
             eventCount += masterCardActions.length;
             eventCount += shareInviteBankInquiries.length;
 
@@ -197,6 +217,12 @@ class QueueManager extends React.Component {
             if (requestInquiries.length > 0) {
                 this.props.requestInquiriesSetInfo(
                     requestInquiries,
+                    account.id
+                );
+            }
+            if (requestInquiryBatches.length > 0) {
+                this.props.requestInquiryBatchesSetInfo(
+                    requestInquiryBatches,
                     account.id
                 );
             }
@@ -481,6 +507,76 @@ class QueueManager extends React.Component {
             });
     };
 
+    requestInquiryBatchesUpdate = (
+        user_id,
+        account_id,
+        olderId = false,
+        continueLoading = false
+    ) => {
+        const { BunqJSClient } = this.props;
+
+        if (olderId !== false) this.props.queueIncreaseRequestCounter();
+
+        BunqJSClient.api.requestInquiryBatch
+            .list(user_id, account_id, {
+                older_id: olderId,
+                count: 200
+            })
+            .then(requestInquiryBatches => {
+                // turn plain objects into Model objects
+                const requestInquiryBatchesNew = requestInquiryBatches.map(
+                    item => new RequestInquiryBatch(item)
+                );
+
+                // more requestInquiryBatches can be loaded for this account
+                if (
+                    requestInquiryBatchesNew.length === 200 &&
+                    continueLoading === true
+                ) {
+                    const oldestRequestInquiryIndex =
+                        requestInquiryBatchesNew.length - 1;
+                    const oldestRequestInquiry =
+                        requestInquiryBatchesNew[oldestRequestInquiryIndex];
+
+                    // re-run the requestInquiryBatches to continue deeper into the acocunt
+                    this.requestInquiryBatchesUpdate(
+                        user_id,
+                        account_id,
+                        oldestRequestInquiry.id
+                    );
+                }
+
+                const currentRequestInquiryBatches = {
+                    ...this.state.requestInquiryBatches
+                };
+                const accountRequestInquiryBatches =
+                    currentRequestInquiryBatches[account_id] || [];
+
+                // merge existing and new
+                const mergedRequestInquiryBatches = [
+                    ...accountRequestInquiryBatches,
+                    ...requestInquiryBatchesNew
+                ];
+
+                // update the list for the account id
+                currentRequestInquiryBatches[
+                    account_id
+                ] = mergedRequestInquiryBatches;
+
+                // set these requestInquiryBatches in the state
+                this.setState({
+                    requestInquiryBatches: currentRequestInquiryBatches
+                });
+
+                // decrease the request count since this request is done
+                this.props.queueDecreaseRequestCounter();
+            })
+            .catch(error => {
+                // ignore errors
+                this.props.queueDecreaseRequestCounter();
+            });
+    };
+
     masterCardActionsUpdate = (
         user_id,
         account_id,
@@ -672,6 +768,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(
                 requestInquiriesSetInfo(
                     requestInquiries,
+                    accountId,
+                    false,
+                    BunqJSClient
+                )
+            ),
+        requestInquiryBatchesSetInfo: (requestInquiryBatches, accountId) =>
+            dispatch(
+                requestInquiryBatchesSetInfo(
+                    requestInquiryBatches,
                     accountId,
                     false,
                     BunqJSClient

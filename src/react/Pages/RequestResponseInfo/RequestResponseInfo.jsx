@@ -204,6 +204,8 @@ class RequestResponseInfo extends React.Component {
                             from={requestResponse.counterparty_alias}
                             user={this.props.user}
                             swap={requestResponse.status === "ACCEPTED"}
+                            type="requestResponse"
+                            event={requestResponse}
                         />
 
                         <Grid item xs={12}>

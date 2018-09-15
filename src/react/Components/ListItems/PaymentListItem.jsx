@@ -8,11 +8,12 @@ import Divider from "@material-ui/core/Divider";
 
 import { formatMoney } from "../../Helpers/Utils";
 import { paymentText } from "../../Helpers/StatusTexts";
+import { defaultPaymentImage } from "../../Helpers/DefaultImageHandlers";
+
 import NavLink from "../Routing/NavLink";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 import MoneyAmountLabel from "../MoneyAmountLabel";
 import CategoryIcons from "../Categories/CategoryIcons";
-import {defaultPaymentImage} from "../../Helpers/DefaultImageHandlers";
 
 const styles = {
     listItemText: {

@@ -1,28 +1,38 @@
 export const defaultPaymentImage = payment => {
-    // if (payment.type === "IDEAL") {
-    //     return "./images/svg/bunq-placeholders/placeholder_avatar_user_company.svg";
-    // }
+    if (payment.type === "IDEAL") {
+        return "./images/svg/bunq-placeholders/ic_ideal.svg";
+    }
 
-    return "./images/svg/bunq-placeholders/placeholder_avatar_user_person.svg";
+    return "./images/svg/bunq-placeholders/user_person.svg";
+};
+
+export const defaultRequestResponseImage = request => {
+    if (request.type === "IDEAL") {
+        return "./images/svg/bunq-placeholders/ic_ideal.svg";
+    }
+
+    return "./images/svg/bunq-placeholders/user_person.svg";
 };
 
 export const defaultMastercardImage = masterCardAction => {
-    let defaultImage =
-        "./images/svg/bunq-placeholders/placeholder_avatar_card_e_commerce.svg";
+    let defaultImage = "./images/svg/bunq-placeholders/card_e_commerce.svg";
 
-    if (masterCardAction.label_card && masterCardAction.label_card.type) {
-        switch (masterCardAction.label_card.type) {
-            case "MAESTRO_MOBILE_NFC":
-                // image for tap & pay and apple pay
-                defaultImage =
-                    "./images/svg/bunq-placeholders/placeholder_avatar_card_virtual.svg";
-                break;
-            default:
-                // default card image
-                defaultImage =
-                    "./images/svg/bunq-placeholders/placeholder_avatar_cash_register.svg";
-                break;
-        }
+    const panEntryMode = masterCardAction.pan_entry_mode_user;
+
+    switch (panEntryMode) {
+        case "ATM":
+            defaultImage = "./images/svg/bunq-placeholders/card_atm.png";
+            break;
+        case "ICC":
+            defaultImage = "./images/svg/bunq-placeholders/card_virtual.svg";
+            break;
+        case "MAGNETIC_STRIPE":
+            defaultImage = "./images/svg/bunq-placeholders/cash_register.svg";
+            break;
+        default:
+        case "E_COMMERCE":
+            defaultImage = "./images/svg/bunq-placeholders/card_e_commerce.svg";
+            break;
     }
 
     return defaultImage;

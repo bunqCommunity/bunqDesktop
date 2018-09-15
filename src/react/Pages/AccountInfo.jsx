@@ -16,7 +16,6 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import Typography from "@material-ui/core/Typography";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -44,6 +43,7 @@ import { requestResponsesUpdate } from "../Actions/request_responses";
 import { bunqMeTabsUpdate } from "../Actions/bunq_me_tabs";
 import { masterCardActionsUpdate } from "../Actions/master_card_actions";
 import { requestInquiriesUpdate } from "../Actions/request_inquiries";
+import { requestInquiryBatchesUpdate } from "../Actions/request_inquiry_batches";
 import { shareInviteBankInquiriesInfoUpdate } from "../Actions/share_invite_bank_inquiries";
 import { shareInviteBankResponsesInfoUpdate } from "../Actions/share_invite_bank_responses";
 
@@ -128,6 +128,7 @@ class AccountInfo extends React.Component {
             this.props.bunqMeTabsUpdate(userId, accountId);
             this.props.requestResponsesUpdate(userId, accountId);
             this.props.requestInquiriesUpdate(userId, accountId);
+            this.props.requestInquiryBatchesUpdate(userId, accountId);
             this.props.masterCardActionsUpdate(userId, accountId);
 
             const accountInfo = this.props.accounts.find(
@@ -577,6 +578,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId)),
         requestInquiriesUpdate: (userId, accountId) =>
             dispatch(requestInquiriesUpdate(BunqJSClient, userId, accountId)),
+        requestInquiryBatchesUpdate: (userId, accountId) =>
+            dispatch(requestInquiryBatchesUpdate(BunqJSClient, userId, accountId)),
         requestResponsesUpdate: (userId, accountId) =>
             dispatch(requestResponsesUpdate(BunqJSClient, userId, accountId)),
         masterCardActionsUpdate: (userId, accountId) =>

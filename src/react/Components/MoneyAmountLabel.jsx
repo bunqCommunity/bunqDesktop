@@ -141,7 +141,7 @@ class MoneyAmountLabel extends React.Component {
     };
 
     render() {
-        let finalStyle = {};
+        let finalStyle = this.props.style;
         switch (this.props.type) {
             case "requestResponse":
                 finalStyle = this.checkRequestResponse();

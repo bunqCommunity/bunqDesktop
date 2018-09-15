@@ -3,6 +3,7 @@ export type EventType =
     | "BunqMeTab"
     | "MasterCardAction"
     | "RequestInquiry"
+    | "RequestInquiryBatch"
     | "RequestResponse";
 
 export default interface Event {

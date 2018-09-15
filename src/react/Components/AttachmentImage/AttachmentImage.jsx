@@ -7,8 +7,7 @@ class AttachmentImage extends React.PureComponent {
         super(props, context);
         this.state = {
             visible: false,
-            defaultImageUrl:
-                "./images/svg/bunq-placeholders/placeholder_avatar_user_person.svg"
+            defaultImageUrl: "./images/svg/bunq-placeholders/user_person.svg"
         };
     }
 

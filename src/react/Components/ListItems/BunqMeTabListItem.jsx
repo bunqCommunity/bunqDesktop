@@ -5,11 +5,16 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import withTheme from "@material-ui/core/styles/withTheme";
+import withStyles from "@material-ui/core/styles/withStyles";
 import Collapse from "@material-ui/core/Collapse";
 import IconButton from "@material-ui/core/IconButton";
 import Divider from "@material-ui/core/Divider";
 import Avatar from "@material-ui/core/Avatar";
+import Badge from "@material-ui/core/Badge";
+import Icon from "@material-ui/core/Icon";
 
+import ArrowDownwardIcon from "@material-ui/icons/KeyboardArrowDown";
+import ArrowUpwardIcon from "@material-ui/icons/KeyboardArrowUp";
 import CopyIcon from "@material-ui/icons/FileCopy";
 import Share from "@material-ui/icons/Share";
 
@@ -31,6 +36,18 @@ const styles = {
     }
 };
 
+const classStyles = theme => ({
+    badge: {
+        top: -8,
+        right: -8,
+        border: `2px solid ${
+            theme.palette.type === "light"
+                ? theme.palette.grey[200]
+                : theme.palette.grey[900]
+        }`
+    }
+});
+
 class BunqMeTabListItem extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -49,7 +66,7 @@ class BunqMeTabListItem extends React.Component {
     };
 
     cancelTab = () => {
-        const { bunqMeTab, user } = this.props;
+        const { bunqMeTab, user, accounts } = this.props;
         this.props.bunqMeTabPut(
             user.id,
             bunqMeTab.monetary_account_id,
@@ -58,7 +75,7 @@ class BunqMeTabListItem extends React.Component {
     };
 
     render() {
-        const { bunqMeTab, theme, t } = this.props;
+        const { bunqMeTab, accounts, theme, t } = this.props;
 
         let iconColor = null;
         let canBeCanceled = false;
@@ -79,26 +96,60 @@ class BunqMeTabListItem extends React.Component {
         const createdDate = humanReadableDate(bunqMeTab.created);
         const updatedDate = humanReadableDate(bunqMeTab.updated);
         const expiryDate = humanReadableDate(bunqMeTab.time_expiry);
-        const numberOfPayments = bunqMeTab.result_inquiries.length;
-        const formattedMoney = formatMoney(
+        const bunqMeTabPayments = bunqMeTab.result_inquiries;
+        const numberOfPayments = bunqMeTabPayments.length;
+
+        // calculate how much was paid to this inquiry
+        const totalPaidAmount = bunqMeTabPayments.reduce(
+            (accumulator, bunqMeTabInquiry) => {
+                const payment = bunqMeTabInquiry.payment.Payment;
+                const paidAmount = parseFloat(payment.amount.value);
+                return accumulator + paidAmount;
+            },
+            0
+        );
+
+        // format the amounts
+        const formattedInquiredAmount = formatMoney(
             bunqMeTab.bunqme_tab_entry.amount_inquired.value
         );
+        const formattedTotalPaid = formatMoney(totalPaidAmount);
 
         const merchantList = bunqMeTab.bunqme_tab_entry.merchant_available
             .filter(merchant => merchant.available)
             .map(merchant => merchant.merchant_type)
             .join(", ");
 
-        const bunqMeTabPayments = bunqMeTab.result_inquiries;
+        const avatarStandalone = (
+            <Avatar style={styles.smallAvatar}>
+                <Share color={"inherit"} style={{ color: iconColor }} />
+            </Avatar>
+        );
+
+        const itemAvatar =
+            bunqMeTabPayments.length <= 0 ? (
+                avatarStandalone
+            ) : (
+                <Badge
+                    badgeContent={bunqMeTabPayments.length}
+                    color="primary"
+                    classes={{ badge: this.props.classes.badge }}
+                >
+                    {avatarStandalone}
+                </Badge>
+            );
+        
+        const secondaryText =
+            bunqMeTabPayments.length > 0
+                ? `${t("Received")}: ${formattedTotalPaid}`
+                : `${t("Requested amount")}: ${formattedInquiredAmount}`;
 
         return [
             <ListItem button onClick={this.toggleExtraInfo}>
-                <Avatar style={styles.smallAvatar}>
-                    <Share color={"inherit"} style={{ color: iconColor }} />
-                </Avatar>
+                {itemAvatar}
                 <ListItemText
-                    primary={formattedMoney}
-                    secondary={bunqMeTab.bunqme_tab_entry.description}
+                    primary={bunqMeTab.bunqme_tab_entry.description}
+                    secondary={secondaryText}
                 />
                 <ListItemSecondaryAction style={{ marginTop: -16 }}>
                     <AccountQRFullscreen mode="HIDDEN" text={shareUrl} />
@@ -111,11 +162,12 @@ class BunqMeTabListItem extends React.Component {
                         </IconButton>
                     </CopyToClipboard>
                 </ListItemSecondaryAction>
-                <CategoryIcons
-                    style={{ marginTop: 26 }}
-                    type={"BunqMeTab"}
-                    id={bunqMeTab.id}
-                />
+
+                {/*<CategoryIcons*/}
+                    {/*style={{ marginTop: 26 }}*/}
+                    {/*type={"BunqMeTab"}*/}
+                    {/*id={bunqMeTab.id}*/}
+                {/*/>*/}
             </ListItem>,
             <Collapse in={this.state.extraInfoOpen} unmountOnExit>
                 <ListItem dense>
@@ -153,11 +205,22 @@ class BunqMeTabListItem extends React.Component {
                         primary={t("Number of payments")}
                         secondary={"" + numberOfPayments}
                     />
+                    <ListItemSecondaryAction>
+                        <Icon color="action">
+                            {this.state.paymentsOpen ? (
+                                <ArrowUpwardIcon />
+                            ) : (
+                                <ArrowDownwardIcon />
+                            )}
+                        </Icon>
+                    </ListItemSecondaryAction>
                 </ListItem>
+
                 <Collapse in={this.state.paymentsOpen} unmountOnExit>
                     {bunqMeTabPayments.map(bunqMeTabPayment => {
                         return (
                             <PaymentListItem
+                                accounts={accounts}
                                 payment={bunqMeTabPayment.payment.Payment}
                                 BunqJSClient={this.props.BunqJSClient}
                             />
@@ -165,9 +228,9 @@ class BunqMeTabListItem extends React.Component {
                     })}
                 </Collapse>
 
-                <ListItem style={styles.actionListItem}>
-                    <ListItemSecondaryAction>
-                        {canBeCanceled ? (
+                {canBeCanceled ? (
+                    <ListItem style={styles.actionListItem}>
+                        <ListItemSecondaryAction>
                             <TranslateButton
                                 variant="raised"
                                 disabled={
@@ -179,11 +242,13 @@ class BunqMeTabListItem extends React.Component {
                             >
                                 Cancel request
                             </TranslateButton>
-                        ) : null}
-                    </ListItemSecondaryAction>
-                </ListItem>
+                        </ListItemSecondaryAction>
+                    </ListItem>
+                ) : null}
             </Collapse>,
-            <Divider />
+            <Divider
+                style={{ marginBottom: this.state.paymentsOpen ? 12 : 0 }}
+            />
         ];
     }
 }
@@ -192,4 +257,6 @@ BunqMeTabListItem.defaultProps = {
     minimalDisplay: false
 };
 
-export default withTheme()(translate("translations")(BunqMeTabListItem));
+export default withTheme()(
+    translate("translations")(withStyles(classStyles)(BunqMeTabListItem))
+);

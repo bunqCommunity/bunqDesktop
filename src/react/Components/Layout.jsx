@@ -45,6 +45,7 @@ import {
 } from "../Actions/application.js";
 import { loadStoredMasterCardActions } from "../Actions/master_card_actions";
 import { loadStoredRequestInquiries } from "../Actions/request_inquiries";
+import { loadStoredrequestInquiryBatches } from "../Actions/request_inquiry_batches";
 import { loadStoredRequestResponses } from "../Actions/request_responses";
 import {
     registrationClearUserInfo,
@@ -403,6 +404,7 @@ class Layout extends React.Component {
         this.props.loadStoredBunqMeTabs();
         this.props.loadStoredMasterCardActions();
         this.props.loadStoredRequestInquiries();
+        this.props.loadStoredrequestInquiryBatches();
         this.props.loadStoredRequestResponses();
         this.props.loadStoredShareInviteBankResponses();
         this.props.loadStoredShareInviteBankInquiries();
@@ -593,6 +595,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(loadStoredMasterCardActions(BunqJSClient)),
         loadStoredRequestInquiries: () =>
             dispatch(loadStoredRequestInquiries(BunqJSClient)),
+        loadStoredrequestInquiryBatches: () =>
+            dispatch(loadStoredrequestInquiryBatches(BunqJSClient)),
         loadStoredAccounts: () => dispatch(loadStoredAccounts(BunqJSClient)),
         loadStoredRequestResponses: () =>
             dispatch(loadStoredRequestResponses(BunqJSClient)),

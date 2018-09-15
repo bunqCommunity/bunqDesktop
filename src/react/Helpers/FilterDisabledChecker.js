@@ -15,7 +15,7 @@ export default ({
         selectedCategories.length <= 0 &&
         searchTerm.length <= 0 &&
         paymentType === "default" &&
-        bunqMeTabType === "active" &&
+        bunqMeTabType === "default" &&
         requestType === "default" &&
         paymentVisibility === true &&
         bunqMeTabVisibility === true &&

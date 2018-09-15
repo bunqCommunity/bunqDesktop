@@ -22,6 +22,7 @@ import PaymentListItem from "../ListItems/PaymentListItem";
 import MasterCardActionListItem from "../ListItems/MasterCardActionListItem";
 import RequestResponseListItem from "../ListItems/RequestResponseListItem";
 import RequestInquiryListItem from "../ListItems/RequestInquiryListItem";
+import RequestInquiryBatchListItem from "../ListItems/RequestInquiryBatchListItem";
 import ShareInviteBankInquiryListItem from "../ListItems/ShareInviteBankInquiryListItem";
 import ShareInviteBankResponseListItem from "../ListItems/ShareInviteBankResponseListItem";
 import ClearBtn from "../FilterComponents/ClearFilter";
@@ -38,12 +39,13 @@ import {
     firstPage
 } from "../../Actions/pagination";
 
-import { humanReadableDate } from "../../Helpers/Utils";
+import { humanReadableDate, UTCDateToLocalDate } from "../../Helpers/Utils";
 import {
     paymentFilter,
     bunqMeTabsFilter,
     masterCardActionFilter,
     requestInquiryFilter,
+    requestInquiryBatchFilter,
     requestResponseFilter,
     shareInviteBankInquiryFilter,
     shareInviteBankResponseFilter
@@ -120,11 +122,21 @@ class CombinedList extends React.Component {
 
     loadEvents = () => {
         // create arrays of the different endpoint types
-        const bunqMeTabs = this.bunqMeTabsMapper();
-        const payments = this.paymentMapper();
+        const { bunqMeTabs, hiddenPaymentIds } = this.bunqMeTabsMapper();
+
+        // load regular payments while hiding the ones connected to the bunq me tabs
+        const payments = this.paymentMapper(hiddenPaymentIds);
         const masterCardActions = this.masterCardActionMapper();
         const requestResponses = this.requestResponseMapper(false, true);
-        const requestInquiries = this.requestInquiryMapper();
+        const {
+            requestInquiryBatches,
+            hiddenRequestInquiryIds
+        } = this.requestInquiryBatchMapper(hiddenRequestInquiryIds);
+
+        // load request inquiries while hiding requests connected to the request inquiry batches
+        const requestInquiries = this.requestInquiryMapper(
+            hiddenRequestInquiryIds
+        );
         const shareInviteBankInquiries = this.shareInviteBankInquiryMapper();
 
         // combine the list, order by date and group by day
@@ -133,6 +145,7 @@ class CombinedList extends React.Component {
             ...requestResponses,
             ...masterCardActions,
             ...requestInquiries,
+            ...requestInquiryBatches,
             ...shareInviteBankInquiries,
             ...payments
         ].sort(function(a, b) {
@@ -174,7 +187,7 @@ class CombinedList extends React.Component {
         };
     };
 
-    paymentMapper = () => {
+    paymentMapper = (hiddenPaymentIds = []) => {
         if (this.props.hiddenTypes.includes("Payment")) return [];
 
         return this.props.payments
@@ -191,6 +204,14 @@ class CombinedList extends React.Component {
                         return false;
                     }
                 }
+
+                // if hidden ids are set, check if this event is included
+                if (hiddenPaymentIds.length > 0) {
+                    if (hiddenPaymentIds.includes(event.id)) {
+                        return false;
+                    }
+                }
+
                 return true;
             })
             .map(payment => {
@@ -203,16 +224,22 @@ class CombinedList extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                         />
                     ),
-                    filterDate: payment.created,
+                    filterDate: UTCDateToLocalDate(payment.created),
                     info: payment
                 };
             });
     };
 
     bunqMeTabsMapper = () => {
-        if (this.props.hiddenTypes.includes("BunqMeTab")) return [];
+        if (this.props.hiddenTypes.includes("BunqMeTab")) {
+            return {
+                hiddenPaymentIds: [],
+                bunqMeTabs: []
+            };
+        }
 
-        return this.props.bunqMeTabs
+        let hiddenPaymentIds = [];
+        const bunqMeTabs = this.props.bunqMeTabs
             .filter(
                 bunqMeTabsFilter({
                     bunqMeTabVisibility: this.props.bunqMeTabVisibility,
@@ -229,6 +256,16 @@ class CombinedList extends React.Component {
                 return true;
             })
             .map(bunqMeTab => {
+                bunqMeTab.result_inquiries.forEach(resultInquiry => {
+                    const payment = resultInquiry.payment.Payment;
+                    const paymentId = payment.id;
+
+                    // add to the list if not already set
+                    if (!hiddenPaymentIds.includes(paymentId)) {
+                        hiddenPaymentIds.push(paymentId);
+                    }
+                });
+
                 return {
                     component: (
                         <BunqMeTabListItem
@@ -238,13 +275,19 @@ class CombinedList extends React.Component {
                             bunqMeTabLoading={this.props.bunqMeTabLoading}
                             bunqMeTabsLoading={this.props.bunqMeTabsLoading}
                             bunqMeTabPut={this.props.bunqMeTabPut}
+                            accounts={this.props.accounts}
                             user={this.props.user}
                         />
                     ),
-                    filterDate: bunqMeTab.created,
+                    filterDate: UTCDateToLocalDate(bunqMeTab.updated),
                     info: bunqMeTab
                 };
             });
+
+        return {
+            bunqMeTabs,
+            hiddenPaymentIds
+        };
     };
 
     masterCardActionMapper = () => {
@@ -274,7 +317,7 @@ class CombinedList extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                         />
                     ),
-                    filterDate: masterCardAction.created,
+                    filterDate: UTCDateToLocalDate(masterCardAction.created),
                     info: masterCardAction
                 };
             });
@@ -320,16 +363,17 @@ class CombinedList extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                         />
                     ),
-                    filterDate:
+                    filterDate: UTCDateToLocalDate(
                         requestResponse.status === "ACCEPTED"
                             ? requestResponse.time_responded
-                            : requestResponse.created,
+                            : requestResponse.created
+                    ),
                     info: requestResponse
                 };
             });
     };
 
-    requestInquiryMapper = () => {
+    requestInquiryMapper = (hiddenRequestInquiryIds = []) => {
         if (this.props.hiddenTypes.includes("RequestInquiry")) return [];
 
         return this.props.requestInquiries
@@ -347,6 +391,14 @@ class CombinedList extends React.Component {
                         return false;
                     }
                 }
+
+                // if hidden ids are set, check if this event is included
+                if (hiddenRequestInquiryIds.length > 0 && event.batch_id) {
+                    if (hiddenRequestInquiryIds.includes(event.batch_id)) {
+                        return false;
+                    }
+                }
+
                 return true;
             })
             .map(requestInquiry => {
@@ -357,10 +409,66 @@ class CombinedList extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                         />
                     ),
-                    filterDate: requestInquiry.created,
+                    filterDate: UTCDateToLocalDate(requestInquiry.created),
                     info: requestInquiry
                 };
             });
+    };
+
+    requestInquiryBatchMapper = () => {
+        if (this.props.hiddenTypes.includes("RequestInquiryBatch")) {
+            return {
+                hiddenRequestInquiryIds: [],
+                requestInquiryBatches: []
+            };
+        }
+
+        let hiddenRequestInquiryIds = [];
+        const requestInquiryBatches = this.props.requestInquiryBatches
+            .filter(
+                requestInquiryBatchFilter({
+                    requestVisibility: this.props.requestVisibility,
+                    requestType: this.props.requestType,
+                    displayAcceptedRequests: true,
+                    ...this.getCommonFilters()
+                })
+            )
+            .filter(requestInquiryBatch => {
+                // TODO loop through inquiries and check if account id matches
+
+                const requestInquiry = requestInquiryBatch.request_inquiries[0];
+                if (requestInquiry && this.props.accountId) {
+                    if (
+                        requestInquiry.monetary_account_id !==
+                        this.props.accountId
+                    ) {
+                        return false;
+                    }
+                }
+
+                return true;
+            })
+            .map(requestInquiryBatch => {
+                // hide requests with the following batch id
+                hiddenRequestInquiryIds.push(requestInquiryBatch.id);
+
+                return {
+                    component: (
+                        <RequestInquiryBatchListItem
+                            accounts={this.props.accounts}
+                            requestInquiryBatch={requestInquiryBatch}
+                            BunqJSClient={this.props.BunqJSClient}
+                        />
+                    ),
+                    filterDate: UTCDateToLocalDate(requestInquiryBatch.updated),
+                    info: requestInquiryBatch
+                };
+            });
+
+        return {
+            requestInquiryBatches: requestInquiryBatches,
+            hiddenRequestInquiryIds: hiddenRequestInquiryIds
+        };
     };
 
     shareInviteBankInquiryMapper = () => {
@@ -390,7 +498,9 @@ class CombinedList extends React.Component {
                             user={this.props.user}
                         />
                     ),
-                    filterDate: shareInviteBankInquiryInfo.created,
+                    filterDate: UTCDateToLocalDate(
+                        shareInviteBankInquiryInfo.created
+                    ),
                     info: shareInviteBankInquiry
                 };
             });
@@ -483,6 +593,7 @@ class CombinedList extends React.Component {
             this.props.paymentsLoading ||
             this.props.requestResponsesLoading ||
             this.props.requestInquiriesLoading ||
+            this.props.requestInquiryBatchLoading ||
             this.props.shareInviteBankInquiriesLoading ||
             this.props.masterCardActionsLoading ? (
                 <LinearProgress />
@@ -716,6 +827,10 @@ const mapStateToProps = state => {
 
         requestInquiries: state.request_inquiries.request_inquiries,
         requestInquiriesLoading: state.request_inquiries.loading,
+
+        requestInquiryBatches:
+            state.request_inquiry_batches.request_inquiry_batches,
+        requestInquiryBatchLoading: state.request_inquiry_batches.loading,
 
         requestResponses: state.request_responses.request_responses,
         requestResponsesLoading: state.request_responses.loading,

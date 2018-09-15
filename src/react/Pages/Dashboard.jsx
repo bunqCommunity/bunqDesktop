@@ -183,15 +183,15 @@ class Dashboard extends React.Component {
                                         }
                                     />
 
-                                    <LoadOlderButton
-                                        wrapperStyle={{ padding: 8 }}
-                                        buttonStyle={{ width: "100%" }}
-                                        buttonContent={t("Load more events")}
-                                        BunqJSClient={this.props.BunqJSClient}
-                                        initialBunqConnect={
-                                            this.props.initialBunqConnect
-                                        }
-                                    />
+                                    {/*<LoadOlderButton*/}
+                                    {/*wrapperStyle={{ padding: 8 }}*/}
+                                    {/*buttonStyle={{ width: "100%" }}*/}
+                                    {/*buttonContent={t("Load more events")}*/}
+                                    {/*BunqJSClient={this.props.BunqJSClient}*/}
+                                    {/*initialBunqConnect={*/}
+                                    {/*this.props.initialBunqConnect*/}
+                                    {/*}*/}
+                                    {/*/>*/}
 
                                     {this.props.environment === "SANDBOX" ? (
                                         <div

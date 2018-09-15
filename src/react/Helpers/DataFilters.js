@@ -473,6 +473,41 @@ export const requestInquiryFilter = options => requestInquiry => {
     );
 };
 
+
+export const requestInquiryBatchFilter = options => requestInquiryBatch => {
+    if (options.requestVisibility === false) {
+        return false;
+    }
+
+    if (
+        options.requestType !== "received" &&
+        options.requestType !== "default"
+    ) {
+        return false;
+    }
+
+    if (options.searchTerm && options.searchTerm.length > 0) {
+        return false;
+    }
+
+    // don't show requests if amount filter is set
+    // TODO check total inquired amount
+    if (options.amountFilterAmount !== "") return false;
+
+    if (options.selectedAccountIds) {
+        if (options.selectedAccountIds.length > 0) {
+            // TODO check underlying request inquiry account ids
+            return false;
+        }
+    }
+
+    return checkDateRange(
+        options.dateFromFilter,
+        options.dateToFilter,
+        requestInquiryBatch.RequestInquiryBatch.updated
+    );
+};
+
 export const shareInviteBankResponseFilter = options => shareInviteBankResponse => {
     const shareInviteBankResponseInfo =
         shareInviteBankResponse.ShareInviteBankResponse;

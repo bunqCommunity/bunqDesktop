@@ -65,6 +65,8 @@ class OAuthManagement extends React.Component {
         };
 
         ipcRenderer.on("received-oauth-bunq-code", this.handleBunqCodeCallback);
+
+        this.bufferedOAuthRequest = null;
     }
 
     componentDidMount() {
@@ -77,6 +79,10 @@ class OAuthManagement extends React.Component {
                 this.validateInputs
             );
         }
+    }
+
+    componentWillUnmount() {
+        if (this.bufferedOAuthRequest) clearTimeout(this.bufferedOAuthRequest);
     }
 
     /**
@@ -112,32 +118,42 @@ class OAuthManagement extends React.Component {
         const errorMessage = this.props.t(
             "Something went wrong while trying to authorize the client"
         );
+
+        if (!code || this.state.loading) return;
+
+        // clear timeout if already set
+        if (this.bufferedOAuthRequest) clearTimeout(this.bufferedOAuthRequest);
+
+        // set loading state
         this.setState({
             loading: true
         });
 
-        // exchange the token
-        this.props.BunqJSClient.exchangeOAuthToken(
-            this.props.clientId,
-            this.props.clientSecret,
-            "http://localhost:1234",
-            code
-        )
-            .then(accessToken => {
-                this.setState({
-                    loading: false
-                });
+        // buffer the request to prevent duplicate calls from the secondary window
+        this.bufferedOAuthRequest = setTimeout(() => {
+            // exchange the token
+            this.props.BunqJSClient.exchangeOAuthToken(
+                this.props.clientId,
+                this.props.clientSecret,
+                "http://localhost:1234",
+                code
+            )
+                .then(accessToken => {
+                    this.setState({
+                        loading: false
+                    });
 
-                this.props.openSnackbar(successMessage);
-                this.props.setApiKeyState(accessToken);
-            })
-            .catch(error => {
-                this.setState({
-                    loading: false
-                });
+                    this.props.openSnackbar(successMessage);
+                    this.props.setApiKeyState(accessToken);
+                })
+                .catch(error => {
+                    this.setState({
+                        loading: false
+                    });
 
-                this.props.handleBunqError(error, errorMessage);
-            });
+                    this.props.handleBunqError(error, errorMessage);
+                });
+        }, 1500);
     };
 
     /**
