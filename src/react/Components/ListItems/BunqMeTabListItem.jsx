@@ -5,11 +5,16 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import withTheme from "@material-ui/core/styles/withTheme";
+import withStyles from "@material-ui/core/styles/withStyles";
 import Collapse from "@material-ui/core/Collapse";
 import IconButton from "@material-ui/core/IconButton";
 import Divider from "@material-ui/core/Divider";
 import Avatar from "@material-ui/core/Avatar";
+import Badge from "@material-ui/core/Badge";
+import Icon from "@material-ui/core/Icon";
 
+import ArrowDownwardIcon from "@material-ui/icons/KeyboardArrowDown";
+import ArrowUpwardIcon from "@material-ui/icons/KeyboardArrowUp";
 import CopyIcon from "@material-ui/icons/FileCopy";
 import Share from "@material-ui/icons/Share";
 
@@ -31,6 +36,18 @@ const styles = {
     }
 };
 
+const classStyles = theme => ({
+    badge: {
+        top: -8,
+        right: -8,
+        border: `2px solid ${
+            theme.palette.type === "light"
+                ? theme.palette.grey[200]
+                : theme.palette.grey[900]
+        }`
+    }
+});
+
 class BunqMeTabListItem extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -49,7 +66,7 @@ class BunqMeTabListItem extends React.Component {
     };
 
     cancelTab = () => {
-        const { bunqMeTab, user } = this.props;
+        const { bunqMeTab, user, accounts } = this.props;
         this.props.bunqMeTabPut(
             user.id,
             bunqMeTab.monetary_account_id,
@@ -58,7 +75,7 @@ class BunqMeTabListItem extends React.Component {
     };
 
     render() {
-        const { bunqMeTab, theme, t } = this.props;
+        const { bunqMeTab, accounts, theme, t } = this.props;
 
         let iconColor = null;
         let canBeCanceled = false;
@@ -91,11 +108,28 @@ class BunqMeTabListItem extends React.Component {
 
         const bunqMeTabPayments = bunqMeTab.result_inquiries;
 
+        const avatarStandalone = (
+            <Avatar style={styles.smallAvatar}>
+                <Share color={"inherit"} style={{ color: iconColor }} />
+            </Avatar>
+        );
+
+        const itemAvatar =
+            bunqMeTab.result_inquiries.length <= 0 ? (
+                avatarStandalone
+            ) : (
+                <Badge
+                    badgeContent={bunqMeTab.result_inquiries.length}
+                    color="primary"
+                    classes={{ badge: this.props.classes.badge }}
+                >
+                    {avatarStandalone}
+                </Badge>
+            );
+
         return [
             <ListItem button onClick={this.toggleExtraInfo}>
-                <Avatar style={styles.smallAvatar}>
-                    <Share color={"inherit"} style={{ color: iconColor }} />
-                </Avatar>
+                {itemAvatar}
                 <ListItemText
                     primary={formattedMoney}
                     secondary={bunqMeTab.bunqme_tab_entry.description}
@@ -153,11 +187,22 @@ class BunqMeTabListItem extends React.Component {
                         primary={t("Number of payments")}
                         secondary={"" + numberOfPayments}
                     />
+                    <ListItemSecondaryAction>
+                        <Icon color="action">
+                            {this.state.paymentsOpen ? (
+                                <ArrowUpwardIcon />
+                            ) : (
+                                <ArrowDownwardIcon />
+                            )}
+                        </Icon>
+                    </ListItemSecondaryAction>
                 </ListItem>
+
                 <Collapse in={this.state.paymentsOpen} unmountOnExit>
                     {bunqMeTabPayments.map(bunqMeTabPayment => {
                         return (
                             <PaymentListItem
+                                accounts={accounts}
                                 payment={bunqMeTabPayment.payment.Payment}
                                 BunqJSClient={this.props.BunqJSClient}
                             />
@@ -192,4 +237,6 @@ BunqMeTabListItem.defaultProps = {
     minimalDisplay: false
 };
 
-export default withTheme()(translate("translations")(BunqMeTabListItem));
+export default withTheme()(
+    translate("translations")(withStyles(classStyles)(BunqMeTabListItem))
+);

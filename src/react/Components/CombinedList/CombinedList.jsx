@@ -120,8 +120,8 @@ class CombinedList extends React.Component {
 
     loadEvents = () => {
         // create arrays of the different endpoint types
-        const bunqMeTabs = this.bunqMeTabsMapper();
-        const payments = this.paymentMapper();
+        const { bunqMeTabs, hiddenPaymentIds } = this.bunqMeTabsMapper();
+        const payments = this.paymentMapper(hiddenPaymentIds);
         const masterCardActions = this.masterCardActionMapper();
         const requestResponses = this.requestResponseMapper(false, true);
         const requestInquiries = this.requestInquiryMapper();
@@ -174,7 +174,7 @@ class CombinedList extends React.Component {
         };
     };
 
-    paymentMapper = () => {
+    paymentMapper = hiddenPaymentIds => {
         if (this.props.hiddenTypes.includes("Payment")) return [];
 
         return this.props.payments
@@ -191,6 +191,14 @@ class CombinedList extends React.Component {
                         return false;
                     }
                 }
+
+                // if hidden ids are set, check if this event is included
+                if (hiddenPaymentIds.length > 0) {
+                    if (hiddenPaymentIds.includes(event.id)) {
+                        return false;
+                    }
+                }
+
                 return true;
             })
             .map(payment => {
@@ -212,7 +220,8 @@ class CombinedList extends React.Component {
     bunqMeTabsMapper = () => {
         if (this.props.hiddenTypes.includes("BunqMeTab")) return [];
 
-        return this.props.bunqMeTabs
+        let hiddenPaymentIds = [];
+        const bunqMeTabs = this.props.bunqMeTabs
             .filter(
                 bunqMeTabsFilter({
                     bunqMeTabVisibility: this.props.bunqMeTabVisibility,
@@ -229,6 +238,16 @@ class CombinedList extends React.Component {
                 return true;
             })
             .map(bunqMeTab => {
+                bunqMeTab.result_inquiries.forEach(resultInquiry => {
+                    const payment = resultInquiry.payment.Payment;
+                    const paymentId = payment.id;
+
+                    // add to the list if not already set
+                    if (!hiddenPaymentIds.includes(paymentId)) {
+                        hiddenPaymentIds.push(paymentId);
+                    }
+                });
+
                 return {
                     component: (
                         <BunqMeTabListItem
@@ -238,13 +257,19 @@ class CombinedList extends React.Component {
                             bunqMeTabLoading={this.props.bunqMeTabLoading}
                             bunqMeTabsLoading={this.props.bunqMeTabsLoading}
                             bunqMeTabPut={this.props.bunqMeTabPut}
+                            accounts={this.props.accounts}
                             user={this.props.user}
                         />
                     ),
-                    filterDate: UTCDateToLocalDate(bunqMeTab.created),
+                    filterDate: UTCDateToLocalDate(bunqMeTab.updated),
                     info: bunqMeTab
                 };
             });
+
+        return {
+            bunqMeTabs,
+            hiddenPaymentIds
+        };
     };
 
     masterCardActionMapper = () => {
@@ -391,7 +416,9 @@ class CombinedList extends React.Component {
                             user={this.props.user}
                         />
                     ),
-                    filterDate: UTCDateToLocalDate(shareInviteBankInquiryInfo.created),
+                    filterDate: UTCDateToLocalDate(
+                        shareInviteBankInquiryInfo.created
+                    ),
                     info: shareInviteBankInquiry
                 };
             });

@@ -72,7 +72,7 @@ class QueueManager extends React.Component {
                 // delay the queue update
                 this.delayedQueue = setTimeout(
                     () => this.triggerQueueUpdate(queueTriggerSync),
-                    1000
+                    500
                 );
             }
         } else {
