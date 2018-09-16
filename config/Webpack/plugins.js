@@ -8,7 +8,13 @@ const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
 
 const packageInfo = require("../../package.json");
 
-module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
+module.exports = ({
+    BUILD_DIR,
+    OUTPUT_DIR,
+    PRODUCTION,
+    DEVELOPMENT,
+    TRAVIS_ENV
+}) => {
     const plugins = [
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.DefinePlugin({
