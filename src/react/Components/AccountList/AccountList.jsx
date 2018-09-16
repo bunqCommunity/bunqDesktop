@@ -48,12 +48,9 @@ class AccountList extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            // keeps track if we already automatically did a request
-            // fetchedExternal: false,
             fetchedAccounts: false,
             accountTotalSelectionMode: false
         };
-        this.delayedUpdate = null;
     }
 
     componentDidMount() {
@@ -62,11 +59,6 @@ class AccountList extends React.Component {
 
     componentDidUpdate(previousProps) {
         this.checkUpdateRequirement(this.props);
-    }
-
-    componentWillUnmount() {
-        // prevent data from being loaded after we unmount
-        if (this.delayedUpdate) clearTimeout(this.delayedUpdate);
     }
 
     updateAccounts = () => {

@@ -186,7 +186,7 @@ class RequestInquiryBatchListItem extends React.Component {
 
         // format the target names into a primary text
         let andMoreText = "";
-        if (targetTexts.length >= 3) {
+        if (targetTexts.length > 3) {
             // max 3 names and add the `and more` text to the end
             andMoreText = t("and more");
             targetTexts = targetTexts.slice(0, 3);

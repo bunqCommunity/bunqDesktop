@@ -53,6 +53,10 @@ class InputSuggestions extends React.Component {
 
     onSelectItem = item => event => {
         this.props.onSelectItem(item.field);
+        if (this.props.onChangeName) {
+            // on name change is set, update the name field aswell
+            this.props.onChangeName(item.name);
+        }
     };
 
     render() {
@@ -61,6 +65,7 @@ class InputSuggestions extends React.Component {
             items = [],
             onSelectItem,
             onKeyDown,
+            onChangeName,
             onChange,
             InputComponent,
             ...otherProps

@@ -525,7 +525,7 @@ class RequestInquiry extends React.Component {
                     <title>{`bunqDesktop - ${t("Pay")}`}</title>
                 </Helmet>
 
-                <Grid item xs={12} sm={10} lg={6} xl={4}>
+                <Grid item xs={12} sm={10} md={8} lg={6} xl={4}>
                     <Paper style={styles.paper}>
                         <TypographyTranslate variant="headline">
                             Request Payment

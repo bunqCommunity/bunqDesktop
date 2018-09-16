@@ -67,7 +67,7 @@ class TargetSelection extends React.Component {
             case "EMAIL":
             case "CONTACT":
                 // loop through all types and create a full list of contacts (name/email combination)
-                const contactList = [];
+                let contactList = [];
                 Object.keys(this.props.contacts).map(contactType => {
                     // go through all contacts for this type
                     this.props.contacts[contactType].forEach(contact => {
@@ -106,16 +106,39 @@ class TargetSelection extends React.Component {
                 break;
             default:
             case "IBAN":
+                let ibanCollection = {};
+                this.props.payments.map(payment => {
+                    if (
+                        payment.counterparty_alias &&
+                        payment.counterparty_alias.iban
+                    ) {
+                        const iban = payment.counterparty_alias.iban;
+                        if (!ibanCollection[iban]) {
+                            ibanCollection[iban] = {
+                                field: iban,
+                                name: payment.counterparty_alias.display_name
+                            };
+                        }
+                    }
+                });
+                // turn ref object into an array
+                const ibanArray = Object.keys(ibanCollection).map(
+                    key => ibanCollection[key]
+                );
+
                 targetContent = [
-                    <TextField
+                    <InputSuggestions
                         autoFocus
-                        error={this.props.targetError}
                         fullWidth
-                        required
                         id="target"
+                        items={ibanArray}
                         label={t("IBAN number")}
+                        error={this.props.targetError}
                         value={this.props.target}
                         onChange={this.props.handleChange("target")}
+                        onChangeName={this.props.handleChangeDirect("ibanName")}
+                        onSelectItem={this.props.handleChangeDirect("target")}
+                        onKeyPress={this.enterKeySubmit}
                     />,
                     <TextField
                         fullWidth
@@ -273,7 +296,9 @@ class TargetSelection extends React.Component {
 const mapStateToProps = state => {
     return {
         contacts: state.contacts.contacts,
-        contactsLoading: state.contacts.loading
+        contactsLoading: state.contacts.loading,
+
+        payments: state.payments.payments
     };
 };
 

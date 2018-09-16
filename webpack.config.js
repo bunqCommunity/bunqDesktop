@@ -6,12 +6,19 @@ const optimizations = require("./config/Webpack/optimizations");
 
 const PRODUCTION = process.env.NODE_ENV === "production";
 const DEVELOPMENT = !PRODUCTION;
+const TRAVIS_ENV = !!process.env.TRAVIS;
 
 const SRC_DIR = path.resolve(__dirname, "src/react");
 const BUILD_DIR = path.resolve(__dirname, "app/react");
 const OUTPUT_DIR = "./";
 
-const moduleOptions = { BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT };
+const moduleOptions = {
+    BUILD_DIR,
+    OUTPUT_DIR,
+    PRODUCTION,
+    DEVELOPMENT,
+    TRAVIS_ENV
+};
 
 let config = {
     entry: {

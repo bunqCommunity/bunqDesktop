@@ -8,7 +8,13 @@ const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
 
 const packageInfo = require("../../package.json");
 
-module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
+module.exports = ({
+    BUILD_DIR,
+    OUTPUT_DIR,
+    PRODUCTION,
+    DEVELOPMENT,
+    TRAVIS_ENV
+}) => {
     const plugins = [
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.DefinePlugin({
@@ -40,19 +46,24 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
             reportFilename: "../../webpack.report.html"
         }),
 
-        // improved caching after multiple builds
-        new HardSourceWebpackPlugin({
-            // Either an absolute path or relative to webpack's options.context.
-            cacheDirectory:
-                "../../node_modules/.cache/hard-source/[confighash]",
-            cachePrune: {
-                sizeThreshold: 100 * 1024 * 1024
-            }
-        }),
-
         // fix annoying warning
         new webpack.IgnorePlugin(/\/iconv-loader$/)
     ];
+
+    // only use these outside of travis environment
+    if (!TRAVIS_ENV) {
+        // improved caching after multiple builds
+        plugins.push(
+            new HardSourceWebpackPlugin({
+                // Either an absolute path or relative to webpack's options.context.
+                cacheDirectory:
+                    "../../node_modules/.cache/hard-source/[confighash]",
+                cachePrune: {
+                    sizeThreshold: 100 * 1024 * 1024
+                }
+            })
+        );
+    }
 
     if (PRODUCTION) {
         // cleanup old build files from BUILD
