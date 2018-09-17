@@ -24,12 +24,13 @@ export default (state = defaultState, action) => {
                 action.payload.payments,
                 ignoreOldItems ? [] : payments
             );
+            const mergedPayments = mergedInfo.items;
 
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
                 action.payload.BunqJSClient.Session.storeEncryptedData(
                     {
-                        items: mergedInfo.items,
+                        items: mergedPayments,
                         account_id: action.payload.account_id
                     },
                     STORED_PAYMENTS
@@ -42,15 +43,15 @@ export default (state = defaultState, action) => {
             const newerIds = {
                 ...state.newer_ids,
                 [action.payload.account_id]: mergedInfo.newer_id
-            }
+            };
             const olderIds = {
                 ...state.older_ids,
                 [action.payload.account_id]: mergedInfo.older_id
-            }
+            };
 
             return {
                 ...state,
-                payments: mergedInfo.items,
+                payments: mergedPayments,
                 account_id: action.payload.account_id,
                 newer_ids: newerIds,
                 older_ids: olderIds
@@ -59,7 +60,7 @@ export default (state = defaultState, action) => {
         case "ACCOUNTS_SELECT_ACCOUNT":
             return {
                 ...state
-            }
+            };
 
         case "PAYMENTS_IS_LOADING":
             return {
