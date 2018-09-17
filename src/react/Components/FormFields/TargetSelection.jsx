@@ -32,7 +32,39 @@ const styles = {
 class TargetSelection extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+        this.state = {
+            ibanList: []
+        };
+    }
+
+    componentDidMount() {
+        if (!this.props.disabledTypes.includes("IBAN")) {
+            let ibanCollection = {};
+            // get first 250 payments and retrieve the iban/name combinations from it
+            this.props.payments.slice(0, 250).map(payment => {
+                if (
+                    payment.counterparty_alias &&
+                    payment.counterparty_alias.iban
+                ) {
+                    const iban = payment.counterparty_alias.iban;
+                    if (!ibanCollection[iban]) {
+                        ibanCollection[iban] = {
+                            field: iban,
+                            name: payment.counterparty_alias.display_name
+                        };
+                    }
+                }
+            });
+
+            // turn ref object into an array
+            const ibanList = Object.keys(ibanCollection).map(
+                key => ibanCollection[key]
+            );
+
+            this.setState({
+                ibanList: ibanList
+            });
+        }
     }
 
     enterKeySubmit = ev => {
@@ -106,32 +138,12 @@ class TargetSelection extends React.Component {
                 break;
             default:
             case "IBAN":
-                let ibanCollection = {};
-                this.props.payments.map(payment => {
-                    if (
-                        payment.counterparty_alias &&
-                        payment.counterparty_alias.iban
-                    ) {
-                        const iban = payment.counterparty_alias.iban;
-                        if (!ibanCollection[iban]) {
-                            ibanCollection[iban] = {
-                                field: iban,
-                                name: payment.counterparty_alias.display_name
-                            };
-                        }
-                    }
-                });
-                // turn ref object into an array
-                const ibanArray = Object.keys(ibanCollection).map(
-                    key => ibanCollection[key]
-                );
-
                 targetContent = [
                     <InputSuggestions
                         autoFocus
                         fullWidth
                         id="target"
-                        items={ibanArray}
+                        items={this.state.ibanList}
                         label={t("IBAN number")}
                         error={this.props.targetError}
                         value={this.props.target}
