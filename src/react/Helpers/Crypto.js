@@ -14,7 +14,7 @@ export const derivePasswordKey = async (
 ) => {
     if (salt === false) {
         // no salt given, create a new random one
-        salt = forge.random.getBytesSync(128);
+        salt = forge.random.getBytesSync(256);
     } else {
         // get bytes from the hex salt
         salt = forge.util.hexToBytes(salt);
@@ -56,7 +56,7 @@ export const derivePasswordKey = async (
  */
 export const encryptString = async (string, encryptionKey) => {
     // create a random initialization vector
-    const iv = forge.random.getBytesSync(16);
+    const iv = forge.random.getBytesSync(32);
     // turn hex-encoded key into bytes
     const encryptionKeyBytes = forge.util.hexToBytes(encryptionKey);
     // create a new aes-cbc cipher with our key

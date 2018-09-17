@@ -25,6 +25,8 @@ import { requestInquiryBatchesSetInfo } from "../../Actions/request_inquiry_batc
 import { requestResponsesSetInfo } from "../../Actions/request_responses";
 import { shareInviteBankInquiriesSetInfo } from "../../Actions/share_invite_bank_inquiries";
 
+export const REQUEST_DEPTH_LIMIT = 2;
+
 class QueueManager extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -70,11 +72,15 @@ class QueueManager extends React.Component {
                 !accountsLoading &&
                 accounts.length > 0
             ) {
+                // if we continue, limit deep search to 5
+                const continueCount =
+                    queueTriggerSync !== false ? REQUEST_DEPTH_LIMIT : false;
+
                 // clear existing timeout if it exists
                 if (this.delayedQueue) clearTimeout(this.delayedQueue);
                 // delay the queue update
                 this.delayedQueue = setTimeout(
-                    () => this.triggerQueueUpdate(queueTriggerSync),
+                    () => this.triggerQueueUpdate(continueCount),
                     500
                 );
             }
@@ -110,11 +116,13 @@ class QueueManager extends React.Component {
             return;
         }
 
+        // ensure initial sync is true to avoid endless syncs
         const userId = user.id;
         this.setState({
             initialSync: true
         });
 
+        // only include active accounts
         const filteredAccounts = accounts.filter(account => {
             return account.status === "ACTIVE";
         });
@@ -280,12 +288,20 @@ class QueueManager extends React.Component {
                 const paymentsNew = payments.map(item => new Payment(item));
 
                 // more payments can be loaded for this account
-                if (paymentsNew.length === 200 && continueLoading === true) {
+                if (
+                    paymentsNew.length === 200 &&
+                    (continueLoading !== false && continueLoading > 0)
+                ) {
                     const oldestPaymentIndex = paymentsNew.length - 1;
                     const oldestPayment = paymentsNew[oldestPaymentIndex];
 
                     // re-run the payments to continue deeper into the acocunt
-                    this.paymentsUpdate(user_id, account_id, oldestPayment.id);
+                    this.paymentsUpdate(
+                        user_id,
+                        account_id,
+                        oldestPayment.id,
+                        continueLoading - 1
+                    );
                 }
 
                 const currentPayments = { ...this.state.payments };
@@ -333,7 +349,10 @@ class QueueManager extends React.Component {
                 );
 
                 // more bunqMeTabs can be loaded for this account
-                if (bunqMeTabsNew.length === 200 && continueLoading === true) {
+                if (
+                    bunqMeTabsNew.length === 200 &&
+                    (continueLoading !== false && continueLoading > 0)
+                ) {
                     const oldestBunqMeTabIndex = bunqMeTabsNew.length - 1;
                     const oldestBunqMeTab = bunqMeTabsNew[oldestBunqMeTabIndex];
 
@@ -341,7 +360,8 @@ class QueueManager extends React.Component {
                     this.bunqMeTabsUpdate(
                         user_id,
                         account_id,
-                        oldestBunqMeTab.id
+                        oldestBunqMeTab.id,
+                        continueLoading - 1
                     );
                 }
 
@@ -395,7 +415,7 @@ class QueueManager extends React.Component {
                 // more requestResponses can be loaded for this account
                 if (
                     requestResponsesNew.length === 200 &&
-                    continueLoading === true
+                    (continueLoading !== false && continueLoading > 0)
                 ) {
                     const oldestRequestResponseIndex =
                         requestResponsesNew.length - 1;
@@ -406,7 +426,8 @@ class QueueManager extends React.Component {
                     this.requestResponsesUpdate(
                         user_id,
                         account_id,
-                        oldestRequestResponse.id
+                        oldestRequestResponse.id,
+                        continueLoading - 1
                     );
                 }
 
@@ -463,7 +484,7 @@ class QueueManager extends React.Component {
                 // more requestInquiries can be loaded for this account
                 if (
                     requestInquiriesNew.length === 200 &&
-                    continueLoading === true
+                    (continueLoading !== false && continueLoading > 0)
                 ) {
                     const oldestRequestInquiryIndex =
                         requestInquiriesNew.length - 1;
@@ -474,7 +495,8 @@ class QueueManager extends React.Component {
                     this.requestInquiriesUpdate(
                         user_id,
                         account_id,
-                        oldestRequestInquiry.id
+                        oldestRequestInquiry.id,
+                        continueLoading - 1
                     );
                 }
 
@@ -531,7 +553,7 @@ class QueueManager extends React.Component {
                 // more requestInquiryBatches can be loaded for this account
                 if (
                     requestInquiryBatchesNew.length === 200 &&
-                    continueLoading === true
+                    (continueLoading !== false && continueLoading > 0)
                 ) {
                     const oldestRequestInquiryIndex =
                         requestInquiryBatchesNew.length - 1;
@@ -542,7 +564,8 @@ class QueueManager extends React.Component {
                     this.requestInquiryBatchesUpdate(
                         user_id,
                         account_id,
-                        oldestRequestInquiry.id
+                        oldestRequestInquiry.id,
+                        continueLoading - 1
                     );
                 }
 
@@ -601,7 +624,7 @@ class QueueManager extends React.Component {
                 // more masterCardActions can be loaded for this account
                 if (
                     masterCardActionsNew.length === 200 &&
-                    continueLoading === true
+                    (continueLoading !== false && continueLoading > 0)
                 ) {
                     const oldestMasterCardActionIndex =
                         masterCardActionsNew.length - 1;
@@ -612,7 +635,8 @@ class QueueManager extends React.Component {
                     this.masterCardActionsUpdate(
                         user_id,
                         account_id,
-                        oldestMasterCardAction.id
+                        oldestMasterCardAction.id,
+                        continueLoading - 1
                     );
                 }
 
@@ -664,7 +688,7 @@ class QueueManager extends React.Component {
                 // more shareInviteBankInquiries can be loaded for this account
                 if (
                     shareInviteBankInquiries.length === 200 &&
-                    continueLoading === true
+                    (continueLoading !== false && continueLoading > 0)
                 ) {
                     const oldestShareInviteBankInquiryIndex =
                         shareInviteBankInquiries.length - 1;
@@ -677,7 +701,8 @@ class QueueManager extends React.Component {
                     this.shareInviteBankInquiriesUpdate(
                         user_id,
                         account_id,
-                        oldestShareInviteBankInquiry.id
+                        oldestShareInviteBankInquiry.id,
+                        continueLoading - 1
                     );
                 }
 

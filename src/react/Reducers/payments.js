@@ -24,7 +24,9 @@ export default (state = defaultState, action) => {
                 action.payload.payments,
                 ignoreOldItems ? [] : payments
             );
-            const mergedPayments = mergedInfo.items;
+
+            // limit payments to 1000 in total
+            const mergedPayments = mergedInfo.items.slice(0, 1000);
 
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {

@@ -29,11 +29,14 @@ export default (state = defaultState, action) => {
                 ignoreOldItems ? [] : request_inquiry_batches
             );
 
+            // limit payments to 1000 in total
+            const mergedRequestBatches = mergedInfo.items.slice(0, 1000);
+
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
                 action.payload.BunqJSClient.Session.storeEncryptedData(
                     {
-                        items: mergedInfo.items,
+                        items: mergedRequestBatches,
                         account_id: action.payload.account_id
                     },
                     STORED_REQUEST_INQUIRY_BATCHES
@@ -54,7 +57,7 @@ export default (state = defaultState, action) => {
 
             return {
                 ...state,
-                request_inquiry_batches: mergedInfo.items,
+                request_inquiry_batches: mergedRequestBatches,
                 account_id: action.payload.account_id,
                 newer_ids: newerIds,
                 older_ids: olderIds

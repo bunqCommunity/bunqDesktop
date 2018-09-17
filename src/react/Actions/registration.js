@@ -149,9 +149,9 @@ export function registrationLoadApiKey(derivedPassword) {
                 );
             })
             .catch(_ => {
-                dispatch(registrationNotLoading());
                 // clear the password so the user can try again
                 dispatch(registrationClearPassword());
+                dispatch(registrationNotLoading());
                 dispatch(openSnackbar(failedMessage));
             });
     };
@@ -203,8 +203,8 @@ export function registrationLoadStoredApiKey(
                 // validate decrypted result
                 if (decryptedString.length !== 64) {
                     // clear the password so the user can try again
-                    dispatch(registrationNotLoading());
                     dispatch(registrationClearPassword());
+                    dispatch(registrationNotLoading());
                     dispatch(openSnackbar(failedMessage));
                     Logger.error(
                         `Failed to load API key: with length: ${
@@ -250,9 +250,9 @@ export function registrationLoadStoredApiKey(
                 }
             })
             .catch(_ => {
+                dispatch(registrationClearPassword());
                 dispatch(registrationNotLoading());
                 // clear the password so the user can try again
-                dispatch(registrationClearPassword());
                 dispatch(openSnackbar(failedMessage));
             });
     };

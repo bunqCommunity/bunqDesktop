@@ -210,7 +210,8 @@ export default (state = defaultState, action) => {
             store.set(USE_NO_PASSWORD_LOCATION, false);
             return {
                 ...state,
-                derivedPassword: false
+                derivedPassword: false,
+                use_no_password: false
             };
 
         case "REGISTRATION_LOADING":
