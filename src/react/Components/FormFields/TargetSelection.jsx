@@ -61,8 +61,15 @@ class TargetSelection extends React.Component {
                 key => ibanCollection[key]
             );
 
+            // sort by name
+            const sortedIbanList = ibanList.sort((a, b) => {
+                if (a.name < b.name) return -1;
+                if (a.name > b.name) return 1;
+                return 0;
+            });
+
             this.setState({
-                ibanList: ibanList
+                ibanList: sortedIbanList
             });
         }
     }

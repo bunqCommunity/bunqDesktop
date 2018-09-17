@@ -35,10 +35,10 @@ const labelFormat = (date, type = "daily") => {
         case "monthly":
             return format(date, "MMM YYYY");
         case "weekly":
-            return format(date, "WW/YYYY");
+            return format(date, "ww/YYYY");
         case "daily":
         default:
-            return format(date, "D MMM YY");
+            return format(date, "dd MMM YY");
     }
 };
 
