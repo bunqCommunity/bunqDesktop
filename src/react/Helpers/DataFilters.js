@@ -473,7 +473,6 @@ export const requestInquiryFilter = options => requestInquiry => {
     );
 };
 
-
 export const requestInquiryBatchFilter = options => requestInquiryBatch => {
     if (options.requestVisibility === false) {
         return false;

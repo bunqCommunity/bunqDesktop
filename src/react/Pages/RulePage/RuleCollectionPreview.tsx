@@ -113,7 +113,8 @@ class RuleCollectionPreview extends React.Component<any, any> {
                                     onChange={() =>
                                         this.setState({
                                             showAll: !this.state.showAll
-                                        })}
+                                        })
+                                    }
                                 />
                             }
                             label={t(

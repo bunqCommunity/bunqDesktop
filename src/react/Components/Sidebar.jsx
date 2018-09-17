@@ -178,7 +178,6 @@ class Sidebar extends React.Component {
                   />
               ];
 
-
         const drawerList = (
             <List style={styles.list}>
                 <NavLink to="/application-info" style={styles.bunqLink}>

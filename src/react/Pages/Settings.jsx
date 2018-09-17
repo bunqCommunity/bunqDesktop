@@ -472,8 +472,7 @@ class Settings extends React.Component {
                                             id="sync-on-startup"
                                             checked={this.props.syncOnStartup}
                                             onChange={
-                                                this
-                                                    .handleSyncOnStartupChange
+                                                this.handleSyncOnStartupChange
                                             }
                                         />
                                     }
@@ -596,7 +595,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         openSnackbar: message => dispatch(openSnackbar(message)),
 
         // options and options_drawer handlers
-        setSyncOnStartup: syncOnStartup => dispatch(setSyncOnStartup(syncOnStartup)),
+        setSyncOnStartup: syncOnStartup =>
+            dispatch(setSyncOnStartup(syncOnStartup)),
         openSnackbar: message => dispatch(openSnackbar(message)),
         setAutomaticThemeChange: automaticThemeChange =>
             dispatch(setAutomaticThemeChange(automaticThemeChange)),

@@ -309,31 +309,31 @@ class RuleCreator extends React.Component<any, any> {
             }
         });
 
-        const includedChips = Object.keys(
-            categoriesIncluded
-        ).map(categoryId => {
-            const categoryInfo = categoriesIncluded[categoryId];
-            return (
-                <CategoryChip
-                    key={categoryId}
-                    category={categoryInfo}
-                    onDelete={this.removeCategory(categoryInfo)}
-                />
-            );
-        });
+        const includedChips = Object.keys(categoriesIncluded).map(
+            categoryId => {
+                const categoryInfo = categoriesIncluded[categoryId];
+                return (
+                    <CategoryChip
+                        key={categoryId}
+                        category={categoryInfo}
+                        onDelete={this.removeCategory(categoryInfo)}
+                    />
+                );
+            }
+        );
 
-        const excludedChips = Object.keys(
-            categoriesExcluded
-        ).map(categoryId => {
-            const categoryInfo = categoriesExcluded[categoryId];
-            return (
-                <CategoryChip
-                    key={categoryId}
-                    category={categoryInfo}
-                    onClick={this.addCategory(categoryInfo)}
-                />
-            );
-        });
+        const excludedChips = Object.keys(categoriesExcluded).map(
+            categoryId => {
+                const categoryInfo = categoriesExcluded[categoryId];
+                return (
+                    <CategoryChip
+                        key={categoryId}
+                        category={categoryInfo}
+                        onClick={this.addCategory(categoryInfo)}
+                    />
+                );
+            }
+        );
 
         const ruleItems = rules.map((rule: Rule, ruleKey: string) => {
             switch (rule.ruleType) {

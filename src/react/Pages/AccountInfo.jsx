@@ -579,7 +579,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         requestInquiriesUpdate: (userId, accountId) =>
             dispatch(requestInquiriesUpdate(BunqJSClient, userId, accountId)),
         requestInquiryBatchesUpdate: (userId, accountId) =>
-            dispatch(requestInquiryBatchesUpdate(BunqJSClient, userId, accountId)),
+            dispatch(
+                requestInquiryBatchesUpdate(BunqJSClient, userId, accountId)
+            ),
         requestResponsesUpdate: (userId, accountId) =>
             dispatch(requestResponsesUpdate(BunqJSClient, userId, accountId)),
         masterCardActionsUpdate: (userId, accountId) =>

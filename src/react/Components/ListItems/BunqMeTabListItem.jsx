@@ -138,7 +138,7 @@ class BunqMeTabListItem extends React.Component {
                     {avatarStandalone}
                 </Badge>
             );
-        
+
         const secondaryText =
             bunqMeTabPayments.length > 0
                 ? `${t("Received")}: ${formattedTotalPaid}`
@@ -164,9 +164,9 @@ class BunqMeTabListItem extends React.Component {
                 </ListItemSecondaryAction>
 
                 {/*<CategoryIcons*/}
-                    {/*style={{ marginTop: 26 }}*/}
-                    {/*type={"BunqMeTab"}*/}
-                    {/*id={bunqMeTab.id}*/}
+                {/*style={{ marginTop: 26 }}*/}
+                {/*type={"BunqMeTab"}*/}
+                {/*id={bunqMeTab.id}*/}
                 {/*/>*/}
             </ListItem>,
             <Collapse in={this.state.extraInfoOpen} unmountOnExit>

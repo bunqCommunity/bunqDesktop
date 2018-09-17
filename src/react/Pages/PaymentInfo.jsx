@@ -81,7 +81,7 @@ class PaymentInfo extends React.Component {
             this.props.user.id &&
             this.props.initialBunqConnect &&
             this.props.match.params.paymentId !==
-            nextProps.match.params.paymentId
+                nextProps.match.params.paymentId
         ) {
             const { paymentId, accountId } = this.props.match.params;
             this.props.updatePayment(
@@ -177,7 +177,6 @@ class PaymentInfo extends React.Component {
                         accounts={this.props.accounts}
                         startPaymentIban={this.startPaymentIban}
                         swap={paymentAmount > 0}
-
                         type="payment"
                         event={payment}
                     />

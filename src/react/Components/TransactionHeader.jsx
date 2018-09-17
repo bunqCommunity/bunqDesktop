@@ -9,7 +9,11 @@ import Avatar from "@material-ui/core/Avatar";
 
 import LazyAttachmentImage from "./AttachmentImage/LazyAttachmentImage";
 
-import { defaultMastercardImage,defaultRequestResponseImage, defaultPaymentImage } from "../Helpers/DefaultImageHandlers";
+import {
+    defaultMastercardImage,
+    defaultRequestResponseImage,
+    defaultPaymentImage
+} from "../Helpers/DefaultImageHandlers";
 
 const styles = {
     targetWrapper: {
@@ -86,14 +90,14 @@ const TransactionHeader = props => {
     }
 
     let defaultImage = false;
-    if(props.type && props.type){
-        if(props.type === "payment"){
+    if (props.type && props.type) {
+        if (props.type === "payment") {
             defaultImage = defaultPaymentImage(props.event);
         }
-        if(props.type === "masterCardAction"){
+        if (props.type === "masterCardAction") {
             defaultImage = defaultMastercardImage(props.event);
         }
-        if(props.type === "requestResponse"){
+        if (props.type === "requestResponse") {
             defaultImage = defaultRequestResponseImage(props.event);
         }
     }

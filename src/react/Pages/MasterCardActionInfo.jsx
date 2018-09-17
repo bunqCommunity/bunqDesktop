@@ -172,7 +172,6 @@ class MasterCardActionInfo extends React.Component {
                         from={masterCardAction.alias}
                         accounts={this.props.accounts}
                         user={this.props.user}
-
                         type="masterCardAction"
                         event={masterCardAction}
                     />
