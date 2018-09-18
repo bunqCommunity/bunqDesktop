@@ -22,9 +22,13 @@ class RuleCollectionChecker extends React.Component {
     }
 
     componentDidUpdate(oldProps) {
+        const updatedToggle =
+            oldProps.updateToggle === true && this.props.updateToggle == false;
+
+        // check if update state changed or queue finished
         if (
-            oldProps.updateToggle === true &&
-            this.props.updateToggle == false
+            updatedToggle ||
+            this.props.queueFinishedSync !== oldProps.queueFinishedSync
         ) {
             // updateToggle went from true to false, update worker
             this.triggerWorkerEvent();
@@ -99,6 +103,8 @@ const mapStateToProps = state => {
     return {
         categories: state.categories.categories,
         categoryRules: state.category_rules.category_rules,
+
+        queueFinishedSync: state.queue.finished_queue,
 
         requestResponses: state.request_responses.request_responses,
         payments: state.payments.payments,
