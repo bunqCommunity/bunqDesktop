@@ -179,6 +179,9 @@ class CombinedList extends React.Component {
             selectedCategories: this.props.selectedCategories,
             toggleCategoryFilter: this.props.toggleCategoryFilter,
 
+            displayAcceptedRequests: true,
+            displayRequestPayments: false,
+
             selectedAccountIds: this.props.selectedAccountIds,
             toggleAccountIds: this.props.toggleAccountIds,
 
@@ -219,7 +222,6 @@ class CombinedList extends React.Component {
                     component: (
                         <PaymentListItem
                             payment={payment}
-                            displayRequestPayments={false}
                             accounts={this.props.accounts}
                             BunqJSClient={this.props.BunqJSClient}
                         />
@@ -342,7 +344,6 @@ class CombinedList extends React.Component {
                 requestResponseFilter({
                     requestVisibility: this.props.requestVisibility,
                     requestType: this.props.requestType,
-                    displayAcceptedRequests: true,
                     ...this.getCommonFilters()
                 })
             )
@@ -358,7 +359,6 @@ class CombinedList extends React.Component {
                 return {
                     component: (
                         <RequestResponseListItem
-                            displayAcceptedRequests={true}
                             requestResponse={requestResponse}
                             BunqJSClient={this.props.BunqJSClient}
                         />
@@ -381,7 +381,6 @@ class CombinedList extends React.Component {
                 requestInquiryFilter({
                     requestVisibility: this.props.requestVisibility,
                     requestType: this.props.requestType,
-                    displayAcceptedRequests: true,
                     ...this.getCommonFilters()
                 })
             )
@@ -429,7 +428,7 @@ class CombinedList extends React.Component {
                 requestInquiryBatchFilter({
                     requestVisibility: this.props.requestVisibility,
                     requestType: this.props.requestType,
-                    displayAcceptedRequests: true,
+
                     ...this.getCommonFilters()
                 })
             )
@@ -653,6 +652,11 @@ class CombinedList extends React.Component {
         Object.keys(groupedItems).map(dateLabel => {
             const groupedItem = groupedItems[dateLabel];
 
+            // no unerlying items so we ignore this label
+            if (groupedItem.components.length <= 0) {
+                return null;
+            }
+
             // get the human readable text for this date group
             const groupTitleText = humanReadableDate(
                 parseFloat(dateLabel),
@@ -666,7 +670,7 @@ class CombinedList extends React.Component {
             ]);
 
             // add the components to the list
-            return groupedItem.components.map(component =>
+            groupedItem.components.map(component =>
                 combinedComponentList.push(component)
             );
         });

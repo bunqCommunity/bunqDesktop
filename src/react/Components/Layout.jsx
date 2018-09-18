@@ -1,12 +1,12 @@
 import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
+import { ipcRenderer } from "electron";
 import { withRouter } from "react-router";
 import Grid from "@material-ui/core/Grid";
 import { withStyles } from "@material-ui/core/styles";
 import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
-import { ipcRenderer } from "electron";
 
 // custom components
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
@@ -408,11 +408,6 @@ class Layout extends React.Component {
         this.props.loadStoredRequestResponses();
         this.props.loadStoredShareInviteBankResponses();
         this.props.loadStoredShareInviteBankInquiries();
-
-        setTimeout(() => {
-            // force the application to update after loading stored data
-            this.props.applicationForceUpdate();
-        }, 100);
 
         // setup finished with no errors
         this.props.applicationSetStatus("");

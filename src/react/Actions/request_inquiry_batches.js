@@ -1,4 +1,5 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import { storeDecryptString } from "../Helpers/CryptoWorkerWrapper";
 import RequestInquiryBatch from "../Models/RequestInquiryBatch";
 
 export const STORED_REQUEST_INQUIRY_BATCHES =
@@ -26,7 +27,11 @@ export function requestInquiryBatchesSetInfo(
 
 export function loadStoredrequestInquiryBatches(BunqJSClient) {
     return dispatch => {
-        BunqJSClient.Session.loadEncryptedData(STORED_REQUEST_INQUIRY_BATCHES)
+        dispatch(requestInquiryBatchesLoading());
+        storeDecryptString(
+            STORED_REQUEST_INQUIRY_BATCHES,
+            BunqJSClient.Session.encryptionKey
+        )
             .then(data => {
                 if (data && data.items) {
                     const requestInquiryBatchesNew = data.items.map(
@@ -39,8 +44,11 @@ export function loadStoredrequestInquiryBatches(BunqJSClient) {
                         )
                     );
                 }
+                dispatch(requestInquiryBatchesNotLoading());
             })
-            .catch(error => {});
+            .catch(error => {
+                dispatch(requestInquiryBatchesNotLoading());
+            });
     };
 }
 

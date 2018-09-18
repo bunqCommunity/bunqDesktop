@@ -36,6 +36,14 @@ export const paymentFilter = options => payment => {
         return false;
     }
 
+    // hide payments linkd to an accepted request
+    if (
+        payment.sub_type === "REQUEST" &&
+        options.displayRequestPayments === false
+    ) {
+        return false;
+    }
+
     if (options.paymentType) {
         if (options.paymentType === "received") {
             if (payment.amount.value <= 0) {

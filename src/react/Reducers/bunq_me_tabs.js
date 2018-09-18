@@ -1,5 +1,6 @@
 import store from "store";
 import MergeApiObjects from "../Helpers/MergeApiObjects";
+import { storeEncryptString } from "../Helpers/CryptoWorkerWrapper";
 
 import { STORED_BUNQ_ME_TABS } from "../Actions/bunq_me_tabs";
 
@@ -34,12 +35,13 @@ export default (state = defaultState, action) => {
 
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
-                action.payload.BunqJSClient.Session.storeEncryptedData(
+                storeEncryptString(
                     {
                         items: mergedBunqMeTabs,
                         account_id: action.payload.account_id
                     },
-                    STORED_BUNQ_ME_TABS
+                    STORED_BUNQ_ME_TABS,
+                    action.payload.BunqJSClient.Session.encryptionKey
                 )
                     .then(() => {})
                     .catch(() => {});

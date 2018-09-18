@@ -1,4 +1,5 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import { storeDecryptString } from "../Helpers/CryptoWorkerWrapper";
 import RequestResponse from "../Models/RequestResponse";
 
 export const STORED_REQUEST_RESPONSES = "BUNQDESKTOP_STORED_REQUEST_RESPONSES";
@@ -25,7 +26,11 @@ export function requestResponsesSetInfo(
 
 export function loadStoredRequestResponses(BunqJSClient) {
     return dispatch => {
-        BunqJSClient.Session.loadEncryptedData(STORED_REQUEST_RESPONSES)
+        dispatch(requestResponsesLoading());
+        storeDecryptString(
+            STORED_REQUEST_RESPONSES,
+            BunqJSClient.Session.encryptionKey
+        )
             .then(data => {
                 if (data && data.items) {
                     const newRequestResponses = data.items.map(
@@ -38,8 +43,11 @@ export function loadStoredRequestResponses(BunqJSClient) {
                         )
                     );
                 }
+                dispatch(requestResponsesNotLoading());
             })
-            .catch(error => {});
+            .catch(error => {
+                dispatch(requestResponsesNotLoading());
+            });
     };
 }
 

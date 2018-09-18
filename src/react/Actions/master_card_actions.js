@@ -1,4 +1,5 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import { storeDecryptString } from "../Helpers/CryptoWorkerWrapper";
 import MasterCardAction from "../Models/MasterCardAction";
 
 export const STORED_MASTER_CARD_ACTIONS =
@@ -26,7 +27,11 @@ export function masterCardActionsSetInfo(
 
 export function loadStoredMasterCardActions(BunqJSClient) {
     return dispatch => {
-        BunqJSClient.Session.loadEncryptedData(STORED_MASTER_CARD_ACTIONS)
+        dispatch(masterCardActionsLoading());
+        storeDecryptString(
+            STORED_MASTER_CARD_ACTIONS,
+            BunqJSClient.Session.encryptionKey
+        )
             .then(data => {
                 if (data && data.items) {
                     // turn plain objects into Model objects
@@ -40,8 +45,11 @@ export function loadStoredMasterCardActions(BunqJSClient) {
                         )
                     );
                 }
+                dispatch(masterCardActionsNotLoading());
             })
-            .catch(error => {});
+            .catch(error => {
+                dispatch(masterCardActionsNotLoading());
+            });
     };
 }
 
