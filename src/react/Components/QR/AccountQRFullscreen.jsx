@@ -15,6 +15,8 @@ import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 import QRSvg from "./QRSvg";
 import QRCode from "./QRCode";
 
+import { formatIban } from "../../Helpers/Utils";
+
 const styles = theme => ({
     btnIcon: {
         color: theme.palette.text.secondary,
@@ -93,7 +95,7 @@ class AccountQRFullscreen extends React.PureComponent {
                             </Avatar>
                             <ListItemText
                                 primary={accountInfo.description}
-                                secondary={IBAN}
+                                secondary={formatIban(IBAN)}
                             />
                         </ListItem>
                     </React.Fragment>

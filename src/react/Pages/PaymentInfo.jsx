@@ -20,7 +20,7 @@ import HelpIcon from "@material-ui/icons/Help";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
 
 import ExportDialog from "../Components/ExportDialog";
-import { formatMoney, humanReadableDate } from "../Helpers/Utils";
+import { formatMoney, humanReadableDate, formatIban } from "../Helpers/Utils";
 import { paymentText, paymentTypeParser } from "../Helpers/StatusTexts";
 
 import SpeedDial from "../Components/SpeedDial";
@@ -28,9 +28,9 @@ import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import TransactionHeader from "../Components/TransactionHeader";
 import CategorySelectorDialog from "../Components/Categories/CategorySelectorDialog";
 import CategoryChips from "../Components/Categories/CategoryChips";
+import NoteTextForm from "../Components/NoteTexts/NoteTextForm";
 
 import { paymentsUpdate } from "../Actions/payment_info";
-import NoteTextForm from "../Components/NoteTexts/NoteTextForm";
 
 const styles = {
     btn: {},
@@ -232,7 +232,7 @@ class PaymentInfo extends React.Component {
                             <ListItem>
                                 <ListItemText
                                     primary={"IBAN"}
-                                    secondary={counterPartyIban}
+                                    secondary={formatIban(counterPartyIban)}
                                 />
                             </ListItem>
                         </List>

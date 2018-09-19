@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { translate } from "react-i18next";
 import CopyToClipboard from "react-copy-to-clipboard";
-
 import Grid from "@material-ui/core/Grid";
 import Radio from "@material-ui/core/Radio";
 import Avatar from "@material-ui/core/Avatar";
@@ -19,6 +18,7 @@ import PersonIcon from "@material-ui/icons/Person";
 import InputSuggestions from "./InputSuggestions";
 import AccountSelectorDialog from "./AccountSelectorDialog";
 import { openSnackbar } from "../../Actions/snackbar";
+import { formatIban } from "../../Helpers/Utils";
 
 const styles = {
     payButton: {
@@ -49,7 +49,7 @@ class TargetSelection extends React.Component {
                     const iban = payment.counterparty_alias.iban;
                     if (!ibanCollection[iban]) {
                         ibanCollection[iban] = {
-                            field: iban,
+                            field: formatIban(iban),
                             name: payment.counterparty_alias.display_name
                         };
                     }
