@@ -39,6 +39,9 @@ const styles = {
     },
     loadCvcbutton: {
         width: "100%"
+    },
+    activityButton: {
+        width: "100%"
     }
 };
 
@@ -50,7 +53,9 @@ class Card extends React.Component {
             scrollDistance: 0,
             carouselStyle: {
                 transform: "translateY(0px)"
-            }
+            },
+
+            displayInactive: false
         };
 
         // improve render smoothness by using requestanimation frames
@@ -70,6 +75,14 @@ class Card extends React.Component {
         window.removeEventListener("mousewheel", this.handleScroll.bind(this));
     }
 
+    filterCards = card => {
+        // ignore filter if enabled
+        if (this.state.displayInactive) return true;
+
+        // filter if not active
+        return !(card.CardDebit && card.CardDebit.status !== "ACTIVE");
+    };
+
     handleScroll = event => {
         if (!this.ticking) {
             window.requestAnimationFrame(() => {
@@ -77,11 +90,9 @@ class Card extends React.Component {
                 if (event.wheelDelta > 0) {
                     this.goPreviousCard();
                 } else {
-                    const filteredCards = this.props.cards.filter(card => {
-                        return !(
-                            card.CardDebit && card.CardDebit.status !== "ACTIVE"
-                        );
-                    });
+                    const filteredCards = this.props.cards.filter(
+                        this.filterCards
+                    );
 
                     this.goNextCard(filteredCards);
                 }
@@ -99,9 +110,7 @@ class Card extends React.Component {
     };
 
     handleKeyDown = event => {
-        const filteredCards = this.props.cards.filter(card => {
-            return !(card.CardDebit && card.CardDebit.status !== "ACTIVE");
-        });
+        const filteredCards = this.props.cards.filter(this.filterCards);
 
         if (event.which === 40) {
             this.goNextCard(filteredCards);
@@ -130,6 +139,13 @@ class Card extends React.Component {
         this.setState({ selectedCardIndex: index });
     };
 
+    toggleInactiveCards = e => {
+        this.setState({
+            displayInactive: !this.state.displayInactive,
+            selectedCardIndex: 0
+        });
+    };
+
     countDownRenderer = ({ total, days, hours, minutes, seconds }) => {
         return `Expires in: ${minutes}:${seconds}`;
     };
@@ -141,17 +157,17 @@ class Card extends React.Component {
 
         if (this.props.cards !== false) {
             // first filter the cards
-            filteredCards = this.props.cards.filter(card => {
-                return !(card.CardDebit && card.CardDebit.status !== "ACTIVE");
-            });
+            filteredCards = this.props.cards.filter(this.filterCards);
             // then generate the items seperately
-            cards = filteredCards.map((card, index) => (
-                <CardListItem
-                    BunqJSClient={this.props.BunqJSClient}
-                    card={card.CardDebit}
-                    onClick={this.handleCardClick.bind(this, index)}
-                />
-            ));
+            cards = filteredCards
+                .filter(this.filterCards)
+                .map((card, index) => (
+                    <CardListItem
+                        BunqJSClient={this.props.BunqJSClient}
+                        card={card.CardDebit}
+                        onClick={this.handleCardClick.bind(this, index)}
+                    />
+                ));
         }
 
         if (this.props.cardsLoading) {
@@ -212,31 +228,20 @@ class Card extends React.Component {
                 let connectedText = "";
                 switch (assignment.type) {
                     case "PRIMARY":
-                        connectedText = t("Primary card");
+                        connectedText = t("Primary account");
                         break;
                     case "SECONDARY":
-                        connectedText = t("Secondary card");
+                        connectedText = t("Secondary account");
                         break;
                 }
 
                 // return the accout item for this account
                 return (
                     <React.Fragment>
-                        <ListSubheader style={{ height: 28 }}>
+                        <ListSubheader style={{ height: 28, marginBottom: 8 }}>
                             {connectedText}
                         </ListSubheader>
-                        {!currentAccount ? (
-                            <ListItem divider>
-                                <ListItemText
-                                    primary={t(
-                                        "No account found for this card"
-                                    )}
-                                    secondary={t(
-                                        "This likely means this card is connected to a Joint account"
-                                    )}
-                                />
-                            </ListItem>
-                        ) : (
+                        {!currentAccount ? null : (
                             <AccountListItem
                                 BunqJSClient={this.props.BunqJSClient}
                                 clickable={false}
@@ -249,7 +254,7 @@ class Card extends React.Component {
         );
 
         let displayCvcInfo = null;
-        if (cardInfo.type === "MASTERCARD") {
+        if (cardInfo.type === "MASTERCARD" && cardInfo.status === "ACTIVE") {
             // if id is different but not null we don't show the cvc list
             const idsSet =
                 this.props.cvcCardId === cardInfo.id &&
@@ -367,12 +372,34 @@ class Card extends React.Component {
                                 <List dense>
                                     <Divider />
                                     {connectedAccounts}
+                                    {cardInfo.status !== "ACTIVE" && (
+                                        <ListItem>
+                                            <ListItemText
+                                                primary={t(
+                                                    "This card is currently not active"
+                                                )}
+                                                secondary={`${t("Status")}: ${
+                                                    cardInfo.status
+                                                }`}
+                                            />
+                                        </ListItem>
+                                    )}
                                 </List>
 
                                 {this.props.limitedPermissions
                                     ? null
                                     : displayCvcInfo}
                             </Paper>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Button
+                                style={styles.activityButton}
+                                onClick={this.toggleInactiveCards}
+                            >
+                                {this.state.displayInactive
+                                    ? t("Hide inactive cards")
+                                    : t("Display inactive cards")}
+                            </Button>
                         </Grid>
                     </Grid>
                 </Grid>
