@@ -1028,10 +1028,10 @@
     is-html "^1.0.0"
     propprop "^0.3.0"
 
-"@material-ui/core@^3.0.3":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-3.0.3.tgz#505499a984feb5da9c13f73e1fa601d0da1acdc3"
-  integrity sha512-xWeqqfAg8YAhEZvQhMefPvUSrVhe0RqzbOjFDbp6DELzs+88lrJP2lrsBPTuy/5+O6L+oeNyHy2XwI9C77R2dw==
+"@material-ui/core@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-3.1.0.tgz#40c70e0764ef27dca5e149551577eba10c2e79ce"
+  integrity sha512-Tq9xO1CsaPq+TGQtMz7B0Hs2Wz9Sf2W8C9ydcZT8cP1ud9cuZZ/2izRvqNZEp1fCaL5+8K0DJvuu8Di98kNuJw==
   dependencies:
     "@babel/runtime" "7.0.0"
     "@types/jss" "^9.5.3"
@@ -1069,10 +1069,10 @@
     "@babel/runtime" "7.0.0"
     recompose "^0.29.0"
 
-"@material-ui/lab@^3.0.0-alpha.15":
-  version "3.0.0-alpha.15"
-  resolved "https://registry.yarnpkg.com/@material-ui/lab/-/lab-3.0.0-alpha.15.tgz#a7c8526e7d5cf39543d84f04f62f974a12be26b5"
-  integrity sha512-Wlbq5xWQQq5ZBSNOYAse2QFabQ0ZSUBvaDE5UMpBdNzg2hmLM19FNmVCKOtAf8hmcd4iPyzbcwQuR1savj1ngQ==
+"@material-ui/lab@^3.0.0-alpha.16":
+  version "3.0.0-alpha.16"
+  resolved "https://registry.yarnpkg.com/@material-ui/lab/-/lab-3.0.0-alpha.16.tgz#48e5a41eaf26a7b50882dad1ebc3ae79aee709fa"
+  integrity sha512-7L7ToJa6CLVNK97rqGWvYmAFZBj5iEA7q+XeVgy5UgBCmgzf170wgXzUSKKLMhThT5K9wP+7E1VC95jCmXBTNA==
   dependencies:
     "@babel/runtime" "7.0.0"
     classnames "^2.2.5"

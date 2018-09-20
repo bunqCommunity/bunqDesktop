@@ -1,3 +1,5 @@
+import fs from "fs";
+import os from "os";
 import url from "url";
 import path from "path";
 import log from "electron-log";
@@ -18,6 +20,10 @@ import settingsHelper from "./helpers/settings";
 import oauth from "./helpers/oauth";
 
 import sentry from "./sentry";
+
+// import the following to deal with pdf
+const ipc = electron.ipcMain;
+const shell = electron.shell;
 
 // import i18n from "./i18n-background";
 import env from "./env";
@@ -205,6 +211,37 @@ app.on("ready", () => {
 
     // register oauth handlers
     oauth(mainWindow);
+
+    // event handler to create pdf from the active window
+    ipc.on("print-to-pdf", (event, fileName) => {
+        // get download directory
+        const downloadDir = app.getPath("downloads");
+
+        // create the absolute path for the pdf file
+        const pdfPath = path.join(downloadDir, fileName);
+
+        // get the window instance, this lets the pdf download get triggered from other windows
+        const win = BrowserWindow.fromWebContents(event.sender);
+
+        // run the toPdf function and retrieve the data
+        win.webContents.printToPDF({}, (error, data) => {
+            if (error) return log.error(error.message);
+
+            fs.writeFile(pdfPath, data, error => {
+                if (error) return log.error(error.message);
+
+                // attempt to open the file
+                try {
+                    shell.openExternal("file://" + pdfPath);
+                } catch (err) {
+                    if (error) return log.error(error.message);
+                }
+
+                // send a event to tell the user the pdf was written
+                event.sender.send("wrote-pdf", pdfPath);
+            });
+        });
+    });
 });
 
 app.on("window-all-closed", () => {

@@ -1,6 +1,7 @@
 import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
+import { ipcRenderer } from "electron";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
 import Grid from "@material-ui/core/Grid";
@@ -16,14 +17,15 @@ import Typography from "@material-ui/core/Typography";
 import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import SaveIcon from "@material-ui/icons/Save";
 import HelpIcon from "@material-ui/icons/Help";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
 
-import ExportDialog from "../Components/ExportDialog";
 import { formatMoney, humanReadableDate, formatIban } from "../Helpers/Utils";
 import { paymentText, paymentTypeParser } from "../Helpers/StatusTexts";
 
 import SpeedDial from "../Components/SpeedDial";
+import ExportDialog from "../Components/ExportDialog";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import TransactionHeader from "../Components/TransactionHeader";
 import CategorySelectorDialog from "../Components/Categories/CategorySelectorDialog";
@@ -31,6 +33,8 @@ import CategoryChips from "../Components/Categories/CategoryChips";
 import NoteTextForm from "../Components/NoteTexts/NoteTextForm";
 
 import { paymentsUpdate } from "../Actions/payment_info";
+import { setTheme } from "../Actions/options";
+import { openSnackbar } from "../Actions/snackbar";
 
 const styles = {
     btn: {},
@@ -53,8 +57,14 @@ class PaymentInfo extends React.Component {
             displayExport: false,
             displayCategories: false,
 
+            pdfSaveMode: false,
+
             initialUpdate: false
         };
+
+        ipcRenderer.on("wrote-pdf", (event, path) => {
+            this.props.openSnackbar(`Stored PDF file at: ${path}`);
+        });
     }
 
     componentDidMount() {
@@ -114,6 +124,35 @@ class PaymentInfo extends React.Component {
         this.props.history.push(`/request?amount=${paymentInfo.getAmount()}`);
     };
 
+    createPdfExport = () => {
+        const { paymentInfo } = this.props;
+        // keep track if a dark theme was set and reset it after the pdf save event
+        let darkThemeEnabled = false;
+        if (this.props.theme === "DarkTheme") {
+            darkThemeEnabled = true;
+            this.props.setTheme("DefaultTheme");
+        }
+
+        this.setState(
+            {
+                pdfSaveMode: true
+            },
+            () => {
+                const timeStamp = paymentInfo.created.getTime();
+                const fileName = `payment-${paymentInfo.id}-${timeStamp}.pdf`;
+                ipcRenderer.send("print-to-pdf", fileName);
+
+                setTimeout(() => {
+                    this.setState({ pdfSaveMode: false }, () => {
+                        if (darkThemeEnabled) {
+                            this.props.setTheme("DarkTheme");
+                        }
+                    });
+                }, 500);
+            }
+        );
+    };
+
     render() {
         const {
             accountsSelectedAccount,
@@ -122,6 +161,7 @@ class PaymentInfo extends React.Component {
             theme,
             t
         } = this.props;
+        const pdfSaveMode = this.state.pdfSaveMode;
         const paramAccountId = this.props.match.params.accountId;
 
         // we require a selected account before we can display payment information
@@ -153,6 +193,7 @@ class PaymentInfo extends React.Component {
             const paymentAmount = parseFloat(payment.amount.value);
             const formattedPaymentAmount = formatMoney(paymentAmount, true);
             const paymentLabel = paymentText(payment, t);
+            const personalAlias = payment.alias;
             const counterPartyIban = payment.counterparty_alias.iban;
 
             noteTextsForm = (
@@ -169,47 +210,79 @@ class PaymentInfo extends React.Component {
                     align={"center"}
                     justify={"center"}
                 >
-                    <TransactionHeader
-                        BunqJSClient={this.props.BunqJSClient}
-                        to={payment.counterparty_alias}
-                        from={payment.alias}
-                        user={this.props.user}
-                        accounts={this.props.accounts}
-                        startPaymentIban={this.startPaymentIban}
-                        swap={paymentAmount > 0}
-                        type="payment"
-                        event={payment}
-                    />
+                    {!pdfSaveMode && (
+                        <TransactionHeader
+                            BunqJSClient={this.props.BunqJSClient}
+                            to={payment.counterparty_alias}
+                            from={payment.alias}
+                            user={this.props.user}
+                            accounts={this.props.accounts}
+                            startPaymentIban={this.startPaymentIban}
+                            swap={paymentAmount > 0}
+                            type="payment"
+                            event={payment}
+                        />
+                    )}
 
                     <Grid item xs={12}>
-                        <MoneyAmountLabel
-                            component={"h1"}
-                            style={{ textAlign: "center" }}
-                            info={payment}
-                            type="payment"
-                        >
-                            {formattedPaymentAmount}
-                        </MoneyAmountLabel>
+                        {!pdfSaveMode && (
+                            <React.Fragment>
+                                <MoneyAmountLabel
+                                    component={"h1"}
+                                    style={{ textAlign: "center" }}
+                                    info={payment}
+                                    type="payment"
+                                >
+                                    {formattedPaymentAmount}
+                                </MoneyAmountLabel>
 
-                        <Typography
-                            style={{ textAlign: "center" }}
-                            variant={"body1"}
-                        >
-                            {paymentLabel}
-                        </Typography>
+                                <Typography
+                                    style={{ textAlign: "center" }}
+                                    variant={"body1"}
+                                >
+                                    {paymentLabel}
+                                </Typography>
+                            </React.Fragment>
+                        )}
 
                         <List style={styles.list}>
-                            {paymentDescription.length > 0
-                                ? [
-                                      <Divider />,
-                                      <ListItem>
-                                          <ListItemText
-                                              primary={t("Description")}
-                                              secondary={paymentDescription}
-                                          />
-                                      </ListItem>
-                                  ]
-                                : null}
+                            {pdfSaveMode && (
+                                <React.Fragment>
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={personalAlias.display_name}
+                                            secondary={t("Account holder")}
+                                        />
+                                    </ListItem>
+
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={formatIban(
+                                                personalAlias.iban
+                                            )}
+                                            secondary={t("Account number")}
+                                        />
+                                    </ListItem>
+
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={t("Amount")}
+                                            secondary={formattedPaymentAmount}
+                                        />
+                                    </ListItem>
+                                </React.Fragment>
+                            )}
+                            {paymentDescription.length > 0 ? (
+                                <React.Fragment>
+                                    <Divider />
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={t("Description")}
+                                            secondary={paymentDescription}
+                                        />
+                                    </ListItem>
+                                </React.Fragment>
+                            ) : null}
 
                             <Divider />
                             <ListItem>
@@ -231,7 +304,11 @@ class PaymentInfo extends React.Component {
                             <Divider />
                             <ListItem>
                                 <ListItemText
-                                    primary={"IBAN"}
+                                    primary={
+                                        pdfSaveMode
+                                            ? "Counterparty account"
+                                            : "IBAN"
+                                    }
                                     secondary={formatIban(counterPartyIban)}
                                 />
                             </ListItem>
@@ -246,36 +323,46 @@ class PaymentInfo extends React.Component {
                             open={this.state.displayCategories}
                         />
 
-                        <SpeedDial
-                            hidden={false}
-                            actions={[
-                                {
-                                    name: "Send payment",
-                                    icon: ArrowUpIcon,
-                                    color: "action",
-                                    onClick: this.startPayment
-                                },
-                                {
-                                    name: "Send request",
-                                    icon: ArrowDownIcon,
-                                    color: "action",
-                                    onClick: this.startRequest
-                                },
-                                {
-                                    name: t("Manage categories"),
-                                    icon: BookmarkIcon,
-                                    color: "action",
-                                    onClick: this.toggleCategoryDialog
-                                },
-                                {
-                                    name: t("View debug information"),
-                                    icon: HelpIcon,
-                                    color: "action",
-                                    onClick: event =>
-                                        this.setState({ displayExport: true })
-                                }
-                            ]}
-                        />
+                        {!pdfSaveMode && (
+                            <SpeedDial
+                                hidden={false}
+                                actions={[
+                                    {
+                                        name: "Send payment",
+                                        icon: ArrowUpIcon,
+                                        color: "action",
+                                        onClick: this.startPayment
+                                    },
+                                    {
+                                        name: "Send request",
+                                        icon: ArrowDownIcon,
+                                        color: "action",
+                                        onClick: this.startRequest
+                                    },
+                                    {
+                                        name: "Create PDF",
+                                        icon: SaveIcon,
+                                        color: "action",
+                                        onClick: this.createPdfExport
+                                    },
+                                    {
+                                        name: t("Manage categories"),
+                                        icon: BookmarkIcon,
+                                        color: "action",
+                                        onClick: this.toggleCategoryDialog
+                                    },
+                                    {
+                                        name: t("View debug information"),
+                                        icon: HelpIcon,
+                                        color: "action",
+                                        onClick: event =>
+                                            this.setState({
+                                                displayExport: true
+                                            })
+                                    }
+                                ]}
+                            />
+                        )}
                     </Grid>
                 </Grid>
             );
@@ -302,12 +389,14 @@ class PaymentInfo extends React.Component {
                 />
 
                 <Grid item xs={12} sm={2} lg={3}>
-                    <Button
-                        onClick={this.props.history.goBack}
-                        style={styles.btn}
-                    >
-                        <ArrowBackIcon />
-                    </Button>
+                    {!pdfSaveMode && (
+                        <Button
+                            onClick={this.props.history.goBack}
+                            style={styles.btn}
+                        >
+                            <ArrowBackIcon />
+                        </Button>
+                    )}
                 </Grid>
 
                 <Grid item xs={12} sm={8} lg={6}>
@@ -324,6 +413,8 @@ const mapStateToProps = state => {
     return {
         user: state.user.user,
 
+        theme: state.options.theme,
+
         paymentInfo: state.payment_info.payment,
         paymentLoading: state.payment_info.loading,
         accountsSelectedAccount: state.accounts.selected_account,
@@ -337,7 +428,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         updatePayment: (user_id, account_id, payment_id) =>
             dispatch(
                 paymentsUpdate(BunqJSClient, user_id, account_id, payment_id)
-            )
+            ),
+
+        openSnackbar: message => dispatch(openSnackbar(message)),
+
+        setTheme: theme => dispatch(setTheme(theme))
     };
 };
 
