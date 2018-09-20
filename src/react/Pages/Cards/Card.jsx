@@ -41,9 +41,8 @@ const styles = {
         width: "100%"
     },
     activityButton: {
-        width: "100%",
         position: "fixed",
-        top: 16,
+        top: 60,
         right: 8
     }
 };
