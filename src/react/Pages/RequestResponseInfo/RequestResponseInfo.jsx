@@ -1,6 +1,7 @@
 import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
+import { ipcRenderer } from "electron";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
 import Grid from "@material-ui/core/Grid";
@@ -16,8 +17,13 @@ import Collapse from "@material-ui/core/Collapse";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import HelpIcon from "@material-ui/icons/Help";
+import SaveIcon from "@material-ui/icons/Save";
+import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
+import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 
+import PDFExportHelper from "../../Components/PDFExportHelper";
 import ExportDialog from "../../Components/ExportDialog";
+import SpeedDial from "../../Components/SpeedDial";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
 import MoneyAmountLabel from "../../Components/MoneyAmountLabel";
 import TransactionHeader from "../../Components/TransactionHeader";
@@ -59,6 +65,8 @@ class RequestResponseInfo extends React.Component {
             accepted: false,
             displayExport: false,
 
+            pdfSaveMode: false,
+
             initialUpdate: false
         };
     }
@@ -99,6 +107,19 @@ class RequestResponseInfo extends React.Component {
     }
     componentDidUpdate() {}
 
+    startPayment = event => {
+        const requestResponseInfo = this.props.requestResponseInfo;
+        this.props.history.push(
+            `/pay?amount=${requestResponseInfo.getAmount()}`
+        );
+    };
+    startRequest = event => {
+        const requestResponseInfo = this.props.requestResponseInfo;
+        this.props.history.push(
+            `/request?amount=${requestResponseInfo.getAmount()}`
+        );
+    };
+
     rejectRequest = () => {
         const { requestResponseId, accountId } = this.props.match.params;
         this.props.requestResponseReject(
@@ -128,6 +149,27 @@ class RequestResponseInfo extends React.Component {
             requestResponseId,
             requestResponse.amount_inquired,
             options
+        );
+    };
+
+    createPdfExport = () => {
+        const { requestResponseInfo } = this.props;
+
+        this.setState(
+            {
+                pdfSaveMode: true
+            },
+            () => {
+                const timeStamp = requestResponseInfo.created.getTime();
+                const fileName = `request-${
+                    requestResponseInfo.id
+                }-${timeStamp}.pdf`;
+                ipcRenderer.send("print-to-pdf", fileName);
+
+                setTimeout(() => {
+                    this.setState({ pdfSaveMode: false });
+                }, 500);
+            }
         );
     };
 
@@ -182,6 +224,20 @@ class RequestResponseInfo extends React.Component {
                 requestResponse,
                 t
             );
+
+            if (this.state.pdfSaveMode) {
+                return (
+                    <PDFExportHelper
+                        t={t}
+                        payment={requestResponse}
+                        formattedPaymentAmount={formattedPaymentAmount}
+                        paymentDate={createdDate}
+                        paymentDateUpdated={timeRespondedDate}
+                        personalAlias={requestResponse.alias}
+                        counterPartyAlias={requestResponse.counterparty_alias}
+                    />
+                );
+            }
 
             noteTextsForm = (
                 <NoteTextForm
@@ -384,6 +440,15 @@ class RequestResponseInfo extends React.Component {
                     <title>{`bunqDesktop - ${t("Request Info")}`}</title>
                 </Helmet>
 
+                <ExportDialog
+                    closeModal={event =>
+                        this.setState({ displayExport: false })
+                    }
+                    title={t("Export info")}
+                    open={this.state.displayExport}
+                    object={exportData}
+                />
+
                 <Grid item xs={12} sm={2} lg={3}>
                     <Button
                         onClick={this.props.history.goBack}
@@ -399,25 +464,35 @@ class RequestResponseInfo extends React.Component {
                     {noteTextsForm}
                 </Grid>
 
-                <Grid item xs={12} sm={2} lg={3} style={{ textAlign: "right" }}>
-                    <ExportDialog
-                        closeModal={event =>
-                            this.setState({ displayExport: false })
+                <SpeedDial
+                    hidden={false}
+                    actions={[
+                        {
+                            name: "Send payment",
+                            icon: ArrowUpIcon,
+                            color: "action",
+                            onClick: this.startPayment
+                        },
+                        {
+                            name: "Send request",
+                            icon: ArrowDownIcon,
+                            color: "action",
+                            onClick: this.startRequest
+                        },
+                        {
+                            name: "Create PDF",
+                            icon: SaveIcon,
+                            color: "action",
+                            onClick: this.createPdfExport
+                        },
+                        {
+                            name: t("View debug information"),
+                            icon: HelpIcon,
+                            onClick: event =>
+                                this.setState({ displayExport: true })
                         }
-                        title={t("Export info")}
-                        open={this.state.displayExport}
-                        object={exportData}
-                    />
-
-                    <Button
-                        style={styles.button}
-                        onClick={event =>
-                            this.setState({ displayExport: true })
-                        }
-                    >
-                        <HelpIcon />
-                    </Button>
-                </Grid>
+                    ]}
+                />
             </Grid>
         );
     }

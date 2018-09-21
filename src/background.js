@@ -224,7 +224,12 @@ app.on("ready", () => {
         const win = BrowserWindow.fromWebContents(event.sender);
 
         // run the toPdf function and retrieve the data
-        win.webContents.printToPDF({}, (error, data) => {
+        win.webContents.printToPDF({
+            printBackground: true,
+            pageSize: "A4",
+            printSelectionOnly: false,
+            landscape: false
+        }, (error, data) => {
             if (error) return log.error(error.message);
 
             fs.writeFile(pdfPath, data, error => {

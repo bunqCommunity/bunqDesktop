@@ -1,6 +1,7 @@
 import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
+import { ipcRenderer } from "electron";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
 import CopyToClipboard from "react-copy-to-clipboard";
@@ -16,11 +17,16 @@ import Divider from "@material-ui/core/Divider";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 
+import CopyIcon from "@material-ui/icons/FileCopy";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import HelpIcon from "@material-ui/icons/Help";
-import CopyIcon from "@material-ui/icons/FileCopy";
+import SaveIcon from "@material-ui/icons/Save";
+import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
+import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 
 import ExportDialog from "../Components/ExportDialog";
+import PDFExportHelper from "../Components/PDFExportHelper";
+import SpeedDial from "../Components/SpeedDial";
 import TranslateButton from "../Components/TranslationHelpers/Button";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import TransactionHeader from "../Components/TransactionHeader";
@@ -54,6 +60,8 @@ class RequestInquiryInfo extends React.Component {
         super(props, context);
         this.state = {
             displayExport: false,
+
+            pdfSaveMode: false,
 
             initialUpdate: false
         };
@@ -106,6 +114,27 @@ class RequestInquiryInfo extends React.Component {
         );
     };
 
+    createPdfExport = () => {
+        const { requestResponseInfo } = this.props;
+
+        this.setState(
+            {
+                pdfSaveMode: true
+            },
+            () => {
+                const timeStamp = requestResponseInfo.created.getTime();
+                const fileName = `request-${
+                    requestResponseInfo.id
+                }-${timeStamp}.pdf`;
+                ipcRenderer.send("print-to-pdf", fileName);
+
+                setTimeout(() => {
+                    this.setState({ pdfSaveMode: false });
+                }, 500);
+            }
+        );
+    };
+
     render() {
         const {
             accountsSelectedAccount,
@@ -140,10 +169,27 @@ class RequestInquiryInfo extends React.Component {
             );
         } else {
             const requestInquiry = requestInquiryInfo.RequestInquiry;
+            const paymentDateCreated = humanReadableDate(
+                requestInquiry.created
+            );
             const paymentDate = humanReadableDate(requestInquiry.updated);
             const paymentAmount = requestInquiry.amount_inquired.value;
             const formattedPaymentAmount = formatMoney(paymentAmount);
             const requestInquiryLabel = requestInquiryText(requestInquiry, t);
+
+            if (this.state.pdfSaveMode) {
+                return (
+                    <PDFExportHelper
+                        t={t}
+                        payment={requestInquiry}
+                        formattedPaymentAmount={formattedPaymentAmount}
+                        paymentDate={paymentDateCreated}
+                        paymentDateUpdated={paymentDate}
+                        personalAlias={requestInquiry.alias}
+                        counterPartyAlias={requestInquiry.counterparty_alias}
+                    />
+                );
+            }
 
             noteTextsForm = (
                 <NoteTextForm
@@ -286,6 +332,15 @@ class RequestInquiryInfo extends React.Component {
                     <title>{`bunqDesktop - ${t("Request Info")}`}</title>
                 </Helmet>
 
+                <ExportDialog
+                    closeModal={event =>
+                        this.setState({ displayExport: false })
+                    }
+                    title={t("Export info")}
+                    open={this.state.displayExport}
+                    object={exportData}
+                />
+
                 <Grid item xs={12} sm={2} lg={3}>
                     <Button
                         onClick={this.props.history.goBack}
@@ -301,25 +356,35 @@ class RequestInquiryInfo extends React.Component {
                     {noteTextsForm}
                 </Grid>
 
-                <Grid item xs={12} sm={2} lg={3} style={{ textAlign: "right" }}>
-                    <ExportDialog
-                        closeModal={event =>
-                            this.setState({ displayExport: false })
+                <SpeedDial
+                    hidden={false}
+                    actions={[
+                        {
+                            name: "Send payment",
+                            icon: ArrowUpIcon,
+                            color: "action",
+                            onClick: this.startPayment
+                        },
+                        {
+                            name: "Send request",
+                            icon: ArrowDownIcon,
+                            color: "action",
+                            onClick: this.startRequest
+                        },
+                        {
+                            name: "Create PDF",
+                            icon: SaveIcon,
+                            color: "action",
+                            onClick: this.createPdfExport
+                        },
+                        {
+                            name: t("View debug information"),
+                            icon: HelpIcon,
+                            onClick: event =>
+                                this.setState({ displayExport: true })
                         }
-                        title={t("Export info")}
-                        open={this.state.displayExport}
-                        object={exportData}
-                    />
-
-                    <Button
-                        style={styles.button}
-                        onClick={event =>
-                            this.setState({ displayExport: true })
-                        }
-                    >
-                        <HelpIcon />
-                    </Button>
-                </Grid>
+                    ]}
+                />
             </Grid>
         );
     }

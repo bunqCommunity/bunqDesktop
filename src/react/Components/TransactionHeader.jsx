@@ -55,8 +55,17 @@ const TransactionHeader = props => {
 
     let toIsCounterparty = false;
     let fromIsCounterparty = false;
-    let toLabelName = toAlias.label_user.display_name;
-    let fromLabelName = fromAlias.label_user.display_name;
+    let toLabelName = toAlias.display_name;
+    const secondaryToLabelName =
+        toAlias.display_name === toAlias.label_user.display_name
+            ? false
+            : toAlias.label_user.display_name;
+
+    let fromLabelName = fromAlias.display_name;
+    const secondaryFromLabelName =
+        fromAlias.display_name === fromAlias.label_user.display_name
+            ? false
+            : fromAlias.label_user.display_name;
 
     // accounts list is available
     if (props.accounts) {
@@ -121,6 +130,11 @@ const TransactionHeader = props => {
                 />
             </Avatar>
             <Typography variant="subheading">{fromLabelName}</Typography>
+            {secondaryFromLabelName && (
+                <Typography variant="subheading">
+                    {secondaryFromLabelName}
+                </Typography>
+            )}
         </Grid>,
 
         <Hidden smDown>
@@ -160,6 +174,11 @@ const TransactionHeader = props => {
             </Avatar>
 
             <Typography variant="subheading">{toLabelName}</Typography>
+            {secondaryToLabelName && (
+                <Typography variant="subheading">
+                    {secondaryToLabelName}
+                </Typography>
+            )}
         </Grid>
     ];
 
