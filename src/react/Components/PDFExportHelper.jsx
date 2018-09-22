@@ -1,4 +1,5 @@
 import React from "react";
+import { ipcRenderer } from "electron";
 import { connect } from "react-redux";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -8,9 +9,9 @@ import Divider from "@material-ui/core/Divider";
 import { bunqTransparantLogo } from "../Helpers/Base64Images";
 import { formatIban } from "../Helpers/Utils";
 
+import { applicationSetPDFMode } from "../Actions/application";
 import { openSnackbar } from "../Actions/snackbar";
 import { setTheme } from "../Actions/options";
-import { ipcRenderer } from "electron";
 
 const styles = {
     bunqLogo: {
@@ -59,6 +60,9 @@ class PDFExportHelper extends React.PureComponent {
 
         // display the success message
         this.props.openSnackbar(`${pdfText}: ${path}`);
+
+        // revert pdf save mode
+        this.props.applicationSetPDFMode(false);
     };
 
     render() {
@@ -182,7 +186,9 @@ class PDFExportHelper extends React.PureComponent {
 
 const mapStateToProps = state => {
     return {
-        theme: state.options.theme
+        theme: state.options.theme,
+
+        pdfSaveModeEnabled: state.application.pdf_save_mode_enabled,
     };
 };
 
@@ -190,6 +196,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
+
+        applicationSetPDFMode: enabled => dispatch(applicationSetPDFMode(enabled)),
 
         setTheme: theme => dispatch(setTheme(theme))
     };

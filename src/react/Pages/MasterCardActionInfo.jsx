@@ -37,6 +37,7 @@ import {
     masterCardActionParser
 } from "../Helpers/StatusTexts";
 import { masterCardActionInfoUpdate } from "../Actions/master_card_action_info";
+import { applicationSetPDFMode } from "../Actions/application";
 
 const styles = {
     btn: {},
@@ -58,8 +59,6 @@ class MasterCardActionInfo extends React.Component {
         this.state = {
             displayExport: false,
             displayCategories: false,
-
-            pdfSaveMode: false,
 
             initialUpdate: false
         };
@@ -119,22 +118,19 @@ class MasterCardActionInfo extends React.Component {
     createPdfExport = () => {
         const { masterCardActionInfo } = this.props;
 
-        this.setState(
-            {
-                pdfSaveMode: true
-            },
-            () => {
-                const timeStamp = masterCardActionInfo.updated.getTime();
-                const fileName = `card-payment-${
-                    masterCardActionInfo.id
-                }-${timeStamp}.pdf`;
-                ipcRenderer.send("print-to-pdf", fileName);
+        // enable pdf mode
+        this.props.applicationSetPDFMode(true);
 
-                setTimeout(() => {
-                    this.setState({ pdfSaveMode: false });
-                }, 500);
-            }
-        );
+        // format a file name
+        const timeStamp = masterCardActionInfo.updated.getTime();
+        const fileName = `card-payment-${
+            masterCardActionInfo.id
+        }-${timeStamp}.pdf`;
+
+        // delay for a short period to let the application update and then create a pdf
+        setTimeout(() => {
+            ipcRenderer.send("print-to-pdf", fileName);
+        }, 250);
     };
 
     render() {
@@ -175,11 +171,13 @@ class MasterCardActionInfo extends React.Component {
             paymentAmount =
                 paymentAmount > 0 ? paymentAmount * -1 : paymentAmount;
             const paymentDate = humanReadableDate(masterCardAction.created);
-            const paymentDateUpdated = humanReadableDate(masterCardAction.updated);
+            const paymentDateUpdated = humanReadableDate(
+                masterCardAction.updated
+            );
             const formattedPaymentAmount = formatMoney(paymentAmount, true);
             const paymentLabel = masterCardActionText(masterCardAction, t);
 
-            if (this.state.pdfSaveMode) {
+            if (this.props.pdfSaveModeEnabled) {
                 return (
                     <PDFExportHelper
                         t={t}
@@ -390,9 +388,13 @@ class MasterCardActionInfo extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+
+        pdfSaveModeEnabled: state.application.pdf_save_mode_enabled,
+
         masterCardActionInfo:
             state.master_card_action_info.master_card_action_info,
         masterCardActionLoading: state.master_card_action_info.loading,
+
         accounts: state.accounts.accounts,
         accountsSelectedAccount: state.accounts.selected_account
     };
@@ -401,6 +403,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
+        applicationSetPDFMode: enabled =>
+            dispatch(applicationSetPDFMode(enabled)),
+
         masterCardActionInfoUpdate: (
             user_id,
             account_id,

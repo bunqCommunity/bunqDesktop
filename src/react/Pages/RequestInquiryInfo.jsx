@@ -37,6 +37,7 @@ import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import { requestInquiryText } from "../Helpers/StatusTexts";
 import { requestInquiryCancel } from "../Actions/request_inquiry";
 import { requestInquiryUpdate } from "../Actions/request_inquiry_info";
+import { applicationSetPDFMode } from "../Actions/application";
 
 const styles = {
     btn: {},
@@ -115,24 +116,21 @@ class RequestInquiryInfo extends React.Component {
     };
 
     createPdfExport = () => {
-        const { requestResponseInfo } = this.props;
+        const { requestInquiryInfo } = this.props;
 
-        this.setState(
-            {
-                pdfSaveMode: true
-            },
-            () => {
-                const timeStamp = requestResponseInfo.created.getTime();
-                const fileName = `request-${
-                    requestResponseInfo.id
-                }-${timeStamp}.pdf`;
-                ipcRenderer.send("print-to-pdf", fileName);
+        // enable pdf mode
+        this.props.applicationSetPDFMode(true);
 
-                setTimeout(() => {
-                    this.setState({ pdfSaveMode: false });
-                }, 500);
-            }
-        );
+        // format a file name
+        const timeStamp = requestInquiryInfo.created.getTime();
+        const fileName = `request-${
+            requestInquiryInfo.id
+            }-${timeStamp}.pdf`;
+
+        // delay for a short period to let the application update and then create a pdf
+        setTimeout(() => {
+            ipcRenderer.send("print-to-pdf", fileName);
+        }, 250);
     };
 
     render() {
@@ -177,7 +175,7 @@ class RequestInquiryInfo extends React.Component {
             const formattedPaymentAmount = formatMoney(paymentAmount);
             const requestInquiryLabel = requestInquiryText(requestInquiry, t);
 
-            if (this.state.pdfSaveMode) {
+            if (this.props.pdfSaveModeEnabled) {
                 return (
                     <PDFExportHelper
                         t={t}
@@ -395,7 +393,11 @@ const mapStateToProps = state => {
         user: state.user.user,
         requestInquiryInfo: state.request_inquiry_info.request_inquiry_info,
         requestInquiryInfoLoading: state.request_inquiry_info.loading,
+
         requestInquiryLoading: state.request_inquiry.loading,
+
+        pdfSaveModeEnabled: state.application.pdf_save_mode_enabled,
+
         accountsSelectedAccount: state.accounts.selected_account
     };
 };
@@ -403,6 +405,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
+        applicationSetPDFMode: enabled =>
+            dispatch(applicationSetPDFMode(enabled)),
+
         requestInquiryUpdate: (user_id, account_id, request_inquiry_id) =>
             dispatch(
                 requestInquiryUpdate(

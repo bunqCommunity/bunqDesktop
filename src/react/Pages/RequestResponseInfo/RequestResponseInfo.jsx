@@ -40,6 +40,7 @@ import {
     requestResponseReject,
     requestResponseAccept
 } from "../../Actions/request_response";
+import { applicationSetPDFMode } from "../../Actions/application";
 
 const styles = {
     btn: {},
@@ -64,8 +65,6 @@ class RequestResponseInfo extends React.Component {
         this.state = {
             accepted: false,
             displayExport: false,
-
-            pdfSaveMode: false,
 
             initialUpdate: false
         };
@@ -155,22 +154,19 @@ class RequestResponseInfo extends React.Component {
     createPdfExport = () => {
         const { requestResponseInfo } = this.props;
 
-        this.setState(
-            {
-                pdfSaveMode: true
-            },
-            () => {
-                const timeStamp = requestResponseInfo.created.getTime();
-                const fileName = `request-${
-                    requestResponseInfo.id
-                }-${timeStamp}.pdf`;
-                ipcRenderer.send("print-to-pdf", fileName);
+        // enable pdf mode
+        this.props.applicationSetPDFMode(true);
 
-                setTimeout(() => {
-                    this.setState({ pdfSaveMode: false });
-                }, 500);
-            }
-        );
+        // format a file name
+        const timeStamp = requestResponseInfo.created.getTime();
+        const fileName = `request-${
+            requestResponseInfo.id
+            }-${timeStamp}.pdf`;
+
+        // delay for a short period to let the application update and then create a pdf
+        setTimeout(() => {
+            ipcRenderer.send("print-to-pdf", fileName);
+        }, 250);
     };
 
     render() {
@@ -225,7 +221,7 @@ class RequestResponseInfo extends React.Component {
                 t
             );
 
-            if (this.state.pdfSaveMode) {
+            if (this.props.pdfSaveModeEnabled) {
                 return (
                     <PDFExportHelper
                         t={t}
@@ -501,10 +497,15 @@ class RequestResponseInfo extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+
+        pdfSaveModeEnabled: state.application.pdf_save_mode_enabled,
+
         requestResponseInfo: state.request_response_info.request_response_info,
         requestResponseAccountId: state.request_response_info.account_id,
         requestResponseInfoLoading: state.request_response_info.loading,
+
         requestResponseLoading: state.request_response.loading,
+
         accountsSelectedAccount: state.accounts.selected_account
     };
 };
@@ -512,6 +513,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
+        applicationSetPDFMode: enabled =>
+            dispatch(applicationSetPDFMode(enabled)),
+
         requestResponseUpdate: (user_id, account_id, request_response_id) =>
             dispatch(
                 requestResponseUpdate(

@@ -35,6 +35,7 @@ import NoteTextForm from "../Components/NoteTexts/NoteTextForm";
 
 import { paymentsUpdate } from "../Actions/payment_info";
 import { setTheme } from "../Actions/options";
+import { applicationSetPDFMode } from "../Actions/application";
 
 const styles = {
     btn: {},
@@ -56,8 +57,6 @@ class PaymentInfo extends React.Component {
         this.state = {
             displayExport: false,
             displayCategories: false,
-
-            pdfSaveMode: false,
 
             initialUpdate: false
         };
@@ -123,20 +122,17 @@ class PaymentInfo extends React.Component {
     createPdfExport = () => {
         const { paymentInfo } = this.props;
 
-        this.setState(
-            {
-                pdfSaveMode: true
-            },
-            () => {
-                const timeStamp = paymentInfo.created.getTime();
-                const fileName = `payment-${paymentInfo.id}-${timeStamp}.pdf`;
-                ipcRenderer.send("print-to-pdf", fileName);
+        // enable pdf mode
+        this.props.applicationSetPDFMode(true);
 
-                setTimeout(() => {
-                    this.setState({ pdfSaveMode: false });
-                }, 500);
-            }
-        );
+        // format a file name
+        const timeStamp = paymentInfo.created.getTime();
+        const fileName = `payment-${paymentInfo.id}-${timeStamp}.pdf`;
+
+        // delay for a short period to let the application update and then create a pdf
+        setTimeout(() => {
+            ipcRenderer.send("print-to-pdf", fileName);
+        }, 100);
     };
 
     render() {
@@ -144,9 +140,9 @@ class PaymentInfo extends React.Component {
             accountsSelectedAccount,
             paymentInfo,
             paymentLoading,
+            pdfSaveModeEnabled,
             t
         } = this.props;
-        const pdfSaveMode = this.state.pdfSaveMode;
         const paramAccountId = this.props.match.params.accountId;
 
         // we require a selected account before we can display payment information
@@ -182,7 +178,7 @@ class PaymentInfo extends React.Component {
             const counterPartyAlias = payment.counterparty_alias;
             const counterPartyIban = payment.counterparty_alias.iban;
 
-            if (pdfSaveMode) {
+            if (pdfSaveModeEnabled) {
                 return (
                     <PDFExportHelper
                         t={t}
@@ -372,8 +368,11 @@ const mapStateToProps = state => {
     return {
         user: state.user.user,
 
+        pdfSaveModeEnabled: state.application.pdf_save_mode_enabled,
+
         paymentInfo: state.payment_info.payment,
         paymentLoading: state.payment_info.loading,
+
         accountsSelectedAccount: state.accounts.selected_account,
         accounts: state.accounts.accounts
     };
@@ -382,6 +381,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
+        applicationSetPDFMode: enabled =>
+            dispatch(applicationSetPDFMode(enabled)),
+
         updatePayment: (user_id, account_id, payment_id) =>
             dispatch(
                 paymentsUpdate(BunqJSClient, user_id, account_id, payment_id)
