@@ -96,6 +96,8 @@ class Header extends React.Component {
     };
 
     render() {
+        const pdfSaveModeEnabled = this.props.pdfSaveModeEnabled;
+
         // only show buttons on windows/linux and when native frame is disabled
         const displayButtons = !IsDarwin() && this.props.nativeFrame === false;
 
@@ -185,11 +187,16 @@ class Header extends React.Component {
 
         return (
             <header style={styles.header}>
-                {wrappedButton}
-                {wrappedQueueIcon}
+                {/* hide all buttons if pdf mode enabled */}
+                {!pdfSaveModeEnabled && (
+                    <React.Fragment>
+                        {wrappedButton}
+                        {wrappedQueueIcon}
 
-                {developmentEnvWarning}
-                {windowControls}
+                        {developmentEnvWarning}
+                        {windowControls}
+                    </React.Fragment>
+                )}
             </header>
         );
     }
@@ -200,6 +207,8 @@ const mapStateToProps = state => {
         stickyMenu: state.options.sticky_menu,
         nativeFrame: state.options.native_frame,
         minimizeToTray: state.options.minimize_to_tray,
+
+        pdfSaveModeEnabled: state.application.pdf_save_mode_enabled,
 
         environment: state.registration.environment
     };

@@ -159,11 +159,7 @@ class MoneyAmountLabel extends React.Component {
 
         const Component = this.props.component;
 
-        return (
-            <Component style={finalStyle}>
-                {this.props.children}
-            </Component>
-        );
+        return <Component style={finalStyle}>{this.props.children}</Component>;
     }
 }
 

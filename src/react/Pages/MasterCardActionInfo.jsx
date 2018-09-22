@@ -2,6 +2,7 @@ import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { withTheme } from "@material-ui/core/styles";
+import { ipcRenderer } from "electron";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
 import Grid from "@material-ui/core/Grid";
@@ -17,9 +18,11 @@ import Typography from "@material-ui/core/Typography";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import HelpIcon from "@material-ui/icons/Help";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
+import SaveIcon from "@material-ui/icons/Save";
 import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 
+import PDFExportHelper from "../Components/PDFExportHelper";
 import ExportDialog from "../Components/ExportDialog";
 import SpeedDial from "../Components/SpeedDial";
 import TransactionHeader from "../Components/TransactionHeader";
@@ -34,6 +37,7 @@ import {
     masterCardActionParser
 } from "../Helpers/StatusTexts";
 import { masterCardActionInfoUpdate } from "../Actions/master_card_action_info";
+import { applicationSetPDFMode } from "../Actions/application";
 
 const styles = {
     btn: {},
@@ -111,6 +115,24 @@ class MasterCardActionInfo extends React.Component {
         this.props.history.push(`/request?amount=${paymentInfo.getAmount()}`);
     };
 
+    createPdfExport = () => {
+        const { masterCardActionInfo } = this.props;
+
+        // enable pdf mode
+        this.props.applicationSetPDFMode(true);
+
+        // format a file name
+        const timeStamp = masterCardActionInfo.updated.getTime();
+        const fileName = `card-payment-${
+            masterCardActionInfo.id
+        }-${timeStamp}.pdf`;
+
+        // delay for a short period to let the application update and then create a pdf
+        setTimeout(() => {
+            ipcRenderer.send("print-to-pdf", fileName);
+        }, 250);
+    };
+
     render() {
         const {
             accountsSelectedAccount,
@@ -149,8 +171,25 @@ class MasterCardActionInfo extends React.Component {
             paymentAmount =
                 paymentAmount > 0 ? paymentAmount * -1 : paymentAmount;
             const paymentDate = humanReadableDate(masterCardAction.created);
+            const paymentDateUpdated = humanReadableDate(
+                masterCardAction.updated
+            );
             const formattedPaymentAmount = formatMoney(paymentAmount, true);
             const paymentLabel = masterCardActionText(masterCardAction, t);
+
+            if (this.props.pdfSaveModeEnabled) {
+                return (
+                    <PDFExportHelper
+                        t={t}
+                        payment={masterCardAction}
+                        formattedPaymentAmount={formattedPaymentAmount}
+                        paymentDate={paymentDate}
+                        paymentDateUpdated={paymentDateUpdated}
+                        personalAlias={masterCardAction.alias}
+                        counterPartyAlias={masterCardAction.counterparty_alias}
+                    />
+                );
+            }
 
             noteTextsForm = (
                 <NoteTextForm
@@ -172,7 +211,6 @@ class MasterCardActionInfo extends React.Component {
                         from={masterCardAction.alias}
                         accounts={this.props.accounts}
                         user={this.props.user}
-
                         type="masterCardAction"
                         event={masterCardAction}
                     />
@@ -284,6 +322,12 @@ class MasterCardActionInfo extends React.Component {
                                     onClick: this.startRequest
                                 },
                                 {
+                                    name: "Create PDF",
+                                    icon: SaveIcon,
+                                    color: "action",
+                                    onClick: this.createPdfExport
+                                },
+                                {
                                     name: t("Manage categories"),
                                     icon: BookmarkIcon,
                                     onClick: this.toggleCategoryDialog
@@ -344,9 +388,13 @@ class MasterCardActionInfo extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+
+        pdfSaveModeEnabled: state.application.pdf_save_mode_enabled,
+
         masterCardActionInfo:
             state.master_card_action_info.master_card_action_info,
         masterCardActionLoading: state.master_card_action_info.loading,
+
         accounts: state.accounts.accounts,
         accountsSelectedAccount: state.accounts.selected_account
     };
@@ -355,6 +403,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
+        applicationSetPDFMode: enabled =>
+            dispatch(applicationSetPDFMode(enabled)),
+
         masterCardActionInfoUpdate: (
             user_id,
             account_id,

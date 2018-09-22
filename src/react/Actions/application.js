@@ -30,3 +30,12 @@ export function applicationForceUpdate() {
         type: "APPLICATION_FORCE_UPDATE"
     };
 }
+
+export function applicationSetPDFMode(enabled = false) {
+    return {
+        type: "APPLICATION_SET_PDF_MODE",
+        payload: {
+            enabled: enabled
+        }
+    };
+}

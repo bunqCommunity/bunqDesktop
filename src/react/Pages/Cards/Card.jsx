@@ -34,11 +34,16 @@ const styles = {
     },
     cardInfoPaper: {
         padding: 12,
-        marginTop: 20,
-        height: 370
+        marginTop: 20
+        // height: 370
     },
     loadCvcbutton: {
         width: "100%"
+    },
+    activityButton: {
+        position: "fixed",
+        top: 60,
+        right: 8
     }
 };
 
@@ -50,7 +55,9 @@ class Card extends React.Component {
             scrollDistance: 0,
             carouselStyle: {
                 transform: "translateY(0px)"
-            }
+            },
+
+            displayInactive: false
         };
 
         // improve render smoothness by using requestanimation frames
@@ -70,6 +77,14 @@ class Card extends React.Component {
         window.removeEventListener("mousewheel", this.handleScroll.bind(this));
     }
 
+    filterCards = card => {
+        // ignore filter if enabled
+        if (this.state.displayInactive) return true;
+
+        // filter if not active
+        return !(card.CardDebit && card.CardDebit.status !== "ACTIVE");
+    };
+
     handleScroll = event => {
         if (!this.ticking) {
             window.requestAnimationFrame(() => {
@@ -77,11 +92,9 @@ class Card extends React.Component {
                 if (event.wheelDelta > 0) {
                     this.goPreviousCard();
                 } else {
-                    const filteredCards = this.props.cards.filter(card => {
-                        return !(
-                            card.CardDebit && card.CardDebit.status !== "ACTIVE"
-                        );
-                    });
+                    const filteredCards = this.props.cards.filter(
+                        this.filterCards
+                    );
 
                     this.goNextCard(filteredCards);
                 }
@@ -99,9 +112,7 @@ class Card extends React.Component {
     };
 
     handleKeyDown = event => {
-        const filteredCards = this.props.cards.filter(card => {
-            return !(card.CardDebit && card.CardDebit.status !== "ACTIVE");
-        });
+        const filteredCards = this.props.cards.filter(this.filterCards);
 
         if (event.which === 40) {
             this.goNextCard(filteredCards);
@@ -130,8 +141,70 @@ class Card extends React.Component {
         this.setState({ selectedCardIndex: index });
     };
 
+    toggleInactiveCards = e => {
+        this.setState({
+            displayInactive: !this.state.displayInactive,
+            selectedCardIndex: 0
+        });
+    };
+
     countDownRenderer = ({ total, days, hours, minutes, seconds }) => {
         return `Expires in: ${minutes}:${seconds}`;
+    };
+
+    getCardStatus = cardInfo => {
+        const t = this.props.t;
+
+        const ACTIVE = t("Active");
+        const DEACTIVATED = t("Deactivated");
+        const LOST = t("Lost");
+        const STOLEN = t("Stolen");
+        const CANCELLED = t("Cancelled");
+
+        switch (cardInfo.status) {
+            case "ACTIVE":
+                return ACTIVE;
+            case "DEACTIVATED":
+                return DEACTIVATED;
+            case "LOST":
+                return LOST;
+            case "STOLEN":
+                return STOLEN;
+            case "CANCELLED":
+                return CANCELLED;
+        }
+
+        return cardInfo.status;
+    };
+    getCardOrderStatus = cardInfo => {
+        const t = this.props.t;
+
+        const VIRTUAL_DELIVERY = t("Delivered virtually");
+        const NEW_CARD_REQUEST_RECEIVED = t("New card request received");
+        const ACCEPTED_FOR_PRODUCTION = t("Accepted for production");
+        const DELIVERED_TO_CUSTOMER = t("Delivered to customer");
+        const CARD_UPDATE_REQUESTED = t("Card update requested");
+        const CARD_UPDATE_SENT = t("Card update sent");
+        const CARD_UPDATE_ACCEPTED = t("Card update accepted");
+
+        switch (cardInfo.order_status) {
+            case "VIRTUAL_DELIVERY":
+                return `${VIRTUAL_DELIVERY} (VIRTUAL_DELIVERY)`;
+            case "ACCEPTED_FOR_PRODUCTION":
+                return `${ACCEPTED_FOR_PRODUCTION} (ACCEPTED_FOR_PRODUCTION)`;
+            case "NEW_CARD_REQUEST_RECEIVED":
+                return `${NEW_CARD_REQUEST_RECEIVED} (NEW_CARD_REQUEST_RECEIVED)`;
+            case "DELIVERED_TO_CUSTOMER":
+                return `${DELIVERED_TO_CUSTOMER} (DELIVERED_TO_CUSTOMER)`;
+            case "CARD_UPDATE_REQUESTED":
+                return `${CARD_UPDATE_REQUESTED} (CARD_UPDATE_REQUESTED)`;
+            case "CARD_UPDATE_SENT":
+                return `${CARD_UPDATE_SENT} (CARD_UPDATE_SENT)`;
+            case "CARD_UPDATE_ACCEPTED":
+                return `${CARD_UPDATE_ACCEPTED} (CARD_UPDATE_ACCEPTED)`;
+        }
+
+        return cardInfo.order_status;
     };
 
     render() {
@@ -141,17 +214,17 @@ class Card extends React.Component {
 
         if (this.props.cards !== false) {
             // first filter the cards
-            filteredCards = this.props.cards.filter(card => {
-                return !(card.CardDebit && card.CardDebit.status !== "ACTIVE");
-            });
+            filteredCards = this.props.cards.filter(this.filterCards);
             // then generate the items seperately
-            cards = filteredCards.map((card, index) => (
-                <CardListItem
-                    BunqJSClient={this.props.BunqJSClient}
-                    card={card.CardDebit}
-                    onClick={this.handleCardClick.bind(this, index)}
-                />
-            ));
+            cards = filteredCards
+                .filter(this.filterCards)
+                .map((card, index) => (
+                    <CardListItem
+                        BunqJSClient={this.props.BunqJSClient}
+                        card={card.CardDebit}
+                        onClick={this.handleCardClick.bind(this, index)}
+                    />
+                ));
         }
 
         if (this.props.cardsLoading) {
@@ -212,31 +285,20 @@ class Card extends React.Component {
                 let connectedText = "";
                 switch (assignment.type) {
                     case "PRIMARY":
-                        connectedText = t("Primary card");
+                        connectedText = t("Primary account");
                         break;
                     case "SECONDARY":
-                        connectedText = t("Secondary card");
+                        connectedText = t("Secondary account");
                         break;
                 }
 
                 // return the accout item for this account
                 return (
                     <React.Fragment>
-                        <ListSubheader style={{ height: 28 }}>
+                        <ListSubheader style={{ height: 28, marginBottom: 8 }}>
                             {connectedText}
                         </ListSubheader>
-                        {!currentAccount ? (
-                            <ListItem divider>
-                                <ListItemText
-                                    primary={t(
-                                        "No account found for this card"
-                                    )}
-                                    secondary={t(
-                                        "This likely means this card is connected to a Joint account"
-                                    )}
-                                />
-                            </ListItem>
-                        ) : (
+                        {!currentAccount ? null : (
                             <AccountListItem
                                 BunqJSClient={this.props.BunqJSClient}
                                 clickable={false}
@@ -249,7 +311,7 @@ class Card extends React.Component {
         );
 
         let displayCvcInfo = null;
-        if (cardInfo.type === "MASTERCARD") {
+        if (cardInfo.type === "MASTERCARD" && cardInfo.status === "ACTIVE") {
             // if id is different but not null we don't show the cvc list
             const idsSet =
                 this.props.cvcCardId === cardInfo.id &&
@@ -294,26 +356,26 @@ class Card extends React.Component {
                     );
             }
 
-            displayCvcInfo = (
-                <React.Fragment>
-                    {cvc2CodeList}
-                    <Button
-                        style={styles.loadCvcbutton}
-                        onClick={this.cardUpdateCvc2Codes}
-                        disabled={this.props.cvcLoading}
-                    >
-                        {cvc2CodeList !== null
-                            ? t("Update CVC Codes")
-                            : t("View CVC Codes")}
-                    </Button>
-                    <TypographyTranslate
-                        variant="caption"
-                        style={{ textAlign: "center" }}
-                    >
-                        This does not create new codes yet!
-                    </TypographyTranslate>
-                </React.Fragment>
-            );
+            // displayCvcInfo = (
+            //     <React.Fragment>
+            //         {cvc2CodeList}
+            //         <Button
+            //             style={styles.loadCvcbutton}
+            //             onClick={this.cardUpdateCvc2Codes}
+            //             disabled={this.props.cvcLoading}
+            //         >
+            //             {cvc2CodeList !== null
+            //                 ? t("Update CVC Codes")
+            //                 : t("View CVC Codes")}
+            //         </Button>
+            //         <TypographyTranslate
+            //             variant="caption"
+            //             style={{ textAlign: "center" }}
+            //         >
+            //             This does not create new codes yet!
+            //         </TypographyTranslate>
+            //     </React.Fragment>
+            // );
         }
 
         let second_line = cardInfo.second_line;
@@ -326,6 +388,15 @@ class Card extends React.Component {
 
         return (
             <Grid container spacing={24} style={styles.gridContainer}>
+                <Button
+                    style={styles.activityButton}
+                    onClick={this.toggleInactiveCards}
+                >
+                    {this.state.displayInactive
+                        ? t("Hide inactive cards")
+                        : t("Display inactive cards")}
+                </Button>
+
                 <Grid item xs={6} className="animated fadeInLeft">
                     <ul
                         className="carousel"
@@ -367,6 +438,31 @@ class Card extends React.Component {
                                 <List dense>
                                     <Divider />
                                     {connectedAccounts}
+
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={t("Card status")}
+                                            secondary={this.getCardStatus(
+                                                cardInfo
+                                            )}
+                                        />
+                                    </ListItem>
+                                    <Divider />
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={t("Country")}
+                                            secondary={cardInfo.country}
+                                        />
+                                    </ListItem>
+                                    <Divider />
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={t("Order status")}
+                                            secondary={this.getCardOrderStatus(
+                                                cardInfo
+                                            )}
+                                        />
+                                    </ListItem>
                                 </List>
 
                                 {this.props.limitedPermissions

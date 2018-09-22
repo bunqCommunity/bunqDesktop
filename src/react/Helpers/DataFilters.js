@@ -36,6 +36,14 @@ export const paymentFilter = options => payment => {
         return false;
     }
 
+    // hide payments linkd to an accepted request
+    if (
+        payment.sub_type === "REQUEST" &&
+        options.displayRequestPayments === false
+    ) {
+        return false;
+    }
+
     if (options.paymentType) {
         if (options.paymentType === "received") {
             if (payment.amount.value <= 0) {
@@ -301,8 +309,18 @@ export const masterCardActionFilter = options => masterCardAction => {
 };
 
 export const requestResponseFilter = options => requestResponse => {
-    if (options.requestVisibility === false) {
-        return false;
+    // check if this is a internal request or a payment E.G. ideal payments
+    const requestTypes = ["INTERNAL"];
+    const isRequestType = requestTypes.includes(requestResponse.type);
+
+    if (isRequestType) {
+        if (options.requestVisibility === false) {
+            return false;
+        }
+    } else {
+        if (options.paymentVisibility === false) {
+            return false;
+        }
     }
 
     // hide accepted payments
@@ -313,8 +331,22 @@ export const requestResponseFilter = options => requestResponse => {
         return false;
     }
 
-    if (options.requestType !== "sent" && options.requestType !== "default") {
-        return false;
+    if (isRequestType) {
+        // check payment type since this is a payment
+        if (
+            options.requestType !== "sent" &&
+            options.requestType !== "default"
+        ) {
+            return false;
+        }
+    } else {
+        // check the request type since this is an actual request
+        if (
+            options.requestType !== "sent" &&
+            options.requestType !== "default"
+        ) {
+            return false;
+        }
     }
 
     if (options.searchTerm && options.searchTerm.length > 0) {
@@ -472,7 +504,6 @@ export const requestInquiryFilter = options => requestInquiry => {
         requestInquiry.RequestInquiry.updated
     );
 };
-
 
 export const requestInquiryBatchFilter = options => requestInquiryBatch => {
     if (options.requestVisibility === false) {

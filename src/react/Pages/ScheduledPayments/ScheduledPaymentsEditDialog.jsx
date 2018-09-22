@@ -42,7 +42,7 @@ class ScheduledPaymentsEditDialog extends React.Component {
             recurrenceSize: "",
             recurrenceUnit: "",
             scheduleEndDate: "",
-            scheduleStartDate: ""
+            scheduleStartDate: null
         };
     }
 
@@ -68,10 +68,8 @@ class ScheduledPaymentsEditDialog extends React.Component {
                 recurrenceUnit: scheduledPayment.schedule.recurrence_unit,
                 scheduleEndDate: scheduledPayment.schedule.time_end
                     ? new Date(scheduledPayment.schedule.time_end)
-                    : scheduledPayment.schedule.time_end,
-                scheduleStartDate: new Date(
-                    scheduledPayment.schedule.time_start
-                )
+                    : null,
+                scheduleStartDate: new Date(scheduledPayment.schedule.time_next)
             });
         }
     }
@@ -157,7 +155,7 @@ class ScheduledPaymentsEditDialog extends React.Component {
 
         this.props.scheduledPaymentUpdate(
             this.props.user.id,
-            this.props.selectedAccount,
+            scheduledPayment.monetary_account_id,
             scheduledPayment.id,
             paymentInfo,
             scheduleInfo

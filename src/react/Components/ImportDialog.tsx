@@ -89,7 +89,10 @@ class ImportDialog extends React.Component<any, any> {
                     </TranslateButton>
 
                     {showAsNewButton ? (
-                        <TranslateButton variant="raised" onClick={this.importDataNew}>
+                        <TranslateButton
+                            variant="raised"
+                            onClick={this.importDataNew}
+                        >
                             Import as new
                         </TranslateButton>
                     ) : null}

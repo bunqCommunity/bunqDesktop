@@ -10,7 +10,7 @@ import {
     requestInquiryColor,
     requestResponseColor
 } from "../../Colors";
-import {sortLinearChartTooltips} from "../../../../Helpers/StatsFormattingTemplates";
+import { sortLinearChartTooltips } from "../../../../Helpers/StatsFormattingTemplates";
 
 export default props => {
     const defaultOptions = {
@@ -134,7 +134,7 @@ export default props => {
             enabled: true,
             mode: "index",
             intersect: false,
-            itemSort: sortLinearChartTooltips,
+            itemSort: sortLinearChartTooltips
         },
         legend: {
             labels: {

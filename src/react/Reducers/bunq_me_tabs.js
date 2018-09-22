@@ -1,5 +1,6 @@
 import store from "store";
 import MergeApiObjects from "../Helpers/MergeApiObjects";
+import { storeEncryptString } from "../Helpers/CryptoWorkerWrapper";
 
 import { STORED_BUNQ_ME_TABS } from "../Actions/bunq_me_tabs";
 
@@ -29,14 +30,18 @@ export default (state = defaultState, action) => {
                 ignoreOldItems ? [] : bunq_me_tabs
             );
 
+            // limit payments to 1000 in total
+            const mergedBunqMeTabs = mergedInfo.items.slice(0, 1000);
+
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
-                action.payload.BunqJSClient.Session.storeEncryptedData(
+                storeEncryptString(
                     {
-                        items: mergedInfo.items,
+                        items: mergedBunqMeTabs,
                         account_id: action.payload.account_id
                     },
-                    STORED_BUNQ_ME_TABS
+                    STORED_BUNQ_ME_TABS,
+                    action.payload.BunqJSClient.Session.encryptionKey
                 )
                     .then(() => {})
                     .catch(() => {});
@@ -46,15 +51,15 @@ export default (state = defaultState, action) => {
             const newerIds = {
                 ...state.newer_ids,
                 [action.payload.account_id]: mergedInfo.newer_id
-            }
+            };
             const olderIds = {
                 ...state.older_ids,
                 [action.payload.account_id]: mergedInfo.older_id
-            }
+            };
 
             return {
                 ...state,
-                bunq_me_tabs: mergedInfo.items,
+                bunq_me_tabs: mergedBunqMeTabs,
                 account_id: action.payload.account_id,
                 newer_ids: newerIds,
                 older_ids: olderIds

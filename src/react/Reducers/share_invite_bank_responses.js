@@ -1,5 +1,6 @@
 import store from "store";
 import { STORED_SHARE_INVITE_BANK_RESPONSES } from "../Actions/share_invite_bank_responses";
+import { storeEncryptString } from "../Helpers/CryptoWorkerWrapper";
 
 export const defaultState = {
     share_invite_bank_responses: [],
@@ -11,11 +12,12 @@ export default (state = defaultState, action) => {
         case "SHARE_INVITE_RESPONSES_SET_INFO":
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
-                action.payload.BunqJSClient.Session.storeEncryptedData(
+                storeEncryptString(
                     {
                         items: action.payload.share_invite_bank_responses
                     },
-                    STORED_SHARE_INVITE_BANK_RESPONSES
+                    STORED_SHARE_INVITE_BANK_RESPONSES,
+                    action.payload.BunqJSClient.Session.encryptionKey
                 )
                     .then(() => {})
                     .catch(() => {});

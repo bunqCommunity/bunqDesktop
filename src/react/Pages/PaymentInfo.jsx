@@ -1,6 +1,7 @@
 import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
+import { ipcRenderer } from "electron";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
 import Grid from "@material-ui/core/Grid";
@@ -16,21 +17,25 @@ import Typography from "@material-ui/core/Typography";
 import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import SaveIcon from "@material-ui/icons/Save";
 import HelpIcon from "@material-ui/icons/Help";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
 
-import ExportDialog from "../Components/ExportDialog";
-import { formatMoney, humanReadableDate } from "../Helpers/Utils";
+import { formatMoney, humanReadableDate, formatIban } from "../Helpers/Utils";
 import { paymentText, paymentTypeParser } from "../Helpers/StatusTexts";
 
+import PDFExportHelper from "../Components/PDFExportHelper";
 import SpeedDial from "../Components/SpeedDial";
+import ExportDialog from "../Components/ExportDialog";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import TransactionHeader from "../Components/TransactionHeader";
 import CategorySelectorDialog from "../Components/Categories/CategorySelectorDialog";
 import CategoryChips from "../Components/Categories/CategoryChips";
+import NoteTextForm from "../Components/NoteTexts/NoteTextForm";
 
 import { paymentsUpdate } from "../Actions/payment_info";
-import NoteTextForm from "../Components/NoteTexts/NoteTextForm";
+import { setTheme } from "../Actions/options";
+import { applicationSetPDFMode } from "../Actions/application";
 
 const styles = {
     btn: {},
@@ -81,7 +86,7 @@ class PaymentInfo extends React.Component {
             this.props.user.id &&
             this.props.initialBunqConnect &&
             this.props.match.params.paymentId !==
-            nextProps.match.params.paymentId
+                nextProps.match.params.paymentId
         ) {
             const { paymentId, accountId } = this.props.match.params;
             this.props.updatePayment(
@@ -114,12 +119,28 @@ class PaymentInfo extends React.Component {
         this.props.history.push(`/request?amount=${paymentInfo.getAmount()}`);
     };
 
+    createPdfExport = () => {
+        const { paymentInfo } = this.props;
+
+        // enable pdf mode
+        this.props.applicationSetPDFMode(true);
+
+        // format a file name
+        const timeStamp = paymentInfo.created.getTime();
+        const fileName = `payment-${paymentInfo.id}-${timeStamp}.pdf`;
+
+        // delay for a short period to let the application update and then create a pdf
+        setTimeout(() => {
+            ipcRenderer.send("print-to-pdf", fileName);
+        }, 100);
+    };
+
     render() {
         const {
             accountsSelectedAccount,
             paymentInfo,
             paymentLoading,
-            theme,
+            pdfSaveModeEnabled,
             t
         } = this.props;
         const paramAccountId = this.props.match.params.accountId;
@@ -153,7 +174,22 @@ class PaymentInfo extends React.Component {
             const paymentAmount = parseFloat(payment.amount.value);
             const formattedPaymentAmount = formatMoney(paymentAmount, true);
             const paymentLabel = paymentText(payment, t);
+            const personalAlias = payment.alias;
+            const counterPartyAlias = payment.counterparty_alias;
             const counterPartyIban = payment.counterparty_alias.iban;
+
+            if (pdfSaveModeEnabled) {
+                return (
+                    <PDFExportHelper
+                        t={t}
+                        payment={payment}
+                        formattedPaymentAmount={formattedPaymentAmount}
+                        paymentDate={paymentDate}
+                        personalAlias={personalAlias}
+                        counterPartyAlias={counterPartyAlias}
+                    />
+                );
+            }
 
             noteTextsForm = (
                 <NoteTextForm
@@ -177,7 +213,6 @@ class PaymentInfo extends React.Component {
                         accounts={this.props.accounts}
                         startPaymentIban={this.startPaymentIban}
                         swap={paymentAmount > 0}
-
                         type="payment"
                         event={payment}
                     />
@@ -200,17 +235,17 @@ class PaymentInfo extends React.Component {
                         </Typography>
 
                         <List style={styles.list}>
-                            {paymentDescription.length > 0
-                                ? [
-                                      <Divider />,
-                                      <ListItem>
-                                          <ListItemText
-                                              primary={t("Description")}
-                                              secondary={paymentDescription}
-                                          />
-                                      </ListItem>
-                                  ]
-                                : null}
+                            {paymentDescription.length > 0 ? (
+                                <React.Fragment>
+                                    <Divider />
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={t("Description")}
+                                            secondary={paymentDescription}
+                                        />
+                                    </ListItem>
+                                </React.Fragment>
+                            ) : null}
 
                             <Divider />
                             <ListItem>
@@ -233,7 +268,7 @@ class PaymentInfo extends React.Component {
                             <ListItem>
                                 <ListItemText
                                     primary={"IBAN"}
-                                    secondary={counterPartyIban}
+                                    secondary={formatIban(counterPartyIban)}
                                 />
                             </ListItem>
                         </List>
@@ -263,6 +298,12 @@ class PaymentInfo extends React.Component {
                                     onClick: this.startRequest
                                 },
                                 {
+                                    name: "Create PDF",
+                                    icon: SaveIcon,
+                                    color: "action",
+                                    onClick: this.createPdfExport
+                                },
+                                {
                                     name: t("Manage categories"),
                                     icon: BookmarkIcon,
                                     color: "action",
@@ -273,7 +314,9 @@ class PaymentInfo extends React.Component {
                                     icon: HelpIcon,
                                     color: "action",
                                     onClick: event =>
-                                        this.setState({ displayExport: true })
+                                        this.setState({
+                                            displayExport: true
+                                        })
                                 }
                             ]}
                         />
@@ -325,8 +368,11 @@ const mapStateToProps = state => {
     return {
         user: state.user.user,
 
+        pdfSaveModeEnabled: state.application.pdf_save_mode_enabled,
+
         paymentInfo: state.payment_info.payment,
         paymentLoading: state.payment_info.loading,
+
         accountsSelectedAccount: state.accounts.selected_account,
         accounts: state.accounts.accounts
     };
@@ -335,10 +381,15 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
+        applicationSetPDFMode: enabled =>
+            dispatch(applicationSetPDFMode(enabled)),
+
         updatePayment: (user_id, account_id, payment_id) =>
             dispatch(
                 paymentsUpdate(BunqJSClient, user_id, account_id, payment_id)
-            )
+            ),
+
+        setTheme: theme => dispatch(setTheme(theme))
     };
 };
 

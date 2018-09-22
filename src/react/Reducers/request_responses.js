@@ -1,5 +1,6 @@
 import store from "store";
 import MergeApiObjects from "../Helpers/MergeApiObjects";
+import { storeEncryptString } from "../Helpers/CryptoWorkerWrapper";
 
 import { STORED_REQUEST_RESPONSES } from "../Actions/request_responses";
 
@@ -29,14 +30,18 @@ export default (state = defaultState, action) => {
                 ignoreOldItems ? [] : request_responses
             );
 
+            // limit payments to 1000 in total
+            const mergedRequestResponses = mergedInfo.items.slice(0, 1000);
+
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
-                action.payload.BunqJSClient.Session.storeEncryptedData(
+                storeEncryptString(
                     {
-                        items: mergedInfo.items,
+                        items: mergedRequestResponses,
                         account_id: action.payload.account_id
                     },
-                    STORED_REQUEST_RESPONSES
+                    STORED_REQUEST_RESPONSES,
+                    action.payload.BunqJSClient.Session.encryptionKey
                 )
                     .then(() => {})
                     .catch(() => {});
@@ -46,15 +51,15 @@ export default (state = defaultState, action) => {
             const newerIds = {
                 ...state.newer_ids,
                 [action.payload.account_id]: mergedInfo.newer_id
-            }
+            };
             const olderIds = {
                 ...state.older_ids,
                 [action.payload.account_id]: mergedInfo.older_id
-            }
+            };
 
             return {
                 ...state,
-                request_responses: mergedInfo.items,
+                request_responses: mergedRequestResponses,
                 account_id: action.payload.account_id,
                 newer_ids: newerIds,
                 older_ids: olderIds

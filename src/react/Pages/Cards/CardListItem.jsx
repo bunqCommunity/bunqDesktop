@@ -39,10 +39,6 @@ class CardListItem extends React.Component {
                 break;
         }
 
-        if (card.status !== "ACTIVE") {
-            return null;
-        }
-
         return [
             <div
                 className="single-card"

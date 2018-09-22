@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { translate } from "react-i18next";
 import CopyToClipboard from "react-copy-to-clipboard";
-
 import Grid from "@material-ui/core/Grid";
 import Radio from "@material-ui/core/Radio";
 import Avatar from "@material-ui/core/Avatar";
@@ -19,6 +18,7 @@ import PersonIcon from "@material-ui/icons/Person";
 import InputSuggestions from "./InputSuggestions";
 import AccountSelectorDialog from "./AccountSelectorDialog";
 import { openSnackbar } from "../../Actions/snackbar";
+import { formatIban } from "../../Helpers/Utils";
 
 const styles = {
     payButton: {
@@ -32,7 +32,46 @@ const styles = {
 class TargetSelection extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+        this.state = {
+            ibanList: []
+        };
+    }
+
+    componentDidMount() {
+        if (!this.props.disabledTypes.includes("IBAN")) {
+            let ibanCollection = {};
+            // get first 250 payments and retrieve the iban/name combinations from it
+            this.props.payments.slice(0, 250).map(payment => {
+                if (
+                    payment.counterparty_alias &&
+                    payment.counterparty_alias.iban
+                ) {
+                    const iban = payment.counterparty_alias.iban;
+                    if (!ibanCollection[iban]) {
+                        ibanCollection[iban] = {
+                            field: formatIban(iban),
+                            name: payment.counterparty_alias.display_name
+                        };
+                    }
+                }
+            });
+
+            // turn ref object into an array
+            const ibanList = Object.keys(ibanCollection).map(
+                key => ibanCollection[key]
+            );
+
+            // sort by name
+            const sortedIbanList = ibanList.sort((a, b) => {
+                if (a.name < b.name) return -1;
+                if (a.name > b.name) return 1;
+                return 0;
+            });
+
+            this.setState({
+                ibanList: sortedIbanList
+            });
+        }
     }
 
     enterKeySubmit = ev => {
@@ -106,32 +145,12 @@ class TargetSelection extends React.Component {
                 break;
             default:
             case "IBAN":
-                let ibanCollection = {};
-                this.props.payments.map(payment => {
-                    if (
-                        payment.counterparty_alias &&
-                        payment.counterparty_alias.iban
-                    ) {
-                        const iban = payment.counterparty_alias.iban;
-                        if (!ibanCollection[iban]) {
-                            ibanCollection[iban] = {
-                                field: iban,
-                                name: payment.counterparty_alias.display_name
-                            };
-                        }
-                    }
-                });
-                // turn ref object into an array
-                const ibanArray = Object.keys(ibanCollection).map(
-                    key => ibanCollection[key]
-                );
-
                 targetContent = [
                     <InputSuggestions
                         autoFocus
                         fullWidth
                         id="target"
-                        items={ibanArray}
+                        items={this.state.ibanList}
                         label={t("IBAN number")}
                         error={this.props.targetError}
                         value={this.props.target}

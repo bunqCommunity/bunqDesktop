@@ -1,6 +1,7 @@
 import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
+import { ipcRenderer } from "electron";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
 import CopyToClipboard from "react-copy-to-clipboard";
@@ -16,11 +17,16 @@ import Divider from "@material-ui/core/Divider";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 
+import CopyIcon from "@material-ui/icons/FileCopy";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import HelpIcon from "@material-ui/icons/Help";
-import CopyIcon from "@material-ui/icons/FileCopy";
+import SaveIcon from "@material-ui/icons/Save";
+import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
+import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 
 import ExportDialog from "../Components/ExportDialog";
+import PDFExportHelper from "../Components/PDFExportHelper";
+import SpeedDial from "../Components/SpeedDial";
 import TranslateButton from "../Components/TranslationHelpers/Button";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import TransactionHeader from "../Components/TransactionHeader";
@@ -31,6 +37,7 @@ import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import { requestInquiryText } from "../Helpers/StatusTexts";
 import { requestInquiryCancel } from "../Actions/request_inquiry";
 import { requestInquiryUpdate } from "../Actions/request_inquiry_info";
+import { applicationSetPDFMode } from "../Actions/application";
 
 const styles = {
     btn: {},
@@ -54,6 +61,8 @@ class RequestInquiryInfo extends React.Component {
         super(props, context);
         this.state = {
             displayExport: false,
+
+            pdfSaveMode: false,
 
             initialUpdate: false
         };
@@ -106,6 +115,24 @@ class RequestInquiryInfo extends React.Component {
         );
     };
 
+    createPdfExport = () => {
+        const { requestInquiryInfo } = this.props;
+
+        // enable pdf mode
+        this.props.applicationSetPDFMode(true);
+
+        // format a file name
+        const timeStamp = requestInquiryInfo.created.getTime();
+        const fileName = `request-${
+            requestInquiryInfo.id
+            }-${timeStamp}.pdf`;
+
+        // delay for a short period to let the application update and then create a pdf
+        setTimeout(() => {
+            ipcRenderer.send("print-to-pdf", fileName);
+        }, 250);
+    };
+
     render() {
         const {
             accountsSelectedAccount,
@@ -140,10 +167,27 @@ class RequestInquiryInfo extends React.Component {
             );
         } else {
             const requestInquiry = requestInquiryInfo.RequestInquiry;
+            const paymentDateCreated = humanReadableDate(
+                requestInquiry.created
+            );
             const paymentDate = humanReadableDate(requestInquiry.updated);
             const paymentAmount = requestInquiry.amount_inquired.value;
             const formattedPaymentAmount = formatMoney(paymentAmount);
             const requestInquiryLabel = requestInquiryText(requestInquiry, t);
+
+            if (this.props.pdfSaveModeEnabled) {
+                return (
+                    <PDFExportHelper
+                        t={t}
+                        payment={requestInquiry}
+                        formattedPaymentAmount={formattedPaymentAmount}
+                        paymentDate={paymentDateCreated}
+                        paymentDateUpdated={paymentDate}
+                        personalAlias={requestInquiry.alias}
+                        counterPartyAlias={requestInquiry.counterparty_alias}
+                    />
+                );
+            }
 
             noteTextsForm = (
                 <NoteTextForm
@@ -286,6 +330,15 @@ class RequestInquiryInfo extends React.Component {
                     <title>{`bunqDesktop - ${t("Request Info")}`}</title>
                 </Helmet>
 
+                <ExportDialog
+                    closeModal={event =>
+                        this.setState({ displayExport: false })
+                    }
+                    title={t("Export info")}
+                    open={this.state.displayExport}
+                    object={exportData}
+                />
+
                 <Grid item xs={12} sm={2} lg={3}>
                     <Button
                         onClick={this.props.history.goBack}
@@ -301,25 +354,35 @@ class RequestInquiryInfo extends React.Component {
                     {noteTextsForm}
                 </Grid>
 
-                <Grid item xs={12} sm={2} lg={3} style={{ textAlign: "right" }}>
-                    <ExportDialog
-                        closeModal={event =>
-                            this.setState({ displayExport: false })
+                <SpeedDial
+                    hidden={false}
+                    actions={[
+                        {
+                            name: "Send payment",
+                            icon: ArrowUpIcon,
+                            color: "action",
+                            onClick: this.startPayment
+                        },
+                        {
+                            name: "Send request",
+                            icon: ArrowDownIcon,
+                            color: "action",
+                            onClick: this.startRequest
+                        },
+                        {
+                            name: "Create PDF",
+                            icon: SaveIcon,
+                            color: "action",
+                            onClick: this.createPdfExport
+                        },
+                        {
+                            name: t("View debug information"),
+                            icon: HelpIcon,
+                            onClick: event =>
+                                this.setState({ displayExport: true })
                         }
-                        title={t("Export info")}
-                        open={this.state.displayExport}
-                        object={exportData}
-                    />
-
-                    <Button
-                        style={styles.button}
-                        onClick={event =>
-                            this.setState({ displayExport: true })
-                        }
-                    >
-                        <HelpIcon />
-                    </Button>
-                </Grid>
+                    ]}
+                />
             </Grid>
         );
     }
@@ -330,7 +393,11 @@ const mapStateToProps = state => {
         user: state.user.user,
         requestInquiryInfo: state.request_inquiry_info.request_inquiry_info,
         requestInquiryInfoLoading: state.request_inquiry_info.loading,
+
         requestInquiryLoading: state.request_inquiry.loading,
+
+        pdfSaveModeEnabled: state.application.pdf_save_mode_enabled,
+
         accountsSelectedAccount: state.accounts.selected_account
     };
 };
@@ -338,6 +405,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
+        applicationSetPDFMode: enabled =>
+            dispatch(applicationSetPDFMode(enabled)),
+
         requestInquiryUpdate: (user_id, account_id, request_inquiry_id) =>
             dispatch(
                 requestInquiryUpdate(

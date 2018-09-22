@@ -42,7 +42,7 @@ import CombinedList from "../Components/CombinedList/CombinedList";
 
 import Logger from "../Helpers/Logger";
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import { humanReadableDate } from "../Helpers/Utils";
+import { humanReadableDate, formatIban } from "../Helpers/Utils";
 import CategoryHelper from "../Helpers/CategoryHelper";
 
 import { openSnackbar } from "../Actions/snackbar";
@@ -323,8 +323,10 @@ class Exports extends React.Component {
                 format(event.date, "YYYY-MM-dd"),
                 format(event.date, "HH:mm:ss"),
                 info.getDelta(),
-                info.alias.iban,
-                info.counterparty_alias.iban,
+                info.alias.iban ? formatIban(info.alias.iban) : null,
+                info.counterparty_alias.iban
+                    ? formatIban(info.counterparty_alias.iban)
+                    : null,
                 info.counterparty_alias.display_name,
                 info.description.replace("\n", " "),
                 labels.join(","),

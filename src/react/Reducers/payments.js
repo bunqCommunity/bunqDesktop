@@ -1,5 +1,6 @@
 import store from "store";
 import MergeApiObjects from "../Helpers/MergeApiObjects";
+import { storeEncryptString } from "../Helpers/CryptoWorkerWrapper";
 
 import { STORED_PAYMENTS } from "../Actions/payments";
 
@@ -25,14 +26,18 @@ export default (state = defaultState, action) => {
                 ignoreOldItems ? [] : payments
             );
 
+            // limit payments to 1000 in total
+            const mergedPayments = mergedInfo.items.slice(0, 1000);
+
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
-                action.payload.BunqJSClient.Session.storeEncryptedData(
+                storeEncryptString(
                     {
-                        items: mergedInfo.items,
+                        items: mergedPayments,
                         account_id: action.payload.account_id
                     },
-                    STORED_PAYMENTS
+                    STORED_PAYMENTS,
+                    action.payload.BunqJSClient.Session.encryptionKey
                 )
                     .then(() => {})
                     .catch(() => {});
@@ -42,24 +47,19 @@ export default (state = defaultState, action) => {
             const newerIds = {
                 ...state.newer_ids,
                 [action.payload.account_id]: mergedInfo.newer_id
-            }
+            };
             const olderIds = {
                 ...state.older_ids,
                 [action.payload.account_id]: mergedInfo.older_id
-            }
+            };
 
             return {
                 ...state,
-                payments: mergedInfo.items,
+                payments: mergedPayments,
                 account_id: action.payload.account_id,
                 newer_ids: newerIds,
                 older_ids: olderIds
             };
-
-        case "ACCOUNTS_SELECT_ACCOUNT":
-            return {
-                ...state
-            }
 
         case "PAYMENTS_IS_LOADING":
             return {
