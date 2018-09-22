@@ -309,8 +309,18 @@ export const masterCardActionFilter = options => masterCardAction => {
 };
 
 export const requestResponseFilter = options => requestResponse => {
-    if (options.requestVisibility === false) {
-        return false;
+    // check if this is a internal request or a payment E.G. ideal payments
+    const requestTypes = ["INTERNAL"];
+    const isRequestType = requestTypes.includes(requestResponse.type);
+
+    if (isRequestType) {
+        if (options.requestVisibility === false) {
+            return false;
+        }
+    } else {
+        if (options.paymentVisibility === false) {
+            return false;
+        }
     }
 
     // hide accepted payments
@@ -321,8 +331,22 @@ export const requestResponseFilter = options => requestResponse => {
         return false;
     }
 
-    if (options.requestType !== "sent" && options.requestType !== "default") {
-        return false;
+    if (isRequestType) {
+        // check payment type since this is a payment
+        if (
+            options.requestType !== "sent" &&
+            options.requestType !== "default"
+        ) {
+            return false;
+        }
+    } else {
+        // check the request type since this is an actual request
+        if (
+            options.requestType !== "sent" &&
+            options.requestType !== "default"
+        ) {
+            return false;
+        }
     }
 
     if (options.searchTerm && options.searchTerm.length > 0) {

@@ -343,7 +343,9 @@ class CombinedList extends React.Component {
             .filter(
                 requestResponseFilter({
                     requestVisibility: this.props.requestVisibility,
+                    paymentVisibility: this.props.paymentVisibility,
                     requestType: this.props.requestType,
+                    paymentType: this.props.paymentType,
                     ...this.getCommonFilters()
                 })
             )

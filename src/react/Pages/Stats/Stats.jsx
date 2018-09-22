@@ -196,7 +196,9 @@ class Stats extends React.Component {
             },
             requestFilterSettings: {
                 requestVisibility: props.requestVisibility,
+                paymentVisibility: props.paymentVisibility,
                 requestType: props.requestType,
+                paymentType: props.paymentType,
                 ...filterCommonValues
             },
 
