@@ -2,8 +2,8 @@ import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { openSnackbar } from "./snackbar";
 import { paymentInfoUpdate } from "./payments";
 import { accountsUpdate } from "./accounts";
-import {shareInviteBankInquiriesInfoUpdate} from "./share_invite_bank_inquiries";
-import {shareInviteBankResponsesInfoUpdate} from "./share_invite_bank_responses";
+import { shareInviteBankInquiriesInfoUpdate } from "./share_invite_bank_inquiries";
+import { shareInviteBankResponsesInfoUpdate } from "./share_invite_bank_responses";
 
 export function paySend(
     BunqJSClient,
@@ -43,14 +43,24 @@ export function paySend(
             .then(result => {
                 const notification = draft
                     ? successMessage1
-                    : isMultiple ? successMessage2 : successMessage3;
+                    : isMultiple
+                        ? successMessage2
+                        : successMessage3;
 
                 dispatch(openSnackbar(notification));
 
                 // update the payments, accounts and share list
                 dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId));
-                dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId, accountId));
-                dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId));
+                dispatch(
+                    shareInviteBankInquiriesInfoUpdate(
+                        BunqJSClient,
+                        userId,
+                        accountId
+                    )
+                );
+                dispatch(
+                    shareInviteBankResponsesInfoUpdate(BunqJSClient, userId)
+                );
                 dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId));
                 dispatch(accountsUpdate(BunqJSClient, userId));
 
@@ -93,21 +103,31 @@ export function paySchedule(
                 description: description,
                 amount: amount,
                 counterparty_alias: target
-            }
-        })
+            };
+        });
 
         const paymentData = isMultiple ? payments.pop() : payments;
 
         scheduleTypeHandler
             .post(userId, accountId, paymentData, schedule)
             .then(result => {
-                const notification =  isMultiple ? successMessage1 : successMessage2;
+                const notification = isMultiple
+                    ? successMessage1
+                    : successMessage2;
                 dispatch(openSnackbar(notification));
 
                 // update the payments, accounts and share list
                 dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId));
-                dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId, accountId));
-                dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId));
+                dispatch(
+                    shareInviteBankInquiriesInfoUpdate(
+                        BunqJSClient,
+                        userId,
+                        accountId
+                    )
+                );
+                dispatch(
+                    shareInviteBankResponsesInfoUpdate(BunqJSClient, userId)
+                );
                 dispatch(accountsUpdate(BunqJSClient, userId));
 
                 dispatch(payNotLoading());

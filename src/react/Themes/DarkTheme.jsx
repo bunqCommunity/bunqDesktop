@@ -26,8 +26,8 @@ export default {
         },
         bunqMeTabs: {
             awaiting_payment: "#62ca04",
-            cancelled: "#3f56d6",
-            expired: "#f50057"
+            cancelled: "#a4a6a4",
+            expired: "#a4a6a4"
         },
         type: "dark"
     },

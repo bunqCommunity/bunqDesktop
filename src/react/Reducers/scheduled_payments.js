@@ -5,7 +5,6 @@ export const defaultState = {
 };
 
 export default (state = defaultState, action) => {
-
     switch (action.type) {
         case "SCHEDULED_PAYMENTS_SET_INFO":
             return {

@@ -3,14 +3,13 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { translate } from "react-i18next";
 import CopyToClipboard from "react-copy-to-clipboard";
-
 import Grid from "@material-ui/core/Grid";
 import Radio from "@material-ui/core/Radio";
 import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import FormControlLabel  from "@material-ui/core/FormControlLabel";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import CompareArrowsIcon from "@material-ui/icons/CompareArrows";
@@ -19,6 +18,7 @@ import PersonIcon from "@material-ui/icons/Person";
 import InputSuggestions from "./InputSuggestions";
 import AccountSelectorDialog from "./AccountSelectorDialog";
 import { openSnackbar } from "../../Actions/snackbar";
+import { formatIban } from "../../Helpers/Utils";
 
 const styles = {
     payButton: {
@@ -32,7 +32,46 @@ const styles = {
 class TargetSelection extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+        this.state = {
+            ibanList: []
+        };
+    }
+
+    componentDidMount() {
+        if (!this.props.disabledTypes.includes("IBAN")) {
+            let ibanCollection = {};
+            // get first 250 payments and retrieve the iban/name combinations from it
+            this.props.payments.slice(0, 250).map(payment => {
+                if (
+                    payment.counterparty_alias &&
+                    payment.counterparty_alias.iban
+                ) {
+                    const iban = payment.counterparty_alias.iban;
+                    if (!ibanCollection[iban]) {
+                        ibanCollection[iban] = {
+                            field: formatIban(iban),
+                            name: payment.counterparty_alias.display_name
+                        };
+                    }
+                }
+            });
+
+            // turn ref object into an array
+            const ibanList = Object.keys(ibanCollection).map(
+                key => ibanCollection[key]
+            );
+
+            // sort by name
+            const sortedIbanList = ibanList.sort((a, b) => {
+                if (a.name < b.name) return -1;
+                if (a.name > b.name) return 1;
+                return 0;
+            });
+
+            this.setState({
+                ibanList: sortedIbanList
+            });
+        }
     }
 
     enterKeySubmit = ev => {
@@ -67,7 +106,7 @@ class TargetSelection extends React.Component {
             case "EMAIL":
             case "CONTACT":
                 // loop through all types and create a full list of contacts (name/email combination)
-                const contactList = [];
+                let contactList = [];
                 Object.keys(this.props.contacts).map(contactType => {
                     // go through all contacts for this type
                     this.props.contacts[contactType].forEach(contact => {
@@ -107,15 +146,18 @@ class TargetSelection extends React.Component {
             default:
             case "IBAN":
                 targetContent = [
-                    <TextField
+                    <InputSuggestions
                         autoFocus
-                        error={this.props.targetError}
                         fullWidth
-                        required
                         id="target"
+                        items={this.state.ibanList}
                         label={t("IBAN number")}
+                        error={this.props.targetError}
                         value={this.props.target}
                         onChange={this.props.handleChange("target")}
+                        onChangeName={this.props.handleChangeDirect("ibanName")}
+                        onSelectItem={this.props.handleChangeDirect("target")}
+                        onKeyPress={this.enterKeySubmit}
                     />,
                     <TextField
                         fullWidth
@@ -189,8 +231,12 @@ class TargetSelection extends React.Component {
                                     icon={<PersonIcon />}
                                     checkedIcon={<PersonIcon />}
                                     color={"secondary"}
-                                    checked={this.props.targetType === "CONTACT"}
-                                    onChange={this.props.setTargetType("CONTACT")}
+                                    checked={
+                                        this.props.targetType === "CONTACT"
+                                    }
+                                    onChange={this.props.setTargetType(
+                                        "CONTACT"
+                                    )}
                                     value="CONTACT"
                                     name="target-type-phone"
                                 />
@@ -269,7 +315,9 @@ class TargetSelection extends React.Component {
 const mapStateToProps = state => {
     return {
         contacts: state.contacts.contacts,
-        contactsLoading: state.contacts.loading
+        contactsLoading: state.contacts.loading,
+
+        payments: state.payments.payments
     };
 };
 
@@ -291,6 +339,7 @@ TargetSelection.defaultProps = {
     disabledTypes: []
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(TargetSelection)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(TargetSelection));

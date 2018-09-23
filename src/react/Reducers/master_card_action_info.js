@@ -12,7 +12,7 @@ export default (state = defaultState, action) => {
                 ...state,
                 master_card_action_info: action.payload.master_card_action_info,
                 master_card_action_id: action.payload.master_card_action_id,
-                account_id: action.payload.account_id,
+                account_id: action.payload.account_id
             };
 
         case "MASTER_CARD_ACTION_INFO_IS_LOADING":

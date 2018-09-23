@@ -2,6 +2,7 @@ import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { withTheme } from "@material-ui/core/styles";
+import { ipcRenderer } from "electron";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
 import Grid from "@material-ui/core/Grid";
@@ -17,13 +18,18 @@ import Typography from "@material-ui/core/Typography";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import HelpIcon from "@material-ui/icons/Help";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
+import SaveIcon from "@material-ui/icons/Save";
+import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
+import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 
+import PDFExportHelper from "../Components/PDFExportHelper";
 import ExportDialog from "../Components/ExportDialog";
 import SpeedDial from "../Components/SpeedDial";
 import TransactionHeader from "../Components/TransactionHeader";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import CategorySelectorDialog from "../Components/Categories/CategorySelectorDialog";
 import CategoryChips from "../Components/Categories/CategoryChips";
+import NoteTextForm from "../Components/NoteTexts/NoteTextForm";
 
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
 import {
@@ -31,13 +37,13 @@ import {
     masterCardActionParser
 } from "../Helpers/StatusTexts";
 import { masterCardActionInfoUpdate } from "../Actions/master_card_action_info";
-import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
-import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
+import { applicationSetPDFMode } from "../Actions/application";
 
 const styles = {
     btn: {},
     paper: {
-        padding: 24
+        padding: 24,
+        marginBottom: 16
     },
     list: {
         textAlign: "left"
@@ -52,7 +58,9 @@ class MasterCardActionInfo extends React.Component {
         super(props, context);
         this.state = {
             displayExport: false,
-            displayCategories: false
+            displayCategories: false,
+
+            initialUpdate: false
         };
     }
 
@@ -70,27 +78,31 @@ class MasterCardActionInfo extends React.Component {
                     : accountId,
                 masterCardActionId
             );
+            this.setState({ initialUpdate: true });
         }
     }
 
-    componentWillUpdate(nextProps, nextState) {
+    getSnapshotBeforeUpdate(nextProps, nextState) {
         if (
-            nextProps.user &&
-            nextProps.user.id &&
+            this.props.user &&
+            this.props.user.id &&
             this.props.initialBunqConnect &&
             this.props.match.params.masterCardActionId !==
-                nextProps.match.params.masterCardActionId
+                this.props.match.params.masterCardActionId
         ) {
-            const { masterCardActionId, accountId } = nextProps.match.params;
+            const { masterCardActionId, accountId } = this.props.match.params;
             this.props.masterCardActionInfoUpdate(
-                nextProps.user.id,
+                this.props.user.id,
                 accountId === undefined
-                    ? nextProps.accountsSelectedAccount
+                    ? this.props.accountsSelectedAccount
                     : accountId,
                 masterCardActionId
             );
+            this.setState({ initialUpdate: true });
         }
+        return null;
     }
+    componentDidUpdate() {}
 
     toggleCategoryDialog = event =>
         this.setState({ displayCategories: !this.state.displayCategories });
@@ -101,6 +113,24 @@ class MasterCardActionInfo extends React.Component {
     startRequest = event => {
         const paymentInfo = this.props.masterCardActionInfo;
         this.props.history.push(`/request?amount=${paymentInfo.getAmount()}`);
+    };
+
+    createPdfExport = () => {
+        const { masterCardActionInfo } = this.props;
+
+        // enable pdf mode
+        this.props.applicationSetPDFMode(true);
+
+        // format a file name
+        const timeStamp = masterCardActionInfo.updated.getTime();
+        const fileName = `card-payment-${
+            masterCardActionInfo.id
+        }-${timeStamp}.pdf`;
+
+        // delay for a short period to let the application update and then create a pdf
+        setTimeout(() => {
+            ipcRenderer.send("print-to-pdf", fileName);
+        }, 250);
     };
 
     render() {
@@ -120,9 +150,11 @@ class MasterCardActionInfo extends React.Component {
         }
 
         let content;
+        let noteTextsForm = null;
         if (
             masterCardActionInfo === false ||
-            masterCardActionLoading === true
+            masterCardActionLoading === true ||
+            this.state.initialUpdate === false
         ) {
             content = (
                 <Grid container spacing={24} justify={"center"}>
@@ -135,10 +167,36 @@ class MasterCardActionInfo extends React.Component {
             );
         } else {
             const masterCardAction = masterCardActionInfo;
-            const paymentAmount = masterCardAction.getAmount();
+            let paymentAmount = masterCardAction.getAmount();
+            paymentAmount =
+                paymentAmount > 0 ? paymentAmount * -1 : paymentAmount;
             const paymentDate = humanReadableDate(masterCardAction.created);
-            const formattedPaymentAmount = formatMoney(paymentAmount);
+            const paymentDateUpdated = humanReadableDate(
+                masterCardAction.updated
+            );
+            const formattedPaymentAmount = formatMoney(paymentAmount, true);
             const paymentLabel = masterCardActionText(masterCardAction, t);
+
+            if (this.props.pdfSaveModeEnabled) {
+                return (
+                    <PDFExportHelper
+                        t={t}
+                        payment={masterCardAction}
+                        formattedPaymentAmount={formattedPaymentAmount}
+                        paymentDate={paymentDate}
+                        paymentDateUpdated={paymentDateUpdated}
+                        personalAlias={masterCardAction.alias}
+                        counterPartyAlias={masterCardAction.counterparty_alias}
+                    />
+                );
+            }
+
+            noteTextsForm = (
+                <NoteTextForm
+                    BunqJSClient={this.props.BunqJSClient}
+                    event={masterCardAction}
+                />
+            );
 
             content = (
                 <Grid
@@ -153,6 +211,8 @@ class MasterCardActionInfo extends React.Component {
                         from={masterCardAction.alias}
                         accounts={this.props.accounts}
                         user={this.props.user}
+                        type="masterCardAction"
+                        event={masterCardAction}
                     />
 
                     <Grid item xs={12}>
@@ -173,19 +233,19 @@ class MasterCardActionInfo extends React.Component {
                         </Typography>
 
                         <List style={styles.list}>
-                            {masterCardAction.description.length > 0 ? (
-                                [
-                                    <Divider />,
-                                    <ListItem>
-                                        <ListItemText
-                                            primary={t("Description")}
-                                            secondary={
-                                                masterCardAction.description
-                                            }
-                                        />
-                                    </ListItem>
-                                ]
-                            ) : null}
+                            {masterCardAction.description.length > 0
+                                ? [
+                                      <Divider />,
+                                      <ListItem>
+                                          <ListItemText
+                                              primary={t("Description")}
+                                              secondary={
+                                                  masterCardAction.description
+                                              }
+                                          />
+                                      </ListItem>
+                                  ]
+                                : null}
 
                             <Divider />
                             <ListItem>
@@ -262,6 +322,12 @@ class MasterCardActionInfo extends React.Component {
                                     onClick: this.startRequest
                                 },
                                 {
+                                    name: "Create PDF",
+                                    icon: SaveIcon,
+                                    color: "action",
+                                    onClick: this.createPdfExport
+                                },
+                                {
                                     name: t("Manage categories"),
                                     icon: BookmarkIcon,
                                     onClick: this.toggleCategoryDialog
@@ -293,7 +359,8 @@ class MasterCardActionInfo extends React.Component {
 
                 <ExportDialog
                     closeModal={event =>
-                        this.setState({ displayExport: false })}
+                        this.setState({ displayExport: false })
+                    }
                     title={t("Export info")}
                     open={this.state.displayExport}
                     object={exportData}
@@ -310,6 +377,8 @@ class MasterCardActionInfo extends React.Component {
 
                 <Grid item xs={12} sm={8} lg={6}>
                     <Paper style={styles.paper}>{content}</Paper>
+
+                    {noteTextsForm}
                 </Grid>
             </Grid>
         );
@@ -319,17 +388,24 @@ class MasterCardActionInfo extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+
+        pdfSaveModeEnabled: state.application.pdf_save_mode_enabled,
+
         masterCardActionInfo:
             state.master_card_action_info.master_card_action_info,
         masterCardActionLoading: state.master_card_action_info.loading,
+
         accounts: state.accounts.accounts,
-        accountsSelectedAccount: state.accounts.selectedAccount
+        accountsSelectedAccount: state.accounts.selected_account
     };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
+        applicationSetPDFMode: enabled =>
+            dispatch(applicationSetPDFMode(enabled)),
+
         masterCardActionInfoUpdate: (
             user_id,
             account_id,
@@ -346,6 +422,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    withTheme()(translate("translations")(MasterCardActionInfo))
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(withTheme()(translate("translations")(MasterCardActionInfo)));

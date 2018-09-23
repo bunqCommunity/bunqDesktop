@@ -1,6 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import Icon from "@material-ui/core/Icon";
 import CategoryHelper from "../../Helpers/CategoryHelper";
 import PrioritySorter from "./PrioritySorter";
 import CategoryIcon from "./CategoryIcon";
@@ -78,4 +77,7 @@ const mapDispatchToProps = dispatch => {
     return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CategoryIcons);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(CategoryIcons);

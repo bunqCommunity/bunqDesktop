@@ -8,12 +8,17 @@ import Divider from "@material-ui/core/Divider";
 
 import { formatMoney } from "../../Helpers/Utils";
 import { paymentText } from "../../Helpers/StatusTexts";
+import { defaultPaymentImage } from "../../Helpers/DefaultImageHandlers";
+
 import NavLink from "../Routing/NavLink";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 import MoneyAmountLabel from "../MoneyAmountLabel";
 import CategoryIcons from "../Categories/CategoryIcons";
 
 const styles = {
+    listItemText: {
+        marginRight: 40
+    },
     smallAvatar: {
         width: 50,
         height: 50
@@ -32,7 +37,13 @@ class PaymentListItem extends React.Component {
     }
 
     render() {
-        const { payment } = this.props;
+        const { t, payment, accounts } = this.props;
+        if (payment.sub_type === "REQUEST") {
+            if (this.props.displayRequestPayments === false) {
+                // hide the payments because a request response exists
+                return null;
+            }
+        }
 
         let imageUUID = false;
         if (payment.counterparty_alias.avatar) {
@@ -42,8 +53,52 @@ class PaymentListItem extends React.Component {
         }
         const displayName = payment.counterparty_alias.display_name;
         const paymentAmount = parseFloat(payment.amount.value);
-        const formattedPaymentAmount = formatMoney(paymentAmount);
+        const formattedPaymentAmount = formatMoney(paymentAmount, true);
         const paymentTypeLabel = paymentText(payment, this.props.t);
+        const counterPartyIban = payment.counterparty_alias.iban;
+
+        let accountInfo = false;
+        let counterpartyAccountInfo = false;
+        if (counterPartyIban) {
+            accounts.forEach(account => {
+                // check alias values for this account
+                const matchesCounterparty = account.alias.some(alias => {
+                    if (alias.type === "IBAN") {
+                        if (alias.value === counterPartyIban) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+                if (matchesCounterparty) {
+                    counterpartyAccountInfo = account;
+                }
+
+                if (account.id === payment.monetary_account_id) {
+                    accountInfo = account;
+                }
+            });
+        }
+
+        let primaryText = displayName;
+        let secondaryText = paymentTypeLabel;
+
+        const fromText = t("from");
+        const toText = t("to");
+
+        // if transfer between personal accounts
+        if (counterpartyAccountInfo) {
+            primaryText = counterpartyAccountInfo.description;
+
+            // format secondary text
+            const connectWord = paymentAmount < 0 ? fromText : toText;
+            const connectWordSecondary = paymentAmount > 0 ? fromText : toText;
+            secondaryText = `${t("Transferred")} ${connectWord} ${
+                accountInfo.description
+            } ${connectWordSecondary} ${counterpartyAccountInfo.description}`;
+        }
+
+        const defaultImage = defaultPaymentImage(payment);
 
         return [
             <ListItem
@@ -53,14 +108,16 @@ class PaymentListItem extends React.Component {
             >
                 <Avatar style={styles.smallAvatar}>
                     <LazyAttachmentImage
-                        width={50}
+                        height={50}
+                        defaultImage={defaultImage}
                         BunqJSClient={this.props.BunqJSClient}
                         imageUUID={imageUUID}
                     />
                 </Avatar>
                 <ListItemText
-                    primary={displayName}
-                    secondary={paymentTypeLabel}
+                    style={styles.listItemText}
+                    primary={primaryText}
+                    secondary={secondaryText}
                 />
                 <ListItemSecondaryAction style={{ marginTop: -16 }}>
                     <MoneyAmountLabel
@@ -83,6 +140,7 @@ class PaymentListItem extends React.Component {
 }
 
 PaymentListItem.defaultProps = {
+    displayRequestPayments: true,
     minimalDisplay: false
 };
 

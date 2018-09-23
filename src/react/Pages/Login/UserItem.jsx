@@ -12,9 +12,16 @@ import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachment
 import { userLogin } from "../../Actions/user";
 
 const styles = {
+    card: {
+        marginBottom: 16
+    },
+    cardContainers: {
+        backgroundColor: "#ffffff",
+        color: "#000000"
+    },
     loginButton: {
         width: "100%",
-        marginTop: 20
+        marginTop: 8
     },
     clearButton: {
         width: "100%",
@@ -26,10 +33,6 @@ const styles = {
     },
     environmentToggle: {
         marginTop: 10
-    },
-    smallAvatar: {
-        width: 50,
-        height: 50
     }
 };
 
@@ -50,33 +53,32 @@ class UserItem extends React.Component {
         const imageUUID = user.avatar.image[0].attachment_public_uuid;
 
         return (
-            <Grid item xs={12} sm={6} md={4}>
-                <Card>
-                    <CardHeader
-                        avatar={
-                            <Avatar>
-                                <LazyAttachmentImage
-                                    style={styles.smallAvatar}
-                                    BunqJSClient={this.props.BunqJSClient}
-                                    imageUUID={imageUUID}
-                                />
-                            </Avatar>
-                        }
-                        title={user.display_name}
-                    />
-                    <CardContent>
-                        <Button
-                            disabled={this.props.userLoading}
-                            onClick={this.selectAccount(userKey)}
-                            variant="raised"
-                            color={"primary"}
-                            style={styles.loginButton}
-                        >
-                            Login
-                        </Button>
-                    </CardContent>
-                </Card>
-            </Grid>
+            <Card style={styles.card}>
+                <CardHeader
+                    style={styles.cardContainers}
+                    disableTypography={true}
+                    avatar={
+                        <Avatar>
+                            <LazyAttachmentImage
+                                BunqJSClient={this.props.BunqJSClient}
+                                imageUUID={imageUUID}
+                            />
+                        </Avatar>
+                    }
+                    title={user.display_name}
+                />
+                <CardContent style={styles.cardContainers}>
+                    <Button
+                        disabled={this.props.userLoading}
+                        onClick={this.selectAccount(userKey)}
+                        variant="raised"
+                        color={"primary"}
+                        style={styles.loginButton}
+                    >
+                        Login
+                    </Button>
+                </CardContent>
+            </Card>
         );
     }
 }
@@ -95,4 +97,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserItem);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(UserItem);

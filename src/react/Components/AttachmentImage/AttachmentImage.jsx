@@ -2,20 +2,28 @@ import React from "react";
 import localforage from "../../ImportWrappers/localforage";
 import Logger from "../../Helpers/Logger";
 
-const defaultImageUrl =
-    "./images/default-avatar.svg";
-
 class AttachmentImage extends React.PureComponent {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            visible: false
+            visible: false,
+            defaultImageUrl: "./images/svg/bunq-placeholders/user_person.svg"
         };
     }
 
     componentDidMount() {
         this._isMounted = true;
-        this.checkImage();
+
+        if (this.props.defaultImage) {
+            this.setState(
+                {
+                    defaultImageUrl: this.props.defaultImage
+                },
+                this.checkImage
+            );
+        } else {
+            this.checkImage();
+        }
     }
 
     componentWillUnmount() {
@@ -30,9 +38,9 @@ class AttachmentImage extends React.PureComponent {
         }
     }
 
-    checkImage() {
+    checkImage = () => {
         if (this.props.imageUUID === false) {
-            this.setState({ imageUrl: defaultImageUrl });
+            this.setState({ imageUrl: this.state.defaultImageUrl });
             return;
         }
 
@@ -47,10 +55,10 @@ class AttachmentImage extends React.PureComponent {
 
         // set a timeout as a fallback incase loading the image takes too long
         this.timeout = setTimeout(() => {
-            if (this.imageUrl === false) {
+            if (this.state.imageUrl === false) {
                 // still no image, fallback to temporary placeholder
                 this.setState({
-                    imageUrl: defaultImageUrl
+                    imageUrl: this.state.defaultImageUrl
                 });
             }
         }, 500);
@@ -59,7 +67,7 @@ class AttachmentImage extends React.PureComponent {
             // remove the fallback timeout
             clearTimeout(this.timeout);
         });
-    }
+    };
 
     loadImage = async () => {
         const storageKey = `image_${this.props.imageUUID}`;
@@ -68,7 +76,7 @@ class AttachmentImage extends React.PureComponent {
             // no image, fallback to default while we load the image remotely
             if (this._isMounted) {
                 this.setState({
-                    imageUrl: defaultImageUrl
+                    imageUrl: this.state.defaultImageUrl
                 });
             }
             // remove the fallback timeout
@@ -107,12 +115,22 @@ class AttachmentImage extends React.PureComponent {
 
     render() {
         // exclude custom props
-        const { BunqJSClient, imageUUID, ...props } = this.props;
+        const { BunqJSClient, imageUUID, defaultImage, ...props } = this.props;
+
+        const defaultSizes = {
+            width: "auto",
+            height: 50
+        };
 
         return this.imageUrl === false ? (
-            <div {...props} />
+            <div {...defaultSizes} {...props} />
         ) : (
-            <img src={this.state.imageUrl} {...props} />
+            <img
+                {...defaultSizes}
+                src={this.state.imageUrl}
+                style={{ backgroundColor: "white" }}
+                {...props}
+            />
         );
     }
 }

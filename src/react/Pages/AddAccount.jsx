@@ -182,7 +182,10 @@ class AddAccount extends React.Component {
                         <ButtonTranslate
                             variant="raised"
                             color="primary"
-                            disabled={!this.state.validForm || this.props.accountsLoading}
+                            disabled={
+                                !this.state.validForm ||
+                                this.props.accountsLoading
+                            }
                             onClick={this.createAccount}
                             style={styles.btn}
                         >
@@ -238,6 +241,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(AddAccount)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(AddAccount));

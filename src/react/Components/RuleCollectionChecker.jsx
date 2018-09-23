@@ -6,7 +6,7 @@ import { setCategoryConnectionMultiple } from "../Actions/categories";
 import { setCategoryRule } from "../Actions/category_rules";
 
 // import typed worker
-const RuleCollectionCheckWorker = require("../WebWorkers/rule_collection_check.worker.js");
+const RuleCollectionCheckWorker = require("worker-loader!../WebWorkers/rule_collection_check.worker.js");
 
 class RuleCollectionChecker extends React.Component {
     constructor(props, context) {
@@ -22,9 +22,13 @@ class RuleCollectionChecker extends React.Component {
     }
 
     componentDidUpdate(oldProps) {
+        const updatedToggle =
+            oldProps.updateToggle === true && this.props.updateToggle == false;
+
+        // check if update state changed or queue finished
         if (
-            oldProps.updateToggle === true &&
-            this.props.updateToggle == false
+            updatedToggle ||
+            this.props.queueFinishedSync !== oldProps.queueFinishedSync
         ) {
             // updateToggle went from true to false, update worker
             this.triggerWorkerEvent();
@@ -100,6 +104,8 @@ const mapStateToProps = state => {
         categories: state.categories.categories,
         categoryRules: state.category_rules.category_rules,
 
+        queueFinishedSync: state.queue.finished_queue,
+
         requestResponses: state.request_responses.request_responses,
         payments: state.payments.payments,
         bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
@@ -117,6 +123,7 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    RuleCollectionChecker
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(RuleCollectionChecker);

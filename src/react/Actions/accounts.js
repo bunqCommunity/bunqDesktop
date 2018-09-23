@@ -16,8 +16,7 @@ export function accountsSetInfo(accounts, BunqJSClient = false) {
 
 export function loadStoredAccounts(BunqJSClient) {
     return dispatch => {
-        BunqJSClient.Session
-            .loadEncryptedData(STORED_ACCOUNTS)
+        BunqJSClient.Session.loadEncryptedData(STORED_ACCOUNTS)
             .then(data => {
                 if (data && data.items) {
                     // turn plain objects back into MonetaryAccount objects
@@ -115,7 +114,12 @@ export function accountsDeactivate(BunqJSClient, userId, accountId, reason) {
     };
 }
 
-export function accountsUpdateSettings(BunqJSClient, userId, accountId, monetaryAccountSettings) {
+export function accountsUpdateSettings(
+    BunqJSClient,
+    userId,
+    accountId,
+    monetaryAccountSettings
+) {
     const failedMessage = window.t(
         "We received the following error updating the settings for your account"
     );
@@ -125,11 +129,7 @@ export function accountsUpdateSettings(BunqJSClient, userId, accountId, monetary
         dispatch(updateAccountStatusLoading());
 
         BunqJSClient.api.monetaryAccountBank
-            .put(
-                userId,
-                accountId,
-                monetaryAccountSettings
-            )
+            .put(userId, accountId, monetaryAccountSettings)
             .then(result => {
                 dispatch(openSnackbar(successMessage));
                 dispatch(accountsUpdate(BunqJSClient, userId));
@@ -151,6 +151,23 @@ export function accountsSelectAccount(account_id) {
         type: "ACCOUNTS_SELECT_ACCOUNT",
         payload: {
             selectedAccount: account_id
+        }
+    };
+}
+
+export function accountExcludeFromTotal(accountId) {
+    return {
+        type: "ACCOUNTS_EXCLUDE_FROM_TOTAL",
+        payload: {
+            account_id: accountId
+        }
+    };
+}
+export function accountIncludeInTotal(accountId) {
+    return {
+        type: "ACCOUNTS_INCLUDE_IN_TOTAL",
+        payload: {
+            account_id: accountId
         }
     };
 }

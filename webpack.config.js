@@ -6,12 +6,19 @@ const optimizations = require("./config/Webpack/optimizations");
 
 const PRODUCTION = process.env.NODE_ENV === "production";
 const DEVELOPMENT = !PRODUCTION;
+const RELEASE_MODE = !!process.env.RELEASE_MODE;
 
 const SRC_DIR = path.resolve(__dirname, "src/react");
 const BUILD_DIR = path.resolve(__dirname, "app/react");
 const OUTPUT_DIR = "./";
 
-const moduleOptions = { BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT };
+const moduleOptions = {
+    BUILD_DIR,
+    OUTPUT_DIR,
+    PRODUCTION,
+    DEVELOPMENT,
+    RELEASE_MODE
+};
 
 let config = {
     entry: {
@@ -21,6 +28,7 @@ let config = {
     output: {
         path: BUILD_DIR,
         filename: OUTPUT_DIR + "[name].js",
+        pathinfo: PRODUCTION,
         publicPath: "react/",
         chunkFilename: OUTPUT_DIR + "[name].bundle.js"
     },

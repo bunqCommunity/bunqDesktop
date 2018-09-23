@@ -14,8 +14,12 @@ import MoneyAmountLabel from "../MoneyAmountLabel";
 
 import { masterCardActionParser } from "../../Helpers/StatusTexts";
 import { formatMoney } from "../../Helpers/Utils";
+import { defaultMastercardImage } from "../../Helpers/DefaultImageHandlers";
 
 const styles = {
+    listItemText: {
+        marginRight: 40
+    },
     smallAvatar: {
         width: 50,
         height: 50
@@ -47,24 +51,34 @@ class MasterCardActionListItem extends React.Component {
                     .attachment_public_uuid;
         }
         const displayName = masterCardAction.counterparty_alias.display_name;
-        const paymentAmount = masterCardAction.getAmount();
-        const formattedPaymentAmount = formatMoney(paymentAmount);
+        let paymentAmount = masterCardAction.getAmount();
+        paymentAmount = paymentAmount > 0 ? paymentAmount * -1 : paymentAmount;
+        const formattedPaymentAmount = formatMoney(paymentAmount, true);
         const secondaryText = masterCardActionParser(masterCardAction, t);
+
+        const defaultImage = defaultMastercardImage(masterCardAction);
 
         return [
             <ListItem
                 button
                 component={NavLink}
-                to={`/mastercard-action-info/${masterCardAction.id}/${masterCardAction.monetary_account_id}`}
+                to={`/mastercard-action-info/${masterCardAction.id}/${
+                    masterCardAction.monetary_account_id
+                }`}
             >
                 <Avatar style={styles.smallAvatar}>
                     <LazyAttachmentImage
-                        width={50}
+                        height={50}
+                        defaultImage={defaultImage}
                         BunqJSClient={this.props.BunqJSClient}
                         imageUUID={imageUUID}
                     />
                 </Avatar>
-                <ListItemText primary={displayName} secondary={secondaryText} />
+                <ListItemText
+                    style={styles.listItemText}
+                    primary={displayName}
+                    secondary={secondaryText}
+                />
                 <ListItemSecondaryAction style={{ marginTop: -16 }}>
                     <MoneyAmountLabel
                         style={styles.moneyAmountLabel}

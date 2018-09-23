@@ -39,10 +39,6 @@ class CardListItem extends React.Component {
                 break;
         }
 
-        if (card.status !== "ACTIVE") {
-            return null;
-        }
-
         return [
             <div
                 className="single-card"
@@ -65,4 +61,7 @@ const mapDispatchToProps = dispatch => {
     return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CardListItem);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(CardListItem);

@@ -21,11 +21,11 @@ class LoadOlderButton extends React.Component {
             accountsAccountId,
             paymentsAccountId,
             paymentsLoading,
-            paymentsOlderId,
-            bunqMeTabsOlderId,
-            requestResponsesOlderId,
-            requestInquiriesOlderId,
-            masterCardActionsOlderId,
+            paymentsOlderIds,
+            bunqMeTabsOlderIds,
+            requestResponsesOlderIds,
+            requestInquiriesOlderIds,
+            masterCardActionsOlderIds,
             initialBunqConnect,
             user
         } = this.props;
@@ -33,6 +33,17 @@ class LoadOlderButton extends React.Component {
         if (!initialBunqConnect) {
             return;
         }
+
+        // check if an older id is set for this account
+        let paymentsOlderId = paymentsOlderIds[accountsAccountId] || false;
+        let bunqMeTabsOlderId = bunqMeTabsOlderIds[accountsAccountId] || false;
+        let requestResponsesOlderId =
+            requestResponsesOlderIds[accountsAccountId] || false;
+        let requestInquiriesOlderId =
+            requestInquiriesOlderIds[accountsAccountId] || false;
+        let masterCardActionsOlderId =
+            masterCardActionsOlderIds[accountsAccountId] || false;
+
         // check if the stored selected account isn't already loaded
         if (
             user.id &&
@@ -124,23 +135,23 @@ const mapStateToProps = state => {
     return {
         user: state.user.user,
 
-        accountsAccountId: state.accounts.selectedAccount,
+        accountsAccountId: state.accounts.selected_account,
 
         payments: state.payments.payments,
         paymentsLoading: state.payments.loading,
-        paymentsOlderId: state.payments.older_id,
+        paymentsOlderIds: state.payments.older_ids,
 
         bunqMeTabsLoading: state.bunq_me_tabs.loading,
-        bunqMeTabsOlderId: state.bunq_me_tabs.older_id,
+        bunqMeTabsOlderIds: state.bunq_me_tabs.older_ids,
 
         requestResponsesLoading: state.request_responses.loading,
-        requestResponsesOlderId: state.request_responses.older_id,
+        requestResponsesOlderIds: state.request_responses.older_ids,
 
         requestInquiriesLoading: state.request_inquiries.loading,
-        requestInquiriesOlderId: state.request_inquiries.older_id,
+        requestInquiriesOlderIds: state.request_inquiries.older_ids,
 
         masterCardActionsLoading: state.master_card_actions.loading,
-        masterCardActionsOlderId: state.master_card_actions.older_id
+        masterCardActionsOlderIds: state.master_card_actions.older_ids
     };
 };
 
@@ -151,38 +162,41 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(
                 paymentInfoUpdate(BunqJSClient, userId, accountId, {
                     older_id: older_id,
-                    count: 50
+                    count: 200
                 })
             ),
         requestInquiriesUpdate: (userId, accountId, older_id) =>
             dispatch(
                 requestInquiriesUpdate(BunqJSClient, userId, accountId, {
                     older_id: older_id,
-                    count: 50
+                    count: 200
                 })
             ),
         requestResponsesUpdate: (userId, accountId, older_id) =>
             dispatch(
                 requestResponsesUpdate(BunqJSClient, userId, accountId, {
                     older_id: older_id,
-                    count: 50
+                    count: 200
                 })
             ),
         masterCardActionsUpdate: (userId, accountId, older_id) =>
             dispatch(
                 masterCardActionsUpdate(BunqJSClient, userId, accountId, {
                     older_id: older_id,
-                    count: 50
+                    count: 200
                 })
             ),
         bunqMeTabsUpdate: (userId, accountId, older_id) =>
             dispatch(
                 bunqMeTabsUpdate(BunqJSClient, userId, accountId, {
                     older_id: older_id,
-                    count: 50
+                    count: 200
                 })
             )
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoadOlderButton);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(LoadOlderButton);

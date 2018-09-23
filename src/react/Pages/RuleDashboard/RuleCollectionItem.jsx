@@ -15,6 +15,8 @@ class RuleCollectionItem extends React.Component {
 
     render() {
         const { ruleCollection, categories, t } = this.props;
+        if (!ruleCollection) return null;
+
         const categoryIds = ruleCollection.getCategories();
 
         // create a list of icons
@@ -22,14 +24,13 @@ class RuleCollectionItem extends React.Component {
             const categoryInfo = categories[categoryId];
             if (!categoryInfo) return null;
 
-            return (
-                <CategoryIcon category={categoryInfo}/>
-            );
+            return <CategoryIcon category={categoryInfo} />;
         });
 
         const enabledText = ruleCollection.isEnabled() ? "Enabled" : "Disabled";
-        const secondaryText = `${t(enabledText)} - ${ruleCollection.getRules()
-            .length} ${t("rules")}`;
+        const secondaryText = `${t(enabledText)} - ${
+            ruleCollection.getRules().length
+        } ${t("rules")}`;
 
         return [
             <ListItem

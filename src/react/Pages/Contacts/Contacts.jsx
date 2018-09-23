@@ -183,7 +183,9 @@ class Contacts extends React.Component {
                                     title="Apple Export"
                                     contactType="AppleContacts"
                                     logo="./images/apple-logo.svg"
-                                    questionLink={"https://support.apple.com/guide/contacts/export-and-archive-contacts-adrbdcfd32e6/mac"}
+                                    questionLink={
+                                        "https://support.apple.com/guide/contacts/export-and-archive-contacts-adrbdcfd32e6/mac"
+                                    }
                                     canImport={true}
                                     loading={this.props.contactsLoading}
                                     clear={this.props.clearContacts}
@@ -242,6 +244,7 @@ const mapDispatchToProps = (dispatch, props) => {
         openSnackbar: message => dispatch(openSnackbar(message))
     };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(Contacts)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(Contacts));

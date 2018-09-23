@@ -15,8 +15,6 @@ import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
 import SchedulePaymentForm from "../../Components/FormFields/SchedulePaymentForm";
 import AttachmentImage from "../../Components/AttachmentImage/AttachmentImage";
 
-import { getUTCDate } from "../../Helpers/Utils";
-
 import { scheduledPaymentUpdate } from "../../Actions/scheduled_payments";
 
 const styles = {
@@ -44,7 +42,7 @@ class ScheduledPaymentsEditDialog extends React.Component {
             recurrenceSize: "",
             recurrenceUnit: "",
             scheduleEndDate: "",
-            scheduleStartDate: ""
+            scheduleStartDate: null
         };
     }
 
@@ -70,10 +68,8 @@ class ScheduledPaymentsEditDialog extends React.Component {
                 recurrenceUnit: scheduledPayment.schedule.recurrence_unit,
                 scheduleEndDate: scheduledPayment.schedule.time_end
                     ? new Date(scheduledPayment.schedule.time_end)
-                    : scheduledPayment.schedule.time_end,
-                scheduleStartDate: new Date(
-                    scheduledPayment.schedule.time_start
-                )
+                    : null,
+                scheduleStartDate: new Date(scheduledPayment.schedule.time_next)
             });
         }
     }
@@ -148,21 +144,18 @@ class ScheduledPaymentsEditDialog extends React.Component {
                 recurrenceUnit !== "ONCE" ? recurrenceSize : 1
             ),
             recurrence_unit: recurrenceUnit,
-            time_start: format(
-                getUTCDate(scheduleStartDate),
-                "YYYY-MM-DD HH:mm:ss"
-            )
+            time_start: format(scheduleStartDate, "YYYY-MM-dd HH:mm:ss")
         };
         if (scheduleEndDate) {
             scheduleInfo.time_end = format(
-                getUTCDate(scheduleEndDate),
-                "YYYY-MM-DD HH:mm:ss"
+                scheduleEndDate,
+                "YYYY-MM-dd HH:mm:ss"
             );
         }
 
         this.props.scheduledPaymentUpdate(
             this.props.user.id,
-            this.props.selectedAccount,
+            scheduledPayment.monetary_account_id,
             scheduledPayment.id,
             paymentInfo,
             scheduleInfo
@@ -182,9 +175,16 @@ class ScheduledPaymentsEditDialog extends React.Component {
         const scheduledPayment =
             scheduledPayments[selectedPaymentIndex].ScheduledPayment;
 
-        const imageUUID =
-            scheduledPayment.payment.counterparty_alias.avatar.image[0]
-                .attachment_public_uuid;
+        // check if there is a counterparty with an avatar
+        let imageUUID = false;
+        if (scheduledPayment.payment.counterparty_alias.avatar) {
+            const counterPartyAvatar =
+                scheduledPayment.payment.counterparty_alias.avatar;
+
+            if (counterPartyAvatar.image) {
+                imageUUID = counterPartyAvatar.image[0].attachment_public_uuid;
+            }
+        }
 
         return (
             <Dialog open={open} onClose={this.closeDialog}>
@@ -192,13 +192,15 @@ class ScheduledPaymentsEditDialog extends React.Component {
 
                 <DialogContent>
                     <ListItem>
-                        <Avatar style={styles.smallAvatar}>
-                            <AttachmentImage
-                                width={60}
-                                BunqJSClient={BunqJSClient}
-                                imageUUID={imageUUID}
-                            />
-                        </Avatar>
+                        {imageUUID && (
+                            <Avatar style={styles.smallAvatar}>
+                                <AttachmentImage
+                                    height={60}
+                                    BunqJSClient={BunqJSClient}
+                                    imageUUID={imageUUID}
+                                />
+                            </Avatar>
+                        )}
 
                         <ListItemText
                             primary={
@@ -218,6 +220,7 @@ class ScheduledPaymentsEditDialog extends React.Component {
                         onChange={this.handleChange("description")}
                         error={!isValid}
                         placeholder={t("Description")}
+                        multiline={true}
                     />
 
                     <SchedulePaymentForm
@@ -252,16 +255,18 @@ class ScheduledPaymentsEditDialog extends React.Component {
                     >
                         Cancel
                     </ButtonTranslate>
-                    <ButtonTranslate
-                        variant="raised"
-                        onClick={this.editPayment}
-                        disabled={
-                            !isValid || this.props.scheduledPaymentsLoading
-                        }
-                        color="primary"
-                    >
-                        Update
-                    </ButtonTranslate>
+                    {this.props.limitedPermissions ? null : (
+                        <ButtonTranslate
+                            variant="raised"
+                            onClick={this.editPayment}
+                            disabled={
+                                !isValid || this.props.scheduledPaymentsLoading
+                            }
+                            color="primary"
+                        >
+                            Update
+                        </ButtonTranslate>
+                    )}
                 </DialogActions>
             </Dialog>
         );
@@ -271,9 +276,11 @@ class ScheduledPaymentsEditDialog extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+        limitedPermissions: state.user.limited_permissions,
+
         scheduledPaymentsLoading: state.scheduled_payments.loading,
         scheduledPayments: state.scheduled_payments.scheduled_payments,
-        selectedAccount: state.accounts.selectedAccount
+        selectedAccount: state.accounts.selected_account
     };
 };
 
@@ -285,6 +292,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    ScheduledPaymentsEditDialog
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ScheduledPaymentsEditDialog);

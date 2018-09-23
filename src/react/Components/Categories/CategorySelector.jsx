@@ -82,7 +82,8 @@ class CategorySelector extends React.Component {
                     {displayToggleButton ? (
                         <TranslateButton
                             onClick={_ =>
-                                this.setState({ open: !this.state.open })}
+                                this.setState({ open: !this.state.open })
+                            }
                         >
                             {this.state.open ? "Cancel" : "Manage categories"}
                         </TranslateButton>
@@ -130,6 +131,7 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(CategorySelector)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(CategorySelector));

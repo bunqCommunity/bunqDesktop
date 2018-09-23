@@ -1,4 +1,5 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import { storeDecryptString } from "../Helpers/CryptoWorkerWrapper";
 import BunqMeTab from "../Models/BunqMeTab.ts";
 
 export const STORED_BUNQ_ME_TABS = "BUNQDESKTOP_STORED_BUNQ_ME_TABS";
@@ -25,8 +26,11 @@ export function bunqMeTabsSetInfo(
 
 export function loadStoredBunqMeTabs(BunqJSClient) {
     return dispatch => {
-        BunqJSClient.Session
-            .loadEncryptedData(STORED_BUNQ_ME_TABS)
+        dispatch(bunqMeTabsLoading());
+        storeDecryptString(
+            STORED_BUNQ_ME_TABS,
+            BunqJSClient.Session.encryptionKey
+        )
             .then(data => {
                 if (data && data.items) {
                     const bunqMeTabsNew = data.items.map(
@@ -34,8 +38,12 @@ export function loadStoredBunqMeTabs(BunqJSClient) {
                     );
                     dispatch(bunqMeTabsSetInfo(bunqMeTabsNew, data.account_id));
                 }
+
+                dispatch(bunqMeTabsNotLoading());
             })
             .catch(error => {
+                console.error(error);
+                dispatch(bunqMeTabsNotLoading());
             });
     };
 }
@@ -45,12 +53,14 @@ export function bunqMeTabsUpdate(
     user_id,
     accountId,
     options = {
-        count: 50,
+        count: 200,
         newer_id: false,
         older_id: false
     }
 ) {
-    const failedMessage = window.t("We failed to load the bunqme requests for this monetary account");
+    const failedMessage = window.t(
+        "We failed to load the bunqme requests for this monetary account"
+    );
 
     return dispatch => {
         dispatch(bunqMeTabsLoading());
@@ -72,11 +82,7 @@ export function bunqMeTabsUpdate(
             })
             .catch(error => {
                 dispatch(bunqMeTabsNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    failedMessage
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

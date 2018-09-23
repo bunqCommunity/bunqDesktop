@@ -18,7 +18,7 @@ const DraftAccess = props => {
     return (
         <ListItem>
             <Avatar style={styles.smallAvatar}>
-                <GroupIcon style={{color: "#03a9f4"}} />
+                <GroupIcon style={{ color: "#03a9f4" }} />
             </Avatar>
 
             <ListItemText

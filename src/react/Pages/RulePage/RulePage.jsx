@@ -74,7 +74,9 @@ class RulesPage extends React.Component {
                 <Grid item xs={12}>
                     <RuleCreator
                         t={t}
+                        BunqJSClient={this.props.BunqJSClient}
                         categories={this.props.categories}
+                        accounts={this.props.accounts}
                         ruleCollection={ruleCollection}
                         updatePreview={this.updatePreview}
                         openSnackbar={this.props.openSnackbar}
@@ -104,6 +106,8 @@ class RulesPage extends React.Component {
 
 const mapStateToProps = state => {
     return {
+        accounts: state.accounts.accounts,
+
         categories: state.categories.categories,
         categoryRules: state.category_rules.category_rules,
 
@@ -131,6 +135,7 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(RulesPage)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(RulesPage));

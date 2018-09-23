@@ -1,4 +1,6 @@
+import store from "store";
 import MergeApiObjects from "../Helpers/MergeApiObjects";
+import { storeEncryptString } from "../Helpers/CryptoWorkerWrapper";
 
 import { STORED_BUNQ_ME_TABS } from "../Actions/bunq_me_tabs";
 
@@ -6,8 +8,8 @@ export const defaultState = {
     bunq_me_tabs: [],
     account_id: false,
     loading: false,
-    newer_id: false,
-    older_id: false
+    newer_ids: [],
+    older_ids: []
 };
 
 export default (state = defaultState, action) => {
@@ -17,35 +19,50 @@ export default (state = defaultState, action) => {
         case "BUNQ_ME_TABS_UPDATE_INFO":
         case "BUNQ_ME_TABS_SET_INFO":
             // with a set info event or if account id changes we ignore the currently stored items
-            const ignoreOldItems =
-                action.type === "BUNQ_ME_TABS_SET_INFO" ||
-                state.account_id !== action.payload.account_id;
+            // const ignoreOldItems =
+            //     action.type === "BUNQ_ME_TABS_SET_INFO" ||
+            //     state.account_id !== action.payload.account_id;
+            const ignoreOldItems = false;
 
             const mergedInfo = MergeApiObjects(
+                action.payload.account_id,
                 action.payload.bunqMeTabs,
                 ignoreOldItems ? [] : bunq_me_tabs
             );
 
+            // limit payments to 1000 in total
+            const mergedBunqMeTabs = mergedInfo.items.slice(0, 1000);
+
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
-                action.payload.BunqJSClient.Session
-                    .storeEncryptedData(
-                        {
-                            items: mergedInfo.items,
-                            account_id: action.payload.account_id
-                        },
-                        STORED_BUNQ_ME_TABS
-                    )
+                storeEncryptString(
+                    {
+                        items: mergedBunqMeTabs,
+                        account_id: action.payload.account_id
+                    },
+                    STORED_BUNQ_ME_TABS,
+                    action.payload.BunqJSClient.Session.encryptionKey
+                )
                     .then(() => {})
                     .catch(() => {});
             }
 
+            // update newer and older id for this monetary account
+            const newerIds = {
+                ...state.newer_ids,
+                [action.payload.account_id]: mergedInfo.newer_id
+            };
+            const olderIds = {
+                ...state.older_ids,
+                [action.payload.account_id]: mergedInfo.older_id
+            };
+
             return {
                 ...state,
-                bunq_me_tabs: mergedInfo.items,
+                bunq_me_tabs: mergedBunqMeTabs,
                 account_id: action.payload.account_id,
-                newer_id: mergedInfo.newer_id,
-                older_id: mergedInfo.older_id
+                newer_ids: newerIds,
+                older_ids: olderIds
             };
 
         case "BUNQ_ME_TABS_IS_LOADING":
@@ -64,6 +81,7 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_LOG_OUT":
         case "REGISTRATION_CLEAR_PRIVATE_DATA":
         case "REGISTRATION_CLEAR_USER_INFO":
+            store.remove(STORED_BUNQ_ME_TABS);
             return {
                 bunq_me_tabs: [],
                 account_id: false,

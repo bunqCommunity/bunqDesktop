@@ -42,7 +42,7 @@ import CombinedList from "../Components/CombinedList/CombinedList";
 
 import Logger from "../Helpers/Logger";
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import { humanReadableDate } from "../Helpers/Utils";
+import { humanReadableDate, formatIban } from "../Helpers/Utils";
 import CategoryHelper from "../Helpers/CategoryHelper";
 
 import { openSnackbar } from "../Actions/snackbar";
@@ -85,7 +85,16 @@ class Exports extends React.Component {
     }
 
     componentDidMount() {
-        this.updateExports(this.props.user.id, this.props.accountsAccountId);
+        if (!this.props.limitedPermissions) {
+            this.updateExports(
+                this.props.user.id,
+                this.props.accountsAccountId
+            );
+        } else {
+            this.setState({
+                selectedTab: 1
+            });
+        }
     }
 
     componentDidUpdate(oldProps) {
@@ -108,6 +117,9 @@ class Exports extends React.Component {
                     categories: this.props.categories,
                     categoryConnections: this.props.categoryConnections,
                     selectedCategories: this.props.selectedCategories,
+
+                    selectedAccountIds: this.props.selectedAccountIds,
+                    toggleAccountIds: this.props.toggleAccountIds,
 
                     searchTerm: this.props.searchTerm,
                     paymentVisibility: this.props.paymentVisibility,
@@ -139,6 +151,9 @@ class Exports extends React.Component {
                     categories: this.props.categories,
                     categoryConnections: this.props.categoryConnections,
                     selectedCategories: this.props.selectedCategories,
+
+                    selectedAccountIds: this.props.selectedAccountIds,
+                    toggleAccountIds: this.props.toggleAccountIds,
 
                     searchTerm: this.props.searchTerm,
                     paymentVisibility: this.props.paymentVisibility,
@@ -235,7 +250,9 @@ class Exports extends React.Component {
                     fileExtension = ".pdf";
                     break;
             }
-            const fileName = `bunq-export.${exportInfo.date_start}_${exportInfo.date_end}_${exportInfo.id}${fileExtension}`;
+            const fileName = `bunq-export.${exportInfo.date_start}_${
+                exportInfo.date_end
+            }_${exportInfo.id}${fileExtension}`;
 
             const failedMessage = this.props.t(
                 "We failed to load the export content for this monetary account"
@@ -303,11 +320,13 @@ class Exports extends React.Component {
             const info = event.info;
             const labels = event.categories.map(category => category.label);
             columnRows.push([
-                format(event.date, "YYYY-MM-DD"),
+                format(event.date, "YYYY-MM-dd"),
                 format(event.date, "HH:mm:ss"),
                 info.getDelta(),
-                info.alias.iban,
-                info.counterparty_alias.iban,
+                info.alias.iban ? formatIban(info.alias.iban) : null,
+                info.counterparty_alias.iban
+                    ? formatIban(info.counterparty_alias.iban)
+                    : null,
                 info.counterparty_alias.display_name,
                 info.description.replace("\n", " "),
                 labels.join(","),
@@ -335,8 +354,8 @@ class Exports extends React.Component {
             : new Date();
 
         // format a file name
-        const startDateLabel = format(dateFromFilter, "YYYY-MM-DD");
-        const endDateLabel = format(dateToFilter, "YYYY-MM-DD");
+        const startDateLabel = format(dateFromFilter, "YYYY-MM-dd");
+        const endDateLabel = format(dateToFilter, "YYYY-MM-dd");
         const fileName = `bunqdesktop-export.${startDateLabel}_${endDateLabel}.csv`;
 
         // store the file using our custom output
@@ -368,11 +387,13 @@ class Exports extends React.Component {
     };
 
     render() {
-        const t = this.props.t;
+        const { t, limitedPermissions } = this.props;
 
         const exportItems = this.props.exports.map((exportItem, key) => {
             const exportInfo = exportItem.CustomerStatement;
-            const primary = `Start ${exportInfo.date_start} - End ${exportInfo.date_end}`;
+            const primary = `Start ${exportInfo.date_start} - End ${
+                exportInfo.date_end
+            }`;
             const secondary = `Created: ${humanReadableDate(
                 exportInfo.created
             )}`;
@@ -415,9 +436,12 @@ class Exports extends React.Component {
                         <Tabs
                             value={this.state.selectedTab}
                             onChange={(event, value) =>
-                                this.setState({ selectedTab: value })}
+                                this.setState({ selectedTab: value })
+                            }
                         >
-                            <Tab value={0} label="bunq Exports" />
+                            {limitedPermissions ? null : (
+                                <Tab value={0} label="bunq Exports" />
+                            )}
                             <Tab value={1} label="Custom Exports" />
                         </Tabs>
                     </AppBar>
@@ -496,7 +520,7 @@ class Exports extends React.Component {
                                             id="from-date"
                                             helperText={t("From date")}
                                             emptyLabel="No filter"
-                                            format="MMMM DD, YYYY"
+                                            format="MMMM dd, YYYY"
                                             disableFuture
                                             style={styles.dateInput}
                                             maxDate={this.state.dateTo}
@@ -525,7 +549,7 @@ class Exports extends React.Component {
                                             id="to-date"
                                             helperText={t("To date")}
                                             emptyLabel="No filter"
-                                            format="MMMM DD, YYYY"
+                                            format="MMMM dd, YYYY"
                                             disableFuture
                                             style={styles.dateInput}
                                             minDate={this.state.dateFrom}
@@ -592,7 +616,8 @@ class Exports extends React.Component {
                                             onClick={() =>
                                                 shell.openItem(
                                                     app.getPath("downloads")
-                                                )}
+                                                )
+                                            }
                                         >
                                             <FolderIcon />
                                         </IconButton>
@@ -651,6 +676,7 @@ class Exports extends React.Component {
                                     hiddenTypes={[
                                         "BunqMeTab",
                                         "RequestInquiry",
+                                        "RequestInquiryBatch",
                                         "RequestResponse",
                                         "ShareInviteBankInquiry"
                                     ]}
@@ -667,7 +693,9 @@ class Exports extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-        accountsAccountId: state.accounts.selectedAccount,
+        limitedPermissions: state.user.limited_permissions,
+
+        accountsAccountId: state.accounts.selected_account,
 
         exportNewLoading: state.export_new.loading,
         exports: state.exports.exports,
@@ -676,6 +704,9 @@ const mapStateToProps = state => {
         searchTerm: state.search_filter.search_term,
         dateFromFilter: state.date_filter.from_date,
         dateToFilter: state.date_filter.to_date,
+
+        selectedAccountIds: state.account_id_filter.selected_account_ids,
+        toggleAccountIds: state.account_id_filter.toggle,
 
         categories: state.categories.categories,
         categoryConnections: state.categories.category_connections,
@@ -697,6 +728,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(Exports)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(Exports));

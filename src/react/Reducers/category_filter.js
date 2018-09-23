@@ -1,5 +1,6 @@
 export const defaultState = {
-    selected_categories: []
+    selected_categories: [],
+    toggle: false
 };
 
 export default function reducer(state = defaultState, action) {
@@ -16,14 +17,19 @@ export default function reducer(state = defaultState, action) {
                 ...state,
                 selected_categories: currentCategories
             };
+
         case "CATEGORY_FILTER_REMOVE_CATEGORY_ID":
             const currentCategories2 = [...state.selected_categories];
-
             currentCategories2.splice(action.payload.index, 1);
-
             return {
                 ...state,
                 selected_categories: currentCategories2
+            };
+
+        case "CATEGORY_FILTER_TOGGLE_CATEGORY_ID":
+            return {
+                ...state,
+                toggle: !state.toggle
             };
 
         case "CATEGORY_FILTER_CLEAR":

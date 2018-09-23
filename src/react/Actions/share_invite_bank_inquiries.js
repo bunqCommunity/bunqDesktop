@@ -1,6 +1,8 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import { storeDecryptString } from "../Helpers/CryptoWorkerWrapper";
 
-export const STORED_SHARE_INVITE_BANK_INQUIRIES = "BUNQDESKTOP_SHARE_INVITE_BANK_INQUIRIES"
+export const STORED_SHARE_INVITE_BANK_INQUIRIES =
+    "BUNQDESKTOP_SHARE_INVITE_BANK_INQUIRIES";
 
 export function shareInviteBankInquiriesSetInfo(
     share_invite_bank_inquiries,
@@ -19,14 +21,25 @@ export function shareInviteBankInquiriesSetInfo(
 
 export function loadStoredShareInviteBankInquiries(BunqJSClient) {
     return dispatch => {
-        BunqJSClient.Session
-            .loadEncryptedData(STORED_SHARE_INVITE_BANK_INQUIRIES)
+        dispatch(shareInviteBankInquiriesLoading());
+        storeDecryptString(
+            STORED_SHARE_INVITE_BANK_INQUIRIES,
+            BunqJSClient.Session.encryptionKey
+        )
             .then(data => {
                 if (data && data.items) {
-                    dispatch(shareInviteBankInquiriesSetInfo(data.items, data.account_id));
+                    dispatch(
+                        shareInviteBankInquiriesSetInfo(
+                            data.items,
+                            data.account_id
+                        )
+                    );
                 }
+                dispatch(shareInviteBankInquiriesNotLoading());
             })
-            .catch(error => {});
+            .catch(error => {
+                dispatch(shareInviteBankInquiriesNotLoading());
+            });
     };
 }
 
@@ -35,7 +48,7 @@ export function shareInviteBankInquiriesInfoUpdate(
     user_id,
     account_id,
     options = {
-        count: 50,
+        count: 200,
         newer_id: false,
         older_id: false
     }

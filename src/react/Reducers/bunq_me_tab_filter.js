@@ -1,5 +1,5 @@
 export const defaultState = {
-    type: "active",
+    type: "default",
     visible: true
 };
 

@@ -35,6 +35,7 @@ export default class RequestInquiry implements Event {
     private _attachment: AttachmentList;
     private _status: RequestStatus;
     private _batch_id: null | number;
+    private _bunqme_share_url: string;
     private _scheduled_id: null | number;
     private _minimum_age: null | number;
     private _require_address: string;
@@ -146,6 +147,9 @@ export default class RequestInquiry implements Event {
     }
     get batch_id(): number | null {
         return this._batch_id;
+    }
+    get bunqme_share_url(): string | null {
+        return this._bunqme_share_url;
     }
     get scheduled_id(): number | null {
         return this._scheduled_id;

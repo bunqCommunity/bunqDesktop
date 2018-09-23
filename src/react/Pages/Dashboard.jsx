@@ -18,7 +18,6 @@ import KeyIcon from "@material-ui/icons/VpnKey";
 
 import CombinedList from "../Components/CombinedList/CombinedList";
 import AccountList from "../Components/AccountList/AccountList";
-import LoadOlderButton from "../Components/LoadOlderButton";
 import NavLink from "../Components/Routing/NavLink";
 import AttachmentImage from "../Components/AttachmentImage/AttachmentImage";
 
@@ -98,6 +97,16 @@ class Dashboard extends React.Component {
             ? this.props.user.display_name
             : t("user");
 
+        const profileAvatar = user ? (
+            <Avatar style={styles.bigAvatar}>
+                <AttachmentImage
+                    height={50}
+                    BunqJSClient={this.props.BunqJSClient}
+                    imageUUID={user.avatar.image[0].attachment_public_uuid}
+                />
+            </Avatar>
+        ) : null;
+
         return (
             <Grid container spacing={16}>
                 <Helmet>
@@ -111,22 +120,13 @@ class Dashboard extends React.Component {
                 <Grid item xs={12} md={12} lg={10} xl={8}>
                     <Grid container spacing={16}>
                         <Grid item xs={6} style={styles.titleWrapper}>
-                            <NavLink to={"/profile"}>
-                                {user ? (
-                                    <Avatar style={styles.bigAvatar}>
-                                        <AttachmentImage
-                                            width={50}
-                                            BunqJSClient={
-                                                this.props.BunqJSClient
-                                            }
-                                            imageUUID={
-                                                user.avatar.image[0]
-                                                    .attachment_public_uuid
-                                            }
-                                        />
-                                    </Avatar>
-                                ) : null}
-                            </NavLink>
+                            {this.props.limitedPermissions ? (
+                                profileAvatar
+                            ) : (
+                                <NavLink to={"/profile"}>
+                                    {profileAvatar}
+                                </NavLink>
+                            )}
 
                             <Typography
                                 variant="title"
@@ -182,15 +182,15 @@ class Dashboard extends React.Component {
                                         }
                                     />
 
-                                    <LoadOlderButton
-                                        wrapperStyle={{ padding: 8 }}
-                                        buttonStyle={{ width: "100%" }}
-                                        buttonContent={t("Load more events")}
-                                        BunqJSClient={this.props.BunqJSClient}
-                                        initialBunqConnect={
-                                            this.props.initialBunqConnect
-                                        }
-                                    />
+                                    {/*<LoadOlderButton*/}
+                                    {/*wrapperStyle={{ padding: 8 }}*/}
+                                    {/*buttonStyle={{ width: "100%" }}*/}
+                                    {/*buttonContent={t("Load more events")}*/}
+                                    {/*BunqJSClient={this.props.BunqJSClient}*/}
+                                    {/*initialBunqConnect={*/}
+                                    {/*this.props.initialBunqConnect*/}
+                                    {/*}*/}
+                                    {/*/>*/}
 
                                     {this.props.environment === "SANDBOX" ? (
                                         <div
@@ -237,10 +237,11 @@ const mapStateToProps = state => {
         users: state.users.users,
         userType: state.user.user_type,
         userLoading: state.user.loading,
+        limitedPermissions: state.user.limited_permissions,
         usersLoading: state.users.loading,
 
         requestInquiryLoading: state.request_inquiry.loading,
-        selectedAccount: state.accounts.selectedAccount,
+        selectedAccount: state.accounts.selected_account,
 
         useNoPassword: state.registration.use_no_password,
         storedApiKeys: state.registration.stored_api_keys,
@@ -271,6 +272,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(userLogin(BunqJSClient, type, updated))
     };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(Dashboard)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(Dashboard));

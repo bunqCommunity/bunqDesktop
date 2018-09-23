@@ -4,8 +4,8 @@ import { translate } from "react-i18next";
 import Helmet from "react-helmet";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
-import Input  from "@material-ui/core/Input";
-import InputLabel  from "@material-ui/core/InputLabel";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -24,6 +24,7 @@ import RemoveIcon from "@material-ui/icons/Delete";
 import HomeIcon from "@material-ui/icons/Home";
 
 import path from "../ImportWrappers/path";
+import { getPrettyLanguage } from "../Helpers/Utils";
 const packageInfo = require("../../../package.json");
 const SUPPORTED_LANGUAGES = packageInfo.supported_languages;
 
@@ -36,6 +37,7 @@ import MenuItemTranslate from "../Components/TranslationHelpers/MenuItem";
 import { openSnackbar } from "../Actions/snackbar";
 import {
     resetApplication,
+    setSyncOnStartup,
     setHideBalance,
     setInactivityCheckDuration,
     setMinimizeToTray,
@@ -75,22 +77,6 @@ const styles = {
     paper: {
         padding: 24
     }
-};
-
-const getPrettyLanguage = key => {
-    switch (key) {
-        case "en":
-            return "English";
-        case "nl":
-            return "Nederlands";
-        case "de":
-            return "Deutsch";
-        case "es":
-            return "Español";
-        case "it":
-            return "Italiano";
-    }
-    return key;
 };
 
 const humanReadableThemes = {
@@ -170,6 +156,9 @@ class Settings extends React.Component {
     handleHideInactivityDurationChange = event => {
         this.props.setInactivityCheckDuration(event.target.value);
     };
+    handleSyncOnStartupChange = event => {
+        this.props.setSyncOnStartup(!this.props.syncOnStartup);
+    };
     handleResetBunqDesktop = event => {
         if (this.state.clearConfirmation === false) {
             this.setState({ clearConfirmation: true });
@@ -180,7 +169,9 @@ class Settings extends React.Component {
 
     displayImportDialog = newPath => {
         this.setState({
-            importTargetLocation: `${newPath}${path.sep}BunqDesktopSettings.json`,
+            importTargetLocation: `${newPath}${
+                path.sep
+            }BunqDesktopSettings.json`,
             openImportDialog: true
         });
     };
@@ -269,13 +260,17 @@ class Settings extends React.Component {
                                         input={<Input id="theme-selection" />}
                                         style={styles.selectField}
                                     >
-                                        {Object.keys(
-                                            this.props.themeList
-                                        ).map(themeKey => (
-                                            <MenuItem value={themeKey}>
-                                                {humanReadableThemes[themeKey]}
-                                            </MenuItem>
-                                        ))}
+                                        {Object.keys(this.props.themeList).map(
+                                            themeKey => (
+                                                <MenuItem value={themeKey}>
+                                                    {
+                                                        humanReadableThemes[
+                                                            themeKey
+                                                        ]
+                                                    }
+                                                </MenuItem>
+                                            )
+                                        )}
                                     </Select>
                                 </FormControl>
                             </Grid>
@@ -470,6 +465,21 @@ class Settings extends React.Component {
                                 ) : null}
                             </Grid>
 
+                            <Grid item xs={12} md={6}>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            id="sync-on-startup"
+                                            checked={this.props.syncOnStartup}
+                                            onChange={
+                                                this.handleSyncOnStartupChange
+                                            }
+                                        />
+                                    }
+                                    label={t("Run background sync on startup")}
+                                />
+                            </Grid>
+
                             <Grid item xs={12}>
                                 <FilePicker
                                     buttonContent={"Change settings location"}
@@ -535,7 +545,8 @@ class Settings extends React.Component {
                             <ButtonTranslate
                                 variant="raised"
                                 onClick={() =>
-                                    this.setState({ openImportDialog: false })}
+                                    this.setState({ openImportDialog: false })
+                                }
                             >
                                 Cancel
                             </ButtonTranslate>
@@ -563,6 +574,7 @@ class Settings extends React.Component {
 
 const mapStateToProps = state => {
     return {
+        syncOnStartup: state.options.sync_on_startup,
         theme: state.options.theme,
         language: state.options.language,
         hideBalance: state.options.hide_balance,
@@ -583,6 +595,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         openSnackbar: message => dispatch(openSnackbar(message)),
 
         // options and options_drawer handlers
+        setSyncOnStartup: syncOnStartup =>
+            dispatch(setSyncOnStartup(syncOnStartup)),
         openSnackbar: message => dispatch(openSnackbar(message)),
         setAutomaticThemeChange: automaticThemeChange =>
             dispatch(setAutomaticThemeChange(automaticThemeChange)),
@@ -615,6 +629,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(Settings)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(Settings));

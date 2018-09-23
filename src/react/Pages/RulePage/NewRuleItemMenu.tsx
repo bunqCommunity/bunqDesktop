@@ -2,13 +2,13 @@ import * as React from "react";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
-import MenuItem  from "@material-ui/core/MenuItem";
+import MenuItem from "@material-ui/core/MenuItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 
 import { RuleTypes } from "../../Types/Types";
 
-import FileDownloadIcon from "@material-ui/icons/FileDownload";
+import FileDownloadIcon from "../../Components/CustomSVG/FileDownload";
 import AddIcon from "@material-ui/icons/Add";
 
 class NewRuleItemMenu extends React.Component<any, any> {
@@ -60,6 +60,9 @@ class NewRuleItemMenu extends React.Component<any, any> {
                     </MenuItem>
                     <MenuItem onClick={this.addRule("ITEM_TYPE")}>
                         Event type
+                    </MenuItem>
+                    <MenuItem onClick={this.addRule("ACCOUNT_TYPE")}>
+                        Account
                     </MenuItem>
                     <Divider />
 

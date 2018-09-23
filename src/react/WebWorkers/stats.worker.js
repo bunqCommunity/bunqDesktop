@@ -6,12 +6,13 @@ import subDays from "date-fns/subDays";
 import subWeeks from "date-fns/subWeeks";
 import subMonths from "date-fns/subMonths";
 import subYears from "date-fns/subYears";
-import getWeek from "date-fns/getISOWeek";
-import getDayOfYear from "date-fns/getDayOfYear";
+import differenceInCalendarDays from "date-fns/differenceInCalendarDays";
+import differenceInCalendarWeeks from "date-fns/differenceInCalendarWeeks";
+import differenceInCalendarMonths from "date-fns/differenceInCalendarMonths";
+import differenceInCalendarYears from "date-fns/differenceInCalendarYears";
 import format from "date-fns/format";
 
 import CategoryHelper from "../Helpers/CategoryHelper";
-
 import {
     bunqMeTabsFilter,
     masterCardActionFilter,
@@ -19,8 +20,8 @@ import {
     requestInquiryFilter,
     requestResponseFilter
 } from "../Helpers/DataFilters";
-import MonetaryAccount from "../Models/MonetaryAccount";
 
+import MonetaryAccount from "../Models/MonetaryAccount";
 import Payment from "../Models/Payment";
 import MasterCardAction from "../Models/MasterCardAction";
 import RequestInquiry from "../Models/RequestInquiry";
@@ -34,10 +35,10 @@ const labelFormat = (date, type = "daily") => {
         case "monthly":
             return format(date, "MMM YYYY");
         case "weekly":
-            return format(date, "WW/YYYY");
+            return format(date, "ww/YYYY");
         case "daily":
         default:
-            return format(date, "D MMM YY");
+            return format(date, "dd MMM YY");
     }
 };
 
@@ -207,107 +208,92 @@ const masterCardActionMapper = (
     return data;
 };
 
-const formatLabels = (events, type) => {
+const formatLabels = (events, type, timeFrom, timeTo) => {
     const dataCollection = {};
 
     // nothing to do with no events
     if (events.length <= 0) return dataCollection;
 
+    // generic date since it can be re-used
+    const startDate = timeTo || new Date();
+    const endDate = timeFrom || events[events.length - 1].date;
+
     // get newest item to check its date
     switch (type) {
         case "yearly":
-            const startDateYearly = new Date();
-            const endDateYearly = events[events.length - 1].date;
-            const yearDifference1 =
-                startDateYearly.getFullYear() - endDateYearly.getFullYear() + 1;
+            // calculate difference in years between the two dates
+            const yearDifference = differenceInCalendarYears(
+                startDate,
+                endDate
+            );
 
-            for (let year = 0; year < yearDifference1; year++) {
-                const startDate = subYears(new Date(), year);
+            for (let year = 0; year <= yearDifference; year++) {
+                const itemDate = subYears(startDate, year);
 
-                const label = labelFormat(startDate, type);
+                const label = labelFormat(itemDate, type);
                 dataCollection[label] = {
                     data: [],
-                    date: startDate
+                    date: itemDate
                 };
             }
             break;
 
         case "monthly":
-            const startDateMonthly = new Date();
-            const endDateMonthly = events[events.length - 1].date;
-            const yearDifference2 =
-                startDateMonthly.getFullYear() - endDateMonthly.getFullYear();
-
             // calculate difference in months between the two dates
-            let monthDifference =
-                startDateMonthly.getMonth() -
-                endDateMonthly.getMonth() +
-                1 +
-                yearDifference2 * 12;
+            let monthDifference = differenceInCalendarMonths(
+                startDate,
+                endDate
+            );
 
-            // limit to 24 months
-            monthDifference = monthDifference > 24 ? 24 : monthDifference;
+            // limit to 24 months if no explicit date is set
+            monthDifference =
+                monthDifference > 24 && !timeFrom ? 24 : monthDifference;
 
-            for (let month = 0; month < monthDifference; month++) {
-                const startDate = subMonths(new Date(), month);
+            for (let month = 0; month <= monthDifference; month++) {
+                const itemDate = subMonths(startDate, month);
 
-                const label = labelFormat(startDate, type);
+                const label = labelFormat(itemDate, type);
                 dataCollection[label] = {
                     data: [],
-                    date: startDate
+                    date: itemDate
                 };
             }
             break;
 
         case "weekly":
-            const startDateWeekly = new Date();
-            const endDateWeekly = events[events.length - 1].date;
-            const yearDifference3 =
-                startDateWeekly.getFullYear() - endDateWeekly.getFullYear();
-
             // calculate difference in weeks between the two dates
-            let weekDifference =
-                getWeek(startDateWeekly) -
-                getWeek(endDateWeekly) +
-                1 +
-                yearDifference3 * 53;
+            let weekDifference = differenceInCalendarWeeks(startDate, endDate);
 
-            // limit to 53 weeks
-            weekDifference = weekDifference > 53 ? 53 : weekDifference;
+            // limit to 53 weeks if no explicit date is set
+            weekDifference =
+                weekDifference > 53 && !timeFrom ? 53 : weekDifference;
 
-            for (let week = 0; week < weekDifference; week++) {
-                const startDate = subWeeks(new Date(), week);
+            for (let week = 0; week <= weekDifference; week++) {
+                const itemDate = subWeeks(startDate, week);
 
-                const label = labelFormat(startDate, type);
+                const label = labelFormat(itemDate, type);
                 dataCollection[label] = {
                     data: [],
-                    date: startDate
+                    date: itemDate
                 };
             }
             break;
 
         case "daily":
-            const startDateDayly = new Date();
-            const endDateDayly = events[events.length - 1].date;
-            const yearDifference4 =
-                startDateDayly.getFullYear() - endDateDayly.getFullYear();
-
             // calculate the difference in days between the two dates
-            let dayDifference =
-                getDayOfYear(startDateDayly) -
-                getDayOfYear(endDateDayly) +
-                yearDifference4 * 365;
+            let dayDifference = differenceInCalendarDays(startDate, endDate);
 
-            // limit to 60 days
-            dayDifference = dayDifference > 60 ? 60 : dayDifference;
+            // limit to 60 days if no explicit date is set
+            dayDifference =
+                dayDifference > 60 && !timeFrom ? 60 : dayDifference;
 
-            for (let day = 0; day < dayDifference; day++) {
-                const startDate = subDays(new Date(), day);
+            for (let day = 0; day <= dayDifference; day++) {
+                const itemDate = subDays(startDate, day);
 
-                const label = labelFormat(startDate, type);
+                const label = labelFormat(itemDate, type);
                 dataCollection[label] = {
                     data: [],
-                    date: startDate
+                    date: itemDate
                 };
             }
             break;
@@ -343,6 +329,7 @@ const getData = (
     let categoryCountHistory = {};
     // total category transaction history
     let categoryTransactionHistory = {};
+
     // individual count history
     let paymentCountHistory = [];
     let requestInquiryCountHistory = [];
@@ -371,7 +358,7 @@ const getData = (
     });
 
     // create the correct labels for the X axis
-    const dataCollection = formatLabels(events, type);
+    const dataCollection = formatLabels(events, type, timeFrom, timeTo);
 
     // combine the list
     sortedEvents.forEach(item => {
@@ -574,13 +561,13 @@ const getData = (
                     timescaleTransactionInfo.masterCardAction
                 );
                 masterCardPaymentTransactionHistory.push(
-                    timescaleTransactionInfo.maestroPayment
+                    timescaleTransactionInfo.masterCardPayment
                 );
                 tapAndPayPaymentTransactionHistory.push(
                     timescaleTransactionInfo.tapAndPayPayment
                 );
                 maestroPaymentTransactionHistory.push(
-                    timescaleTransactionInfo.masterCardPayment
+                    timescaleTransactionInfo.maestroPayment
                 );
                 applePayPaymentTransactionHistory.push(
                     timescaleTransactionInfo.applePayPayment
@@ -623,6 +610,7 @@ const getData = (
         // total category count
         categoryCountHistory: categoryCountHistory,
         categoryTransactionHistory: categoryTransactionHistory,
+
         // individual history count
         requestResponseHistory: requestResponseCountHistory.reverse(),
         requestInquiryHistory: requestInquiryCountHistory.reverse(),

@@ -10,7 +10,7 @@ import Drawer from "@material-ui/core/Drawer";
 import Divider from "@material-ui/core/Divider";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Typography from "@material-ui/core/Typography";
-import Radio  from "@material-ui/core/Radio";
+import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import ListItem from "@material-ui/core/ListItem";
 import ListSubheader from "@material-ui/core/ListSubheader";
@@ -30,13 +30,10 @@ import TimerOff from "@material-ui/icons/TimerOff";
 import Cancel from "@material-ui/icons/Cancel";
 
 import {
-    clearPaymentFilterType,
     togglePaymentFilterVisibility,
     setPaymentFilterType,
-    clearRequestFilterType,
     toggleRequestFilterVisibility,
     setRequestFilterType,
-    clearBunqMeTabFilterType,
     toggleBunqMeTabFilterVisibility,
     setBunqMeTabFilterType,
     setFromDateFilter,
@@ -47,7 +44,9 @@ import {
 } from "../../Actions/filters";
 
 import SearchFilter from "./SearchFilter";
+import AccountSelection from "./AccountSelection";
 import CategorySelection from "./CategorySelection";
+import AmountFilter from "./AmountFilter";
 
 const styles = {
     list: {
@@ -169,6 +168,10 @@ class FilterDrawer extends React.Component {
             <List style={styles.list}>
                 <ListItem style={styles.textFieldListItem}>
                     <SearchFilter style={styles.textField} t={t} />
+                </ListItem>
+
+                <ListItem style={styles.textFieldListItem}>
+                    <AmountFilter style={styles.textField} t={t} />
                 </ListItem>
 
                 {/* filters for both normal payments and mastercard actions */}
@@ -355,7 +358,7 @@ class FilterDrawer extends React.Component {
                         id="from-date"
                         helperText={t("From date")}
                         emptyLabel={t("No filter")}
-                        format="MMMM DD, YYYY"
+                        format="MMMM dd, YYYY"
                         disableFuture
                         style={styles.dateInput}
                         maxDate={this.props.dateToFilter}
@@ -378,7 +381,7 @@ class FilterDrawer extends React.Component {
                         id="to-date"
                         helperText={t("To date")}
                         emptyLabel={t("No filter")}
-                        format="MMMM DD, YYYY"
+                        format="MMMM dd, YYYY"
                         disableFuture
                         style={styles.dateInput}
                         minDate={this.props.dateFromFilter}
@@ -398,6 +401,11 @@ class FilterDrawer extends React.Component {
                 </ListItem>
 
                 <CategorySelection t={t} />
+
+                <AccountSelection
+                    BunqJSClient={this.props.BunqJSClient}
+                    t={t}
+                />
 
                 <ListItem style={styles.listFiller} />
 
@@ -476,17 +484,14 @@ const mapDispatchToProps = dispatch => {
     return {
         resetFilters: () => dispatch(resetFilters()),
 
-        clearPaymentFilterType: () => dispatch(clearPaymentFilterType()),
         setPaymentFilterType: type => dispatch(setPaymentFilterType(type)),
         togglePaymentFilterVisibility: () =>
             dispatch(togglePaymentFilterVisibility()),
 
-        clearRequestFilterType: () => dispatch(clearRequestFilterType()),
         setRequestFilterType: type => dispatch(setRequestFilterType(type)),
         toggleRequestFilterVisibility: () =>
             dispatch(toggleRequestFilterVisibility()),
 
-        clearBunqMeTabFilterType: () => dispatch(clearBunqMeTabFilterType()),
         setBunqMeTabFilterType: type => dispatch(setBunqMeTabFilterType(type)),
         toggleBunqMeTabFilterVisibility: () =>
             dispatch(toggleBunqMeTabFilterVisibility()),
@@ -498,6 +503,7 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    withTheme()(translate("translations")(FilterDrawer))
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(withTheme()(translate("translations")(FilterDrawer)));

@@ -5,8 +5,10 @@ import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import CirclePicker from "react-color/lib/Circle";
 import Grid from "@material-ui/core/Grid";
+import Chip from "@material-ui/core/Chip";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
+import Avatar from "@material-ui/core/Avatar";
 import TextField from "@material-ui/core/TextField";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Dialog from "@material-ui/core/Dialog";
@@ -20,6 +22,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
+import LazyAttachmentImage from "../Components/AttachmentImage/LazyAttachmentImage";
 import NavLink from "../Components/Routing/NavLink";
 import CombinedList from "../Components/CombinedList/CombinedList";
 import AccountCard from "../Components/AccountCard";
@@ -40,10 +43,18 @@ import { requestResponsesUpdate } from "../Actions/request_responses";
 import { bunqMeTabsUpdate } from "../Actions/bunq_me_tabs";
 import { masterCardActionsUpdate } from "../Actions/master_card_actions";
 import { requestInquiriesUpdate } from "../Actions/request_inquiries";
+import { requestInquiryBatchesUpdate } from "../Actions/request_inquiry_batches";
 import { shareInviteBankInquiriesInfoUpdate } from "../Actions/share_invite_bank_inquiries";
 import { shareInviteBankResponsesInfoUpdate } from "../Actions/share_invite_bank_responses";
 
 const styles = {
+    chip: {
+        margin: 8
+    },
+    chipImage: {
+        width: 32,
+        height: 32
+    },
     textField: {
         width: "100%",
         marginTop: 16
@@ -51,6 +62,10 @@ const styles = {
     paper: {
         padding: 24,
         marginBottom: 16
+    },
+    paperIcons: {
+        marginTop: 16,
+        padding: 8
     },
     paperList: {
         marginTop: 16
@@ -64,6 +79,25 @@ const styles = {
     circlePicker: {
         padding: 8
     }
+};
+
+const PersonChip = ({ alias, BunqJSClient }) => {
+    return (
+        <Chip
+            style={styles.chip}
+            avatar={
+                <Avatar>
+                    <LazyAttachmentImage
+                        style={styles.chipImage}
+                        BunqJSClient={BunqJSClient}
+                        height={32}
+                        imageUUID={alias.avatar.image[0].attachment_public_uuid}
+                    />
+                </Avatar>
+            }
+            label={alias.display_name}
+        />
+    );
 };
 
 class AccountInfo extends React.Component {
@@ -94,6 +128,7 @@ class AccountInfo extends React.Component {
             this.props.bunqMeTabsUpdate(userId, accountId);
             this.props.requestResponsesUpdate(userId, accountId);
             this.props.requestInquiriesUpdate(userId, accountId);
+            this.props.requestInquiryBatchesUpdate(userId, accountId);
             this.props.masterCardActionsUpdate(userId, accountId);
 
             const accountInfo = this.props.accounts.find(
@@ -112,10 +147,10 @@ class AccountInfo extends React.Component {
         }
     }
 
-    componentWillUpdate(nextProps, nextState) {
-        const { initialBunqConnect, accountsLoading, user } = nextProps;
-        const accountId = parseFloat(this.props.match.params.accountId);
+    getSnapshotBeforeUpdate(nextProps, nextState) {
+        const { initialBunqConnect, accountsLoading, user } = this.props;
         const nextAccountId = parseFloat(nextProps.match.params.accountId);
+        const accountId = parseFloat(this.props.match.params.accountId);
 
         if (
             accountsLoading === false &&
@@ -135,7 +170,9 @@ class AccountInfo extends React.Component {
             this.props.requestInquiriesUpdate(user.id, nextAccountId);
             this.props.masterCardActionsUpdate(user.id, nextAccountId);
         }
+        return null;
     }
+    componentDidUpdate() {}
 
     toggleDeactivateDialog = () =>
         this.setState({ openDialog: !this.state.openDialog });
@@ -204,6 +241,7 @@ class AccountInfo extends React.Component {
     render() {
         const {
             accounts,
+            user,
             shareInviteBankResponses,
             shareInviteBankInquiries,
             t
@@ -213,6 +251,7 @@ class AccountInfo extends React.Component {
         const noneText = t("None");
         const sharedWithText = t("Shared with");
         const sharedByText = t("Shared by");
+        const coOwnersText = t("Co-owners");
 
         if (this.state.deactivateActivated) return <Redirect to="/" />;
 
@@ -227,36 +266,77 @@ class AccountInfo extends React.Component {
                 filterShareInviteBankInquiries(accountInfo.id)
             );
 
+            const isJointAccount =
+                accountInfo.accountType === "MonetaryAccountJoint";
+
             let primaryConnectText = sharedWithText;
-            let secondaryConnectText = noneText;
-            let displayNameList = [];
+            let profileIconList = [];
             let allowConnectSettings = true;
 
-            if (filteredInviteResponses.length > 0) {
-                // this account was shared by someone
-                primaryConnectText = sharedByText;
+            // don't render if on a joint account
+            if (isJointAccount) {
+                primaryConnectText = coOwnersText;
                 allowConnectSettings = false;
 
-                displayNameList = filteredInviteResponses.map(
-                    filteredInviteResponse => {
-                        return filteredInviteResponse.ShareInviteBankResponse
-                            .counter_alias.display_name;
-                    }
-                );
-            } else if (filteredShareInquiries.length > 0) {
-                // this account was shared with someone
-                primaryConnectText = sharedWithText;
+                profileIconList = accountInfo.all_co_owner
+                    .filter(coOwner => {
+                        return coOwner.alias.uuid !== user.avatar.anchor_uuid;
+                    })
+                    .map(coOwner => {
+                        return (
+                            <PersonChip
+                                BunqJSClient={this.props.BunqJSClient}
+                                alias={coOwner.alias}
+                            />
+                        );
+                    });
+            } else {
+                if (filteredInviteResponses.length > 0) {
+                    // this account was shared by someone
+                    primaryConnectText = sharedByText;
+                    allowConnectSettings = false;
 
-                displayNameList = filteredShareInquiries.map(
-                    filteredShareInquiry => {
-                        return filteredShareInquiry.ShareInviteBankInquiry
-                            .counter_user_alias.display_name;
-                    }
-                );
+                    profileIconList = filteredInviteResponses.map(
+                        filteredInviteResponse => {
+                            return (
+                                <PersonChip
+                                    BunqJSClient={this.props.BunqJSClient}
+                                    alias={
+                                        filteredInviteResponse
+                                            .ShareInviteBankResponse
+                                            .counter_alias
+                                    }
+                                />
+                            );
+                        }
+                    );
+                } else if (filteredShareInquiries.length > 0) {
+                    // this account was shared with someone
+                    primaryConnectText = sharedWithText;
+
+                    profileIconList = filteredShareInquiries.map(
+                        filteredShareInquiry => {
+                            return (
+                                <PersonChip
+                                    BunqJSClient={this.props.BunqJSClient}
+                                    alias={
+                                        filteredShareInquiry
+                                            .ShareInviteBankInquiry
+                                            .counter_user_alias
+                                    }
+                                />
+                            );
+                        }
+                    );
+                }
             }
-            if (displayNameList.length > 0) {
-                secondaryConnectText = displayNameList.join(", ");
-            }
+
+            const connectListItemText = (
+                <ListItemText
+                    primary={`${primaryConnectText}: `}
+                    secondary={profileIconList.length === 0 ? noneText : ""}
+                />
+            );
 
             content = (
                 <React.Fragment>
@@ -268,15 +348,20 @@ class AccountInfo extends React.Component {
 
                         <DialogContent>
                             <DialogContentText>
-                                {t(
-                                    "Are you sure you wish to cancel this account?"
-                                )}
+                                {isJointAccount
+                                    ? t(
+                                          "It is not possible to delete a Joint or Connect account using bunqDesktop"
+                                      )
+                                    : t(
+                                          "Are you sure you wish to cancel this account?"
+                                      )}
                             </DialogContentText>
                             <TextField
                                 style={styles.textField}
                                 value={this.state.deactivateReason}
                                 onChange={this.handleReasonChange}
                                 error={this.state.deactivateReason.length === 0}
+                                disabled={isJointAccount}
                                 helperText={t(
                                     "Why are you closing the account?"
                                 )}
@@ -299,7 +384,8 @@ class AccountInfo extends React.Component {
                                 color="secondary"
                                 disabled={
                                     this.props.accountsLoading ||
-                                    this.state.deactivateReason.length === 0
+                                    this.state.deactivateReason.length === 0 ||
+                                    isJointAccount
                                 }
                             >
                                 Agree
@@ -372,30 +458,25 @@ class AccountInfo extends React.Component {
                         toggleDeactivateDialog={this.toggleDeactivateDialog}
                         shareInviteBankResponses={filteredInviteResponses}
                         account={accountInfo}
+                        isJoint={isJointAccount}
                     />
 
-                    <Paper style={styles.paperList}>
-                        <List>
+                    <Paper style={styles.paperIcons}>
+                        <List dense={true}>
                             {allowConnectSettings ? (
                                 <ListItem
                                     to={`/connect/${accountId}`}
                                     component={NavLink}
                                     button
                                 >
-                                    <ListItemText
-                                        primary={`${primaryConnectText}: `}
-                                        secondary={secondaryConnectText}
-                                    />
+                                    {connectListItemText}
                                 </ListItem>
                             ) : (
-                                <ListItem>
-                                    <ListItemText
-                                        primary={`${primaryConnectText}: `}
-                                        secondary={secondaryConnectText}
-                                    />
-                                </ListItem>
+                                <ListItem>{connectListItemText}</ListItem>
                             )}
                         </List>
+
+                        {profileIconList}
                     </Paper>
 
                     <Paper style={styles.paperList}>
@@ -403,6 +484,7 @@ class AccountInfo extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                             initialBunqConnect={this.props.initialBunqConnect}
                             hiddenTypes={["ShareInviteBankInquiry"]}
+                            accountId={accountId}
                         />
                     </Paper>
                 </React.Fragment>
@@ -496,6 +578,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId)),
         requestInquiriesUpdate: (userId, accountId) =>
             dispatch(requestInquiriesUpdate(BunqJSClient, userId, accountId)),
+        requestInquiryBatchesUpdate: (userId, accountId) =>
+            dispatch(
+                requestInquiryBatchesUpdate(BunqJSClient, userId, accountId)
+            ),
         requestResponsesUpdate: (userId, accountId) =>
             dispatch(requestResponsesUpdate(BunqJSClient, userId, accountId)),
         masterCardActionsUpdate: (userId, accountId) =>
@@ -505,6 +591,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(AccountInfo)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(AccountInfo));

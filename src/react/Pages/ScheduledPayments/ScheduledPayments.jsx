@@ -47,6 +47,10 @@ class ScheduledPayments extends React.Component {
         };
     }
 
+    componentDidMount() {
+        this.updateScheduledPayments();
+    }
+
     updateScheduledPayments = (userId, accountId) => {
         if (
             !this.props.initialBunqConnect ||
@@ -181,7 +185,8 @@ class ScheduledPayments extends React.Component {
                                 ) : (
                                     <IconButton
                                         onClick={() =>
-                                            this.updateScheduledPayments()}
+                                            this.updateScheduledPayments()
+                                        }
                                     >
                                         <RefreshIcon />
                                     </IconButton>
@@ -216,7 +221,7 @@ class ScheduledPayments extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-        accountsAccountId: state.accounts.selectedAccount,
+        accountsAccountId: state.accounts.selected_account,
 
         scheduledPaymentsLoading: state.scheduled_payments.loading,
         scheduledPayments: state.scheduled_payments.scheduled_payments
@@ -234,6 +239,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(ScheduledPayments)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(ScheduledPayments));

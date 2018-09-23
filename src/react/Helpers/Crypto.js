@@ -14,7 +14,7 @@ export const derivePasswordKey = async (
 ) => {
     if (salt === false) {
         // no salt given, create a new random one
-        salt = forge.random.getBytesSync(128);
+        salt = forge.random.getBytesSync(256);
     } else {
         // get bytes from the hex salt
         salt = forge.util.hexToBytes(salt);
@@ -56,11 +56,14 @@ export const derivePasswordKey = async (
  */
 export const encryptString = async (string, encryptionKey) => {
     // create a random initialization vector
-    const iv = forge.random.getBytesSync(16);
+    const iv = forge.random.getBytesSync(32);
+
     // turn hex-encoded key into bytes
     const encryptionKeyBytes = forge.util.hexToBytes(encryptionKey);
+
     // create a new aes-cbc cipher with our key
     const cipher = forge.cipher.createCipher("AES-CBC", encryptionKeyBytes);
+
     // turn our string into a buffer
     const buffer = forge.util.createBuffer(string, "utf8");
 
@@ -85,6 +88,7 @@ export const encryptString = async (string, encryptionKey) => {
 export const decryptString = async (encryptedString, key, iv) => {
     // get byte data from hex encoded strings
     const encrypedBytes = forge.util.hexToBytes(encryptedString);
+
     // create a new forge buffer using the bytes
     const encryptedBuffer = forge.util.createBuffer(encrypedBytes, "raw");
     const keyBytes = forge.util.hexToBytes(key);
@@ -100,12 +104,13 @@ export const decryptString = async (encryptedString, key, iv) => {
     if (!result) {
         throw new Error("Failed to decrypt string");
     }
+
     // get the raw bytes from the forge buffer
     const outputBytes = decipher.output.getBytes();
 
     // turn forge bytes into a regular buffer
-    const nodeBuffer = new Buffer(outputBytes, "binary");
+    const forgeBuffer = forge.util.createBuffer(outputBytes, "raw");
 
     // return the result as an utf8-encoded string
-    return nodeBuffer.toString("utf8");
+    return forgeBuffer.toString("utf8");
 };

@@ -1,6 +1,9 @@
 import settings from "../ImportWrappers/electronSettings";
 import { generateGUID } from "../Helpers/Utils";
 
+// default categories if no previous were found
+const defaultCategories = require("@bunq-community/bunqdesktop-templates/categories.json");
+
 export const BUNQDESKTOP_CATEGORIES = "BUNQDESKTOP_CATEGORIES";
 export const BUNQDESKTOP_CATEGORY_CONNECTIONS =
     "BUNQDESKTOP_CATEGORY_CONNECTIONS";
@@ -14,11 +17,18 @@ const categoryConnectionsStored = settings.get(
 const categoriesStoredDefault =
     categoriesStored !== undefined
         ? JSON.parse(JSON.stringify(categoriesStored))
-        : {};
+        : defaultCategories;
+
 const categoryConnectionsStoredDefault =
     categoryConnectionsStored !== undefined
         ? JSON.parse(JSON.stringify(categoryConnectionsStored))
         : {};
+
+// store the default categories
+if (categoriesStored === undefined)
+    settings.set(BUNQDESKTOP_CATEGORIES, defaultCategories);
+if (categoryConnectionsStored === undefined)
+    settings.set(BUNQDESKTOP_CATEGORY_CONNECTIONS, {});
 
 // construct the default state
 export const defaultState = {
@@ -215,6 +225,8 @@ export default function reducer(state = defaultState, action) {
                 BUNQDESKTOP_CATEGORY_CONNECTIONS,
                 state.category_connections
             );
+            return { ...state };
+
         // load categories from new settings location
         case "OPTIONS_LOAD_SETTINGS_LOCATION":
             const storedCategories = settings.get(BUNQDESKTOP_CATEGORIES);

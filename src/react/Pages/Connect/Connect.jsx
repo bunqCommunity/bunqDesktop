@@ -115,10 +115,10 @@ class Connect extends React.Component {
         }
     }
 
-    componentWillUpdate(nextProps, nextState) {
-        const { initialBunqConnect, accountsLoading, user } = nextProps;
-        const accountId = parseFloat(this.props.match.params.accountId);
+    getSnapshotBeforeUpdate(nextProps, nextState) {
+        const { initialBunqConnect, accountsLoading, user } = this.props;
         const nextAccountId = parseFloat(nextProps.match.params.accountId);
+        const accountId = parseFloat(this.props.match.params.accountId);
 
         if (
             accountsLoading === false &&
@@ -133,7 +133,9 @@ class Connect extends React.Component {
             );
             this.props.shareInviteBankResponsesInfoUpdate(user.id);
         }
+        return null;
     }
+    componentDidUpdate() {}
 
     handleChange = name => event => {
         this.setState(
@@ -296,7 +298,7 @@ class Connect extends React.Component {
             if (this.state.accessLevel !== "draft" && this.state.setTimeLimit) {
                 const timeFormatted = format(
                     getUTCDate(this.state.timeLimit),
-                    "YYYY-MM-DD HH:mm:ss"
+                    "YYYY-MM-dd HH:mm:ss"
                 );
                 shareOptions = {
                     end_date: timeFormatted
@@ -677,7 +679,7 @@ const mapStateToProps = state => {
 
         accounts: state.accounts.accounts,
         accountsLoading: state.accounts.loading,
-        selectedAccountId: state.accounts.selectedAccount,
+        selectedAccountId: state.accounts.selected_account,
 
         shareInviteBankInquiryLoading: state.share_invite_bank_inquiry.loading
     };
@@ -724,6 +726,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(Connect)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(Connect));

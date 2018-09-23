@@ -120,8 +120,9 @@ class ApplicationInfo extends React.Component {
                                         bunqDesktop
                                     </Typography>
                                     <Typography variant={"body2"}>
-                                        {`${t("Version")}: ${process.env
-                                            .CURRENT_VERSION}`}
+                                        {`${t("Version")}: ${
+                                            process.env.CURRENT_VERSION
+                                        }`}
                                     </Typography>
                                 </div>
 
@@ -130,7 +131,8 @@ class ApplicationInfo extends React.Component {
                                         onClick={() =>
                                             shell.openItem(
                                                 app.getPath("userData")
-                                            )}
+                                            )
+                                        }
                                     >
                                         <FolderIcon />
                                     </IconButton>
@@ -179,6 +181,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(ApplicationInfo)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(ApplicationInfo));

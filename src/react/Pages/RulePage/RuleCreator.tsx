@@ -27,6 +27,7 @@ import RuleCollectionMenu2 from "./RuleCollectionMenu";
 const RuleCollectionMenu: any = RuleCollectionMenu2;
 const MenuItem: any = MenuItemObj;
 
+import AccountRuleItem from "./RuleTypeItems/AccountRuleItem";
 import ValueRuleItem from "./RuleTypeItems/ValueRuleItem";
 import TransactionAmountRuleItem from "./RuleTypeItems/TransactionAmountRuleItem";
 import ItemTypeRuleItem from "./RuleTypeItems/ItemTypeRuleItem";
@@ -174,6 +175,13 @@ class RuleCreator extends React.Component<any, any> {
                     matchType: "PAYMENT"
                 };
                 break;
+            case "ACCOUNT_TYPE":
+                newRule = {
+                    ruleType: "ACCOUNT_TYPE",
+                    paymentType: "ALL",
+                    accountId: 0
+                };
+                break;
             default:
                 return false;
         }
@@ -181,7 +189,7 @@ class RuleCreator extends React.Component<any, any> {
         // add the new rule to the list
         rules.push(newRule);
 
-        // put the item_type first becuase these are checked the fastest
+        // put the item_type first because these are checked the fastest
         rules = rules.sort((ruleA: Rule, ruleB: Rule) => {
             if (
                 ruleA.ruleType === "ITEM_TYPE" &&
@@ -223,8 +231,12 @@ class RuleCreator extends React.Component<any, any> {
         const ruleCollection = this.createRuleCollection();
         // get the new ID so we can update instead of creating infinite clones
         this.setState({ id: ruleCollection.getId() }, this.updatePreview);
+
         // send the updated class to the parent
         this.props.saveRuleCollection(ruleCollection);
+
+        // display a confirmation message
+        this.props.openSnackbar(this.props.t("Changes were saved!"));
     };
     createRuleCollection = (): RuleCollection => {
         const ruleCollection = new RuleCollection();
@@ -297,31 +309,31 @@ class RuleCreator extends React.Component<any, any> {
             }
         });
 
-        const includedChips = Object.keys(
-            categoriesIncluded
-        ).map(categoryId => {
-            const categoryInfo = categoriesIncluded[categoryId];
-            return (
-                <CategoryChip
-                    key={categoryId}
-                    category={categoryInfo}
-                    onDelete={this.removeCategory(categoryInfo)}
-                />
-            );
-        });
+        const includedChips = Object.keys(categoriesIncluded).map(
+            categoryId => {
+                const categoryInfo = categoriesIncluded[categoryId];
+                return (
+                    <CategoryChip
+                        key={categoryId}
+                        category={categoryInfo}
+                        onDelete={this.removeCategory(categoryInfo)}
+                    />
+                );
+            }
+        );
 
-        const excludedChips = Object.keys(
-            categoriesExcluded
-        ).map(categoryId => {
-            const categoryInfo = categoriesExcluded[categoryId];
-            return (
-                <CategoryChip
-                    key={categoryId}
-                    category={categoryInfo}
-                    onClick={this.addCategory(categoryInfo)}
-                />
-            );
-        });
+        const excludedChips = Object.keys(categoriesExcluded).map(
+            categoryId => {
+                const categoryInfo = categoriesExcluded[categoryId];
+                return (
+                    <CategoryChip
+                        key={categoryId}
+                        category={categoryInfo}
+                        onClick={this.addCategory(categoryInfo)}
+                    />
+                );
+            }
+        );
 
         const ruleItems = rules.map((rule: Rule, ruleKey: string) => {
             switch (rule.ruleType) {
@@ -351,6 +363,18 @@ class RuleCreator extends React.Component<any, any> {
                             openExportDialog={this.openExportDialog}
                             removeRule={this.removeRule(ruleKey)}
                             updateRule={this.updateRule(ruleKey)}
+                            rule={rule}
+                            key={ruleKey}
+                        />
+                    );
+                case "ACCOUNT_TYPE":
+                    return (
+                        <AccountRuleItem
+                            BunqJSClient={this.props.BunqJSClient}
+                            openExportDialog={this.openExportDialog}
+                            removeRule={this.removeRule(ruleKey)}
+                            updateRule={this.updateRule(ruleKey)}
+                            accounts={this.props.accounts}
                             rule={rule}
                             key={ruleKey}
                         />

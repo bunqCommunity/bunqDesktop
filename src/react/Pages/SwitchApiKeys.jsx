@@ -4,6 +4,7 @@ import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Grid from "@material-ui/core/Grid";
+import Chip from "@material-ui/core/Chip";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
@@ -45,7 +46,7 @@ class SwitchApiKeys extends React.Component {
         this.state = {};
     }
 
-    componentWillMount() {
+    componentDidMount() {
         if (this.props.apiKey) {
             this.props.history.push("/");
         }
@@ -82,14 +83,13 @@ class SwitchApiKeys extends React.Component {
                     <ListItemText
                         primary={storedApiKey.device_name}
                         secondary={
-                            storedApiKey.environment === "SANDBOX" ? (
-                                t("Sandbox key")
-                            ) : (
-                                t("Production key")
-                            )
+                            storedApiKey.environment === "SANDBOX"
+                                ? t("Sandbox key")
+                                : t("Production key")
                         }
                     />
                     <ListItemSecondaryAction>
+                        {storedApiKey.isOAuth ? <Chip label="OAuth" /> : null}
                         <IconButton onClick={this.removeStoredApiKey(index)}>
                             <RemoveIcon />
                         </IconButton>
@@ -187,6 +187,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(SwitchApiKeys)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(SwitchApiKeys));

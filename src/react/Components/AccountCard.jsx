@@ -16,16 +16,24 @@ import PersonIcon from "@material-ui/icons/Person";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import UrlIcon from "@material-ui/icons/Link";
+import LinkIcon from "@material-ui/icons/Link";
+import PeopleIcon from "@material-ui/icons/People";
 
 import LazyAttachmentImage from "./AttachmentImage/LazyAttachmentImage";
 import AccountQRFullscreen from "./QR/AccountQRFullscreen";
-import { formatMoney } from "../Helpers/Utils";
+import { formatMoney, formatIban } from "../Helpers/Utils";
 import GetShareDetailBudget from "../Helpers/GetShareDetailBudget";
 
 const styles = {
     avatar: {
         width: 60,
         height: 60
+    },
+    secondaryIcon: {
+        width: 26,
+        height: 26,
+        color: "#ffffff",
+        backgroundColor: "#ffa500"
     }
 };
 
@@ -47,9 +55,22 @@ class AccountCard extends React.Component {
             const connectBudget = GetShareDetailBudget(
                 this.props.shareInviteBankResponses
             );
-            if (connectBudget) {
-                formattedBalance = connectBudget;
-            }
+            if (connectBudget) formattedBalance = connectBudget;
+        }
+
+        let avatarSub = null;
+        if (this.props.isJoint) {
+            avatarSub = (
+                <Avatar style={styles.secondaryIcon}>
+                    <PeopleIcon />
+                </Avatar>
+            );
+        } else if (this.props.shareInviteBankResponses.length > 0) {
+            avatarSub = (
+                <Avatar style={styles.secondaryIcon}>
+                    <LinkIcon />
+                </Avatar>
+            );
         }
 
         const accountBalanceText = hideBalance
@@ -62,14 +83,23 @@ class AccountCard extends React.Component {
                     <ListItem>
                         <Avatar style={styles.avatar}>
                             <LazyAttachmentImage
-                                width={60}
                                 BunqJSClient={this.props.BunqJSClient}
+                                height={60}
                                 imageUUID={
                                     account.avatar.image[0]
                                         .attachment_public_uuid
                                 }
                             />
                         </Avatar>
+                        <div
+                            style={{
+                                position: "absolute",
+                                left: 60,
+                                bottom: 4
+                            }}
+                        >
+                            {avatarSub}
+                        </div>
                         <ListItemText
                             primary={account.description}
                             secondary={accountBalanceText}
@@ -95,6 +125,7 @@ class AccountCard extends React.Component {
                         </ListItemSecondaryAction>
                     </ListItem>
                     {account.alias.map(alias => {
+                        let value = alias.value;
                         let icon = <PersonIcon />;
                         switch (alias.type) {
                             case "EMAIL":
@@ -105,6 +136,7 @@ class AccountCard extends React.Component {
                                 break;
                             case "IBAN":
                                 icon = <AccountBalanceIcon />;
+                                value = formatIban(alias.value);
                                 break;
                             case "URL":
                                 icon = <UrlIcon />;
@@ -118,7 +150,7 @@ class AccountCard extends React.Component {
                                     text={alias.value}
                                     onCopy={this.copiedValue(alias.type)}
                                 >
-                                    <ListItemText primary={alias.value} />
+                                    <ListItemText primary={value} />
                                 </CopyToClipboard>
                             </ListItem>
                         );
@@ -130,6 +162,7 @@ class AccountCard extends React.Component {
 }
 
 AccountCard.defaultProps = {
+    isJoint: false,
     toggleDeactivateDialog: false,
     toggleSettingsDialog: false
 };

@@ -36,7 +36,8 @@ export default props => {
                                 onChange={e =>
                                     handleChangeDirect("setBudget")(
                                         !props.setBudget
-                                    )}
+                                    )
+                                }
                                 value="setBudget"
                                 color="primary"
                             />

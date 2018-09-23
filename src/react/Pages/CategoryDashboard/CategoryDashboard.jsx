@@ -1,6 +1,8 @@
 import React from "react";
-import { connect } from "react-redux";
+import axios from "axios";
 import Helmet from "react-helmet";
+import { connect } from "react-redux";
+import { translate } from "react-i18next";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 
@@ -16,13 +18,17 @@ import {
     removeCategoryConnection,
     setCategory
 } from "../../Actions/categories";
-import { translate } from "react-i18next";
+import { openSnackbar } from "../../Actions/snackbar";
 
 const styles = {
     chipWrapper: {
         display: "flex",
         justifyContent: "center",
         flexWrap: "wrap"
+    },
+    buttons: {
+        width: "100%",
+        marginBottom: 8
     }
 };
 
@@ -32,7 +38,9 @@ class CategoryDashboard extends React.Component {
         this.state = {
             selectedCategoryId: false,
             openExportDialog: false,
-            openImportDialog: false
+            openImportDialog: false,
+
+            defaultCategories: false
         };
     }
 
@@ -85,6 +93,19 @@ class CategoryDashboard extends React.Component {
         });
     };
 
+    loadDefaultCategories = () => {
+        axios
+            .get(
+                "https://raw.githubusercontent.com/bunqCommunity/bunqDesktopTemplates/master/categories.json"
+            )
+            .then(response => {
+                this.setState({ defaultCategories: response.data });
+            })
+            .catch(error => {
+                this.props.openSnackbar("Failed to load default categories");
+            });
+    };
+
     render() {
         const t = this.props.t;
         const chips = Object.keys(this.props.categories).map(categoryId => {
@@ -97,6 +118,19 @@ class CategoryDashboard extends React.Component {
                 />
             );
         });
+
+        const defaultCategoryChips = this.state.defaultCategories ? (
+            <Paper style={{ padding: 8 }}>
+                {Object.keys(this.state.defaultCategories).map(categoryId => {
+                    return (
+                        <CategoryChip
+                            category={this.state.defaultCategories[categoryId]}
+                            style={this.props.chipStyle}
+                        />
+                    );
+                })}
+            </Paper>
+        ) : null;
 
         return (
             <Grid container spacing={16}>
@@ -113,7 +147,8 @@ class CategoryDashboard extends React.Component {
                 <ExportDialog
                     title={t("Export categories")}
                     closeModal={() =>
-                        this.setState({ openExportDialog: false })}
+                        this.setState({ openExportDialog: false })
+                    }
                     open={this.state.openExportDialog}
                     object={this.props.categories}
                 />
@@ -121,7 +156,8 @@ class CategoryDashboard extends React.Component {
                 <ImportDialog
                     title={t("Import categories")}
                     closeModal={() =>
-                        this.setState({ openImportDialog: false })}
+                        this.setState({ openImportDialog: false })
+                    }
                     importData={this.importCategories}
                     open={this.state.openImportDialog}
                 />
@@ -132,7 +168,8 @@ class CategoryDashboard extends React.Component {
                         color="primary"
                         style={{ width: "100%" }}
                         onClick={() =>
-                            this.setState({ openExportDialog: true })}
+                            this.setState({ openExportDialog: true })
+                        }
                     >
                         Export
                     </ButtonTranslate>
@@ -143,7 +180,8 @@ class CategoryDashboard extends React.Component {
                         color="primary"
                         style={{ width: "100%" }}
                         onClick={() =>
-                            this.setState({ openImportDialog: true })}
+                            this.setState({ openImportDialog: true })
+                        }
                     >
                         Import
                     </ButtonTranslate>
@@ -167,6 +205,40 @@ class CategoryDashboard extends React.Component {
                         </Grid>
                     </Grid>
                 </Grid>
+
+                <Grid item xs={12}>
+                    <Grid container spacing={16}>
+                        <Grid item xs={12} md={4}>
+                            <Paper style={{ padding: 8 }}>
+                                <ButtonTranslate
+                                    variant="raised"
+                                    color="primary"
+                                    style={styles.buttons}
+                                    onClick={this.loadDefaultCategories}
+                                >
+                                    Load default categories
+                                </ButtonTranslate>
+
+                                <ButtonTranslate
+                                    variant="raised"
+                                    color="primary"
+                                    style={styles.buttons}
+                                    onClick={e =>
+                                        this.importCategories(
+                                            this.state.defaultCategories
+                                        )
+                                    }
+                                    disabled={!this.state.defaultCategories}
+                                >
+                                    Import default categories
+                                </ButtonTranslate>
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12} md={8}>
+                            {defaultCategoryChips}
+                        </Grid>
+                    </Grid>
+                </Grid>
             </Grid>
         );
     }
@@ -182,6 +254,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        openSnackbar: message => dispatch(openSnackbar(message)),
         removeCategory: (...params) => dispatch(removeCategory(...params)),
         removeCategoryConnection: (...params) =>
             dispatch(removeCategoryConnection(...params)),
@@ -189,6 +262,7 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(CategoryDashboard)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(CategoryDashboard));
