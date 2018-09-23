@@ -69,13 +69,6 @@ before_deploy:
     fi
 #  install JQ for curl handling
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install jq; else brew install jq; fi
-#  Install latest version of Go with snap
-  - eval "$(curl -sL https://raw.githubusercontent.com/travis-ci/gimme/master/gimme | GIMME_GO_VERSION=master bash)"
-#  get the GHR go library
-  - go version
-  - export GOPATH="$HOME/go"
-  - export PATH="$PATH:$GOPATH/bin"
-  - go get -u github.com/tcnksm/ghr
 
 deploy:
   - provider: releases
@@ -90,9 +83,9 @@ deploy:
     file:
       - dist/bunqDesktop-*.exe
       - dist/bunqDesktop-*.dmg
-      - dist/bunqdesktop-*.deb
-      - dist/bunqdesktop-*.snap
-      - dist/bunqdesktop-*.AppImage
+      - dist/bunqDesktop-*.deb
+      - dist/bunqDesktop-*.snap
+      - dist/bunqDesktop-*.AppImage
       - dist/bunqDesktop-linux-unpacked.tar.gz
       - dist/CHECKSUMS*.sha256
     on:
@@ -100,7 +93,16 @@ deploy:
       condition: $TRAVIS_BRANCH == 'release'
   - provider: script
     skip_cleanup: true
-    script: bash ./tasks/ghr-upload.sh
+    script:
+      #  Install latest version of Go with snap
+      - eval "$(curl -sL https://raw.githubusercontent.com/travis-ci/gimme/master/gimme | GIMME_GO_VERSION=master bash)"
+      #  get the GHR go library
+      - go version
+      - export GOPATH="$HOME/go"
+      - export PATH="$PATH:$GOPATH/bin"
+      - go get -u github.com/tcnksm/ghr
+      # run the actual upload script
+      - bash ./tasks/ghr-upload.sh
     on:
       all_branches: true
       condition: $TRAVIS_BRANCH == 'snapshot-build' || $TRAVIS_EVENT_TYPE == 'cron'
