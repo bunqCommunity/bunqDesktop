@@ -70,6 +70,6 @@ export const storeEncryptString = async (data, location, encryptionKey) => {
     // store the key and iv details
     store.set(location, encryptedDetails.encryptedString);
     store.set(`${location}_IV`, encryptedDetails.iv);
-    
+
     cryptoWorker.terminate();
 };

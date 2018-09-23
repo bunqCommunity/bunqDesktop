@@ -224,28 +224,31 @@ app.on("ready", () => {
         const win = BrowserWindow.fromWebContents(event.sender);
 
         // run the toPdf function and retrieve the data
-        win.webContents.printToPDF({
-            printBackground: true,
-            pageSize: "A4",
-            printSelectionOnly: false,
-            landscape: false
-        }, (error, data) => {
-            if (error) return log.error(error.message);
-
-            fs.writeFile(pdfPath, data, error => {
+        win.webContents.printToPDF(
+            {
+                printBackground: true,
+                pageSize: "A4",
+                printSelectionOnly: false,
+                landscape: false
+            },
+            (error, data) => {
                 if (error) return log.error(error.message);
 
-                // attempt to open the file
-                try {
-                    shell.openExternal("file://" + pdfPath);
-                } catch (err) {
+                fs.writeFile(pdfPath, data, error => {
                     if (error) return log.error(error.message);
-                }
 
-                // send a event to tell the user the pdf was written
-                event.sender.send("wrote-pdf", pdfPath);
-            });
-        });
+                    // attempt to open the file
+                    try {
+                        shell.openExternal("file://" + pdfPath);
+                    } catch (err) {
+                        if (error) return log.error(error.message);
+                    }
+
+                    // send a event to tell the user the pdf was written
+                    event.sender.send("wrote-pdf", pdfPath);
+                });
+            }
+        );
     });
 });
 

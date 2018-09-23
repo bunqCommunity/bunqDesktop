@@ -136,7 +136,7 @@ class AccountCard extends React.Component {
                                 break;
                             case "IBAN":
                                 icon = <AccountBalanceIcon />;
-                                value = formatIban(alias.value)
+                                value = formatIban(alias.value);
                                 break;
                             case "URL":
                                 icon = <UrlIcon />;

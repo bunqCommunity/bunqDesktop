@@ -188,7 +188,7 @@ const mapStateToProps = state => {
     return {
         theme: state.options.theme,
 
-        pdfSaveModeEnabled: state.application.pdf_save_mode_enabled,
+        pdfSaveModeEnabled: state.application.pdf_save_mode_enabled
     };
 };
 
@@ -197,7 +197,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
 
-        applicationSetPDFMode: enabled => dispatch(applicationSetPDFMode(enabled)),
+        applicationSetPDFMode: enabled =>
+            dispatch(applicationSetPDFMode(enabled)),
 
         setTheme: theme => dispatch(setTheme(theme))
     };
