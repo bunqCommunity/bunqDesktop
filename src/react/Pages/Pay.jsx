@@ -224,11 +224,52 @@ class Pay extends React.Component {
             );
         }
     };
+
+    checkDraftOnly = () => {
+        const { t, accounts, shareInviteBankResponses } = this.props;
+        const { selectedAccount, sendDraftPayment } = this.state;
+        const outgoingPaymentsConnectMessage = t(
+            "It is not possible to send outgoing payments using a draft-only account"
+        );
+
+        // get current account
+        const account = accounts[selectedAccount];
+
+        // check if the selected account item has connect details
+        const filteredInviteResponses = shareInviteBankResponses.filter(
+            filterShareInviteBankResponses(account.id)
+        );
+
+        // no results means no checks required
+        if (filteredInviteResponses.length > 0) {
+            // get first item from the list
+            const firstInviteResponse = filteredInviteResponses.pop();
+            const inviteResponse = firstInviteResponse.ShareInviteBankResponse;
+
+            // get the key values for this list
+            const shareDetailKeys = Object.keys(inviteResponse.share_detail);
+            if (shareDetailKeys.includes("ShareDetailDraftPayment")) {
+                // draft payment is enforced when doing outgoing payments on a oauth session
+                if (!sendDraftPayment) {
+                    this.setState({
+                        sendDraftPayment: true
+                    });
+
+                    // notify the user
+                    this.props.openSnackbar(outgoingPaymentsConnectMessage);
+                }
+            }
+        }
+    };
+
     draftChange = () => {
         const sendDraftPayment = !this.state.sendDraftPayment;
         const outgoingPaymentsMessage = this.props.t(
             "It is not possible to send outgoing payments without draft mode when using a OAuth API key"
         );
+
+        // check if a draft only account is selected and force
+        this.checkDraftOnly();
 
         // check if on oauth session
         if (this.props.limitedPermissions) {
@@ -425,6 +466,9 @@ class Pay extends React.Component {
             }
         }
 
+        // check if a draft only account is selected and force
+        this.checkDraftOnly();
+
         const noTargetsCondition = targets.length < 0;
         const insufficientFundsCondition =
             amount !== "" &&
@@ -599,6 +643,7 @@ class Pay extends React.Component {
             const filteredInviteResponses = this.props.shareInviteBankResponses.filter(
                 filterShareInviteBankResponses(account.id)
             );
+
             // regular balance value
             accountBalance = account.balance ? account.balance.value : 0;
             if (filteredInviteResponses.length > 0) {
@@ -775,6 +820,7 @@ class Pay extends React.Component {
                                 )}
                                 accounts={this.props.accounts}
                                 BunqJSClient={this.props.BunqJSClient}
+                                hiddenConnectTypes={["showOnly"]}
                             />
                             {this.state.insufficientFundsCondition !== false ? (
                                 <InputLabel error={true}>
@@ -785,9 +831,7 @@ class Pay extends React.Component {
                             ) : null}
 
                             <TargetSelection
-                                selectedTargetAccount={
-                                    this.state.selectedTargetAccount
-                                }
+                                selectedTargetAccount={selectedTargetAccount}
                                 targetType={this.state.targetType}
                                 targets={this.state.targets}
                                 target={this.state.target}

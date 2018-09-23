@@ -536,6 +536,7 @@ class RequestInquiry extends React.Component {
                             onChange={this.handleChange("selectedAccount")}
                             accounts={this.props.accounts}
                             BunqJSClient={this.props.BunqJSClient}
+                            hiddenConnectTypes={["draftOnly", "showOnly"]}
                         />
 
                         <TargetSelection
