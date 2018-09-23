@@ -10,6 +10,7 @@ const userDefault =
 export const defaultState = {
     user: false,
     user_type: userDefault,
+    limitedPermissions: false,
     loading: false,
     initialCheck: false
 };
@@ -22,6 +23,7 @@ export default (state = defaultState, action) => {
                 ...state,
                 user: action.payload.user,
                 user_type: action.payload.user_type,
+                limited_permissions: action.payload.user_type === "UserApiKey",
                 initialCheck: true
             };
 
@@ -30,6 +32,7 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 user: false,
+                limited_permissions: false,
                 user_type: false
             };
 
@@ -54,12 +57,12 @@ export default (state = defaultState, action) => {
         case "USER_CLEAR":
         case "REGISTRATION_LOG_OUT":
         case "REGISTRATION_CLEAR_PRIVATE_DATA":
-        case "REGISTRATION_LOG_OUT":
         case "REGISTRATION_CLEAR_USER_INFO":
             store.remove(USER_TYPE_LOCATION);
             return {
                 user: false,
                 user_type: false,
+                limited_permissions: false,
                 loading: false,
                 initialCheck: false
             };

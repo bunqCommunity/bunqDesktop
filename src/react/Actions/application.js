@@ -18,3 +18,24 @@ export function applicationSetOnline() {
         type: "APPLICATION_SET_ONLINE"
     };
 }
+
+export function applicationSetLastAutoUpdate() {
+    return {
+        type: "APPLICATION_SET_LAST_AUTO_UPDATE"
+    };
+}
+
+export function applicationForceUpdate() {
+    return {
+        type: "APPLICATION_FORCE_UPDATE"
+    };
+}
+
+export function applicationSetPDFMode(enabled = false) {
+    return {
+        type: "APPLICATION_SET_PDF_MODE",
+        payload: {
+            enabled: enabled
+        }
+    };
+}

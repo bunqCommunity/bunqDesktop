@@ -12,7 +12,7 @@ export default (state = defaultState, action) => {
                 ...state,
                 exports: action.payload.exports,
                 user_id: action.payload.user_id,
-                account_id: action.payload.account_id,
+                account_id: action.payload.account_id
             };
 
         case "EXPORTS_IS_LOADING":

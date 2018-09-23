@@ -48,7 +48,7 @@ class BunqMeTab extends React.Component {
     toggleForm = () => this.setState({ showForm: !this.state.showForm });
 
     render() {
-        const t=this.props.t;
+        const t = this.props.t;
         return (
             <Grid container spacing={16}>
                 <Helmet>
@@ -70,10 +70,7 @@ class BunqMeTab extends React.Component {
                 </Grid>
 
                 <Grid item xs={12} md={8} lg={6}>
-                    <Collapse
-                        in={this.state.showForm}
-                        unmountOnExit
-                    >
+                    <Collapse in={this.state.showForm} unmountOnExit>
                         <Paper style={styles.paper}>
                             <BunqMeTabForm
                                 BunqJSClient={this.props.BunqJSClient}
@@ -85,16 +82,18 @@ class BunqMeTab extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                             initialBunqConnect={this.props.initialBunqConnect}
                             secondaryActions={
-                                <IconButton
-                                    aria-label="Toggle the form"
-                                    onClick={this.toggleForm}
-                                >
-                                    {this.state.showForm ? (
-                                        <CloseIcon />
-                                    ) : (
-                                        <AddIcon />
-                                    )}
-                                </IconButton>
+                                this.props.limitedPermissions ? null : (
+                                    <IconButton
+                                        aria-label="Toggle the form"
+                                        onClick={this.toggleForm}
+                                    >
+                                        {this.state.showForm ? (
+                                            <CloseIcon />
+                                        ) : (
+                                            <AddIcon />
+                                        )}
+                                    </IconButton>
+                                )
                             }
                         />
                     </Paper>
@@ -106,9 +105,12 @@ class BunqMeTab extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        selectedAccount: state.accounts.selectedAccount,
         accounts: state.accounts.accounts,
-        user: state.user.user
+        selectedAccount: state.accounts.selected_account,
+
+        user: state.user.user,
+        userType: state.user.user_type,
+        limitedPermissions: state.user.limited_permissions
     };
 };
 
@@ -120,6 +122,7 @@ const mapDispatchToProps = (dispatch, props) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(BunqMeTab)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(BunqMeTab));

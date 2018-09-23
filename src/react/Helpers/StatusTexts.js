@@ -1,9 +1,14 @@
+// type	= DIRECT_DEBIT, DIRECT_DEBIT_B2B, IDEAL, SOFORT or INTERNAL.
+// sub_type	= ONCE or RECURRING for DIRECT_DEBIT RequestInquiries and NONE
+
 export const requestResponseText = (requestResponse, t) => {
-    const ACCEPTED = t("You paid the request");
-    const PENDING = t("Received a request");
-    const REJECTED = t("You denied the request");
-    const REVOKED = t("Request was cancelled");
-    const EXPIRED = t("Request has expired");
+    let requestType = requestResponseTypeParser(requestResponse, t);
+
+    const ACCEPTED = `${requestType} ${t(`payment accepted`)}`;
+    const PENDING = `${requestType} ${t(`payment is pending`)} `;
+    const REJECTED = `${t(`You denied the`)} ${requestType} ${t(`payment`)}`;
+    const REVOKED = `${t(`The`)} ${requestType} ${t(`payment was cancelled`)}`;
+    const EXPIRED = `${t(`The`)} ${requestType} ${t(`payment has expired`)}`;
     switch (requestResponse.status) {
         case "ACCEPTED":
             return ACCEPTED;
@@ -17,6 +22,21 @@ export const requestResponseText = (requestResponse, t) => {
             return EXPIRED;
         default:
             return requestResponse.status;
+    }
+};
+
+export const requestResponseTypeParser = (requestResponse, t) => {
+    switch (requestResponse.type) {
+        case "DIRECT_DEBIT":
+        case "DIRECT_DEBIT_B2B":
+            return "direct debit";
+        case "SOFORT":
+            return "SOFORT";
+        case "IDEAL":
+            return "iDEAL";
+        case "INTERNAL":
+        default:
+            return t("request");
     }
 };
 
@@ -75,19 +95,19 @@ export const masterCardActionText = (masterCardAction, t) => {
                 t
             )}`;
         case "BLOCKED":
-            return `${t(
-                "The payment was blocked due to "
-            )}${masterCardAction.decision_description}`;
+            return `${t("The payment was blocked due to ")}${
+                masterCardAction.decision_description
+            }`;
         case "CLEARING_REFUND":
-            return `${t(
-                "Payment was refunded due to "
-            )}${masterCardAction.decision_description}`;
+            return `${t("Payment was refunded due to ")}${
+                masterCardAction.decision_description
+            }`;
         case "REVERSED":
             return t("The payment was reversed");
         default:
-            return `${t(
-                "The payment currently has the status "
-            )}${masterCardAction.authorisation_status} - ${masterCardAction.authorisation_type}`;
+            return `${t("The payment currently has the status ")}${
+                masterCardAction.authorisation_status
+            } - ${masterCardAction.authorisation_type}`;
     }
 };
 
@@ -95,10 +115,15 @@ export const masterCardActionParser = (masterCardAction, t) => {
     const defaultMessage = t("Card payment");
     const paymentText = t("Payment");
     const refundText = t("Refund");
+    const atmText = t("ATM Withdrawal");
 
     let secondaryText = paymentText;
     if (masterCardAction.authorisation_status === "CLEARING_REFUND") {
         secondaryText = refundText;
+    }
+
+    if (masterCardAction.pan_entry_mode_user === "ATM") {
+        return atmText;
     }
 
     if (masterCardAction.label_card) {
@@ -108,6 +133,9 @@ export const masterCardActionParser = (masterCardAction, t) => {
 
         switch (masterCardAction.label_card.type) {
             case "MAESTRO_MOBILE_NFC":
+                if (masterCardAction.wallet_provider_id === null) {
+                    return defaultMessage;
+                }
                 return "Tap & Pay " + secondaryText;
             case "MASTERCARD":
                 return "Mastercard " + secondaryText;

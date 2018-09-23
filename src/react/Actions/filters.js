@@ -117,6 +117,12 @@ export function removeCategoryIdFilter(index) {
     };
 }
 
+export function toggleCategoryIdFilter() {
+    return {
+        type: "CATEGORY_FILTER_TOGGLE_CATEGORY_ID"
+    };
+}
+
 export function clearFromDateFilter() {
     return {
         type: "DATE_FILTER_FROM_CLEAR"
@@ -126,5 +132,59 @@ export function clearFromDateFilter() {
 export function clearToDateFilter() {
     return {
         type: "DATE_FILTER_TO_CLEAR"
+    };
+}
+
+export function addAccountIdFilter(accountId) {
+    return {
+        type: "ACCOUNT_ID_FILTER_ADD",
+        payload: {
+            account_id: accountId
+        }
+    };
+}
+
+export function removeAccountIdFilter(accountId) {
+    return {
+        type: "ACCOUNT_ID_FILTER_REMOVE",
+        payload: {
+            account_id: accountId
+        }
+    };
+}
+
+export function toggleAccountIdFilter() {
+    return {
+        type: "ACCOUNT_ID_FILTER_TOGGLE"
+    };
+}
+
+export function clearAccountIdFilter() {
+    return {
+        type: "ACCOUNT_ID_FILTER_CLEAR"
+    };
+}
+
+export function setAmountFilterAmount(amount = null) {
+    return {
+        type: "AMOUNT_FILTER_SET_AMOUNT",
+        payload: {
+            amount: amount
+        }
+    };
+}
+
+export function setAmountFilterType(type = null) {
+    return {
+        type: "AMOUNT_FILTER_SET_TYPE",
+        payload: {
+            type: type
+        }
+    };
+}
+
+export function clearAmountFilter() {
+    return {
+        type: "AMOUNT_FILTER_CLEAR"
     };
 }

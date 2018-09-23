@@ -2,15 +2,20 @@ import React from "react";
 import { connect } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
 import Hidden from "@material-ui/core/Hidden";
-const remote = require("electron").remote;
+
 import MenuIcon from "@material-ui/icons/Menu";
 import CloseIcon from "@material-ui/icons/Close";
 import RestoreIcon from "./CustomSVG/Restore";
 import MaximizeIcon from "./CustomSVG/Maximize";
 import MinimizeIcon from "./CustomSVG/Minimize";
 
+import QueueHeaderIcon from "./Queue/QueueHeaderIcon";
+import TranslateTypography from "./TranslationHelpers/Typography";
+
 import IsDarwin from "../Helpers/IsDarwin";
-import { openMainDrawer } from "../Actions/main_drawer";
+import { openSidebar } from "../Actions/sidebar";
+
+const remote = require("electron").remote;
 
 const buttonDefaultStyles = {
     color: "white",
@@ -29,6 +34,15 @@ const styles = {
         ...buttonDefaultStyles,
         right: 5
     },
+    headerQueueBtn: {
+        ...buttonDefaultStyles,
+        left: 52
+    },
+    headerQueueBtnDarwin: {
+        ...buttonDefaultStyles,
+        right: 52
+    },
+
     headerRightBtn: {
         ...buttonDefaultStyles,
         right: 5
@@ -41,6 +55,7 @@ const styles = {
         ...buttonDefaultStyles,
         right: 85
     },
+
     header: {
         backgroundImage: "url('images/svg/bunq_Colors.svg')",
         WebkitAppRegion: "drag",
@@ -48,9 +63,8 @@ const styles = {
         position: "fixed",
         width: "100%",
         top: 0,
-        zIndex: 10000,
         height: 50,
-        zIndex: 1000,
+        zIndex: 2000,
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center center"
@@ -82,16 +96,22 @@ class Header extends React.Component {
     };
 
     render() {
+        const pdfSaveModeEnabled = this.props.pdfSaveModeEnabled;
+
         // only show buttons on windows/linux and when native frame is disabled
         const displayButtons = !IsDarwin() && this.props.nativeFrame === false;
 
-        // if not on macOS or native frame is used we display the icon on the left
+        // if not on macOS or native frame is used we display the icons on the left
         const menuIconButtonStyle =
             !IsDarwin() || this.props.nativeFrame === true
                 ? styles.headerMenuBtn
                 : styles.headerMenuBtnDarwin;
+        const queueIconButtonStyle =
+            !IsDarwin() || this.props.nativeFrame === true
+                ? styles.headerQueueBtn
+                : styles.headerQueueBtnDarwin;
 
-        // the actual menu button
+        // the top header buttons
         const menuButton = (
             <IconButton
                 aria-label="view main drawer"
@@ -101,13 +121,23 @@ class Header extends React.Component {
                 <MenuIcon />
             </IconButton>
         );
+        const queueIconButton = (
+            <QueueHeaderIcon style={queueIconButtonStyle} />
+        );
 
-        // wrap it in a hidden wrapper in case of sticky menu mode
+        // wrap in a hidden wrapper in case of sticky menu mode
         const wrappedButton = this.props.stickyMenu ? (
             <Hidden mdUp>{menuButton}</Hidden>
         ) : (
             menuButton
         );
+        const wrappedQueueIcon = this.props.stickyMenu ? (
+            <Hidden mdUp>{queueIconButton}</Hidden>
+        ) : (
+            queueIconButton
+        );
+
+        // wrap it in a hidden wrapper in case of sticky menu mode
 
         let middleIcon = null;
         if (this.mainWindow.isMaximized()) {
@@ -141,28 +171,57 @@ class Header extends React.Component {
             </React.Fragment>
         ) : null;
 
+        const developmentEnvWarning =
+            this.props.environment === "SANDBOX" ? (
+                <TranslateTypography
+                    style={{
+                        marginLeft: 53,
+                        lineHeight: `${styles.header.height}px`,
+                        fontSize: "11pt",
+                        textAlign: "center"
+                    }}
+                >
+                    Sandbox mode active
+                </TranslateTypography>
+            ) : null;
+
         return (
             <header style={styles.header}>
-                {wrappedButton}
-                {windowControls}
+                {/* hide all buttons if pdf mode enabled */}
+                {!pdfSaveModeEnabled && (
+                    <React.Fragment>
+                        {wrappedButton}
+                        {wrappedQueueIcon}
+
+                        {developmentEnvWarning}
+                        {windowControls}
+                    </React.Fragment>
+                )}
             </header>
         );
     }
 }
 
-const mapStateToProps = store => {
+const mapStateToProps = state => {
     return {
-        stickyMenu: store.options.sticky_menu,
-        nativeFrame: store.options.native_frame,
-        minimizeToTray: store.options.minimize_to_tray
+        stickyMenu: state.options.sticky_menu,
+        nativeFrame: state.options.native_frame,
+        minimizeToTray: state.options.minimize_to_tray,
+
+        pdfSaveModeEnabled: state.application.pdf_save_mode_enabled,
+
+        environment: state.registration.environment
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
         // opens the options drawer on the left
-        openDrawer: () => dispatch(openMainDrawer())
+        openDrawer: () => dispatch(openSidebar())
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Header);

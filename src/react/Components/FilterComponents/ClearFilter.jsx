@@ -4,6 +4,8 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import ClearIcon from "@material-ui/icons/Clear";
 
+import FilterDisabledChecker from "../../Helpers/FilterDisabledChecker";
+
 import { resetFilters } from "../../Actions/filters";
 
 class ClearFilter extends React.Component {
@@ -13,15 +15,32 @@ class ClearFilter extends React.Component {
     }
 
     render() {
+        const {
+            selectedAccountIds,
+            selectedCategories,
+            searchTerm,
+            paymentType,
+            bunqMeTabType,
+            requestType,
+            paymentVisibility,
+            bunqMeTabVisibility,
+            requestVisibility,
+            amountFilterAmount
+        } = this.props;
+
         if (
-            this.props.selectedCategories.length <= 0 &&
-            this.props.searchTerm.length <= 0 &&
-            this.props.paymentType === "default" &&
-            this.props.bunqMeTabType === "active" &&
-            this.props.requestType === "default" &&
-            this.props.paymentVisibility === true &&
-            this.props.bunqMeTabVisibility === true &&
-            this.props.requestVisibility === true
+            FilterDisabledChecker({
+                selectedAccountIds,
+                selectedCategories,
+                searchTerm,
+                paymentType,
+                bunqMeTabType,
+                requestType,
+                paymentVisibility,
+                bunqMeTabVisibility,
+                requestVisibility,
+                amountFilterAmount
+            })
         ) {
             return null;
         }
@@ -65,7 +84,10 @@ const mapStateToProps = state => {
         requestType: state.request_filter.type,
         requestVisibility: state.request_filter.visible,
 
-        selectedCategories: state.category_filter.selected_categories
+        selectedCategories: state.category_filter.selected_categories,
+        selectedAccountIds: state.account_id_filter.selected_account_ids,
+
+        amountFilterAmount: state.amount_filter.amount
     };
 };
 
@@ -75,4 +97,7 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ClearFilter);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ClearFilter);

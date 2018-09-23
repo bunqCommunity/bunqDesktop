@@ -190,7 +190,7 @@ class Profile extends React.Component {
         let content = null;
         if (userLoading === false && this.state.loading === false) {
             let businessInfo = null;
-            if (userType !== "UserCompany") {
+            if (userType === "UserCompany") {
                 const hasSafeKeepingFee = totalBalance > 100000;
 
                 let costsTable = null;
@@ -217,7 +217,8 @@ class Profile extends React.Component {
                                     // go through the days to calculate historic change
                                     for (let day = 0; day < days; day++) {
                                         const thousands = accountBalance / 1000;
-                                        let nextPayment = thousands * 2.4 / 100;
+                                        let nextPayment =
+                                            (thousands * 2.4) / 100;
 
                                         // update balance
                                         accountBalance =
@@ -253,7 +254,7 @@ class Profile extends React.Component {
                         <Grid container spacing={16} justify="center">
                             <Grid item xs={12}>
                                 <TranslateTypography variant="subheading">
-                                    Company information
+                                    Safekeeping fee calculator
                                 </TranslateTypography>
                             </Grid>
 
@@ -264,13 +265,9 @@ class Profile extends React.Component {
                                     type="number"
                                     label="Total account balance"
                                     value={parseFloat(
-                                        totalBalance
-                                            ? totalBalance
-                                            : 0
-                                    )}
-                                    onChange={this.onChange(
-                                        "totalBalance"
-                                    )}
+                                        totalBalance ? totalBalance : 0
+                                    ).toFixed(2)}
+                                    onChange={this.onChange("totalBalance")}
                                 />
                             </Grid>
 
@@ -406,6 +403,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(Profile)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(Profile));

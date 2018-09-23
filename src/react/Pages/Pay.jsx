@@ -3,13 +3,13 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import EmailValidator from "email-validator";
+import format from "date-fns/format";
+import iban from "iban";
 import DateFnsUtils from "material-ui-pickers/utils/date-fns-utils";
 import MuiPickersUtilsProvider from "material-ui-pickers/utils/MuiPickersUtilsProvider";
-import format from "date-fns/format";
 import enLocale from "date-fns/locale/en-US";
 import deLocale from "date-fns/locale/de";
 import nlLocale from "date-fns/locale/nl";
-import iban from "iban";
 
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
@@ -77,7 +77,7 @@ class Pay extends React.Component {
 
             // if true the schedule payment form is shown
             schedulePayment: false,
-            scheduleStartDate: new Date(),
+            scheduleStartDate: getUTCDate(new Date()),
             scheduleEndDate: null,
             recurrenceSize: 1,
             recurrenceUnit: "ONCE",
@@ -224,8 +224,73 @@ class Pay extends React.Component {
             );
         }
     };
+
+    checkDraftOnly = () => {
+        const { t, accounts, shareInviteBankResponses } = this.props;
+        const { selectedAccount, sendDraftPayment } = this.state;
+        const outgoingPaymentsConnectMessage = t(
+            "It is not possible to send outgoing payments using a draft-only account"
+        );
+
+        // get current account
+        const account = accounts[selectedAccount];
+
+        // check if the selected account item has connect details
+        const filteredInviteResponses = shareInviteBankResponses.filter(
+            filterShareInviteBankResponses(account.id)
+        );
+
+        // no results means no checks required
+        if (filteredInviteResponses.length > 0) {
+            // get first item from the list
+            const firstInviteResponse = filteredInviteResponses.pop();
+            const inviteResponse = firstInviteResponse.ShareInviteBankResponse;
+
+            // get the key values for this list
+            const shareDetailKeys = Object.keys(inviteResponse.share_detail);
+            if (shareDetailKeys.includes("ShareDetailDraftPayment")) {
+                // draft payment is enforced when doing outgoing payments on a oauth session
+                if (!sendDraftPayment) {
+                    this.setState({
+                        sendDraftPayment: true
+                    });
+
+                    // notify the user
+                    this.props.openSnackbar(outgoingPaymentsConnectMessage);
+                }
+            }
+        }
+    };
+
     draftChange = () => {
         const sendDraftPayment = !this.state.sendDraftPayment;
+        const outgoingPaymentsMessage = this.props.t(
+            "It is not possible to send outgoing payments without draft mode when using a OAuth API key"
+        );
+
+        // check if a draft only account is selected and force
+        this.checkDraftOnly();
+
+        // check if on oauth session
+        if (this.props.limitedPermissions) {
+            // check if outgoing payments are done
+            const hasOutGoing = this.state.targets.some(target => {
+                return target.type !== "TRANSFER";
+            });
+
+            if (hasOutGoing) {
+                // draft payment is enforced when doing outgoing payments on a oauth session
+                if (!this.state.sendDraftPayment) {
+                    this.setState({
+                        sendDraftPayment: true
+                    });
+                }
+
+                // notify the user
+                this.props.openSnackbar(outgoingPaymentsMessage);
+                return;
+            }
+        }
 
         this.setState(
             {
@@ -291,6 +356,16 @@ class Pay extends React.Component {
                 });
 
                 if (!foundDuplicate) {
+                    if (
+                        this.props.limitedPermissions &&
+                        this.state.targetType !== "TRANSFER"
+                    ) {
+                        // limited permissions and new target isn't a transfer
+                        this.setState({
+                            sendDraftPayment: true
+                        });
+                    }
+
                     currentTargets.push({
                         type: this.state.targetType,
                         value: targetValue,
@@ -391,6 +466,9 @@ class Pay extends React.Component {
             }
         }
 
+        // check if a draft only account is selected and force
+        this.checkDraftOnly();
+
         const noTargetsCondition = targets.length < 0;
         const insufficientFundsCondition =
             amount !== "" &&
@@ -407,11 +485,11 @@ class Pay extends React.Component {
             descriptionError: descriptionErrorCondition,
             ibanNameError: ibanNameErrorCondition,
             validForm:
-            !noTargetsCondition &&
-            !insufficientFundsCondition &&
-            !amountErrorCondition &&
-            !descriptionErrorCondition &&
-            targets.length > 0
+                !noTargetsCondition &&
+                !insufficientFundsCondition &&
+                !amountErrorCondition &&
+                !descriptionErrorCondition &&
+                targets.length > 0
         });
     };
 
@@ -509,7 +587,7 @@ class Pay extends React.Component {
             const schedule = {
                 time_start: format(
                     getUTCDate(scheduleStartDate),
-                    "YYYY-MM-DD HH:mm:ss"
+                    "YYYY-MM-dd HH:mm:ss"
                 ),
                 recurrence_unit: recurrenceUnit,
                 // on once size has to be 1
@@ -521,7 +599,7 @@ class Pay extends React.Component {
             if (scheduleEndDate) {
                 schedule.time_end = format(
                     getUTCDate(scheduleEndDate),
-                    "YYYY-MM-DD HH:mm:ss"
+                    "YYYY-MM-dd HH:mm:ss"
                 );
             }
 
@@ -547,13 +625,15 @@ class Pay extends React.Component {
     };
 
     render() {
-        const t = this.props.t;
+        const { t, limitedPermissions } = this.props;
         const {
             selectedTargetAccount,
             selectedAccount,
             description,
             amount,
-            targets
+            targets,
+            scheduleEndDate,
+            scheduleStartDate
         } = this.state;
         const account = this.props.accounts[selectedAccount];
 
@@ -563,6 +643,7 @@ class Pay extends React.Component {
             const filteredInviteResponses = this.props.shareInviteBankResponses.filter(
                 filterShareInviteBankResponses(account.id)
             );
+
             // regular balance value
             accountBalance = account.balance ? account.balance.value : 0;
             if (filteredInviteResponses.length > 0) {
@@ -623,10 +704,10 @@ class Pay extends React.Component {
                     case "TRANSFER":
                         const targetAccountInfo = this.props.accounts[
                             targetItem.value
-                            ];
-                        primaryText = `${t(
-                            "Transfer"
-                        )}: ${targetAccountInfo.description}`;
+                        ];
+                        primaryText = `${t("Transfer")}: ${
+                            targetAccountInfo.description
+                        }`;
                         break;
                 }
 
@@ -653,18 +734,18 @@ class Pay extends React.Component {
                             <ListItem>
                                 <ListItemText
                                     primary={t("From")}
-                                    secondary={`${account.description} ${accountBalance}`}
+                                    secondary={`${
+                                        account.description
+                                    } ${accountBalance}`}
                                 />
                             </ListItem>
                             <ListItem>
                                 <ListItemText
                                     primary={t("Description")}
                                     secondary={
-                                        description.length <= 0 ? (
-                                            "None"
-                                        ) : (
-                                            description
-                                        )
+                                        description.length <= 0
+                                            ? "None"
+                                            : description
                                     }
                                 />
                             </ListItem>
@@ -726,7 +807,7 @@ class Pay extends React.Component {
                     utils={DateFnsUtils}
                     locale={localeData}
                 >
-                    <Grid item xs={12} sm={8} lg={6} xl={4}>
+                    <Grid item xs={12} sm={10} md={8} lg={6} xl={4}>
                         <Paper style={styles.paper}>
                             <Typography variant="headline">
                                 {t("New Payment")}
@@ -739,6 +820,7 @@ class Pay extends React.Component {
                                 )}
                                 accounts={this.props.accounts}
                                 BunqJSClient={this.props.BunqJSClient}
+                                hiddenConnectTypes={["showOnly"]}
                             />
                             {this.state.insufficientFundsCondition !== false ? (
                                 <InputLabel error={true}>
@@ -749,9 +831,7 @@ class Pay extends React.Component {
                             ) : null}
 
                             <TargetSelection
-                                selectedTargetAccount={
-                                    this.state.selectedTargetAccount
-                                }
+                                selectedTargetAccount={selectedTargetAccount}
                                 targetType={this.state.targetType}
                                 targets={this.state.targets}
                                 target={this.state.target}
@@ -777,7 +857,7 @@ class Pay extends React.Component {
                                 margin="normal"
                             />
 
-                            <Grid container justify={"center"}>
+                            <Grid container>
                                 <Grid item xs={6}>
                                     <FormControlLabel
                                         control={
@@ -793,32 +873,34 @@ class Pay extends React.Component {
                                     />
                                 </Grid>
 
-                                <Grid item xs={6}>
-                                    <FormControlLabel
-                                        control={
-                                            <Switch
-                                                color="primary"
-                                                checked={
-                                                    this.state.schedulePayment
-                                                }
-                                                onChange={
-                                                    this.schedulePaymentChange
-                                                }
-                                            />
-                                        }
-                                        label={t("Schedule payment")}
-                                    />
-                                </Grid>
+                                {limitedPermissions ? null : (
+                                    <Grid item xs={6}>
+                                        <FormControlLabel
+                                            control={
+                                                <Switch
+                                                    color="primary"
+                                                    checked={
+                                                        this.state
+                                                            .schedulePayment
+                                                    }
+                                                    onChange={
+                                                        this
+                                                            .schedulePaymentChange
+                                                    }
+                                                />
+                                            }
+                                            label={t("Schedule payment")}
+                                        />
+                                    </Grid>
+                                )}
 
                                 <SchedulePaymentForm
                                     t={t}
                                     schedulePayment={this.state.schedulePayment}
                                     recurrenceUnit={this.state.recurrenceUnit}
                                     recurrenceSize={this.state.recurrenceSize}
-                                    scheduleEndDate={this.state.scheduleEndDate}
-                                    scheduleStartDate={
-                                        this.state.scheduleStartDate
-                                    }
+                                    scheduleEndDate={scheduleEndDate}
+                                    scheduleStartDate={scheduleStartDate}
                                     handleChangeDirect={this.handleChangeDirect}
                                     handleChange={this.handleChange}
                                 />
@@ -870,14 +952,17 @@ class Pay extends React.Component {
 const mapStateToProps = state => {
     return {
         payLoading: state.pay.loading,
+
         accounts: state.accounts.accounts,
-        selectedAccount: state.accounts.selectedAccount,
+        selectedAccount: state.accounts.selected_account,
+
         language: state.options.language,
 
         shareInviteBankResponses:
-        state.share_invite_bank_responses.share_invite_bank_responses,
+            state.share_invite_bank_responses.share_invite_bank_responses,
 
-        user: state.user.user
+        user: state.user.user,
+        limitedPermissions: state.user.limited_permissions
     };
 };
 
@@ -928,6 +1013,7 @@ const mapDispatchToProps = (dispatch, props) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(Pay)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(Pay));

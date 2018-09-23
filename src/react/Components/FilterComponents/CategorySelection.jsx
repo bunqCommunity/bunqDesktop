@@ -1,22 +1,25 @@
 import React from "react";
 import { connect } from "react-redux";
-import Icon from "@material-ui/core/Icon";
 import IconButton from "@material-ui/core/IconButton";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Menu from "@material-ui/core/Menu";
-import MenuItem  from "@material-ui/core/MenuItem";
+import MenuItem from "@material-ui/core/MenuItem";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import AddIcon from "@material-ui/icons/Add";
+import FilterListIcon from "@material-ui/icons/FilterList";
 
+import CustomIcon from "../CustomIcon";
 import CategoryIcon from "../Categories/CategoryIcon";
 import CategoryChip from "../Categories/CategoryChip";
 
 import {
     addCategoryIdFilter,
-    removeCategoryIdFilter
+    removeCategoryIdFilter,
+    toggleCategoryIdFilter
 } from "../../Actions/filters";
 
 const styles = {
@@ -57,7 +60,7 @@ class CategorySelection extends React.Component {
         const { categories, selectedCategories } = this.props;
 
         // limit size if a lot of categories are selected
-        const bigChips = selectedCategories.length <= 8;
+        const bigChips = selectedCategories.length <= 4;
 
         const categoryItems = selectedCategories.map((categoryId, key) => {
             const category = categories[categoryId];
@@ -79,33 +82,33 @@ class CategorySelection extends React.Component {
             );
         });
 
-        const categoryMenuItems = Object.keys(
-            categories
-        ).map((categoryId, key) => {
-            const category = categories[categoryId];
+        const categoryMenuItems = Object.keys(categories).map(
+            (categoryId, key) => {
+                const category = categories[categoryId];
 
-            // don't display already selected items
-            if (selectedCategories.includes(categoryId)) {
-                return null;
+                // don't display already selected items
+                if (selectedCategories.includes(categoryId)) {
+                    return null;
+                }
+
+                return (
+                    <MenuItem key={key} onClick={this.addCategory(categoryId)}>
+                        <ListItemIcon>
+                            <CustomIcon
+                                style={{
+                                    height: 24,
+                                    color: category.color,
+                                    marginRight: 16
+                                }}
+                            >
+                                {category.icon}
+                            </CustomIcon>
+                        </ListItemIcon>
+                        {category.label}
+                    </MenuItem>
+                );
             }
-
-            return (
-                <MenuItem key={key} onClick={this.addCategory(categoryId)}>
-                    <ListItemIcon>
-                        <Icon
-                            style={{
-                                height: 24,
-                                width: 24,
-                                color: category.color
-                            }}
-                        >
-                            {category.icon}
-                        </Icon>
-                    </ListItemIcon>
-                    {category.label}
-                </MenuItem>
-            );
-        });
+        );
 
         return (
             <React.Fragment>
@@ -113,6 +116,28 @@ class CategorySelection extends React.Component {
                     {t("Category filter")}
 
                     <ListItemSecondaryAction>
+                        <Tooltip
+                            placement="left"
+                            title={t(
+                                `Click to ${
+                                    this.props.toggleCategoryFilter
+                                        ? "include"
+                                        : "exclude"
+                                } the selected categories`
+                            )}
+                        >
+                            <IconButton
+                                aria-haspopup="true"
+                                onClick={this.props.toggleCategoryIdFilter}
+                            >
+                                {this.props.toggleCategoryFilter ? (
+                                    <FilterListIcon className="icon-rotate-180" />
+                                ) : (
+                                    <FilterListIcon />
+                                )}
+                            </IconButton>
+                        </Tooltip>
+
                         <IconButton
                             aria-haspopup="true"
                             onClick={this.handleClick}
@@ -138,15 +163,20 @@ const mapStateToProps = state => {
     return {
         categories: state.categories.categories,
 
+        toggleCategoryFilter: state.category_filter.toggle,
         selectedCategories: state.category_filter.selected_categories
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
+        toggleCategoryIdFilter: () => dispatch(toggleCategoryIdFilter()),
         addCategoryId: categoryId => dispatch(addCategoryIdFilter(categoryId)),
         removeCategoryId: index => dispatch(removeCategoryIdFilter(index))
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CategorySelection);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(CategorySelection);

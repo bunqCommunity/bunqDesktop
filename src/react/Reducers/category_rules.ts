@@ -1,13 +1,36 @@
 import settings from "../ImportWrappers/electronSettings";
 
+// storage location
 import { STORED_CATEGORY_RULES } from "../Actions/category_rules";
 
+// type checkign imports
 import { RuleCollectionList } from "../Types/Types";
 import RuleCollection from "../Types/RuleCollection";
 
+// default category rules if no previous were found
+const defaultCategoryRules: any[] = require("@bunq-community/bunqdesktop-templates/category-rules.json");
+
+// format the basic default category rules
+const formattedDefaultCategoryRules = {};
+defaultCategoryRules["category-rules"].forEach(defaultCategoryRule => {
+    // turn empty json data into ruleCollection objects
+    const ruleCollection = new RuleCollection();
+    ruleCollection.fromObject(defaultCategoryRule);
+    ruleCollection.ensureId();
+
+    formattedDefaultCategoryRules[ruleCollection.getId()] = ruleCollection;
+});
+
 const categoryRulesStored = settings.get(STORED_CATEGORY_RULES);
 const categoryRulesDefault: RuleCollectionList =
-    categoryRulesStored !== undefined ? categoryRulesStored : [];
+    categoryRulesStored !== undefined
+        ? categoryRulesStored
+        : formattedDefaultCategoryRules;
+
+// store the default category rules
+if (categoryRulesStored === undefined) {
+    settings.set(STORED_CATEGORY_RULES, formattedDefaultCategoryRules);
+}
 
 // new formatted list
 const formattedCategoryRulesDefault: RuleCollectionList = {};
@@ -82,6 +105,7 @@ export default (state = defaultState, action) => {
         // update categories in new settings location
         case "OPTIONS_OVERWRITE_SETTINGS_LOCATION":
             settings.set(STORED_CATEGORY_RULES, state.category_rules);
+            return { ...state };
 
         // load categories from new settings location
         case "OPTIONS_LOAD_SETTINGS_LOCATION":

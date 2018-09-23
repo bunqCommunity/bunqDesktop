@@ -9,6 +9,12 @@ import Avatar from "@material-ui/core/Avatar";
 
 import LazyAttachmentImage from "./AttachmentImage/LazyAttachmentImage";
 
+import {
+    defaultMastercardImage,
+    defaultRequestResponseImage,
+    defaultPaymentImage
+} from "../Helpers/DefaultImageHandlers";
+
 const styles = {
     targetWrapper: {
         display: "flex",
@@ -49,8 +55,17 @@ const TransactionHeader = props => {
 
     let toIsCounterparty = false;
     let fromIsCounterparty = false;
-    let toLabelName = toAlias.label_user.display_name;
-    let fromLabelName = fromAlias.label_user.display_name;
+    let toLabelName = toAlias.display_name;
+    const secondaryToLabelName =
+        toAlias.display_name === toAlias.label_user.display_name
+            ? false
+            : toAlias.label_user.display_name;
+
+    let fromLabelName = fromAlias.display_name;
+    const secondaryFromLabelName =
+        fromAlias.display_name === fromAlias.label_user.display_name
+            ? false
+            : fromAlias.label_user.display_name;
 
     // accounts list is available
     if (props.accounts) {
@@ -83,11 +98,25 @@ const TransactionHeader = props => {
         fromIsCounterparty = false;
     }
 
+    let defaultImage = false;
+    if (props.type && props.type) {
+        if (props.type === "payment") {
+            defaultImage = defaultPaymentImage(props.event);
+        }
+        if (props.type === "masterCardAction") {
+            defaultImage = defaultMastercardImage(props.event);
+        }
+        if (props.type === "requestResponse") {
+            defaultImage = defaultRequestResponseImage(props.event);
+        }
+    }
+
     const components = [
         <Grid item xs={12} md={5} style={styles.targetWrapper}>
             <Avatar style={styles.avatar}>
                 <LazyAttachmentImage
-                    width={90}
+                    height={90}
+                    defaultImage={defaultImage}
                     BunqJSClient={props.BunqJSClient}
                     imageUUID={fromAvatar}
                     onClick={() => {
@@ -101,6 +130,11 @@ const TransactionHeader = props => {
                 />
             </Avatar>
             <Typography variant="subheading">{fromLabelName}</Typography>
+            {secondaryFromLabelName && (
+                <Typography variant="subheading">
+                    {secondaryFromLabelName}
+                </Typography>
+            )}
         </Grid>,
 
         <Hidden smDown>
@@ -124,7 +158,8 @@ const TransactionHeader = props => {
         <Grid item xs={12} md={5} style={styles.targetWrapper}>
             <Avatar style={styles.avatar}>
                 <LazyAttachmentImage
-                    width={90}
+                    height={90}
+                    defaultImage={defaultImage}
                     BunqJSClient={props.BunqJSClient}
                     imageUUID={toAvatar}
                     onClick={() => {
@@ -139,6 +174,11 @@ const TransactionHeader = props => {
             </Avatar>
 
             <Typography variant="subheading">{toLabelName}</Typography>
+            {secondaryToLabelName && (
+                <Typography variant="subheading">
+                    {secondaryToLabelName}
+                </Typography>
+            )}
         </Grid>
     ];
 

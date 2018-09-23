@@ -3,15 +3,14 @@ import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import { translate } from "react-i18next";
 import EmailValidator from "email-validator";
-
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
 import Collapse from "@material-ui/core/Collapse";
 import Switch from "@material-ui/core/Switch";
 import FormControl from "@material-ui/core/FormControl";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 
+import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
 import TargetSelection from "../../Components/FormFields/TargetSelection";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
@@ -19,27 +18,34 @@ import RedirectUrl from "../../Components/FormFields/RedirectUrl";
 import TypographyTranslate from "../../Components/TranslationHelpers/Typography";
 import ButtonTranslate from "../../Components/TranslationHelpers/Button";
 import ConfirmationDialog from "./ConfirmationDialog";
+
+import SplitAmountForm from "./SplitAmountForm";
 import MinimumAge from "./Options/MinimumAge";
 import AllowBunqMe from "./Options/AllowBunqMe";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { requestInquirySend } from "../../Actions/request_inquiry";
+
 import {
     getInternationalFormat,
     isValidPhonenumber
 } from "../../Helpers/PhoneLib";
+import TotalSplitHelper from "./TotalSplitHelper";
 
 const styles = {
     payButton: {
         width: "100%"
     },
     formControlAlt: {
-        marginBottom: 10
+        marginBottom: 10,
+        marginTop: 10
     },
     paper: {
         padding: 24,
+        marginBottom: 8,
         textAlign: "left"
-    }
+    },
+    titleGrid: { display: "flex", alignItems: "center" }
 };
 
 class RequestInquiry extends React.Component {
@@ -82,6 +88,10 @@ class RequestInquiry extends React.Component {
 
             // a list with all the targets
             targets: [],
+
+            // split amounts for targets
+            splitAmounts: {},
+            splitRequest: true,
 
             // defines which type is used
             targetType: "CONTACT"
@@ -185,6 +195,20 @@ class RequestInquiry extends React.Component {
                 }
             );
         }
+    };
+
+    setSplitCount = (key, amount) => {
+        const splitAmounts = this.state.splitAmounts;
+        splitAmounts[key] = amount;
+
+        this.setState({
+            splitAmounts: splitAmounts
+        });
+    };
+    toggleSplitRequest = event => {
+        this.setState({
+            splitRequest: !this.state.splitRequest
+        });
     };
 
     // add a target from the current text inputs to the target list
@@ -332,7 +356,9 @@ class RequestInquiry extends React.Component {
             minimumAge,
             setRedirectUrl,
             redirectUrl,
-            allowBunqMe
+            allowBunqMe,
+            splitAmounts,
+            splitRequest
         } = this.state;
         const minimumAgeInt = parseInt(minimumAge);
 
@@ -341,11 +367,8 @@ class RequestInquiry extends React.Component {
         // our user id
         const userId = user.id;
 
-        // amount inquired for all the requestInquiries
-        const amountInfo = {
-            value: amount + "", // sigh, number has to be sent as a string
-            currency: "EUR"
-        };
+        // calculate total split count
+        const totalSplit = TotalSplitHelper(targets, splitAmounts);
 
         const requestInquiries = [];
         targets.map(target => {
@@ -378,6 +401,33 @@ class RequestInquiry extends React.Component {
                     break;
             }
 
+            // amount inquired for all the requestInquiries
+            let amountInfo = {
+                value: amount + "", // sigh, number has to be sent as a string
+                currency: "EUR"
+            };
+
+            if (splitRequest) {
+                // default to 1 if split is enabled
+                const splitAmountValue =
+                    typeof splitAmounts[target.value] !== "undefined"
+                        ? splitAmounts[target.value]
+                        : 1;
+
+                // calculate the percentage for this split vs total
+                const percentage =
+                    totalSplit > 0 ? splitAmountValue / totalSplit : 0;
+
+                // calculate the actual amount
+                const moneyAmount = amount * percentage;
+
+                // set correct amount
+                amountInfo = {
+                    value: moneyAmount.toFixed(2) + "", // sigh, number has to be sent as a string
+                    currency: "EUR"
+                };
+            }
+
             const requestInquiry = {
                 amount_inquired: amountInfo,
                 counterparty_alias: targetInfo,
@@ -401,11 +451,15 @@ class RequestInquiry extends React.Component {
         const {
             selectedAccount,
             description,
+            descriptionError,
             targetType,
             allowBunqMe,
             amount,
             target,
-            targets
+            targetError,
+            targets,
+            splitAmounts,
+            splitRequest
         } = this.state;
         const t = this.props.t;
         if (!this.props.accounts[selectedAccount]) {
@@ -413,84 +467,23 @@ class RequestInquiry extends React.Component {
         }
         const account = this.props.accounts[selectedAccount];
 
-        return (
-            <Grid container spacing={24} align={"center"} justify={"center"}>
-                <Helmet>
-                    <title>{`bunqDesktop - ${t("Pay")}`}</title>
-                </Helmet>
+        const totalSplit = TotalSplitHelper(targets, splitAmounts);
 
-                <Grid item xs={12} sm={8} lg={6} xl={4}>
-                    <Paper style={styles.paper}>
-                        <TypographyTranslate variant="headline">
-                            Request Payment
-                        </TypographyTranslate>
-
-                        <AccountSelectorDialog
-                            value={this.state.selectedAccount}
-                            onChange={this.handleChange("selectedAccount")}
-                            accounts={this.props.accounts}
-                            BunqJSClient={this.props.BunqJSClient}
+        const advancedOptionsForm = (
+            <Paper style={styles.paper}>
+                <Grid container spacing={8}>
+                    <Grid item xs={12} style={styles.titleGrid}>
+                        <Switch
+                            color="primary"
+                            checked={this.state.expandedCollapse}
+                            onClick={this.toggleExpanded}
                         />
-
-                        <TargetSelection
-                            targetType={this.state.targetType}
-                            targets={this.state.targets}
-                            target={this.state.target}
-                            targetError={this.state.targetError}
-                            validForm={this.state.validForm}
-                            handleChangeDirect={this.handleChangeDirect}
-                            handleChange={this.handleChange}
-                            setTargetType={this.setTargetType}
-                            removeTarget={this.removeTarget}
-                            addTarget={this.addTarget}
-                            disabledTypes={["IBAN", "TRANSFER"]}
-                        />
-
-                        <TextField
-                            fullWidth
-                            error={this.state.descriptionError}
-                            id="description"
-                            label={t("Description")}
-                            value={this.state.description}
-                            onChange={this.handleChange("description")}
-                        />
-
-                        <FormControl
-                            style={styles.formControlAlt}
-                            error={this.state.amountError}
-                            fullWidth
-                        >
-                            <MoneyFormatInput
-                                id="amount"
-                                value={this.state.amount}
-                                onValueChange={this.handleChangeFormatted}
-                                onKeyPress={ev => {
-                                    if (
-                                        ev.key === "Enter" &&
-                                        this.state.validForm
-                                    ) {
-                                        this.openModal();
-                                        ev.preventDefault();
-                                    }
-                                }}
-                            />
-                        </FormControl>
-
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    color="primary"
-                                    checked={this.state.expandedCollapse}
-                                    onClick={this.toggleExpanded}
-                                />
-                            }
-                            label={t("Advanced options")}
-                        />
-
-                        <Collapse
-                            in={this.state.expandedCollapse}
-                            unmountOnExit
-                        >
+                        <TranslateTypography variant={"title"}>
+                            Advanced options
+                        </TranslateTypography>
+                    </Grid>
+                    <Collapse in={this.state.expandedCollapse} unmountOnExit>
+                        <Grid item xs={12}>
                             <MinimumAge
                                 t={t}
                                 targetType={this.state.targetType}
@@ -520,14 +513,100 @@ class RequestInquiry extends React.Component {
                                 allowBunqMe={this.state.allowBunqMe}
                                 handleToggle={this.handleToggle("allowBunqMe")}
                             />
-                        </Collapse>
+                        </Grid>
+                    </Collapse>
+                </Grid>
+            </Paper>
+        );
 
+        return (
+            <Grid container spacing={24} align={"center"} justify={"center"}>
+                <Helmet>
+                    <title>{`bunqDesktop - ${t("Pay")}`}</title>
+                </Helmet>
+
+                <Grid item xs={12} sm={10} md={8} lg={6} xl={4}>
+                    <Paper style={styles.paper}>
+                        <TypographyTranslate variant="headline">
+                            Request Payment
+                        </TypographyTranslate>
+
+                        <AccountSelectorDialog
+                            value={this.state.selectedAccount}
+                            onChange={this.handleChange("selectedAccount")}
+                            accounts={this.props.accounts}
+                            BunqJSClient={this.props.BunqJSClient}
+                            hiddenConnectTypes={["draftOnly", "showOnly"]}
+                        />
+
+                        <TargetSelection
+                            targetType={targetType}
+                            targets={targets}
+                            target={target}
+                            targetError={targetError}
+                            validForm={this.state.validForm}
+                            handleChangeDirect={this.handleChangeDirect}
+                            handleChange={this.handleChange}
+                            setTargetType={this.setTargetType}
+                            removeTarget={this.removeTarget}
+                            addTarget={this.addTarget}
+                            disabledTypes={["IBAN", "TRANSFER"]}
+                        />
+
+                        <TextField
+                            fullWidth
+                            error={descriptionError}
+                            id="description"
+                            label={t("Description")}
+                            value={description}
+                            onChange={this.handleChange("description")}
+                            multiline={true}
+                        />
+
+                        <FormControl
+                            style={styles.formControlAlt}
+                            error={this.state.amountError}
+                            fullWidth
+                        >
+                            <MoneyFormatInput
+                                id="amount"
+                                value={this.state.amount}
+                                onValueChange={this.handleChangeFormatted}
+                                onKeyPress={ev => {
+                                    if (
+                                        ev.key === "Enter" &&
+                                        this.state.validForm
+                                    ) {
+                                        this.openModal();
+                                        ev.preventDefault();
+                                    }
+                                }}
+                            />
+                        </FormControl>
+                    </Paper>
+
+                    <SplitAmountForm
+                        t={t}
+                        BunqJSClient={this.props.BunqJSClient}
+                        account={account}
+                        targets={this.state.targets}
+                        amount={this.state.amount}
+                        splitAmounts={this.state.splitAmounts}
+                        setSplitCount={this.setSplitCount}
+                        splitRequest={this.state.splitRequest}
+                        toggleSplitRequest={this.toggleSplitRequest}
+                    />
+
+                    {advancedOptionsForm}
+
+                    <Paper style={styles.paper}>
                         <ButtonTranslate
                             variant="raised"
                             color="primary"
                             disabled={
                                 !this.state.validForm ||
-                                this.props.requestInquiryLoading
+                                (this.props.requestInquiryLoading ||
+                                    (totalSplit <= 0 && splitRequest === true))
                             }
                             style={styles.payButton}
                             onClick={this.openModal}
@@ -546,8 +625,10 @@ class RequestInquiry extends React.Component {
                         allowBunqMe={allowBunqMe}
                         account={account}
                         amount={amount}
-                        target={target}
                         targets={targets}
+                        totalSplit={totalSplit}
+                        splitAmounts={splitAmounts}
+                        splitRequest={splitRequest}
                     />
                 </Grid>
             </Grid>
@@ -558,7 +639,7 @@ class RequestInquiry extends React.Component {
 const mapStateToProps = state => {
     return {
         requestInquiryLoading: state.request_inquiry.loading,
-        selectedAccount: state.accounts.selectedAccount,
+        selectedAccount: state.accounts.selected_account,
         accounts: state.accounts.accounts,
         user: state.user.user
     };
@@ -580,6 +661,7 @@ const mapDispatchToProps = (dispatch, props) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(RequestInquiry)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(RequestInquiry));

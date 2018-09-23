@@ -71,8 +71,7 @@ const loadLocales = (url, options, callback, data) => {
     }
 };
 
-i18n
-    .use(Backend)
+i18n.use(Backend)
     .use(reactI18nextModule)
     .init({
         // fallback to english

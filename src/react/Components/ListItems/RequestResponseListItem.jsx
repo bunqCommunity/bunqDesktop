@@ -8,6 +8,7 @@ import Divider from "@material-ui/core/Divider";
 
 import { formatMoney } from "../../Helpers/Utils";
 import { requestResponseText } from "../../Helpers/StatusTexts";
+import { defaultRequestResponseImage } from "../../Helpers/DefaultImageHandlers";
 
 import NavLink from "../../Components/Routing/NavLink";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
@@ -15,6 +16,9 @@ import CategoryIcons from "../Categories/CategoryIcons";
 import MoneyAmountLabel from "../MoneyAmountLabel";
 
 const styles = {
+    listItemText: {
+        marginRight: 40
+    },
     smallAvatar: {
         width: 50,
         height: 50
@@ -40,7 +44,7 @@ class RequestResponseListItem extends React.Component {
         const { requestResponse, t } = this.props;
         if (requestResponse.status === "ACCEPTED") {
             if (this.props.displayAcceptedRequests === false) {
-                // hide the request-response becuase a payment item exists
+                // hide the request-response because a payment item exists
                 return null;
             }
         }
@@ -52,24 +56,34 @@ class RequestResponseListItem extends React.Component {
                     .attachment_public_uuid;
         }
         const displayName = requestResponse.counterparty_alias.display_name;
-        const paymentAmount = requestResponse.getAmount();
-        const formattedPaymentAmount = formatMoney(paymentAmount);
+        let paymentAmount = requestResponse.getAmount();
+        paymentAmount = paymentAmount > 0 ? paymentAmount * -1 : paymentAmount;
+        const formattedPaymentAmount = formatMoney(paymentAmount, true);
         let paymentLabel = requestResponseText(requestResponse, t);
+
+        let defaultImage = defaultRequestResponseImage(requestResponse);
 
         return [
             <ListItem
                 button
                 component={NavLink}
-                to={`/request-response-info/${requestResponse.id}/${requestResponse.monetary_account_id}`}
+                to={`/request-response-info/${requestResponse.id}/${
+                    requestResponse.monetary_account_id
+                }`}
             >
                 <Avatar style={styles.smallAvatar}>
                     <LazyAttachmentImage
-                        width={50}
+                        height={50}
+                        defaultImage={defaultImage}
                         BunqJSClient={this.props.BunqJSClient}
                         imageUUID={imageUUID}
                     />
                 </Avatar>
-                <ListItemText primary={displayName} secondary={paymentLabel} />
+                <ListItemText
+                    style={styles.listItemText}
+                    primary={displayName}
+                    secondary={paymentLabel}
+                />
                 <ListItemSecondaryAction style={{ marginTop: -16 }}>
                     <MoneyAmountLabel
                         style={styles.moneyAmountLabel}

@@ -7,8 +7,9 @@ export default ({ isLoading, pastDelay, error }) => {
         return null;
     } else if (error && !isLoading) {
         // failed to load the component
+        console.error(error);
         Logger.error("Failed to load", error);
-        return null;
+        throw error;
     } else {
         // during loading
         return <div key="loading-component" />;

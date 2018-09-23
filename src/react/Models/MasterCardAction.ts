@@ -75,7 +75,7 @@ export default class MasterCardAction implements Event {
      * @returns {number}
      */
     public getAmount(): number {
-        return parseFloat(this.amount_local.value);
+        return parseFloat(this.amount_billing.value);
     }
 
     /**

@@ -17,6 +17,9 @@ import DraftAccess from "./ShareInviteBankTypes/DraftAccess";
 import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiries";
 
 const styles = {
+    listItemText: {
+        marginRight: 40
+    },
     smallAvatar: {
         width: 50,
         height: 50
@@ -79,12 +82,9 @@ class ShareInviteBankInquiryListItem extends React.Component {
 
         let imageUUID = false;
         if (aliasInfo.avatar) {
-            imageUUID =
-                aliasInfo.avatar.image[0]
-                    .attachment_public_uuid;
+            imageUUID = aliasInfo.avatar.image[0].attachment_public_uuid;
         }
-        const displayName =
-            aliasInfo.display_name;
+        const displayName = aliasInfo.display_name;
 
         const connectActions = (
             <React.Fragment>
@@ -131,12 +131,13 @@ class ShareInviteBankInquiryListItem extends React.Component {
             >
                 <Avatar style={styles.smallAvatar}>
                     <LazyAttachmentImage
-                        width={50}
+                        height={50}
                         BunqJSClient={this.props.BunqJSClient}
                         imageUUID={imageUUID}
                     />
                 </Avatar>
                 <ListItemText
+                    style={styles.listItemText}
                     primary={displayName}
                     secondary={t("Connect invite sent")}
                 />
@@ -158,7 +159,7 @@ ShareInviteBankInquiryListItem.defaultProps = {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-        accountsSelectedId: state.accounts.selectedAccount
+        accountsSelectedId: state.accounts.selected_account
     };
 };
 
@@ -169,6 +170,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId))
     };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(ShareInviteBankInquiryListItem)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(ShareInviteBankInquiryListItem));

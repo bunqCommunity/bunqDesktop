@@ -1,12 +1,12 @@
 import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
+import { ipcRenderer } from "electron";
 import { withRouter } from "react-router";
 import Grid from "@material-ui/core/Grid";
 import { withStyles } from "@material-ui/core/styles";
 import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
-import { ipcRenderer } from "electron";
 
 // custom components
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
@@ -14,9 +14,10 @@ import Logger from "../Helpers/Logger";
 import VersionChecker from "../Helpers/VersionChecker";
 import NetworkStatusChecker from "./NetworkStatusChecker";
 import RuleCollectionChecker from "./RuleCollectionChecker";
+import QueueManager from "./Queue/QueueManager";
 import MainDialog from "./MainDialog";
 import MainSnackbar from "./MainSnackbar";
-import MainDrawer from "./MainDrawer";
+import Sidebar from "./Sidebar";
 import Header from "./Header";
 import ErrorBoundary from "./ErrorBoundary";
 
@@ -38,18 +39,19 @@ import { openSnackbar } from "../Actions/snackbar";
 import { loadStoredPayments } from "../Actions/payments";
 import { loadStoredAccounts } from "../Actions/accounts";
 import { loadStoredBunqMeTabs } from "../Actions/bunq_me_tabs";
-import { applicationSetStatus } from "../Actions/application.js";
 import {
-    registrationClearUserInfo,
-    registrationResetToApiScreenSoft
-} from "../Actions/registration";
+    applicationSetStatus,
+    applicationForceUpdate
+} from "../Actions/application.js";
 import { loadStoredMasterCardActions } from "../Actions/master_card_actions";
 import { loadStoredRequestInquiries } from "../Actions/request_inquiries";
+import { loadStoredrequestInquiryBatches } from "../Actions/request_inquiry_batches";
 import { loadStoredRequestResponses } from "../Actions/request_responses";
 import {
+    registrationClearUserInfo,
     registrationLoading,
     registrationNotLoading,
-    registrationResetToApiScreen
+    registrationResetToApiScreenSoft
 } from "../Actions/registration";
 import {
     setHideBalance,
@@ -140,7 +142,11 @@ class Layout extends React.Component {
             VersionChecker().then(versionInfo => {
                 if (versionInfo.newerLink !== false) {
                     this.props.openSnackbar(
-                        `A new version (v${versionInfo.latestVersion}) is available! You are currently using ${versionInfo.currentVersion}`,
+                        `A new version (v${
+                            versionInfo.latestVersion
+                        }) is available! You are currently using ${
+                            versionInfo.currentVersion
+                        }`,
                         8000
                     );
                 }
@@ -398,6 +404,7 @@ class Layout extends React.Component {
         this.props.loadStoredBunqMeTabs();
         this.props.loadStoredMasterCardActions();
         this.props.loadStoredRequestInquiries();
+        this.props.loadStoredrequestInquiryBatches();
         this.props.loadStoredRequestResponses();
         this.props.loadStoredShareInviteBankResponses();
         this.props.loadStoredShareInviteBankInquiries();
@@ -471,8 +478,10 @@ class Layout extends React.Component {
                     <RuleCollectionChecker updateToggle={isLoading} />
                     <NetworkStatusChecker />
 
-                    <Header />
-                    <MainDrawer
+                    <QueueManager BunqJSClient={this.props.BunqJSClient} />
+
+                    <Header BunqJSClient={this.props.BunqJSClient} />
+                    <Sidebar
                         BunqJSClient={this.props.BunqJSClient}
                         location={this.props.location}
                     />
@@ -558,10 +567,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         applicationSetStatus: status_message =>
             dispatch(applicationSetStatus(status_message)),
 
+        // forces an update for certain components
+        applicationForceUpdate: () => dispatch(applicationForceUpdate()),
+
         registrationLoading: () => dispatch(registrationLoading()),
         registrationNotLoading: () => dispatch(registrationNotLoading()),
-        registrationResetToApiScreen: () =>
-            dispatch(registrationResetToApiScreen(BunqJSClient)),
         registrationResetToApiScreenSoft: () =>
             dispatch(registrationResetToApiScreenSoft(BunqJSClient)),
 
@@ -580,6 +590,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(loadStoredMasterCardActions(BunqJSClient)),
         loadStoredRequestInquiries: () =>
             dispatch(loadStoredRequestInquiries(BunqJSClient)),
+        loadStoredrequestInquiryBatches: () =>
+            dispatch(loadStoredrequestInquiryBatches(BunqJSClient)),
         loadStoredAccounts: () => dispatch(loadStoredAccounts(BunqJSClient)),
         loadStoredRequestResponses: () =>
             dispatch(loadStoredRequestResponses(BunqJSClient)),
@@ -595,8 +607,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 export default withStyles(styles, { withTheme: true })(
     withRouter(
-        connect(mapStateToProps, mapDispatchToProps)(
-            translate("translations")(Layout)
-        )
+        connect(
+            mapStateToProps,
+            mapDispatchToProps
+        )(translate("translations")(Layout))
     )
 );

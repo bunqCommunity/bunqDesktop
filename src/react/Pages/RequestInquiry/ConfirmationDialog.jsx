@@ -17,6 +17,9 @@ export default class ConfirmationDialog extends React.Component {
             description,
             account,
             targets,
+            totalSplit,
+            splitAmounts,
+            splitRequest,
             amount,
             t
         } = this.props;
@@ -27,16 +30,23 @@ export default class ConfirmationDialog extends React.Component {
 
         // create a list of ListItems with our targets
         const confirmationModelTargets = targets.map(targetItem => {
-            let primaryText = "";
-            let secondaryText = "";
+            let moneyAmount = amount;
 
-            switch (targetItem.type) {
-                case "CONTACT":
-                    primaryText = `${t("Contact")}: ${targetItem.value}`;
-                    break
-                default:
-                    return null;
+            if (splitRequest) {
+                // get split amount for this target
+                const splitAmountValue =
+                    typeof splitAmounts[targetItem.value] === "undefined"
+                        ? 1
+                        : splitAmounts[targetItem.value];
+
+                // calculate percentage and then monetary amount
+                const percentage = splitAmountValue / totalSplit;
+                moneyAmount = amount * percentage;
             }
+
+            // format the label
+            const primaryText = `${t("Contact")}: ${targetItem.value}`;
+            const secondaryText = `${t("Amount")}: ${formatMoney(moneyAmount)}`;
 
             return [
                 <ListItem>
@@ -60,27 +70,20 @@ export default class ConfirmationDialog extends React.Component {
                     <List>
                         <ListItem>
                             <ListItemText
-                                primary="To"
-                                secondary={`${account.description} ${account
-                                    .balance.value}`}
+                                primary={t("To") + ":"}
+                                secondary={`${account.description} ${
+                                    account.balance.value
+                                }`}
                             />
                         </ListItem>
                         <ListItem>
                             <ListItemText
                                 primary={t("Description")}
                                 secondary={
-                                    description.length <= 0 ? (
-                                        t("None")
-                                    ) : (
-                                        description
-                                    )
+                                    description.length <= 0
+                                        ? t("None")
+                                        : description
                                 }
-                            />
-                        </ListItem>
-                        <ListItem>
-                            <ListItemText
-                                primary={t("Amount")}
-                                secondary={`${formatMoney(amount)}`}
                             />
                         </ListItem>
                         <ListItem>

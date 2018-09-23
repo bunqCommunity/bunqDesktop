@@ -15,6 +15,8 @@ import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 import QRSvg from "./QRSvg";
 import QRCode from "./QRCode";
 
+import { formatIban } from "../../Helpers/Utils";
+
 const styles = theme => ({
     btnIcon: {
         color: theme.palette.text.secondary,
@@ -83,7 +85,7 @@ class AccountQRFullscreen extends React.PureComponent {
                         <ListItem className={classes.listItem}>
                             <Avatar className={classes.bigAvatar}>
                                 <LazyAttachmentImage
-                                    width={45}
+                                    height={45}
                                     BunqJSClient={this.props.BunqJSClient}
                                     imageUUID={
                                         accountInfo.avatar.image[0]
@@ -93,7 +95,7 @@ class AccountQRFullscreen extends React.PureComponent {
                             </Avatar>
                             <ListItemText
                                 primary={accountInfo.description}
-                                secondary={IBAN}
+                                secondary={formatIban(IBAN)}
                             />
                         </ListItem>
                     </React.Fragment>
@@ -148,7 +150,7 @@ AccountQRFullscreen.defaultProps = {
 const mapStateToProps = state => {
     return {
         accounts: state.accounts.accounts,
-        selectedAccount: state.accounts.selectedAccount
+        selectedAccount: state.accounts.selected_account
     };
 };
 

@@ -20,7 +20,8 @@ export default ({ component: Component, derivedPassword, ...rest }) => {
                     />
                 ) : (
                     componentHandler(props)
-                )}
+                )
+            }
         />
     );
 };

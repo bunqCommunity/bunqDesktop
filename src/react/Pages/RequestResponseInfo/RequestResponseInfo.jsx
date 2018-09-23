@@ -1,6 +1,7 @@
 import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
+import { ipcRenderer } from "electron";
 import Helmet from "react-helmet";
 import Redirect from "react-router-dom/Redirect";
 import Grid from "@material-ui/core/Grid";
@@ -16,20 +17,30 @@ import Collapse from "@material-ui/core/Collapse";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import HelpIcon from "@material-ui/icons/Help";
+import SaveIcon from "@material-ui/icons/Save";
+import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
+import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 
+import PDFExportHelper from "../../Components/PDFExportHelper";
 import ExportDialog from "../../Components/ExportDialog";
+import SpeedDial from "../../Components/SpeedDial";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
 import MoneyAmountLabel from "../../Components/MoneyAmountLabel";
 import TransactionHeader from "../../Components/TransactionHeader";
 import CategorySelector from "../../Components/Categories/CategorySelector";
+import NoteTextForm from "../../Components/NoteTexts/NoteTextForm";
 
 import { formatMoney, humanReadableDate } from "../../Helpers/Utils";
-import { requestResponseText } from "../../Helpers/StatusTexts";
+import {
+    requestResponseText,
+    requestResponseTypeParser
+} from "../../Helpers/StatusTexts";
 import { requestResponseUpdate } from "../../Actions/request_response_info";
 import {
     requestResponseReject,
     requestResponseAccept
 } from "../../Actions/request_response";
+import { applicationSetPDFMode } from "../../Actions/application";
 
 const styles = {
     btn: {},
@@ -53,7 +64,9 @@ class RequestResponseInfo extends React.Component {
         super(props, context);
         this.state = {
             accepted: false,
-            displayExport: false
+            displayExport: false,
+
+            initialUpdate: false
         };
     }
 
@@ -67,27 +80,44 @@ class RequestResponseInfo extends React.Component {
                     : accountId,
                 requestResponseId
             );
+            this.setState({ initialUpdate: true });
         }
     }
 
-    componentWillUpdate(nextProps, nextState) {
+    getSnapshotBeforeUpdate(nextProps, nextState) {
         if (
-            nextProps.user &&
-            nextProps.user.id &&
+            this.props.user &&
+            this.props.user.id &&
             this.props.initialBunqConnect &&
             this.props.match.params.requestResponseId !==
-                nextProps.match.params.requestResponseId
+                this.props.match.params.requestResponseId
         ) {
-            const { requestResponseId, accountId } = nextProps.match.params;
+            const { requestResponseId, accountId } = this.props.match.params;
             this.props.requestResponseUpdate(
-                nextProps.user.id,
+                this.props.user.id,
                 accountId === undefined
-                    ? nextProps.accountsSelectedAccount
+                    ? this.props.accountsSelectedAccount
                     : accountId,
                 requestResponseId
             );
+            this.setState({ initialUpdate: true });
         }
+        return null;
     }
+    componentDidUpdate() {}
+
+    startPayment = event => {
+        const requestResponseInfo = this.props.requestResponseInfo;
+        this.props.history.push(
+            `/pay?amount=${requestResponseInfo.getAmount()}`
+        );
+    };
+    startRequest = event => {
+        const requestResponseInfo = this.props.requestResponseInfo;
+        this.props.history.push(
+            `/request?amount=${requestResponseInfo.getAmount()}`
+        );
+    };
 
     rejectRequest = () => {
         const { requestResponseId, accountId } = this.props.match.params;
@@ -121,6 +151,22 @@ class RequestResponseInfo extends React.Component {
         );
     };
 
+    createPdfExport = () => {
+        const { requestResponseInfo } = this.props;
+
+        // enable pdf mode
+        this.props.applicationSetPDFMode(true);
+
+        // format a file name
+        const timeStamp = requestResponseInfo.created.getTime();
+        const fileName = `request-${requestResponseInfo.id}-${timeStamp}.pdf`;
+
+        // delay for a short period to let the application update and then create a pdf
+        setTimeout(() => {
+            ipcRenderer.send("print-to-pdf", fileName);
+        }, 250);
+    };
+
     render() {
         const {
             accountsSelectedAccount,
@@ -138,9 +184,11 @@ class RequestResponseInfo extends React.Component {
         }
 
         let content;
+        let noteTextsForm = null;
         if (
             requestResponseInfo === false ||
-            requestResponseInfoLoading === true
+            requestResponseInfoLoading === true ||
+            this.state.initialUpdate === false
         ) {
             content = (
                 <Paper style={styles.paper}>
@@ -155,12 +203,41 @@ class RequestResponseInfo extends React.Component {
             );
         } else {
             const requestResponse = requestResponseInfo.RequestResponse;
-            const paymentDate = humanReadableDate(requestResponse.updated);
-            const paymentAmount = requestResponse.amount_inquired.value;
+            const createdDate = humanReadableDate(requestResponse.created);
+            const timeRespondedDate = humanReadableDate(
+                requestResponse.time_responded
+            );
+            let paymentAmount = requestResponse.amount_inquired.value;
+            paymentAmount =
+                requestResponse.status === "ACCEPTED"
+                    ? paymentAmount * -1
+                    : paymentAmount;
+
             const formattedPaymentAmount = formatMoney(paymentAmount);
             const requestResponseLabel = requestResponseText(
                 requestResponse,
                 t
+            );
+
+            if (this.props.pdfSaveModeEnabled) {
+                return (
+                    <PDFExportHelper
+                        t={t}
+                        payment={requestResponse}
+                        formattedPaymentAmount={formattedPaymentAmount}
+                        paymentDate={createdDate}
+                        paymentDateUpdated={timeRespondedDate}
+                        personalAlias={requestResponse.alias}
+                        counterPartyAlias={requestResponse.counterparty_alias}
+                    />
+                );
+            }
+
+            noteTextsForm = (
+                <NoteTextForm
+                    BunqJSClient={this.props.BunqJSClient}
+                    event={requestResponse}
+                />
             );
 
             content = [
@@ -176,6 +253,9 @@ class RequestResponseInfo extends React.Component {
                             to={requestResponse.alias}
                             from={requestResponse.counterparty_alias}
                             user={this.props.user}
+                            swap={requestResponse.status === "ACCEPTED"}
+                            type="requestResponse"
+                            event={requestResponse}
                         />
 
                         <Grid item xs={12}>
@@ -196,27 +276,40 @@ class RequestResponseInfo extends React.Component {
                             </Typography>
 
                             <List style={styles.list}>
-                                {requestResponse.description.length > 0 ? (
-                                    [
-                                        <Divider />,
-                                        <ListItem>
-                                            <ListItemText
-                                                primary={t("Description")}
-                                                secondary={
-                                                    requestResponse.description
-                                                }
-                                            />
-                                        </ListItem>
-                                    ]
-                                ) : null}
+                                {requestResponse.description.length > 0
+                                    ? [
+                                          <Divider />,
+                                          <ListItem>
+                                              <ListItemText
+                                                  primary={t("Description")}
+                                                  secondary={
+                                                      requestResponse.description
+                                                  }
+                                              />
+                                          </ListItem>
+                                      ]
+                                    : null}
 
                                 <Divider />
                                 <ListItem>
                                     <ListItemText
-                                        primary={t("Date")}
-                                        secondary={paymentDate}
+                                        primary={t("Received")}
+                                        secondary={createdDate}
                                     />
                                 </ListItem>
+
+                                {timeRespondedDate ? (
+                                    <React.Fragment>
+                                        <Divider />
+                                        <ListItem>
+                                            <ListItemText
+                                                primary={t("Paid")}
+                                                secondary={timeRespondedDate}
+                                            />
+                                        </ListItem>
+                                    </React.Fragment>
+                                ) : null}
+
                                 {requestResponse.counterparty_alias &&
                                 requestResponse.counterparty_alias.iban ? (
                                     <React.Fragment>
@@ -232,6 +325,34 @@ class RequestResponseInfo extends React.Component {
                                         </ListItem>
                                     </React.Fragment>
                                 ) : null}
+
+                                <Divider />
+                                <ListItem>
+                                    <ListItemText
+                                        primary={t("Type")}
+                                        secondary={requestResponseTypeParser(
+                                            requestResponse,
+                                            t
+                                        )}
+                                    />
+                                </ListItem>
+
+                                <Divider />
+                                <ListItem>
+                                    <ListItemText
+                                        primary={t("Status")}
+                                        secondary={requestResponse.status}
+                                    />
+                                </ListItem>
+
+                                <Divider />
+                                <ListItem>
+                                    <ListItemText
+                                        primary={t("Sub type")}
+                                        secondary={requestResponse.sub_type}
+                                    />
+                                </ListItem>
+
                                 <Divider />
                             </List>
 
@@ -313,6 +434,15 @@ class RequestResponseInfo extends React.Component {
                     <title>{`bunqDesktop - ${t("Request Info")}`}</title>
                 </Helmet>
 
+                <ExportDialog
+                    closeModal={event =>
+                        this.setState({ displayExport: false })
+                    }
+                    title={t("Export info")}
+                    open={this.state.displayExport}
+                    object={exportData}
+                />
+
                 <Grid item xs={12} sm={2} lg={3}>
                     <Button
                         onClick={this.props.history.goBack}
@@ -324,25 +454,39 @@ class RequestResponseInfo extends React.Component {
 
                 <Grid item xs={12} sm={8} lg={6}>
                     {content}
+
+                    {noteTextsForm}
                 </Grid>
 
-                <Grid item xs={12} sm={2} lg={3} style={{ textAlign: "right" }}>
-                    <ExportDialog
-                        closeModal={event =>
-                            this.setState({ displayExport: false })}
-                        title={t("Export info")}
-                        open={this.state.displayExport}
-                        object={exportData}
-                    />
-
-                    <Button
-                        style={styles.button}
-                        onClick={event =>
-                            this.setState({ displayExport: true })}
-                    >
-                        <HelpIcon />
-                    </Button>
-                </Grid>
+                <SpeedDial
+                    hidden={false}
+                    actions={[
+                        {
+                            name: "Send payment",
+                            icon: ArrowUpIcon,
+                            color: "action",
+                            onClick: this.startPayment
+                        },
+                        {
+                            name: "Send request",
+                            icon: ArrowDownIcon,
+                            color: "action",
+                            onClick: this.startRequest
+                        },
+                        {
+                            name: "Create PDF",
+                            icon: SaveIcon,
+                            color: "action",
+                            onClick: this.createPdfExport
+                        },
+                        {
+                            name: t("View debug information"),
+                            icon: HelpIcon,
+                            onClick: event =>
+                                this.setState({ displayExport: true })
+                        }
+                    ]}
+                />
             </Grid>
         );
     }
@@ -351,17 +495,25 @@ class RequestResponseInfo extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+
+        pdfSaveModeEnabled: state.application.pdf_save_mode_enabled,
+
         requestResponseInfo: state.request_response_info.request_response_info,
         requestResponseAccountId: state.request_response_info.account_id,
         requestResponseInfoLoading: state.request_response_info.loading,
+
         requestResponseLoading: state.request_response.loading,
-        accountsSelectedAccount: state.accounts.selectedAccount
+
+        accountsSelectedAccount: state.accounts.selected_account
     };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
+        applicationSetPDFMode: enabled =>
+            dispatch(applicationSetPDFMode(enabled)),
+
         requestResponseUpdate: (user_id, account_id, request_response_id) =>
             dispatch(
                 requestResponseUpdate(
@@ -400,6 +552,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(RequestResponseInfo)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(RequestResponseInfo));

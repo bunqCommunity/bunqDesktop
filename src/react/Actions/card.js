@@ -23,11 +23,7 @@ export function cardUpdate(BunqJSClient, user_id) {
             })
             .catch(error => {
                 dispatch(cardNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    failedMessage
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

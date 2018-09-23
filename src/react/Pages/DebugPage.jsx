@@ -5,7 +5,7 @@ import ReactJson from "react-json-view";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 
-import ReactJsonWrapper from "../Components/ReactJsonWrapper"
+import ReactJsonWrapper from "../Components/ReactJsonWrapper";
 
 const styles = {
     paper: {

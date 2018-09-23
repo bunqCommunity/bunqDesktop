@@ -45,11 +45,7 @@ export function paymentsUpdate(BunqJSClient, user_id, account_id, payment_id) {
             })
             .catch(error => {
                 dispatch(paymentInfoNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    failedMessage
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

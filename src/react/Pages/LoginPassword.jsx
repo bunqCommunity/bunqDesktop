@@ -5,11 +5,18 @@ import Redirect from "react-router-dom/Redirect";
 import Helmet from "react-helmet";
 import store from "store";
 import Grid from "@material-ui/core/Grid";
-import Input from "@material-ui/core/Input";
 import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import IconButton from "@material-ui/core/IconButton";
+import FormControl from "@material-ui/core/FormControl";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
+import InputAdornment from "@material-ui/core/InputAdornment";
+
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
 import TranslateButton from "../Components/TranslationHelpers/Button";
 
@@ -43,6 +50,9 @@ const styles = {
         width: "100%",
         marginTop: 20
     },
+    passwordVisibilityIcon: {
+        color: "#4c4c4c"
+    },
     environmentToggle: {
         marginTop: 10
     },
@@ -54,8 +64,14 @@ const styles = {
         textAlign: "center",
         backgroundColor: "#ffffff"
     },
+    formControl: {
+        width: "100%"
+    },
     text: {
         color: "#000000"
+    },
+    capslockWarning: {
+        color: "#FF0000"
     }
 };
 
@@ -65,9 +81,17 @@ class LoginPassword extends React.Component {
         this.state = {
             password: "",
             passwordValid: false,
+            passwordRepeat: "",
+            passwordRepeatValid: false,
+            showPassword: false,
+            showPasswordRepeat: false,
+            capslockWarningDisplay: false,
 
             hasReadWarning: !!store.get("HAS_READ_DEV_WARNING2")
         };
+
+        this.passwordInput = React.createRef();
+        this.passwordRepeatInput = React.createRef();
     }
 
     componentDidMount() {
@@ -81,30 +105,87 @@ class LoginPassword extends React.Component {
     }
 
     setRegistration = () => {
-        if (this.state.password.length < 7) {
+        const { hasStoredApiKey, storedApiKeys } = this.props;
+        const { password, passwordValid, passwordRepeatValid } = this.state;
+        if (password.length < 7) {
             this.props.openSnackbar(
                 "The password you entered should be atleast 7 characters long!"
             );
             return;
         }
 
-        if (this.state.passwordValid) {
-            this.props.usePasswordLogin(this.state.password);
-            this.setState({ password: "", passwordValid: false });
+        const isExistingInstallation =
+            hasStoredApiKey || (storedApiKeys && storedApiKeys.length > 0);
+
+        // main password field is valid
+        if (passwordValid) {
+            // there are stored keys or second password is valid
+            if (isExistingInstallation || passwordRepeatValid) {
+                this.props.usePasswordLogin(password);
+                this.setState({ password: "", passwordValid: false });
+            }
         }
     };
 
     handlePasswordChange = event => {
         const targetValue = event.target.value;
-        this.setState({
-            password: targetValue
-        });
-        this.validateInputs(targetValue);
+        this.setState(
+            {
+                password: targetValue
+            },
+            this.validateInputs
+        );
+    };
+    handlePasswordChangeRepeat = event => {
+        const targetValue = event.target.value;
+        this.setState(
+            {
+                passwordRepeat: targetValue
+            },
+            this.validateInputs
+        );
     };
 
-    validateInputs = password => {
+    handleKeyEvent = event => {
+        if (this.isCapslockEnabled(event) === true) {
+            this.setState({ capslockWarningDisplay: true });
+        } else {
+            if (this.state.capslockWarningDisplay) {
+                this.setState({ capslockWarningDisplay: false });
+            }
+        }
+    };
+
+    isCapslockEnabled = event => {
+        return event.getModifierState("CapsLock");
+    };
+
+    toggleShowPassword = event => {
+        this.setState({ showPassword: !this.state.showPassword });
+        setTimeout(() => {
+            this.passwordInput.focus();
+            this.passwordInput.selectionStart = 1000;
+            this.passwordInput.selectionEnd = 1000;
+        }, 300);
+    };
+    toggleShowPasswordRepeat = event => {
+        this.setState({ showPasswordRepeat: !this.state.showPasswordRepeat });
+        setTimeout(() => {
+            this.passwordRepeatInput.focus();
+            this.passwordRepeatInput.selectionStart = 1000;
+            this.passwordRepeatInput.selectionEnd = 1000;
+        }, 300);
+    };
+
+    validateInputs = () => {
+        const { password, passwordRepeat } = this.state;
+
+        // check if password and repeat password are the same
+        const samePassword = password === passwordRepeat;
+
         this.setState({
-            passwordValid: password && password.length >= 7
+            passwordValid: password && password.length >= 7,
+            passwordRepeatValid: samePassword
         });
     };
 
@@ -114,28 +195,42 @@ class LoginPassword extends React.Component {
 
     render() {
         const {
-            status_message,
+            statusMessage,
             registrationLoading,
             hasStoredApiKey,
+            storedApiKeys,
             useNoPassword,
             derivedPassword,
             analyticsEnabled,
             t
         } = this.props;
-        const { passwordValid, hasReadWarning } = this.state;
+        const {
+            passwordValid,
+            passwordRepeatValid,
+            hasReadWarning
+        } = this.state;
 
         if (derivedPassword !== false) {
             return <Redirect to="/login" />;
         }
         if (
-            this.state.hasReadWarning === false ||
+            hasReadWarning === false ||
             typeof analyticsEnabled === "undefined"
         ) {
             return <Redirect to="/disclaimer" />;
         }
 
+        const isExistingInstallation =
+            hasStoredApiKey || (storedApiKeys && storedApiKeys.length > 0);
+
         const buttonDisabled =
-            passwordValid === false || registrationLoading === true;
+            // invalid password
+            passwordValid === false ||
+            // no existing installation so repeat password is required
+            (isExistingInstallation === false &&
+                passwordRepeatValid === false) ||
+            // if loading we block disabled
+            registrationLoading === true;
 
         let cardContent = registrationLoading ? (
             <CardContent style={styles.cardContent}>
@@ -143,7 +238,9 @@ class LoginPassword extends React.Component {
                     Loading
                 </Typography>
                 <CircularProgress size={50} />
-                <Typography variant="subheading">{status_message}</Typography>
+                <Typography variant="subheading" style={styles.text}>
+                    {statusMessage}
+                </Typography>
             </CardContent>
         ) : (
             <CardContent style={styles.cardContent}>
@@ -152,29 +249,120 @@ class LoginPassword extends React.Component {
                     component="h2"
                     style={styles.text}
                 >
-                    {hasStoredApiKey ? (
-                        t("Enter your password")
-                    ) : (
-                        t("Enter a password")
-                    )}
+                    {isExistingInstallation
+                        ? t("Enter your password")
+                        : t("Enter a password")}
                 </Typography>
 
-                <Input
-                    autoFocus
-                    style={styles.passwordInput}
-                    error={!this.state.passwordValid}
-                    type="password"
-                    label="Password"
-                    hint="A secure 7+ character password"
-                    onChange={this.handlePasswordChange}
-                    onKeyPress={ev => {
-                        if (ev.key === "Enter" && buttonDisabled === false) {
-                            this.setRegistration();
-                            ev.preventDefault();
+                <FormControl style={styles.formControl}>
+                    <InputLabel style={styles.text}>Password</InputLabel>
+                    <Input
+                        autoFocus
+                        className={"text-input"}
+                        inputRef={ref => (this.passwordInput = ref)}
+                        style={styles.passwordInput}
+                        onChange={this.handlePasswordChange}
+                        error={!this.state.passwordValid}
+                        value={this.state.password}
+                        type={this.state.showPassword ? "text" : "password"}
+                        onKeyPress={ev => {
+                            this.handleKeyEvent(ev);
+                            if (
+                                ev.key === "Enter" &&
+                                buttonDisabled === false
+                            ) {
+                                this.setRegistration();
+                                ev.preventDefault();
+                            }
+                        }}
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="Toggle password visibility"
+                                    onClick={this.toggleShowPassword}
+                                    onMouseDown={this.toggleShowPassword}
+                                >
+                                    {this.state.showPassword ? (
+                                        <VisibilityOff
+                                            style={
+                                                styles.passwordVisibilityIcon
+                                            }
+                                        />
+                                    ) : (
+                                        <Visibility
+                                            style={
+                                                styles.passwordVisibilityIcon
+                                            }
+                                        />
+                                    )}
+                                </IconButton>
+                            </InputAdornment>
                         }
-                    }}
-                    value={this.state.password}
-                />
+                    />
+                </FormControl>
+
+                {isExistingInstallation ? null : (
+                    <FormControl style={styles.formControl}>
+                        <InputLabel>Password repeat</InputLabel>
+                        <Input
+                            className={"text-input"}
+                            inputRef={ref => (this.passwordRepeatInput = ref)}
+                            style={styles.passwordInput}
+                            error={!this.state.passwordRepeatValid}
+                            type={
+                                this.state.showPasswordRepeat
+                                    ? "text"
+                                    : "password"
+                            }
+                            onChange={this.handlePasswordChangeRepeat}
+                            value={this.state.passwordRepeat}
+                            onKeyPress={ev => {
+                                this.handleKeyEvent(ev);
+                                if (
+                                    ev.key === "Enter" &&
+                                    buttonDisabled === false
+                                ) {
+                                    this.setRegistration();
+                                    ev.preventDefault();
+                                }
+                            }}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="Toggle password visibility"
+                                        onClick={this.toggleShowPasswordRepeat}
+                                        onMouseDown={
+                                            this.toggleShowPasswordRepeat
+                                        }
+                                    >
+                                        {this.state.showPasswordRepeat ? (
+                                            <VisibilityOff
+                                                style={
+                                                    styles.passwordVisibilityIcon
+                                                }
+                                            />
+                                        ) : (
+                                            <Visibility
+                                                style={
+                                                    styles.passwordVisibilityIcon
+                                                }
+                                            />
+                                        )}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        />
+                    </FormControl>
+                )}
+                {this.state.capslockWarningDisplay ? (
+                    <Typography
+                        style={{
+                            color: styles.capslockWarning.color
+                        }}
+                    >
+                        {t("Capslock active")}
+                    </Typography>
+                ) : null}
 
                 <Grid
                     container
@@ -270,10 +458,11 @@ class LoginPassword extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        status_message: state.application.status_message,
+        statusMessage: state.application.status_message,
 
         analyticsEnabled: state.options.analytics_enabled,
 
+        storedApiKeys: state.registration.stored_api_keys,
         hasStoredApiKey: state.registration.has_stored_api_key,
         useNoPassword: state.registration.use_no_password,
         derivedPassword: state.registration.derivedPassword,
@@ -304,6 +493,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(LoginPassword)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(LoginPassword));

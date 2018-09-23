@@ -11,7 +11,7 @@ import RuleCollection, { EventObjectResult } from "../../Types/RuleCollection";
 import RuleCollectionPreviewItem from "./RuleCollectionPreviewItem";
 
 // import typed worker
-const RuleCollectionCheckWorker: any = require("../../WebWorkers/rule_collection_check.worker.js");
+const RuleCollectionCheckWorker: any = require("worker-loader!../../WebWorkers/rule_collection_check.worker.js");
 
 const styles = {
     toggleVisibilityButton: {
@@ -29,10 +29,9 @@ class RuleCollectionPreview extends React.Component<any, any> {
         eventResults: [],
         showAll: false
     };
-    worker: any;
+    worker: any = new RuleCollectionCheckWorker();
 
-    componentWillMount() {
-        this.worker = new RuleCollectionCheckWorker();
+    componentDidMount() {
         this.worker.onmessage = this.handleWorkerEvent;
     }
 
@@ -114,7 +113,8 @@ class RuleCollectionPreview extends React.Component<any, any> {
                                     onChange={() =>
                                         this.setState({
                                             showAll: !this.state.showAll
-                                        })}
+                                        })
+                                    }
                                 />
                             }
                             label={t(

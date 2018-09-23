@@ -189,4 +189,8 @@ export type RuleCollectionList = {
 };
 
 // all valid rule types
-export type RuleTypes = "VALUE" | "TRANSACTION_AMOUNT" | "ITEM_TYPE";
+export type RuleTypes =
+    | "VALUE"
+    | "TRANSACTION_AMOUNT"
+    | "ITEM_TYPE"
+    | "ACCOUNT_TYPE";

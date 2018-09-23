@@ -75,4 +75,7 @@ const mapDispatchToProps = dispatch => {
     return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CategoryChips);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(CategoryChips);

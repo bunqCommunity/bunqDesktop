@@ -35,7 +35,9 @@ class RuleCollectionPreviewItem extends React.Component<any, any> {
                     case "ITEM_TYPE":
                         let ruleItemType: TypeRule = matchingRule.rule;
 
-                        primaryText = `Event is ${negativeText} a ${ruleItemType.matchType}`;
+                        primaryText = `Event is ${negativeText} a ${
+                            ruleItemType.matchType
+                        }`;
 
                         break;
                     case "VALUE":
@@ -45,14 +47,18 @@ class RuleCollectionPreviewItem extends React.Component<any, any> {
                                 ? ruleValue.field
                                 : ruleValue.customField;
 
-                        primaryText = `Field ${fieldChecked} does ${negativeText} ${ruleValue.matchType}`;
+                        primaryText = `Field ${fieldChecked} does ${negativeText} ${
+                            ruleValue.matchType
+                        } '${matchingRule.rule.value}'`;
 
                         break;
                     case "TRANSACTION_AMOUNT":
                         let ruleTransactionAMount: TransactionAmountRule =
                             matchingRule.rule;
 
-                        primaryText = `Transaction amount is ${negativeText} ${ruleTransactionAMount.matchType} than ${ruleTransactionAMount.amount}`;
+                        primaryText = `Transaction amount is ${negativeText} ${
+                            ruleTransactionAMount.matchType
+                        } than ${ruleTransactionAMount.amount}`;
 
                         break;
                 }
@@ -61,8 +67,9 @@ class RuleCollectionPreviewItem extends React.Component<any, any> {
                     <ListItem dense key={key}>
                         <ListItemText
                             primary={primaryText}
-                            secondary={`Rule type: ${matchingRule.rule
-                                .ruleType}`}
+                            secondary={`Rule type: ${
+                                matchingRule.rule.ruleType
+                            }`}
                         />
                         <ListItemIcon>
                             {matchingRule.matched ? (

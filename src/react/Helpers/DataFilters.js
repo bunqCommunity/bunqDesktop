@@ -1,5 +1,8 @@
 import CategoryHelper from "./CategoryHelper";
 
+// amountFilterAmount
+// amountFilterType
+
 const checkDateRange = (fromDate, toDate, date) => {
     // nothing to check so always valid
     if (fromDate === null && toDate === null) return true;
@@ -28,20 +31,26 @@ export const paymentFilter = options => payment => {
     if (options.paymentVisibility === false) {
         return false;
     }
-    const paymentInfo = payment.Payment;
-
     // hide mastercard payments
-    if (paymentInfo.type === "MASTERCARD") {
+    if (payment.type === "MASTERCARD") {
+        return false;
+    }
+
+    // hide payments linkd to an accepted request
+    if (
+        payment.sub_type === "REQUEST" &&
+        options.displayRequestPayments === false
+    ) {
         return false;
     }
 
     if (options.paymentType) {
         if (options.paymentType === "received") {
-            if (paymentInfo.amount.value <= 0) {
+            if (payment.amount.value <= 0) {
                 return false;
             }
         } else if (options.paymentType === "sent") {
-            if (paymentInfo.amount.value >= 0) {
+            if (payment.amount.value >= 0) {
                 return false;
             }
         }
@@ -55,6 +64,20 @@ export const paymentFilter = options => payment => {
             payment.counterparty_alias.display_name.toLowerCase()
         ].some(text => text.includes(options.searchTerm));
         if (!searchMatches) return false;
+    }
+
+    if (options.amountFilterAmount !== "") {
+        let amountValue = payment.getAmount();
+        if (amountValue < 0) amountValue = amountValue * -1;
+
+        switch (options.amountFilterType) {
+            case "EQUALS":
+                if (amountValue != options.amountFilterAmount) return false;
+            case "MORE":
+                if (amountValue < options.amountFilterAmount) return false;
+            case "LESS":
+                if (amountValue > options.amountFilterAmount) return false;
+        }
     }
 
     if (
@@ -71,7 +94,9 @@ export const paymentFilter = options => payment => {
             );
 
             // no categories linked so always unmatched
-            if (categories.length === 0) return false;
+            if (categories.length === 0) {
+                if (!options.toggleCategoryFilter) return false;
+            }
 
             // go through the connected categories and selected categories to see if one matches
             const categoryMatches = categories.some(category => {
@@ -79,14 +104,36 @@ export const paymentFilter = options => payment => {
                     return category.id === selectedCategory;
                 });
             });
-            if (!categoryMatches) return false;
+
+            // if reversed and we got matches, return false
+            if (options.toggleCategoryFilter && categoryMatches) return false;
+
+            // no matches and not reversed so return false
+            if (!categoryMatches) {
+                if (!options.toggleCategoryFilter) return false;
+            }
+        }
+    }
+
+    if (options.selectedAccountIds) {
+        if (options.selectedAccountIds.length > 0) {
+            // check if the payment is connected to a selected account
+            const foundIndex = options.selectedAccountIds.findIndex(
+                selectedAccountId =>
+                    selectedAccountId === payment.monetary_account_id
+            );
+
+            // if true only return true if account id is in the filter, else return false
+            return options.toggleAccountIds === false
+                ? foundIndex > -1
+                : foundIndex === -1;
         }
     }
 
     return checkDateRange(
         options.dateFromFilter,
         options.dateToFilter,
-        paymentInfo.created
+        payment.created
     );
 };
 
@@ -109,6 +156,9 @@ export const bunqMeTabsFilter = options => bunqMeTab => {
         if (!searchMatches) return false;
     }
 
+    // don't show bunqme requests if amount filter is set
+    if (options.amountFilterAmount !== "") return false;
+
     if (
         options.selectedCategories &&
         options.categories &&
@@ -123,7 +173,9 @@ export const bunqMeTabsFilter = options => bunqMeTab => {
             );
 
             // no categories linked so always unmatched
-            if (categories.length === 0) return false;
+            if (categories.length === 0) {
+                if (!options.toggleCategoryFilter) return false;
+            }
 
             // go through the connected categories and selected categories to see if one matches
             const categoryMatches = categories.some(category => {
@@ -131,7 +183,29 @@ export const bunqMeTabsFilter = options => bunqMeTab => {
                     return category.id === selectedCategory;
                 });
             });
-            if (!categoryMatches) return false;
+
+            // if reversed and we got matches, return false
+            if (options.toggleCategoryFilter && categoryMatches) return false;
+
+            // no matches and not reversed so return false
+            if (!categoryMatches) {
+                if (!options.toggleCategoryFilter) return false;
+            }
+        }
+    }
+
+    if (options.selectedAccountIds) {
+        if (options.selectedAccountIds.length > 0) {
+            // check if the payment is connected to a selected account
+            const foundIndex = options.selectedAccountIds.findIndex(
+                selectedAccountId =>
+                    selectedAccountId === bunqMeTab.monetary_account_id
+            );
+
+            // if true only return true if account id is in the filter, else return false
+            return options.toggleAccountIds === false
+                ? foundIndex > -1
+                : foundIndex === -1;
         }
     }
 
@@ -165,6 +239,18 @@ export const masterCardActionFilter = options => masterCardAction => {
         if (!searchMatches) return false;
     }
 
+    if (options.amountFilterAmount !== "") {
+        const amountValue = masterCardAction.getAmount();
+        switch (options.amountFilterType) {
+            case "EQUALS":
+                if (amountValue != options.amountFilterAmount) return false;
+            case "MORE":
+                if (amountValue < options.amountFilterAmount) return false;
+            case "LESS":
+                if (amountValue > options.amountFilterAmount) return false;
+        }
+    }
+
     if (
         options.selectedCategories &&
         options.categories &&
@@ -179,7 +265,7 @@ export const masterCardActionFilter = options => masterCardAction => {
             );
 
             // no categories linked so always unmatched
-            if (categories.length === 0) return false;
+            if (categories.length === 0) return options.toggleCategoryFilter;
 
             // go through the connected categories and selected categories to see if one matches
             const categoryMatches = categories.some(category => {
@@ -187,7 +273,31 @@ export const masterCardActionFilter = options => masterCardAction => {
                     return category.id === selectedCategory;
                 });
             });
-            if (!categoryMatches) return false;
+
+            // if reversed and we got matches, return false
+            if (categories.length === 0) {
+                if (!options.toggleCategoryFilter) return false;
+            }
+
+            // no matches and not reversed so return false
+            if (!categoryMatches) {
+                if (!options.toggleCategoryFilter) return false;
+            }
+        }
+    }
+
+    if (options.selectedAccountIds) {
+        if (options.selectedAccountIds.length > 0) {
+            // check if the payment is connected to a selected account
+            const foundIndex = options.selectedAccountIds.findIndex(
+                selectedAccountId =>
+                    selectedAccountId === masterCardAction.monetary_account_id
+            );
+
+            // if true only return true if account id is in the filter, else return false
+            return options.toggleAccountIds === false
+                ? foundIndex > -1
+                : foundIndex === -1;
         }
     }
 
@@ -199,17 +309,44 @@ export const masterCardActionFilter = options => masterCardAction => {
 };
 
 export const requestResponseFilter = options => requestResponse => {
-    if (options.requestVisibility === false) {
-        return false;
+    // check if this is a internal request or a payment E.G. ideal payments
+    const requestTypes = ["INTERNAL"];
+    const isRequestType = requestTypes.includes(requestResponse.type);
+
+    if (isRequestType) {
+        if (options.requestVisibility === false) {
+            return false;
+        }
+    } else {
+        if (options.paymentVisibility === false) {
+            return false;
+        }
     }
 
     // hide accepted payments
-    if (requestResponse.RequestResponse.status === "ACCEPTED") {
+    if (
+        requestResponse.RequestResponse.status === "ACCEPTED" &&
+        options.displayAcceptedRequests !== true
+    ) {
         return false;
     }
 
-    if (options.requestType !== "sent" && options.requestType !== "default") {
-        return false;
+    if (isRequestType) {
+        // check payment type since this is a payment
+        if (
+            options.requestType !== "sent" &&
+            options.requestType !== "default"
+        ) {
+            return false;
+        }
+    } else {
+        // check the request type since this is an actual request
+        if (
+            options.requestType !== "sent" &&
+            options.requestType !== "default"
+        ) {
+            return false;
+        }
     }
 
     if (options.searchTerm && options.searchTerm.length > 0) {
@@ -220,6 +357,9 @@ export const requestResponseFilter = options => requestResponse => {
         ].some(text => text.includes(options.searchTerm));
         if (!searchMatches) return false;
     }
+
+    // don't show requests if amount filter is set
+    if (options.amountFilterAmount !== "") return false;
 
     if (
         options.selectedCategories &&
@@ -235,7 +375,9 @@ export const requestResponseFilter = options => requestResponse => {
             );
 
             // no categories linked so always unmatched
-            if (categories.length === 0) return false;
+            if (categories.length === 0) {
+                if (!options.toggleCategoryFilter) return false;
+            }
 
             // go through the connected categories and selected categories to see if one matches
             const categoryMatches = categories.some(category => {
@@ -243,7 +385,29 @@ export const requestResponseFilter = options => requestResponse => {
                     return category.id === selectedCategory;
                 });
             });
-            if (!categoryMatches) return false;
+
+            // if reversed and we got matches, return false
+            if (options.toggleCategoryFilter && categoryMatches) return false;
+
+            // no matches and not reversed so return false
+            if (!categoryMatches) {
+                if (!options.toggleCategoryFilter) return false;
+            }
+        }
+    }
+
+    if (options.selectedAccountIds) {
+        if (options.selectedAccountIds.length > 0) {
+            // check if the payment is connected to a selected account
+            const foundIndex = options.selectedAccountIds.findIndex(
+                selectedAccountId =>
+                    selectedAccountId === requestResponse.monetary_account_id
+            );
+
+            // if true only return true if account id is in the filter, else return false
+            return options.toggleAccountIds === false
+                ? foundIndex > -1
+                : foundIndex === -1;
         }
     }
 
@@ -259,7 +423,10 @@ export const requestInquiryFilter = options => requestInquiry => {
         return false;
     }
 
-    if (requestInquiry.RequestInquiry.status === "ACCEPTED") {
+    if (
+        requestInquiry.RequestInquiry.status === "ACCEPTED" &&
+        options.displayAcceptedRequests !== true
+    ) {
         return false;
     }
 
@@ -278,6 +445,9 @@ export const requestInquiryFilter = options => requestInquiry => {
         if (!searchMatches) return false;
     }
 
+    // don't show requests if amount filter is set
+    if (options.amountFilterAmount !== "") return false;
+
     if (
         options.selectedCategories &&
         options.categories &&
@@ -292,7 +462,9 @@ export const requestInquiryFilter = options => requestInquiry => {
             );
 
             // no categories linked so always unmatched
-            if (categories.length === 0) return false;
+            if (categories.length === 0) {
+                if (!options.toggleCategoryFilter) return false;
+            }
 
             // go through the connected categories and selected categories to see if one matches
             const categoryMatches = categories.some(category => {
@@ -300,7 +472,29 @@ export const requestInquiryFilter = options => requestInquiry => {
                     return category.id === selectedCategory;
                 });
             });
-            if (!categoryMatches) return false;
+
+            // if reversed and we got matches, return false
+            if (options.toggleCategoryFilter && categoryMatches) return false;
+
+            // no matches and not reversed so return false
+            if (!categoryMatches) {
+                if (!options.toggleCategoryFilter) return false;
+            }
+        }
+    }
+
+    if (options.selectedAccountIds) {
+        if (options.selectedAccountIds.length > 0) {
+            // check if the payment is connected to a selected account
+            const foundIndex = options.selectedAccountIds.findIndex(
+                selectedAccountId =>
+                    selectedAccountId === requestInquiry.monetary_account_id
+            );
+
+            // if true only return true if account id is in the filter, else return false
+            return options.toggleAccountIds === false
+                ? foundIndex > -1
+                : foundIndex === -1;
         }
     }
 
@@ -311,6 +505,40 @@ export const requestInquiryFilter = options => requestInquiry => {
     );
 };
 
+export const requestInquiryBatchFilter = options => requestInquiryBatch => {
+    if (options.requestVisibility === false) {
+        return false;
+    }
+
+    if (
+        options.requestType !== "received" &&
+        options.requestType !== "default"
+    ) {
+        return false;
+    }
+
+    if (options.searchTerm && options.searchTerm.length > 0) {
+        return false;
+    }
+
+    // don't show requests if amount filter is set
+    // TODO check total inquired amount
+    if (options.amountFilterAmount !== "") return false;
+
+    if (options.selectedAccountIds) {
+        if (options.selectedAccountIds.length > 0) {
+            // TODO check underlying request inquiry account ids
+            return false;
+        }
+    }
+
+    return checkDateRange(
+        options.dateFromFilter,
+        options.dateToFilter,
+        requestInquiryBatch.RequestInquiryBatch.updated
+    );
+};
+
 export const shareInviteBankResponseFilter = options => shareInviteBankResponse => {
     const shareInviteBankResponseInfo =
         shareInviteBankResponse.ShareInviteBankResponse;
@@ -318,6 +546,9 @@ export const shareInviteBankResponseFilter = options => shareInviteBankResponse 
     if (shareInviteBankResponseInfo.status !== "PENDING") {
         return false;
     }
+
+    // don't show share invites if amount filter is set
+    if (options.amountFilterAmount !== "") return false;
 
     // hide these if any type of filter is set
     if (options.searchTerm && options.searchTerm.length > 0) {
@@ -332,7 +563,7 @@ export const shareInviteBankResponseFilter = options => shareInviteBankResponse 
         return false;
     }
     if (
-        options.bunqMeTabType !== "active" ||
+        options.bunqMeTabType !== "default" ||
         options.paymentType !== "default" ||
         options.requestType !== "default"
     ) {
@@ -359,6 +590,10 @@ export const shareInviteBankInquiryFilter = options => shareInviteBankInquiry =>
     if (options.searchTerm && options.searchTerm.length > 0) {
         return false;
     }
+
+    // don't show share invites if amount filter is set
+    if (options.amountFilterAmount !== "") return false;
+
     if (
         options.selectedCategories &&
         options.categories &&
@@ -368,7 +603,7 @@ export const shareInviteBankInquiryFilter = options => shareInviteBankInquiry =>
         return false;
     }
     if (
-        options.bunqMeTabType !== "active" ||
+        options.bunqMeTabType !== "default" ||
         options.paymentType !== "default" ||
         options.requestType !== "default"
     ) {

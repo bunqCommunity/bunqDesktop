@@ -1,6 +1,6 @@
 import store from "store";
 import localforage from "../ImportWrappers/localforage";
-import {ipcRenderer} from "electron";
+import { ipcRenderer } from "electron";
 import settings from "../ImportWrappers/electronSettings";
 
 // configure the localforage instance
@@ -12,6 +12,7 @@ localforage.config({
     description: "Image cache for bunqDesktop in IndexedDB"
 });
 
+export const SYNC_ON_STARTUP_LOCATION = "BUNQDESKTOP_SYNC_ON_STARTUP";
 export const THEME_LOCATION = "BUNQDESKTOP_THEME";
 export const ANALYTICS_ENABLED = "ANALYTICS_ENABLED";
 export const LANGUAGE_LOCATION = "BUNQDESKTOP_LANGUAGE";
@@ -23,148 +24,90 @@ export const CHECK_INACTIVITY_DURATION_LOCATION = "CHECK_INACTIVITY_DURATION";
 export const AUTOMATIC_THEME_CHANGE_LOCATION = "AUTOMATIC_THEME_CHANGE";
 export const HIDE_BALANCE_LOCATION = "HIDE_BALANCE";
 
-// get stored values
-const nativeFrameStored = settings.get(USE_NATIVE_FRAME_LOCATION);
-const minimizeToTrayStored = settings.get(MINIMIZE_TO_TRAY_LOCATION);
-const stickyMenuStored = settings.get(USE_STICKY_MENU_LOCATION);
-const checkInactivityStored = settings.get(CHECK_INACTIVITY_ENABLED_LOCATION);
-const inactivityCheckDurationStored = settings.get(
-    CHECK_INACTIVITY_DURATION_LOCATION
-);
-const automaticThemeChangeStored = settings.get(
-    AUTOMATIC_THEME_CHANGE_LOCATION
-);
-const hideBalanceStored = settings.get(HIDE_BALANCE_LOCATION);
-const themeDefaultStored = settings.get(THEME_LOCATION);
-const languageDefaultStored = settings.get(LANGUAGE_LOCATION);
-const analyticsEnabledStored = settings.get(ANALYTICS_ENABLED);
+// maps settings to locations and defaults, ignore means it'll be ignored (duhh)
+const settingsStoredMap = {
+    sync_on_startup: { location: SYNC_ON_STARTUP_LOCATION, default: true },
+    theme: { location: THEME_LOCATION, default: "DefaultTheme" },
+    analytics_enabled: { location: ANALYTICS_ENABLED, default: false },
+    language: { location: LANGUAGE_LOCATION, default: "en" },
+    native_frame: { location: USE_NATIVE_FRAME_LOCATION, default: false },
+    minimize_to_tray: { location: MINIMIZE_TO_TRAY_LOCATION, default: false },
+    sticky_menu: { location: USE_STICKY_MENU_LOCATION, default: false },
+    check_inactivity: {
+        location: CHECK_INACTIVITY_ENABLED_LOCATION,
+        default: false
+    },
+    inactivity_check_duration: {
+        location: CHECK_INACTIVITY_DURATION_LOCATION,
+        default: 300
+    },
+    automatic_theme_change: {
+        location: AUTOMATIC_THEME_CHANGE_LOCATION,
+        default: false
+    },
+    hide_balance: { location: HIDE_BALANCE_LOCATION, default: false },
+    settings_location: { ignore: true }
+};
 
-const nativeFrameDefault =
-    nativeFrameStored !== undefined ? nativeFrameStored : false;
-const minimizeToTrayDefault =
-    minimizeToTrayStored !== undefined ? minimizeToTrayStored : false;
-const stickyMenuDefault =
-    stickyMenuStored !== undefined ? stickyMenuStored : false;
-const checkInactivityDefault =
-    checkInactivityStored !== undefined ? checkInactivityStored : false;
-const inactivityCheckDurationDefault =
-    inactivityCheckDurationStored !== undefined
-        ? inactivityCheckDurationStored
-        : 300;
-const hideBalanceDefault =
-    hideBalanceStored !== undefined ? hideBalanceStored : false;
-const analyticsEnabledDefault =
-    analyticsEnabledStored !== undefined ? analyticsEnabledStored : undefined;
-const automaticThemeChangeDefault =
-    automaticThemeChangeStored !== undefined
-        ? automaticThemeChangeStored
-        : false;
-const settingsLocationDefault = settings.file();
-const themeDefault =
-    themeDefaultStored !== undefined ? themeDefaultStored : "DefaultTheme";
-const languageDefault =
-    languageDefaultStored !== undefined ? languageDefaultStored : "en";
+// retrieves the stored value from the settings and falls back to default when possible
+const getStoredValues = (useDefault = true) => {
+    let settingsStoredValues = {};
+
+    Object.keys(settingsStoredMap).forEach(settingsKey => {
+        const settingsInfo = settingsStoredMap[settingsKey];
+        if (settingsInfo.ignore) return;
+
+        // attempt to get option from settings
+        const storedValue = settings.get(settingsInfo.location);
+
+        if (storedValue === undefined) {
+            // if false, we don't include it
+            if (useDefault) {
+                // set default value
+                settingsStoredValues[settingsKey] = settingsInfo.default;
+            }
+        } else {
+            // set stored value
+            settingsStoredValues[settingsKey] = storedValue;
+        }
+    });
+
+    return settingsStoredValues;
+};
+
+const settingsStoredValues = getStoredValues();
 
 export const defaultState = {
-    theme: themeDefault,
-    language: languageDefault,
-    minimize_to_tray: minimizeToTrayDefault,
-    automatic_theme_change: automaticThemeChangeDefault,
-    native_frame: nativeFrameDefault,
-    sticky_menu: stickyMenuDefault,
-    analytics_enabled: analyticsEnabledDefault,
-    hide_balance: hideBalanceDefault,
-    check_inactivity: checkInactivityDefault,
-    settings_location: settingsLocationDefault,
-    inactivity_check_duration: inactivityCheckDurationDefault
+    ...settingsStoredValues,
+    settings_location: settings.file()
 };
+
+// update global variable
+window.BUNQDESKTOP_LANGUAGE_SETTING = settingsStoredValues.language;
 
 export default function reducer(state = defaultState, action) {
     switch (action.type) {
-        case "OPTIONS_SET_THEME":
-            settings.set(THEME_LOCATION, action.payload.theme);
+        case "OPTIONS_SET_GENERIC":
+            const settingKey = action.payload.setting;
+            const settingValue = action.payload.value;
+            const settingInfo = settingsStoredMap[settingKey];
+
+            if (!settingInfo) return { ...state };
+
+            settings.set(settingInfo.location, settingValue);
             return {
                 ...state,
-                theme: action.payload.theme
+                [settingKey]: settingValue
             };
 
         case "OPTIONS_SET_LANGUAGE":
             settings.set(LANGUAGE_LOCATION, action.payload.language);
+
+            // update global variable
+            window.BUNQDESKTOP_LANGUAGE_SETTING = action.payload.language;
             return {
                 ...state,
                 language: action.payload.language
-            };
-
-        case "OPTIONS_SET_HIDE_MINIMIZE_TO_TRAY":
-            settings.set(
-                MINIMIZE_TO_TRAY_LOCATION,
-                action.payload.minimize_to_tray
-            );
-            return {
-                ...state,
-                minimize_to_tray: action.payload.minimize_to_tray
-            };
-
-        case "OPTIONS_SET_AUTOMATIC_THEME_CHANGE":
-            settings.set(
-                AUTOMATIC_THEME_CHANGE_LOCATION,
-                action.payload.automatic_theme_change
-            );
-            return {
-                ...state,
-                automatic_theme_change: action.payload.automatic_theme_change
-            };
-
-        case "OPTIONS_SET_NATIVE_FRAME":
-            settings.set(
-                USE_NATIVE_FRAME_LOCATION,
-                action.payload.native_frame
-            );
-            return {
-                ...state,
-                native_frame: action.payload.native_frame
-            };
-
-        case "OPTIONS_SET_STICKY_MENU":
-            settings.set(USE_STICKY_MENU_LOCATION, action.payload.sticky_menu);
-            return {
-                ...state,
-                sticky_menu: action.payload.sticky_menu
-            };
-
-        case "OPTIONS_SET_ANALYTICS_ENABLED":
-            settings.set(ANALYTICS_ENABLED, action.payload.analytics_enabled);
-            return {
-                ...state,
-                analytics_enabled: action.payload.analytics_enabled
-            };
-
-        case "OPTIONS_SET_CHECK_INACTIVITY":
-            settings.set(
-                CHECK_INACTIVITY_ENABLED_LOCATION,
-                action.payload.check_inactivity
-            );
-            return {
-                ...state,
-                check_inactivity: action.payload.check_inactivity
-            };
-
-        case "OPTIONS_SET_SET_INACTIVITY_DURATION":
-            settings.set(
-                CHECK_INACTIVITY_DURATION_LOCATION,
-                action.payload.inactivity_check_duration
-            );
-            return {
-                ...state,
-                inactivity_check_duration:
-                    action.payload.inactivity_check_duration
-            };
-
-        case "OPTIONS_SET_HIDE_BALANCE":
-            settings.set(HIDE_BALANCE_LOCATION, action.payload.hide_balance);
-            return {
-                ...state,
-                hide_balance: action.payload.hide_balance
             };
 
         case "OPTIONS_OVERWRITE_SETTINGS_LOCATION":
@@ -180,26 +123,14 @@ export default function reducer(state = defaultState, action) {
                 targetLocation = state.settings_location;
             }
 
-            // set our current settings in this file
-            settings.set(USE_STICKY_MENU_LOCATION, state.sticky_menu);
-            settings.set(THEME_LOCATION, state.theme);
-            settings.set(LANGUAGE_LOCATION, state.language);
-            settings.set(MINIMIZE_TO_TRAY_LOCATION, state.minimize_to_tray);
-            settings.set(USE_NATIVE_FRAME_LOCATION, state.native_frame);
-            settings.set(ANALYTICS_ENABLED, state.analytics_enabled);
-            settings.set(
-                AUTOMATIC_THEME_CHANGE_LOCATION,
-                state.automatic_theme_change
-            );
-            settings.set(
-                CHECK_INACTIVITY_ENABLED_LOCATION,
-                state.check_inactivity
-            );
-            settings.set(
-                CHECK_INACTIVITY_DURATION_LOCATION,
-                state.inactivity_check_duration
-            );
-            settings.set(HIDE_BALANCE_LOCATION, state.hide_balance);
+            // go through all settings and overwrite the new file with our state
+            Object.keys(settingsStoredMap).forEach(settingsKey => {
+                const settingsInfo = settingsStoredMap[settingsKey];
+                if (settingsInfo.ignore) return;
+
+                // overwrite the new location with the value stored in the state
+                settings.set(settingsInfo.location, state[settingsKey]);
+            });
 
             return {
                 ...state,
@@ -219,69 +150,14 @@ export default function reducer(state = defaultState, action) {
                 targetLocation2 = state.settings_location;
             }
 
-            const nativeFrameStored = settings.get(USE_NATIVE_FRAME_LOCATION);
-            const minimizeToTrayStored = settings.get(
-                MINIMIZE_TO_TRAY_LOCATION
-            );
-            const stickyMenuStored = settings.get(USE_STICKY_MENU_LOCATION);
-            const checkInactivityStored = settings.get(
-                CHECK_INACTIVITY_ENABLED_LOCATION
-            );
-            const automaticThemeChangeStored = settings.get(
-                AUTOMATIC_THEME_CHANGE_LOCATION
-            );
-            const inactivityCheckDurationStored = settings.get(
-                CHECK_INACTIVITY_DURATION_LOCATION
-            );
-            const hideBalanceStored = settings.get(HIDE_BALANCE_LOCATION);
-            const themeDefaultStored = settings.get(THEME_LOCATION);
-            const languageDefaultStored = settings.get(LANGUAGE_LOCATION);
-            const analyticsEnabledStored = settings.get(ANALYTICS_ENABLED);
+            // fetch stored values from the new location
+            let storedValues = getStoredValues(false);
 
             // only overwrite if the new settings file contains these settings
             return {
                 ...state,
-                settings_location: targetLocation2,
-                sticky_menu:
-                    typeof stickyMenuStored !== "undefined"
-                        ? stickyMenuStored
-                        : state.sticky_menu,
-                theme:
-                    typeof themeDefaultStored !== "undefined"
-                        ? themeDefaultStored
-                        : state.theme,
-                language:
-                    typeof languageDefaultStored !== "undefined"
-                        ? languageDefaultStored
-                        : state.language,
-                automatic_theme_change:
-                    typeof automaticThemeChangeStored !== "undefined"
-                        ? automaticThemeChangeStored
-                        : state.automatic_theme_change,
-                minimize_to_tray:
-                    typeof minimizeToTrayStored !== "undefined"
-                        ? minimizeToTrayStored
-                        : state.minimize_to_tray,
-                native_frame:
-                    typeof nativeFrameStored !== "undefined"
-                        ? nativeFrameStored
-                        : state.native_frame,
-                analytics_enabled:
-                    typeof analyticsEnabledStored !== "undefined"
-                        ? analyticsEnabledStored
-                        : state.analytics_enabled,
-                check_inactivity:
-                    typeof checkInactivityStored !== "undefined"
-                        ? checkInactivityStored
-                        : state.check_inactivity,
-                inactivity_check_duration:
-                    typeof inactivityCheckDurationStored !== "undefined"
-                        ? inactivityCheckDurationStored
-                        : state.inactivity_check_duration,
-                hide_balance:
-                    typeof hideBalanceStored !== "undefined"
-                        ? hideBalanceStored
-                        : state.hide_balance
+                ...storedValues,
+                settings_location: targetLocation2
             };
 
         case "OPTIONS_RESET_APPLICATION":

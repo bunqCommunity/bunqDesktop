@@ -14,6 +14,9 @@ import CategoryIcons from "../Categories/CategoryIcons";
 import MoneyAmountLabel from "../MoneyAmountLabel";
 
 const styles = {
+    listItemText: {
+        marginRight: 40
+    },
     smallAvatar: {
         width: 50,
         height: 50
@@ -39,7 +42,7 @@ class RequestInquiryListItem extends React.Component {
         const { requestInquiry, t } = this.props;
         if (requestInquiry.status === "ACCEPTED") {
             if (this.props.displayAcceptedRequests === false) {
-                // hide the request-response becuase a payment item exists
+                // hide the request-response because a payment item exists
                 return null;
             }
         }
@@ -59,16 +62,22 @@ class RequestInquiryListItem extends React.Component {
             <ListItem
                 button
                 component={NavLink}
-                to={`/request-inquiry-info/${requestInquiry.id}/${requestInquiry.monetary_account_id}`}
+                to={`/request-inquiry-info/${requestInquiry.id}/${
+                    requestInquiry.monetary_account_id
+                }`}
             >
                 <Avatar style={styles.smallAvatar}>
                     <LazyAttachmentImage
-                        width={50}
+                        height={50}
                         BunqJSClient={this.props.BunqJSClient}
                         imageUUID={imageUUID}
                     />
                 </Avatar>
-                <ListItemText primary={displayName} secondary={paymentLabel} />
+                <ListItemText
+                    style={styles.listItemText}
+                    primary={displayName}
+                    secondary={paymentLabel}
+                />
                 <ListItemSecondaryAction style={{ marginTop: -16 }}>
                     <MoneyAmountLabel
                         style={styles.moneyAmountLabel}

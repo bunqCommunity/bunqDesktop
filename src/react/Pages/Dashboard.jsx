@@ -9,17 +9,17 @@ import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
+import Avatar from "@material-ui/core/Avatar";
 import Tooltip from "@material-ui/core/Tooltip";
 
 import MoneyIcon from "@material-ui/icons/AttachMoney";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import KeyIcon from "@material-ui/icons/VpnKey";
-import ProfileIcon from "@material-ui/icons/Person";
 
 import CombinedList from "../Components/CombinedList/CombinedList";
 import AccountList from "../Components/AccountList/AccountList";
-import LoadOlderButton from "../Components/LoadOlderButton";
 import NavLink from "../Components/Routing/NavLink";
+import AttachmentImage from "../Components/AttachmentImage/AttachmentImage";
 
 import { userLogin, userLogout } from "../Actions/user";
 import { requestInquirySend } from "../Actions/request_inquiry";
@@ -28,6 +28,10 @@ import { registrationLogOut } from "../Actions/registration";
 const styles = {
     btn: {
         width: "100%"
+    },
+    bigAvatar: {
+        width: 50,
+        height: 50
     },
     iconButton: {
         marginLeft: 16
@@ -86,11 +90,22 @@ class Dashboard extends React.Component {
 
     render() {
         const t = this.props.t;
+        const user = this.props.user;
         const userTypes = Object.keys(this.props.users);
 
         const displayName = this.props.user.display_name
             ? this.props.user.display_name
             : t("user");
+
+        const profileAvatar = user ? (
+            <Avatar style={styles.bigAvatar}>
+                <AttachmentImage
+                    height={50}
+                    BunqJSClient={this.props.BunqJSClient}
+                    imageUUID={user.avatar.image[0].attachment_public_uuid}
+                />
+            </Avatar>
+        ) : null;
 
         return (
             <Grid container spacing={16}>
@@ -105,13 +120,14 @@ class Dashboard extends React.Component {
                 <Grid item xs={12} md={12} lg={10} xl={8}>
                     <Grid container spacing={16}>
                         <Grid item xs={6} style={styles.titleWrapper}>
-                            <IconButton
-                                style={styles.iconButton}
-                                component={NavLink}
-                                to={"/profile"}
-                            >
-                                <ProfileIcon />
-                            </IconButton>
+                            {this.props.limitedPermissions ? (
+                                profileAvatar
+                            ) : (
+                                <NavLink to={"/profile"}>
+                                    {profileAvatar}
+                                </NavLink>
+                            )}
+
                             <Typography
                                 variant="title"
                                 gutterBottom
@@ -166,15 +182,15 @@ class Dashboard extends React.Component {
                                         }
                                     />
 
-                                    <LoadOlderButton
-                                        wrapperStyle={{ padding: 8 }}
-                                        buttonStyle={{ width: "100%" }}
-                                        buttonContent={t("Load more events")}
-                                        BunqJSClient={this.props.BunqJSClient}
-                                        initialBunqConnect={
-                                            this.props.initialBunqConnect
-                                        }
-                                    />
+                                    {/*<LoadOlderButton*/}
+                                    {/*wrapperStyle={{ padding: 8 }}*/}
+                                    {/*buttonStyle={{ width: "100%" }}*/}
+                                    {/*buttonContent={t("Load more events")}*/}
+                                    {/*BunqJSClient={this.props.BunqJSClient}*/}
+                                    {/*initialBunqConnect={*/}
+                                    {/*this.props.initialBunqConnect*/}
+                                    {/*}*/}
+                                    {/*/>*/}
 
                                     {this.props.environment === "SANDBOX" ? (
                                         <div
@@ -221,10 +237,11 @@ const mapStateToProps = state => {
         users: state.users.users,
         userType: state.user.user_type,
         userLoading: state.user.loading,
+        limitedPermissions: state.user.limited_permissions,
         usersLoading: state.users.loading,
 
         requestInquiryLoading: state.request_inquiry.loading,
-        selectedAccount: state.accounts.selectedAccount,
+        selectedAccount: state.accounts.selected_account,
 
         useNoPassword: state.registration.use_no_password,
         storedApiKeys: state.registration.stored_api_keys,
@@ -255,6 +272,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(userLogin(BunqJSClient, type, updated))
     };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(
-    translate("translations")(Dashboard)
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(translate("translations")(Dashboard));

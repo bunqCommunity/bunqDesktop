@@ -1,10 +1,6 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
-export function exportsSetInfo(
-    exports,
-    user_id,
-    account_id
-) {
+export function exportsSetInfo(exports, user_id, account_id) {
     return {
         type: "EXPORTS_SET_INFO",
         payload: {
@@ -20,12 +16,14 @@ export function exportInfoUpdate(
     user_id,
     account_id,
     options = {
-        count: 50,
+        count: 200,
         newer_id: false,
         older_id: false
     }
 ) {
-    const failedMessage = window.t("We failed to load the exports for this monetary account");
+    const failedMessage = window.t(
+        "We failed to load the exports for this monetary account"
+    );
 
     return dispatch => {
         dispatch(exportsLoading());
@@ -33,23 +31,12 @@ export function exportInfoUpdate(
         BunqJSClient.api.customerStatementExport
             .list(user_id, account_id, options)
             .then(exports => {
-
-                dispatch(
-                    exportsSetInfo(
-                        exports,
-                        user_id,
-                        account_id
-                    )
-                );
+                dispatch(exportsSetInfo(exports, user_id, account_id));
                 dispatch(exportsNotLoading());
             })
             .catch(error => {
                 dispatch(exportsNotLoading());
-                BunqErrorHandler(
-                    dispatch,
-                    error,
-                    failedMessage
-                );
+                BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }

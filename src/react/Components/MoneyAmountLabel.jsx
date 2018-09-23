@@ -97,11 +97,17 @@ class MoneyAmountLabel extends React.Component {
 
     checkPayment = () => {
         const { theme, style, info } = this.props;
+
+        // switch between incoming/outgoing colors
         const paymentColor =
             info.amount.value < 0
                 ? theme.palette.common.sentPayment
                 : theme.palette.common.receivedPayment;
-        return { color: paymentColor, ...style };
+
+        return {
+            color: paymentColor,
+            ...style
+        };
     };
 
     checkMasterCardAction = () => {
@@ -132,13 +138,10 @@ class MoneyAmountLabel extends React.Component {
                     ...style
                 };
         }
-
-        const paymentColor = theme.palette.common.sentPayment;
-        return { color: paymentColor, ...style };
     };
 
     render() {
-        let finalStyle = {};
+        let finalStyle = this.props.style;
         switch (this.props.type) {
             case "requestResponse":
                 finalStyle = this.checkRequestResponse();
