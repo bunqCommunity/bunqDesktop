@@ -23,7 +23,7 @@ You can directly search for 'bunqDesktop' in the Ubuntu store or use  the snap c
 
 #### [Brew Cask](https://caskroom.github.io/)
 
-`brew cask install bunqdesktop`
+`brew cask install bunqcommunity-bunq`
 
 #### [Chocolatey](https://chocolatey.org/packages/bunqdesktop) ![Download count for Chocolatey](https://img.shields.io/chocolatey/dt/bunqdesktop.svg)
 
