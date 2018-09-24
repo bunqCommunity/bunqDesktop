@@ -122,7 +122,12 @@ class AccountInfo extends React.Component {
             const userId = this.props.user.id;
             const accountId = parseFloat(this.props.match.params.accountId);
 
-            this.props.shareInviteBankInquiriesInfoUpdate(userId, accountId);
+            if (this.props.limitedPermissions === false) {
+                this.props.shareInviteBankInquiriesInfoUpdate(
+                    userId,
+                    accountId
+                );
+            }
             this.props.shareInviteBankResponsesInfoUpdate(userId);
             this.props.paymentsUpdate(userId, accountId);
             this.props.bunqMeTabsUpdate(userId, accountId);
@@ -159,10 +164,12 @@ class AccountInfo extends React.Component {
         ) {
             this.props.accountsUpdate(user.id);
 
-            this.props.shareInviteBankInquiriesInfoUpdate(
-                user.id,
-                nextAccountId
-            );
+            if (this.props.limitedPermissions === false) {
+                this.props.shareInviteBankInquiriesInfoUpdate(
+                    user.id,
+                    nextAccountId
+                );
+            }
             this.props.shareInviteBankResponsesInfoUpdate(user.id);
             this.props.paymentsUpdate(user.id, nextAccountId);
             this.props.bunqMeTabsUpdate(user.id, nextAccountId);
@@ -538,6 +545,8 @@ const mapStateToProps = state => {
             state.share_invite_bank_inquiries.loading,
 
         user: state.user.user,
+        limitedPermissions: state.user.limited_permissions,
+
         accounts: state.accounts.accounts,
         accountsLoading: state.accounts.loading
     };

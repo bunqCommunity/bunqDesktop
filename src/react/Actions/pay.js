@@ -52,13 +52,6 @@ export function paySend(
                 // update the payments, accounts and share list
                 dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId));
                 dispatch(
-                    shareInviteBankInquiriesInfoUpdate(
-                        BunqJSClient,
-                        userId,
-                        accountId
-                    )
-                );
-                dispatch(
                     shareInviteBankResponsesInfoUpdate(BunqJSClient, userId)
                 );
                 dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId));
