@@ -78,6 +78,8 @@ class PDFExportHelper extends React.PureComponent {
 
         const counterPartyIban = counterPartyAlias.iban;
         const merchantReferenceText = t("Merchant reference");
+        const mandateIdentifierText = t("Mandate identifier");
+        const creditSchemeIdentifierText = t("Credit scheme identifier");
 
         return (
             <div>
@@ -174,6 +176,32 @@ class PDFExportHelper extends React.PureComponent {
                                 <ListItemText
                                     primary={merchantReferenceText}
                                     secondary={payment.merchant_reference}
+                                />
+                            </ListItem>
+                        </React.Fragment>
+                    )}
+
+                    {payment.mandate_identifier && (
+                        <React.Fragment>
+                            <Divider style={styles.divider} />
+
+                            <ListItem>
+                                <ListItemText
+                                    primary={mandateIdentifierText}
+                                    secondary={payment.mandate_identifier}
+                                />
+                            </ListItem>
+                        </React.Fragment>
+                    )}
+
+                    {payment.credit_scheme_identifier && (
+                        <React.Fragment>
+                            <Divider style={styles.divider} />
+
+                            <ListItem>
+                                <ListItemText
+                                    primary={creditSchemeIdentifierText}
+                                    secondary={payment.credit_scheme_identifier}
                                 />
                             </ListItem>
                         </React.Fragment>
