@@ -42,6 +42,7 @@ You can directly search for 'bunqDesktop' in the Ubuntu store or use  the snap c
 
 ## Keybinds
  - CTRL/CMD + Q : Closes the application
+ - CTRL/CMD + U : Runs the background sync process
  - CTRL/CMD + H : Toggles the account balance visibility
  - CTRL/CMD + T : Toggles between the light and dark theme
  - CTRL/CMD + D : Dashboard

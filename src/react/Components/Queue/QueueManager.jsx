@@ -63,10 +63,15 @@ class QueueManager extends React.Component {
             this.setState({ initialSync: true });
         }
 
+        if (queueLoading && queueTriggerSync) {
+            this.props.queueResetSyncState();
+        }
+
         // no initial sync completed or manual sync was triggered
         if (!this.state.initialSync || queueTriggerSync) {
             if (
                 user &&
+                !queueLoading &&
                 !userLoading &&
                 accounts &&
                 !accountsLoading &&
@@ -81,7 +86,7 @@ class QueueManager extends React.Component {
                 // delay the queue update
                 this.delayedQueue = setTimeout(
                     () => this.triggerQueueUpdate(continueCount),
-                    500
+                    100
                 );
             }
         } else {
@@ -93,7 +98,7 @@ class QueueManager extends React.Component {
                 // clear existing timeout if it exists
                 if (this.delayedSetState) clearTimeout(this.delayedSetState);
                 // delay the queue update
-                this.delayedSetState = setTimeout(this.pushQueueData, 1000);
+                this.delayedSetState = setTimeout(this.pushQueueData, 100);
             }
         }
     }
