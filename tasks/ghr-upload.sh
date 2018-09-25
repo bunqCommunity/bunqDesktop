@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 echo " - Ensure releases directory exists"
 mkdir -p dist/releases
 
