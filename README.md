@@ -64,7 +64,7 @@ Check out the settings page to see where this information is stored and to chang
 ## Privacy
 At no point is your API key, session information or other data directly sent to other servers or systems. All requests to the bunq API are done directly from the bunqDesktop client to the bunq servers.
 
-We use Google Analytics with minimal settings ([Source code](./src/react/Helpers/Analytics.js)) to check which version of the application is used and other basic information like system language, OS version and country. Your IP address is anonimized using [IP Anonymization in Analytics](https://support.google.com/analytics/answer/2763052?hl=en).
+We use Google Analytics with minimal settings ([Source code](./src/react/Helpers/Analytics.js)) to check which version of the application is used and other basic information like system language, OS version and country. Your IP address is anonymized using [IP Anonymization in Analytics](https://support.google.com/analytics/answer/2763052?hl=en).
 
 Along that we use [Sentry](https://sentry.io/gregory-goijaerts/) to log errors when they occur. These only include fatal errors from within bunqDesktop and not any API errors received from bunq. We ensure that both in the client and within sentry that extra filters are in place to ensure no private data is sent or stored.
 
