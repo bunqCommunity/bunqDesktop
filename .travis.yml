@@ -67,8 +67,15 @@ before_deploy:
       sha256sum dist/bunqDesktop-*.* >> dist/CHECKSUMS.sha256
       cat dist/CHECKSUMS.sha256
     fi
-#  install JQ for curl handling
+  # install JQ for curl handling
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install jq; else brew install jq; fi
+  # install latest version of Go with snap
+  - eval "$(curl -sL https://raw.githubusercontent.com/travis-ci/gimme/master/gimme | GIMME_GO_VERSION=master bash)"
+  # get the GHR go library
+  - go version
+  - export GOPATH="$HOME/go"
+  - export PATH="$PATH:$GOPATH/bin"
+  - go get -u github.com/tcnksm/ghr
 
 deploy:
   - provider: releases
@@ -93,23 +100,7 @@ deploy:
       condition: $TRAVIS_BRANCH == 'release'
   - provider: script
     skip_cleanup: true
-    script:
-      - echo "\n\n\n"
-      #  install latest version of Go with snap
-      - eval "$(curl -sL https://raw.githubusercontent.com/travis-ci/gimme/master/gimme | GIMME_GO_VERSION=master bash)"
-      #  get the GHR go library
-      - echo "\n\n\n"
-      - go version
-      - echo "\n\n\n"
-      - export GOPATH="$HOME/go"
-      - echo "\n\n\n"
-      - export PATH="$PATH:$GOPATH/bin"
-      - echo "\n\n\n"
-      - go get -u github.com/tcnksm/ghr
-      - echo "\n\n\n"
-      # run the actual upload script
-      - bash ./tasks/ghr-upload.sh
-      - echo "\n\n\n"
+    script: bash ./tasks/ghr-upload.sh
     on:
       all_branches: true
       condition: $TRAVIS_BRANCH == 'snapshot-build' || $TRAVIS_EVENT_TYPE == 'cron'
