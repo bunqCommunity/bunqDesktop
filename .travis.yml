@@ -93,16 +93,7 @@ deploy:
       condition: $TRAVIS_BRANCH == 'release'
   - provider: script
     skip_cleanup: true
-    script:
-      #  Install latest version of Go with snap
-      - eval "$(curl -sL https://raw.githubusercontent.com/travis-ci/gimme/master/gimme | GIMME_GO_VERSION=master bash)"
-      #  get the GHR go library
-      - go version
-      - export GOPATH="$HOME/go"
-      - export PATH="$PATH:$GOPATH/bin"
-      - go get -u github.com/tcnksm/ghr
-      # run the actual upload script
-      - bash ./tasks/ghr-upload.sh
+    script: eval "$(curl -sL https://raw.githubusercontent.com/travis-ci/gimme/master/gimme | GIMME_GO_VERSION=master bash)" && go version &&  export GOPATH="$HOME/go" && export PATH="$PATH:$GOPATH/bin" && go get -u github.com/tcnksm/ghr && bash ./tasks/ghr-upload.sh
     on:
       all_branches: true
       condition: $TRAVIS_BRANCH == 'snapshot-build' || $TRAVIS_EVENT_TYPE == 'cron'
