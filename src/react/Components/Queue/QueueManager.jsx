@@ -15,7 +15,8 @@ import {
     queueIncreaseRequestCounter,
     queueSetRequestCounter,
     queueFinishedSync,
-    queueResetSyncState
+    queueResetSyncState,
+    queueStartSync
 } from "../../Actions/queue";
 import { paymentsSetInfo } from "../../Actions/payments";
 import { bunqMeTabsSetInfo } from "../../Actions/bunq_me_tabs";
@@ -44,6 +45,9 @@ class QueueManager extends React.Component {
 
         this.delayedQueue = null;
         this.delayedSetState = null;
+
+        this.automaticUpdateTimer = null;
+        this.automaticUpdateTimerDuration = null;
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -57,6 +61,9 @@ class QueueManager extends React.Component {
             syncOnStartup,
             queueTriggerSync
         } = this.props;
+
+        // setup the timer and enable/disable or update it
+        this.setupTimer();
 
         // if sync on startup setting is false, we disable the initial sync event
         if (syncOnStartup === false && this.state.initialSync === false) {
@@ -101,6 +108,12 @@ class QueueManager extends React.Component {
                 this.delayedSetState = setTimeout(this.pushQueueData, 100);
             }
         }
+    }
+
+    componentWillUnmount() {
+        if (this.delayedSetState) clearTimeout(this.delayedSetState);
+        if (this.delayedQueue) clearTimeout(this.delayedQueue);
+        if (this.automaticUpdateTimer) clearInterval(this.automaticUpdateTimer);
     }
 
     /**
@@ -262,15 +275,56 @@ class QueueManager extends React.Component {
         // trigger an update by changing the finished timestamp
         this.props.queueFinishedSync();
 
+        // force the timer to update
+        this.setupTimer(true);
+
         // reset the events in the queue state
         this.setState({
             payments: {},
             bunqMeTabs: {},
             requestResponses: {},
             requestInquiries: {},
+            requestInquiryBatches: {},
             masterCardActions: {},
             shareInviteBankInquiries: {}
         });
+    };
+
+    /**
+     * Checks if the automatic update timer should be set
+     * @param forceReset
+     */
+    setupTimer = (forceReset = false) => {
+        if (this.props.automaticUpdateEnabled) {
+            if (
+                forceReset ||
+                (this.automaticUpdateTimerDuration !== null &&
+                    this.automaticUpdateTimerDuration !==
+                        this.props.automaticUpdateDuration)
+            ) {
+                this.resetTimer();
+            }
+
+            // only set if not already set
+            if (!this.automaticUpdateTimer) {
+                this.automaticUpdateTimer = setInterval(() => {
+                    this.props.queueStartSync();
+                }, this.props.automaticUpdateDuration * 1000);
+
+                // store value so we can detect changes
+                this.automaticUpdateTimerDuration = this.props.automaticUpdateDuration;
+            }
+        } else {
+            // reset timer since not enabled
+            this.resetTimer();
+        }
+    };
+
+    resetTimer = () => {
+        if (this.automaticUpdateTimer) {
+            clearInterval(this.automaticUpdateTimer);
+            this.automaticUpdateTimer = null;
+        }
     };
 
     paymentsUpdate = (
@@ -758,6 +812,9 @@ const mapStateToProps = state => {
 
         syncOnStartup: state.options.sync_on_startup,
 
+        automaticUpdateEnabled: state.options.automatic_update_enabled,
+        automaticUpdateDuration: state.options.automatic_update_duration,
+
         queueRequestCounter: state.queue.request_counter,
         queueTriggerSync: state.queue.trigger_sync,
         queueLoading: state.queue.loading
@@ -776,6 +833,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(queueIncreaseRequestCounter()),
         queueSetRequestCounter: counter =>
             dispatch(queueSetRequestCounter(counter)),
+        queueStartSync: () => dispatch(queueStartSync()),
         queueFinishedSync: () => dispatch(queueFinishedSync()),
         queueResetSyncState: () => dispatch(queueResetSyncState()),
 
