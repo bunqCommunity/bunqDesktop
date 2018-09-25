@@ -210,7 +210,7 @@ app.on("ready", () => {
     });
 
     // register oauth handlers
-    oauth(mainWindow);
+    oauth(mainWindow, log);
 
     // event handler to create pdf from the active window
     ipc.on("print-to-pdf", (event, fileName) => {

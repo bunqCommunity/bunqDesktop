@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { ipcRenderer } from "electron";
 import Grid from "@material-ui/core/Grid";
 import Input from "@material-ui/core/Input";
-import Collapse from "@material-ui/core/Collapse";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import CardContent from "@material-ui/core/CardContent";
@@ -12,6 +11,8 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
+
+import Logger from "../../Helpers/Logger";
 import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
 
 import { oauthSetDetails } from "../../Actions/oauth";
@@ -59,14 +60,12 @@ class OAuthManagement extends React.Component {
             clientSecret: "",
             clientSecretValud: true,
 
-            showHelp: false,
-
-            oauthCode: false
+            showHelp: false
         };
 
-        ipcRenderer.on("received-oauth-bunq-code", this.handleBunqCodeCallback);
+        this.isLoading = false;
 
-        this.bufferedOAuthRequest = null;
+        ipcRenderer.on("received-oauth-bunq-code", this.handleBunqCodeCallback);
     }
 
     componentDidMount() {
@@ -79,10 +78,6 @@ class OAuthManagement extends React.Component {
                 this.validateInputs
             );
         }
-    }
-
-    componentWillUnmount() {
-        if (this.bufferedOAuthRequest) clearTimeout(this.bufferedOAuthRequest);
     }
 
     /**
@@ -103,10 +98,7 @@ class OAuthManagement extends React.Component {
      * @param data
      */
     handleBunqCodeCallback = (event, data) => {
-        this.setState({
-            oauthCode: data
-        });
-        this.exchangeBunqOAuthToken(data);
+        if (data) this.exchangeBunqOAuthToken(data);
     };
 
     /**
@@ -114,46 +106,54 @@ class OAuthManagement extends React.Component {
      * @param code
      */
     exchangeBunqOAuthToken = code => {
+        const { clientId, clientSecret } = this.props;
         const successMessage = this.props.t("Successfully authorized client!");
         const errorMessage = this.props.t(
             "Something went wrong while trying to authorize the client"
         );
 
-        if (!code || this.state.loading) return;
+        if (!code || this.isLoading) return;
+        this.isLoading = true;
 
-        // clear timeout if already set
-        if (this.bufferedOAuthRequest) clearTimeout(this.bufferedOAuthRequest);
+        // exchange the token
+        Logger.debug(" = Begin exchanging OAuth token");
+        Logger.debug(`clientSecret: ${clientId.substring(0, 8)}`);
+        Logger.debug(`clientSecret: ${clientSecret.substring(0, 8)}`);
+        Logger.debug(`code: ${code.substring(0, 8)}`);
+        this.props.BunqJSClient.exchangeOAuthToken(
+            clientId,
+            clientSecret,
+            "http://localhost:1234",
+            code
+        )
+            .then(accessToken => {
+                this.isLoading = false;
 
-        // set loading state
-        this.setState({
-            loading: true
-        });
+                this.props.openSnackbar(successMessage);
+                this.props.setApiKeyState(accessToken);
+            })
+            .catch(error => {
+                this.isLoading = false;
 
-        // buffer the request to prevent duplicate calls from the secondary window
-        this.bufferedOAuthRequest = setTimeout(() => {
-            // exchange the token
-            this.props.BunqJSClient.exchangeOAuthToken(
-                this.props.clientId,
-                this.props.clientSecret,
-                "http://localhost:1234",
-                code
-            )
-                .then(accessToken => {
-                    this.setState({
-                        loading: false
-                    });
+                Logger.debug("Failed to authenticate OAuth");
+                Logger.debug(
+                    `clientSecret: ${
+                        clientId ? clientId.substring(0, 8) : "no clientId"
+                    }`
+                );
+                Logger.debug(
+                    `.clientSecret: ${
+                        clientSecret
+                            ? clientSecret.substring(0, 8)
+                            : "no secret"
+                    }`
+                );
+                Logger.debug(
+                    `code: ${code ? code.substring(0, 8) : "no code"}`
+                );
 
-                    this.props.openSnackbar(successMessage);
-                    this.props.setApiKeyState(accessToken);
-                })
-                .catch(error => {
-                    this.setState({
-                        loading: false
-                    });
-
-                    this.props.handleBunqError(error, errorMessage);
-                });
-        }, 1500);
+                this.props.handleBunqError(error, errorMessage);
+            });
     };
 
     /**
@@ -199,7 +199,7 @@ class OAuthManagement extends React.Component {
     render() {
         const { t } = this.props;
 
-        const content = this.state.loading ? (
+        const content = this.isLoading ? (
             <Grid item xs={12} style={styles.cardContent}>
                 <TranslateTypography
                     variant="headline"
@@ -287,8 +287,7 @@ const mapStateToProps = state => {
         clientSecret: state.oauth.client_secret,
 
         user: state.user.user,
-        userType: state.user.user_type,
-        userLoading: state.user.loading
+        userType: state.user.user_type
     };
 };
 
