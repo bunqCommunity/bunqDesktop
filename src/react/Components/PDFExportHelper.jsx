@@ -78,6 +78,8 @@ class PDFExportHelper extends React.PureComponent {
 
         const counterPartyIban = counterPartyAlias.iban;
         const merchantReferenceText = t("Merchant reference");
+        const mandateIdentifierText = t("Mandate identifier");
+        const creditSchemeIdentifierText = t("Credit scheme identifier");
 
         return (
             <div>
@@ -178,6 +180,32 @@ class PDFExportHelper extends React.PureComponent {
                             </ListItem>
                         </React.Fragment>
                     )}
+
+                    {payment.mandate_identifier && (
+                        <React.Fragment>
+                            <Divider style={styles.divider} />
+
+                            <ListItem>
+                                <ListItemText
+                                    primary={mandateIdentifierText}
+                                    secondary={payment.mandate_identifier}
+                                />
+                            </ListItem>
+                        </React.Fragment>
+                    )}
+
+                    {payment.credit_scheme_identifier && (
+                        <React.Fragment>
+                            <Divider style={styles.divider} />
+
+                            <ListItem>
+                                <ListItemText
+                                    primary={creditSchemeIdentifierText}
+                                    secondary={payment.credit_scheme_identifier}
+                                />
+                            </ListItem>
+                        </React.Fragment>
+                    )}
                 </List>
             </div>
         );
@@ -188,7 +216,7 @@ const mapStateToProps = state => {
     return {
         theme: state.options.theme,
 
-        pdfSaveModeEnabled: state.application.pdf_save_mode_enabled,
+        pdfSaveModeEnabled: state.application.pdf_save_mode_enabled
     };
 };
 
@@ -197,7 +225,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
 
-        applicationSetPDFMode: enabled => dispatch(applicationSetPDFMode(enabled)),
+        applicationSetPDFMode: enabled =>
+            dispatch(applicationSetPDFMode(enabled)),
 
         setTheme: theme => dispatch(setTheme(theme))
     };

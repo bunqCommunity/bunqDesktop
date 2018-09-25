@@ -563,7 +563,7 @@ export const shareInviteBankResponseFilter = options => shareInviteBankResponse 
         return false;
     }
     if (
-        options.bunqMeTabType !== "active" ||
+        options.bunqMeTabType !== "default" ||
         options.paymentType !== "default" ||
         options.requestType !== "default"
     ) {
@@ -603,7 +603,7 @@ export const shareInviteBankInquiryFilter = options => shareInviteBankInquiry =>
         return false;
     }
     if (
-        options.bunqMeTabType !== "active" ||
+        options.bunqMeTabType !== "default" ||
         options.paymentType !== "default" ||
         options.requestType !== "default"
     ) {

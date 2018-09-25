@@ -6,7 +6,7 @@ const optimizations = require("./config/Webpack/optimizations");
 
 const PRODUCTION = process.env.NODE_ENV === "production";
 const DEVELOPMENT = !PRODUCTION;
-const TRAVIS_ENV = !!process.env.TRAVIS;
+const RELEASE_MODE = !!process.env.RELEASE_MODE;
 
 const SRC_DIR = path.resolve(__dirname, "src/react");
 const BUILD_DIR = path.resolve(__dirname, "app/react");
@@ -17,7 +17,7 @@ const moduleOptions = {
     OUTPUT_DIR,
     PRODUCTION,
     DEVELOPMENT,
-    TRAVIS_ENV
+    RELEASE_MODE
 };
 
 let config = {

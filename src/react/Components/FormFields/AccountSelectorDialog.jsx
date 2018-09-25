@@ -96,37 +96,77 @@ class AccountSelectorDialog extends React.Component {
     };
 
     render() {
-        const { BunqJSClient, accounts, value, t, ...otherProps } = this.props;
+        const {
+            BunqJSClient,
+            accounts,
+            value,
+            hiddenConnectTypes,
+            shareInviteBankResponses,
+            t,
+            ...otherProps
+        } = this.props;
         const style = otherProps.style ? otherProps.style : {};
 
-        const accountItems = accounts.map((account, accountKey) => {
-            if (account.status !== "ACTIVE") {
-                return null;
-            }
-            return (
-                <AccountItem
-                    shareInviteBankResponses={
-                        this.props.shareInviteBankResponses
-                    }
-                    account={account}
-                    onClick={this.onClickHandler(accountKey)}
-                    hideBalance={this.props.hideBalance}
-                    BunqJSClient={BunqJSClient}
-                />
-            );
-        });
+        const hideDraftOnly = hiddenConnectTypes.includes("draftOnly");
+        const hideShowOnly = hiddenConnectTypes.includes("showOnly");
+
+        const accountItems = accounts
+            .filter(account => {
+                return account.status === "ACTIVE";
+            })
+            .filter(account => {
+                const filteredInviteResponses = shareInviteBankResponses.filter(
+                    filterShareInviteBankResponses(account.id)
+                );
+
+                // no results means no filter required
+                if (filteredInviteResponses.length == 0) return true;
+
+                const firstInviteResponse = filteredInviteResponses.pop();
+                const inviteResponse =
+                    firstInviteResponse.ShareInviteBankResponse;
+
+                // get the key values for this list
+                const shareDetailKeys = Object.keys(
+                    inviteResponse.share_detail
+                );
+
+                if (
+                    hideDraftOnly &&
+                    shareDetailKeys.includes("ShareDetailDraftPayment")
+                ) {
+                    return false;
+                }
+                if (
+                    hideShowOnly &&
+                    shareDetailKeys.includes("ShareDetailReadOnly")
+                ) {
+                    return false;
+                }
+
+                return true;
+            })
+            .map((account, accountKey) => {
+                return (
+                    <AccountItem
+                        shareInviteBankResponses={shareInviteBankResponses}
+                        onClick={this.onClickHandler(accountKey)}
+                        hideBalance={this.props.hideBalance}
+                        BunqJSClient={BunqJSClient}
+                        account={account}
+                    />
+                );
+            });
 
         let selectedAccountItem = null;
         if (value !== "" && accounts[value]) {
             selectedAccountItem = (
                 <AccountItem
-                    shareInviteBankResponses={
-                        this.props.shareInviteBankResponses
-                    }
+                    shareInviteBankResponses={shareInviteBankResponses}
+                    hideBalance={this.props.hideBalance}
+                    BunqJSClient={BunqJSClient}
                     account={accounts[value]}
                     onClick={this.openDialog}
-                    BunqJSClient={BunqJSClient}
-                    hideBalance={this.props.hideBalance}
                 />
             );
         } else {
@@ -160,6 +200,7 @@ AccountSelectorDialog.propTypes = {
 };
 
 AccountSelectorDialog.defaultProps = {
+    hiddenConnectTypes: [],
     style: styles.formControl,
     selectStyle: styles.selectField
 };

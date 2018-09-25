@@ -97,6 +97,7 @@ class RulesPage extends React.Component {
                         masterCardActions={masterCardActions}
                         bunqMeTabs={bunqMeTabs}
                         requestResponses={requestResponses}
+                        openSnackbar={this.props.openSnackbar}
                     />
                 </Grid>
             </Grid>

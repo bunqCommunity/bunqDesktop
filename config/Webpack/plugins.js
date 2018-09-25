@@ -13,7 +13,7 @@ module.exports = ({
     OUTPUT_DIR,
     PRODUCTION,
     DEVELOPMENT,
-    TRAVIS_ENV
+    RELEASE_MODE
 }) => {
     const plugins = [
         new webpack.NoEmitOnErrorsPlugin(),
@@ -51,7 +51,7 @@ module.exports = ({
     ];
 
     // only use these outside of travis environment
-    if (!TRAVIS_ENV) {
+    if (!RELEASE_MODE) {
         // improved caching after multiple builds
         plugins.push(
             new HardSourceWebpackPlugin({

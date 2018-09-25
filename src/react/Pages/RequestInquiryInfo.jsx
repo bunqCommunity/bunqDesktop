@@ -123,9 +123,7 @@ class RequestInquiryInfo extends React.Component {
 
         // format a file name
         const timeStamp = requestInquiryInfo.created.getTime();
-        const fileName = `request-${
-            requestInquiryInfo.id
-            }-${timeStamp}.pdf`;
+        const fileName = `request-${requestInquiryInfo.id}-${timeStamp}.pdf`;
 
         // delay for a short period to let the application update and then create a pdf
         setTimeout(() => {

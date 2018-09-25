@@ -159,9 +159,7 @@ class RequestResponseInfo extends React.Component {
 
         // format a file name
         const timeStamp = requestResponseInfo.created.getTime();
-        const fileName = `request-${
-            requestResponseInfo.id
-            }-${timeStamp}.pdf`;
+        const fileName = `request-${requestResponseInfo.id}-${timeStamp}.pdf`;
 
         // delay for a short period to let the application update and then create a pdf
         setTimeout(() => {
