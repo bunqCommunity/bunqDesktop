@@ -136,28 +136,27 @@ app.on("ready", () => {
         const tray = new Tray(trayIcon);
         const contextMenu = Menu.buildFromTemplate([
             {
-                // label: i18n.t("Dashboard"),
                 label: "Dashboard",
                 click: () => changePage(mainWindow, "/")
             },
             {
-                // label: i18n.t("Pay"),
+                label: "Update",
+                click: () => mainWindow.webContents.send("trigger-queue-sync")
+            },
+            {
                 label: "Pay",
                 click: () => changePage(mainWindow, "/pay")
             },
             {
-                // label: i18n.t("Request"),
                 label: "Request",
                 click: () => changePage(mainWindow, "/request")
             },
             {
-                // label: i18n.t("Cards"),
                 label: "Cards",
                 click: () => changePage(mainWindow, "/card")
             },
             { type: "separator" },
             {
-                // label: i18n.t("Quit"),
                 label: "Quit",
                 click: () => app.quit()
             }

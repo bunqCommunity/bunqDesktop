@@ -21,6 +21,8 @@ export const MINIMIZE_TO_TRAY_LOCATION = "MINIMIZE_TO_TRAY";
 export const USE_STICKY_MENU_LOCATION = "USE_STICKY_MENU";
 export const CHECK_INACTIVITY_ENABLED_LOCATION = "CHECK_INACTIVITY_ENABLED";
 export const CHECK_INACTIVITY_DURATION_LOCATION = "CHECK_INACTIVITY_DURATION";
+export const AUTOMATIC_UPDATE_ENABLED_LOCATION = "AUTOMATIC_UPDATE_ENABLED";
+export const AUTOMATIC_UPDATE_DURATION_LOCATION = "AUTOMATIC_UPDATE_DURATION";
 export const AUTOMATIC_THEME_CHANGE_LOCATION = "AUTOMATIC_THEME_CHANGE";
 export const HIDE_BALANCE_LOCATION = "HIDE_BALANCE";
 
@@ -39,6 +41,14 @@ const settingsStoredMap = {
     },
     inactivity_check_duration: {
         location: CHECK_INACTIVITY_DURATION_LOCATION,
+        default: 300
+    },
+    automatic_update_enabled: {
+        location: AUTOMATIC_UPDATE_ENABLED_LOCATION,
+        default: false
+    },
+    automatic_update_duration: {
+        location: AUTOMATIC_UPDATE_DURATION_LOCATION,
         default: 300
     },
     automatic_theme_change: {

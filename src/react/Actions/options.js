@@ -55,6 +55,17 @@ export function setInactivityCheckDuration(inactivityCheckDuration) {
     );
 }
 
+export function toggleAutomaticUpdatesEnabled(updateAutomatically) {
+    return setGenericOption("automatic_update_enabled", updateAutomatically);
+}
+
+export function setAutomaticUpdateDuration(automaticUpdateDuration) {
+    return setGenericOption(
+        "automatic_update_duration",
+        automaticUpdateDuration
+    );
+}
+
 export function overwriteSettingsLocation(location) {
     return {
         type: "OPTIONS_OVERWRITE_SETTINGS_LOCATION",

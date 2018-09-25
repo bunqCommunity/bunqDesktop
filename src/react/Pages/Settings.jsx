@@ -39,7 +39,6 @@ import {
     resetApplication,
     setSyncOnStartup,
     setHideBalance,
-    setInactivityCheckDuration,
     setMinimizeToTray,
     setNativeFrame,
     setStickyMenu,
@@ -47,6 +46,9 @@ import {
     setLanguage,
     overwriteSettingsLocation,
     toggleInactivityCheck,
+    setInactivityCheckDuration,
+    toggleAutomaticUpdatesEnabled,
+    setAutomaticUpdateDuration,
     loadSettingsLocation,
     setAutomaticThemeChange,
     setAnalyticsEnabled
@@ -147,14 +149,22 @@ class Settings extends React.Component {
         }
         this.props.setAnalyticsEnabled(!this.props.analyticsEnabled);
     };
-    handleHideInactivityCheckChange = event => {
-        this.props.toggleInactivityCheck(!this.props.checkInactivity);
-    };
     handleAutomaticThemeChange = event => {
         this.props.setAutomaticThemeChange(!this.props.automaticThemeChange);
     };
+    handleHideInactivityCheckChange = event => {
+        this.props.toggleInactivityCheck(!this.props.checkInactivity);
+    };
     handleHideInactivityDurationChange = event => {
         this.props.setInactivityCheckDuration(event.target.value);
+    };
+    handleAutomaticUpdatesEnabledChane = event => {
+        this.props.toggleAutomaticUpdatesEnabled(
+            !this.props.automaticUpdateEnabled
+        );
+    };
+    handleAutomaticUpdateDurationChane = event => {
+        this.props.setAutomaticUpdateDuration(event.target.value);
     };
     handleSyncOnStartupChange = event => {
         this.props.setSyncOnStartup(!this.props.syncOnStartup);
@@ -197,11 +207,358 @@ class Settings extends React.Component {
             ? clearBunqDesktopText1
             : clearBunqDesktopTex2;
 
+        const settingsContainer = (
+            <Grid container spacing={16}>
+                <Grid item xs={12} md={6} lg={8}>
+                    <TypographyTranslate variant={"headline"}>
+                        Settings
+                    </TypographyTranslate>
+                </Grid>
+
+                <Grid item xs={6} md={3} lg={2}>
+                    <Button
+                        variant="raised"
+                        color="secondary"
+                        style={styles.button}
+                        onClick={this.clearPrivateData}
+                    >
+                        {t("Remove keys")} <RemoveIcon />
+                    </Button>
+                </Grid>
+
+                <Grid item xs={6} md={3} lg={2}>
+                    <Button
+                        variant="raised"
+                        color="primary"
+                        style={styles.button}
+                        onClick={this.logout}
+                    >
+                        {t("Logout")} <LogoutIcon />
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                    <FormControl style={styles.formControl}>
+                        <InputLabel htmlFor="theme-selection">
+                            {t("Theme")}
+                        </InputLabel>
+                        <Select
+                            value={this.props.theme}
+                            onChange={this.handleThemeChange}
+                            input={<Input id="theme-selection" />}
+                            style={styles.selectField}
+                        >
+                            {Object.keys(this.props.themeList).map(themeKey => (
+                                <MenuItem value={themeKey}>
+                                    {humanReadableThemes[themeKey]}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                    <FormControl style={styles.formControl}>
+                        <InputLabel htmlFor="theme-selection">
+                            Language
+                        </InputLabel>
+                        <Select
+                            value={this.props.language}
+                            onChange={this.handleLanguageChange}
+                            input={<Input id="language-selection" />}
+                            style={styles.selectField}
+                        >
+                            {SUPPORTED_LANGUAGES.map(language => (
+                                <MenuItem value={language}>
+                                    {getPrettyLanguage(language)}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Grid>
+
+                {/* automatic updates */}
+                <Grid
+                    item
+                    xs={12}
+                    md={this.props.automaticUpdateEnabled ? 6 : 12}
+                >
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                id="inactivity-check-selection"
+                                checked={this.props.automaticUpdateEnabled}
+                                onChange={
+                                    this.handleAutomaticUpdatesEnabledChane
+                                }
+                            />
+                        }
+                        label={t("Update automatically in the background")}
+                    />
+                </Grid>
+                {this.props.automaticUpdateEnabled ? (
+                    <Grid item xs={12} md={6}>
+                        <Select
+                            style={styles.selectField}
+                            value={this.props.automaticUpdateDuration}
+                            onChange={this.handleAutomaticUpdateDurationChane}
+                        >
+                            <MenuItemTranslate key={60} value={60}>
+                                1 Minute
+                            </MenuItemTranslate>
+                            <MenuItemTranslate key={120} value={120}>
+                                2 Minutes
+                            </MenuItemTranslate>
+                            <MenuItemTranslate key={300} value={300}>
+                                5 Minutes
+                            </MenuItemTranslate>
+                            <MenuItemTranslate key={600} value={600}>
+                                10 Minutes
+                            </MenuItemTranslate>
+                            <MenuItemTranslate key={1800} value={1800}>
+                                30 Minutes
+                            </MenuItemTranslate>
+                            <MenuItemTranslate key={3600} value={3600}>
+                                1 Hour
+                            </MenuItemTranslate>
+                            <MenuItemTranslate key={7200} value={7200}>
+                                2 Hours
+                            </MenuItemTranslate>
+                        </Select>
+                    </Grid>
+                ) : null}
+
+                {/* sync on startup */}
+                <Grid item xs={12} md={6}>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                id="sync-on-startup"
+                                checked={this.props.syncOnStartup}
+                                onChange={this.handleSyncOnStartupChange}
+                            />
+                        }
+                        label={t("Run background sync on startup")}
+                    />
+                </Grid>
+
+                {/* hide account balances */}
+                <Grid item xs={12} md={6}>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                id="hide-balance-selection"
+                                checked={this.props.hideBalance}
+                                onChange={this.handleHideBalanceCheckChange}
+                            />
+                        }
+                        label={t("Hide account balances")}
+                    />
+                </Grid>
+
+                {/* use native frame */}
+                <Grid item xs={12} md={6}>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                id="nativeframe-selection"
+                                checked={this.props.nativeFrame}
+                                onChange={this.handleNativeFrameCheckChange}
+                            />
+                        }
+                        label={t("Use the native frame")}
+                    />
+                </Grid>
+
+                {/* use sticky menu */}
+                <Grid item xs={12} md={6}>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                id="sticky-menu-selection"
+                                checked={this.props.stickyMenu}
+                                onChange={this.handleStickyMenuCheckChange}
+                            />
+                        }
+                        label={t("Enable sticky menu")}
+                    />
+                </Grid>
+
+                {/* change theme based on time */}
+                <Grid item xs={12} md={6}>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                id="automatic-change-selection"
+                                checked={this.props.automaticThemeChange}
+                                onChange={this.handleAutomaticThemeChange}
+                            />
+                        }
+                        label={t(
+                            "Automatically switch theme based on the time"
+                        )}
+                    />
+                </Grid>
+
+                {/* check inactivity */}
+                <Grid item xs={12} md={6}>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                id="inactivity-check-selection"
+                                checked={this.props.checkInactivity}
+                                onChange={this.handleHideInactivityCheckChange}
+                            />
+                        }
+                        label={t("Logout automatically")}
+                    />
+                    {this.props.checkInactivity ? (
+                        <Select
+                            style={styles.selectField}
+                            value={this.props.inactivityCheckDuration}
+                            onChange={this.handleHideInactivityDurationChange}
+                        >
+                            <MenuItemTranslate key={60} value={60}>
+                                1 Minute
+                            </MenuItemTranslate>
+                            <MenuItemTranslate key={120} value={120}>
+                                2 Minutes
+                            </MenuItemTranslate>
+                            <MenuItemTranslate key={300} value={300}>
+                                5 Minutes
+                            </MenuItemTranslate>
+                            <MenuItemTranslate key={600} value={600}>
+                                10 Minutes
+                            </MenuItemTranslate>
+                            <MenuItemTranslate key={1800} value={1800}>
+                                30 Minutes
+                            </MenuItemTranslate>
+                            <MenuItemTranslate key={3600} value={3600}>
+                                1 Hour
+                            </MenuItemTranslate>
+                            <MenuItemTranslate key={7200} value={7200}>
+                                2 Hours
+                            </MenuItemTranslate>
+                        </Select>
+                    ) : null}
+                </Grid>
+
+                {/* minimize to tray */}
+                <Grid item xs={12} md={6}>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                id="minimize-to-try-selection"
+                                checked={this.props.minimizeToTray}
+                                onChange={this.handleMinimizeToTrayChange}
+                            />
+                        }
+                        label={t("Minimize to tray")}
+                    />
+                </Grid>
+
+                {/* enable google analytics */}
+                <Grid item xs={12} md={6}>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                id="set-analytics-enabled"
+                                checked={!!this.props.analyticsEnabled}
+                                onChange={this.handleAnalyticsEnabledChange}
+                            />
+                        }
+                        label={t(
+                            "Allow basic and anonymous Google Analytics tracking"
+                        )}
+                    />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <FilePicker
+                        buttonContent={"Change settings location"}
+                        extensions={["json"]}
+                        properties={["openDirectory", "promptToCreate"]}
+                        value={this.props.settingsLocation}
+                        defaultPath={path.dirname(this.props.settingsLocation)}
+                        onChange={this.displayImportDialog}
+                    />
+                </Grid>
+
+                <Grid item xs={12} />
+
+                <Grid item xs={12} sm={4}>
+                    <ButtonTranslate
+                        variant="raised"
+                        component={NavLink}
+                        to={"/debug-page"}
+                        style={styles.button}
+                    >
+                        Debug application
+                    </ButtonTranslate>
+                </Grid>
+
+                <Grid item xs={12} sm={4} />
+
+                <Grid item xs={12} sm={4}>
+                    <Button
+                        variant="raised"
+                        color="secondary"
+                        style={styles.button}
+                        onClick={this.handleResetBunqDesktop}
+                    >
+                        {clearBunqDesktopText}
+                    </Button>
+                </Grid>
+            </Grid>
+        );
+
         return (
             <Grid container spacing={24}>
                 <Helmet>
                     <title>{`bunqDesktop - ${t("Settings")}`}</title>
                 </Helmet>
+
+                <Dialog open={this.state.openImportDialog}>
+                    <DialogTitle>Change settings location</DialogTitle>
+
+                    <DialogContent>
+                        <DialogContentText>
+                            You are about to change the settings location to:
+                        </DialogContentText>
+                        <DialogContentText>
+                            {this.state.importTargetLocation}
+                        </DialogContentText>
+                        <DialogContentText>
+                            Would you like to import the settings file or
+                            overwrite the settings currently in bunqDesktop?
+                        </DialogContentText>
+                    </DialogContent>
+
+                    <DialogActions>
+                        <ButtonTranslate
+                            variant="raised"
+                            onClick={() =>
+                                this.setState({ openImportDialog: false })
+                            }
+                        >
+                            Cancel
+                        </ButtonTranslate>
+                        <ButtonTranslate
+                            variant="raised"
+                            onClick={this.overwriteSettingsFile}
+                            color="secondary"
+                        >
+                            Overwrite file
+                        </ButtonTranslate>
+                        <ButtonTranslate
+                            variant="raised"
+                            onClick={this.importSettingsFile}
+                            color="primary"
+                        >
+                            Import file
+                        </ButtonTranslate>
+                    </DialogActions>
+                </Dialog>
 
                 <Grid item xs={12} sm={2}>
                     <Button
@@ -219,353 +576,7 @@ class Settings extends React.Component {
                 </Grid>
 
                 <Grid item xs={12} sm={8}>
-                    <Paper style={styles.paper}>
-                        <Grid container spacing={16}>
-                            <Grid item xs={12} md={6} lg={8}>
-                                <TypographyTranslate variant={"headline"}>
-                                    Settings
-                                </TypographyTranslate>
-                            </Grid>
-
-                            <Grid item xs={6} md={3} lg={2}>
-                                <Button
-                                    variant="raised"
-                                    color="secondary"
-                                    style={styles.button}
-                                    onClick={this.clearPrivateData}
-                                >
-                                    {t("Remove keys")} <RemoveIcon />
-                                </Button>
-                            </Grid>
-
-                            <Grid item xs={6} md={3} lg={2}>
-                                <Button
-                                    variant="raised"
-                                    color="primary"
-                                    style={styles.button}
-                                    onClick={this.logout}
-                                >
-                                    {t("Logout")} <LogoutIcon />
-                                </Button>
-                            </Grid>
-
-                            <Grid item xs={12} md={6}>
-                                <FormControl style={styles.formControl}>
-                                    <InputLabel htmlFor="theme-selection">
-                                        {t("Theme")}
-                                    </InputLabel>
-                                    <Select
-                                        value={this.props.theme}
-                                        onChange={this.handleThemeChange}
-                                        input={<Input id="theme-selection" />}
-                                        style={styles.selectField}
-                                    >
-                                        {Object.keys(this.props.themeList).map(
-                                            themeKey => (
-                                                <MenuItem value={themeKey}>
-                                                    {
-                                                        humanReadableThemes[
-                                                            themeKey
-                                                        ]
-                                                    }
-                                                </MenuItem>
-                                            )
-                                        )}
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-
-                            <Grid item xs={12} md={6}>
-                                <FormControl style={styles.formControl}>
-                                    <InputLabel htmlFor="theme-selection">
-                                        Language
-                                    </InputLabel>
-                                    <Select
-                                        value={this.props.language}
-                                        onChange={this.handleLanguageChange}
-                                        input={
-                                            <Input id="language-selection" />
-                                        }
-                                        style={styles.selectField}
-                                    >
-                                        {SUPPORTED_LANGUAGES.map(language => (
-                                            <MenuItem value={language}>
-                                                {getPrettyLanguage(language)}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-
-                            <Grid item xs={12} md={6}>
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            id="nativeframe-selection"
-                                            checked={this.props.nativeFrame}
-                                            onChange={
-                                                this
-                                                    .handleNativeFrameCheckChange
-                                            }
-                                        />
-                                    }
-                                    label={t("Use the native frame")}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} md={6}>
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            id="minimize-to-try-selection"
-                                            checked={this.props.minimizeToTray}
-                                            onChange={
-                                                this.handleMinimizeToTrayChange
-                                            }
-                                        />
-                                    }
-                                    label={t("Minimize to tray")}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} md={6}>
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            id="set-analytics-enabled"
-                                            checked={
-                                                !!this.props.analyticsEnabled
-                                            }
-                                            onChange={
-                                                this
-                                                    .handleAnalyticsEnabledChange
-                                            }
-                                        />
-                                    }
-                                    label={t(
-                                        "Allow basic and anonymous Google Analytics tracking"
-                                    )}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} md={6}>
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            id="sticky-menu-selection"
-                                            checked={this.props.stickyMenu}
-                                            onChange={
-                                                this.handleStickyMenuCheckChange
-                                            }
-                                        />
-                                    }
-                                    label={t("Enable sticky menu")}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} md={6}>
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            id="automatic-change-selection"
-                                            checked={
-                                                this.props.automaticThemeChange
-                                            }
-                                            onChange={
-                                                this.handleAutomaticThemeChange
-                                            }
-                                        />
-                                    }
-                                    label={t(
-                                        "Automatically switch theme based on the time"
-                                    )}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} md={6}>
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            id="hide-balance-selection"
-                                            checked={this.props.hideBalance}
-                                            onChange={
-                                                this
-                                                    .handleHideBalanceCheckChange
-                                            }
-                                        />
-                                    }
-                                    label={t("Hide account balances")}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} md={6}>
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            id="inactivity-check-selection"
-                                            checked={this.props.checkInactivity}
-                                            onChange={
-                                                this
-                                                    .handleHideInactivityCheckChange
-                                            }
-                                        />
-                                    }
-                                    label={t("Logout automatically")}
-                                />
-                                {this.props.checkInactivity ? (
-                                    <Select
-                                        value={
-                                            this.props.inactivityCheckDuration
-                                        }
-                                        onChange={
-                                            this
-                                                .handleHideInactivityDurationChange
-                                        }
-                                    >
-                                        <MenuItemTranslate key={60} value={60}>
-                                            1 Minute
-                                        </MenuItemTranslate>
-                                        <MenuItemTranslate
-                                            key={120}
-                                            value={120}
-                                        >
-                                            2 Minutes
-                                        </MenuItemTranslate>
-                                        <MenuItemTranslate
-                                            key={300}
-                                            value={300}
-                                        >
-                                            5 Minutes
-                                        </MenuItemTranslate>
-                                        <MenuItemTranslate
-                                            key={600}
-                                            value={600}
-                                        >
-                                            10 Minutes
-                                        </MenuItemTranslate>
-                                        <MenuItemTranslate
-                                            key={1800}
-                                            value={1800}
-                                        >
-                                            30 Minutes
-                                        </MenuItemTranslate>
-                                        <MenuItemTranslate
-                                            key={3600}
-                                            value={3600}
-                                        >
-                                            1 Hour
-                                        </MenuItemTranslate>
-                                        <MenuItemTranslate
-                                            key={7200}
-                                            value={7200}
-                                        >
-                                            2 Hours
-                                        </MenuItemTranslate>
-                                    </Select>
-                                ) : null}
-                            </Grid>
-
-                            <Grid item xs={12} md={6}>
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            id="sync-on-startup"
-                                            checked={this.props.syncOnStartup}
-                                            onChange={
-                                                this.handleSyncOnStartupChange
-                                            }
-                                        />
-                                    }
-                                    label={t("Run background sync on startup")}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <FilePicker
-                                    buttonContent={"Change settings location"}
-                                    extensions={["json"]}
-                                    properties={[
-                                        "openDirectory",
-                                        "promptToCreate"
-                                    ]}
-                                    value={this.props.settingsLocation}
-                                    defaultPath={path.dirname(
-                                        this.props.settingsLocation
-                                    )}
-                                    onChange={this.displayImportDialog}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} />
-
-                            <Grid item xs={12} sm={4}>
-                                <ButtonTranslate
-                                    variant="raised"
-                                    component={NavLink}
-                                    to={"/debug-page"}
-                                    style={styles.button}
-                                >
-                                    Debug application
-                                </ButtonTranslate>
-                            </Grid>
-
-                            <Grid item xs={12} sm={4} />
-
-                            <Grid item xs={12} sm={4}>
-                                <Button
-                                    variant="raised"
-                                    color="secondary"
-                                    style={styles.button}
-                                    onClick={this.handleResetBunqDesktop}
-                                >
-                                    {clearBunqDesktopText}
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </Paper>
-
-                    <Dialog open={this.state.openImportDialog}>
-                        <DialogTitle>Change settings location</DialogTitle>
-
-                        <DialogContent>
-                            <DialogContentText>
-                                You are about to change the settings location
-                                to:
-                            </DialogContentText>
-                            <DialogContentText>
-                                {this.state.importTargetLocation}
-                            </DialogContentText>
-                            <DialogContentText>
-                                Would you like to import the settings file or
-                                overwrite the settings currently in bunqDesktop?
-                            </DialogContentText>
-                        </DialogContent>
-
-                        <DialogActions>
-                            <ButtonTranslate
-                                variant="raised"
-                                onClick={() =>
-                                    this.setState({ openImportDialog: false })
-                                }
-                            >
-                                Cancel
-                            </ButtonTranslate>
-                            <ButtonTranslate
-                                variant="raised"
-                                onClick={this.overwriteSettingsFile}
-                                color="secondary"
-                            >
-                                Overwrite file
-                            </ButtonTranslate>
-                            <ButtonTranslate
-                                variant="raised"
-                                onClick={this.importSettingsFile}
-                                color="primary"
-                            >
-                                Import file
-                            </ButtonTranslate>
-                        </DialogActions>
-                    </Dialog>
+                    <Paper style={styles.paper}>{settingsContainer}</Paper>
                 </Grid>
             </Grid>
         );
@@ -582,10 +593,13 @@ const mapStateToProps = state => {
         nativeFrame: state.options.native_frame,
         stickyMenu: state.options.sticky_menu,
         analyticsEnabled: state.options.analytics_enabled,
-        checkInactivity: state.options.check_inactivity,
         settingsLocation: state.options.settings_location,
         automaticThemeChange: state.options.automatic_theme_change,
-        inactivityCheckDuration: state.options.inactivity_check_duration
+
+        checkInactivity: state.options.check_inactivity,
+        inactivityCheckDuration: state.options.inactivity_check_duration,
+        automaticUpdateEnabled: state.options.automatic_update_enabled,
+        automaticUpdateDuration: state.options.automatic_update_duration
     };
 };
 
@@ -614,6 +628,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(toggleInactivityCheck(inactivityCheck)),
         setInactivityCheckDuration: inactivityCheckDuration =>
             dispatch(setInactivityCheckDuration(inactivityCheckDuration)),
+        toggleAutomaticUpdatesEnabled: updateAutomatically =>
+            dispatch(toggleAutomaticUpdatesEnabled(updateAutomatically)),
+        setAutomaticUpdateDuration: automaticUpdateDuration =>
+            dispatch(setAutomaticUpdateDuration(automaticUpdateDuration)),
         overwriteSettingsLocation: location =>
             dispatch(overwriteSettingsLocation(location)),
         loadSettingsLocation: location =>
