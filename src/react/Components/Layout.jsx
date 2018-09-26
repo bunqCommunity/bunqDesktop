@@ -39,9 +39,7 @@ import { openSnackbar } from "../Actions/snackbar";
 import { loadStoredPayments } from "../Actions/payments";
 import { loadStoredAccounts } from "../Actions/accounts";
 import { loadStoredBunqMeTabs } from "../Actions/bunq_me_tabs";
-import {
-    applicationSetStatus
-} from "../Actions/application.js";
+import { applicationSetStatus } from "../Actions/application.js";
 import { loadStoredMasterCardActions } from "../Actions/master_card_actions";
 import { loadStoredRequestInquiries } from "../Actions/request_inquiries";
 import { loadStoredrequestInquiryBatches } from "../Actions/request_inquiry_batches";
@@ -60,7 +58,7 @@ import {
 import { loadStoredContacts } from "../Actions/contacts";
 import { loadStoredShareInviteBankResponses } from "../Actions/share_invite_bank_responses";
 import { loadStoredShareInviteBankInquiries } from "../Actions/share_invite_bank_inquiries";
-import {queueStartSync} from "../Actions/queue";
+import { queueStartSync } from "../Actions/queue";
 
 const styles = theme => ({
     contentContainer: {
@@ -173,6 +171,7 @@ class Layout extends React.Component {
     }
 
     componentWillUpdate(nextProps) {
+
         // make sure language is up-to-date
         this.checkLanguageChange(nextProps);
 

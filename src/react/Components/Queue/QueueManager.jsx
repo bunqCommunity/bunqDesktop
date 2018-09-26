@@ -26,7 +26,7 @@ import { requestInquiryBatchesSetInfo } from "../../Actions/request_inquiry_batc
 import { requestResponsesSetInfo } from "../../Actions/request_responses";
 import { shareInviteBankInquiriesSetInfo } from "../../Actions/share_invite_bank_inquiries";
 
-export const REQUEST_DEPTH_LIMIT = 2;
+export const REQUEST_DEPTH_LIMIT = 1;
 
 class QueueManager extends React.Component {
     constructor(props, context) {
@@ -351,6 +351,7 @@ class QueueManager extends React.Component {
                     paymentsNew.length === 200 &&
                     (continueLoading !== false && continueLoading > 0)
                 ) {
+                    console.log(continueLoading, continueLoading - 1);
                     const oldestPaymentIndex = paymentsNew.length - 1;
                     const oldestPayment = paymentsNew[oldestPaymentIndex];
 

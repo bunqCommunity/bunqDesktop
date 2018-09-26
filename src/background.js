@@ -1,5 +1,4 @@
 import fs from "fs";
-import os from "os";
 import url from "url";
 import path from "path";
 import log from "electron-log";
