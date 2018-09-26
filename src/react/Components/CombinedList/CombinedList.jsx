@@ -97,6 +97,7 @@ class CombinedList extends React.Component {
             this.props.paymentsLoading ||
             this.props.requestResponsesLoading ||
             this.props.requestInquiriesLoading ||
+            this.props.requestInquiryBatchLoading ||
             this.props.masterCardActionsLoading;
         const wasLoading =
             prevProps.queueLoading ||
@@ -104,6 +105,7 @@ class CombinedList extends React.Component {
             prevProps.paymentsLoading ||
             prevProps.requestResponsesLoading ||
             prevProps.requestInquiriesLoading ||
+            prevProps.requestInquiryBatchLoading ||
             prevProps.masterCardActionsLoading;
 
         // no longer loading or filter changed

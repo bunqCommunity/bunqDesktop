@@ -203,6 +203,12 @@ class QueueManager extends React.Component {
             return account.status === "ACTIVE";
         });
 
+        let newerPaymentCount = 0;
+        let newerBunqMeTabsCount = 0;
+        let newerRequestResponsesCount = 0;
+        let newerRequestInquiriesCount = 0;
+        let newerMasterCardActionsCount = 0;
+        let newerShareInviteBankInquiriesCount = 0;
         filteredAccounts.forEach(account => {
             // get events for this account and fallback to empty list
             const payments = this.state.payments[account.id] || [];
@@ -218,12 +224,69 @@ class QueueManager extends React.Component {
             const shareInviteBankInquiries =
                 this.state.shareInviteBankInquiries[account.id] || [];
 
+            // count the new events for each type and account
+            const newestPayment = this.props.payments.filter(
+                payment => account.id === payment.monetary_account_id
+            )[0];
+            if (newestPayment)
+                newerPaymentCount += payments.filter(
+                    payment => payment.id > newestPayment.id
+                ).length;
+
+            const newestBunqMeTab = this.props.bunqMeTabs.filter(
+                bunqMeTab => account.id === bunqMeTab.monetary_account_id
+            )[0];
+            if (newestBunqMeTab)
+                newerBunqMeTabsCount += bunqMeTabs.filter(
+                    bunqMeTab => bunqMeTab.id > newestBunqMeTab.id
+                ).length;
+
+            const newestRequestResponse = this.props.requestResponses.filter(
+                requestResponse =>
+                    account.id === requestResponse.monetary_account_id
+            )[0];
+            if (newestRequestResponse)
+                newerRequestResponsesCount += requestResponses.filter(
+                    requestResponse =>
+                        requestResponse.id > newestRequestResponse.id
+                ).length;
+
+            const newestRequestInquiry = this.props.requestInquiries.filter(
+                requestInquiry =>
+                    account.id === requestInquiry.monetary_account_id
+            )[0];
+            if (newestRequestInquiry)
+                newerRequestInquiriesCount += requestInquiries.filter(
+                    requestInquiry =>
+                        requestInquiry.id > newestRequestInquiry.id
+                ).length;
+
+            const newestMasterCardAction = this.props.masterCardActions.filter(
+                masterCardAction =>
+                    account.id === masterCardAction.monetary_account_id
+            )[0];
+            if (newestMasterCardAction)
+                newerMasterCardActionsCount += masterCardActions.filter(
+                    masterCardAction =>
+                        masterCardAction.id > newestMasterCardAction.id
+                ).length;
+
+            const newestShareInviteBankInquiry = this.props.shareInviteBankInquiries.filter(
+                shareInviteBankInquiry =>
+                    account.id === shareInviteBankInquiry.monetary_account_id
+            )[0];
+            if (newestShareInviteBankInquiry)
+                newerShareInviteBankInquiriesCount += shareInviteBankInquiries.filter(
+                    shareInviteBankInquiry =>
+                        shareInviteBankInquiry.id >
+                        newestShareInviteBankInquiry.id
+                ).length;
+
             // count the total amount of events
             eventCount += payments.length;
             eventCount += bunqMeTabs.length;
             eventCount += requestResponses.length;
             eventCount += requestInquiries.length;
-            eventCount += requestInquiryBatches.length;
             eventCount += masterCardActions.length;
             eventCount += shareInviteBankInquiries.length;
 
@@ -266,10 +329,23 @@ class QueueManager extends React.Component {
             }
         });
 
+        const totalNewEvents =
+            newerPaymentCount +
+            newerBunqMeTabsCount +
+            newerRequestResponsesCount +
+            newerRequestInquiriesCount +
+            newerMasterCardActionsCount +
+            newerShareInviteBankInquiriesCount;
+
+        let newEventsText = "";
+        if (totalNewEvents > 0) {
+            newEventsText = ` of which ${totalNewEvents} were new`;
+        }
+
         // display a message to notify the user
         const mainText = this.props.t("Background sync finished and loaded");
         const eventsText = this.props.t("events");
-        const resultMessage = `${mainText} ${eventCount} ${eventsText}`;
+        const resultMessage = `${mainText} ${eventCount} ${eventsText}${newEventsText}`;
         this.props.openSnackbar(resultMessage);
 
         // trigger an update by changing the finished timestamp
@@ -351,7 +427,6 @@ class QueueManager extends React.Component {
                     paymentsNew.length === 200 &&
                     (continueLoading !== false && continueLoading > 0)
                 ) {
-                    console.log(continueLoading, continueLoading - 1);
                     const oldestPaymentIndex = paymentsNew.length - 1;
                     const oldestPayment = paymentsNew[oldestPaymentIndex];
 
@@ -818,7 +893,17 @@ const mapStateToProps = state => {
 
         queueRequestCounter: state.queue.request_counter,
         queueTriggerSync: state.queue.trigger_sync,
-        queueLoading: state.queue.loading
+        queueLoading: state.queue.loading,
+
+        payments: state.payments.payments,
+        bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
+        masterCardActions: state.master_card_actions.master_card_actions,
+        requestInquiries: state.request_inquiries.request_inquiries,
+        requestInquiryBatches:
+            state.request_inquiry_batches.request_inquiry_batches,
+        requestResponses: state.request_responses.request_responses,
+        shareInviteBankInquiries:
+            state.share_invite_bank_inquiries.share_invite_bank_inquiries
     };
 };
 
