@@ -203,6 +203,10 @@ class QueueManager extends React.Component {
             return account.status === "ACTIVE";
         });
 
+        const calculateNewEvents =
+            this.props.automaticUpdateEnabled &&
+            this.props.automaticUpdateSendNotification;
+
         let newerPaymentCount = 0;
         let newerBunqMeTabsCount = 0;
         let newerRequestResponsesCount = 0;
@@ -224,63 +228,66 @@ class QueueManager extends React.Component {
             const shareInviteBankInquiries =
                 this.state.shareInviteBankInquiries[account.id] || [];
 
-            // count the new events for each type and account
-            const newestPayment = this.props.payments.filter(
-                payment => account.id === payment.monetary_account_id
-            )[0];
-            if (newestPayment)
-                newerPaymentCount += payments.filter(
-                    payment => payment.id > newestPayment.id
-                ).length;
+            if (calculateNewEvents) {
+                // count the new events for each type and account
+                const newestPayment = this.props.payments.filter(
+                    payment => account.id === payment.monetary_account_id
+                )[0];
+                if (newestPayment)
+                    newerPaymentCount += payments.filter(
+                        payment => payment.id > newestPayment.id
+                    ).length;
 
-            const newestBunqMeTab = this.props.bunqMeTabs.filter(
-                bunqMeTab => account.id === bunqMeTab.monetary_account_id
-            )[0];
-            if (newestBunqMeTab)
-                newerBunqMeTabsCount += bunqMeTabs.filter(
-                    bunqMeTab => bunqMeTab.id > newestBunqMeTab.id
-                ).length;
+                const newestBunqMeTab = this.props.bunqMeTabs.filter(
+                    bunqMeTab => account.id === bunqMeTab.monetary_account_id
+                )[0];
+                if (newestBunqMeTab)
+                    newerBunqMeTabsCount += bunqMeTabs.filter(
+                        bunqMeTab => bunqMeTab.id > newestBunqMeTab.id
+                    ).length;
 
-            const newestRequestResponse = this.props.requestResponses.filter(
-                requestResponse =>
-                    account.id === requestResponse.monetary_account_id
-            )[0];
-            if (newestRequestResponse)
-                newerRequestResponsesCount += requestResponses.filter(
+                const newestRequestResponse = this.props.requestResponses.filter(
                     requestResponse =>
-                        requestResponse.id > newestRequestResponse.id
-                ).length;
+                        account.id === requestResponse.monetary_account_id
+                )[0];
+                if (newestRequestResponse)
+                    newerRequestResponsesCount += requestResponses.filter(
+                        requestResponse =>
+                            requestResponse.id > newestRequestResponse.id
+                    ).length;
 
-            const newestRequestInquiry = this.props.requestInquiries.filter(
-                requestInquiry =>
-                    account.id === requestInquiry.monetary_account_id
-            )[0];
-            if (newestRequestInquiry)
-                newerRequestInquiriesCount += requestInquiries.filter(
+                const newestRequestInquiry = this.props.requestInquiries.filter(
                     requestInquiry =>
-                        requestInquiry.id > newestRequestInquiry.id
-                ).length;
+                        account.id === requestInquiry.monetary_account_id
+                )[0];
+                if (newestRequestInquiry)
+                    newerRequestInquiriesCount += requestInquiries.filter(
+                        requestInquiry =>
+                            requestInquiry.id > newestRequestInquiry.id
+                    ).length;
 
-            const newestMasterCardAction = this.props.masterCardActions.filter(
-                masterCardAction =>
-                    account.id === masterCardAction.monetary_account_id
-            )[0];
-            if (newestMasterCardAction)
-                newerMasterCardActionsCount += masterCardActions.filter(
+                const newestMasterCardAction = this.props.masterCardActions.filter(
                     masterCardAction =>
-                        masterCardAction.id > newestMasterCardAction.id
-                ).length;
+                        account.id === masterCardAction.monetary_account_id
+                )[0];
+                if (newestMasterCardAction)
+                    newerMasterCardActionsCount += masterCardActions.filter(
+                        masterCardAction =>
+                            masterCardAction.id > newestMasterCardAction.id
+                    ).length;
 
-            const newestShareInviteBankInquiry = this.props.shareInviteBankInquiries.filter(
-                shareInviteBankInquiry =>
-                    account.id === shareInviteBankInquiry.monetary_account_id
-            )[0];
-            if (newestShareInviteBankInquiry)
-                newerShareInviteBankInquiriesCount += shareInviteBankInquiries.filter(
+                const newestShareInviteBankInquiry = this.props.shareInviteBankInquiries.filter(
                     shareInviteBankInquiry =>
-                        shareInviteBankInquiry.id >
-                        newestShareInviteBankInquiry.id
-                ).length;
+                        account.id ===
+                        shareInviteBankInquiry.monetary_account_id
+                )[0];
+                if (newestShareInviteBankInquiry)
+                    newerShareInviteBankInquiriesCount += shareInviteBankInquiries.filter(
+                        shareInviteBankInquiry =>
+                            shareInviteBankInquiry.id >
+                            newestShareInviteBankInquiry.id
+                    ).length;
+            }
 
             // count the total amount of events
             eventCount += payments.length;
@@ -329,23 +336,31 @@ class QueueManager extends React.Component {
             }
         });
 
-        const totalNewEvents =
-            newerPaymentCount +
-            newerBunqMeTabsCount +
-            newerRequestResponsesCount +
-            newerRequestInquiriesCount +
-            newerMasterCardActionsCount +
-            newerShareInviteBankInquiriesCount;
+        const t = this.props.t;
+        const mainText = t("Background sync finished and loaded");
+        const eventsText = t("events");
 
-        let newEventsText = "";
-        if (totalNewEvents > 0) {
-            newEventsText = ` of which ${totalNewEvents} were new`;
+        // if background sync is enabled and notifcations are on we send a notification
+        // instead of using the snackbar
+        let resultMessage = `${mainText} ${eventCount} ${eventsText}`;
+        if (calculateNewEvents) {
+            const totalNewEvents =
+                newerPaymentCount +
+                newerBunqMeTabsCount +
+                newerRequestResponsesCount +
+                newerRequestInquiriesCount +
+                newerMasterCardActionsCount +
+                newerShareInviteBankInquiriesCount;
+
+            if (totalNewEvents > 0) {
+                resultMessage = `${t(
+                    "Background sync loaded"
+                )} ${totalNewEvents} ${t("new events")}`;
+
+            }
         }
 
         // display a message to notify the user
-        const mainText = this.props.t("Background sync finished and loaded");
-        const eventsText = this.props.t("events");
-        const resultMessage = `${mainText} ${eventCount} ${eventsText}${newEventsText}`;
         this.props.openSnackbar(resultMessage);
 
         // trigger an update by changing the finished timestamp
@@ -889,6 +904,8 @@ const mapStateToProps = state => {
         syncOnStartup: state.options.sync_on_startup,
 
         automaticUpdateEnabled: state.options.automatic_update_enabled,
+        automaticUpdateSendNotification:
+            state.options.automatic_update_send_notification,
         automaticUpdateDuration: state.options.automatic_update_duration,
 
         queueRequestCounter: state.queue.request_counter,

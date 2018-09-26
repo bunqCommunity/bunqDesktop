@@ -51,7 +51,8 @@ import {
     setAutomaticUpdateDuration,
     loadSettingsLocation,
     setAutomaticThemeChange,
-    setAnalyticsEnabled
+    setAnalyticsEnabled,
+    toggleAutomaticUpdatesSendNotification
 } from "../Actions/options";
 import {
     registrationClearPrivateData,
@@ -168,6 +169,11 @@ class Settings extends React.Component {
     };
     handleSyncOnStartupChange = event => {
         this.props.setSyncOnStartup(!this.props.syncOnStartup);
+    };
+    handleAutomaticUpdatesSendNotificationChange = event => {
+        this.props.toggleAutomaticUpdatesSendNotification(
+            !this.props.automaticUpdateSendNotification
+        );
     };
     handleResetBunqDesktop = event => {
         if (this.state.clearConfirmation === false) {
@@ -327,6 +333,28 @@ class Settings extends React.Component {
                         </Select>
                     </Grid>
                 ) : null}
+
+                {/* send events if new events are found in an autoamtic sync */}
+                {this.props.automaticUpdateEnabled && (
+                    <Grid item xs={12} md={6}>
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    id="notification-on-new-events"
+                                    checked={
+                                        this.props
+                                            .automaticUpdateSendNotification
+                                    }
+                                    onChange={
+                                        this
+                                            .handleAutomaticUpdatesSendNotificationChange
+                                    }
+                                />
+                            }
+                            label={t("Send a notification on new events")}
+                        />
+                    </Grid>
+                )}
 
                 {/* sync on startup */}
                 <Grid item xs={12} md={6}>
@@ -599,6 +627,8 @@ const mapStateToProps = state => {
         checkInactivity: state.options.check_inactivity,
         inactivityCheckDuration: state.options.inactivity_check_duration,
         automaticUpdateEnabled: state.options.automatic_update_enabled,
+        automaticUpdateSendNotification:
+            state.options.automatic_update_send_notification,
         automaticUpdateDuration: state.options.automatic_update_duration
     };
 };
@@ -630,6 +660,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(setInactivityCheckDuration(inactivityCheckDuration)),
         toggleAutomaticUpdatesEnabled: updateAutomatically =>
             dispatch(toggleAutomaticUpdatesEnabled(updateAutomatically)),
+        toggleAutomaticUpdatesSendNotification: sendNotifcation =>
+            dispatch(toggleAutomaticUpdatesSendNotification(sendNotifcation)),
         setAutomaticUpdateDuration: automaticUpdateDuration =>
             dispatch(setAutomaticUpdateDuration(automaticUpdateDuration)),
         overwriteSettingsLocation: location =>
