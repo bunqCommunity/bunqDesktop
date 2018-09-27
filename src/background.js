@@ -123,59 +123,60 @@ app.on("ready", () => {
         mainWindow.openDevTools();
     }
 
+    // setup the tray handler
     const trayIcon = nativeImage.createFromPath(
         path.join(
             __dirname,
             `..${path.sep}app${path.sep}images${path.sep}32x32.png`
         )
     );
+    const notificationIcon = nativeImage.createFromPath(
+        path.join(
+            __dirname,
+            `..${path.sep}app${path.sep}images${path.sep}256x256.png`
+        )
+    );
+    const tray = new Tray(trayIcon);
+    const contextMenu = Menu.buildFromTemplate([
+        {
+            label: "Dashboard",
+            click: () => changePage(mainWindow, "/")
+        },
+        {
+            label: "Update",
+            click: () => mainWindow.webContents.send("trigger-queue-sync")
+        },
+        {
+            label: "Pay",
+            click: () => changePage(mainWindow, "/pay")
+        },
+        {
+            label: "Request",
+            click: () => changePage(mainWindow, "/request")
+        },
+        {
+            label: "Cards",
+            click: () => changePage(mainWindow, "/card")
+        },
+        { type: "separator" },
+        {
+            label: "Quit",
+            click: () => app.quit()
+        }
+    ]);
+    tray.setContextMenu(contextMenu);
+    tray.setToolTip("bunqDesktop");
 
-    const createTrayIcon = () => {
-        // setup the tray handler
-        const tray = new Tray(trayIcon);
-        const contextMenu = Menu.buildFromTemplate([
-            {
-                label: "Dashboard",
-                click: () => changePage(mainWindow, "/")
-            },
-            {
-                label: "Update",
-                click: () => mainWindow.webContents.send("trigger-queue-sync")
-            },
-            {
-                label: "Pay",
-                click: () => changePage(mainWindow, "/pay")
-            },
-            {
-                label: "Request",
-                click: () => changePage(mainWindow, "/request")
-            },
-            {
-                label: "Cards",
-                click: () => changePage(mainWindow, "/card")
-            },
-            { type: "separator" },
-            {
-                label: "Quit",
-                click: () => app.quit()
-            }
-        ]);
-        tray.setContextMenu(contextMenu);
-        tray.setToolTip("bunqDesktop");
-
-        // Event handlers
-        tray.on("click", () => {
-            // show app on single click
-            if (!mainWindow.isVisible()) mainWindow.show();
-            tray.destroy();
-        });
-    };
+    // Event handlers
+    tray.on("click", () => {
+        // show app on single click
+        if (!mainWindow.isVisible()) mainWindow.show();
+    });
 
     // handle minimize event to minimze to tray when requried
     mainWindow.on("minimize", function(event) {
         const minimizeToTray = !!settings.get("MINIMIZE_TO_TRAY");
         if (minimizeToTray) {
-            createTrayIcon();
             event.preventDefault();
             mainWindow.hide();
         }
@@ -209,6 +210,15 @@ app.on("ready", () => {
 
     // register oauth handlers
     oauth(mainWindow, log);
+
+    // handler to display a balloon message for windows
+    ipc.on("display-balloon", (event, data) => {
+        tray.displayBalloon({
+            icon: notificationIcon,
+            title: data.title,
+            content: data.content
+        });
+    });
 
     // event handler to create pdf from the active window
     ipc.on("print-to-pdf", (event, fileName) => {

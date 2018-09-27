@@ -9,6 +9,8 @@ import RequestInquiry from "../../Models/RequestInquiry";
 import RequestInquiryBatch from "../../Models/RequestInquiryBatch";
 import MasterCardAction from "../../Models/MasterCardAction";
 
+import NotificationHelper from "../../Helpers/NotificationHelper";
+
 import { openSnackbar } from "../../Actions/snackbar";
 import {
     queueDecreaseRequestCounter,
@@ -337,12 +339,14 @@ class QueueManager extends React.Component {
         });
 
         const t = this.props.t;
-        const mainText = t("Background sync finished and loaded");
+        const backgroundSyncText = t("Background sync finished");
         const eventsText = t("events");
 
         // if background sync is enabled and notifcations are on we send a notification
         // instead of using the snackbar
-        let resultMessage = `${mainText} ${eventCount} ${eventsText}`;
+        let resultMessage = `${backgroundSyncText} ${t(
+            "and loaded"
+        )} ${eventCount} ${eventsText}`;
         if (calculateNewEvents) {
             const totalNewEvents =
                 newerPaymentCount +
@@ -353,12 +357,16 @@ class QueueManager extends React.Component {
                 newerShareInviteBankInquiriesCount;
 
             if (totalNewEvents > 0) {
-                resultMessage = `${t(
-                    "Background sync loaded"
-                )} ${totalNewEvents} ${t("new events")}`;
+                resultMessage = `${totalNewEvents} ${t(
+                    "new events were found!"
+                )}`;
 
+                // create a native notification
+                NotificationHelper(backgroundSyncText, resultMessage);
             }
         }
+
+        resultMessage = `${backgroundSyncText} ${t("and")} ${resultMessage}`;
 
         // display a message to notify the user
         this.props.openSnackbar(resultMessage);
