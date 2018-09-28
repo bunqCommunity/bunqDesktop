@@ -147,7 +147,6 @@
 	"Disclaimer": "Disclaimer",
 	"DisclaimerActiveDevelopmentWarning": "This project is still in active development and we are not responsible if anything goes wrong.",
 	"DisclaimerBunqDesktopExplanation": "bunqDesktop is an unofficial, free and open-source project and is in no way associated with or supported by bunq!",
-	"DisclaimerErrorLoggingWarning": "We use Sentry to log uncaught errors when they occur. This does NOT include web requests to the bunq API to ensure your data is never exposed.",
 	"DisclaimerPasswordWarningPart1": "In order to keep your data safe everything is encrypted using the password you enter. If you forget this password all personal data within bunqDesktop will be reset and you will have to log back in.",
 	"DisclaimerPasswordWarningPart2": "If you decide to use an empty password, anyone with the required knowledge could view your data if they get access to your physical device!",
 	"Display inactive cards": "Display inactive cards",
