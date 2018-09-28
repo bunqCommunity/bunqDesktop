@@ -39,10 +39,7 @@ import { openSnackbar } from "../Actions/snackbar";
 import { loadStoredPayments } from "../Actions/payments";
 import { loadStoredAccounts } from "../Actions/accounts";
 import { loadStoredBunqMeTabs } from "../Actions/bunq_me_tabs";
-import {
-    applicationSetStatus,
-    applicationForceUpdate
-} from "../Actions/application.js";
+import { applicationSetStatus } from "../Actions/application.js";
 import { loadStoredMasterCardActions } from "../Actions/master_card_actions";
 import { loadStoredRequestInquiries } from "../Actions/request_inquiries";
 import { loadStoredrequestInquiryBatches } from "../Actions/request_inquiry_batches";
@@ -61,6 +58,7 @@ import {
 import { loadStoredContacts } from "../Actions/contacts";
 import { loadStoredShareInviteBankResponses } from "../Actions/share_invite_bank_responses";
 import { loadStoredShareInviteBankInquiries } from "../Actions/share_invite_bank_inquiries";
+import { queueStartSync } from "../Actions/queue";
 
 const styles = theme => ({
     contentContainer: {
@@ -111,6 +109,9 @@ class Layout extends React.Component {
         // keybind events from main process
         ipcRenderer.on("toggle-balance", event => {
             this.props.setHideBalance(!this.props.hideBalance);
+        });
+        ipcRenderer.on("trigger-queue-sync", event => {
+            this.props.queueStartSync();
         });
         ipcRenderer.on("toggle-theme", event => {
             this.props.setTheme(
@@ -170,6 +171,7 @@ class Layout extends React.Component {
     }
 
     componentWillUpdate(nextProps) {
+
         // make sure language is up-to-date
         this.checkLanguageChange(nextProps);
 
@@ -567,9 +569,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         applicationSetStatus: status_message =>
             dispatch(applicationSetStatus(status_message)),
 
-        // forces an update for certain components
-        applicationForceUpdate: () => dispatch(applicationForceUpdate()),
-
         registrationLoading: () => dispatch(registrationLoading()),
         registrationNotLoading: () => dispatch(registrationNotLoading()),
         registrationResetToApiScreenSoft: () =>
@@ -581,6 +580,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // login the user with a specific type from the list
         userLogin: (userType, updated = false) =>
             dispatch(userLogin(BunqJSClient, userType, updated)),
+
+        queueStartSync: () => dispatch(queueStartSync()),
 
         loadStoredPayments: () => dispatch(loadStoredPayments(BunqJSClient)),
         loadStoredContacts: () => dispatch(loadStoredContacts(BunqJSClient)),

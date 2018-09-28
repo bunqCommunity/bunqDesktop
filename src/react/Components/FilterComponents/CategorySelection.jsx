@@ -57,7 +57,7 @@ class CategorySelection extends React.Component {
 
     render() {
         const { anchorEl } = this.state;
-        const { categories, selectedCategories } = this.props;
+        const { categories, selectedCategories, t } = this.props;
 
         // limit size if a lot of categories are selected
         const bigChips = selectedCategories.length <= 4;

@@ -1,6 +1,5 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
-import * as Sentry from "@sentry/electron";
 
 import Logger from "../Helpers/Logger";
 import TranslateButton from "./TranslationHelpers/Button";

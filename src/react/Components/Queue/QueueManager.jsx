@@ -1,4 +1,5 @@
 import React from "react";
+import { ipcRenderer } from "electron";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 
@@ -9,13 +10,16 @@ import RequestInquiry from "../../Models/RequestInquiry";
 import RequestInquiryBatch from "../../Models/RequestInquiryBatch";
 import MasterCardAction from "../../Models/MasterCardAction";
 
+import NotificationHelper from "../../Helpers/NotificationHelper";
+
 import { openSnackbar } from "../../Actions/snackbar";
 import {
     queueDecreaseRequestCounter,
     queueIncreaseRequestCounter,
     queueSetRequestCounter,
     queueFinishedSync,
-    queueResetSyncState
+    queueResetSyncState,
+    queueStartSync
 } from "../../Actions/queue";
 import { paymentsSetInfo } from "../../Actions/payments";
 import { bunqMeTabsSetInfo } from "../../Actions/bunq_me_tabs";
@@ -25,7 +29,7 @@ import { requestInquiryBatchesSetInfo } from "../../Actions/request_inquiry_batc
 import { requestResponsesSetInfo } from "../../Actions/request_responses";
 import { shareInviteBankInquiriesSetInfo } from "../../Actions/share_invite_bank_inquiries";
 
-export const REQUEST_DEPTH_LIMIT = 2;
+export const REQUEST_DEPTH_LIMIT = 1;
 
 class QueueManager extends React.Component {
     constructor(props, context) {
@@ -44,6 +48,9 @@ class QueueManager extends React.Component {
 
         this.delayedQueue = null;
         this.delayedSetState = null;
+
+        this.automaticUpdateTimer = null;
+        this.automaticUpdateTimerDuration = null;
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -58,15 +65,23 @@ class QueueManager extends React.Component {
             queueTriggerSync
         } = this.props;
 
+        // setup the timer and enable/disable or update it
+        this.setupTimer();
+
         // if sync on startup setting is false, we disable the initial sync event
         if (syncOnStartup === false && this.state.initialSync === false) {
             this.setState({ initialSync: true });
+        }
+
+        if (queueLoading && queueTriggerSync) {
+            this.props.queueResetSyncState();
         }
 
         // no initial sync completed or manual sync was triggered
         if (!this.state.initialSync || queueTriggerSync) {
             if (
                 user &&
+                !queueLoading &&
                 !userLoading &&
                 accounts &&
                 !accountsLoading &&
@@ -81,7 +96,7 @@ class QueueManager extends React.Component {
                 // delay the queue update
                 this.delayedQueue = setTimeout(
                     () => this.triggerQueueUpdate(continueCount),
-                    500
+                    100
                 );
             }
         } else {
@@ -93,9 +108,15 @@ class QueueManager extends React.Component {
                 // clear existing timeout if it exists
                 if (this.delayedSetState) clearTimeout(this.delayedSetState);
                 // delay the queue update
-                this.delayedSetState = setTimeout(this.pushQueueData, 1000);
+                this.delayedSetState = setTimeout(this.pushQueueData, 100);
             }
         }
+    }
+
+    componentWillUnmount() {
+        if (this.delayedSetState) clearTimeout(this.delayedSetState);
+        if (this.delayedQueue) clearTimeout(this.delayedQueue);
+        if (this.automaticUpdateTimer) clearInterval(this.automaticUpdateTimer);
     }
 
     /**
@@ -185,6 +206,16 @@ class QueueManager extends React.Component {
             return account.status === "ACTIVE";
         });
 
+        const calculateNewEvents =
+            this.props.automaticUpdateEnabled &&
+            this.props.automaticUpdateSendNotification;
+
+        let newerPaymentCount = 0;
+        let newerBunqMeTabsCount = 0;
+        let newerRequestResponsesCount = 0;
+        let newerRequestInquiriesCount = 0;
+        let newerMasterCardActionsCount = 0;
+        let newerShareInviteBankInquiriesCount = 0;
         filteredAccounts.forEach(account => {
             // get events for this account and fallback to empty list
             const payments = this.state.payments[account.id] || [];
@@ -200,12 +231,72 @@ class QueueManager extends React.Component {
             const shareInviteBankInquiries =
                 this.state.shareInviteBankInquiries[account.id] || [];
 
+            if (calculateNewEvents) {
+                // count the new events for each type and account
+                const newestPayment = this.props.payments.find(
+                    payment => account.id === payment.monetary_account_id
+                );
+                if (newestPayment)
+                    newerPaymentCount += payments.filter(
+                        payment => payment.id > newestPayment.id
+                    ).length;
+
+                const newestBunqMeTab = this.props.bunqMeTabs.find(
+                    bunqMeTab => account.id === bunqMeTab.monetary_account_id
+                );
+                if (newestBunqMeTab)
+                    newerBunqMeTabsCount += bunqMeTabs.filter(
+                        bunqMeTab => bunqMeTab.id > newestBunqMeTab.id
+                    ).length;
+
+                const newestRequestResponse = this.props.requestResponses.find(
+                    requestResponse =>
+                        account.id === requestResponse.monetary_account_id
+                );
+                if (newestRequestResponse)
+                    newerRequestResponsesCount += requestResponses.filter(
+                        requestResponse =>
+                            requestResponse.id > newestRequestResponse.id
+                    ).length;
+
+                const newestRequestInquiry = this.props.requestInquiries.find(
+                    requestInquiry =>
+                        account.id === requestInquiry.monetary_account_id
+                );
+                if (newestRequestInquiry)
+                    newerRequestInquiriesCount += requestInquiries.filter(
+                        requestInquiry =>
+                            requestInquiry.id > newestRequestInquiry.id
+                    ).length;
+
+                const newestMasterCardAction = this.props.masterCardActions.find(
+                    masterCardAction =>
+                        account.id === masterCardAction.monetary_account_id
+                );
+                if (newestMasterCardAction)
+                    newerMasterCardActionsCount += masterCardActions.filter(
+                        masterCardAction =>
+                            masterCardAction.id > newestMasterCardAction.id
+                    ).length;
+
+                const newestShareInviteBankInquiry = this.props.shareInviteBankInquiries.find(
+                    shareInviteBankInquiry =>
+                        account.id ===
+                        shareInviteBankInquiry.monetary_account_id
+                );
+                if (newestShareInviteBankInquiry)
+                    newerShareInviteBankInquiriesCount += shareInviteBankInquiries.filter(
+                        shareInviteBankInquiry =>
+                            shareInviteBankInquiry.id >
+                            newestShareInviteBankInquiry.id
+                    ).length;
+            }
+
             // count the total amount of events
             eventCount += payments.length;
             eventCount += bunqMeTabs.length;
             eventCount += requestResponses.length;
             eventCount += requestInquiries.length;
-            eventCount += requestInquiryBatches.length;
             eventCount += masterCardActions.length;
             eventCount += shareInviteBankInquiries.length;
 
@@ -248,14 +339,48 @@ class QueueManager extends React.Component {
             }
         });
 
+        const t = this.props.t;
+        const backgroundSyncText = t("Background sync finished");
+        const newEventsText = t("new events were found!");
+        const andLoadedText = t("and loaded");
+        const eventsText = t("events");
+
+        // if background sync is enabled and notifcations are on we send a notification
+        // instead of using the snackbar
+        const standardMessage = `${backgroundSyncText} ${andLoadedText} ${eventCount} ${eventsText}`;
+        let extraMessage = "";
+        if (calculateNewEvents) {
+            const totalNewEvents =
+                newerPaymentCount +
+                newerBunqMeTabsCount +
+                newerRequestResponsesCount +
+                newerRequestInquiriesCount +
+                newerMasterCardActionsCount +
+                newerShareInviteBankInquiriesCount;
+
+            if (totalNewEvents > 0) {
+                extraMessage = `${totalNewEvents} ${newEventsText}`;
+
+                // create a native notification
+                NotificationHelper(backgroundSyncText, extraMessage);
+
+                // send notification to backend for touchbar changes
+                ipcRenderer.send("loaded-new-events", totalNewEvents);
+            }
+        }
+
+        const snackbarMessage = `${standardMessage}${
+            extraMessage ? `, ${extraMessage}` : ""
+        }`;
+
         // display a message to notify the user
-        const mainText = this.props.t("Background sync finished and loaded");
-        const eventsText = this.props.t("events");
-        const resultMessage = `${mainText} ${eventCount} ${eventsText}`;
-        this.props.openSnackbar(resultMessage);
+        this.props.openSnackbar(snackbarMessage);
 
         // trigger an update by changing the finished timestamp
         this.props.queueFinishedSync();
+
+        // force the timer to update
+        this.setupTimer(true);
 
         // reset the events in the queue state
         this.setState({
@@ -263,9 +388,47 @@ class QueueManager extends React.Component {
             bunqMeTabs: {},
             requestResponses: {},
             requestInquiries: {},
+            requestInquiryBatches: {},
             masterCardActions: {},
             shareInviteBankInquiries: {}
         });
+    };
+
+    /**
+     * Checks if the automatic update timer should be set
+     * @param forceReset
+     */
+    setupTimer = (forceReset = false) => {
+        if (this.props.automaticUpdateEnabled) {
+            if (
+                forceReset ||
+                (this.automaticUpdateTimerDuration !== null &&
+                    this.automaticUpdateTimerDuration !==
+                        this.props.automaticUpdateDuration)
+            ) {
+                this.resetTimer();
+            }
+
+            // only set if not already set
+            if (!this.automaticUpdateTimer) {
+                this.automaticUpdateTimer = setInterval(() => {
+                    this.props.queueStartSync();
+                }, this.props.automaticUpdateDuration * 1000);
+
+                // store value so we can detect changes
+                this.automaticUpdateTimerDuration = this.props.automaticUpdateDuration;
+            }
+        } else {
+            // reset timer since not enabled
+            this.resetTimer();
+        }
+    };
+
+    resetTimer = () => {
+        if (this.automaticUpdateTimer) {
+            clearInterval(this.automaticUpdateTimer);
+            this.automaticUpdateTimer = null;
+        }
     };
 
     paymentsUpdate = (
@@ -753,9 +916,24 @@ const mapStateToProps = state => {
 
         syncOnStartup: state.options.sync_on_startup,
 
+        automaticUpdateEnabled: state.options.automatic_update_enabled,
+        automaticUpdateSendNotification:
+            state.options.automatic_update_send_notification,
+        automaticUpdateDuration: state.options.automatic_update_duration,
+
         queueRequestCounter: state.queue.request_counter,
         queueTriggerSync: state.queue.trigger_sync,
-        queueLoading: state.queue.loading
+        queueLoading: state.queue.loading,
+
+        payments: state.payments.payments,
+        bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
+        masterCardActions: state.master_card_actions.master_card_actions,
+        requestInquiries: state.request_inquiries.request_inquiries,
+        requestInquiryBatches:
+            state.request_inquiry_batches.request_inquiry_batches,
+        requestResponses: state.request_responses.request_responses,
+        shareInviteBankInquiries:
+            state.share_invite_bank_inquiries.share_invite_bank_inquiries
     };
 };
 
@@ -771,6 +949,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(queueIncreaseRequestCounter()),
         queueSetRequestCounter: counter =>
             dispatch(queueSetRequestCounter(counter)),
+        queueStartSync: () => dispatch(queueStartSync()),
         queueFinishedSync: () => dispatch(queueFinishedSync()),
         queueResetSyncState: () => dispatch(queueResetSyncState()),
 

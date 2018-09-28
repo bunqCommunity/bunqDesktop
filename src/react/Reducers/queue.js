@@ -56,6 +56,7 @@ export default function reducer(state = defaultState, action) {
         case "QUEUE_FINISHED_SYNC":
             return {
                 ...state,
+                trigger_sync: false,
                 finished_queue: new Date()
             };
         case "QUEUE_START_SYNC":

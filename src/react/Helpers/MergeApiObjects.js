@@ -30,7 +30,18 @@ export default (accountId, newItems, oldItems) => {
     // turn back into an array
     const mergedItemsArray = Object.keys(mergedItemsObject)
         // sort by key which is also the item id
-        .sort((a, b) => (a > b ? -1 : a < b ? 1 : 0))
+        .sort((a, b) => {
+            const aItem = mergedItemsObject[a];
+            const bItem = mergedItemsObject[b];
+
+            if (aItem.id > bItem.id) {
+                return -1;
+            }
+            if (aItem.id < bItem.id) {
+                return 1;
+            }
+            return 0;
+        })
         // map the ids list  back to objects
         .map(eventId => mergedItemsObject[eventId]);
 
