@@ -1,8 +1,5 @@
 import CategoryHelper from "./CategoryHelper";
 
-// amountFilterAmount
-// amountFilterType
-
 const checkDateRange = (fromDate, toDate, date) => {
     // nothing to check so always valid
     if (fromDate === null && toDate === null) return true;
@@ -328,6 +325,7 @@ export const requestResponseFilter = options => requestResponse => {
         requestResponse.RequestResponse.status === "ACCEPTED" &&
         options.displayAcceptedRequests !== true
     ) {
+        console.log("hide request response");
         return false;
     }
 
@@ -427,6 +425,7 @@ export const requestInquiryFilter = options => requestInquiry => {
         requestInquiry.RequestInquiry.status === "ACCEPTED" &&
         options.displayAcceptedRequests !== true
     ) {
+        console.log("hide request inquiry batch");
         return false;
     }
 
@@ -522,7 +521,6 @@ export const requestInquiryBatchFilter = options => requestInquiryBatch => {
     }
 
     // don't show requests if amount filter is set
-    // TODO check total inquired amount
     if (options.amountFilterAmount !== "") return false;
 
     if (options.selectedAccountIds) {

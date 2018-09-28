@@ -221,6 +221,8 @@ class Dashboard extends React.Component {
                                     initialBunqConnect={
                                         this.props.initialBunqConnect
                                     }
+                                    displayRequestPayments={false}
+                                    displayAcceptedRequests={true}
                                 />
                             </Paper>
                         </Grid>

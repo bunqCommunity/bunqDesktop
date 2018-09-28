@@ -152,6 +152,8 @@ class Stats extends React.Component {
             dateFromFilter: props.dateFromFilter,
             dateToFilter: props.dateToFilter,
 
+            searchTerm: this.props.searchTerm,
+
             // amount filters
             amountFilterAmount: this.props.amountFilterAmount,
             amountFilterType: this.props.amountFilterType,
@@ -166,7 +168,11 @@ class Stats extends React.Component {
 
             // category data
             categories: props.categories,
-            categoryConnections: props.categoryConnections
+            categoryConnections: props.categoryConnections,
+
+            // whether to hide or display request or payment variants
+            displayRequestPayments: this.props.displayRequestPayments,
+            displayAcceptedRequests: this.props.displayAcceptedRequests
         };
 
         this.worker.postMessage({

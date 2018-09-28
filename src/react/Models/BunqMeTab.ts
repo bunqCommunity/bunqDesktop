@@ -4,6 +4,7 @@ import {
     BunqMeTabStatus
 } from "../Types/Types";
 import Event, { EventType } from "../Types/Event";
+import RequestInquiry from "./RequestInquiry";
 
 export default class BunqMeTab implements Event {
     // the original raw object
@@ -32,8 +33,9 @@ export default class BunqMeTab implements Event {
 
         // go through all keys and set the data
         Object.keys(paymentInfo).forEach(key => {
-            if (typeof this[`_${key}`] !== undefined)
-                this[`_${key}`] = paymentInfo[key];
+            const objectKey = key[0] === "_" ? key : `_${key}`;
+            if (typeof this[objectKey] !== undefined)
+                this[objectKey] = paymentInfo[key];
         });
 
         this._updated = new Date(this._updated);
@@ -57,11 +59,26 @@ export default class BunqMeTab implements Event {
     }
 
     /**
+     * @returns {number}
+     */
+    public getTotalResultInquiryAmount(): number {
+        return this.result_inquiries.reduce(
+            (accumulator: number, requestInquiry: any) => {
+                const paymentAmount = parseFloat(
+                    requestInquiry.payment.Payment.amount.value
+                );
+                return accumulator + paymentAmount;
+            },
+            0
+        );
+    }
+
+    /**
      * Returns the change in account balance if any based on this object's data
      * @returns {number}
      */
     public getDelta(): number {
-        return 0;
+        return this.getTotalResultInquiryAmount();
     }
 
     get id(): number {
