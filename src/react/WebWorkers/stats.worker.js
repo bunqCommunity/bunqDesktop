@@ -184,8 +184,7 @@ const requestInquiryMapper = (
     requestInquiries,
     requestFilterSettings,
     categories,
-    categoryConnections,
-    hiddenRequestInquiryIds = []
+    categoryConnections
 ) => {
     const data = [];
     requestInquiries
@@ -218,10 +217,22 @@ const requestResponseMapper = (
         .map(requestResponse => new RequestResponse(requestResponse))
         .filter(requestResponseFilter(requestFilterSettings))
         .map(requestResponse => {
+            let registeredType = "requestResponse";
+            switch(requestResponse.type){
+                case "SOFORT":
+                case "IDEAL":
+                    registeredType = "payment";
+                    break;
+                case "DIRECT_DEBIT":
+                case "DIRECT_DEBIT_B2B":
+                case "INTERNAL":
+                default:
+                    break;
+            }
             data.push({
                 date: requestResponse.created,
                 change: requestResponse.getDelta(),
-                type: "requestResponse",
+                type: registeredType,
                 categories: CategoryHelper(
                     categories,
                     categoryConnections,

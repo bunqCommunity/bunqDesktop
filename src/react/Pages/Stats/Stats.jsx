@@ -171,8 +171,8 @@ class Stats extends React.Component {
             categoryConnections: props.categoryConnections,
 
             // whether to hide or display request or payment variants
-            displayRequestPayments: this.props.displayRequestPayments,
-            displayAcceptedRequests: this.props.displayAcceptedRequests
+            displayRequestPayments: false,
+            displayAcceptedRequests: true
         };
 
         this.worker.postMessage({
