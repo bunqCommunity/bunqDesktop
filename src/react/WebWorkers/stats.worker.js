@@ -46,94 +46,26 @@ const roundMoney = amount => {
     return Math.round(amount * 100) / 100;
 };
 
-const bunqMeTabMapper = (
-    bunqMeTabs,
-    bunqMeTabFilterSettings,
-    categories,
-    categoryConnections
-) => {
-    const data = [];
-    bunqMeTabs
-        .map(bunqmeTab => new BunqMeTab(bunqmeTab))
-        .filter(bunqMeTabsFilter(bunqMeTabFilterSettings))
-        .map(bunqMeTab => {
-            data.push({
-                date: bunqMeTab.created,
-                change: 0,
-                type: "bunqMeTab",
-                categories: CategoryHelper(
-                    categories,
-                    categoryConnections,
-                    "BunqMeTab",
-                    bunqMeTab.id
-                )
-            });
-        });
-    return data;
-};
-
-const requestInquiryMapper = (
-    requestInquiries,
-    requestFilterSettings,
-    categories,
-    categoryConnections
-) => {
-    const data = [];
-    requestInquiries
-        .map(requestInquiry => new RequestInquiry(requestInquiry))
-        .filter(requestInquiryFilter(requestFilterSettings))
-        .map(requestInquiry => {
-            data.push({
-                date: requestInquiry.created,
-                change: 0,
-                type: "requestInquiry",
-                categories: CategoryHelper(
-                    categories,
-                    categoryConnections,
-                    "RequestInquiry",
-                    requestInquiry.id
-                )
-            });
-        });
-    return data;
-};
-
-const requestResponseMapper = (
-    requestResponses,
-    requestFilterSettings,
-    categories,
-    categoryConnections
-) => {
-    const data = [];
-    requestResponses
-        .map(requestResponse => new RequestResponse(requestResponse))
-        .filter(requestResponseFilter(requestFilterSettings))
-        .map(requestResponse => {
-            data.push({
-                date: requestResponse.created,
-                change: 0,
-                type: "requestResponse",
-                categories: CategoryHelper(
-                    categories,
-                    categoryConnections,
-                    "RequestResponse",
-                    requestResponse.id
-                )
-            });
-        });
-    return data;
-};
-
 const paymentMapper = (
     payments,
     paymentFilterSettings,
     categories,
-    categoryConnections
+    categoryConnections,
+    hiddenPaymentIds = []
 ) => {
     const data = [];
     payments
         .map(payment => new Payment(payment))
         .filter(paymentFilter(paymentFilterSettings))
+        .filter(event => {
+            // if hidden ids are set, check if this event is included
+            if (hiddenPaymentIds.length > 0) {
+                if (hiddenPaymentIds.includes(event.id)) {
+                    return false;
+                }
+            }
+            return true;
+        })
         .map(payment => {
             data.push({
                 date: payment.created,
@@ -148,6 +80,46 @@ const paymentMapper = (
             });
         });
     return data;
+};
+
+const bunqMeTabMapper = (
+    bunqMeTabs,
+    bunqMeTabFilterSettings,
+    categories,
+    categoryConnections
+) => {
+    const data = [];
+    const hiddenPaymentIds = [];
+    bunqMeTabs
+        .map(bunqmeTab => new BunqMeTab(bunqmeTab))
+        .filter(bunqMeTabsFilter(bunqMeTabFilterSettings))
+        .map(bunqMeTab => {
+            bunqMeTab.result_inquiries.forEach(resultInquiry => {
+                const payment = resultInquiry.payment.Payment;
+                const paymentId = payment.id;
+
+                // add to the list if not already set
+                if (!hiddenPaymentIds.includes(paymentId)) {
+                    hiddenPaymentIds.push(paymentId);
+                }
+            });
+
+            data.push({
+                date: bunqMeTab.created,
+                change: bunqMeTab.getDelta(),
+                type: "bunqMeTab",
+                categories: CategoryHelper(
+                    categories,
+                    categoryConnections,
+                    "BunqMeTab",
+                    bunqMeTab.id
+                )
+            });
+        });
+    return {
+        bunqMeTabs: data,
+        hiddenPaymentIds: hiddenPaymentIds
+    };
 };
 
 const masterCardActionMapper = (
@@ -204,6 +176,70 @@ const masterCardActionMapper = (
                     )
                 });
             }
+        });
+    return data;
+};
+
+const requestInquiryMapper = (
+    requestInquiries,
+    requestFilterSettings,
+    categories,
+    categoryConnections
+) => {
+    const data = [];
+    requestInquiries
+        .map(requestInquiry => new RequestInquiry(requestInquiry))
+        .filter(requestInquiryFilter(requestFilterSettings))
+        .map(requestInquiry => {
+            data.push({
+                date: requestInquiry.created,
+                change: requestInquiry.getDelta(),
+                type: "requestInquiry",
+                categories: CategoryHelper(
+                    categories,
+                    categoryConnections,
+                    "RequestInquiry",
+                    requestInquiry.id
+                )
+            });
+        });
+    return data;
+};
+
+const requestResponseMapper = (
+    requestResponses,
+    requestFilterSettings,
+    categories,
+    categoryConnections
+) => {
+    const data = [];
+    requestResponses
+        .map(requestResponse => new RequestResponse(requestResponse))
+        .filter(requestResponseFilter(requestFilterSettings))
+        .map(requestResponse => {
+            let registeredType = "requestResponse";
+            switch(requestResponse.type){
+                case "SOFORT":
+                case "IDEAL":
+                    registeredType = "payment";
+                    break;
+                case "DIRECT_DEBIT":
+                case "DIRECT_DEBIT_B2B":
+                case "INTERNAL":
+                default:
+                    break;
+            }
+            data.push({
+                date: requestResponse.created,
+                change: requestResponse.getDelta(),
+                type: registeredType,
+                categories: CategoryHelper(
+                    categories,
+                    categoryConnections,
+                    "RequestResponse",
+                    requestResponse.id
+                )
+            });
         });
     return data;
 };
@@ -636,13 +672,15 @@ const getData = (
 };
 
 onmessage = e => {
+    const { bunqMeTabs, hiddenPaymentIds } = bunqMeTabMapper(
+        e.data.bunqMeTabs,
+        e.data.bunqMeTabFilterSettings,
+        e.data.categories,
+        e.data.categoryConnections
+    );
+
     const events = [
-        ...bunqMeTabMapper(
-            e.data.bunqMeTabs,
-            e.data.bunqMeTabFilterSettings,
-            e.data.categories,
-            e.data.categoryConnections
-        ),
+        ...bunqMeTabs,
         ...requestInquiryMapper(
             e.data.requestInquiries,
             e.data.requestFilterSettings,
@@ -659,7 +697,8 @@ onmessage = e => {
             e.data.payments,
             e.data.paymentFilterSettings,
             e.data.categories,
-            e.data.categoryConnections
+            e.data.categoryConnections,
+            hiddenPaymentIds
         ),
         ...masterCardActionMapper(
             e.data.masterCardActions,

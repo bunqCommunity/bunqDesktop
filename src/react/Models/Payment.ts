@@ -52,7 +52,8 @@ export default class Payment implements Event {
 
         // go through all keys and set the data
         Object.keys(paymentInfo).forEach(key => {
-            this[`_${key}`] = paymentInfo[key];
+            const objectKey = key[0] === "_" ? key : `_${key}`;
+            this[objectKey] = paymentInfo[key];
         });
 
         this._updated = new Date(this._updated);

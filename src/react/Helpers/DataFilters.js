@@ -1,8 +1,5 @@
 import CategoryHelper from "./CategoryHelper";
 
-// amountFilterAmount
-// amountFilterType
-
 const checkDateRange = (fromDate, toDate, date) => {
     // nothing to check so always valid
     if (fromDate === null && toDate === null) return true;
@@ -73,10 +70,13 @@ export const paymentFilter = options => payment => {
         switch (options.amountFilterType) {
             case "EQUALS":
                 if (amountValue != options.amountFilterAmount) return false;
+                break;
             case "MORE":
                 if (amountValue < options.amountFilterAmount) return false;
+                break;
             case "LESS":
                 if (amountValue > options.amountFilterAmount) return false;
+                break;
         }
     }
 
@@ -244,10 +244,13 @@ export const masterCardActionFilter = options => masterCardAction => {
         switch (options.amountFilterType) {
             case "EQUALS":
                 if (amountValue != options.amountFilterAmount) return false;
+                break;
             case "MORE":
                 if (amountValue < options.amountFilterAmount) return false;
+                break;
             case "LESS":
                 if (amountValue > options.amountFilterAmount) return false;
+                break;
         }
     }
 
@@ -310,7 +313,7 @@ export const masterCardActionFilter = options => masterCardAction => {
 
 export const requestResponseFilter = options => requestResponse => {
     // check if this is a internal request or a payment E.G. ideal payments
-    const requestTypes = ["INTERNAL"];
+    const requestTypes = ["INTERNAL", "DIRECT_DEBIT", "DIRECT_DEBIT_B2B"];
     const isRequestType = requestTypes.includes(requestResponse.type);
 
     if (isRequestType) {
@@ -358,8 +361,22 @@ export const requestResponseFilter = options => requestResponse => {
         if (!searchMatches) return false;
     }
 
-    // don't show requests if amount filter is set
-    if (options.amountFilterAmount !== "") return false;
+    if (options.amountFilterAmount !== "") {
+        let amountValue = requestResponse.getAmount();
+        if (amountValue < 0) amountValue = amountValue * -1;
+
+        switch (options.amountFilterType) {
+            case "EQUALS":
+                if (amountValue != options.amountFilterAmount) return false;
+                break;
+            case "MORE":
+                if (amountValue < options.amountFilterAmount) return false;
+                break;
+            case "LESS":
+                if (amountValue > options.amountFilterAmount) return false;
+                break;
+        }
+    }
 
     if (
         options.selectedCategories &&
@@ -445,8 +462,22 @@ export const requestInquiryFilter = options => requestInquiry => {
         if (!searchMatches) return false;
     }
 
-    // don't show requests if amount filter is set
-    if (options.amountFilterAmount !== "") return false;
+    if (options.amountFilterAmount !== "") {
+        let amountValue = requestInquiry.getAmount();
+        if (amountValue < 0) amountValue = amountValue * -1;
+
+        switch (options.amountFilterType) {
+            case "EQUALS":
+                if (amountValue != options.amountFilterAmount) return false;
+                break;
+            case "MORE":
+                if (amountValue < options.amountFilterAmount) return false;
+                break;
+            case "LESS":
+                if (amountValue > options.amountFilterAmount) return false;
+                break;
+        }
+    }
 
     if (
         options.selectedCategories &&
@@ -522,7 +553,6 @@ export const requestInquiryBatchFilter = options => requestInquiryBatch => {
     }
 
     // don't show requests if amount filter is set
-    // TODO check total inquired amount
     if (options.amountFilterAmount !== "") return false;
 
     if (options.selectedAccountIds) {
