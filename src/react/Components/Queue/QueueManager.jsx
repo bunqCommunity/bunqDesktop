@@ -206,10 +206,6 @@ class QueueManager extends React.Component {
             return account.status === "ACTIVE";
         });
 
-        const calculateNewEvents =
-            this.props.automaticUpdateEnabled &&
-            this.props.automaticUpdateSendNotification;
-
         let newerPaymentCount = 0;
         let newerBunqMeTabsCount = 0;
         let newerRequestResponsesCount = 0;
@@ -231,66 +227,63 @@ class QueueManager extends React.Component {
             const shareInviteBankInquiries =
                 this.state.shareInviteBankInquiries[account.id] || [];
 
-            if (calculateNewEvents) {
-                // count the new events for each type and account
-                const newestPayment = this.props.payments.find(
-                    payment => account.id === payment.monetary_account_id
-                );
-                if (newestPayment)
-                    newerPaymentCount += payments.filter(
-                        payment => payment.id > newestPayment.id
-                    ).length;
+            // count the new events for each type and account
+            const newestPayment = this.props.payments.find(
+                payment => account.id === payment.monetary_account_id
+            );
+            if (newestPayment)
+                newerPaymentCount += payments.filter(
+                    payment => payment.id > newestPayment.id
+                ).length;
 
-                const newestBunqMeTab = this.props.bunqMeTabs.find(
-                    bunqMeTab => account.id === bunqMeTab.monetary_account_id
-                );
-                if (newestBunqMeTab)
-                    newerBunqMeTabsCount += bunqMeTabs.filter(
-                        bunqMeTab => bunqMeTab.id > newestBunqMeTab.id
-                    ).length;
+            const newestBunqMeTab = this.props.bunqMeTabs.find(
+                bunqMeTab => account.id === bunqMeTab.monetary_account_id
+            );
+            if (newestBunqMeTab)
+                newerBunqMeTabsCount += bunqMeTabs.filter(
+                    bunqMeTab => bunqMeTab.id > newestBunqMeTab.id
+                ).length;
 
-                const newestRequestResponse = this.props.requestResponses.find(
+            const newestRequestResponse = this.props.requestResponses.find(
+                requestResponse =>
+                    account.id === requestResponse.monetary_account_id
+            );
+            if (newestRequestResponse)
+                newerRequestResponsesCount += requestResponses.filter(
                     requestResponse =>
-                        account.id === requestResponse.monetary_account_id
-                );
-                if (newestRequestResponse)
-                    newerRequestResponsesCount += requestResponses.filter(
-                        requestResponse =>
-                            requestResponse.id > newestRequestResponse.id
-                    ).length;
+                        requestResponse.id > newestRequestResponse.id
+                ).length;
 
-                const newestRequestInquiry = this.props.requestInquiries.find(
+            const newestRequestInquiry = this.props.requestInquiries.find(
+                requestInquiry =>
+                    account.id === requestInquiry.monetary_account_id
+            );
+            if (newestRequestInquiry)
+                newerRequestInquiriesCount += requestInquiries.filter(
                     requestInquiry =>
-                        account.id === requestInquiry.monetary_account_id
-                );
-                if (newestRequestInquiry)
-                    newerRequestInquiriesCount += requestInquiries.filter(
-                        requestInquiry =>
-                            requestInquiry.id > newestRequestInquiry.id
-                    ).length;
+                        requestInquiry.id > newestRequestInquiry.id
+                ).length;
 
-                const newestMasterCardAction = this.props.masterCardActions.find(
+            const newestMasterCardAction = this.props.masterCardActions.find(
+                masterCardAction =>
+                    account.id === masterCardAction.monetary_account_id
+            );
+            if (newestMasterCardAction)
+                newerMasterCardActionsCount += masterCardActions.filter(
                     masterCardAction =>
-                        account.id === masterCardAction.monetary_account_id
-                );
-                if (newestMasterCardAction)
-                    newerMasterCardActionsCount += masterCardActions.filter(
-                        masterCardAction =>
-                            masterCardAction.id > newestMasterCardAction.id
-                    ).length;
+                        masterCardAction.id > newestMasterCardAction.id
+                ).length;
 
-                const newestShareInviteBankInquiry = this.props.shareInviteBankInquiries.find(
+            const newestShareInviteBankInquiry = this.props.shareInviteBankInquiries.find(
+                shareInviteBankInquiry =>
+                    account.id === shareInviteBankInquiry.monetary_account_id
+            );
+            if (newestShareInviteBankInquiry)
+                newerShareInviteBankInquiriesCount += shareInviteBankInquiries.filter(
                     shareInviteBankInquiry =>
-                        account.id ===
-                        shareInviteBankInquiry.monetary_account_id
-                );
-                if (newestShareInviteBankInquiry)
-                    newerShareInviteBankInquiriesCount += shareInviteBankInquiries.filter(
-                        shareInviteBankInquiry =>
-                            shareInviteBankInquiry.id >
-                            newestShareInviteBankInquiry.id
-                    ).length;
-            }
+                        shareInviteBankInquiry.id >
+                        newestShareInviteBankInquiry.id
+                ).length;
 
             // count the total amount of events
             eventCount += payments.length;
@@ -349,24 +342,24 @@ class QueueManager extends React.Component {
         // instead of using the snackbar
         const standardMessage = `${backgroundSyncText} ${andLoadedText} ${eventCount} ${eventsText}`;
         let extraMessage = "";
-        if (calculateNewEvents) {
-            const totalNewEvents =
-                newerPaymentCount +
-                newerBunqMeTabsCount +
-                newerRequestResponsesCount +
-                newerRequestInquiriesCount +
-                newerMasterCardActionsCount +
-                newerShareInviteBankInquiriesCount;
+        const totalNewEvents =
+            newerPaymentCount +
+            newerBunqMeTabsCount +
+            newerRequestResponsesCount +
+            newerRequestInquiriesCount +
+            newerMasterCardActionsCount +
+            newerShareInviteBankInquiriesCount;
 
-            if (totalNewEvents > 0) {
-                extraMessage = `${totalNewEvents} ${newEventsText}`;
+        if (totalNewEvents > 0) {
+            extraMessage = `${totalNewEvents} ${newEventsText}`;
 
+            if (this.props.automaticUpdateSendNotification) {
                 // create a native notification
                 NotificationHelper(backgroundSyncText, extraMessage);
-
-                // send notification to backend for touchbar changes
-                ipcRenderer.send("loaded-new-events", totalNewEvents);
             }
+
+            // send notification to backend for touchbar changes
+            ipcRenderer.send("loaded-new-events", totalNewEvents);
         }
 
         const snackbarMessage = `${standardMessage}${
