@@ -540,6 +540,7 @@
 	"from": "from",
 	"hour": "hour",
 	"hours": "hours",
+    "is pending": "is pending",
 	"month": "month",
 	"months": "months",
 	"new events": "new events",

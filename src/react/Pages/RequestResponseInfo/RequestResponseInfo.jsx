@@ -204,9 +204,9 @@ class RequestResponseInfo extends React.Component {
         } else {
             const requestResponse = requestResponseInfo.RequestResponse;
             const createdDate = humanReadableDate(requestResponse.created);
-            const timeRespondedDate = humanReadableDate(
-                requestResponse.time_responded
-            );
+            const timeRespondedDate = requestResponse.time_responded
+                ? humanReadableDate(requestResponse.time_responded)
+                : false;
             let paymentAmount = requestResponse.amount_inquired.value;
             paymentAmount =
                 requestResponse.status === "ACCEPTED"
