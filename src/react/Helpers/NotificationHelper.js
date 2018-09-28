@@ -1,7 +1,5 @@
 import { ipcRenderer } from "electron";
 
-console.log(process.platform);
-
 export default (title, content, options = {}) => {
     if (process.platform === "win32") {
         // on windows use the display balloon

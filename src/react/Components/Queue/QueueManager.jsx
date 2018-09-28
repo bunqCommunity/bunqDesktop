@@ -1,4 +1,5 @@
 import React from "react";
+import { ipcRenderer } from "electron";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 
@@ -232,57 +233,57 @@ class QueueManager extends React.Component {
 
             if (calculateNewEvents) {
                 // count the new events for each type and account
-                const newestPayment = this.props.payments.filter(
+                const newestPayment = this.props.payments.find(
                     payment => account.id === payment.monetary_account_id
-                )[0];
+                );
                 if (newestPayment)
                     newerPaymentCount += payments.filter(
                         payment => payment.id > newestPayment.id
                     ).length;
 
-                const newestBunqMeTab = this.props.bunqMeTabs.filter(
+                const newestBunqMeTab = this.props.bunqMeTabs.find(
                     bunqMeTab => account.id === bunqMeTab.monetary_account_id
-                )[0];
+                );
                 if (newestBunqMeTab)
                     newerBunqMeTabsCount += bunqMeTabs.filter(
                         bunqMeTab => bunqMeTab.id > newestBunqMeTab.id
                     ).length;
 
-                const newestRequestResponse = this.props.requestResponses.filter(
+                const newestRequestResponse = this.props.requestResponses.find(
                     requestResponse =>
                         account.id === requestResponse.monetary_account_id
-                )[0];
+                );
                 if (newestRequestResponse)
                     newerRequestResponsesCount += requestResponses.filter(
                         requestResponse =>
                             requestResponse.id > newestRequestResponse.id
                     ).length;
 
-                const newestRequestInquiry = this.props.requestInquiries.filter(
+                const newestRequestInquiry = this.props.requestInquiries.find(
                     requestInquiry =>
                         account.id === requestInquiry.monetary_account_id
-                )[0];
+                );
                 if (newestRequestInquiry)
                     newerRequestInquiriesCount += requestInquiries.filter(
                         requestInquiry =>
                             requestInquiry.id > newestRequestInquiry.id
                     ).length;
 
-                const newestMasterCardAction = this.props.masterCardActions.filter(
+                const newestMasterCardAction = this.props.masterCardActions.find(
                     masterCardAction =>
                         account.id === masterCardAction.monetary_account_id
-                )[0];
+                );
                 if (newestMasterCardAction)
                     newerMasterCardActionsCount += masterCardActions.filter(
                         masterCardAction =>
                             masterCardAction.id > newestMasterCardAction.id
                     ).length;
 
-                const newestShareInviteBankInquiry = this.props.shareInviteBankInquiries.filter(
+                const newestShareInviteBankInquiry = this.props.shareInviteBankInquiries.find(
                     shareInviteBankInquiry =>
                         account.id ===
                         shareInviteBankInquiry.monetary_account_id
-                )[0];
+                );
                 if (newestShareInviteBankInquiry)
                     newerShareInviteBankInquiriesCount += shareInviteBankInquiries.filter(
                         shareInviteBankInquiry =>
@@ -340,13 +341,14 @@ class QueueManager extends React.Component {
 
         const t = this.props.t;
         const backgroundSyncText = t("Background sync finished");
+        const newEventsText = t("new events were found!");
+        const andLoadedText = t("and loaded");
         const eventsText = t("events");
 
         // if background sync is enabled and notifcations are on we send a notification
         // instead of using the snackbar
-        let resultMessage = `${backgroundSyncText} ${t(
-            "and loaded"
-        )} ${eventCount} ${eventsText}`;
+        const standardMessage = `${backgroundSyncText} ${andLoadedText} ${eventCount} ${eventsText}`;
+        let extraMessage = "";
         if (calculateNewEvents) {
             const totalNewEvents =
                 newerPaymentCount +
@@ -357,19 +359,22 @@ class QueueManager extends React.Component {
                 newerShareInviteBankInquiriesCount;
 
             if (totalNewEvents > 0) {
-                resultMessage = `${totalNewEvents} ${t(
-                    "new events were found!"
-                )}`;
+                extraMessage = `${totalNewEvents} ${newEventsText}`;
 
                 // create a native notification
-                NotificationHelper(backgroundSyncText, resultMessage);
+                NotificationHelper(backgroundSyncText, extraMessage);
+
+                // send notification to backend for touchbar changes
+                ipcRenderer.send("loaded-new-events", totalNewEvents);
             }
         }
 
-        resultMessage = `${backgroundSyncText} ${t("and")} ${resultMessage}`;
+        const snackbarMessage = `${standardMessage}${
+            extraMessage ? `, ${extraMessage}` : ""
+        }`;
 
         // display a message to notify the user
-        this.props.openSnackbar(resultMessage);
+        this.props.openSnackbar(snackbarMessage);
 
         // trigger an update by changing the finished timestamp
         this.props.queueFinishedSync();
