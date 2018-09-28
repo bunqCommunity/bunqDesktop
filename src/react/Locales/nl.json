@@ -136,7 +136,6 @@
 	"Disclaimer": "Disclaimer",
 	"DisclaimerActiveDevelopmentWarning": "Dit project is nog steeds in actieve ontwikkeling en we zijn niet verantwoordelijk als er iets misgaat.",
 	"DisclaimerBunqDesktopExplanation": "bunqDesktop is een onofficieel, gratis en open-source project en is op geen enkele manier geassocieerd met of ondersteund door bunq!",
-	"DisclaimerErrorLoggingWarning": "We gebruiken Sentry om fouten te registreren mocht er iets fout gaan. Dit omvat NIET de webverzoeken naar de bunq API om te zorgen dat je data niet verstuurd word naar een externe service.",
 	"DisclaimerPasswordWarningPart1": "Om je gegevens veilig te houden, wordt alles gecodeerd met het wachtwoord dat je invoert. Als je dit wachtwoord bent vergeten, worden alle persoonlijke gegevens binnen bunqDesktop gereset en moet je opnieuw inloggen.",
 	"DisclaimerPasswordWarningPart2": "Als je besluit een leeg wachtwoord te gebruiken, kan iedereen met de vereiste kennis je gegevens bekijken als ze toegang krijgen tot je apparaat!",
 	"Display inactive cards": "Inactieve kaarten weergeven",

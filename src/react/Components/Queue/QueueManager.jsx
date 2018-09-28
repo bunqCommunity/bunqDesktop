@@ -1,4 +1,5 @@
 import React from "react";
+import { ipcRenderer } from "electron";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 
@@ -8,6 +9,8 @@ import RequestResponse from "../../Models/RequestResponse";
 import RequestInquiry from "../../Models/RequestInquiry";
 import RequestInquiryBatch from "../../Models/RequestInquiryBatch";
 import MasterCardAction from "../../Models/MasterCardAction";
+
+import NotificationHelper from "../../Helpers/NotificationHelper";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import {
@@ -225,56 +228,56 @@ class QueueManager extends React.Component {
                 this.state.shareInviteBankInquiries[account.id] || [];
 
             // count the new events for each type and account
-            const newestPayment = this.props.payments.filter(
+            const newestPayment = this.props.payments.find(
                 payment => account.id === payment.monetary_account_id
-            )[0];
+            );
             if (newestPayment)
                 newerPaymentCount += payments.filter(
                     payment => payment.id > newestPayment.id
                 ).length;
 
-            const newestBunqMeTab = this.props.bunqMeTabs.filter(
+            const newestBunqMeTab = this.props.bunqMeTabs.find(
                 bunqMeTab => account.id === bunqMeTab.monetary_account_id
-            )[0];
+            );
             if (newestBunqMeTab)
                 newerBunqMeTabsCount += bunqMeTabs.filter(
                     bunqMeTab => bunqMeTab.id > newestBunqMeTab.id
                 ).length;
 
-            const newestRequestResponse = this.props.requestResponses.filter(
+            const newestRequestResponse = this.props.requestResponses.find(
                 requestResponse =>
                     account.id === requestResponse.monetary_account_id
-            )[0];
+            );
             if (newestRequestResponse)
                 newerRequestResponsesCount += requestResponses.filter(
                     requestResponse =>
                         requestResponse.id > newestRequestResponse.id
                 ).length;
 
-            const newestRequestInquiry = this.props.requestInquiries.filter(
+            const newestRequestInquiry = this.props.requestInquiries.find(
                 requestInquiry =>
                     account.id === requestInquiry.monetary_account_id
-            )[0];
+            );
             if (newestRequestInquiry)
                 newerRequestInquiriesCount += requestInquiries.filter(
                     requestInquiry =>
                         requestInquiry.id > newestRequestInquiry.id
                 ).length;
 
-            const newestMasterCardAction = this.props.masterCardActions.filter(
+            const newestMasterCardAction = this.props.masterCardActions.find(
                 masterCardAction =>
                     account.id === masterCardAction.monetary_account_id
-            )[0];
+            );
             if (newestMasterCardAction)
                 newerMasterCardActionsCount += masterCardActions.filter(
                     masterCardAction =>
                         masterCardAction.id > newestMasterCardAction.id
                 ).length;
 
-            const newestShareInviteBankInquiry = this.props.shareInviteBankInquiries.filter(
+            const newestShareInviteBankInquiry = this.props.shareInviteBankInquiries.find(
                 shareInviteBankInquiry =>
                     account.id === shareInviteBankInquiry.monetary_account_id
-            )[0];
+            );
             if (newestShareInviteBankInquiry)
                 newerShareInviteBankInquiriesCount += shareInviteBankInquiries.filter(
                     shareInviteBankInquiry =>
@@ -329,6 +332,16 @@ class QueueManager extends React.Component {
             }
         });
 
+        const t = this.props.t;
+        const backgroundSyncText = t("Background sync finished");
+        const newEventsText = t("new events were found!");
+        const andLoadedText = t("and loaded");
+        const eventsText = t("events");
+
+        // if background sync is enabled and notifcations are on we send a notification
+        // instead of using the snackbar
+        const standardMessage = `${backgroundSyncText} ${andLoadedText} ${eventCount} ${eventsText}`;
+        let extraMessage = "";
         const totalNewEvents =
             newerPaymentCount +
             newerBunqMeTabsCount +
@@ -337,16 +350,24 @@ class QueueManager extends React.Component {
             newerMasterCardActionsCount +
             newerShareInviteBankInquiriesCount;
 
-        let newEventsText = "";
         if (totalNewEvents > 0) {
-            newEventsText = ` of which ${totalNewEvents} were new`;
+            extraMessage = `${totalNewEvents} ${newEventsText}`;
+
+            if (this.props.automaticUpdateSendNotification) {
+                // create a native notification
+                NotificationHelper(backgroundSyncText, extraMessage);
+            }
+
+            // send notification to backend for touchbar changes
+            ipcRenderer.send("loaded-new-events", totalNewEvents);
         }
 
+        const snackbarMessage = `${standardMessage}${
+            extraMessage ? `, ${extraMessage}` : ""
+        }`;
+
         // display a message to notify the user
-        const mainText = this.props.t("Background sync finished and loaded");
-        const eventsText = this.props.t("events");
-        const resultMessage = `${mainText} ${eventCount} ${eventsText}${newEventsText}`;
-        this.props.openSnackbar(resultMessage);
+        this.props.openSnackbar(snackbarMessage);
 
         // trigger an update by changing the finished timestamp
         this.props.queueFinishedSync();
@@ -889,6 +910,8 @@ const mapStateToProps = state => {
         syncOnStartup: state.options.sync_on_startup,
 
         automaticUpdateEnabled: state.options.automatic_update_enabled,
+        automaticUpdateSendNotification:
+            state.options.automatic_update_send_notification,
         automaticUpdateDuration: state.options.automatic_update_duration,
 
         queueRequestCounter: state.queue.request_counter,

@@ -11,14 +11,6 @@ export default (window, i18n) => {
         }
     });
 
-    const updateQueueButton = new TouchBarButton({
-        label: "🔄 Update",
-        click: () => {
-            window.webContents.send("trigger-queue-sync");
-            window.focus();
-        }
-    });
-
     const payButton = new TouchBarButton({
         label: "👆 Pay",
         click: () => {
@@ -46,6 +38,18 @@ export default (window, i18n) => {
         click: () => {
             changePage(window, "/card");
         }
+    });
+
+    const updateQueueButton = new TouchBarButton({
+        label: "🔄 Update",
+        click: () => {
+            window.webContents.send("trigger-queue-sync");
+            window.focus();
+        }
+    });
+
+    ipcMain.on("loaded-new-events", (event, newEventCount) => {
+        updateQueueButton.label = `🔄 ${newEventCount} new events`;
     });
 
     const bar = new TouchBar([

@@ -59,6 +59,13 @@ export function toggleAutomaticUpdatesEnabled(updateAutomatically) {
     return setGenericOption("automatic_update_enabled", updateAutomatically);
 }
 
+export function toggleAutomaticUpdatesSendNotification(sendNotification) {
+    return setGenericOption(
+        "automatic_update_send_notification",
+        sendNotification
+    );
+}
+
 export function setAutomaticUpdateDuration(automaticUpdateDuration) {
     return setGenericOption(
         "automatic_update_duration",

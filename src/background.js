@@ -1,10 +1,17 @@
+import {
+    app,
+    shell,
+    Menu,
+    Tray,
+    ipcMain,
+    nativeImage,
+    BrowserWindow
+} from "electron";
 import fs from "fs";
 import url from "url";
 import path from "path";
 import log from "electron-log";
-import electron from "electron";
 import settings from "electron-settings";
-import { app, Menu, Tray, nativeImage, ipcMain, BrowserWindow } from "electron";
 import { devMenuTemplate } from "./menu/dev_menu_template";
 import { editMenuTemplate } from "./menu/edit_menu_template";
 import { helpMenuTemplate } from "./menu/help_menu_template";
@@ -18,30 +25,10 @@ import changePage from "./helpers/react_navigate";
 import settingsHelper from "./helpers/settings";
 import oauth from "./helpers/oauth";
 
-import sentry from "./sentry";
-
-// import the following to deal with pdf
-const ipc = electron.ipcMain;
-const shell = electron.shell;
-
-// import i18n from "./i18n-background";
 import env from "./env";
 
 // disable security warnings since we need cross-origin requests
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 1;
-
-// // use english by default
-// i18n.changeLanguage("en");
-//
-// // listen for changes in language in the client
-// ipcMain.on("change-language", (event, arg) => {
-//     i18n.changeLanguage(arg);
-// });
-
-// listen for changes in settings path
-ipcMain.on("change-settings-path", (event, newPath) => {
-    settingsHelper.savePath(newPath);
-});
 
 const userDataPath = app.getPath("userData");
 
@@ -123,59 +110,60 @@ app.on("ready", () => {
         mainWindow.openDevTools();
     }
 
+    // setup the tray handler
     const trayIcon = nativeImage.createFromPath(
         path.join(
             __dirname,
             `..${path.sep}app${path.sep}images${path.sep}32x32.png`
         )
     );
+    const notificationIcon = nativeImage.createFromPath(
+        path.join(
+            __dirname,
+            `..${path.sep}app${path.sep}images${path.sep}256x256.png`
+        )
+    );
+    const tray = new Tray(trayIcon);
+    const contextMenu = Menu.buildFromTemplate([
+        {
+            label: "Dashboard",
+            click: () => changePage(mainWindow, "/")
+        },
+        {
+            label: "Update",
+            click: () => mainWindow.webContents.send("trigger-queue-sync")
+        },
+        {
+            label: "Pay",
+            click: () => changePage(mainWindow, "/pay")
+        },
+        {
+            label: "Request",
+            click: () => changePage(mainWindow, "/request")
+        },
+        {
+            label: "Cards",
+            click: () => changePage(mainWindow, "/card")
+        },
+        { type: "separator" },
+        {
+            label: "Quit",
+            click: () => app.quit()
+        }
+    ]);
+    tray.setContextMenu(contextMenu);
+    tray.setToolTip("bunqDesktop");
 
-    const createTrayIcon = () => {
-        // setup the tray handler
-        const tray = new Tray(trayIcon);
-        const contextMenu = Menu.buildFromTemplate([
-            {
-                label: "Dashboard",
-                click: () => changePage(mainWindow, "/")
-            },
-            {
-                label: "Update",
-                click: () => mainWindow.webContents.send("trigger-queue-sync")
-            },
-            {
-                label: "Pay",
-                click: () => changePage(mainWindow, "/pay")
-            },
-            {
-                label: "Request",
-                click: () => changePage(mainWindow, "/request")
-            },
-            {
-                label: "Cards",
-                click: () => changePage(mainWindow, "/card")
-            },
-            { type: "separator" },
-            {
-                label: "Quit",
-                click: () => app.quit()
-            }
-        ]);
-        tray.setContextMenu(contextMenu);
-        tray.setToolTip("bunqDesktop");
-
-        // Event handlers
-        tray.on("click", () => {
-            // show app on single click
-            if (!mainWindow.isVisible()) mainWindow.show();
-            tray.destroy();
-        });
-    };
+    // Event handlers
+    tray.on("click", () => {
+        // show app on single click
+        if (!mainWindow.isVisible()) mainWindow.show();
+    });
 
     // handle minimize event to minimze to tray when requried
     mainWindow.on("minimize", function(event) {
         const minimizeToTray = !!settings.get("MINIMIZE_TO_TRAY");
         if (minimizeToTray) {
-            createTrayIcon();
             event.preventDefault();
             mainWindow.hide();
         }
@@ -198,20 +186,25 @@ app.on("ready", () => {
         app.quit();
     });
 
-    // reload the window if the system goes into sleep mode
-    electron.powerMonitor.on("resume", () => {
-        log.debug("resume");
-        mainWindow.reload();
-    });
-    electron.powerMonitor.on("suspend", () => {
-        log.debug("suspend");
-    });
-
     // register oauth handlers
     oauth(mainWindow, log);
 
+    // listen for changes in settings path
+    ipcMain.on("change-settings-path", (event, newPath) => {
+        settingsHelper.savePath(newPath);
+    });
+
+    // handler to display a balloon message for windows
+    ipcMain.on("display-balloon", (event, data) => {
+        tray.displayBalloon({
+            icon: notificationIcon,
+            title: data.title,
+            content: data.content
+        });
+    });
+
     // event handler to create pdf from the active window
-    ipc.on("print-to-pdf", (event, fileName) => {
+    ipcMain.on("print-to-pdf", (event, fileName) => {
         // get download directory
         const downloadDir = app.getPath("downloads");
 
