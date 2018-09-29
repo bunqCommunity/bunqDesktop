@@ -70,6 +70,7 @@ class RequestInquiryBatchListItem extends React.Component {
             accepted: 0,
             pending: 0,
             rejected: 0,
+            revoked: 0,
             expired: 0
         };
         let primaryText = "";
@@ -109,6 +110,9 @@ class RequestInquiryBatchListItem extends React.Component {
                 case "REJECTED":
                     requestItemCounts.rejected += 1;
                     break;
+                case "REVOKED":
+                    requestItemCounts.revoked += 1;
+                    break;
                 case "ACCEPTED":
                     requestItemCounts.accepted += 1;
                     break;
@@ -126,10 +130,17 @@ class RequestInquiryBatchListItem extends React.Component {
         let strikeThrough = false;
         let eventColor =
             requestItemCounts.pending > 0
-                ? theme.palette.requestInquiry.pending
-                : theme.palette.requestInquiry.expired;
+                ? // pick between pending or finished color
+                  theme.palette.requestInquiry.pending
+                : requestItemCounts.accepted > 0
+                    ? // pick between accepted or expired if atleast 1 got accepted
+                      theme.palette.requestInquiry.accepted
+                    : theme.palette.requestInquiry.expired;
         if (requestItemCounts.pending === 0) {
-            if (requestItemCounts.rejected > 0) {
+            if (
+                requestItemCounts.rejected > 0 ||
+                requestItemCounts.revoked > 0
+            ) {
                 strikeThrough = true;
             }
         }
