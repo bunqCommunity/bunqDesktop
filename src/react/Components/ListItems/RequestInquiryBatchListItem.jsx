@@ -112,6 +112,7 @@ class RequestInquiryBatchListItem extends React.Component {
                 case "ACCEPTED":
                     requestItemCounts.accepted += 1;
                     break;
+                case "PENDING":
                 case "WAITING_FOR_PAYMENT":
                     requestItemCounts.pending += 1;
                     break;
