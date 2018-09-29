@@ -30,6 +30,7 @@ import MoneyAmountLabel from "../../Components/MoneyAmountLabel";
 import TransactionHeader from "../../Components/TransactionHeader";
 import CategorySelector from "../../Components/Categories/CategorySelector";
 import NoteTextForm from "../../Components/NoteTexts/NoteTextForm";
+import GeoLocationListItem from "../../Components/GeoLocation/GeoLocationListItem";
 
 import { formatMoney, humanReadableDate } from "../../Helpers/Utils";
 import {
@@ -369,6 +370,12 @@ class RequestResponseInfo extends React.Component {
                                     </ListItem>
 
                                     <Divider />
+                                    <GeoLocationListItem
+                                        t={t}
+                                        geoLocation={
+                                            requestResponse.geolocation
+                                        }
+                                    />
                                 </List>
 
                                 <CategorySelector

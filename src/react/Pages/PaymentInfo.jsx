@@ -24,6 +24,7 @@ import BookmarkIcon from "@material-ui/icons/Bookmark";
 import { formatMoney, humanReadableDate, formatIban } from "../Helpers/Utils";
 import { paymentText, paymentTypeParser } from "../Helpers/StatusTexts";
 
+import GeoLocationListItem from "../Components/GeoLocation/GeoLocationListItem";
 import PDFExportHelper from "../Components/PDFExportHelper";
 import SpeedDial from "../Components/SpeedDial";
 import ExportDialog from "../Components/ExportDialog";
@@ -254,6 +255,7 @@ class PaymentInfo extends React.Component {
                                     secondary={paymentDate}
                                 />
                             </ListItem>
+
                             <Divider />
                             <ListItem>
                                 <ListItemText
@@ -264,6 +266,7 @@ class PaymentInfo extends React.Component {
                                     )}
                                 />
                             </ListItem>
+
                             <Divider />
                             <ListItem>
                                 <ListItemText
@@ -271,6 +274,14 @@ class PaymentInfo extends React.Component {
                                     secondary={formatIban(counterPartyIban)}
                                 />
                             </ListItem>
+
+                            <Divider />
+                            <GeoLocationListItem
+                                t={t}
+                                geoLocation={
+                                    paymentInfo.geolocation
+                                }
+                            />
                         </List>
 
                         <CategoryChips type={"Payment"} id={payment.id} />
