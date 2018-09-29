@@ -21,6 +21,7 @@ import SaveIcon from "@material-ui/icons/Save";
 import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 
+import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
 import PDFExportHelper from "../../Components/PDFExportHelper";
 import ExportDialog from "../../Components/ExportDialog";
 import SpeedDial from "../../Components/SpeedDial";
@@ -35,6 +36,7 @@ import {
     requestResponseText,
     requestResponseTypeParser
 } from "../../Helpers/StatusTexts";
+
 import { requestResponseUpdate } from "../../Actions/request_response_info";
 import {
     requestResponseReject,
@@ -66,6 +68,8 @@ class RequestResponseInfo extends React.Component {
             accepted: false,
             displayExport: false,
 
+            selectedAccount: 0,
+
             initialUpdate: false
         };
     }
@@ -86,11 +90,13 @@ class RequestResponseInfo extends React.Component {
 
     getSnapshotBeforeUpdate(nextProps, nextState) {
         if (
-            this.props.user &&
-            this.props.user.id &&
-            this.props.initialBunqConnect &&
-            this.props.match.params.requestResponseId !==
-                this.props.match.params.requestResponseId
+            (nextProps.requestResponseLoading === false &&
+                this.props.requestResponseLoading === true) ||
+            (this.props.user &&
+                this.props.user.id &&
+                this.props.initialBunqConnect &&
+                this.props.match.params.requestResponseId !==
+                    this.props.match.params.requestResponseId)
         ) {
             const { requestResponseId, accountId } = this.props.match.params;
             this.props.requestResponseUpdate(
@@ -132,19 +138,18 @@ class RequestResponseInfo extends React.Component {
 
     acceptRequest = () => {
         const { requestResponseId } = this.props.match.params;
-        const {
-            user,
-            requestResponseInfo,
-            requestResponseAccountId
-        } = this.props;
+        const { user, requestResponseInfo } = this.props;
 
         const requestResponse = requestResponseInfo.RequestResponse;
 
         const options = {};
 
+        // get account that is selected
+        const accountInfo = this.props.accounts[this.state.selectedAccount];
+
         this.props.requestResponseAccept(
             user.id,
-            requestResponseAccountId,
+            accountInfo.id,
             requestResponseId,
             requestResponse.amount_inquired,
             options
@@ -167,13 +172,21 @@ class RequestResponseInfo extends React.Component {
         }, 250);
     };
 
+    handleChangeDirect = name => value => {
+        this.setState({
+            [name]: value
+        });
+    };
+
     render() {
         const {
+            t,
             accountsSelectedAccount,
             requestResponseInfo,
             requestResponseInfoLoading,
             requestResponseLoading,
-            t
+            limitedPermissions,
+            accounts
         } = this.props;
         const paramAccountId = this.props.match.params.accountId;
 
@@ -240,123 +253,138 @@ class RequestResponseInfo extends React.Component {
                 />
             );
 
-            content = [
-                <Paper style={styles.paper}>
-                    <Grid
-                        container
-                        spacing={24}
-                        align={"center"}
-                        justify={"center"}
-                    >
-                        <TransactionHeader
-                            BunqJSClient={this.props.BunqJSClient}
-                            to={requestResponse.alias}
-                            from={requestResponse.counterparty_alias}
-                            user={this.props.user}
-                            swap={requestResponse.status === "ACCEPTED"}
-                            type="requestResponse"
-                            event={requestResponse}
-                        />
-
-                        <Grid item xs={12}>
-                            <MoneyAmountLabel
-                                component={"h1"}
-                                style={{ textAlign: "center" }}
-                                info={requestResponse}
+            content = (
+                <React.Fragment>
+                    <Paper style={styles.paper}>
+                        <Grid
+                            container
+                            spacing={24}
+                            align={"center"}
+                            justify={"center"}
+                        >
+                            <TransactionHeader
+                                BunqJSClient={this.props.BunqJSClient}
+                                to={requestResponse.alias}
+                                from={requestResponse.counterparty_alias}
+                                user={this.props.user}
+                                swap={requestResponse.status === "ACCEPTED"}
                                 type="requestResponse"
-                            >
-                                {formattedPaymentAmount}
-                            </MoneyAmountLabel>
+                                event={requestResponse}
+                            />
 
-                            <Typography
-                                style={{ textAlign: "center" }}
-                                type={"body1"}
-                            >
-                                {requestResponseLabel}
-                            </Typography>
+                            <Grid item xs={12}>
+                                <MoneyAmountLabel
+                                    component={"h1"}
+                                    style={{ textAlign: "center" }}
+                                    info={requestResponse}
+                                    type="requestResponse"
+                                >
+                                    {formattedPaymentAmount}
+                                </MoneyAmountLabel>
 
-                            <List style={styles.list}>
-                                {requestResponse.description.length > 0
-                                    ? [
-                                          <Divider />,
-                                          <ListItem>
-                                              <ListItemText
-                                                  primary={t("Description")}
-                                                  secondary={
-                                                      requestResponse.description
-                                                  }
-                                              />
-                                          </ListItem>
-                                      ]
-                                    : null}
+                                <Typography
+                                    style={{ textAlign: "center" }}
+                                    type={"body1"}
+                                >
+                                    {requestResponseLabel}
+                                </Typography>
 
-                                <Divider />
-                                <ListItem>
-                                    <ListItemText
-                                        primary={t("Received")}
-                                        secondary={createdDate}
-                                    />
-                                </ListItem>
+                                <List style={styles.list}>
+                                    {requestResponse.description.length > 0
+                                        ? [
+                                              <Divider />,
+                                              <ListItem>
+                                                  <ListItemText
+                                                      primary={t("Description")}
+                                                      secondary={
+                                                          requestResponse.description
+                                                      }
+                                                  />
+                                              </ListItem>
+                                          ]
+                                        : null}
 
-                                {timeRespondedDate ? (
-                                    <React.Fragment>
-                                        <Divider />
-                                        <ListItem>
-                                            <ListItemText
-                                                primary={t("Paid")}
-                                                secondary={timeRespondedDate}
-                                            />
-                                        </ListItem>
-                                    </React.Fragment>
-                                ) : null}
+                                    <Divider />
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={t("Received")}
+                                            secondary={createdDate}
+                                        />
+                                    </ListItem>
 
-                                {requestResponse.counterparty_alias &&
-                                requestResponse.counterparty_alias.iban ? (
-                                    <React.Fragment>
-                                        <Divider />
-                                        <ListItem>
-                                            <ListItemText
-                                                primary={t("IBAN")}
-                                                secondary={
-                                                    requestResponse
-                                                        .counterparty_alias.iban
-                                                }
-                                            />
-                                        </ListItem>
-                                    </React.Fragment>
-                                ) : null}
+                                    {timeRespondedDate ? (
+                                        <React.Fragment>
+                                            <Divider />
+                                            <ListItem>
+                                                <ListItemText
+                                                    primary={t("Paid")}
+                                                    secondary={
+                                                        timeRespondedDate
+                                                    }
+                                                />
+                                            </ListItem>
+                                        </React.Fragment>
+                                    ) : null}
 
-                                <Divider />
-                                <ListItem>
-                                    <ListItemText
-                                        primary={t("Type")}
-                                        secondary={requestResponseTypeParser(
-                                            requestResponse,
-                                            t
-                                        )}
-                                    />
-                                </ListItem>
+                                    {requestResponse.counterparty_alias &&
+                                    requestResponse.counterparty_alias.iban ? (
+                                        <React.Fragment>
+                                            <Divider />
+                                            <ListItem>
+                                                <ListItemText
+                                                    primary={t("IBAN")}
+                                                    secondary={
+                                                        requestResponse
+                                                            .counterparty_alias
+                                                            .iban
+                                                    }
+                                                />
+                                            </ListItem>
+                                        </React.Fragment>
+                                    ) : null}
 
-                                <Divider />
-                                <ListItem>
-                                    <ListItemText
-                                        primary={t("Status")}
-                                        secondary={requestResponse.status}
-                                    />
-                                </ListItem>
+                                    <Divider />
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={t("Type")}
+                                            secondary={requestResponseTypeParser(
+                                                requestResponse,
+                                                t
+                                            )}
+                                        />
+                                    </ListItem>
 
-                                <Divider />
-                                <ListItem>
-                                    <ListItemText
-                                        primary={t("Sub type")}
-                                        secondary={requestResponse.sub_type}
-                                    />
-                                </ListItem>
+                                    <Divider />
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={t("Status")}
+                                            secondary={requestResponse.status}
+                                        />
+                                    </ListItem>
 
-                                <Divider />
-                            </List>
+                                    <Divider />
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={t("Sub type")}
+                                            secondary={requestResponse.sub_type}
+                                        />
+                                    </ListItem>
 
-                            {requestResponse.status === "PENDING" ? (
+                                    <Divider />
+                                </List>
+
+                                <CategorySelector
+                                    type={"RequestResponse"}
+                                    item={requestResponseInfo}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Paper>
+
+                    {!limitedPermissions &&
+                    requestResponse.status === "PENDING" ? (
+                        !this.state.accepted ? (
+                            <Paper style={styles.paper}>
                                 <Grid container spacing={16}>
                                     <Grid item xs={12} sm={6}>
                                         <TranslateButton
@@ -373,6 +401,7 @@ class RequestResponseInfo extends React.Component {
                                             Continue
                                         </TranslateButton>
                                     </Grid>
+
                                     <Grid item xs={12} sm={6}>
                                         <TranslateButton
                                             variant="raised"
@@ -388,38 +417,46 @@ class RequestResponseInfo extends React.Component {
                                         </TranslateButton>
                                     </Grid>
                                 </Grid>
-                            ) : null}
-
-                            <CategorySelector
-                                type={"RequestResponse"}
-                                item={requestResponseInfo}
-                            />
-                        </Grid>
-                    </Grid>
-                </Paper>,
-                <Collapse in={this.state.accepted} collapsedHeight="0px">
-                    <Paper style={styles.paper}>
-                        <Grid
-                            container
-                            spacing={24}
-                            align={"center"}
-                            justify={"center"}
-                        >
-                            <Grid item xs={12}>
-                                <TranslateButton
-                                    variant="raised"
-                                    disabled={false}
-                                    color="primary"
-                                    style={styles.button}
-                                    onClick={this.acceptRequest}
+                            </Paper>
+                        ) : (
+                            <Paper style={styles.paper}>
+                                <Grid
+                                    container
+                                    spacing={24}
+                                    align={"center"}
+                                    justify={"center"}
                                 >
-                                    Accept request
-                                </TranslateButton>
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                </Collapse>
-            ];
+                                    <Grid item xs={12}>
+                                        <AccountSelectorDialog
+                                            value={this.state.selectedAccount}
+                                            onChange={this.handleChangeDirect(
+                                                "selectedAccount"
+                                            )}
+                                            accounts={accounts}
+                                            BunqJSClient={
+                                                this.props.BunqJSClient
+                                            }
+                                            hiddenConnectTypes={["showOnly"]}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <TranslateButton
+                                            variant="raised"
+                                            disabled={false}
+                                            color="primary"
+                                            style={styles.button}
+                                            onClick={this.acceptRequest}
+                                        >
+                                            Accept request
+                                        </TranslateButton>
+                                    </Grid>
+                                </Grid>
+                            </Paper>
+                        )
+                    ) : null}
+                </React.Fragment>
+            );
         }
 
         const exportData =
@@ -495,6 +532,7 @@ class RequestResponseInfo extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+        limitedPermissions: state.user.limited_permissions,
 
         pdfSaveModeEnabled: state.application.pdf_save_mode_enabled,
 
@@ -502,8 +540,12 @@ const mapStateToProps = state => {
         requestResponseAccountId: state.request_response_info.account_id,
         requestResponseInfoLoading: state.request_response_info.loading,
 
+        shareInviteBankResponses:
+            state.share_invite_bank_responses.share_invite_bank_responses,
+
         requestResponseLoading: state.request_response.loading,
 
+        accounts: state.accounts.accounts,
         accountsSelectedAccount: state.accounts.selected_account
     };
 };
