@@ -90,13 +90,11 @@ class RequestResponseInfo extends React.Component {
 
     getSnapshotBeforeUpdate(nextProps, nextState) {
         if (
-            (nextProps.requestResponseLoading === false &&
-                this.props.requestResponseLoading === true) ||
-            (this.props.user &&
-                this.props.user.id &&
-                this.props.initialBunqConnect &&
-                this.props.match.params.requestResponseId !==
-                    this.props.match.params.requestResponseId)
+            this.props.user &&
+            this.props.user.id &&
+            this.props.initialBunqConnect &&
+            this.props.match.params.requestResponseId !==
+                this.props.match.params.requestResponseId
         ) {
             const { requestResponseId, accountId } = this.props.match.params;
             this.props.requestResponseUpdate(
