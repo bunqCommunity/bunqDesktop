@@ -475,6 +475,8 @@ class Login extends React.Component {
                     <OAuthManagement
                         BunqJSClient={BunqJSClient}
                         setApiKeyState={this.setApiKeyState}
+                        sandboxMode={this.state.sandboxMode}
+                        handleCheckboxChange={this.handleCheckboxChange}
                     />
                 )}
 

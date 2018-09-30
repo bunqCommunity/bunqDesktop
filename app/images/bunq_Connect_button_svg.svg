@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="340px" height="80px" viewBox="0 0 340 80" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>Artboard@2x</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="60" height="60" rx="12"></rect>
+    </defs>
+    <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle-20" fill="#000000" x="0" y="0" width="340" height="80" rx="18"></rect>
+        <g id="Group" transform="translate(10.000000, 10.000000)">
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <use id="Rectangle-19" fill="#000000" xlink:href="#path-1"></use>
+            <g id="Bunq/_RainbowColors" mask="url(#mask-2)">
+                <g id="Bunq/Red4" transform="translate(50.000000, 0.000000)" fill="#F5C836">
+                    <rect id="Color" x="0" y="0" width="10" height="60"></rect>
+                </g>
+                <g id="Bunq/Red3" transform="translate(45.000000, 0.000000)" fill="#F28825">
+                    <rect id="Color" x="0" y="0" width="10" height="60"></rect>
+                </g>
+                <g id="Bunq/Red2" transform="translate(40.000000, 0.000000)" fill="#E13030">
+                    <rect id="Color" x="0" y="0" width="10" height="60"></rect>
+                </g>
+                <g id="Bunq/Red1" transform="translate(35.000000, 0.000000)" fill="#993233">
+                    <rect id="Color" x="0" y="0" width="10" height="60"></rect>
+                </g>
+                <g id="Bunq/Blue4" transform="translate(30.000000, 0.000000)" fill="#1D5C84">
+                    <rect id="Color" x="0" y="0" width="10" height="60"></rect>
+                </g>
+                <g id="Bunq/Blue3" transform="translate(25.000000, 0.000000)" fill="#2872BC">
+                    <rect id="Color" x="0" y="0" width="10" height="60"></rect>
+                </g>
+                <g id="Bunq/Blue2" transform="translate(20.000000, 0.000000)" fill="#3394D7">
+                    <rect id="Color" x="0" y="0" width="10" height="60"></rect>
+                </g>
+                <g id="Bunq/Blue1" transform="translate(15.000000, 0.000000)" fill="#3DB8AD">
+                    <rect id="Color" x="0" y="0" width="10" height="60"></rect>
+                </g>
+                <g id="Bunq/Green4" transform="translate(10.000000, 0.000000)" fill="#89CC53">
+                    <rect id="Color" x="0" y="0" width="10" height="60"></rect>
+                </g>
+                <g id="Bunq/Green3" transform="translate(5.000000, 0.000000)" fill="#62B64F">
+                    <rect id="Color" x="0" y="0" width="10" height="60"></rect>
+                </g>
+                <g id="Bunq/Green2" fill="#2F9B47">
+                    <rect id="Color" x="0" y="0" width="10" height="60"></rect>
+                </g>
+                <g id="Bunq/Green1" fill="#238647">
+                    <rect id="Color" x="0" y="0" width="5" height="60"></rect>
+                </g>
+            </g>
+        </g>
+        <g id="Logo_White" transform="translate(10.000000, 22.000000)">
+            <rect id="Rectangle-path" x="0" y="0" width="60" height="36"></rect>
+            <g id="Group" transform="translate(9.609375, 9.473684)" fill="#FFFFFF">
+                <g transform="translate(11.015625, 4.026316)" id="Shape">
+                    <path d="M6.5625,0 L8.4375,0 L8.4375,4.97368421 C8.4375,7.32647368 6.54703125,9.23684211 4.21875,9.23684211 C1.89046875,9.23684211 0,7.32647368 0,4.97368421 L0,0 L1.875,0 L1.875,4.97368421 C1.875,6.41155263 2.92523437,7.57894737 4.21875,7.57894737 C5.51226563,7.57894737 6.5625,6.41155263 6.5625,4.97368421 L6.5625,0 Z"></path>
+                </g>
+                <g transform="translate(25.828125, 8.026316) scale(-1, 1) rotate(-180.000000) translate(-25.828125, -8.026316) translate(21.328125, 3.026316)" id="Shape">
+                    <path d="M6.5625,0 L8.4375,0 L8.4375,4.97368421 C8.4375,7.32647368 6.54703125,9.23684211 4.21875,9.23684211 C1.89046875,9.23684211 0,7.32647368 0,4.97368421 L0,0 L1.875,0 L1.875,4.97368421 C1.875,6.41155263 2.92523437,7.57894737 4.21875,7.57894737 C5.51226563,7.57894737 6.5625,6.41155263 6.5625,4.97368421 L6.5625,0 Z"></path>
+                </g>
+                <g id="Shape">
+                    <path d="M1.640625,13.0263158 L0,13.0263158 L0,8.76315789 L0.00703125,8.76315789 C0.00234375,8.68476316 0,8.60565789 0,8.52631579 L0,0 L1.875,0 L1.875,4.73755263 C2.6578125,4.14236842 3.6328125,3.78947368 4.6875,3.78947368 C7.275,3.78947368 9.375,5.91205263 9.375,8.52631579 C9.375,11.1405789 7.275,13.2631579 4.6875,13.2631579 C3.5671875,13.2631579 2.53828125,12.8650263 1.73203125,12.2013947 L1.640625,13.0263158 Z M4.5703125,5.44736842 C6.1875,5.44736842 7.5,6.82697368 7.5,8.52631579 C7.5,10.2256579 6.1875,11.6052632 4.5703125,11.6052632 C2.953125,11.6052632 1.640625,10.2256579 1.640625,8.52631579 C1.640625,6.82697368 2.953125,5.44736842 4.5703125,5.44736842 Z"></path>
+                </g>
+                <g transform="translate(35.781250, 10.052632) rotate(-180.000000) translate(-35.781250, -10.052632) translate(30.781250, 3.052632)" id="Shape">
+                    <path d="M1.640625,13.0263158 L0,13.0263158 L0,8.76315789 L0.00703125,8.76315789 C0.00234375,8.68476316 0,8.60565789 0,8.52631579 L0,0 L1.875,0 L1.875,4.73755263 C2.6578125,4.14236842 3.6328125,3.78947368 4.6875,3.78947368 C7.275,3.78947368 9.375,5.91205263 9.375,8.52631579 C9.375,11.1405789 7.275,13.2631579 4.6875,13.2631579 C3.5671875,13.2631579 2.53828125,12.8650263 1.73203125,12.2013947 L1.640625,13.0263158 Z M4.5703125,5.44736842 C6.1875,5.44736842 7.5,6.82697368 7.5,8.52631579 C7.5,10.2256579 6.1875,11.6052632 4.5703125,11.6052632 C2.953125,11.6052632 1.640625,10.2256579 1.640625,8.52631579 C1.640625,6.82697368 2.953125,5.44736842 4.5703125,5.44736842 Z"></path>
+                </g>
+            </g>
+            <rect id="Rectangle-path" x="0" y="0" width="60" height="36"></rect>
+        </g>
+        <text id="Connect-to-bunq" font-family="Montserrat-SemiBold, Montserrat" font-size="26" font-weight="500" letter-spacing="-0.3670588" fill="#FFFFFF">
+            <tspan x="89" y="50">Connect to bunq</tspan>
+        </text>
+    </g>
+</svg>
