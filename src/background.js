@@ -7,6 +7,7 @@ import {
     nativeImage,
     BrowserWindow
 } from "electron";
+import os from "os";
 import fs from "fs";
 import url from "url";
 import path from "path";
@@ -24,13 +25,23 @@ import registerTouchBar from "./helpers/touchbar";
 import changePage from "./helpers/react_navigate";
 import settingsHelper from "./helpers/settings";
 import oauth from "./helpers/oauth";
-
 import env from "./env";
 
 // disable security warnings since we need cross-origin requests
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 1;
 
+const platform = os.platform();
 const userDataPath = app.getPath("userData");
+
+const imagesDir = path.join(
+    __dirname,
+    `..${path.sep}app${path.sep}images${path.sep}`
+);
+const trayIcon =
+    platform === "darwin"
+        ? nativeImage.createFromPath(`${imagesDir}32x32.png`)
+        : nativeImage.createFromPath(`${imagesDir}icon.ico`);
+const notificationIcon = nativeImage.createFromPath(`${imagesDir}256x256.png`);
 
 // hide/show different native menus based on env
 const setApplicationMenu = () => {
@@ -111,18 +122,6 @@ app.on("ready", () => {
     }
 
     // setup the tray handler
-    const trayIcon = nativeImage.createFromPath(
-        path.join(
-            __dirname,
-            `..${path.sep}app${path.sep}images${path.sep}32x32.png`
-        )
-    );
-    const notificationIcon = nativeImage.createFromPath(
-        path.join(
-            __dirname,
-            `..${path.sep}app${path.sep}images${path.sep}256x256.png`
-        )
-    );
     const tray = new Tray(trayIcon);
     const contextMenu = Menu.buildFromTemplate([
         {
