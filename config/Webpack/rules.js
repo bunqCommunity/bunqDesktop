@@ -2,7 +2,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const babelLoaderConfig = {
     loader: "babel-loader?cacheDirectory=./node_modules/.cache/babel_loader"
-}
+};
 
 module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
     return [
@@ -41,6 +41,17 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
                     }
                 },
                 "sass-loader"
+            ]
+        },
+        {
+            test: /\.(woff(2)?|ttf|eot|svg)$/,
+            use: [
+                {
+                    loader: "file-loader",
+                    options: {
+                        publicPath: "./"
+                    }
+                }
             ]
         }
     ];

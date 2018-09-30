@@ -70,7 +70,7 @@
             </g>
             <rect id="Rectangle-path" x="0" y="0" width="60" height="36"></rect>
         </g>
-        <text id="Connect-to-bunq" font-family="Montserrat-SemiBold, Montserrat" font-size="26" font-weight="500" letter-spacing="-0.3670588" fill="#FFFFFF">
+        <text id="Connect-to-bunq" font-family="Roboto, Helvetica, Arial, sans-serif" font-size="26" font-weight="500" letter-spacing="-0.3670588" fill="#FFFFFF">
             <tspan x="89" y="50">Connect to bunq</tspan>
         </text>
     </g>
