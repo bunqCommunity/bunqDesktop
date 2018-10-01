@@ -58,7 +58,7 @@ If you spot errors or want to help us translate the desktop app to a different l
 ## Security
 All sensitive data is encrypted with the password that is entered on startup. You can choose to skip this step which will encrypt the data with a default password so that you will be logged in without asking you for a password. 
 
-The bunqDesktop settings, custom categories and category rules are not stored using encryption. This data is stored seperatly so it can be synced more easily across multiple devices.
+The bunqDesktop settings, custom categories and category rules are not stored using encryption. This data is stored separately so it can be synced more easily across multiple devices.
 
 Check out the settings page to see where this information is stored and to change this location if you'd like to move it. You can easily use services like Google Drive, iCloud Drive, Dropbox and other software to sync the settings file to always have the same categories and settings across your devices.
 
