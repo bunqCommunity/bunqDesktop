@@ -54,7 +54,8 @@ export default class RequestInquiry implements Event {
 
         // go through all keys and set the data
         Object.keys(requestInfo).forEach(key => {
-            this[`_${key}`] = requestInfo[key];
+            const objectKey = key[0] === "_" ? key : `_${key}`;
+            this[objectKey] = requestInfo[key];
         });
 
         this._updated = new Date(this._updated);
@@ -97,7 +98,7 @@ export default class RequestInquiry implements Event {
         }
 
         // inquiry means we sent money so amount negative
-        return this.getAmount() * -1;
+        return this.getAmountResponded();
     }
 
     get id(): number {

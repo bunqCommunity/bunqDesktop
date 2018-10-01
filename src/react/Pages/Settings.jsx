@@ -334,27 +334,24 @@ class Settings extends React.Component {
                     </Grid>
                 ) : null}
 
-                {/* send events if new events are found in an autoamtic sync */}
-                {this.props.automaticUpdateEnabled && (
-                    <Grid item xs={12} md={6}>
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    id="notification-on-new-events"
-                                    checked={
-                                        this.props
-                                            .automaticUpdateSendNotification
-                                    }
-                                    onChange={
-                                        this
-                                            .handleAutomaticUpdatesSendNotificationChange
-                                    }
-                                />
-                            }
-                            label={t("Send a notification on new events")}
-                        />
-                    </Grid>
-                )}
+                {/* send events if new events are found in an automatic sync */}
+                <Grid item xs={12} md={6}>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                id="notification-on-new-events"
+                                checked={
+                                    this.props.automaticUpdateSendNotification
+                                }
+                                onChange={
+                                    this
+                                        .handleAutomaticUpdatesSendNotificationChange
+                                }
+                            />
+                        }
+                        label={t("Send a notification on new events")}
+                    />
+                </Grid>
 
                 {/* sync on startup */}
                 <Grid item xs={12} md={6}>

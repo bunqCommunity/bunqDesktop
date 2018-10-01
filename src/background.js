@@ -7,6 +7,7 @@ import {
     nativeImage,
     BrowserWindow
 } from "electron";
+import os from "os";
 import fs from "fs";
 import url from "url";
 import path from "path";
@@ -24,13 +25,40 @@ import registerTouchBar from "./helpers/touchbar";
 import changePage from "./helpers/react_navigate";
 import settingsHelper from "./helpers/settings";
 import oauth from "./helpers/oauth";
-
 import env from "./env";
 
 // disable security warnings since we need cross-origin requests
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 1;
 
+const platform = os.platform();
 const userDataPath = app.getPath("userData");
+
+const imagesDir = path.join(
+    __dirname,
+    `..${path.sep}app${path.sep}images${path.sep}`
+);
+let trayIcon = "";
+if (platform !== "darwin") {
+    trayIcon = nativeImage.createFromPath(`${imagesDir}logo@1x.png`);
+
+    const iconScale2Raw = fs.readFileSync(`${imagesDir}logo@2x.png`);
+    trayIcon.addRepresentation({
+        scaleFactor: 2,
+        width: 38,
+        height: 38,
+        buffer: iconScale2Raw
+    });
+    const iconScale3Raw = fs.readFileSync(`${imagesDir}logo@3x.png`);
+    trayIcon.addRepresentation({
+        scaleFactor: 3,
+        width: 76,
+        height: 76,
+        buffer: iconScale3Raw
+    });
+} else {
+    trayIcon = nativeImage.createFromPath(`${imagesDir}icon.ico`);
+}
+const notificationIcon = nativeImage.createFromPath(`${imagesDir}256x256.png`);
 
 // hide/show different native menus based on env
 const setApplicationMenu = () => {
@@ -97,7 +125,8 @@ app.on("ready", () => {
         frame: USE_NATIVE_FRAME,
         webPreferences: { webSecurity: false, nodeIntegration: true },
         width: 1000,
-        height: 800
+        height: 800,
+        show: false
     });
 
     // load the app.html file to get started
@@ -106,23 +135,7 @@ app.on("ready", () => {
     registerShortcuts(mainWindow, app);
     registerTouchBar(mainWindow, null);
 
-    if (env.name === "development") {
-        mainWindow.openDevTools();
-    }
-
     // setup the tray handler
-    const trayIcon = nativeImage.createFromPath(
-        path.join(
-            __dirname,
-            `..${path.sep}app${path.sep}images${path.sep}32x32.png`
-        )
-    );
-    const notificationIcon = nativeImage.createFromPath(
-        path.join(
-            __dirname,
-            `..${path.sep}app${path.sep}images${path.sep}256x256.png`
-        )
-    );
     const tray = new Tray(trayIcon);
     const contextMenu = Menu.buildFromTemplate([
         {
@@ -158,6 +171,16 @@ app.on("ready", () => {
     tray.on("click", () => {
         // show app on single click
         if (!mainWindow.isVisible()) mainWindow.show();
+    });
+
+    // on ready, show the main window
+    mainWindow.on("ready-to-show", function() {
+        mainWindow.show();
+        mainWindow.focus();
+
+        if (env.name === "development") {
+            mainWindow.openDevTools();
+        }
     });
 
     // handle minimize event to minimze to tray when requried

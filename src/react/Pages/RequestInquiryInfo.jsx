@@ -23,7 +23,9 @@ import HelpIcon from "@material-ui/icons/Help";
 import SaveIcon from "@material-ui/icons/Save";
 import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
+import FilterIcon from "@material-ui/icons/FilterList";
 
+import FilterCreationDialog from "../Components/FilterCreationDialog";
 import ExportDialog from "../Components/ExportDialog";
 import PDFExportHelper from "../Components/PDFExportHelper";
 import SpeedDial from "../Components/SpeedDial";
@@ -62,7 +64,7 @@ class RequestInquiryInfo extends React.Component {
         this.state = {
             displayExport: false,
 
-            pdfSaveMode: false,
+            viewFilterCreationDialog: false,
 
             initialUpdate: false
         };
@@ -115,6 +117,18 @@ class RequestInquiryInfo extends React.Component {
         );
     };
 
+    startPayment = event => {
+        const requestInquiryInfo = this.props.requestInquiryInfo;
+        this.props.history.push(
+            `/pay?amount=${requestInquiryInfo.getAmount()}`
+        );
+    };
+    startRequest = event => {
+        const requestInquiryInfo = this.props.requestInquiryInfo;
+        this.props.history.push(
+            `/request?amount=${requestInquiryInfo.getAmount()}`
+        );
+    };
     createPdfExport = () => {
         const { requestInquiryInfo } = this.props;
 
@@ -129,6 +143,11 @@ class RequestInquiryInfo extends React.Component {
         setTimeout(() => {
             ipcRenderer.send("print-to-pdf", fileName);
         }, 250);
+    };
+    toggleCreateFilterDialog = e => {
+        this.setState({
+            viewFilterCreationDialog: !this.state.viewFilterCreationDialog
+        });
     };
 
     render() {
@@ -206,6 +225,13 @@ class RequestInquiryInfo extends React.Component {
                         to={requestInquiry.counterparty_alias}
                         from={requestInquiry.user_alias_created}
                         user={this.props.user}
+                    />
+
+                    <FilterCreationDialog
+                        t={t}
+                        item={requestInquiry}
+                        open={this.state.viewFilterCreationDialog}
+                        onClose={this.toggleCreateFilterDialog}
                     />
 
                     <Grid item xs={12}>
@@ -356,19 +382,25 @@ class RequestInquiryInfo extends React.Component {
                     hidden={false}
                     actions={[
                         {
-                            name: "Send payment",
+                            name: t("Send payment"),
                             icon: ArrowUpIcon,
                             color: "action",
                             onClick: this.startPayment
                         },
                         {
-                            name: "Send request",
+                            name: t("Send request"),
                             icon: ArrowDownIcon,
                             color: "action",
                             onClick: this.startRequest
                         },
                         {
-                            name: "Create PDF",
+                            name: t("Create filter"),
+                            icon: FilterIcon,
+                            color: "action",
+                            onClick: this.toggleCreateFilterDialog
+                        },
+                        {
+                            name: t("Create PDF"),
                             icon: SaveIcon,
                             color: "action",
                             onClick: this.createPdfExport
