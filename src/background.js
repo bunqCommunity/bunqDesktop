@@ -38,7 +38,7 @@ const imagesDir = path.join(
     `..${path.sep}app${path.sep}images${path.sep}`
 );
 let trayIcon = "";
-if (platform !== "darwin") {
+if (platform === "darwin") {
     trayIcon = nativeImage.createFromPath(`${imagesDir}logo@1x.png`);
 
     const iconScale2Raw = fs.readFileSync(`${imagesDir}logo@2x.png`);
