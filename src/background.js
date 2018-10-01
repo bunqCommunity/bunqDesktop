@@ -37,10 +37,27 @@ const imagesDir = path.join(
     __dirname,
     `..${path.sep}app${path.sep}images${path.sep}`
 );
-const trayIcon =
-    platform === "darwin"
-        ? nativeImage.createFromPath(`${imagesDir}32x32.png`)
-        : nativeImage.createFromPath(`${imagesDir}icon.ico`);
+let trayIcon = "";
+if (platform !== "darwin") {
+    trayIcon = nativeImage.createFromPath(`${imagesDir}logo@1x.png`);
+
+    const iconScale2Raw = fs.readFileSync(`${imagesDir}logo@2x.png`);
+    trayIcon.addRepresentation({
+        scaleFactor: 2,
+        width: 38,
+        height: 38,
+        buffer: iconScale2Raw
+    });
+    const iconScale3Raw = fs.readFileSync(`${imagesDir}logo@3x.png`);
+    trayIcon.addRepresentation({
+        scaleFactor: 3,
+        width: 76,
+        height: 76,
+        buffer: iconScale3Raw
+    });
+} else {
+    trayIcon = nativeImage.createFromPath(`${imagesDir}icon.ico`);
+}
 const notificationIcon = nativeImage.createFromPath(`${imagesDir}256x256.png`);
 
 // hide/show different native menus based on env
