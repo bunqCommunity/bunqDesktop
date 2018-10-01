@@ -13,14 +13,15 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
-import Collapse from "@material-ui/core/Collapse";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import HelpIcon from "@material-ui/icons/Help";
 import SaveIcon from "@material-ui/icons/Save";
 import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
+import FilterIcon from "@material-ui/icons/FilterList";
 
+import FilterCreationDialog from "../../Components/FilterCreationDialog";
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
 import PDFExportHelper from "../../Components/PDFExportHelper";
 import ExportDialog from "../../Components/ExportDialog";
@@ -70,6 +71,8 @@ class RequestResponseInfo extends React.Component {
             displayExport: false,
 
             selectedAccount: 0,
+
+            viewFilterCreationDialog: false,
 
             initialUpdate: false
         };
@@ -122,6 +125,11 @@ class RequestResponseInfo extends React.Component {
         this.props.history.push(
             `/request?amount=${requestResponseInfo.getAmount()}`
         );
+    };
+    toggleCreateFilterDialog = e => {
+        this.setState({
+            viewFilterCreationDialog: !this.state.viewFilterCreationDialog
+        });
     };
 
     rejectRequest = () => {
@@ -269,6 +277,13 @@ class RequestResponseInfo extends React.Component {
                                 swap={requestResponse.status === "ACCEPTED"}
                                 type="requestResponse"
                                 event={requestResponse}
+                            />
+
+                            <FilterCreationDialog
+                                t={t}
+                                item={requestResponse}
+                                open={this.state.viewFilterCreationDialog}
+                                onClose={this.toggleCreateFilterDialog}
                             />
 
                             <Grid item xs={12}>
@@ -504,19 +519,25 @@ class RequestResponseInfo extends React.Component {
                     hidden={false}
                     actions={[
                         {
-                            name: "Send payment",
+                            name: t("Send payment"),
                             icon: ArrowUpIcon,
                             color: "action",
                             onClick: this.startPayment
                         },
                         {
-                            name: "Send request",
+                            name: t("Send request"),
                             icon: ArrowDownIcon,
                             color: "action",
                             onClick: this.startRequest
                         },
                         {
-                            name: "Create PDF",
+                            name: t("Create filter"),
+                            icon: FilterIcon,
+                            color: "action",
+                            onClick: this.toggleCreateFilterDialog
+                        },
+                        {
+                            name: t("Create PDF"),
                             icon: SaveIcon,
                             color: "action",
                             onClick: this.createPdfExport

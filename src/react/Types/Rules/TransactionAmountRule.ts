@@ -7,6 +7,7 @@ export type TransactionAmountRule = {
 export type TransactionAmountType =
     | "MORE"
     | "MORE_EQUALS"
+    | "EXACTLY"
     | "LESS"
     | "LESS_EQUALS";
 

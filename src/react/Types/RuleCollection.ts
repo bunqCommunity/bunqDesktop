@@ -269,7 +269,7 @@ export default class RuleCollection {
         }
 
         // no data found or null so we return true of the rule value is empty
-        if (dataToCheck.length === 0) return rule.value.length === 0;
+        if (dataToCheck.length === 0) return rule.value && rule.value.length === 0;
 
         // go through every item
         let matchedItem = false;
@@ -356,6 +356,8 @@ export default class RuleCollection {
                 return rule.amount < amount;
             case "MORE_EQUALS":
                 return rule.amount <= amount;
+            case "EXACTLY":
+                return rule.amount === amount;
             case "LESS":
                 return rule.amount > amount;
             case "LESS_EQUALS":
@@ -364,7 +366,6 @@ export default class RuleCollection {
     }
 
     /**
-     * aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
      * @param {AccountRule} rule
      * @param {EventObject} event
      * @returns {boolean}

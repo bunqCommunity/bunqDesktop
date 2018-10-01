@@ -86,6 +86,9 @@ class TransactionAmountRuleItem extends React.Component<IPropTypes, any> {
                             <TranslateMenuItem value={"MORE_EQUALS"}>
                                 Equals or more than
                             </TranslateMenuItem>
+                            <TranslateMenuItem value={"EXACTLY"}>
+                                Exactly
+                            </TranslateMenuItem>
                             <TranslateMenuItem value={"LESS"}>
                                 Less than
                             </TranslateMenuItem>
@@ -93,19 +96,10 @@ class TransactionAmountRuleItem extends React.Component<IPropTypes, any> {
                                 Equals or less than
                             </TranslateMenuItem>
                         </Select>
-                        {/*<FormHelperText>*/}
-                        {/*How to check the amount*/}
-                        {/*</FormHelperText>*/}
                     </FormControl>
                 </TableCell>
 
                 <TableCell style={styles.tableCell}>
-                    {/*<TextField*/}
-                    {/*style={styles.textField}*/}
-                    {/*value={rule.amount}*/}
-                    {/*type={"number"}*/}
-                    {/*onChange={this.handleValueChange}*/}
-                    {/*/>*/}
                     <FormControl error={this.state.amountError} fullWidth>
                         <MoneyFormatInputDefault
                             id="amount"

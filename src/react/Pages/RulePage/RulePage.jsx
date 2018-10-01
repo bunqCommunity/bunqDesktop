@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 import RuleCreator from "./RuleCreator.tsx";
@@ -21,8 +20,50 @@ class RulesPage extends React.Component {
         super(props, context);
         this.state = {
             previewRuleCollection: null,
-            previewUpdated: new Date()
+            previewUpdated: new Date(),
+
+            checkedInitial: false,
+
+            initialRules: false
         };
+    }
+
+    componentWillMount() {
+        const searchParams = new URLSearchParams(this.props.location.search);
+        if (searchParams.has("value")) {
+            const value = searchParams.get("value");
+            const field = searchParams.get("field") || "DESCRIPTION";
+
+            this.setState({
+                checkedInitial: true,
+                initialRules: [
+                    {
+                        ruleType: "VALUE",
+                        field: field,
+                        matchType: "CONTAINS",
+                        value: value
+                    }
+                ]
+            });
+        } else if (searchParams.has("amount")) {
+            const amount = searchParams.get("amount");
+            const match_type = searchParams.get("match_type") || "EXACTLY";
+
+            this.setState({
+                checkedInitial: true,
+                initialRules: [
+                    {
+                        ruleType: "TRANSACTION_AMOUNT",
+                        matchType: match_type,
+                        amount: amount
+                    }
+                ]
+            });
+        } else {
+            this.setState({
+                checkedInitial: true
+            });
+        }
     }
 
     updatePreview = ruleCollection => {
@@ -36,6 +77,9 @@ class RulesPage extends React.Component {
         const { categoryRules, match, t } = this.props;
         const ruleCollectionId = match.params.ruleId;
 
+        // don't render before initial parameters are checked
+        if (!this.state.checkedInitial) return null;
+
         let ruleCollection;
         if (
             ruleCollectionId !== "null" &&
@@ -44,7 +88,12 @@ class RulesPage extends React.Component {
         ) {
             ruleCollection = categoryRules[ruleCollectionId];
         } else {
-            ruleCollection = new RuleCollection();
+            ruleCollection = new RuleCollection(this.state.initialRules);
+            if (this.state.initialRules) {
+                ruleCollection.setTitle("New category rule");
+                // if we have rules, set an id
+                ruleCollection.ensureId();
+            }
         }
 
         const payments = this.props.payments.map(item => item.toJSON());
