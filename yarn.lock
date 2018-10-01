@@ -1077,13 +1077,13 @@
   resolved "https://registry.yarnpkg.com/@mapbox/whoots-js/-/whoots-js-3.1.0.tgz#497c67a1cef50d1a2459ba60f315e448d2ad87fe"
   integrity sha512-Es6WcD0nO5l+2BOQS4uLfNPYQaNDfbot3X1XUoloz+x0mPDS3eeORZJl06HXjwBG1fOGwCRnzK88LMdxKRrd6Q==
 
-"@material-ui/core@^3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-3.1.0.tgz#40c70e0764ef27dca5e149551577eba10c2e79ce"
-  integrity sha512-Tq9xO1CsaPq+TGQtMz7B0Hs2Wz9Sf2W8C9ydcZT8cP1ud9cuZZ/2izRvqNZEp1fCaL5+8K0DJvuu8Di98kNuJw==
+"@material-ui/core@^3.1.2":
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-3.1.2.tgz#0ba7c510320c41be672792e3f3ab73ab79ff100f"
+  integrity sha512-tTRjlTVJY78GDKRHKSuxpoghrFyDAu9GrYCnaARHaZ2pZWiBHuviqUgAC8n8jWUXG3e6vfAXn9zZWzFedb4LwQ==
   dependencies:
     "@babel/runtime" "7.0.0"
-    "@types/jss" "^9.5.3"
+    "@types/jss" "^9.5.6"
     "@types/react-transition-group" "^2.0.8"
     brcast "^3.0.1"
     classnames "^2.2.5"
@@ -1118,10 +1118,10 @@
     "@babel/runtime" "7.0.0"
     recompose "^0.29.0"
 
-"@material-ui/lab@^3.0.0-alpha.16":
-  version "3.0.0-alpha.16"
-  resolved "https://registry.yarnpkg.com/@material-ui/lab/-/lab-3.0.0-alpha.16.tgz#48e5a41eaf26a7b50882dad1ebc3ae79aee709fa"
-  integrity sha512-7L7ToJa6CLVNK97rqGWvYmAFZBj5iEA7q+XeVgy5UgBCmgzf170wgXzUSKKLMhThT5K9wP+7E1VC95jCmXBTNA==
+"@material-ui/lab@^3.0.0-alpha.18":
+  version "3.0.0-alpha.18"
+  resolved "https://registry.yarnpkg.com/@material-ui/lab/-/lab-3.0.0-alpha.18.tgz#d3c3a77364fefa7be9d759ed080a5c2b6b97b8ac"
+  integrity sha512-WSOY4vi0AEIsVgOyr4TccHF/EonCqnLIQmhqDGK5SegWOEVSsPq3Tw4nQgu+Yd+4lNAP9WUefSasjuZ5vBjIwQ==
   dependencies:
     "@babel/runtime" "7.0.0"
     classnames "^2.2.5"
@@ -1149,10 +1149,10 @@
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-22.2.3.tgz#0157c0316dc3722c43a7b71de3fdf3acbccef10d"
   integrity sha512-e74sM9W/4qqWB6D4TWV9FQk0WoHtX1X4FJpbjxucMSVJHtFjbQOH3H6yp+xno4br0AKG0wz/kPtaN599GUOvAg==
 
-"@types/jss@^9.5.3":
-  version "9.5.3"
-  resolved "https://registry.yarnpkg.com/@types/jss/-/jss-9.5.3.tgz#0c106de3fe0b324cd4173fac7dab26c12cda624e"
-  integrity sha512-RQWhcpOVyIhGryKpnUyZARwsgmp+tB82O7c75lC4Tjbmr3hPiCnM1wc+pJipVEOsikYXW0IHgeiQzmxQXbnAIA==
+"@types/jss@^9.5.6":
+  version "9.5.6"
+  resolved "https://registry.yarnpkg.com/@types/jss/-/jss-9.5.6.tgz#96e1d246ddfbccc4867494077c714773cf29acde"
+  integrity sha512-7TWmR5y1jYG4ka4wTZt65RR0kw4WgALFUWktQIWbLnDd6/z/0SQZ/4+UeH0rhdp+HEdIfmzPBH0VwE/4Z9Evzw==
   dependencies:
     csstype "^2.0.0"
     indefinite-observable "^1.0.1"
