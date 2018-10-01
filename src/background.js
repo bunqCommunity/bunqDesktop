@@ -108,7 +108,8 @@ app.on("ready", () => {
         frame: USE_NATIVE_FRAME,
         webPreferences: { webSecurity: false, nodeIntegration: true },
         width: 1000,
-        height: 800
+        height: 800,
+        show: false
     });
 
     // load the app.html file to get started
@@ -116,10 +117,6 @@ app.on("ready", () => {
 
     registerShortcuts(mainWindow, app);
     registerTouchBar(mainWindow, null);
-
-    if (env.name === "development") {
-        mainWindow.openDevTools();
-    }
 
     // setup the tray handler
     const tray = new Tray(trayIcon);
@@ -157,6 +154,16 @@ app.on("ready", () => {
     tray.on("click", () => {
         // show app on single click
         if (!mainWindow.isVisible()) mainWindow.show();
+    });
+
+    // on ready, show the main window
+    mainWindow.on("ready-to-show", function() {
+        mainWindow.show();
+        mainWindow.focus();
+
+        if (env.name === "development") {
+            mainWindow.openDevTools();
+        }
     });
 
     // handle minimize event to minimze to tray when requried
