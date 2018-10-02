@@ -170,7 +170,7 @@ app.on("ready", () => {
     // Event handlers
     tray.on("click", () => {
         // show app on single click
-        if (!mainWindow.isVisible()) mainWindow.show();
+        mainWindow.show();
     });
 
     // on ready, show the main window
