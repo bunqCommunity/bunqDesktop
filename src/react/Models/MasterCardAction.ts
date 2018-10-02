@@ -56,7 +56,8 @@ export default class MasterCardAction implements Event {
 
         // go through all keys and set the data
         Object.keys(masterCardActionInfo).forEach(key => {
-            this[`_${key}`] = masterCardActionInfo[key];
+            const objectKey = key[0] === "_" ? key : `_${key}`;
+            this[objectKey] = masterCardActionInfo[key];
         });
 
         this._updated = new Date(this._updated);

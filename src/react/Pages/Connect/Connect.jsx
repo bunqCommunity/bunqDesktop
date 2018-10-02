@@ -127,10 +127,12 @@ class Connect extends React.Component {
         ) {
             this.props.accountsUpdate(user.id);
 
-            this.props.shareInviteBankInquiriesInfoUpdate(
-                user.id,
-                nextAccountId
-            );
+            if(this.props.limitedPermissions === false){
+                this.props.shareInviteBankInquiriesInfoUpdate(
+                    user.id,
+                    nextAccountId
+                );
+            }
             this.props.shareInviteBankResponsesInfoUpdate(user.id);
         }
         return null;
@@ -666,6 +668,7 @@ class Connect extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+        limitedPermissions: state.user.limited_permissions,
 
         shareInviteBankResponses:
             state.share_invite_bank_responses.share_invite_bank_responses,

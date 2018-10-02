@@ -10,6 +10,104 @@ export const ucfirst = str => {
 };
 
 /**
+ * Checks is a variable is an array
+ * @param a
+ * @returns {boolean}
+ */
+export const isArray = a => {
+    return !!a && a.constructor === Array;
+};
+
+/**
+ * Checks is a variable is an object
+ * @param a
+ * @returns {boolean}
+ */
+export const isObject = a => {
+    return !!a && a.constructor === Object;
+};
+
+// list of keys which should be anonymized
+export const anonymizeKeys = [
+    "card_authorisation_id_response",
+    "public_nick_name",
+    "display_name",
+    "second_line",
+    "description",
+    "country",
+    "api_key",
+    "session_id",
+    "uuid",
+    "iban"
+];
+// list of special handlers, used to keep certain formatting or values
+export const anonymizedHandlers = {
+    value: val => {
+        return parseFloat(val) < 0 ? "-1.00" : "1.00";
+    },
+    address_billing: val => {
+        if (!val) return val;
+        return {
+            emptied: "address"
+        };
+    },
+    address_shipping: val => {
+        if (!val) return val;
+        return {
+            emptied: "address"
+        };
+    },
+    radius: val => 1.1,
+    latitude: val => 1.1,
+    longitude: val => 1.1,
+    altitude: val => 1.1
+};
+export const anonymizedHandlerKeys = Object.keys(anonymizedHandlers);
+
+/**
+ * Goes through object and removes possibly personal info
+ * @param object
+ * @returns {*}
+ */
+export const anonymizeObject = (object, key = false) => {
+    // this could be an item itself
+    if (key) {
+        if (anonymizeKeys.includes(key)) {
+            // just return the same string value
+            return "Anonymized value";
+        }
+        if (anonymizedHandlerKeys.includes(key)) {
+            // run the special function to handle this item
+            return anonymizedHandlers[key](object);
+        }
+    }
+
+    // check if this item is an object or an array
+    if (isObject(object)) {
+        let noRefObject = { ...object };
+        // go through all keys
+        Object.keys(noRefObject).forEach(objectKey => {
+            const objectItem = noRefObject[objectKey];
+            // anonymize this item and re-set it
+            noRefObject[objectKey] = anonymizeObject(objectItem, objectKey);
+        });
+
+        return noRefObject;
+    } else if (isArray(object)) {
+        let noRefArray = [...object];
+        // go through all keys
+        noRefArray.forEach((objectItem, key) => {
+            // anonymize this item and re-set it
+            noRefArray[key] = anonymizeObject(objectItem);
+        });
+
+        return noRefArray;
+    }
+
+    return object;
+};
+
+/**
  * returns a , or . depending on localized result
  */
 export const { preferedThousandSeparator, preferedDecimalSeparator } = (() => {

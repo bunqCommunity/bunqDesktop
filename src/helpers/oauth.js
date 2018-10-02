@@ -67,7 +67,7 @@ const createOauthWindow = (window, url) => {
     return consentWindow;
 };
 
-export default window => {
+export default (window, log) => {
     ipcMain.on("open-bunq-oauth", (event, data) => {
         const consentWindow = createOauthWindow(window, data.targetUrl);
 
@@ -92,6 +92,10 @@ export default window => {
 
             // check if we received an access token
             if (params.code) {
+                log.debug(
+                    "Received OAuth code: " + params.code.substring(0, 8)
+                );
+
                 // send data to renderer view
                 window.webContents.send(
                     "received-oauth-bunq-code",

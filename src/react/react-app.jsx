@@ -3,11 +3,13 @@ import ReactDOM from "react-dom";
 import store from "store";
 import BunqJSClient from "@bunq-community/bunq-js-client";
 
+// bunqDesktop entry point
 import App from "./App";
+
+// Css styling and libraries
 import "../scss/main.scss";
 import "animate.css";
-
-require("../sentry.js");
+import "typeface-roboto";
 
 import Logger from "./Helpers/Logger";
 import Analytics from "./Helpers/Analytics";

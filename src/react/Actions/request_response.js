@@ -1,6 +1,7 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { openSnackbar } from "./snackbar";
 import { requestResponseUpdate } from "./request_response_info";
+import { requestInquiryBatchesUpdate } from "./request_inquiry_batches";
 
 // Disabled until after 0.7 release
 export function requestResponseAccept(
@@ -41,6 +42,9 @@ export function requestResponseAccept(
                         accountId,
                         requestResponseId
                     )
+                );
+                dispatch(
+                    requestInquiryBatchesUpdate(BunqJSClient, userId, accountId)
                 );
             })
             .catch(error => {

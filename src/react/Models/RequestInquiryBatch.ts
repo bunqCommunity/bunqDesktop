@@ -26,7 +26,8 @@ export default class RequestInquiryBatch implements Event {
 
         // go through all keys and set the data
         Object.keys(requestInfo).forEach(key => {
-            this[`_${key}`] = requestInfo[key];
+            const objectKey = key[0] === "_" ? key : `_${key}`;
+            this[objectKey] = requestInfo[key];
         });
 
         this._updated = new Date(this._updated);
@@ -69,11 +70,23 @@ export default class RequestInquiryBatch implements Event {
     }
 
     /**
+     * @returns {number}
+     */
+    public getTotalAmountResponded(): number {
+        return this.request_inquiries.reduce(
+            (accumulator, requestInquiry: RequestInquiry) => {
+                return accumulator + requestInquiry.getDelta();
+            },
+            0
+        );
+    }
+
+    /**
      * 0 change since this isn't an actual transaction
      * @returns {number}
      */
     public getDelta(): number {
-        return 0;
+        return this.getTotalAmountResponded();
     }
 
     get id(): number {

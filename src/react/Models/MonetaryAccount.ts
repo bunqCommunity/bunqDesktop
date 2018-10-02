@@ -49,9 +49,10 @@ export default class MonetaryAccount {
         const accountInfo: any = monetaryAccountObject[this.accountType];
 
         // go through all keys and set the data
-        Object.keys(accountInfo).forEach(
-            key => (this[`_${key}`] = accountInfo[key])
-        );
+        Object.keys(accountInfo).forEach(key => {
+            const objectKey = key[0] === "_" ? key : `_${key}`;
+            this[objectKey] = accountInfo[key];
+        });
 
         this._updated = new Date(this._updated);
         this._created = new Date(this._created);

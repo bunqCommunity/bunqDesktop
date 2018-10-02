@@ -67,7 +67,10 @@ class AccountList extends React.Component {
 
         if (!this.props.accountsLoading) this.props.accountsUpdate(userId);
 
-        if (!this.props.shareInviteBankInquiriesLoading)
+        if (
+            !this.props.shareInviteBankInquiriesLoading &&
+            this.props.limitedPermissions === false
+        )
             this.props.shareInviteBankInquiriesInfoUpdate(
                 userId,
                 selectedAccountId

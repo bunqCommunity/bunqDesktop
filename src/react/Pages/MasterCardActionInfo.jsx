@@ -21,7 +21,9 @@ import BookmarkIcon from "@material-ui/icons/Bookmark";
 import SaveIcon from "@material-ui/icons/Save";
 import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
+import FilterIcon from "@material-ui/icons/FilterList";
 
+import FilterCreationDialog from "../Components/FilterCreationDialog";
 import PDFExportHelper from "../Components/PDFExportHelper";
 import ExportDialog from "../Components/ExportDialog";
 import SpeedDial from "../Components/SpeedDial";
@@ -59,6 +61,8 @@ class MasterCardActionInfo extends React.Component {
         this.state = {
             displayExport: false,
             displayCategories: false,
+
+            viewFilterCreationDialog: false,
 
             initialUpdate: false
         };
@@ -113,6 +117,11 @@ class MasterCardActionInfo extends React.Component {
     startRequest = event => {
         const paymentInfo = this.props.masterCardActionInfo;
         this.props.history.push(`/request?amount=${paymentInfo.getAmount()}`);
+    };
+    toggleCreateFilterDialog = e => {
+        this.setState({
+            viewFilterCreationDialog: !this.state.viewFilterCreationDialog
+        });
     };
 
     createPdfExport = () => {
@@ -215,6 +224,13 @@ class MasterCardActionInfo extends React.Component {
                         event={masterCardAction}
                     />
 
+                    <FilterCreationDialog
+                        t={t}
+                        item={masterCardAction}
+                        open={this.state.viewFilterCreationDialog}
+                        onClose={this.toggleCreateFilterDialog}
+                    />
+
                     <Grid item xs={12}>
                         <MoneyAmountLabel
                             component={"h1"}
@@ -310,19 +326,25 @@ class MasterCardActionInfo extends React.Component {
                             hidden={false}
                             actions={[
                                 {
-                                    name: "Send payment",
+                                    name: t("Send payment"),
                                     icon: ArrowUpIcon,
                                     color: "action",
                                     onClick: this.startPayment
                                 },
                                 {
-                                    name: "Send request",
+                                    name: t("Send request"),
                                     icon: ArrowDownIcon,
                                     color: "action",
                                     onClick: this.startRequest
                                 },
                                 {
-                                    name: "Create PDF",
+                                    name: t("Create filter"),
+                                    icon: FilterIcon,
+                                    color: "action",
+                                    onClick: this.toggleCreateFilterDialog
+                                },
+                                {
+                                    name: t("Create PDF"),
                                     icon: SaveIcon,
                                     color: "action",
                                     onClick: this.createPdfExport

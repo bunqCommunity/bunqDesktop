@@ -104,14 +104,6 @@ class Disclaimer extends React.Component {
                             <br />
 
                             <Typography variant="headline">
-                                <LiveHelpIcon /> Error logging
-                            </Typography>
-                            <Typography variant="body2">
-                                {t("DisclaimerErrorLoggingWarning")}
-                            </Typography>
-                            <br />
-
-                            <Typography variant="headline">
                                 <LockIcon /> Password
                             </Typography>
                             <Typography variant="body2">

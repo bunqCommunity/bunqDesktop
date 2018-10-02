@@ -20,7 +20,8 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 
 import CategoryChip from "../../Components/Categories/CategoryChip";
-import ExportDialog from "../../Components/ExportDialog";
+import ExportDialog2 from "../../Components/ExportDialog";
+const ExportDialog: any = ExportDialog2;
 import ImportDialog from "../../Components/ImportDialog";
 import NewRuleItemMenu from "./NewRuleItemMenu";
 import RuleCollectionMenu2 from "./RuleCollectionMenu";

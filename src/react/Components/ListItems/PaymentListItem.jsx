@@ -90,6 +90,12 @@ class PaymentListItem extends React.Component {
         if (counterpartyAccountInfo) {
             primaryText = counterpartyAccountInfo.description;
 
+            // on transfers we attempt to use our own alias instead
+            if (payment.alias.avatar) {
+                imageUUID =
+                    payment.alias.avatar.image[0].attachment_public_uuid;
+            }
+
             // format secondary text
             const connectWord = paymentAmount < 0 ? fromText : toText;
             const connectWordSecondary = paymentAmount > 0 ? fromText : toText;

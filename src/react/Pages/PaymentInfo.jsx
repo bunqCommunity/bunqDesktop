@@ -20,10 +20,13 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import SaveIcon from "@material-ui/icons/Save";
 import HelpIcon from "@material-ui/icons/Help";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
+import FilterIcon from "@material-ui/icons/FilterList";
 
 import { formatMoney, humanReadableDate, formatIban } from "../Helpers/Utils";
 import { paymentText, paymentTypeParser } from "../Helpers/StatusTexts";
 
+import FilterCreationDialog from "../Components/FilterCreationDialog";
+import GeoLocationListItem from "../Components/GeoLocation/GeoLocationListItem";
 import PDFExportHelper from "../Components/PDFExportHelper";
 import SpeedDial from "../Components/SpeedDial";
 import ExportDialog from "../Components/ExportDialog";
@@ -33,8 +36,8 @@ import CategorySelectorDialog from "../Components/Categories/CategorySelectorDia
 import CategoryChips from "../Components/Categories/CategoryChips";
 import NoteTextForm from "../Components/NoteTexts/NoteTextForm";
 
-import { paymentsUpdate } from "../Actions/payment_info";
 import { setTheme } from "../Actions/options";
+import { paymentsUpdate } from "../Actions/payment_info";
 import { applicationSetPDFMode } from "../Actions/application";
 
 const styles = {
@@ -57,6 +60,8 @@ class PaymentInfo extends React.Component {
         this.state = {
             displayExport: false,
             displayCategories: false,
+
+            viewFilterCreationDialog: false,
 
             initialUpdate: false
         };
@@ -117,6 +122,11 @@ class PaymentInfo extends React.Component {
     startRequest = event => {
         const paymentInfo = this.props.paymentInfo;
         this.props.history.push(`/request?amount=${paymentInfo.getAmount()}`);
+    };
+    toggleCreateFilterDialog = e => {
+        this.setState({
+            viewFilterCreationDialog: !this.state.viewFilterCreationDialog
+        });
     };
 
     createPdfExport = () => {
@@ -217,6 +227,13 @@ class PaymentInfo extends React.Component {
                         event={payment}
                     />
 
+                    <FilterCreationDialog
+                        t={t}
+                        item={payment}
+                        open={this.state.viewFilterCreationDialog}
+                        onClose={this.toggleCreateFilterDialog}
+                    />
+
                     <Grid item xs={12}>
                         <MoneyAmountLabel
                             component={"h1"}
@@ -254,6 +271,7 @@ class PaymentInfo extends React.Component {
                                     secondary={paymentDate}
                                 />
                             </ListItem>
+
                             <Divider />
                             <ListItem>
                                 <ListItemText
@@ -264,6 +282,7 @@ class PaymentInfo extends React.Component {
                                     )}
                                 />
                             </ListItem>
+
                             <Divider />
                             <ListItem>
                                 <ListItemText
@@ -271,6 +290,12 @@ class PaymentInfo extends React.Component {
                                     secondary={formatIban(counterPartyIban)}
                                 />
                             </ListItem>
+
+                            <Divider />
+                            <GeoLocationListItem
+                                t={t}
+                                geoLocation={paymentInfo.geolocation}
+                            />
                         </List>
 
                         <CategoryChips type={"Payment"} id={payment.id} />
@@ -286,22 +311,28 @@ class PaymentInfo extends React.Component {
                             hidden={false}
                             actions={[
                                 {
-                                    name: "Send payment",
+                                    name: t("Send payment"),
                                     icon: ArrowUpIcon,
                                     color: "action",
                                     onClick: this.startPayment
                                 },
                                 {
-                                    name: "Send request",
+                                    name: t("Send request"),
                                     icon: ArrowDownIcon,
                                     color: "action",
                                     onClick: this.startRequest
                                 },
                                 {
-                                    name: "Create PDF",
+                                    name: t("Create PDF"),
                                     icon: SaveIcon,
                                     color: "action",
                                     onClick: this.createPdfExport
+                                },
+                                {
+                                    name: t("Create filter"),
+                                    icon: FilterIcon,
+                                    color: "action",
+                                    onClick: this.toggleCreateFilterDialog
                                 },
                                 {
                                     name: t("Manage categories"),

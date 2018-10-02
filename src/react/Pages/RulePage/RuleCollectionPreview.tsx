@@ -95,8 +95,10 @@ class RuleCollectionPreview extends React.Component<any, any> {
                         if (this.state.showAll || event.matches) {
                             return (
                                 <RuleCollectionPreviewItem
+                                    openSnackbar={this.props.openSnackbar}
                                     event={event}
                                     key={index}
+                                    t={t}
                                 />
                             );
                         }
@@ -104,6 +106,7 @@ class RuleCollectionPreview extends React.Component<any, any> {
                     }
                 );
 
+                const decreasedListSize = items.slice(0, 100);
                 previewContent = (
                     <Paper style={styles.paper}>
                         <FormControlLabel
@@ -121,7 +124,7 @@ class RuleCollectionPreview extends React.Component<any, any> {
                                 "Show all events, not just the matching ones"
                             )}
                         />
-                        <List>{items}</List>
+                        <List>{decreasedListSize}</List>
                     </Paper>
                 );
             }

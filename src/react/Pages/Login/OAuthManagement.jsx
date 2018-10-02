@@ -2,9 +2,9 @@ import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { ipcRenderer } from "electron";
+import Card from "@material-ui/core/Card";
 import Grid from "@material-ui/core/Grid";
 import Input from "@material-ui/core/Input";
-import Collapse from "@material-ui/core/Collapse";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import CardContent from "@material-ui/core/CardContent";
@@ -12,6 +12,8 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
+
+import Logger from "../../Helpers/Logger";
 import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
 
 import { oauthSetDetails } from "../../Actions/oauth";
@@ -22,12 +24,18 @@ const styles = {
         width: "100%",
         marginTop: 20
     },
+    connectButton: {
+        cursor: "pointer",
+        width: "100%",
+        marginTop: 20
+    },
+    optionsButton: {
+        marginTop: 12,
+        color: "#000000"
+    },
     input: {
         width: "100%",
         marginTop: 20,
-        color: "#000000"
-    },
-    inputLabel: {
         color: "#000000"
     },
     card: {
@@ -36,6 +44,13 @@ const styles = {
     formControl: {
         width: "100%",
         marginBottom: 8
+    },
+    inputLabel: {
+        color: "#000000"
+    },
+    environmentToggle: {
+        marginTop: 10,
+        color: "#000000"
     },
     cardContent: {
         backgroundColor: "#ffffff",
@@ -57,16 +72,19 @@ class OAuthManagement extends React.Component {
             clientId: "",
             clientIdValid: true,
             clientSecret: "",
-            clientSecretValud: true,
+            clientSecretValid: true,
 
-            showHelp: false,
+            sandboxClientId: "",
+            sandboxClientIdValid: true,
+            sandboxClientSecret: "",
+            sandboxClientSecretValid: true,
 
-            oauthCode: false
+            showHelp: false
         };
 
-        ipcRenderer.on("received-oauth-bunq-code", this.handleBunqCodeCallback);
+        this.isLoading = false;
 
-        this.bufferedOAuthRequest = null;
+        ipcRenderer.on("received-oauth-bunq-code", this.handleBunqCodeCallback);
     }
 
     componentDidMount() {
@@ -74,15 +92,16 @@ class OAuthManagement extends React.Component {
             this.setState(
                 {
                     clientId: this.props.clientId,
-                    clientSecret: this.props.clientSecret
+                    clientSecret: this.props.clientSecret,
+                    sandboxClientId: this.props.sandboxClientId,
+                    sandboxClientSecret: this.props.sandboxClientSecret
                 },
-                this.validateInputs
+                () => {
+                    this.validateInputs();
+                    this.validateSandboxInputs();
+                }
             );
         }
-    }
-
-    componentWillUnmount() {
-        if (this.bufferedOAuthRequest) clearTimeout(this.bufferedOAuthRequest);
     }
 
     /**
@@ -90,9 +109,13 @@ class OAuthManagement extends React.Component {
      * @param event
      */
     openBunqConsentScreen = event => {
+        const sandboxMode = this.props.sandboxMode;
+
         const targetUrl = this.props.BunqJSClient.formatOAuthAuthorizationRequestUrl(
-            this.props.clientId,
-            "http://localhost:1234"
+            sandboxMode ? this.props.sandboxClientId : this.props.clientId,
+            "http://localhost:1234",
+            false,
+            sandboxMode
         );
         ipcRenderer.send("open-bunq-oauth", { targetUrl: targetUrl });
     };
@@ -103,10 +126,7 @@ class OAuthManagement extends React.Component {
      * @param data
      */
     handleBunqCodeCallback = (event, data) => {
-        this.setState({
-            oauthCode: data
-        });
-        this.exchangeBunqOAuthToken(data);
+        if (data) this.exchangeBunqOAuthToken(data);
     };
 
     /**
@@ -114,46 +134,70 @@ class OAuthManagement extends React.Component {
      * @param code
      */
     exchangeBunqOAuthToken = code => {
+        const {
+            sandboxMode,
+            clientId,
+            clientSecret,
+            sandboxClientId,
+            sandboxClientSecret
+        } = this.props;
+
+        const requestClientId = sandboxMode ? sandboxClientId : clientId;
+        const requestClientSecret = sandboxMode
+            ? sandboxClientSecret
+            : clientSecret;
+
         const successMessage = this.props.t("Successfully authorized client!");
         const errorMessage = this.props.t(
             "Something went wrong while trying to authorize the client"
         );
 
-        if (!code || this.state.loading) return;
+        if (!code || this.isLoading) return;
+        this.isLoading = true;
 
-        // clear timeout if already set
-        if (this.bufferedOAuthRequest) clearTimeout(this.bufferedOAuthRequest);
+        // exchange the token
+        Logger.debug(" = Begin exchanging OAuth token");
+        Logger.debug(`clientSecret: ${requestClientId.substring(0, 8)}`);
+        Logger.debug(`clientSecret: ${requestClientSecret.substring(0, 8)}`);
+        Logger.debug(`code: ${code.substring(0, 8)}`);
+        this.props.BunqJSClient.exchangeOAuthToken(
+            requestClientId,
+            requestClientSecret,
+            "http://localhost:1234",
+            code,
+            false,
+            sandboxMode
+        )
+            .then(accessToken => {
+                this.isLoading = false;
 
-        // set loading state
-        this.setState({
-            loading: true
-        });
+                this.props.openSnackbar(successMessage);
+                this.props.setApiKeyState(accessToken);
+            })
+            .catch(error => {
+                this.isLoading = false;
 
-        // buffer the request to prevent duplicate calls from the secondary window
-        this.bufferedOAuthRequest = setTimeout(() => {
-            // exchange the token
-            this.props.BunqJSClient.exchangeOAuthToken(
-                this.props.clientId,
-                this.props.clientSecret,
-                "http://localhost:1234",
-                code
-            )
-                .then(accessToken => {
-                    this.setState({
-                        loading: false
-                    });
+                Logger.debug("Failed to authenticate OAuth");
+                Logger.debug(
+                    `clientSecret: ${
+                        requestClientId
+                            ? requestClientId.substring(0, 8)
+                            : "no clientId"
+                    }`
+                );
+                Logger.debug(
+                    `.clientSecret: ${
+                        requestClientSecret
+                            ? requestClientSecret.substring(0, 8)
+                            : "no secret"
+                    }`
+                );
+                Logger.debug(
+                    `code: ${code ? code.substring(0, 8) : "no code"}`
+                );
 
-                    this.props.openSnackbar(successMessage);
-                    this.props.setApiKeyState(accessToken);
-                })
-                .catch(error => {
-                    this.setState({
-                        loading: false
-                    });
-
-                    this.props.handleBunqError(error, errorMessage);
-                });
-        }, 1500);
+                this.props.handleBunqError(error, errorMessage);
+            });
     };
 
     /**
@@ -163,7 +207,9 @@ class OAuthManagement extends React.Component {
     setOauthDetails = event => {
         this.props.oauthSetDetails(
             this.state.clientId,
-            this.state.clientSecret
+            this.state.clientSecret,
+            this.state.sandboxClientId,
+            this.state.sandboxClientSecret
         );
     };
 
@@ -172,7 +218,10 @@ class OAuthManagement extends React.Component {
             {
                 [name]: event.target.value
             },
-            this.validateInputs
+            () => {
+                this.validateInputs();
+                this.validateSandboxInputs();
+            }
         );
     };
 
@@ -195,11 +244,45 @@ class OAuthManagement extends React.Component {
             }
         );
     };
+    validateSandboxInputs = () => {
+        const clientSecretValid =
+            this.state.sandboxClientSecret &&
+            this.state.sandboxClientSecret.length === 64;
+        const clientIdValid =
+            this.state.sandboxClientId &&
+            this.state.sandboxClientId.length === 64;
+
+        this.setState(
+            {
+                sandboxClientSecretValid: clientSecretValid,
+                sandboxClientIdValid: clientIdValid
+            },
+            () => {
+                // waited for state to update and now save the details if valid
+                if (clientSecretValid && clientIdValid) {
+                    this.setOauthDetails();
+                }
+            }
+        );
+    };
 
     render() {
-        const { t } = this.props;
+        const { t, sandboxMode } = this.props;
 
-        const content = this.state.loading ? (
+        const clientId = sandboxMode
+            ? this.state.sandboxClientId
+            : this.state.clientId;
+        const clientSecret = sandboxMode
+            ? this.state.sandboxClientSecret
+            : this.state.clientSecret;
+        const clientIdValid = sandboxMode
+            ? this.state.sandboxClientIdValid
+            : this.state.clientSecretValid;
+        const clientSecretValid = sandboxMode
+            ? this.state.sandboxClientSecretValid
+            : this.state.clientIdValid;
+
+        const content = this.isLoading ? (
             <Grid item xs={12} style={styles.cardContent}>
                 <TranslateTypography
                     variant="headline"
@@ -225,10 +308,11 @@ class OAuthManagement extends React.Component {
                         autoFocus
                         className={"text-input"}
                         style={styles.input}
-                        error={!this.state.clientIdValid}
-                        placeholder={t("Client ID")}
-                        onChange={this.handleChange("clientId")}
-                        value={this.state.clientId}
+                        error={!clientIdValid}
+                        onChange={this.handleChange(
+                            sandboxMode ? "sandboxClientId" : "clientId"
+                        )}
+                        value={clientId}
                     />
                 </FormControl>
 
@@ -239,25 +323,22 @@ class OAuthManagement extends React.Component {
                     <Input
                         className={"text-input"}
                         style={styles.input}
-                        error={!this.state.clientSecretValid}
-                        placeholder={t("Client Secret")}
-                        onChange={this.handleChange("clientSecret")}
-                        value={this.state.clientSecret}
+                        error={!clientSecretValid}
+                        onChange={this.handleChange(
+                            sandboxMode ? "sandboxClientSecret" : "clientSecret"
+                        )}
+                        value={clientSecret}
                     />
                 </FormControl>
 
-                <TranslateButton
-                    variant="raised"
-                    className="black-button"
-                    style={styles.button}
-                    disabled={
-                        !this.state.clientSecretValid ||
-                        !this.state.clientIdValid
-                    }
-                    onClick={this.openBunqConsentScreen}
-                >
-                    Authenticate
-                </TranslateButton>
+                {this.state.clientSecretValid &&
+                    this.state.clientIdValid && (
+                        <img
+                            style={styles.connectButton}
+                            src="images/bunq_Connect_button_svg.svg"
+                            onClick={this.openBunqConsentScreen}
+                        />
+                    )}
 
                 <TranslateButton
                     style={styles.button}
@@ -272,11 +353,15 @@ class OAuthManagement extends React.Component {
         );
 
         return (
-            <CardContent style={styles.cardContent}>
-                <Grid container spacing={8} justify={"center"}>
-                    {content}
-                </Grid>
-            </CardContent>
+            <React.Fragment>
+                <Card style={styles.card}>
+                    <CardContent style={styles.cardContent}>
+                        <Grid container spacing={8} justify={"center"}>
+                            {content}
+                        </Grid>
+                    </CardContent>
+                </Card>
+            </React.Fragment>
         );
     }
 }
@@ -286,9 +371,11 @@ const mapStateToProps = state => {
         clientId: state.oauth.client_id,
         clientSecret: state.oauth.client_secret,
 
+        sandboxClientId: state.oauth.sandbox_client_id,
+        sandboxClientSecret: state.oauth.sandbox_client_secret,
+
         user: state.user.user,
-        userType: state.user.user_type,
-        userLoading: state.user.loading
+        userType: state.user.user_type
     };
 };
 
@@ -297,8 +384,20 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
 
-        oauthSetDetails: (clientId, clientSecret) =>
-            dispatch(oauthSetDetails(clientId, clientSecret, BunqJSClient)),
+        oauthSetDetails: (
+            clientId,
+            clientSecret,
+            sandboxClientId,
+            sandboxClientSecret
+        ) =>
+            dispatch(
+                oauthSetDetails(
+                    clientId,
+                    clientSecret,
+                    sandboxClientId,
+                    sandboxClientSecret
+                )
+            ),
 
         handleBunqError: (error, customError) =>
             BunqErrorHandler(dispatch, error, customError)

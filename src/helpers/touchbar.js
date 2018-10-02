@@ -5,7 +5,6 @@ const { TouchBarButton } = TouchBar;
 
 export default (window, i18n) => {
     const dashboardButton = new TouchBarButton({
-        // label: "🏠 " + i18n.t("Dashboard"),
         label: "🏠 Dashboard",
         click: () => {
             changePage(window, "/");
@@ -13,7 +12,6 @@ export default (window, i18n) => {
     });
 
     const payButton = new TouchBarButton({
-        // label: "👆 " + i18n.t("Pay"),
         label: "👆 Pay",
         click: () => {
             changePage(window, "/pay");
@@ -21,7 +19,6 @@ export default (window, i18n) => {
     });
 
     const requestButton = new TouchBarButton({
-        // label: "👇 " + i18n.t("Request"),
         label: "👇 Request",
         click: () => {
             changePage(window, "/request");
@@ -37,15 +34,27 @@ export default (window, i18n) => {
     });
 
     const cardsButton = new TouchBarButton({
-        // label: "💳 " + i18n.t("Cards"),
         label: "💳 Cards",
         click: () => {
             changePage(window, "/card");
         }
     });
 
+    const updateQueueButton = new TouchBarButton({
+        label: "🔄 Update",
+        click: () => {
+            window.webContents.send("trigger-queue-sync");
+            window.focus();
+        }
+    });
+
+    ipcMain.on("loaded-new-events", (event, newEventCount) => {
+        updateQueueButton.label = `🔄 ${newEventCount} new events`;
+    });
+
     const bar = new TouchBar([
         dashboardButton,
+        updateQueueButton,
         payButton,
         requestButton,
         bunqMeButton,

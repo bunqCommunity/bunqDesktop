@@ -43,9 +43,9 @@ script:
         -v ~/.cache/electron:/root/.cache/electron \
         -v ~/.cache/electron-builder:/root/.cache/electron-builder \
         electronuserland/builder:wine \
-        /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn release --linux"
+        /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn run release --linux"
     else
-      yarn release -- --mac --win
+      yarn run release -- --mac --win
     fi
 
 before_cache:
@@ -67,11 +67,11 @@ before_deploy:
       sha256sum dist/bunqDesktop-*.* >> dist/CHECKSUMS.sha256
       cat dist/CHECKSUMS.sha256
     fi
-#  install JQ for curl handling
+  # install JQ for curl handling
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install jq; else brew install jq; fi
-#  Install latest version of Go with snap
+  # install latest version of Go with snap
   - eval "$(curl -sL https://raw.githubusercontent.com/travis-ci/gimme/master/gimme | GIMME_GO_VERSION=master bash)"
-#  get the GHR go library
+  # get the GHR go library
   - go version
   - export GOPATH="$HOME/go"
   - export PATH="$PATH:$GOPATH/bin"
@@ -90,9 +90,9 @@ deploy:
     file:
       - dist/bunqDesktop-*.exe
       - dist/bunqDesktop-*.dmg
-      - dist/bunqdesktop-*.deb
-      - dist/bunqdesktop-*.snap
-      - dist/bunqdesktop-*.AppImage
+      - dist/bunqDesktop-*.deb
+      - dist/bunqDesktop-*.snap
+      - dist/bunqDesktop-*.AppImage
       - dist/bunqDesktop-linux-unpacked.tar.gz
       - dist/CHECKSUMS*.sha256
     on:
