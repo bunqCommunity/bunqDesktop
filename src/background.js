@@ -39,16 +39,17 @@ const imagesDir = path.join(
 );
 let trayIcon = "";
 if (platform === "darwin") {
-    trayIcon = nativeImage.createFromPath(`${imagesDir}logo@1x.png`);
+    trayIcon = nativeImage.createFromPath(`${imagesDir}logoTemplate@1x.png`);
+    trayIcon.setTemplateImage(true);
 
-    const iconScale2Raw = fs.readFileSync(`${imagesDir}logo@2x.png`);
+    const iconScale2Raw = fs.readFileSync(`${imagesDir}logoTemplate@2x.png`);
     trayIcon.addRepresentation({
         scaleFactor: 2,
         width: 38,
         height: 38,
         buffer: iconScale2Raw
     });
-    const iconScale3Raw = fs.readFileSync(`${imagesDir}logo@3x.png`);
+    const iconScale3Raw = fs.readFileSync(`${imagesDir}logoTemplate@3x.png`);
     trayIcon.addRepresentation({
         scaleFactor: 3,
         width: 76,
