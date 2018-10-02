@@ -2,14 +2,13 @@ import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { ipcRenderer } from "electron";
+import Card from "@material-ui/core/Card";
 import Grid from "@material-ui/core/Grid";
 import Input from "@material-ui/core/Input";
-import Switch from "@material-ui/core/Switch";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import CardContent from "@material-ui/core/CardContent";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
@@ -30,12 +29,13 @@ const styles = {
         width: "100%",
         marginTop: 20
     },
+    optionsButton: {
+        marginTop: 12,
+        color: "#000000"
+    },
     input: {
         width: "100%",
         marginTop: 20,
-        color: "#000000"
-    },
-    inputLabel: {
         color: "#000000"
     },
     card: {
@@ -44,6 +44,9 @@ const styles = {
     formControl: {
         width: "100%",
         marginBottom: 8
+    },
+    inputLabel: {
+        color: "#000000"
     },
     environmentToggle: {
         marginTop: 10,
@@ -306,7 +309,6 @@ class OAuthManagement extends React.Component {
                         className={"text-input"}
                         style={styles.input}
                         error={!clientIdValid}
-                        placeholder={t("Client ID")}
                         onChange={this.handleChange(
                             sandboxMode ? "sandboxClientId" : "clientId"
                         )}
@@ -322,7 +324,6 @@ class OAuthManagement extends React.Component {
                         className={"text-input"}
                         style={styles.input}
                         error={!clientSecretValid}
-                        placeholder={t("Client Secret")}
                         onChange={this.handleChange(
                             sandboxMode ? "sandboxClientSecret" : "clientSecret"
                         )}
@@ -339,25 +340,6 @@ class OAuthManagement extends React.Component {
                         />
                     )}
 
-                <FormControlLabel
-                    style={styles.environmentToggle}
-                    label={
-                        <TranslateTypography
-                            variant="body1"
-                            style={styles.text}
-                        >
-                            Enable sandbox mode?
-                        </TranslateTypography>
-                    }
-                    control={
-                        <Switch
-                            checked={sandboxMode}
-                            onChange={this.props.handleCheckboxChange}
-                            aria-label="enable or disable sandbox mode"
-                        />
-                    }
-                />
-
                 <TranslateButton
                     style={styles.button}
                     rel="noopener"
@@ -371,11 +353,15 @@ class OAuthManagement extends React.Component {
         );
 
         return (
-            <CardContent style={styles.cardContent}>
-                <Grid container spacing={8} justify={"center"}>
-                    {content}
-                </Grid>
-            </CardContent>
+            <React.Fragment>
+                <Card style={styles.card}>
+                    <CardContent style={styles.cardContent}>
+                        <Grid container spacing={8} justify={"center"}>
+                            {content}
+                        </Grid>
+                    </CardContent>
+                </Card>
+            </React.Fragment>
         );
     }
 }

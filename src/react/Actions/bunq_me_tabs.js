@@ -42,7 +42,6 @@ export function loadStoredBunqMeTabs(BunqJSClient) {
                 dispatch(bunqMeTabsNotLoading());
             })
             .catch(error => {
-                console.error(error);
                 dispatch(bunqMeTabsNotLoading());
             });
     };

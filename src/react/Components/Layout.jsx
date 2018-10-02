@@ -171,7 +171,6 @@ class Layout extends React.Component {
     }
 
     componentWillUpdate(nextProps) {
-
         // make sure language is up-to-date
         this.checkLanguageChange(nextProps);
 
@@ -281,6 +280,7 @@ class Layout extends React.Component {
                 nextProps.apiKey,
                 nextProps.deviceName,
                 nextProps.environment,
+                nextProps.permittedIps,
                 encryptionKey,
                 true
             )
@@ -304,6 +304,7 @@ class Layout extends React.Component {
      * @param apiKey             - the bunq api key
      * @param deviceName         - device name used in the bunq app
      * @param environment        - Production/sandbox environment
+     * @param permittedIPs       - Permitted IP addresses for the api key
      * @param encryptionKey      - Key used to encrypt/decrypt all data
      * @param allowReRun         - When true the function can call itself to restart in certain situations
      * @returns {Promise<void>}
@@ -312,6 +313,7 @@ class Layout extends React.Component {
         apiKey,
         deviceName,
         environment = "SANDBOX",
+        permittedIps = [],
         encryptionKey = false,
         allowReRun = false
     ) => {
@@ -326,7 +328,7 @@ class Layout extends React.Component {
         try {
             await this.props.BunqJSClient.run(
                 apiKey,
-                [],
+                permittedIps,
                 environment,
                 encryptionKey
             );
@@ -384,6 +386,7 @@ class Layout extends React.Component {
                                 apiKey,
                                 deviceName,
                                 environment,
+                                permittedIps,
                                 encryptionKey,
                                 false
                             );
@@ -535,6 +538,7 @@ const mapStateToProps = state => {
         registrationIsLoading: state.registration.loading,
         environment: state.registration.environment,
         deviceName: state.registration.device_name,
+        permittedIps: state.registration.permitted_ips,
         apiKey: state.registration.api_key,
 
         user: state.user.user,
