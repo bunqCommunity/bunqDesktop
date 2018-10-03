@@ -88,7 +88,7 @@ class PaymentListItem extends React.Component {
 
         // if transfer between personal accounts
         if (counterpartyAccountInfo) {
-            primaryText = counterpartyAccountInfo.description;
+            primaryText = accountInfo.description;
 
             // on transfers we attempt to use our own alias instead
             if (payment.alias.avatar) {
