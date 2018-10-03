@@ -43,9 +43,9 @@ script:
         -v ~/.cache/electron:/root/.cache/electron \
         -v ~/.cache/electron-builder:/root/.cache/electron-builder \
         electronuserland/builder:wine \
-        /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn release --linux"
+        /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn run release --linux"
     else
-      yarn release -- --mac --win
+      yarn run release -- --mac --win
     fi
 
 before_cache:
@@ -67,8 +67,15 @@ before_deploy:
       sha256sum dist/bunqDesktop-*.* >> dist/CHECKSUMS.sha256
       cat dist/CHECKSUMS.sha256
     fi
-#  install JQ for curl handling
+  # install JQ for curl handling
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install jq; else brew install jq; fi
+  # install latest version of Go with snap
+  - eval "$(curl -sL https://raw.githubusercontent.com/travis-ci/gimme/master/gimme | GIMME_GO_VERSION=master bash)"
+  # get the GHR go library
+  - go version
+  - export GOPATH="$HOME/go"
+  - export PATH="$PATH:$GOPATH/bin"
+  - go get -u github.com/tcnksm/ghr
 
 deploy:
   - provider: releases
@@ -93,16 +100,7 @@ deploy:
       condition: $TRAVIS_BRANCH == 'release'
   - provider: script
     skip_cleanup: true
-    script:
-      #  Install latest version of Go with snap
-      - eval "$(curl -sL https://raw.githubusercontent.com/travis-ci/gimme/master/gimme | GIMME_GO_VERSION=master bash)"
-      #  get the GHR go library
-      - go version
-      - export GOPATH="$HOME/go"
-      - export PATH="$PATH:$GOPATH/bin"
-      - go get -u github.com/tcnksm/ghr
-      # run the actual upload script
-      - bash ./tasks/ghr-upload.sh
+    script: bash ./tasks/ghr-upload.sh
     on:
       all_branches: true
       condition: $TRAVIS_BRANCH == 'snapshot-build' || $TRAVIS_EVENT_TYPE == 'cron'

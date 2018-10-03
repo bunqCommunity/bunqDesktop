@@ -72,7 +72,7 @@ export default (dispatch, error, customError = false, BunqJSClient = false) => {
     if (responseId) Logger.error(`Response-Id: ${responseId}`);
 
     // response was json so we can retrieve the error
-    if (contentType && contentType.includes("application/json")) {
+    if (contentType && contentType.includes("application/json") && response.data.Error) {
         const errorObject = response.data.Error[0];
 
         // error contains an error description

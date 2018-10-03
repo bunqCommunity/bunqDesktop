@@ -19,12 +19,17 @@ export const API_KEY_IV_LOCATION = "BUNQDESKTOP_API_IV";
  * @param encrypted_api_key
  * @returns {{type: string, payload: {api_key: *}}}
  */
-export function registrationSetApiKeyBasic(api_key, encrypted_api_key = false) {
+export function registrationSetApiKeyBasic(
+    api_key,
+    encrypted_api_key = false,
+    permitted_ips = []
+) {
     return {
         type: "REGISTRATION_SET_API_KEY",
         payload: {
             api_key: api_key,
-            encrypted_api_key: encrypted_api_key
+            encrypted_api_key: encrypted_api_key,
+            permitted_ips: permitted_ips
         }
     };
 }
@@ -35,7 +40,11 @@ export function registrationSetApiKeyBasic(api_key, encrypted_api_key = false) {
  * @param encryptionKey
  * @returns {function(*)}
  */
-export function registrationSetApiKey(api_key, derivedPassword) {
+export function registrationSetApiKey(
+    api_key,
+    derivedPassword,
+    permitted_ips = []
+) {
     return dispatch => {
         encryptString(api_key, derivedPassword.key)
             .then(encrypedData => {
@@ -48,7 +57,8 @@ export function registrationSetApiKey(api_key, derivedPassword) {
                 dispatch(
                     registrationSetApiKeyBasic(
                         api_key,
-                        encrypedData.encryptedString
+                        encrypedData.encryptedString,
+                        permitted_ips
                     )
                 );
                 dispatch(
@@ -63,7 +73,7 @@ export function registrationSetApiKey(api_key, derivedPassword) {
 }
 
 /**
- * Ensures the stored api keys contain an encrypted key and iv set
+ * Ensures the stored api_keys contain an encrypted key and iv set
  * @param apiKey
  * @param apiKeyIv
  * @returns {{type: string, payload: {api_key: *, api_key_iv: *}}}

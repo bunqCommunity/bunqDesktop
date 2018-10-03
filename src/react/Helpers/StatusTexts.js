@@ -5,7 +5,7 @@ export const requestResponseText = (requestResponse, t) => {
     let requestType = requestResponseTypeParser(requestResponse, t);
 
     const ACCEPTED = `${requestType} ${t(`payment accepted`)}`;
-    const PENDING = `${requestType} ${t(`payment is pending`)} `;
+    const PENDING = `${requestType} ${t(`is pending`)} `;
     const REJECTED = `${t(`You denied the`)} ${requestType} ${t(`payment`)}`;
     const REVOKED = `${t(`The`)} ${requestType} ${t(`payment was cancelled`)}`;
     const EXPIRED = `${t(`The`)} ${requestType} ${t(`payment has expired`)}`;
@@ -36,7 +36,7 @@ export const requestResponseTypeParser = (requestResponse, t) => {
             return "iDEAL";
         case "INTERNAL":
         default:
-            return t("request");
+            return t("Request");
     }
 };
 

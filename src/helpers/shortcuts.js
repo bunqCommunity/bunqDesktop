@@ -12,6 +12,9 @@ export default (window, app) => {
     localShortcuts.register(window, "CmdOrCtrl+T", () => {
         window.webContents.send("toggle-theme");
     });
+    localShortcuts.register(window, "CmdOrCtrl+U", () => {
+        window.webContents.send("trigger-queue-sync");
+    });
     localShortcuts.register(window, "F5", () => {
         window.reload();
     });

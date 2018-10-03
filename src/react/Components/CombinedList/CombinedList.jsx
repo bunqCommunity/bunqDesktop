@@ -97,6 +97,7 @@ class CombinedList extends React.Component {
             this.props.paymentsLoading ||
             this.props.requestResponsesLoading ||
             this.props.requestInquiriesLoading ||
+            this.props.requestInquiryBatchLoading ||
             this.props.masterCardActionsLoading;
         const wasLoading =
             prevProps.queueLoading ||
@@ -104,6 +105,7 @@ class CombinedList extends React.Component {
             prevProps.paymentsLoading ||
             prevProps.requestResponsesLoading ||
             prevProps.requestInquiriesLoading ||
+            prevProps.requestInquiryBatchLoading ||
             prevProps.masterCardActionsLoading;
 
         // no longer loading or filter changed
@@ -131,7 +133,7 @@ class CombinedList extends React.Component {
         const {
             requestInquiryBatches,
             hiddenRequestInquiryIds
-        } = this.requestInquiryBatchMapper(hiddenRequestInquiryIds);
+        } = this.requestInquiryBatchMapper();
 
         // load request inquiries while hiding requests connected to the request inquiry batches
         const requestInquiries = this.requestInquiryMapper(
@@ -172,15 +174,17 @@ class CombinedList extends React.Component {
         return {
             dateFromFilter: this.props.dateFromFilter,
             dateToFilter: this.props.dateToFilter,
+
             searchTerm: this.props.searchTerm,
 
             categories: this.props.categories,
             categoryConnections: this.props.categoryConnections,
+
             selectedCategories: this.props.selectedCategories,
             toggleCategoryFilter: this.props.toggleCategoryFilter,
 
-            displayAcceptedRequests: true,
-            displayRequestPayments: false,
+            displayAcceptedRequests: !!this.props.displayAcceptedRequests,
+            displayRequestPayments: !!this.props.displayRequestPayments,
 
             selectedAccountIds: this.props.selectedAccountIds,
             toggleAccountIds: this.props.toggleAccountIds,
@@ -325,6 +329,47 @@ class CombinedList extends React.Component {
             });
     };
 
+    requestInquiryMapper = (hiddenRequestInquiryIds = []) => {
+        if (this.props.hiddenTypes.includes("RequestInquiry")) return [];
+
+        return this.props.requestInquiries
+            .filter(
+                requestInquiryFilter({
+                    requestVisibility: this.props.requestVisibility,
+                    requestType: this.props.requestType,
+                    ...this.getCommonFilters()
+                })
+            )
+            .filter(event => {
+                if (this.props.accountId) {
+                    if (event.monetary_account_id !== this.props.accountId) {
+                        return false;
+                    }
+                }
+
+                // if hidden ids are set, check if this event is included
+                if (hiddenRequestInquiryIds.length > 0 && event.batch_id) {
+                    if (hiddenRequestInquiryIds.includes(event.batch_id)) {
+                        return false;
+                    }
+                }
+
+                return true;
+            })
+            .map(requestInquiry => {
+                return {
+                    component: (
+                        <RequestInquiryListItem
+                            requestInquiry={requestInquiry}
+                            BunqJSClient={this.props.BunqJSClient}
+                        />
+                    ),
+                    filterDate: UTCDateToLocalDate(requestInquiry.created),
+                    info: requestInquiry
+                };
+            });
+    };
+
     requestResponseMapper = (onlyPending = false, onlyNonPending = false) => {
         if (this.props.hiddenTypes.includes("RequestResponse")) return [];
 
@@ -375,47 +420,6 @@ class CombinedList extends React.Component {
             });
     };
 
-    requestInquiryMapper = (hiddenRequestInquiryIds = []) => {
-        if (this.props.hiddenTypes.includes("RequestInquiry")) return [];
-
-        return this.props.requestInquiries
-            .filter(
-                requestInquiryFilter({
-                    requestVisibility: this.props.requestVisibility,
-                    requestType: this.props.requestType,
-                    ...this.getCommonFilters()
-                })
-            )
-            .filter(event => {
-                if (this.props.accountId) {
-                    if (event.monetary_account_id !== this.props.accountId) {
-                        return false;
-                    }
-                }
-
-                // if hidden ids are set, check if this event is included
-                if (hiddenRequestInquiryIds.length > 0 && event.batch_id) {
-                    if (hiddenRequestInquiryIds.includes(event.batch_id)) {
-                        return false;
-                    }
-                }
-
-                return true;
-            })
-            .map(requestInquiry => {
-                return {
-                    component: (
-                        <RequestInquiryListItem
-                            requestInquiry={requestInquiry}
-                            BunqJSClient={this.props.BunqJSClient}
-                        />
-                    ),
-                    filterDate: UTCDateToLocalDate(requestInquiry.created),
-                    info: requestInquiry
-                };
-            });
-    };
-
     requestInquiryBatchMapper = () => {
         if (this.props.hiddenTypes.includes("RequestInquiryBatch")) {
             return {
@@ -430,7 +434,6 @@ class CombinedList extends React.Component {
                 requestInquiryBatchFilter({
                     requestVisibility: this.props.requestVisibility,
                     requestType: this.props.requestType,
-
                     ...this.getCommonFilters()
                 })
             )

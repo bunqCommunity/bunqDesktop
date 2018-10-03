@@ -1,6 +1,5 @@
 const webpack = require("webpack");
 const HardSourceWebpackPlugin = require("hard-source-webpack-plugin");
-// const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")

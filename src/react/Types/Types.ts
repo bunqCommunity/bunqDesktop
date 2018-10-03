@@ -147,6 +147,7 @@ export type PaymentSubType =
     | "NLO";
 
 export type PaymentType =
+    | "MASTERCARD"
     | "BUNQ"
     | "EBA_SCT"
     | "EBA_SDD"

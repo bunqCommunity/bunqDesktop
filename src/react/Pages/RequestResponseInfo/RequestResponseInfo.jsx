@@ -13,14 +13,16 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
-import Collapse from "@material-ui/core/Collapse";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import HelpIcon from "@material-ui/icons/Help";
 import SaveIcon from "@material-ui/icons/Save";
 import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
+import FilterIcon from "@material-ui/icons/FilterList";
 
+import FilterCreationDialog from "../../Components/FilterCreationDialog";
+import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
 import PDFExportHelper from "../../Components/PDFExportHelper";
 import ExportDialog from "../../Components/ExportDialog";
 import SpeedDial from "../../Components/SpeedDial";
@@ -29,12 +31,14 @@ import MoneyAmountLabel from "../../Components/MoneyAmountLabel";
 import TransactionHeader from "../../Components/TransactionHeader";
 import CategorySelector from "../../Components/Categories/CategorySelector";
 import NoteTextForm from "../../Components/NoteTexts/NoteTextForm";
+import GeoLocationListItem from "../../Components/GeoLocation/GeoLocationListItem";
 
 import { formatMoney, humanReadableDate } from "../../Helpers/Utils";
 import {
     requestResponseText,
     requestResponseTypeParser
 } from "../../Helpers/StatusTexts";
+
 import { requestResponseUpdate } from "../../Actions/request_response_info";
 import {
     requestResponseReject,
@@ -65,6 +69,10 @@ class RequestResponseInfo extends React.Component {
         this.state = {
             accepted: false,
             displayExport: false,
+
+            selectedAccount: 0,
+
+            viewFilterCreationDialog: false,
 
             initialUpdate: false
         };
@@ -118,6 +126,11 @@ class RequestResponseInfo extends React.Component {
             `/request?amount=${requestResponseInfo.getAmount()}`
         );
     };
+    toggleCreateFilterDialog = e => {
+        this.setState({
+            viewFilterCreationDialog: !this.state.viewFilterCreationDialog
+        });
+    };
 
     rejectRequest = () => {
         const { requestResponseId, accountId } = this.props.match.params;
@@ -132,19 +145,18 @@ class RequestResponseInfo extends React.Component {
 
     acceptRequest = () => {
         const { requestResponseId } = this.props.match.params;
-        const {
-            user,
-            requestResponseInfo,
-            requestResponseAccountId
-        } = this.props;
+        const { user, requestResponseInfo } = this.props;
 
         const requestResponse = requestResponseInfo.RequestResponse;
 
         const options = {};
 
+        // get account that is selected
+        const accountInfo = this.props.accounts[this.state.selectedAccount];
+
         this.props.requestResponseAccept(
             user.id,
-            requestResponseAccountId,
+            accountInfo.id,
             requestResponseId,
             requestResponse.amount_inquired,
             options
@@ -167,13 +179,21 @@ class RequestResponseInfo extends React.Component {
         }, 250);
     };
 
+    handleChangeDirect = name => value => {
+        this.setState({
+            [name]: value
+        });
+    };
+
     render() {
         const {
+            t,
             accountsSelectedAccount,
             requestResponseInfo,
             requestResponseInfoLoading,
             requestResponseLoading,
-            t
+            limitedPermissions,
+            accounts
         } = this.props;
         const paramAccountId = this.props.match.params.accountId;
 
@@ -204,9 +224,9 @@ class RequestResponseInfo extends React.Component {
         } else {
             const requestResponse = requestResponseInfo.RequestResponse;
             const createdDate = humanReadableDate(requestResponse.created);
-            const timeRespondedDate = humanReadableDate(
-                requestResponse.time_responded
-            );
+            const timeRespondedDate = requestResponse.time_responded
+                ? humanReadableDate(requestResponse.time_responded)
+                : false;
             let paymentAmount = requestResponse.amount_inquired.value;
             paymentAmount =
                 requestResponse.status === "ACCEPTED"
@@ -240,123 +260,151 @@ class RequestResponseInfo extends React.Component {
                 />
             );
 
-            content = [
-                <Paper style={styles.paper}>
-                    <Grid
-                        container
-                        spacing={24}
-                        align={"center"}
-                        justify={"center"}
-                    >
-                        <TransactionHeader
-                            BunqJSClient={this.props.BunqJSClient}
-                            to={requestResponse.alias}
-                            from={requestResponse.counterparty_alias}
-                            user={this.props.user}
-                            swap={requestResponse.status === "ACCEPTED"}
-                            type="requestResponse"
-                            event={requestResponse}
-                        />
-
-                        <Grid item xs={12}>
-                            <MoneyAmountLabel
-                                component={"h1"}
-                                style={{ textAlign: "center" }}
-                                info={requestResponse}
+            content = (
+                <React.Fragment>
+                    <Paper style={styles.paper}>
+                        <Grid
+                            container
+                            spacing={24}
+                            align={"center"}
+                            justify={"center"}
+                        >
+                            <TransactionHeader
+                                BunqJSClient={this.props.BunqJSClient}
+                                to={requestResponse.alias}
+                                from={requestResponse.counterparty_alias}
+                                user={this.props.user}
+                                swap={requestResponse.status === "ACCEPTED"}
                                 type="requestResponse"
-                            >
-                                {formattedPaymentAmount}
-                            </MoneyAmountLabel>
+                                event={requestResponse}
+                            />
 
-                            <Typography
-                                style={{ textAlign: "center" }}
-                                type={"body1"}
-                            >
-                                {requestResponseLabel}
-                            </Typography>
+                            <FilterCreationDialog
+                                t={t}
+                                item={requestResponse}
+                                open={this.state.viewFilterCreationDialog}
+                                onClose={this.toggleCreateFilterDialog}
+                            />
 
-                            <List style={styles.list}>
-                                {requestResponse.description.length > 0
-                                    ? [
-                                          <Divider />,
-                                          <ListItem>
-                                              <ListItemText
-                                                  primary={t("Description")}
-                                                  secondary={
-                                                      requestResponse.description
-                                                  }
-                                              />
-                                          </ListItem>
-                                      ]
-                                    : null}
+                            <Grid item xs={12}>
+                                <MoneyAmountLabel
+                                    component={"h1"}
+                                    style={{ textAlign: "center" }}
+                                    info={requestResponse}
+                                    type="requestResponse"
+                                >
+                                    {formattedPaymentAmount}
+                                </MoneyAmountLabel>
 
-                                <Divider />
-                                <ListItem>
-                                    <ListItemText
-                                        primary={t("Received")}
-                                        secondary={createdDate}
+                                <Typography
+                                    style={{ textAlign: "center" }}
+                                    type={"body1"}
+                                >
+                                    {requestResponseLabel}
+                                </Typography>
+
+                                <List style={styles.list}>
+                                    {requestResponse.description.length > 0
+                                        ? [
+                                              <Divider />,
+                                              <ListItem>
+                                                  <ListItemText
+                                                      primary={t("Description")}
+                                                      secondary={
+                                                          requestResponse.description
+                                                      }
+                                                  />
+                                              </ListItem>
+                                          ]
+                                        : null}
+
+                                    <Divider />
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={t("Received")}
+                                            secondary={createdDate}
+                                        />
+                                    </ListItem>
+
+                                    {timeRespondedDate ? (
+                                        <React.Fragment>
+                                            <Divider />
+                                            <ListItem>
+                                                <ListItemText
+                                                    primary={t("Paid")}
+                                                    secondary={
+                                                        timeRespondedDate
+                                                    }
+                                                />
+                                            </ListItem>
+                                        </React.Fragment>
+                                    ) : null}
+
+                                    {requestResponse.counterparty_alias &&
+                                    requestResponse.counterparty_alias.iban ? (
+                                        <React.Fragment>
+                                            <Divider />
+                                            <ListItem>
+                                                <ListItemText
+                                                    primary={t("IBAN")}
+                                                    secondary={
+                                                        requestResponse
+                                                            .counterparty_alias
+                                                            .iban
+                                                    }
+                                                />
+                                            </ListItem>
+                                        </React.Fragment>
+                                    ) : null}
+
+                                    <Divider />
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={t("Type")}
+                                            secondary={requestResponseTypeParser(
+                                                requestResponse,
+                                                t
+                                            )}
+                                        />
+                                    </ListItem>
+
+                                    <Divider />
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={t("Status")}
+                                            secondary={requestResponse.status}
+                                        />
+                                    </ListItem>
+
+                                    <Divider />
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={t("Sub type")}
+                                            secondary={requestResponse.sub_type}
+                                        />
+                                    </ListItem>
+
+                                    <Divider />
+                                    <GeoLocationListItem
+                                        t={t}
+                                        geoLocation={
+                                            requestResponse.geolocation
+                                        }
                                     />
-                                </ListItem>
+                                </List>
 
-                                {timeRespondedDate ? (
-                                    <React.Fragment>
-                                        <Divider />
-                                        <ListItem>
-                                            <ListItemText
-                                                primary={t("Paid")}
-                                                secondary={timeRespondedDate}
-                                            />
-                                        </ListItem>
-                                    </React.Fragment>
-                                ) : null}
+                                <CategorySelector
+                                    type={"RequestResponse"}
+                                    item={requestResponseInfo}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Paper>
 
-                                {requestResponse.counterparty_alias &&
-                                requestResponse.counterparty_alias.iban ? (
-                                    <React.Fragment>
-                                        <Divider />
-                                        <ListItem>
-                                            <ListItemText
-                                                primary={t("IBAN")}
-                                                secondary={
-                                                    requestResponse
-                                                        .counterparty_alias.iban
-                                                }
-                                            />
-                                        </ListItem>
-                                    </React.Fragment>
-                                ) : null}
-
-                                <Divider />
-                                <ListItem>
-                                    <ListItemText
-                                        primary={t("Type")}
-                                        secondary={requestResponseTypeParser(
-                                            requestResponse,
-                                            t
-                                        )}
-                                    />
-                                </ListItem>
-
-                                <Divider />
-                                <ListItem>
-                                    <ListItemText
-                                        primary={t("Status")}
-                                        secondary={requestResponse.status}
-                                    />
-                                </ListItem>
-
-                                <Divider />
-                                <ListItem>
-                                    <ListItemText
-                                        primary={t("Sub type")}
-                                        secondary={requestResponse.sub_type}
-                                    />
-                                </ListItem>
-
-                                <Divider />
-                            </List>
-
-                            {requestResponse.status === "PENDING" ? (
+                    {!limitedPermissions &&
+                    requestResponse.status === "PENDING" ? (
+                        !this.state.accepted ? (
+                            <Paper style={styles.paper}>
                                 <Grid container spacing={16}>
                                     <Grid item xs={12} sm={6}>
                                         <TranslateButton
@@ -373,6 +421,7 @@ class RequestResponseInfo extends React.Component {
                                             Continue
                                         </TranslateButton>
                                     </Grid>
+
                                     <Grid item xs={12} sm={6}>
                                         <TranslateButton
                                             variant="raised"
@@ -388,38 +437,46 @@ class RequestResponseInfo extends React.Component {
                                         </TranslateButton>
                                     </Grid>
                                 </Grid>
-                            ) : null}
-
-                            <CategorySelector
-                                type={"RequestResponse"}
-                                item={requestResponseInfo}
-                            />
-                        </Grid>
-                    </Grid>
-                </Paper>,
-                <Collapse in={this.state.accepted} collapsedHeight="0px">
-                    <Paper style={styles.paper}>
-                        <Grid
-                            container
-                            spacing={24}
-                            align={"center"}
-                            justify={"center"}
-                        >
-                            <Grid item xs={12}>
-                                <TranslateButton
-                                    variant="raised"
-                                    disabled={false}
-                                    color="primary"
-                                    style={styles.button}
-                                    onClick={this.acceptRequest}
+                            </Paper>
+                        ) : (
+                            <Paper style={styles.paper}>
+                                <Grid
+                                    container
+                                    spacing={24}
+                                    align={"center"}
+                                    justify={"center"}
                                 >
-                                    Accept request
-                                </TranslateButton>
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                </Collapse>
-            ];
+                                    <Grid item xs={12}>
+                                        <AccountSelectorDialog
+                                            value={this.state.selectedAccount}
+                                            onChange={this.handleChangeDirect(
+                                                "selectedAccount"
+                                            )}
+                                            accounts={accounts}
+                                            BunqJSClient={
+                                                this.props.BunqJSClient
+                                            }
+                                            hiddenConnectTypes={["showOnly"]}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <TranslateButton
+                                            variant="raised"
+                                            disabled={false}
+                                            color="primary"
+                                            style={styles.button}
+                                            onClick={this.acceptRequest}
+                                        >
+                                            Accept request
+                                        </TranslateButton>
+                                    </Grid>
+                                </Grid>
+                            </Paper>
+                        )
+                    ) : null}
+                </React.Fragment>
+            );
         }
 
         const exportData =
@@ -462,19 +519,25 @@ class RequestResponseInfo extends React.Component {
                     hidden={false}
                     actions={[
                         {
-                            name: "Send payment",
+                            name: t("Send payment"),
                             icon: ArrowUpIcon,
                             color: "action",
                             onClick: this.startPayment
                         },
                         {
-                            name: "Send request",
+                            name: t("Send request"),
                             icon: ArrowDownIcon,
                             color: "action",
                             onClick: this.startRequest
                         },
                         {
-                            name: "Create PDF",
+                            name: t("Create filter"),
+                            icon: FilterIcon,
+                            color: "action",
+                            onClick: this.toggleCreateFilterDialog
+                        },
+                        {
+                            name: t("Create PDF"),
                             icon: SaveIcon,
                             color: "action",
                             onClick: this.createPdfExport
@@ -495,6 +558,7 @@ class RequestResponseInfo extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+        limitedPermissions: state.user.limited_permissions,
 
         pdfSaveModeEnabled: state.application.pdf_save_mode_enabled,
 
@@ -502,8 +566,12 @@ const mapStateToProps = state => {
         requestResponseAccountId: state.request_response_info.account_id,
         requestResponseInfoLoading: state.request_response_info.loading,
 
+        shareInviteBankResponses:
+            state.share_invite_bank_responses.share_invite_bank_responses,
+
         requestResponseLoading: state.request_response.loading,
 
+        accounts: state.accounts.accounts,
         accountsSelectedAccount: state.accounts.selected_account
     };
 };

@@ -30,6 +30,7 @@ const storedApiKeysDefault =
 export const defaultState = {
     // unencrypted api key, this should NEVER be stored elsewhere
     api_key: false,
+    permitted_ips: [],
     encrypted_api_key: false,
 
     // if true there is a stored api key
@@ -54,6 +55,7 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 api_key: action.payload.api_key,
+                permitted_ips: action.payload.permitted_ips,
                 encrypted_api_key: action.payload.encrypted_api_key
             };
 

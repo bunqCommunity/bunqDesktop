@@ -45,7 +45,6 @@ import share_invite_bank_responses from "./share_invite_bank_responses";
 import snackbar from "./snackbar";
 import search_filter from "./search_filter";
 import sidebar from "./sidebar";
-import theme from "./theme";
 import user from "./user";
 import users from "./users";
 
@@ -95,7 +94,6 @@ export default combineReducers({
     share_invite_bank_responses,
     snackbar,
     sidebar,
-    theme,
     user,
     users
 });

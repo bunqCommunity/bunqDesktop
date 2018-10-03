@@ -99,6 +99,11 @@ class RequestInquiry extends React.Component {
     }
 
     componentDidMount() {
+        if (this.props.limitedPermissions) {
+            this.props.history.push("/");
+            return;
+        }
+
         const searchParams = new URLSearchParams(this.props.location.search);
         if (searchParams.has("amount")) {
             const amount = parseFloat(searchParams.get("amount"));
@@ -639,9 +644,12 @@ class RequestInquiry extends React.Component {
 const mapStateToProps = state => {
     return {
         requestInquiryLoading: state.request_inquiry.loading,
+
         selectedAccount: state.accounts.selected_account,
         accounts: state.accounts.accounts,
-        user: state.user.user
+
+        user: state.user.user,
+        limitedPermissions: state.user.limited_permissions
     };
 };
 

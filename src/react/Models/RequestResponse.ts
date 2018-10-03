@@ -55,7 +55,8 @@ export default class RequestResponse implements Event {
 
         // go through all keys and set the data
         Object.keys(requestInfo).forEach(key => {
-            this[`_${key}`] = requestInfo[key];
+            const objectKey = key[0] === "_" ? key : `_${key}`;
+            this[objectKey] = requestInfo[key];
         });
 
         this._updated = new Date(this._updated);
@@ -84,6 +85,13 @@ export default class RequestResponse implements Event {
     }
 
     /**
+     * @returns {number}
+     */
+    public getAmountResponded(): number {
+        return -parseFloat(this.amount_responded.value);
+    }
+
+    /**
      * Returns the change in account balance if any based on this object's data
      * @returns {number}
      */
@@ -93,7 +101,7 @@ export default class RequestResponse implements Event {
             return 0;
         }
 
-        return this.getAmount();
+        return this.getAmountResponded();
     }
 
     get id(): number {
