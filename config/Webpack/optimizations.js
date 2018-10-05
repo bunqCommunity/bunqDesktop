@@ -16,7 +16,7 @@ module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT }) => {
                     minSize: 25000
                 },
                 vendor: {
-                    test: /node_modules/,
+                    test: /[\\/]node_modules[\\/].*(js|jsx?)$/,
                     chunks: "initial",
                     name: "vendor",
                     priority: 10,
