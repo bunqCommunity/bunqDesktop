@@ -43,7 +43,8 @@ const styles = {
     activityButton: {
         position: "fixed",
         top: 60,
-        right: 8
+        right: 8,
+        zIndex: 2
     }
 };
 
