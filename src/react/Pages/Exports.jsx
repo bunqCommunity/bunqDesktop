@@ -518,7 +518,7 @@ class Exports extends React.Component {
                                     <Grid item xs={12} md={6}>
                                         <DatePicker
                                             id="from-date"
-                                            helperText={t("From date")}
+                                            label={t("From date")}
                                             emptyLabel="No filter"
                                             format="MMMM dd, YYYY"
                                             disableFuture
@@ -529,7 +529,10 @@ class Exports extends React.Component {
                                             clearable={true}
                                             InputProps={{
                                                 endAdornment: (
-                                                    <InputAdornment position="end">
+                                                    <InputAdornment
+                                                        style={{ height: 29 }}
+                                                        position="end"
+                                                    >
                                                         <IconButton
                                                             onClick={
                                                                 this
@@ -547,7 +550,7 @@ class Exports extends React.Component {
                                     <Grid item xs={12} md={6}>
                                         <DatePicker
                                             id="to-date"
-                                            helperText={t("To date")}
+                                            label={t("To date")}
                                             emptyLabel="No filter"
                                             format="MMMM dd, YYYY"
                                             disableFuture
@@ -558,7 +561,10 @@ class Exports extends React.Component {
                                             clearable={true}
                                             InputProps={{
                                                 endAdornment: (
-                                                    <InputAdornment position="end">
+                                                    <InputAdornment
+                                                        style={{ height: 29 }}
+                                                        position="end"
+                                                    >
                                                         <IconButton
                                                             onClick={
                                                                 this.clearDateTo
