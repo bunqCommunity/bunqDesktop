@@ -72,7 +72,7 @@ class NetworkStatusChecker extends React.PureComponent {
                     <IconButton
                         key="close"
                         aria-label="Check again"
-                        color={"secondary"}
+                        color="secondary"
                         onClick={this.checkNetWorkStatus}
                         disabled={this.state.loading}
                     >

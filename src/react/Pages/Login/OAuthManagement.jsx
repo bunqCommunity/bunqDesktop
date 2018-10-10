@@ -248,14 +248,14 @@ class OAuthManagement extends React.Component {
 
         const content = this.isLoading ? (
             <Grid item xs={12} style={styles.cardContent}>
-                <TranslateTypography variant="headline" component="h2" style={styles.text}>
+                <TranslateTypography variant="h5" component="h2" style={styles.text}>
                     Waiting for authorization
                 </TranslateTypography>
                 <CircularProgress size={50} />
             </Grid>
         ) : (
             <Grid item xs={12}>
-                <TranslateTypography variant="subheading" style={styles.subHeading}>
+                <TranslateTypography variant="subtitle1" style={styles.subHeading}>
                     Login with limited permissions using OAuth
                 </TranslateTypography>
 
@@ -294,7 +294,7 @@ class OAuthManagement extends React.Component {
                 <TranslateButton
                     style={styles.button}
                     rel="noopener"
-                    variant="raised"
+                    variant="contained"
                     className="js-external-link white-button"
                     href="https://wiki.bunqdesk.top/setup/setup-oauth/"
                 >

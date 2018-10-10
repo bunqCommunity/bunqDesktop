@@ -188,7 +188,7 @@ class CategoryEditor extends React.Component {
 
                     {this.props.selectedCategoryId ? (
                         <TranslateButton
-                            variant="raised"
+                            variant="contained"
                             color="secondary"
                             style={styles.button}
                             onClick={this.props.deselectChip}
@@ -198,7 +198,7 @@ class CategoryEditor extends React.Component {
                     ) : null}
 
                     <TranslateButton
-                        variant="raised"
+                        variant="contained"
                         disabled={this.state.labelError || this.state.label.length === 0}
                         color="primary"
                         style={styles.button}

@@ -109,7 +109,7 @@ class BunqMeTabListItem extends React.Component {
 
         const avatarStandalone = (
             <Avatar style={styles.smallAvatar}>
-                <Share color={"inherit"} style={{ color: iconColor }} />
+                <Share color="inherit" style={{ color: iconColor }} />
             </Avatar>
         );
 
@@ -194,7 +194,7 @@ class BunqMeTabListItem extends React.Component {
                     <ListItem style={styles.actionListItem}>
                         <ListItemSecondaryAction>
                             <TranslateButton
-                                variant="raised"
+                                variant="contained"
                                 disabled={this.props.bunqMeTabLoading || this.props.bunqMeTabsLoading}
                                 color="secondary"
                                 onClick={this.cancelTab}

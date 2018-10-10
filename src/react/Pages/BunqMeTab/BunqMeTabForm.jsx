@@ -159,7 +159,7 @@ class BunqMeTabForm extends React.Component {
 
         return [
             <div style={styles.paper}>
-                <TypographyTranslate variant="headline">Create new bunqme request</TypographyTranslate>
+                <TypographyTranslate variant="h5">Create new bunqme request</TypographyTranslate>
 
                 <AccountSelectorDialog
                     value={this.state.selectedAccount}
@@ -193,7 +193,7 @@ class BunqMeTabForm extends React.Component {
                 </FormControl>
 
                 <ButtonTranslate
-                    variant="raised"
+                    variant="contained"
                     color="primary"
                     disabled={!this.state.validForm || this.props.bunqMeTabLoading}
                     style={styles.payButton}

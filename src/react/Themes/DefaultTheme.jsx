@@ -1,5 +1,8 @@
 export default {
     themeName: "DefaultTheme",
+    typography: {
+        useNextVariants: true
+    },
     palette: {
         common: {
             receivedPayment: "#008000",

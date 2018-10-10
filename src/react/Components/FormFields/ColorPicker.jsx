@@ -39,7 +39,7 @@ class ColorPicker extends React.Component {
         return (
             <div style={this.props.style}>
                 <Button
-                    variant="raised"
+                    variant="contained"
                     key={"randomkey1"}
                     color="default"
                     onClick={this.handleOpen}

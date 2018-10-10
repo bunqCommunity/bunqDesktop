@@ -60,17 +60,17 @@ export default class ExportDialog extends React.Component {
                     ) : null}
                 </DialogContent>
                 <DialogActions>
-                    <TranslateButton variant="raised" onClick={this.onAnonymizeChange}>
+                    <TranslateButton variant="contained" onClick={this.onAnonymizeChange}>
                         {anonymize ? "Original" : "Anonymize"}
                     </TranslateButton>
 
                     <CopyToClipboard text={jsonPretty}>
-                        <TranslateButton variant="raised" onClick={closeModal}>
+                        <TranslateButton variant="contained" onClick={closeModal}>
                             Copy
                         </TranslateButton>
                     </CopyToClipboard>
 
-                    <TranslateButton variant="raised" onClick={closeModal} color="primary">
+                    <TranslateButton variant="contained" onClick={closeModal} color="primary">
                         Ok
                     </TranslateButton>
                 </DialogActions>

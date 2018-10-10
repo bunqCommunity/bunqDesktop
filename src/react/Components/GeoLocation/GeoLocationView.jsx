@@ -36,7 +36,7 @@ class GeoLocationView extends React.PureComponent {
                 </div>
                 <Button
                     onClick={this.props.onClose}
-                    variant="raised"
+                    variant="contained"
                     style={{
                         position: "fixed",
                         top: 12,

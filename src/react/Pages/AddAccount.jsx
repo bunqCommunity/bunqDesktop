@@ -127,7 +127,7 @@ class AddAccount extends React.Component {
 
                 <Grid item xs={12} sm={6} md={4}>
                     <Paper style={styles.paper}>
-                        <TypographyTranslate variant="headline" style={{ marginBottom: "25px" }}>
+                        <TypographyTranslate variant="h5" style={{ marginBottom: "25px" }}>
                             Add an account
                         </TypographyTranslate>
 
@@ -159,7 +159,7 @@ class AddAccount extends React.Component {
                         </FormControl>
 
                         <ButtonTranslate
-                            variant="raised"
+                            variant="contained"
                             color="primary"
                             disabled={!this.state.validForm || this.props.accountsLoading}
                             onClick={this.createAccount}
@@ -173,7 +173,7 @@ class AddAccount extends React.Component {
                 {accountsAmount === 25 ? (
                     <Grid item xs={12} sm={6} md={4}>
                         <Paper style={{ padding: 8 }}>
-                            <TypographyTranslate variant="subheading">Attention!</TypographyTranslate>
+                            <TypographyTranslate variant="subtitle1">Attention!</TypographyTranslate>
                             <TypographyTranslate variant="body2">
                                 Creating a new account when you've reached the limit of 25 accounts comes at additional
                                 costs You may have to create the new account using the official bunq app to approve

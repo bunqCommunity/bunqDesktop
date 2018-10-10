@@ -40,7 +40,7 @@ const StatsWorker = require("worker-loader!../../WebWorkers/stats.worker.js");
 
 const ChartTitle = ({ children, t, ...rest }) => {
     return (
-        <Typography variant="title" style={{ textAlign: "center", padding: 8 }} {...rest}>
+        <Typography variant="h6" style={{ textAlign: "center", padding: 8 }} {...rest}>
             {t(children)}
         </Typography>
     );

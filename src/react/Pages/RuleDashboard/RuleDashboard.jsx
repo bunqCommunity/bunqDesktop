@@ -133,7 +133,7 @@ class RuleDashboard extends React.Component {
                         <Grid container spacing={16}>
                             <Grid item xs={12}>
                                 <Button
-                                    variant="raised"
+                                    variant="contained"
                                     color="primary"
                                     component={NavLink}
                                     to={`/rule-page/null`}
@@ -145,14 +145,22 @@ class RuleDashboard extends React.Component {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Button variant="raised" style={styles.newRuleButton} onClick={this.openImportDialog}>
+                                <Button
+                                    variant="contained"
+                                    style={styles.newRuleButton}
+                                    onClick={this.openImportDialog}
+                                >
                                     {t("Import")}
                                     <FileDownloadIcon style={styles.buttonIcons} />
                                 </Button>
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Button variant="raised" style={styles.newRuleButton} onClick={this.openExportDialog}>
+                                <Button
+                                    variant="contained"
+                                    style={styles.newRuleButton}
+                                    onClick={this.openExportDialog}
+                                >
                                     {t("Export")}
                                     <FileUploadIcon style={styles.buttonIcons} />
                                 </Button>
@@ -165,7 +173,7 @@ class RuleDashboard extends React.Component {
                     <Paper style={styles.paper}>
                         <Grid container spacing={16}>
                             <Grid item xs={12} sm={3} md={6}>
-                                <TranslateTypography variant={"headline"}>Rules</TranslateTypography>
+                                <TranslateTypography variant="h5">Rules</TranslateTypography>
                             </Grid>
 
                             <Grid item xs={12}>

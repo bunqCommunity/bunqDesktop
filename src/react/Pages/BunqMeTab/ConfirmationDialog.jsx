@@ -34,10 +34,10 @@ class ConfirmationDialog extends React.Component {
                     </List>
                 </DialogContent>
                 <DialogActions>
-                    <ButtonTranslate variant="raised" onClick={this.props.closeModal} color="secondary">
+                    <ButtonTranslate variant="contained" onClick={this.props.closeModal} color="secondary">
                         Cancel
                     </ButtonTranslate>
-                    <ButtonTranslate variant="raised" onClick={this.props.sendInquiry} color="primary">
+                    <ButtonTranslate variant="contained" onClick={this.props.sendInquiry} color="primary">
                         Confirm
                     </ButtonTranslate>
                 </DialogActions>

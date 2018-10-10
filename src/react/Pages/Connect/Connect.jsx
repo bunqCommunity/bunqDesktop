@@ -425,7 +425,7 @@ class Connect extends React.Component {
 
                 <Grid item xs={12} sm={12} md={5} lg={6}>
                     <Paper style={styles.paper}>
-                        <TypographyTranslate variant="headline" style={{ marginBottom: "25px" }}>
+                        <TypographyTranslate variant="h5" style={{ marginBottom: "25px" }}>
                             Send a Connect request
                         </TypographyTranslate>
 
@@ -452,7 +452,7 @@ class Connect extends React.Component {
                         <Grid container spacing={8}>
                             {this.state.accessLevel !== "draft" ? (
                                 <Grid item xs={12}>
-                                    <TypographyTranslate variant="subheading" style={{ marginBottom: 8 }}>
+                                    <TypographyTranslate variant="subtitle1" style={{ marginBottom: 8 }}>
                                         Settings
                                     </TypographyTranslate>
                                 </Grid>
@@ -481,7 +481,7 @@ class Connect extends React.Component {
                             ) : null}
 
                             <Grid item xs={12}>
-                                <TypographyTranslate variant="subheading" style={{ marginBottom: 8 }}>
+                                <TypographyTranslate variant="subtitle1" style={{ marginBottom: 8 }}>
                                     Advanced settings
                                 </TypographyTranslate>
                             </Grid>
@@ -528,7 +528,7 @@ class Connect extends React.Component {
 
                             <Grid item xs={12}>
                                 <ButtonTranslate
-                                    variant="raised"
+                                    variant="contained"
                                     color="primary"
                                     disabled={!this.state.validForm || this.props.shareInviteBankInquiryLoading}
                                     onClick={this.sendConnectRequest}

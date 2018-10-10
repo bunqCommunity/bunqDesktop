@@ -55,7 +55,7 @@ class SplitAmountForm extends React.Component {
                     <Grid item xs={12} style={styles.titleGrid}>
                         <Switch checked={splitRequest} onChange={toggleSplitRequest} />
 
-                        <TranslateTypography variant={"title"}>Split request</TranslateTypography>
+                        <TranslateTypography variant="h6">Split request</TranslateTypography>
                     </Grid>
                     {splitRequest ? (
                         <Grid item xs={12}>

@@ -230,7 +230,7 @@ class Profile extends React.Component {
                     <Paper style={styles.paper}>
                         <Grid container spacing={16} justify="center">
                             <Grid item xs={12}>
-                                <TranslateTypography variant="subheading">
+                                <TranslateTypography variant="subtitle1">
                                     Safekeeping fee calculator
                                 </TranslateTypography>
                             </Grid>
@@ -250,7 +250,7 @@ class Profile extends React.Component {
                                 {hasSafeKeepingFee ? (
                                     costsTable
                                 ) : (
-                                    <TranslateTypography variant="subheading">No safekeeping fee</TranslateTypography>
+                                    <TranslateTypography variant="subtitle1">No safekeeping fee</TranslateTypography>
                                 )}
                             </Grid>
                         </Grid>
@@ -272,7 +272,7 @@ class Profile extends React.Component {
                             </Grid>
 
                             <Grid item xs={12} sm={6}>
-                                <TranslateTypography variant={"title"} style={styles.title}>
+                                <TranslateTypography variant="h6" style={styles.title}>
                                     Main address
                                 </TranslateTypography>
                                 <Address
@@ -283,7 +283,7 @@ class Profile extends React.Component {
                             </Grid>
 
                             <Grid item xs={12} sm={6}>
-                                <TranslateTypography variant={"title"} style={styles.title}>
+                                <TranslateTypography variant="h6" style={styles.title}>
                                     Postal address
                                 </TranslateTypography>
                                 <Address
@@ -297,7 +297,7 @@ class Profile extends React.Component {
                                 <Button
                                     disabled={this.state.loading}
                                     onClick={this.updateSettings}
-                                    variant={"raised"}
+                                    variant="contained"
                                     color={"primary"}
                                 >
                                     Update

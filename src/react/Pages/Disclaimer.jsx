@@ -77,19 +77,19 @@ class Disclaimer extends React.Component {
                 <Grid item xs={12} sm={8} md={6} lg={4}>
                     <Card style={styles.warningCard}>
                         <CardContent>
-                            <Typography variant="headline">
+                            <Typography variant="h5">
                                 <DesktopIcon /> bunqDesktop
                             </Typography>
                             <Typography variant="body2">{t("DisclaimerBunqDesktopExplanation")}</Typography>
                             <br />
 
-                            <Typography variant="headline">
+                            <Typography variant="h5">
                                 <BuildIcon /> Development
                             </Typography>
                             <Typography variant="body2">{t("DisclaimerActiveDevelopmentWarning")}</Typography>
                             <br />
 
-                            <Typography variant="headline">
+                            <Typography variant="h5">
                                 <LockIcon /> Password
                             </Typography>
                             <Typography variant="body2">{t("DisclaimerPasswordWarningPart1")}</Typography>
@@ -104,8 +104,8 @@ class Disclaimer extends React.Component {
 
                             <div style={{ textAlign: "center" }}>
                                 <TranslateButton
-                                    variant={"raised"}
-                                    color={"primary"}
+                                    variant="contained"
+                                    color="primary"
                                     style={styles.buttons}
                                     onClick={this.ignoreWarning}
                                 >

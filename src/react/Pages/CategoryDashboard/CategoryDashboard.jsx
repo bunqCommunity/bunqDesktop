@@ -127,7 +127,7 @@ class CategoryDashboard extends React.Component {
                 </Helmet>
 
                 <Grid item xs={12} md={8}>
-                    <TypographyTranslate variant="title" gutterBottom>
+                    <TypographyTranslate variant="h6" gutterBottom>
                         Categories
                     </TypographyTranslate>
                 </Grid>
@@ -148,7 +148,7 @@ class CategoryDashboard extends React.Component {
 
                 <Grid item xs={6} md={2}>
                     <ButtonTranslate
-                        variant="raised"
+                        variant="contained"
                         color="primary"
                         style={{ width: "100%" }}
                         onClick={() => this.setState({ openExportDialog: true })}
@@ -158,7 +158,7 @@ class CategoryDashboard extends React.Component {
                 </Grid>
                 <Grid item xs={6} md={2}>
                     <ButtonTranslate
-                        variant="raised"
+                        variant="contained"
                         color="primary"
                         style={{ width: "100%" }}
                         onClick={() => this.setState({ openImportDialog: true })}
@@ -189,7 +189,7 @@ class CategoryDashboard extends React.Component {
                         <Grid item xs={12} md={4}>
                             <Paper style={{ padding: 8 }}>
                                 <ButtonTranslate
-                                    variant="raised"
+                                    variant="contained"
                                     color="primary"
                                     style={styles.buttons}
                                     onClick={this.loadDefaultCategories}
@@ -198,7 +198,7 @@ class CategoryDashboard extends React.Component {
                                 </ButtonTranslate>
 
                                 <ButtonTranslate
-                                    variant="raised"
+                                    variant="contained"
                                     color="primary"
                                     style={styles.buttons}
                                     onClick={e => this.importCategories(this.state.defaultCategories)}

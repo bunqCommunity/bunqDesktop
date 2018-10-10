@@ -56,7 +56,7 @@ class ItemTypeRuleItem extends React.Component<IPropTypes, any> {
         return (
             <TableRow>
                 <TableCell>
-                    <TranslateTypography variant="subheading">Event type</TranslateTypography>
+                    <TranslateTypography variant="subtitle1">Event type</TranslateTypography>
                 </TableCell>
 
                 <TableCell style={styles.tableCell}>

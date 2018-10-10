@@ -143,7 +143,7 @@ class ScheduledPayments extends React.Component {
                     <Paper style={styles.paper}>
                         <Grid container spacing={16}>
                             <Grid item xs={8} md={10}>
-                                <TranslateTypography variant={"headline"}>Scheduled payments</TranslateTypography>
+                                <TranslateTypography variant="h5">Scheduled payments</TranslateTypography>
                             </Grid>
 
                             <Grid item xs={2} md={1}>
@@ -168,7 +168,7 @@ class ScheduledPayments extends React.Component {
                                     {scheduledPayments.length > 0 ? (
                                         scheduledPayments
                                     ) : (
-                                        <Typography variant={"body2"} style={{ textAlign: "center" }}>
+                                        <Typography variant="body1" style={{ textAlign: "center" }}>
                                             {t("No scheduled payments")}
                                         </Typography>
                                     )}

@@ -82,7 +82,7 @@ class ShareInviteBankInquiryListItem extends React.Component {
             <React.Fragment>
                 <TranslateButton
                     style={styles.buttons}
-                    variant="raised"
+                    variant="contained"
                     color="secondary"
                     onClick={this.cancel}
                     disabled={this.state.loading}

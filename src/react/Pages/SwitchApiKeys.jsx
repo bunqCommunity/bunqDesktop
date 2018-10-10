@@ -108,7 +108,7 @@ class SwitchApiKeys extends React.Component {
                         {apiKeyItems.length > 0 ? (
                             <List>{apiKeyItems}</List>
                         ) : (
-                            <TranslateTypography variant={"title"} style={styles.text}>
+                            <TranslateTypography variant="h6" style={styles.text}>
                                 No stored API keys set!
                             </TranslateTypography>
                         )}
@@ -116,10 +116,10 @@ class SwitchApiKeys extends React.Component {
                 </Grid>
                 <Grid item xs={12} sm={2} md={3}>
                     <Paper style={styles.paper}>
-                        <TranslateTypography variant={"body1"} style={styles.textBody}>
+                        <TranslateTypography variant="body2" style={styles.textBody}>
                             When you login with an API key it will appear in this list
                         </TranslateTypography>
-                        <TranslateTypography variant={"body1"} style={styles.textBody}>
+                        <TranslateTypography variant="body2" style={styles.textBody}>
                             A disabled button means the API key was stored with a different password so it can't be
                             decrypted
                         </TranslateTypography>

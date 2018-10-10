@@ -142,7 +142,7 @@ class NoteTextForm extends React.Component {
                     </Grid>
                     <Grid item xs={12} sm={4} md={2}>
                         <TranslateButton
-                            variant="raised"
+                            variant="contained"
                             color="primary"
                             style={styles.button}
                             disabled={noteTextsLoading || !this.state.messageValid}
@@ -154,7 +154,7 @@ class NoteTextForm extends React.Component {
 
                     {/*<Grid item xs={12}>*/}
                     {/*<Button*/}
-                    {/*variant="raised"*/}
+                    {/*variant="contained"*/}
                     {/*style={styles.button}*/}
                     {/*disabled={noteTextsLoading}*/}
                     {/*onClick={this.updateNotes}*/}

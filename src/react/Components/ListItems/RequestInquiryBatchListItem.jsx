@@ -148,7 +148,7 @@ class RequestInquiryBatchListItem extends React.Component {
         }
 
         // avatar object on its own
-        const shareIcon = <Share color={"inherit"} style={{ color: eventColor }} />;
+        const shareIcon = <Share color="inherit" style={{ color: eventColor }} />;
         const avatarStandalone = (
             <Avatar style={styles.smallAvatar}>
                 {imageUUID ? (

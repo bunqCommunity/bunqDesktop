@@ -356,7 +356,7 @@ class RuleCreator extends React.Component<any, any> {
                 <Paper style={styles.wrapper}>
                     <Grid container spacing={16}>
                         <Grid item xs={11}>
-                            <Typography variant="title" style={styles.subTitle}>
+                            <Typography variant="h6" style={styles.subTitle}>
                                 {t("Settings")}
                             </Typography>
                         </Grid>
@@ -403,7 +403,7 @@ class RuleCreator extends React.Component<any, any> {
 
                         <Grid item xs={12} sm={6} style={styles.saveButtonGridWrapper}>
                             <Button
-                                variant="raised"
+                                variant="contained"
                                 color="primary"
                                 style={{ width: "100%" }}
                                 onClick={this.saveRuleCollection}
@@ -420,7 +420,7 @@ class RuleCreator extends React.Component<any, any> {
                         <TableHead key={"tableHead"}>
                             <TableRow>
                                 <TableCell style={{ paddingLeft: 0 }}>
-                                    <Typography variant="title" style={styles.subTitle}>
+                                    <Typography variant="h6" style={styles.subTitle}>
                                         {t("Rules")}
                                     </Typography>
                                 </TableCell>
@@ -436,11 +436,11 @@ class RuleCreator extends React.Component<any, any> {
                 </Paper>
 
                 <Paper style={styles.wrapper} key={"categoryChipsWrapper"}>
-                    <Typography variant="title" style={styles.subTitle}>
+                    <Typography variant="h6" style={styles.subTitle}>
                         {t("Categories")}
                     </Typography>
                     <div>
-                        <Typography variant="subheading" style={styles.subTitle}>
+                        <Typography variant="subtitle1" style={styles.subTitle}>
                             {t("Categories that will be added")}
                         </Typography>
                         {includedChips}

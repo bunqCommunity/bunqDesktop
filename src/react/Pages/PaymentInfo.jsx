@@ -212,7 +212,7 @@ class PaymentInfo extends React.Component {
                             {formattedPaymentAmount}
                         </MoneyAmountLabel>
 
-                        <Typography style={{ textAlign: "center" }} variant={"body1"}>
+                        <Typography style={{ textAlign: "center" }} variant="body2">
                             {paymentLabel}
                         </Typography>
 

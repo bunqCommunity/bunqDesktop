@@ -339,7 +339,7 @@ class RequestResponseInfo extends React.Component {
                                 <Grid container spacing={16}>
                                     <Grid item xs={12} sm={6}>
                                         <TranslateButton
-                                            variant="raised"
+                                            variant="contained"
                                             color="primary"
                                             style={styles.button}
                                             disabled={this.state.accepted}
@@ -355,7 +355,7 @@ class RequestResponseInfo extends React.Component {
 
                                     <Grid item xs={12} sm={6}>
                                         <TranslateButton
-                                            variant="raised"
+                                            variant="contained"
                                             color="secondary"
                                             disabled={requestResponseInfoLoading || requestResponseLoading}
                                             onClick={this.rejectRequest}
@@ -381,7 +381,7 @@ class RequestResponseInfo extends React.Component {
 
                                     <Grid item xs={12}>
                                         <TranslateButton
-                                            variant="raised"
+                                            variant="contained"
                                             disabled={false}
                                             color="primary"
                                             style={styles.button}

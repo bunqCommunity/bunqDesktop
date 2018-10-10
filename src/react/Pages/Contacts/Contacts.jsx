@@ -136,12 +136,12 @@ class Contacts extends React.Component {
                 <Grid item xs={12} sm={10} md={6} lg={4}>
                     <Grid container spacing={8} justify={"center"}>
                         <Grid item xs={8} md={9} style={styles.row}>
-                            <TranslateTypography variant={"headline"}>Contacts</TranslateTypography>
+                            <TranslateTypography variant="h5">Contacts</TranslateTypography>
                         </Grid>
 
                         <Grid item xs={4} md={3} style={styles.row}>
                             <TranslateButton
-                                variant="raised"
+                                variant="contained"
                                 color="secondary"
                                 style={styles.button}
                                 disabled={this.props.contactsLoading}

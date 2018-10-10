@@ -225,7 +225,7 @@ class Card extends React.Component {
                 <Grid container spacing={24} style={styles.gridContainer} justify="center" alignItems="center">
                     <Grid item xs={12} style={{ textAlign: "center" }}>
                         <CircularProgress size={75} />
-                        <TypographyTranslate variant="display1" style={{ textAlign: "center" }}>
+                        <TypographyTranslate variant="h4" style={{ textAlign: "center" }}>
                             Loading cards
                         </TypographyTranslate>
                     </Grid>
@@ -237,7 +237,7 @@ class Card extends React.Component {
             return (
                 <Grid container spacing={24} style={styles.gridContainer} justify="center" alignItems="center">
                     <Grid item xs={12}>
-                        <TypographyTranslate variant="display1" style={{ textAlign: "center" }}>
+                        <TypographyTranslate variant="h4" style={{ textAlign: "center" }}>
                             You don't have any cards
                         </TypographyTranslate>
                     </Grid>
@@ -358,11 +358,11 @@ class Card extends React.Component {
                             <Paper style={styles.cardInfoPaper}>
                                 <Grid container spacing={16}>
                                     <Grid item xs={12} sm={6}>
-                                        <Typography variant={"title"}>{cardInfo.name_on_card}</Typography>
-                                        <Typography variant={"subheading"}>{second_line}</Typography>
+                                        <Typography variant="h6">{cardInfo.name_on_card}</Typography>
+                                        <Typography variant="subtitle1">{second_line}</Typography>
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
-                                        <Typography variant={"body2"} style={{ textAlign: "right" }}>
+                                        <Typography variant="body1" style={{ textAlign: "right" }}>
                                             {t("Expires")}: <br />
                                             {cardInfo.expiry_date}
                                         </Typography>

@@ -676,10 +676,10 @@ class Pay extends React.Component {
                         </List>
                     </DialogContent>
                     <DialogActions>
-                        <Button variant="raised" onClick={this.closeModal} color="secondary">
+                        <Button variant="contained" onClick={this.closeModal} color="secondary">
                             {t("Cancel")}
                         </Button>
-                        <Button variant="raised" onClick={this.sendPayment} color="primary">
+                        <Button variant="contained" onClick={this.sendPayment} color="primary">
                             {t("Confirm")}
                         </Button>
                     </DialogActions>
@@ -709,7 +709,7 @@ class Pay extends React.Component {
                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={localeData}>
                     <Grid item xs={12} sm={10} md={8} lg={6} xl={4}>
                         <Paper style={styles.paper}>
-                            <Typography variant="headline">{t("New Payment")}</Typography>
+                            <Typography variant="h5">{t("New Payment")}</Typography>
 
                             <AccountSelectorDialog
                                 value={this.state.selectedAccount}
@@ -807,7 +807,7 @@ class Pay extends React.Component {
                             </FormControl>
 
                             <Button
-                                variant="raised"
+                                variant="contained"
                                 color="primary"
                                 disabled={!this.state.validForm || this.props.payLoading}
                                 style={styles.payButton}

@@ -38,7 +38,7 @@ export default ({ icon: PropIcon, to: targetUrl, text, exact = false, ...rest })
     return (
         <ListItem style={styles.listBottomItem} {...rest}>
             <PropIcon color={iconColor} style={styles.propIcon} />
-            <TranslateTypography variant="subheading">{text}</TranslateTypography>
+            <TranslateTypography variant="subtitle1">{text}</TranslateTypography>
         </ListItem>
     );
 };

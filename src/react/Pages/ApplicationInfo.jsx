@@ -103,8 +103,8 @@ class ApplicationInfo extends React.Component {
                                 </div>
 
                                 <div style={{ flexGrow: 1, marginTop: 4 }}>
-                                    <Typography variant={"headline"}>bunqDesktop</Typography>
-                                    <Typography variant={"body2"}>
+                                    <Typography variant="h5">bunqDesktop</Typography>
+                                    <Typography variant="body1">
                                         {`${t("Version")}: ${process.env.CURRENT_VERSION}`}
                                     </Typography>
                                 </div>
@@ -117,19 +117,19 @@ class ApplicationInfo extends React.Component {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Typography variant={"body2"}>
+                                <Typography variant="body1">
                                     {t("Application data")}: {app.getPath("userData")}
                                 </Typography>
                             </Grid>
 
                             <Grid item xs={12}>
-                                <ButtonTranslate variant="raised" component={NavLink} to={"/"}>
+                                <ButtonTranslate variant="contained" component={NavLink} to={"/"}>
                                     Back
                                 </ButtonTranslate>
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Typography variant={"title"}>Releases</Typography>
+                                <Typography variant="h6">Releases</Typography>
                                 <List>{releaseItems}</List>
                             </Grid>
                         </Grid>

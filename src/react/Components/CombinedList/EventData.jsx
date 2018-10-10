@@ -67,7 +67,7 @@ class EventData extends React.Component {
                                             : theme.palette.common.sentPayment
                                 }}
                             />
-                            <Typography variant={"body1"}>
+                            <Typography variant="body2">
                                 {t("Total change")}: {formatMoney(change, true)}
                             </Typography>
                         </Grid>
@@ -78,7 +78,7 @@ class EventData extends React.Component {
                                     color: theme.palette.common.receivedPayment
                                 }}
                             />
-                            <Typography variant={"body1"}>
+                            <Typography variant="body2">
                                 {t("Received")}: {formatMoney(incoming, true)}
                             </Typography>
                         </Grid>
@@ -89,7 +89,7 @@ class EventData extends React.Component {
                                     color: theme.palette.common.sentPayment
                                 }}
                             />
-                            <Typography variant={"body1"}>
+                            <Typography variant="body2">
                                 {t("Sent")}: {formatMoney(outGoing, true)}
                             </Typography>
                         </Grid>

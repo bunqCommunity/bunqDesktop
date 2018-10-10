@@ -410,7 +410,7 @@ class Exports extends React.Component {
                             <Paper style={styles.paper}>
                                 <Grid container spacing={16}>
                                     <Grid item xs={12}>
-                                        <TranslateTypography variant={"headline"}>New export</TranslateTypography>
+                                        <TranslateTypography variant="h5">New export</TranslateTypography>
                                     </Grid>
 
                                     <Grid item xs={12} md={6}>
@@ -496,7 +496,7 @@ class Exports extends React.Component {
 
                                     <Grid item xs={12} md={6}>
                                         <TranslateButton
-                                            variant="raised"
+                                            variant="contained"
                                             color="primary"
                                             onClick={this.createNew}
                                             disabled={
@@ -515,7 +515,7 @@ class Exports extends React.Component {
                             <Paper style={styles.paper}>
                                 <Grid container spacing={16}>
                                     <Grid item xs={8} md={10}>
-                                        <TranslateTypography variant={"headline"}>Existing Exports</TranslateTypography>
+                                        <TranslateTypography variant="h5">Existing Exports</TranslateTypography>
                                     </Grid>
 
                                     <Grid item xs={2} md={1}>
@@ -549,20 +549,18 @@ class Exports extends React.Component {
                             <Paper style={styles.paper}>
                                 <Grid container spacing={16}>
                                     <Grid item xs={12}>
-                                        <TranslateTypography variant={"headline"}>
-                                            New custom export
-                                        </TranslateTypography>
+                                        <TranslateTypography variant="h5">New custom export</TranslateTypography>
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <Typography variant={"body1"}>
+                                        <Typography variant="body2">
                                             The export will include all the events shown in the list below
                                         </Typography>
                                     </Grid>
 
                                     <Grid item xs={12} md={6}>
                                         <TranslateButton
-                                            variant="raised"
+                                            variant="contained"
                                             color="primary"
                                             onClick={this.createCustomExport}
                                         >

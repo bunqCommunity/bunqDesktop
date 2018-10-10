@@ -463,7 +463,7 @@ class RequestInquiry extends React.Component {
                 <Grid container spacing={8}>
                     <Grid item xs={12} style={styles.titleGrid}>
                         <Switch color="primary" checked={this.state.expandedCollapse} onClick={this.toggleExpanded} />
-                        <TranslateTypography variant={"title"}>Advanced options</TranslateTypography>
+                        <TranslateTypography variant="h6">Advanced options</TranslateTypography>
                     </Grid>
                     <Collapse in={this.state.expandedCollapse} unmountOnExit>
                         <Grid item xs={12}>
@@ -506,7 +506,7 @@ class RequestInquiry extends React.Component {
 
                 <Grid item xs={12} sm={10} md={8} lg={6} xl={4}>
                     <Paper style={styles.paper}>
-                        <TypographyTranslate variant="headline">Request Payment</TypographyTranslate>
+                        <TypographyTranslate variant="h5">Request Payment</TypographyTranslate>
 
                         <AccountSelectorDialog
                             value={this.state.selectedAccount}
@@ -571,7 +571,7 @@ class RequestInquiry extends React.Component {
 
                     <Paper style={styles.paper}>
                         <ButtonTranslate
-                            variant="raised"
+                            variant="contained"
                             color="primary"
                             disabled={
                                 !this.state.validForm ||

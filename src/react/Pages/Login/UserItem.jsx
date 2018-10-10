@@ -68,8 +68,8 @@ class UserItem extends React.Component {
                     <Button
                         disabled={this.props.userLoading}
                         onClick={this.selectAccount(userKey)}
-                        variant="raised"
-                        color={"primary"}
+                        variant="contained"
+                        color="primary"
                         style={styles.loginButton}
                     >
                         Login

@@ -1,5 +1,8 @@
 export default {
     themeName: "DarkTheme",
+    typography: {
+        useNextVariants: true
+    },
     palette: {
         common: {
             receivedPayment: "#8DC55F",

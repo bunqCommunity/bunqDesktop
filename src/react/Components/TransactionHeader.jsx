@@ -119,19 +119,19 @@ const TransactionHeader = props => {
                     }}
                 />
             </Avatar>
-            <Typography variant="subheading">{fromLabelName}</Typography>
-            {secondaryFromLabelName && <Typography variant="subheading">{secondaryFromLabelName}</Typography>}
+            <Typography variant="subtitle1">{fromLabelName}</Typography>
+            {secondaryFromLabelName && <Typography variant="subtitle1">{secondaryFromLabelName}</Typography>}
         </Grid>,
 
         <Hidden smDown>
             <Grid item md={2} style={styles.arrow}>
-                <ArrowForwardIcon style={{ color: arrowColor }} color={"inherit"} />
+                <ArrowForwardIcon style={{ color: arrowColor }} color="inherit" />
             </Grid>
         </Hidden>,
 
         <Hidden mdUp>
             <Grid item xs={12} style={styles.arrow}>
-                <ArrowDownIcon style={{ color: arrowColor }} color={"inherit"} />
+                <ArrowDownIcon style={{ color: arrowColor }} color="inherit" />
             </Grid>
         </Hidden>,
 
@@ -153,8 +153,8 @@ const TransactionHeader = props => {
                 />
             </Avatar>
 
-            <Typography variant="subheading">{toLabelName}</Typography>
-            {secondaryToLabelName && <Typography variant="subheading">{secondaryToLabelName}</Typography>}
+            <Typography variant="subtitle1">{toLabelName}</Typography>
+            {secondaryToLabelName && <Typography variant="subtitle1">{secondaryToLabelName}</Typography>}
         </Grid>
     ];
 

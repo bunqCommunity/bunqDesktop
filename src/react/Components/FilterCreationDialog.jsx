@@ -86,7 +86,7 @@ export default props => {
                 </List>
             </DialogContent>
             <DialogActions>
-                <Button variant="raised" onClick={onClose} color="secondary">
+                <Button variant="contained" onClick={onClose} color="secondary">
                     Cancel
                 </Button>
             </DialogActions>

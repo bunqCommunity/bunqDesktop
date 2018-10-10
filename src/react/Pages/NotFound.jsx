@@ -17,7 +17,7 @@ class NotFound extends React.Component {
                 <Helmet>
                     <title>{`bunqDesktop - 404 ${this.props.t("Not Found")}`}</title>
                 </Helmet>
-                <TypographyTranslate variant="title">Page Not Found</TypographyTranslate>
+                <TypographyTranslate variant="h6">Page Not Found</TypographyTranslate>
             </div>
         );
     }

@@ -442,7 +442,7 @@ class Login extends React.Component {
             userLoading || usersLoading ? (
                 <Grid item xs={12}>
                     <CardContent style={{ textAlign: "center" }}>
-                        <TranslateTypography variant="headline" component="h2">
+                        <TranslateTypography variant="h5" component="h2">
                             Loading user accounts
                         </TranslateTypography>
                         <CircularProgress size={50} />
@@ -584,12 +584,12 @@ class Login extends React.Component {
         ) : (
             <Card style={styles.card}>
                 <CardContent style={styles.cardContent}>
-                    <TranslateTypography variant="headline" component="h2" style={styles.text}>
+                    <TranslateTypography variant="h5" component="h2" style={styles.text}>
                         You're logged in!
                     </TranslateTypography>
                     <TranslateButton
-                        variant="raised"
-                        color={"secondary"}
+                        variant="contained"
+                        color="secondary"
                         className={"black-button"}
                         style={styles.button}
                         onClick={this.props.logOut}
@@ -604,11 +604,11 @@ class Login extends React.Component {
         const cardContent = this.props.registrationLoading ? (
             <Card style={styles.card}>
                 <CardContent style={styles.cardContent}>
-                    <TranslateTypography variant="headline" component="h2" style={styles.text}>
+                    <TranslateTypography variant="h5" component="h2" style={styles.text}>
                         Loading
                     </TranslateTypography>
                     <CircularProgress size={50} />
-                    <Typography variant="subheading" style={styles.text}>
+                    <Typography variant="subtitle1" style={styles.text}>
                         {status_message}
                     </Typography>
                 </CardContent>
@@ -652,7 +652,7 @@ class Login extends React.Component {
                         component={NavLink}
                         style={styles.switchKeyButton}
                         className={"white-button"}
-                        variant={"raised"}
+                        variant="contained"
                     >
                         Switch keys <KeyIcon style={styles.switchKeyIcon} />
                     </Button>

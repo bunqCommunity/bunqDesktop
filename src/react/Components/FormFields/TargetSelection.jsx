@@ -219,7 +219,7 @@ class TargetSelection extends React.Component {
                                 <Radio
                                     icon={<PersonIcon />}
                                     checkedIcon={<PersonIcon />}
-                                    color={"secondary"}
+                                    color="secondary"
                                     checked={this.props.targetType === "CONTACT"}
                                     onChange={this.props.setTargetType("CONTACT")}
                                     value="CONTACT"
@@ -254,7 +254,7 @@ class TargetSelection extends React.Component {
                                 <Radio
                                     icon={<CompareArrowsIcon />}
                                     checkedIcon={<CompareArrowsIcon />}
-                                    color={"secondary"}
+                                    color="secondary"
                                     checked={this.props.targetType === "TRANSFER"}
                                     onChange={this.props.setTargetType("TRANSFER")}
                                     value="TRANSFER"
@@ -271,7 +271,7 @@ class TargetSelection extends React.Component {
                 </Grid>
                 <Grid item xs={12}>
                     <Button
-                        variant="raised"
+                        variant="contained"
                         color="primary"
                         disabled={
                             // target input error

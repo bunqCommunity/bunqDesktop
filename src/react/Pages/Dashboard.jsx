@@ -120,7 +120,7 @@ class Dashboard extends React.Component {
                                 <NavLink to={"/profile"}>{profileAvatar}</NavLink>
                             )}
 
-                            <Typography variant="title" gutterBottom style={styles.title}>
+                            <Typography variant="h6" gutterBottom style={styles.title}>
                                 {`${t("Welcome")} ${displayName}`}
                             </Typography>
                         </Grid>

@@ -217,7 +217,7 @@ class RequestInquiryInfo extends React.Component {
                             {formattedPaymentAmount}
                         </MoneyAmountLabel>
 
-                        <Typography style={{ textAlign: "center" }} variant={"body1"}>
+                        <Typography style={{ textAlign: "center" }} variant="body2">
                             {requestInquiryLabel}
                         </Typography>
 
@@ -274,7 +274,7 @@ class RequestInquiryInfo extends React.Component {
                             <Grid container spacing={16} justify="center">
                                 <Grid item xs={12} sm={6}>
                                     <TranslateButton
-                                        variant="raised"
+                                        variant="contained"
                                         disabled={requestInquiryLoading || requestInquiryInfoLoading}
                                         onClick={this.cancelInquiry}
                                         color="secondary"

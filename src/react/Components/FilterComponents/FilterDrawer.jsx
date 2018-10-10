@@ -196,19 +196,19 @@ class FilterDrawer extends React.Component {
                         <Radio
                             style={styles.radioBtn}
                             icon={<CompareArrowsIcon />}
-                            checkedIcon={<CompareArrowsIcon color={"primary"} />}
+                            checkedIcon={<CompareArrowsIcon color="primary" />}
                             value={"default"}
                         />
                         <Radio
                             style={styles.radioBtn}
                             icon={<ArrowDownward />}
-                            checkedIcon={<ArrowDownward style={{ color: receivedPayment }} color={"inherit"} />}
+                            checkedIcon={<ArrowDownward style={{ color: receivedPayment }} color="inherit" />}
                             value={"received"}
                         />
                         <Radio
                             style={styles.radioBtn}
                             icon={<ArrowUpward />}
-                            checkedIcon={<ArrowUpward style={{ color: sentPayment }} color={"inherit"} />}
+                            checkedIcon={<ArrowUpward style={{ color: sentPayment }} color="inherit" />}
                             value={"sent"}
                         />
                     </RadioGroup>
@@ -236,19 +236,19 @@ class FilterDrawer extends React.Component {
                         <Radio
                             style={styles.radioBtn}
                             icon={<CompareArrowsIcon />}
-                            checkedIcon={<CompareArrowsIcon color={"primary"} />}
+                            checkedIcon={<CompareArrowsIcon color="primary" />}
                             value={"default"}
                         />
                         <Radio
                             style={styles.radioBtn}
                             icon={<ArrowDownward />}
-                            checkedIcon={<ArrowDownward style={{ color: sentPayment }} color={"inherit"} />}
+                            checkedIcon={<ArrowDownward style={{ color: sentPayment }} color="inherit" />}
                             value={"received"}
                         />
                         <Radio
                             style={styles.radioBtn}
                             icon={<ArrowUpward />}
-                            checkedIcon={<ArrowUpward style={{ color: receivedPayment }} color={"inherit"} />}
+                            checkedIcon={<ArrowUpward style={{ color: receivedPayment }} color="inherit" />}
                             value={"sent"}
                         />
                     </RadioGroup>
@@ -276,7 +276,7 @@ class FilterDrawer extends React.Component {
                         <Radio
                             style={styles.radioBtn}
                             icon={<CompareArrowsIcon />}
-                            checkedIcon={<CompareArrowsIcon color={"primary"} />}
+                            checkedIcon={<CompareArrowsIcon color="primary" />}
                             value={"default"}
                         />
                         <Radio
@@ -287,7 +287,7 @@ class FilterDrawer extends React.Component {
                                     style={{
                                         color: theme.palette.bunqMeTabs.awaiting_payment
                                     }}
-                                    color={"inherit"}
+                                    color="inherit"
                                 />
                             }
                             value={"active"}
@@ -300,7 +300,7 @@ class FilterDrawer extends React.Component {
                                     style={{
                                         color: theme.palette.bunqMeTabs.cancelled
                                     }}
-                                    color={"inherit"}
+                                    color="inherit"
                                 />
                             }
                             value={"cancelled"}
@@ -313,7 +313,7 @@ class FilterDrawer extends React.Component {
                                     style={{
                                         color: theme.palette.bunqMeTabs.expired
                                     }}
-                                    color={"inherit"}
+                                    color="inherit"
                                 />
                             }
                             value={"expired"}
@@ -380,13 +380,13 @@ class FilterDrawer extends React.Component {
                     <ListItemIcon>
                         <ClearIcon />
                     </ListItemIcon>
-                    <Typography variant="subheading">{t("Clear filters")}</Typography>
+                    <Typography variant="subtitle1">{t("Clear filters")}</Typography>
                 </ListItem>
             </List>
         );
 
         const button = this.props.bigButton ? (
-            <Button variant="raised" key={"button"} onClick={this.openDrawer} {...this.props.buttonProps}>
+            <Button variant="contained" key={"button"} onClick={this.openDrawer} {...this.props.buttonProps}>
                 {t("Filter")} <FilterListIcon />
             </Button>
         ) : (

@@ -50,14 +50,14 @@ const ContactHeader = props => {
             <Grid item xs={12} sm={4} md={6} style={styles.titleWrapper}>
                 <img style={styles.logo} src={props.logo} />
 
-                <TranslateTypography variant={"title"} style={styles.title}>
+                <TranslateTypography variant="h6" style={styles.title}>
                     {props.title}
                 </TranslateTypography>
             </Grid>
 
             <Grid item xs={6} sm={4} md={3}>
                 <TranslateButton
-                    variant="raised"
+                    variant="contained"
                     color="secondary"
                     style={styles.button}
                     disabled={props.loading}
@@ -70,7 +70,7 @@ const ContactHeader = props => {
             <Grid item xs={6} sm={4} md={3}>
                 {props.canImport ? (
                     <Button
-                        variant="raised"
+                        variant="contained"
                         color="primary"
                         style={styles.button}
                         disabled={props.loading}
@@ -80,7 +80,7 @@ const ContactHeader = props => {
                     </Button>
                 ) : (
                     <Button
-                        variant="raised"
+                        variant="contained"
                         color="primary"
                         style={styles.button}
                         disabled={props.loading}
@@ -93,11 +93,11 @@ const ContactHeader = props => {
 
             <Grid item xs={8} sm={10}>
                 {contactsCount > 0 ? (
-                    <Typography variant={"subheading"} style={styles.contactCount}>
+                    <Typography variant="subtitle1" style={styles.contactCount}>
                         {`${contactsCount} ${t("contacts")}`}
                     </Typography>
                 ) : (
-                    <TranslateTypography variant={"subheading"} style={styles.contactCount}>
+                    <TranslateTypography variant="subtitle1" style={styles.contactCount}>
                         No stored contacts
                     </TranslateTypography>
                 )}

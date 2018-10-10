@@ -109,7 +109,7 @@ class AddressForm extends React.Component {
         return (
             <Grid container spacing={24}>
                 <Grid item xs={12}>
-                    <Typography variant="subheading">{`${this.props.labelValue} - ${requiredStatus}`}</Typography>
+                    <Typography variant="subtitle1">{`${this.props.labelValue} - ${requiredStatus}`}</Typography>
                 </Grid>
                 <Collapse in={this.state.open}>
                     <Grid item xs={12} md={6}>

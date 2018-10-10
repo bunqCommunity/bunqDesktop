@@ -314,7 +314,7 @@ class AccountInfo extends React.Component {
 
                         <DialogActions>
                             <ButtonTranslate
-                                variant="raised"
+                                variant="contained"
                                 onClick={this.toggleDeactivateDialog}
                                 color="primary"
                                 autoFocus
@@ -322,7 +322,7 @@ class AccountInfo extends React.Component {
                                 Cancel
                             </ButtonTranslate>
                             <ButtonTranslate
-                                variant="raised"
+                                variant="contained"
                                 onClick={this.deactivateAccount}
                                 color="secondary"
                                 disabled={
@@ -367,7 +367,7 @@ class AccountInfo extends React.Component {
 
                         <DialogActions>
                             <ButtonTranslate
-                                variant="raised"
+                                variant="contained"
                                 onClick={this.toggleSettingsDialog}
                                 color="secondary"
                                 autoFocus
@@ -375,7 +375,7 @@ class AccountInfo extends React.Component {
                                 Cancel
                             </ButtonTranslate>
                             <ButtonTranslate
-                                variant="raised"
+                                variant="contained"
                                 onClick={this.editAccount}
                                 disabled={this.props.accountsLoading || this.state.settingsDescription.length === 0}
                                 color="primary"

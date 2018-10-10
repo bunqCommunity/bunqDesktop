@@ -222,17 +222,17 @@ class LoginPassword extends React.Component {
 
         let cardContent = registrationLoading ? (
             <CardContent style={styles.cardContent}>
-                <Typography variant="headline" component="h2">
+                <Typography variant="h5" component="h2">
                     Loading
                 </Typography>
                 <CircularProgress size={50} />
-                <Typography variant="subheading" style={styles.text}>
+                <Typography variant="subtitle1" style={styles.text}>
                     {statusMessage}
                 </Typography>
             </CardContent>
         ) : (
             <CardContent style={styles.cardContent}>
-                <Typography variant="headline" component="h2" style={styles.text}>
+                <Typography variant="h5" component="h2" style={styles.text}>
                     {isExistingInstallation ? t("Enter your password") : t("Enter a password")}
                 </Typography>
 
@@ -322,7 +322,7 @@ class LoginPassword extends React.Component {
                     {hasStoredApiKey ? (
                         <Grid item xs={6} sm={4}>
                             <TranslateButton
-                                variant="raised"
+                                variant="contained"
                                 className="white-button"
                                 style={styles.secondaryButtons}
                                 onClick={this.logOut}
@@ -337,7 +337,7 @@ class LoginPassword extends React.Component {
                             <Grid item xs={6} sm={4} />
                             <Grid item xs={6} sm={4}>
                                 <TranslateButton
-                                    variant="raised"
+                                    variant="contained"
                                     className="white-button"
                                     style={styles.secondaryButtons}
                                     onClick={this.props.useNoPasswordLogin}
@@ -352,7 +352,7 @@ class LoginPassword extends React.Component {
 
                     <Grid item xs={12} sm={4}>
                         <TranslateButton
-                            variant="raised"
+                            variant="contained"
                             color="primary"
                             className="black-button"
                             disabled={buttonDisabled}

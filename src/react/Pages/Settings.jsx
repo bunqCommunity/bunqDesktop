@@ -199,17 +199,17 @@ class Settings extends React.Component {
         const settingsContainer = (
             <Grid container spacing={16}>
                 <Grid item xs={12} md={6} lg={8}>
-                    <TypographyTranslate variant={"headline"}>Settings</TypographyTranslate>
+                    <TypographyTranslate variant="h5">Settings</TypographyTranslate>
                 </Grid>
 
                 <Grid item xs={6} md={3} lg={2}>
-                    <Button variant="raised" color="secondary" style={styles.button} onClick={this.clearPrivateData}>
+                    <Button variant="contained" color="secondary" style={styles.button} onClick={this.clearPrivateData}>
                         {t("Remove keys")} <RemoveIcon />
                     </Button>
                 </Grid>
 
                 <Grid item xs={6} md={3} lg={2}>
-                    <Button variant="raised" color="primary" style={styles.button} onClick={this.logout}>
+                    <Button variant="contained" color="primary" style={styles.button} onClick={this.logout}>
                         {t("Logout")} <LogoutIcon />
                     </Button>
                 </Grid>
@@ -460,7 +460,7 @@ class Settings extends React.Component {
                 <Grid item xs={12} />
 
                 <Grid item xs={12} sm={4}>
-                    <ButtonTranslate variant="raised" component={NavLink} to={"/debug-page"} style={styles.button}>
+                    <ButtonTranslate variant="contained" component={NavLink} to={"/debug-page"} style={styles.button}>
                         Debug application
                     </ButtonTranslate>
                 </Grid>
@@ -469,7 +469,7 @@ class Settings extends React.Component {
 
                 <Grid item xs={12} sm={4}>
                     <Button
-                        variant="raised"
+                        variant="contained"
                         color="secondary"
                         style={styles.button}
                         onClick={this.handleResetBunqDesktop}
@@ -499,13 +499,13 @@ class Settings extends React.Component {
                     </DialogContent>
 
                     <DialogActions>
-                        <ButtonTranslate variant="raised" onClick={() => this.setState({ openImportDialog: false })}>
+                        <ButtonTranslate variant="contained" onClick={() => this.setState({ openImportDialog: false })}>
                             Cancel
                         </ButtonTranslate>
-                        <ButtonTranslate variant="raised" onClick={this.overwriteSettingsFile} color="secondary">
+                        <ButtonTranslate variant="contained" onClick={this.overwriteSettingsFile} color="secondary">
                             Overwrite file
                         </ButtonTranslate>
-                        <ButtonTranslate variant="raised" onClick={this.importSettingsFile} color="primary">
+                        <ButtonTranslate variant="contained" onClick={this.importSettingsFile} color="primary">
                             Import file
                         </ButtonTranslate>
                     </DialogActions>

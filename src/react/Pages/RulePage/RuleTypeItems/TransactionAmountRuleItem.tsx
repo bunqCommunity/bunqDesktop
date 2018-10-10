@@ -63,7 +63,7 @@ class TransactionAmountRuleItem extends React.Component<IPropTypes, any> {
         return (
             <TableRow>
                 <TableCell>
-                    <TranslateTypography variant="subheading">Transaction amount</TranslateTypography>
+                    <TranslateTypography variant="subtitle1">Transaction amount</TranslateTypography>
                 </TableCell>
 
                 <TableCell style={styles.tableCell}>

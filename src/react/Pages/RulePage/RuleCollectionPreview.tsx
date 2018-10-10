@@ -74,7 +74,7 @@ class RuleCollectionPreview extends React.Component<any, any> {
     render() {
         const t = this.props.t;
         const toggleDisplay = (
-            <Button variant="raised" style={styles.toggleVisibilityButton} onClick={this.handleVisibilityToggle}>
+            <Button variant="contained" style={styles.toggleVisibilityButton} onClick={this.handleVisibilityToggle}>
                 {this.state.visible ? t("Hide preview") : t("Show preview")}
             </Button>
         );

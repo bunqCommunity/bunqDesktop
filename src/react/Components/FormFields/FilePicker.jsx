@@ -42,7 +42,7 @@ class FilePicker extends React.Component {
             <Grid container spacing={16} style={style}>
                 <Grid item xs={4}>
                     <ButtonTranslate
-                        variant="raised"
+                        variant="contained"
                         color="primary"
                         onClick={this.handleButtonClick}
                         style={{ width: "100%" }}

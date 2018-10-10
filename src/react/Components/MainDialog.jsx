@@ -35,7 +35,7 @@ class MainDialog extends React.Component {
                 <DialogTitle>{modalTitle}</DialogTitle>
                 <DialogContent>{fixedModalText}</DialogContent>
                 <DialogActions>
-                    <Button variant="raised" onClick={this.props.closeModal} color="primary">
+                    <Button variant="contained" onClick={this.props.closeModal} color="primary">
                         Ok
                     </Button>
                 </DialogActions>

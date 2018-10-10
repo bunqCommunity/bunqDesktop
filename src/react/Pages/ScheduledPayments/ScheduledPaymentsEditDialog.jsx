@@ -220,12 +220,12 @@ class ScheduledPaymentsEditDialog extends React.Component {
                 </DialogContent>
 
                 <DialogActions>
-                    <ButtonTranslate variant="raised" onClick={this.closeDialog} color="secondary">
+                    <ButtonTranslate variant="contained" onClick={this.closeDialog} color="secondary">
                         Cancel
                     </ButtonTranslate>
                     {this.props.limitedPermissions ? null : (
                         <ButtonTranslate
-                            variant="raised"
+                            variant="contained"
                             onClick={this.editPayment}
                             disabled={!isValid || this.props.scheduledPaymentsLoading}
                             color="primary"

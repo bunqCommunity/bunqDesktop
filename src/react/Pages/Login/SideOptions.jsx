@@ -140,7 +140,7 @@ export default props => {
 
                     {sandboxMode ? (
                         <TranslateButton
-                            variant="raised"
+                            variant="contained"
                             color="secondary"
                             disabled={sandboxButtonDisabled}
                             style={styles.button}
@@ -151,7 +151,7 @@ export default props => {
                     ) : null}
 
                     <TranslateButton
-                        variant="raised"
+                        variant="contained"
                         color="primary"
                         className={setApiKeyClassname}
                         disabled={buttonDisabled}
