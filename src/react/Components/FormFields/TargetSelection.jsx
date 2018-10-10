@@ -42,10 +42,7 @@ class TargetSelection extends React.Component {
             let ibanCollection = {};
             // get first 250 payments and retrieve the iban/name combinations from it
             this.props.payments.slice(0, 250).map(payment => {
-                if (
-                    payment.counterparty_alias &&
-                    payment.counterparty_alias.iban
-                ) {
+                if (payment.counterparty_alias && payment.counterparty_alias.iban) {
                     const iban = payment.counterparty_alias.iban;
                     if (!ibanCollection[iban]) {
                         ibanCollection[iban] = {
@@ -57,9 +54,7 @@ class TargetSelection extends React.Component {
             });
 
             // turn ref object into an array
-            const ibanList = Object.keys(ibanCollection).map(
-                key => ibanCollection[key]
-            );
+            const ibanList = Object.keys(ibanCollection).map(key => ibanCollection[key]);
 
             // sort by name
             const sortedIbanList = ibanList.sort((a, b) => {
@@ -94,9 +89,7 @@ class TargetSelection extends React.Component {
                     <AccountSelectorDialog
                         id="target"
                         value={this.props.selectedTargetAccount}
-                        onChange={this.props.handleChangeDirect(
-                            "selectedTargetAccount"
-                        )}
+                        onChange={this.props.handleChangeDirect("selectedTargetAccount")}
                         accounts={this.props.accounts}
                         BunqJSClient={this.props.BunqJSClient}
                     />
@@ -186,8 +179,7 @@ class TargetSelection extends React.Component {
                 case "TRANSFER":
                     // for transfers we can try to display a description
                     if (this.props.accounts[target.value]) {
-                        targetValue = this.props.accounts[target.value]
-                            .description;
+                        targetValue = this.props.accounts[target.value].description;
                     }
                     Icon = CompareArrowsIcon;
                     break;
@@ -206,10 +198,7 @@ class TargetSelection extends React.Component {
                         </Avatar>
                     }
                     label={
-                        <CopyToClipboard
-                            text={targetValue}
-                            onCopy={this.copiedValue}
-                        >
+                        <CopyToClipboard text={targetValue} onCopy={this.copiedValue}>
                             <p>{targetValue}</p>
                         </CopyToClipboard>
                     }
@@ -231,12 +220,8 @@ class TargetSelection extends React.Component {
                                     icon={<PersonIcon />}
                                     checkedIcon={<PersonIcon />}
                                     color={"secondary"}
-                                    checked={
-                                        this.props.targetType === "CONTACT"
-                                    }
-                                    onChange={this.props.setTargetType(
-                                        "CONTACT"
-                                    )}
+                                    checked={this.props.targetType === "CONTACT"}
+                                    onChange={this.props.setTargetType("CONTACT")}
                                     value="CONTACT"
                                     name="target-type-phone"
                                 />
@@ -270,12 +255,8 @@ class TargetSelection extends React.Component {
                                     icon={<CompareArrowsIcon />}
                                     checkedIcon={<CompareArrowsIcon />}
                                     color={"secondary"}
-                                    checked={
-                                        this.props.targetType === "TRANSFER"
-                                    }
-                                    onChange={this.props.setTargetType(
-                                        "TRANSFER"
-                                    )}
+                                    checked={this.props.targetType === "TRANSFER"}
+                                    onChange={this.props.setTargetType("TRANSFER")}
                                     value="TRANSFER"
                                     name="target-type-transfer"
                                 />
@@ -296,8 +277,7 @@ class TargetSelection extends React.Component {
                             // target input error
                             this.props.targetError ||
                             // no target input value yet
-                            (this.props.target.length <= 0 &&
-                                this.props.targetType !== "TRANSFER") ||
+                            (this.props.target.length <= 0 && this.props.targetType !== "TRANSFER") ||
                             // already loading
                             this.props.payLoading
                         }

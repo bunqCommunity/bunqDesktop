@@ -40,11 +40,7 @@ const classStyles = theme => ({
     badge: {
         top: -8,
         right: -8,
-        border: `2px solid ${
-            theme.palette.type === "light"
-                ? theme.palette.grey[200]
-                : theme.palette.grey[900]
-        }`
+        border: `2px solid ${theme.palette.type === "light" ? theme.palette.grey[200] : theme.palette.grey[900]}`
     }
 });
 
@@ -67,11 +63,7 @@ class BunqMeTabListItem extends React.Component {
 
     cancelTab = () => {
         const { bunqMeTab, user, accounts } = this.props;
-        this.props.bunqMeTabPut(
-            user.id,
-            bunqMeTab.monetary_account_id,
-            bunqMeTab.id
-        );
+        this.props.bunqMeTabPut(user.id, bunqMeTab.monetary_account_id, bunqMeTab.id);
     };
 
     render() {
@@ -100,19 +92,14 @@ class BunqMeTabListItem extends React.Component {
         const numberOfPayments = bunqMeTabPayments.length;
 
         // calculate how much was paid to this inquiry
-        const totalPaidAmount = bunqMeTabPayments.reduce(
-            (accumulator, bunqMeTabInquiry) => {
-                const payment = bunqMeTabInquiry.payment.Payment;
-                const paidAmount = parseFloat(payment.amount.value);
-                return accumulator + paidAmount;
-            },
-            0
-        );
+        const totalPaidAmount = bunqMeTabPayments.reduce((accumulator, bunqMeTabInquiry) => {
+            const payment = bunqMeTabInquiry.payment.Payment;
+            const paidAmount = parseFloat(payment.amount.value);
+            return accumulator + paidAmount;
+        }, 0);
 
         // format the amounts
-        const formattedInquiredAmount = formatMoney(
-            bunqMeTab.bunqme_tab_entry.amount_inquired.value
-        );
+        const formattedInquiredAmount = formatMoney(bunqMeTab.bunqme_tab_entry.amount_inquired.value);
         const formattedTotalPaid = formatMoney(totalPaidAmount);
 
         const merchantList = bunqMeTab.bunqme_tab_entry.merchant_available
@@ -147,16 +134,10 @@ class BunqMeTabListItem extends React.Component {
         return [
             <ListItem button onClick={this.toggleExtraInfo}>
                 {itemAvatar}
-                <ListItemText
-                    primary={bunqMeTab.bunqme_tab_entry.description}
-                    secondary={secondaryText}
-                />
+                <ListItemText primary={bunqMeTab.bunqme_tab_entry.description} secondary={secondaryText} />
                 <ListItemSecondaryAction style={{ marginTop: -16 }}>
                     <AccountQRFullscreen mode="HIDDEN" text={shareUrl} />
-                    <CopyToClipboard
-                        text={shareUrl}
-                        onCopy={this.props.copiedValue("the bunq tab url")}
-                    >
+                    <CopyToClipboard text={shareUrl} onCopy={this.props.copiedValue("the bunq tab url")}>
                         <IconButton aria-label="Copy the share url">
                             <CopyIcon />
                         </IconButton>
@@ -171,47 +152,28 @@ class BunqMeTabListItem extends React.Component {
             </ListItem>,
             <Collapse in={this.state.extraInfoOpen} unmountOnExit>
                 <ListItem dense>
-                    <ListItemText
-                        primary={t("Created")}
-                        secondary={createdDate}
-                    />
+                    <ListItemText primary={t("Created")} secondary={createdDate} />
                 </ListItem>
 
                 {updatedDate !== createdDate ? (
                     <ListItem dense>
-                        <ListItemText
-                            primary={t("Updated")}
-                            secondary={updatedDate}
-                        />
+                        <ListItemText primary={t("Updated")} secondary={updatedDate} />
                     </ListItem>
                 ) : null}
 
                 <ListItem dense>
-                    <ListItemText
-                        primary={t("Expires")}
-                        secondary={expiryDate}
-                    />
+                    <ListItemText primary={t("Expires")} secondary={expiryDate} />
                 </ListItem>
 
                 <ListItem dense>
-                    <ListItemText
-                        primary={t("Available merchants")}
-                        secondary={merchantList}
-                    />
+                    <ListItemText primary={t("Available merchants")} secondary={merchantList} />
                 </ListItem>
 
                 <ListItem button dense onClick={this.togglePayments}>
-                    <ListItemText
-                        primary={t("Number of payments")}
-                        secondary={"" + numberOfPayments}
-                    />
+                    <ListItemText primary={t("Number of payments")} secondary={"" + numberOfPayments} />
                     <ListItemSecondaryAction>
                         <Icon color="action">
-                            {this.state.paymentsOpen ? (
-                                <ArrowUpwardIcon />
-                            ) : (
-                                <ArrowDownwardIcon />
-                            )}
+                            {this.state.paymentsOpen ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
                         </Icon>
                     </ListItemSecondaryAction>
                 </ListItem>
@@ -233,10 +195,7 @@ class BunqMeTabListItem extends React.Component {
                         <ListItemSecondaryAction>
                             <TranslateButton
                                 variant="raised"
-                                disabled={
-                                    this.props.bunqMeTabLoading ||
-                                    this.props.bunqMeTabsLoading
-                                }
+                                disabled={this.props.bunqMeTabLoading || this.props.bunqMeTabsLoading}
                                 color="secondary"
                                 onClick={this.cancelTab}
                             >
@@ -246,9 +205,7 @@ class BunqMeTabListItem extends React.Component {
                     </ListItem>
                 ) : null}
             </Collapse>,
-            <Divider
-                style={{ marginBottom: this.state.paymentsOpen ? 12 : 0 }}
-            />
+            <Divider style={{ marginBottom: this.state.paymentsOpen ? 12 : 0 }} />
         ];
     }
 }
@@ -257,6 +214,4 @@ BunqMeTabListItem.defaultProps = {
     minimalDisplay: false
 };
 
-export default withTheme()(
-    translate("translations")(withStyles(classStyles)(BunqMeTabListItem))
-);
+export default withTheme()(translate("translations")(withStyles(classStyles)(BunqMeTabListItem)));

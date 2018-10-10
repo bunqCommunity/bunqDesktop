@@ -84,22 +84,11 @@ class AccountRuleItem extends React.Component<IPropTypes, any> {
                         <Select
                             value={rule.paymentType}
                             onChange={this.handlePaymentTypeChange}
-                            input={
-                                <Input
-                                    name="payment-type"
-                                    id="payment-type-helper"
-                                />
-                            }
+                            input={<Input name="payment-type" id="payment-type-helper" />}
                         >
-                            <TranslateMenuItem value={"RECEIVES"}>
-                                Receives money
-                            </TranslateMenuItem>
-                            <TranslateMenuItem value={"SENDS"}>
-                                Sends money
-                            </TranslateMenuItem>
-                            <TranslateMenuItem value={"ALL"}>
-                                All payments
-                            </TranslateMenuItem>
+                            <TranslateMenuItem value={"RECEIVES"}>Receives money</TranslateMenuItem>
+                            <TranslateMenuItem value={"SENDS"}>Sends money</TranslateMenuItem>
+                            <TranslateMenuItem value={"ALL"}>All payments</TranslateMenuItem>
                         </Select>
                     </FormControl>
                 </TableCell>

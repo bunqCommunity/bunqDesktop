@@ -9,10 +9,8 @@ export const EXCLUDED_ACCOUNT_IDS = "BUNQDESKTOP_EXCLUDED_ACCOUNT_IDS";
 const excludedAccountIdsStored = settings.get(EXCLUDED_ACCOUNT_IDS);
 const selectedAccountStored = store.get(SELECTED_ACCOUNT_LOCAION);
 
-const selectedAccountDefault =
-    selectedAccountStored !== undefined ? selectedAccountStored : false;
-const excludedAccountIdsDefault =
-    excludedAccountIdsStored !== undefined ? excludedAccountIdsStored : [];
+const selectedAccountDefault = selectedAccountStored !== undefined ? selectedAccountStored : false;
+const excludedAccountIdsDefault = excludedAccountIdsStored !== undefined ? excludedAccountIdsStored : [];
 
 export const defaultState = {
     accounts: [],
@@ -50,9 +48,7 @@ export default (state = defaultState, action) => {
 
         case "ACCOUNTS_EXCLUDE_FROM_TOTAL":
             const currentAccountIds = [...state.excluded_account_ids];
-            const existingIndex = currentAccountIds.indexOf(
-                action.payload.account_id
-            );
+            const existingIndex = currentAccountIds.indexOf(action.payload.account_id);
 
             if (existingIndex === -1) {
                 // doesn't exist, add account id to excluded list
@@ -68,9 +64,7 @@ export default (state = defaultState, action) => {
             };
         case "ACCOUNTS_INCLUDE_IN_TOTAL":
             const currentAccountIds2 = [...state.excluded_account_ids];
-            const existingIndex2 = currentAccountIds2.indexOf(
-                action.payload.account_id
-            );
+            const existingIndex2 = currentAccountIds2.indexOf(action.payload.account_id);
 
             if (existingIndex2 > -1) {
                 // exists, remove the id from the excluded list

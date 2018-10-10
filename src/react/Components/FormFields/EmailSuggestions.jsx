@@ -41,12 +41,7 @@ class EmailSuggestions extends React.Component {
     };
 
     render() {
-        const {
-            wrapperStyle = {},
-            emails = [],
-            onSelectItem,
-            ...otherProps
-        } = this.props;
+        const { wrapperStyle = {}, emails = [], onSelectItem, ...otherProps } = this.props;
 
         let count = 0;
 
@@ -71,10 +66,8 @@ class EmailSuggestions extends React.Component {
             // ignore item if it is already a direct match
             if (inputValue === inputEmail) return false;
 
-            const nameMatches =
-                inputName.length > 0 && inputName.includes(inputValue);
-            const emailMatches =
-                inputEmail.length > 0 && inputEmail.includes(inputValue);
+            const nameMatches = inputName.length > 0 && inputName.includes(inputValue);
+            const emailMatches = inputEmail.length > 0 && inputEmail.includes(inputValue);
 
             // check if either name or email matches the search query
             if (!nameMatches && !emailMatches) return false;
@@ -86,29 +79,12 @@ class EmailSuggestions extends React.Component {
 
         return (
             <div style={{ ...styles.container, ...wrapperStyle }}>
-                <TextField
-                    key="textfield"
-                    type="email"
-                    onBlur={this.onBlur}
-                    onFocus={this.onFocus}
-                    {...otherProps}
-                />
+                <TextField key="textfield" type="email" onBlur={this.onBlur} onFocus={this.onFocus} {...otherProps} />
                 {this.state.visible ? (
-                    <Paper
-                        key="paper-wrapper"
-                        style={styles.suggestionsWrapper}
-                        square
-                    >
+                    <Paper key="paper-wrapper" style={styles.suggestionsWrapper} square>
                         {filteredEmails.map((email, index) => (
-                            <ListItem
-                                key={index}
-                                button
-                                onClick={this.onSelectItem(email)}
-                            >
-                                <ListItemText
-                                    primary={email.email}
-                                    secondary={email.name}
-                                />
+                            <ListItem key={index} button onClick={this.onSelectItem(email)}>
+                                <ListItemText primary={email.email} secondary={email.name} />
                             </ListItem>
                         ))}
                     </Paper>

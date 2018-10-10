@@ -64,22 +64,12 @@ class Disclaimer extends React.Component {
         const { t, analyticsEnabled } = this.props;
         const { hasReadWarning, clicked } = this.state;
 
-        if (
-            clicked === true &&
-            hasReadWarning === true &&
-            typeof analyticsEnabled !== "undefined"
-        ) {
+        if (clicked === true && hasReadWarning === true && typeof analyticsEnabled !== "undefined") {
             return <Redirect to="/login" />;
         }
 
         return (
-            <Grid
-                container
-                spacing={16}
-                justify={"center"}
-                alignItems={"center"}
-                style={styles.wrapperContainer}
-            >
+            <Grid container spacing={16} justify={"center"} alignItems={"center"} style={styles.wrapperContainer}>
                 <Helmet>
                     <title>{`bunqDesktop - ${t("Disclaimer")}`}</title>
                 </Helmet>
@@ -90,39 +80,26 @@ class Disclaimer extends React.Component {
                             <Typography variant="headline">
                                 <DesktopIcon /> bunqDesktop
                             </Typography>
-                            <Typography variant="body2">
-                                {t("DisclaimerBunqDesktopExplanation")}
-                            </Typography>
+                            <Typography variant="body2">{t("DisclaimerBunqDesktopExplanation")}</Typography>
                             <br />
 
                             <Typography variant="headline">
                                 <BuildIcon /> Development
                             </Typography>
-                            <Typography variant="body2">
-                                {t("DisclaimerActiveDevelopmentWarning")}
-                            </Typography>
+                            <Typography variant="body2">{t("DisclaimerActiveDevelopmentWarning")}</Typography>
                             <br />
 
                             <Typography variant="headline">
                                 <LockIcon /> Password
                             </Typography>
-                            <Typography variant="body2">
-                                {t("DisclaimerPasswordWarningPart1")}
-                            </Typography>
-                            <Typography variant="body2">
-                                {t("DisclaimerPasswordWarningPart2")}
-                            </Typography>
+                            <Typography variant="body2">{t("DisclaimerPasswordWarningPart1")}</Typography>
+                            <Typography variant="body2">{t("DisclaimerPasswordWarningPart2")}</Typography>
 
                             <FormControlLabel
                                 control={
-                                    <Checkbox
-                                        checked={analyticsEnabled !== false}
-                                        onChange={this.toggleAnalytics}
-                                    />
+                                    <Checkbox checked={analyticsEnabled !== false} onChange={this.toggleAnalytics} />
                                 }
-                                label={t(
-                                    "Allow basic and anonymous Google Analytics tracking"
-                                )}
+                                label={t("Allow basic and anonymous Google Analytics tracking")}
                             />
 
                             <div style={{ textAlign: "center" }}>

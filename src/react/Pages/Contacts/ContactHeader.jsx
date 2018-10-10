@@ -43,17 +43,10 @@ const ContactHeader = props => {
         contacts[contactType] = [];
     }
 
-    const contactsCount = contacts[contactType]
-        ? contacts[contactType].length
-        : 0;
+    const contactsCount = contacts[contactType] ? contacts[contactType].length : 0;
 
     return (
-        <Grid
-            container
-            alignItems={"center"}
-            spacing={8}
-            style={styles.container}
-        >
+        <Grid container alignItems={"center"} spacing={8} style={styles.container}>
             <Grid item xs={12} sm={4} md={6} style={styles.titleWrapper}>
                 <img style={styles.logo} src={props.logo} />
 
@@ -100,29 +93,18 @@ const ContactHeader = props => {
 
             <Grid item xs={8} sm={10}>
                 {contactsCount > 0 ? (
-                    <Typography
-                        variant={"subheading"}
-                        style={styles.contactCount}
-                    >
+                    <Typography variant={"subheading"} style={styles.contactCount}>
                         {`${contactsCount} ${t("contacts")}`}
                     </Typography>
                 ) : (
-                    <TranslateTypography
-                        variant={"subheading"}
-                        style={styles.contactCount}
-                    >
+                    <TranslateTypography variant={"subheading"} style={styles.contactCount}>
                         No stored contacts
                     </TranslateTypography>
                 )}
             </Grid>
             <Grid item xs={4} sm={2}>
                 {props.questionLink ? (
-                    <IconButton
-                        component="a"
-                        className="js-external-link"
-                        rel="noopener"
-                        href={props.questionLink}
-                    >
+                    <IconButton component="a" className="js-external-link" rel="noopener" href={props.questionLink}>
                         <HelpIcon />
                     </IconButton>
                 ) : null}

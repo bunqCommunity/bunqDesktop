@@ -21,14 +21,9 @@ const DraftAccess = props => {
                 <GroupIcon style={{ color: "#03a9f4" }} />
             </Avatar>
 
-            <ListItemText
-                primary={props.t("Draft only")}
-                secondary={props.t("Others can prepare payments")}
-            />
+            <ListItemText primary={props.t("Draft only")} secondary={props.t("Others can prepare payments")} />
 
-            <ListItemSecondaryAction>
-                {props.secondaryActions}
-            </ListItemSecondaryAction>
+            <ListItemSecondaryAction>{props.secondaryActions}</ListItemSecondaryAction>
         </ListItem>
     );
 };

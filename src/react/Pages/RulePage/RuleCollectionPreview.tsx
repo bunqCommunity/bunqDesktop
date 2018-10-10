@@ -41,9 +41,7 @@ class RuleCollectionPreview extends React.Component<any, any> {
 
     componentDidUpdate(lastProps, lastState) {
         // if changed, we reload the worker info
-        if (
-            lastProps.ruleCollectionUpdated !== this.props.ruleCollectionUpdated
-        ) {
+        if (lastProps.ruleCollectionUpdated !== this.props.ruleCollectionUpdated) {
             if (this.state.visible) {
                 this.triggerWorkerEvent(this.props);
             }
@@ -76,35 +74,28 @@ class RuleCollectionPreview extends React.Component<any, any> {
     render() {
         const t = this.props.t;
         const toggleDisplay = (
-            <Button
-                variant="raised"
-                style={styles.toggleVisibilityButton}
-                onClick={this.handleVisibilityToggle}
-            >
+            <Button variant="raised" style={styles.toggleVisibilityButton} onClick={this.handleVisibilityToggle}>
                 {this.state.visible ? t("Hide preview") : t("Show preview")}
             </Button>
         );
 
         let previewContent = null;
         if (this.state.visible) {
-            const ruleCollection: RuleCollection | null = this.props
-                .ruleCollection;
+            const ruleCollection: RuleCollection | null = this.props.ruleCollection;
             if (ruleCollection !== null) {
-                const items: any[] = this.state.eventResults.map(
-                    (event: EventObjectResult, index: any) => {
-                        if (this.state.showAll || event.matches) {
-                            return (
-                                <RuleCollectionPreviewItem
-                                    openSnackbar={this.props.openSnackbar}
-                                    event={event}
-                                    key={index}
-                                    t={t}
-                                />
-                            );
-                        }
-                        return null;
+                const items: any[] = this.state.eventResults.map((event: EventObjectResult, index: any) => {
+                    if (this.state.showAll || event.matches) {
+                        return (
+                            <RuleCollectionPreviewItem
+                                openSnackbar={this.props.openSnackbar}
+                                event={event}
+                                key={index}
+                                t={t}
+                            />
+                        );
                     }
-                );
+                    return null;
+                });
 
                 const decreasedListSize = items.slice(0, 100);
                 previewContent = (
@@ -120,9 +111,7 @@ class RuleCollectionPreview extends React.Component<any, any> {
                                     }
                                 />
                             }
-                            label={t(
-                                "Show all events, not just the matching ones"
-                            )}
+                            label={t("Show all events, not just the matching ones")}
                         />
                         <List>{decreasedListSize}</List>
                     </Paper>

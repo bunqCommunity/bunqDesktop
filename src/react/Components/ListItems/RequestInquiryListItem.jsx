@@ -49,9 +49,7 @@ class RequestInquiryListItem extends React.Component {
 
         let imageUUID = false;
         if (requestInquiry.counterparty_alias.avatar) {
-            imageUUID =
-                requestInquiry.counterparty_alias.avatar.image[0]
-                    .attachment_public_uuid;
+            imageUUID = requestInquiry.counterparty_alias.avatar.image[0].attachment_public_uuid;
         }
         const displayName = requestInquiry.counterparty_alias.display_name;
         const paymentAmount = requestInquiry.getAmount();
@@ -62,36 +60,18 @@ class RequestInquiryListItem extends React.Component {
             <ListItem
                 button
                 component={NavLink}
-                to={`/request-inquiry-info/${requestInquiry.id}/${
-                    requestInquiry.monetary_account_id
-                }`}
+                to={`/request-inquiry-info/${requestInquiry.id}/${requestInquiry.monetary_account_id}`}
             >
                 <Avatar style={styles.smallAvatar}>
-                    <LazyAttachmentImage
-                        height={50}
-                        BunqJSClient={this.props.BunqJSClient}
-                        imageUUID={imageUUID}
-                    />
+                    <LazyAttachmentImage height={50} BunqJSClient={this.props.BunqJSClient} imageUUID={imageUUID} />
                 </Avatar>
-                <ListItemText
-                    style={styles.listItemText}
-                    primary={displayName}
-                    secondary={paymentLabel}
-                />
+                <ListItemText style={styles.listItemText} primary={displayName} secondary={paymentLabel} />
                 <ListItemSecondaryAction style={{ marginTop: -16 }}>
-                    <MoneyAmountLabel
-                        style={styles.moneyAmountLabel}
-                        info={requestInquiry}
-                        type="requestInquiry"
-                    >
+                    <MoneyAmountLabel style={styles.moneyAmountLabel} info={requestInquiry} type="requestInquiry">
                         {formattedPaymentAmount}
                     </MoneyAmountLabel>
                 </ListItemSecondaryAction>
-                <CategoryIcons
-                    style={{ marginTop: 26 }}
-                    type={"RequestInquiry"}
-                    id={requestInquiry.id}
-                />
+                <CategoryIcons style={{ marginTop: 26 }} type={"RequestInquiry"} id={requestInquiry.id} />
             </ListItem>,
             <Divider />
         ];

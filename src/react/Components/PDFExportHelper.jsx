@@ -89,10 +89,7 @@ class PDFExportHelper extends React.PureComponent {
                     {personalAlias && (
                         <React.Fragment>
                             <ListItem>
-                                <ListItemText
-                                    primary={t("Account holder")}
-                                    secondary={personalAlias.display_name}
-                                />
+                                <ListItemText primary={t("Account holder")} secondary={personalAlias.display_name} />
                             </ListItem>
                             <Divider style={styles.divider} />
 
@@ -107,30 +104,20 @@ class PDFExportHelper extends React.PureComponent {
                     )}
 
                     <ListItem>
-                        <ListItemText
-                            primary={t("Amount")}
-                            secondary={formattedPaymentAmount}
-                        />
+                        <ListItemText primary={t("Amount")} secondary={formattedPaymentAmount} />
                     </ListItem>
                     <Divider style={styles.divider} />
 
                     <ListItem>
                         <ListItemText
                             primary={t("Description")}
-                            secondary={
-                                payment.description
-                                    ? payment.description
-                                    : " - "
-                            }
+                            secondary={payment.description ? payment.description : " - "}
                         />
                     </ListItem>
                     <Divider style={styles.divider} />
 
                     <ListItem>
-                        <ListItemText
-                            primary={t("Date created")}
-                            secondary={paymentDate}
-                        />
+                        <ListItemText primary={t("Date created")} secondary={paymentDate} />
                     </ListItem>
                     <Divider style={styles.divider} />
 
@@ -138,10 +125,7 @@ class PDFExportHelper extends React.PureComponent {
                         paymentDate !== paymentDateUpdated && (
                             <React.Fragment>
                                 <ListItem>
-                                    <ListItemText
-                                        primary={t("Date updated")}
-                                        secondary={paymentDateUpdated}
-                                    />
+                                    <ListItemText primary={t("Date updated")} secondary={paymentDateUpdated} />
                                 </ListItem>
 
                                 <Divider style={styles.divider} />
@@ -149,10 +133,7 @@ class PDFExportHelper extends React.PureComponent {
                         )}
 
                     <ListItem>
-                        <ListItemText
-                            primary={t("Counterparty name")}
-                            secondary={counterPartyAlias.display_name}
-                        />
+                        <ListItemText primary={t("Counterparty name")} secondary={counterPartyAlias.display_name} />
                     </ListItem>
 
                     {counterPartyIban && (
@@ -173,10 +154,7 @@ class PDFExportHelper extends React.PureComponent {
                             <Divider style={styles.divider} />
 
                             <ListItem>
-                                <ListItemText
-                                    primary={merchantReferenceText}
-                                    secondary={payment.merchant_reference}
-                                />
+                                <ListItemText primary={merchantReferenceText} secondary={payment.merchant_reference} />
                             </ListItem>
                         </React.Fragment>
                     )}
@@ -186,10 +164,7 @@ class PDFExportHelper extends React.PureComponent {
                             <Divider style={styles.divider} />
 
                             <ListItem>
-                                <ListItemText
-                                    primary={mandateIdentifierText}
-                                    secondary={payment.mandate_identifier}
-                                />
+                                <ListItemText primary={mandateIdentifierText} secondary={payment.mandate_identifier} />
                             </ListItem>
                         </React.Fragment>
                     )}
@@ -225,8 +200,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
 
-        applicationSetPDFMode: enabled =>
-            dispatch(applicationSetPDFMode(enabled)),
+        applicationSetPDFMode: enabled => dispatch(applicationSetPDFMode(enabled)),
 
         setTheme: theme => dispatch(setTheme(theme))
     };

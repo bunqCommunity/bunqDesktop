@@ -6,10 +6,7 @@ import { paymentsClear } from "./payments";
 import { requestResponseClear } from "./request_response_info";
 import { requestInquiryClear } from "./request_inquiry_info";
 import { bunqMeTabsClear } from "./bunq_me_tabs";
-import {
-    registrationClearUserInfo,
-    registrationSetOAuthStoredApiKey
-} from "./registration";
+import { registrationClearUserInfo, registrationSetOAuthStoredApiKey } from "./registration";
 
 const USER_ID_LOCATION = "BUNQDESKTOP_USER_ID";
 
@@ -36,9 +33,7 @@ export function userSetInfo(user, type) {
 }
 
 export function userLogin(BunqJSClient, type, updated = false) {
-    const failedMessage = window.t(
-        "We failed to load the information for this user"
-    );
+    const failedMessage = window.t("We failed to load the information for this user");
 
     return dispatch => {
         dispatch(userLoading());

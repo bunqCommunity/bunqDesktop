@@ -40,11 +40,7 @@ class CardListItem extends React.Component {
         }
 
         return [
-            <div
-                className="single-card"
-                style={styles.cardWrapper}
-                onClick={this.props.onClick}
-            >
+            <div className="single-card" style={styles.cardWrapper} onClick={this.props.onClick}>
                 <img className="card-image" src={cardImage} />
             </div>
         ];

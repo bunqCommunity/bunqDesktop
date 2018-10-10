@@ -73,18 +73,10 @@ class ApplicationInfo extends React.Component {
         const releaseItems = this.state.releases.slice(0, 10).map(release => {
             const preRelease = release.prerelease ? " (Pre-Release)" : "";
             return (
-                <ListItem
-                    button
-                    component="a"
-                    className="js-external-link"
-                    rel="noopener"
-                    href={release.html_url}
-                >
+                <ListItem button component="a" className="js-external-link" rel="noopener" href={release.html_url}>
                     <ListItemText
                         primary={`v${release.tag_name} ${preRelease}`}
-                        secondary={`${t("Released")}: ${humanReadableDate(
-                            release.published_at
-                        )}`}
+                        secondary={`${t("Released")}: ${humanReadableDate(release.published_at)}`}
                     />
                 </ListItem>
             );
@@ -93,9 +85,7 @@ class ApplicationInfo extends React.Component {
         return (
             <Grid container spacing={24} justify={"center"}>
                 <Helmet>
-                    <title>{`bunqDesktop - ${t(
-                        "Application Information"
-                    )}`}</title>
+                    <title>{`bunqDesktop - ${t("Application Information")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={8}>
@@ -108,32 +98,19 @@ class ApplicationInfo extends React.Component {
                                         rel="noopener"
                                         href="https://github.com/bunqCommunity/bunqDesktop"
                                     >
-                                        <Avatar
-                                            style={styles.avatar}
-                                            src="./images/512x512.png"
-                                        />
+                                        <Avatar style={styles.avatar} src="./images/512x512.png" />
                                     </a>
                                 </div>
 
                                 <div style={{ flexGrow: 1, marginTop: 4 }}>
-                                    <Typography variant={"headline"}>
-                                        bunqDesktop
-                                    </Typography>
+                                    <Typography variant={"headline"}>bunqDesktop</Typography>
                                     <Typography variant={"body2"}>
-                                        {`${t("Version")}: ${
-                                            process.env.CURRENT_VERSION
-                                        }`}
+                                        {`${t("Version")}: ${process.env.CURRENT_VERSION}`}
                                     </Typography>
                                 </div>
 
                                 <div>
-                                    <IconButton
-                                        onClick={() =>
-                                            shell.openItem(
-                                                app.getPath("userData")
-                                            )
-                                        }
-                                    >
+                                    <IconButton onClick={() => shell.openItem(app.getPath("userData"))}>
                                         <FolderIcon />
                                     </IconButton>
                                 </div>
@@ -141,25 +118,18 @@ class ApplicationInfo extends React.Component {
 
                             <Grid item xs={12}>
                                 <Typography variant={"body2"}>
-                                    {t("Application data")}:{" "}
-                                    {app.getPath("userData")}
+                                    {t("Application data")}: {app.getPath("userData")}
                                 </Typography>
                             </Grid>
 
                             <Grid item xs={12}>
-                                <ButtonTranslate
-                                    variant="raised"
-                                    component={NavLink}
-                                    to={"/"}
-                                >
+                                <ButtonTranslate variant="raised" component={NavLink} to={"/"}>
                                     Back
                                 </ButtonTranslate>
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Typography variant={"title"}>
-                                    Releases
-                                </Typography>
+                                <Typography variant={"title"}>Releases</Typography>
                                 <List>{releaseItems}</List>
                             </Grid>
                         </Grid>

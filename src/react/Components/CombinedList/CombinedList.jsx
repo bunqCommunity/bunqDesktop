@@ -31,13 +31,7 @@ import EventData from "./EventData";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { bunqMeTabPut } from "../../Actions/bunq_me_tab";
-import {
-    nextPage,
-    previousPage,
-    setPage,
-    setPageSize,
-    firstPage
-} from "../../Actions/pagination";
+import { nextPage, previousPage, setPage, setPageSize, firstPage } from "../../Actions/pagination";
 
 import { humanReadableDate, UTCDateToLocalDate } from "../../Helpers/Utils";
 import {
@@ -130,15 +124,10 @@ class CombinedList extends React.Component {
         const payments = this.paymentMapper(hiddenPaymentIds);
         const masterCardActions = this.masterCardActionMapper();
         const requestResponses = this.requestResponseMapper(false, true);
-        const {
-            requestInquiryBatches,
-            hiddenRequestInquiryIds
-        } = this.requestInquiryBatchMapper();
+        const { requestInquiryBatches, hiddenRequestInquiryIds } = this.requestInquiryBatchMapper();
 
         // load request inquiries while hiding requests connected to the request inquiry batches
-        const requestInquiries = this.requestInquiryMapper(
-            hiddenRequestInquiryIds
-        );
+        const requestInquiries = this.requestInquiryMapper(hiddenRequestInquiryIds);
         const shareInviteBankInquiries = this.shareInviteBankInquiryMapper();
 
         // combine the list, order by date and group by day
@@ -155,10 +144,7 @@ class CombinedList extends React.Component {
         });
 
         this.setState({
-            totalEvents:
-                this.state.totalEvents < events.length
-                    ? events.length
-                    : this.state.totalEvents,
+            totalEvents: this.state.totalEvents < events.length ? events.length : this.state.totalEvents,
             events: events
         });
     };
@@ -167,8 +153,7 @@ class CombinedList extends React.Component {
         this.props.openSnackbar(`Copied ${type} to your clipboard`);
     };
 
-    toggleEventData = event =>
-        this.setState({ displayEventData: !this.state.displayEventData });
+    toggleEventData = event => this.setState({ displayEventData: !this.state.displayEventData });
 
     getCommonFilters = () => {
         return {
@@ -411,9 +396,7 @@ class CombinedList extends React.Component {
                         />
                     ),
                     filterDate: UTCDateToLocalDate(
-                        requestResponse.status === "ACCEPTED"
-                            ? requestResponse.time_responded
-                            : requestResponse.created
+                        requestResponse.status === "ACCEPTED" ? requestResponse.time_responded : requestResponse.created
                     ),
                     info: requestResponse
                 };
@@ -442,10 +425,7 @@ class CombinedList extends React.Component {
 
                 const requestInquiry = requestInquiryBatch.request_inquiries[0];
                 if (requestInquiry && this.props.accountId) {
-                    if (
-                        requestInquiry.monetary_account_id !==
-                        this.props.accountId
-                    ) {
+                    if (requestInquiry.monetary_account_id !== this.props.accountId) {
                         return false;
                     }
                 }
@@ -476,8 +456,7 @@ class CombinedList extends React.Component {
     };
 
     shareInviteBankInquiryMapper = () => {
-        if (this.props.hiddenTypes.includes("ShareInviteBankInquiry"))
-            return [];
+        if (this.props.hiddenTypes.includes("ShareInviteBankInquiry")) return [];
 
         return this.props.shareInviteBankInquiries
             .filter(
@@ -502,17 +481,14 @@ class CombinedList extends React.Component {
                             user={this.props.user}
                         />
                     ),
-                    filterDate: UTCDateToLocalDate(
-                        shareInviteBankInquiryInfo.created
-                    ),
+                    filterDate: UTCDateToLocalDate(shareInviteBankInquiryInfo.created),
                     info: shareInviteBankInquiry
                 };
             });
     };
 
     shareInviteBankResponseMapper = () => {
-        if (this.props.hiddenTypes.includes("ShareInviteBankResponse"))
-            return [];
+        if (this.props.hiddenTypes.includes("ShareInviteBankResponse")) return [];
 
         return this.props.shareInviteBankResponses
             .filter(
@@ -527,9 +503,7 @@ class CombinedList extends React.Component {
                 return (
                     <ShareInviteBankResponseListItem
                         BunqJSClient={this.props.BunqJSClient}
-                        shareInviteBankResponse={
-                            shareInviteBankResponse.ShareInviteBankResponse
-                        }
+                        shareInviteBankResponse={shareInviteBankResponse.ShareInviteBankResponse}
                         openSnackbar={this.props.openSnackbar}
                         user={this.props.user}
                     />
@@ -587,9 +561,7 @@ class CombinedList extends React.Component {
         });
 
         // set a total amount
-        const filterEnabledText = filterIsDisabled
-            ? ""
-            : ` of ${this.state.totalEvents}`;
+        const filterEnabledText = filterIsDisabled ? "" : ` of ${this.state.totalEvents}`;
 
         let loadingContent =
             this.props.queueLoading ||
@@ -620,27 +592,15 @@ class CombinedList extends React.Component {
 
         // calculate last page
         const unRoundedPageCount = events.length / usedPageSize;
-        const pageCount = unRoundedPageCount
-            ? Math.ceil(unRoundedPageCount)
-            : 1;
+        const pageCount = unRoundedPageCount ? Math.ceil(unRoundedPageCount) : 1;
 
         // create a smaller list based on the page and pageSize
-        const slicedEvents = events.slice(
-            page * usedPageSize,
-            (page + 1) * usedPageSize
-        );
+        const slicedEvents = events.slice(page * usedPageSize, (page + 1) * usedPageSize);
 
         // group by date
         slicedEvents.map(item => {
             const dateFull = new Date(item.filterDate);
-            const date = new Date(
-                dateFull.getFullYear(),
-                dateFull.getMonth(),
-                dateFull.getDate(),
-                0,
-                0,
-                0
-            );
+            const date = new Date(dateFull.getFullYear(), dateFull.getMonth(), dateFull.getDate(), 0, 0, 0);
             if (!groupedItems[date.getTime()]) {
                 groupedItems[date.getTime()] = {
                     date: dateFull,
@@ -663,21 +623,13 @@ class CombinedList extends React.Component {
             }
 
             // get the human readable text for this date group
-            const groupTitleText = humanReadableDate(
-                parseFloat(dateLabel),
-                false
-            );
+            const groupTitleText = humanReadableDate(parseFloat(dateLabel), false);
 
             // add a header component for this date
-            combinedComponentList.push([
-                <ListSubheader>{groupTitleText}</ListSubheader>,
-                <Divider />
-            ]);
+            combinedComponentList.push([<ListSubheader>{groupTitleText}</ListSubheader>, <Divider />]);
 
             // add the components to the list
-            groupedItem.components.map(component =>
-                combinedComponentList.push(component)
-            );
+            groupedItem.components.map(component => combinedComponentList.push(component));
         });
 
         // add the connect requests and pending request responses to the top
@@ -701,21 +653,13 @@ class CombinedList extends React.Component {
                 <ListSubheader>
                     <Grid container>
                         <Grid item xs={1}>
-                            <IconButton
-                                style={styles.button}
-                                onClick={this.props.firstPage}
-                                disabled={page === 0}
-                            >
+                            <IconButton style={styles.button} onClick={this.props.firstPage} disabled={page === 0}>
                                 <SkipPreviousIcon />
                             </IconButton>
                         </Grid>
 
                         <Grid item xs={1}>
-                            <IconButton
-                                style={styles.button}
-                                onClick={this.props.previousPage}
-                                disabled={page === 0}
-                            >
+                            <IconButton style={styles.button} onClick={this.props.previousPage} disabled={page === 0}>
                                 <KeyboardArrowLeftIcon />
                             </IconButton>
                         </Grid>
@@ -735,12 +679,7 @@ class CombinedList extends React.Component {
                         </Grid>
 
                         <Grid item xs={4} style={styles.centerPaginationDiv}>
-                            <TextField
-                                select
-                                style={styles.pageField}
-                                value={pageSize}
-                                onChange={this.setPageSize}
-                            >
+                            <TextField select style={styles.pageField} value={pageSize} onChange={this.setPageSize}>
                                 <MenuItem value={5}>5</MenuItem>
                                 <MenuItem value={10}>10</MenuItem>
                                 <MenuItem value={20}>20</MenuItem>
@@ -773,11 +712,7 @@ class CombinedList extends React.Component {
                     </Grid>
                 </ListSubheader>
 
-                <EventData
-                    t={t}
-                    events={events}
-                    open={this.state.displayEventData}
-                />
+                <EventData t={t} events={events} open={this.state.displayEventData} />
 
                 {loadingContent}
                 {combinedComponentList}
@@ -837,22 +772,17 @@ const mapStateToProps = state => {
         requestInquiries: state.request_inquiries.request_inquiries,
         requestInquiriesLoading: state.request_inquiries.loading,
 
-        requestInquiryBatches:
-            state.request_inquiry_batches.request_inquiry_batches,
+        requestInquiryBatches: state.request_inquiry_batches.request_inquiry_batches,
         requestInquiryBatchLoading: state.request_inquiry_batches.loading,
 
         requestResponses: state.request_responses.request_responses,
         requestResponsesLoading: state.request_responses.loading,
 
-        shareInviteBankInquiries:
-            state.share_invite_bank_inquiries.share_invite_bank_inquiries,
-        shareInviteBankInquiriesLoading:
-            state.share_invite_bank_inquiries.loading,
+        shareInviteBankInquiries: state.share_invite_bank_inquiries.share_invite_bank_inquiries,
+        shareInviteBankInquiriesLoading: state.share_invite_bank_inquiries.loading,
 
-        shareInviteBankResponses:
-            state.share_invite_bank_responses.share_invite_bank_responses,
-        shareInviteBankResponsesLoading:
-            state.share_invite_bank_responses.loading
+        shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
+        shareInviteBankResponsesLoading: state.share_invite_bank_responses.loading
     };
 };
 
@@ -861,9 +791,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
         bunqMeTabPut: (userId, accountId, tabId, status) =>
-            dispatch(
-                bunqMeTabPut(BunqJSClient, userId, accountId, tabId, status)
-            ),
+            dispatch(bunqMeTabPut(BunqJSClient, userId, accountId, tabId, status)),
         firstPage: () => dispatch(firstPage()),
         nextPage: () => dispatch(nextPage()),
         previousPage: () => dispatch(previousPage()),

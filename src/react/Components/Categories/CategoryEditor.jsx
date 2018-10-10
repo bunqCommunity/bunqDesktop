@@ -62,13 +62,8 @@ class CategoryEditor extends React.Component {
             const stateChanges = {
                 categoryId: this.props.selectedCategoryId
             };
-            if (
-                this.props.selectedCategoryId &&
-                this.props.categories[this.props.selectedCategoryId]
-            ) {
-                const categoryInfo = this.props.categories[
-                    this.props.selectedCategoryId
-                ];
+            if (this.props.selectedCategoryId && this.props.categories[this.props.selectedCategoryId]) {
+                const categoryInfo = this.props.categories[this.props.selectedCategoryId];
                 stateChanges.label = categoryInfo.label;
                 stateChanges.icon = categoryInfo.icon;
                 stateChanges.color = categoryInfo.color;
@@ -151,9 +146,7 @@ class CategoryEditor extends React.Component {
                         }
                     />
 
-                    <CustomIcon style={{ color: this.state.color }}>
-                        {this.state.icon}
-                    </CustomIcon>
+                    <CustomIcon style={{ color: this.state.color }}>{this.state.icon}</CustomIcon>
                 </Grid>
 
                 <Grid item xs={12}>
@@ -206,17 +199,12 @@ class CategoryEditor extends React.Component {
 
                     <TranslateButton
                         variant="raised"
-                        disabled={
-                            this.state.labelError ||
-                            this.state.label.length === 0
-                        }
+                        disabled={this.state.labelError || this.state.label.length === 0}
                         color="primary"
                         style={styles.button}
                         onClick={this.saveCategory}
                     >
-                        {this.props.selectedCategoryId
-                            ? t("Update category")
-                            : t("Add new category")}
+                        {this.props.selectedCategoryId ? t("Update category") : t("Add new category")}
                     </TranslateButton>
                 </Grid>
             </Grid>

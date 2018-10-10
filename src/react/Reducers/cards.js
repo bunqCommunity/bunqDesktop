@@ -2,10 +2,7 @@ const store = require("store");
 
 export const SELECTED_CARD_LOCATION = "BUNQDESKTOP_SELECTED_CARD";
 
-const selectedCardDefault =
-    store.get(SELECTED_CARD_LOCATION) !== undefined
-        ? store.get(SELECTED_CARD_LOCATION)
-        : false;
+const selectedCardDefault = store.get(SELECTED_CARD_LOCATION) !== undefined ? store.get(SELECTED_CARD_LOCATION) : false;
 
 export const defaultState = {
     cards: [],

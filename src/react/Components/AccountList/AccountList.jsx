@@ -67,28 +67,14 @@ class AccountList extends React.Component {
 
         if (!this.props.accountsLoading) this.props.accountsUpdate(userId);
 
-        if (
-            !this.props.shareInviteBankInquiriesLoading &&
-            this.props.limitedPermissions === false
-        )
-            this.props.shareInviteBankInquiriesInfoUpdate(
-                userId,
-                selectedAccountId
-            );
+        if (!this.props.shareInviteBankInquiriesLoading && this.props.limitedPermissions === false)
+            this.props.shareInviteBankInquiriesInfoUpdate(userId, selectedAccountId);
 
-        if (!this.props.shareInviteBankResponsesLoading)
-            this.props.shareInviteBankResponsesInfoUpdate(userId);
+        if (!this.props.shareInviteBankResponsesLoading) this.props.shareInviteBankResponsesInfoUpdate(userId);
     };
 
     checkUpdateRequirement = (props = this.props) => {
-        const {
-            accounts,
-            accountsSelectedId,
-            paymentsAccountId,
-            paymentsLoading,
-            initialBunqConnect,
-            user
-        } = props;
+        const { accounts, accountsSelectedId, paymentsAccountId, paymentsLoading, initialBunqConnect, user } = props;
 
         if (!initialBunqConnect) {
             return;
@@ -101,16 +87,11 @@ class AccountList extends React.Component {
                 return account && account.status === "ACTIVE";
             });
 
-            if (firstAccount && firstAccount.id)
-                this.props.selectAccount(firstAccount.id);
+            if (firstAccount && firstAccount.id) this.props.selectAccount(firstAccount.id);
         }
 
         // no accounts loaded
-        if (
-            this.state.fetchedAccounts === false &&
-            props.user.id &&
-            props.accountsLoading === false
-        ) {
+        if (this.state.fetchedAccounts === false && props.user.id && props.accountsLoading === false) {
             this.props.accountsUpdate(props.user.id);
             this.setState({ fetchedAccounts: true });
         }
@@ -130,12 +111,7 @@ class AccountList extends React.Component {
     };
 
     render() {
-        const {
-            t,
-            shareInviteBankResponses,
-            shareInviteBankInquiries,
-            excludedAccountIds = []
-        } = this.props;
+        const { t, shareInviteBankResponses, shareInviteBankInquiries, excludedAccountIds = [] } = this.props;
         const { accountTotalSelectionMode } = this.state;
 
         let accounts = [];
@@ -154,16 +130,12 @@ class AccountList extends React.Component {
 
                     // set external if added or default to false
                     let onClickHandler = this.props.updateExternal
-                        ? (userId, accountId) =>
-                              this.props.updateExternal(userId, accountId)
+                        ? (userId, accountId) => this.props.updateExternal(userId, accountId)
                         : false;
 
                     let secondaryAction = false;
                     if (accountTotalSelectionMode) {
-                        const excluded = excludedAccountIds.some(
-                            excludedAccountId =>
-                                account.id === excludedAccountId
-                        );
+                        const excluded = excludedAccountIds.some(excludedAccountId => account.id === excludedAccountId);
 
                         // overwrite click handler
                         onClickHandler = excluded
@@ -171,12 +143,7 @@ class AccountList extends React.Component {
                             : this.accountExcludeFromTotal(account.id);
 
                         // set a custom secondary action
-                        secondaryAction = (
-                            <Checkbox
-                                checked={!excluded}
-                                onChange={onClickHandler}
-                            />
-                        );
+                        secondaryAction = <Checkbox checked={!excluded} onChange={onClickHandler} />;
                     }
 
                     return (
@@ -185,9 +152,7 @@ class AccountList extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                             denseMode={this.props.denseMode}
                             account={account}
-                            isJoint={
-                                account.accountType === "MonetaryAccountJoint"
-                            }
+                            isJoint={account.accountType === "MonetaryAccountJoint"}
                             shareInviteBankResponses={filteredResponses}
                             secondaryAction={secondaryAction}
                         />
@@ -198,24 +163,18 @@ class AccountList extends React.Component {
         const totalBalance = this.props.accounts.reduce((total, account) => {
             if (account.balance) {
                 if (excludedAccountIds) {
-                    const isExcluded = excludedAccountIds.some(
-                        excludedAccountId => account.id === excludedAccountId
-                    );
+                    const isExcluded = excludedAccountIds.some(excludedAccountId => account.id === excludedAccountId);
 
                     // is excluded so we don't calculate anything
                     if (isExcluded) return total;
                 }
 
                 // get responses for this account
-                const filteredResponses = shareInviteBankResponses.filter(
-                    filterShareInviteBankResponses(account.id)
-                );
+                const filteredResponses = shareInviteBankResponses.filter(filterShareInviteBankResponses(account.id));
 
                 // get budget from this response
                 if (filteredResponses.length > 0) {
-                    const connectBudget = GetShareDetailBudget(
-                        filteredResponses
-                    );
+                    const connectBudget = GetShareDetailBudget(filteredResponses);
 
                     if (connectBudget) return total + parseFloat(connectBudget);
                 }
@@ -231,26 +190,13 @@ class AccountList extends React.Component {
                 <ListItem dense>
                     <ListItemText
                         primary={`${t("Accounts")}: ${accounts.length}`}
-                        secondary={
-                            this.props.hideBalance
-                                ? ""
-                                : `${t("Balance")}: ${formattedTotalBalance}`
-                        }
+                        secondary={this.props.hideBalance ? "" : `${t("Balance")}: ${formattedTotalBalance}`}
                     />
                     <ListItemSecondaryAction>
-                        <IconButton
-                            onClick={this.toggleAccountTotalSelectionMode}
-                        >
-                            {this.state.accountTotalSelectionMode ? (
-                                <CheckBoxIcon />
-                            ) : (
-                                <CheckBoxOutlinedIcon />
-                            )}
+                        <IconButton onClick={this.toggleAccountTotalSelectionMode}>
+                            {this.state.accountTotalSelectionMode ? <CheckBoxIcon /> : <CheckBoxOutlinedIcon />}
                         </IconButton>
-                        <IconButton
-                            onClick={this.updateAccounts}
-                            disabled={this.props.accountsLoading}
-                        >
+                        <IconButton onClick={this.updateAccounts} disabled={this.props.accountsLoading}>
                             <RefreshIcon />
                         </IconButton>
                     </ListItemSecondaryAction>
@@ -259,12 +205,9 @@ class AccountList extends React.Component {
                 {this.props.accountsLoading ? <LinearProgress /> : <Divider />}
                 {accounts}
 
-                {this.props.denseMode === false &&
-                this.props.limitedPermissions === false ? (
+                {this.props.denseMode === false && this.props.limitedPermissions === false ? (
                     <React.Fragment>
-                        <AddAccount
-                            displayAddAccount={this.props.displayAddAccount}
-                        />
+                        <AddAccount displayAddAccount={this.props.displayAddAccount} />
                         <Divider />
                     </React.Fragment>
                 ) : null}
@@ -292,15 +235,11 @@ const mapStateToProps = state => {
         accountsLoading: state.accounts.loading,
         excludedAccountIds: state.accounts.excluded_account_ids,
 
-        shareInviteBankResponses:
-            state.share_invite_bank_responses.share_invite_bank_responses,
-        shareInviteBankResponsesLoading:
-            state.share_invite_bank_responses.loading,
+        shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
+        shareInviteBankResponsesLoading: state.share_invite_bank_responses.loading,
 
-        shareInviteBankInquiries:
-            state.share_invite_bank_inquiries.share_invite_bank_inquiries,
-        shareInviteBankInquiriesLoading:
-            state.share_invite_bank_inquiries.loading,
+        shareInviteBankInquiries: state.share_invite_bank_inquiries.share_invite_bank_inquiries,
+        shareInviteBankInquiriesLoading: state.share_invite_bank_inquiries.loading,
 
         paymentsLoading: state.payments.loading,
         bunqMeTabsLoading: state.bunq_me_tabs.loading,
@@ -313,39 +252,27 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        paymentsUpdate: (userId, accountId) =>
-            dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId)),
+        paymentsUpdate: (userId, accountId) => dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId)),
         requestInquiriesUpdate: (userId, accountId) =>
             dispatch(requestInquiriesUpdate(BunqJSClient, userId, accountId)),
         requestResponsesUpdate: (userId, accountId) =>
             dispatch(requestResponsesUpdate(BunqJSClient, userId, accountId)),
         masterCardActionsUpdate: (userId, accountId) =>
             dispatch(masterCardActionsUpdate(BunqJSClient, userId, accountId)),
-        bunqMeTabsUpdate: (userId, accountId) =>
-            dispatch(bunqMeTabsUpdate(BunqJSClient, userId, accountId)),
+        bunqMeTabsUpdate: (userId, accountId) => dispatch(bunqMeTabsUpdate(BunqJSClient, userId, accountId)),
 
-        accountsUpdate: userId =>
-            dispatch(accountsUpdate(BunqJSClient, userId)),
+        accountsUpdate: userId => dispatch(accountsUpdate(BunqJSClient, userId)),
 
-        accountExcludeFromTotal: accountId =>
-            dispatch(accountExcludeFromTotal(accountId)),
-        accountIncludeInTotal: accountId =>
-            dispatch(accountIncludeInTotal(accountId)),
+        accountExcludeFromTotal: accountId => dispatch(accountExcludeFromTotal(accountId)),
+        accountIncludeInTotal: accountId => dispatch(accountIncludeInTotal(accountId)),
 
         shareInviteBankResponsesInfoUpdate: userId =>
             dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId)),
         shareInviteBankInquiriesInfoUpdate: (userId, accountId) =>
-            dispatch(
-                shareInviteBankInquiriesInfoUpdate(
-                    BunqJSClient,
-                    userId,
-                    accountId
-                )
-            ),
+            dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId, accountId)),
         selectAccount: acountId => dispatch(accountsSelectAccount(acountId)),
 
-        applicationSetLastAutoUpdate: () =>
-            dispatch(applicationSetLastAutoUpdate())
+        applicationSetLastAutoUpdate: () => dispatch(applicationSetLastAutoUpdate())
     };
 };
 

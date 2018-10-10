@@ -65,10 +65,7 @@ class SwitchApiKeys extends React.Component {
     render() {
         const { storedApiKeys, passwordIdentifier, t } = this.props;
 
-        if (
-            this.props.derivedPassword === false &&
-            this.props.registrationLoading === false
-        ) {
+        if (this.props.derivedPassword === false && this.props.registrationLoading === false) {
             // no password set, go to password screen
             return <Redirect to="/password" />;
         }
@@ -82,11 +79,7 @@ class SwitchApiKeys extends React.Component {
                 >
                     <ListItemText
                         primary={storedApiKey.device_name}
-                        secondary={
-                            storedApiKey.environment === "SANDBOX"
-                                ? t("Sandbox key")
-                                : t("Production key")
-                        }
+                        secondary={storedApiKey.environment === "SANDBOX" ? t("Sandbox key") : t("Production key")}
                     />
                     <ListItemSecondaryAction>
                         {storedApiKey.isOAuth ? <Chip label="OAuth" /> : null}
@@ -105,10 +98,7 @@ class SwitchApiKeys extends React.Component {
                 </Helmet>
 
                 <Grid item xs={12} sm={2} md={3}>
-                    <Button
-                        onClick={this.props.history.goBack}
-                        style={styles.btn}
-                    >
+                    <Button onClick={this.props.history.goBack} style={styles.btn}>
                         <ArrowBackIcon />
                     </Button>
                 </Grid>
@@ -118,10 +108,7 @@ class SwitchApiKeys extends React.Component {
                         {apiKeyItems.length > 0 ? (
                             <List>{apiKeyItems}</List>
                         ) : (
-                            <TranslateTypography
-                                variant={"title"}
-                                style={styles.text}
-                            >
+                            <TranslateTypography variant={"title"} style={styles.text}>
                                 No stored API keys set!
                             </TranslateTypography>
                         )}
@@ -129,19 +116,12 @@ class SwitchApiKeys extends React.Component {
                 </Grid>
                 <Grid item xs={12} sm={2} md={3}>
                     <Paper style={styles.paper}>
-                        <TranslateTypography
-                            variant={"body1"}
-                            style={styles.textBody}
-                        >
-                            When you login with an API key it will appear in
-                            this list
+                        <TranslateTypography variant={"body1"} style={styles.textBody}>
+                            When you login with an API key it will appear in this list
                         </TranslateTypography>
-                        <TranslateTypography
-                            variant={"body1"}
-                            style={styles.textBody}
-                        >
-                            A disabled button means the API key was stored with
-                            a different password so it can't be decrypted
+                        <TranslateTypography variant={"body1"} style={styles.textBody}>
+                            A disabled button means the API key was stored with a different password so it can't be
+                            decrypted
                         </TranslateTypography>
                     </Paper>
                 </Grid>
@@ -172,18 +152,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         // attempt to load the api key with our password if one is stored
         loadStoredApiKeys: (index, derivedPassword) =>
-            dispatch(
-                registrationLoadStoredApiKey(
-                    BunqJSClient,
-                    index,
-                    derivedPassword
-                )
-            ),
+            dispatch(registrationLoadStoredApiKey(BunqJSClient, index, derivedPassword)),
 
         logOut: () => dispatch(registrationLogOut(BunqJSClient)),
 
-        removeStoredApiKey: index =>
-            dispatch(registrationRemoveStoredApiKey(index))
+        removeStoredApiKey: index => dispatch(registrationRemoveStoredApiKey(index))
     };
 };
 

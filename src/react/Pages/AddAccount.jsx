@@ -61,13 +61,7 @@ class AddAccount extends React.Component {
         }
         const { user } = this.props;
 
-        this.props.createAccount(
-            user.id,
-            "EUR",
-            this.state.description,
-            this.state.limit + "",
-            this.state.color
-        );
+        this.props.createAccount(user.id, "EUR", this.state.description, this.state.limit + "", this.state.color);
     };
 
     handleChange = name => event => {
@@ -84,10 +78,7 @@ class AddAccount extends React.Component {
     handleChangeFormatted = valueObject => {
         this.setState(
             {
-                limit:
-                    valueObject.formattedValue.length > 0
-                        ? valueObject.floatValue
-                        : ""
+                limit: valueObject.formattedValue.length > 0 ? valueObject.floatValue : ""
             },
             () => {
                 this.validateForm();
@@ -103,8 +94,7 @@ class AddAccount extends React.Component {
         const { description, limit } = this.state;
 
         const limitErrorCondition = limit < 0.01 || limit > 10000;
-        const descriptionErrorCondition =
-            description.length < 1 || description.length > 140;
+        const descriptionErrorCondition = description.length < 1 || description.length > 140;
 
         this.setState({
             limitError: limitErrorCondition,
@@ -116,15 +106,12 @@ class AddAccount extends React.Component {
     render() {
         const t = this.props.t;
 
-        const accountsAmount = this.props.accounts.reduce(
-            (accumulator, account) => {
-                if (account.status === "ACTIVE") {
-                    return accumulator + 1;
-                }
-                return accumulator;
-            },
-            0
-        );
+        const accountsAmount = this.props.accounts.reduce((accumulator, account) => {
+            if (account.status === "ACTIVE") {
+                return accumulator + 1;
+            }
+            return accumulator;
+        }, 0);
 
         return (
             <Grid container spacing={16}>
@@ -133,20 +120,14 @@ class AddAccount extends React.Component {
                 </Helmet>
 
                 <Grid item xs={12} sm={3} md={4}>
-                    <Button
-                        onClick={this.props.history.goBack}
-                        style={styles.btn}
-                    >
+                    <Button onClick={this.props.history.goBack} style={styles.btn}>
                         <ArrowBackIcon />
                     </Button>
                 </Grid>
 
                 <Grid item xs={12} sm={6} md={4}>
                     <Paper style={styles.paper}>
-                        <TypographyTranslate
-                            variant="headline"
-                            style={{ marginBottom: "25px" }}
-                        >
+                        <TypographyTranslate variant="headline" style={{ marginBottom: "25px" }}>
                             Add an account
                         </TypographyTranslate>
 
@@ -169,9 +150,7 @@ class AddAccount extends React.Component {
                         />
 
                         <FormControl error={this.state.limitError}>
-                            <TypographyTranslate type="body2">
-                                Daily limit
-                            </TypographyTranslate>
+                            <TypographyTranslate type="body2">Daily limit</TypographyTranslate>
                             <MoneyFormatInput
                                 id="limit"
                                 onValueChange={this.handleChangeFormatted}
@@ -182,10 +161,7 @@ class AddAccount extends React.Component {
                         <ButtonTranslate
                             variant="raised"
                             color="primary"
-                            disabled={
-                                !this.state.validForm ||
-                                this.props.accountsLoading
-                            }
+                            disabled={!this.state.validForm || this.props.accountsLoading}
                             onClick={this.createAccount}
                             style={styles.btn}
                         >
@@ -197,14 +173,11 @@ class AddAccount extends React.Component {
                 {accountsAmount === 25 ? (
                     <Grid item xs={12} sm={6} md={4}>
                         <Paper style={{ padding: 8 }}>
-                            <TypographyTranslate variant="subheading">
-                                Attention!
-                            </TypographyTranslate>
+                            <TypographyTranslate variant="subheading">Attention!</TypographyTranslate>
                             <TypographyTranslate variant="body2">
-                                Creating a new account when you've reached the
-                                limit of 25 accounts comes at additional costs
-                                You may have to create the new account using the
-                                official bunq app to approve these
+                                Creating a new account when you've reached the limit of 25 accounts comes at additional
+                                costs You may have to create the new account using the official bunq app to approve
+                                these
                             </TypographyTranslate>
                         </Paper>
                     </Grid>
@@ -227,16 +200,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         createAccount: (userId, currency, description, dailyLimit, color) =>
-            dispatch(
-                createAccount(
-                    BunqJSClient,
-                    userId,
-                    currency,
-                    description,
-                    dailyLimit,
-                    color
-                )
-            ),
+            dispatch(createAccount(BunqJSClient, userId, currency, description, dailyLimit, color)),
         openSnackbar: message => dispatch(openSnackbar(message))
     };
 };

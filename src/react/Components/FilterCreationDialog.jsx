@@ -24,14 +24,9 @@ export default props => {
                 button
                 divider
                 component={NavLink}
-                to={`/rule-page/null?value=${
-                    item.description
-                }&field=DESCRIPTION`}
+                to={`/rule-page/null?value=${item.description}&field=DESCRIPTION`}
             >
-                <ListItemText
-                    primary={t("Description")}
-                    secondary={`${valueRuleWithText}: ${item.description}`}
-                />
+                <ListItemText primary={t("Description")} secondary={`${valueRuleWithText}: ${item.description}`} />
             </ListItem>
         );
     }
@@ -41,15 +36,11 @@ export default props => {
                 button
                 divider
                 component={NavLink}
-                to={`/rule-page/null?value=${
-                    item.counterparty_alias.iban
-                }&field=IBAN`}
+                to={`/rule-page/null?value=${item.counterparty_alias.iban}&field=IBAN`}
             >
                 <ListItemText
                     primary={"IBAN"}
-                    secondary={`${valueRuleWithText}: ${formatIban(
-                        item.counterparty_alias.iban
-                    )}`}
+                    secondary={`${valueRuleWithText}: ${formatIban(item.counterparty_alias.iban)}`}
                 />
             </ListItem>
         );
@@ -60,15 +51,11 @@ export default props => {
                 button
                 divider
                 component={NavLink}
-                to={`/rule-page/null?value=${
-                    item.counterparty_alias.display_name
-                }&field=COUNTERPARTY_NAME`}
+                to={`/rule-page/null?value=${item.counterparty_alias.display_name}&field=COUNTERPARTY_NAME`}
             >
                 <ListItemText
                     primary={t("Counterparty name")}
-                    secondary={`${valueRuleWithText}: ${
-                        item.counterparty_alias.display_name
-                    }`}
+                    secondary={`${valueRuleWithText}: ${item.counterparty_alias.display_name}`}
                 />
             </ListItem>
         );
@@ -78,16 +65,8 @@ export default props => {
         const amount = rawAmount < 0 ? rawAmount * -1 : rawAmount;
 
         copyItems.push(
-            <ListItem
-                button
-                divider
-                component={NavLink}
-                to={`/rule-page/null?amount=${amount}&match_type=EXACTLY`}
-            >
-                <ListItemText
-                    primary={t("Amount")}
-                    secondary={`${transactionAmountRuleWithText}: ${amount}`}
-                />
+            <ListItem button divider component={NavLink} to={`/rule-page/null?amount=${amount}&match_type=EXACTLY`}>
+                <ListItemText primary={t("Amount")} secondary={`${transactionAmountRuleWithText}: ${amount}`} />
             </ListItem>
         );
     }
@@ -101,10 +80,7 @@ export default props => {
                         copyItems
                     ) : (
                         <ListItem>
-                            <ListItemText
-                                primary="primary text"
-                                secondary="secondary text"
-                            />
+                            <ListItemText primary="primary text" secondary="secondary text" />
                         </ListItem>
                     )}
                 </List>

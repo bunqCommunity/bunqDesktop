@@ -1,12 +1,6 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 
-export function noteTextsSetInfo(
-    noteTexts,
-    event_type,
-    user_id,
-    account_id,
-    event_id
-) {
+export function noteTextsSetInfo(noteTexts, event_type, user_id, account_id, event_id) {
     return {
         type: "NOTE_TEXTS_SET_INFO",
         payload: {
@@ -19,14 +13,7 @@ export function noteTextsSetInfo(
     };
 }
 
-export function notesTextsAddNote(
-    BunqJSClient,
-    event_type,
-    user_id,
-    account_id,
-    event_id,
-    content
-) {
+export function notesTextsAddNote(BunqJSClient, event_type, user_id, account_id, event_id, content) {
     const failedMessage = window.t("We failed to add a new note");
 
     return dispatch => {
@@ -35,15 +22,7 @@ export function notesTextsAddNote(
             .post(event_type, user_id, account_id, event_id, content)
             .then(() => {
                 // update the notes
-                dispatch(
-                    noteTextsUpdate(
-                        BunqJSClient,
-                        event_type,
-                        user_id,
-                        account_id,
-                        event_id
-                    )
-                );
+                dispatch(noteTextsUpdate(BunqJSClient, event_type, user_id, account_id, event_id));
                 dispatch(noteTextsNotLoading());
             })
             .catch(error => {
@@ -53,15 +32,7 @@ export function notesTextsAddNote(
     };
 }
 
-export function notesTextsUpdateNote(
-    BunqJSClient,
-    event_type,
-    user_id,
-    account_id,
-    event_id,
-    content,
-    note_id
-) {
+export function notesTextsUpdateNote(BunqJSClient, event_type, user_id, account_id, event_id, content, note_id) {
     const failedMessage = window.t("We failed to update the note");
 
     return dispatch => {
@@ -70,15 +41,7 @@ export function notesTextsUpdateNote(
             .put(event_type, user_id, account_id, event_id, content, note_id)
             .then(() => {
                 // update the notes
-                dispatch(
-                    noteTextsUpdate(
-                        BunqJSClient,
-                        event_type,
-                        user_id,
-                        account_id,
-                        event_id
-                    )
-                );
+                dispatch(noteTextsUpdate(BunqJSClient, event_type, user_id, account_id, event_id));
                 dispatch(noteTextsNotLoading());
             })
             .catch(error => {
@@ -88,14 +51,7 @@ export function notesTextsUpdateNote(
     };
 }
 
-export function notesTextsDeleteNote(
-    BunqJSClient,
-    event_type,
-    user_id,
-    account_id,
-    event_id,
-    note_id
-) {
+export function notesTextsDeleteNote(BunqJSClient, event_type, user_id, account_id, event_id, note_id) {
     const failedMessage = window.t("We failed to delete the note");
 
     return dispatch => {
@@ -104,15 +60,7 @@ export function notesTextsDeleteNote(
             .delete(event_type, user_id, account_id, event_id, note_id)
             .then(() => {
                 // update the notes
-                dispatch(
-                    noteTextsUpdate(
-                        BunqJSClient,
-                        event_type,
-                        user_id,
-                        account_id,
-                        event_id
-                    )
-                );
+                dispatch(noteTextsUpdate(BunqJSClient, event_type, user_id, account_id, event_id));
                 dispatch(noteTextsNotLoading());
             })
             .catch(error => {
@@ -122,13 +70,7 @@ export function notesTextsDeleteNote(
     };
 }
 
-export function noteTextsUpdate(
-    BunqJSClient,
-    event_type,
-    user_id,
-    account_id,
-    event_id
-) {
+export function noteTextsUpdate(BunqJSClient, event_type, user_id, account_id, event_id) {
     const failedMessage = window.t("We failed to load your notes");
 
     return dispatch => {
@@ -136,15 +78,7 @@ export function noteTextsUpdate(
         BunqJSClient.api.noteText
             .list(event_type, user_id, account_id, event_id)
             .then(noteTexts => {
-                dispatch(
-                    noteTextsSetInfo(
-                        noteTexts,
-                        event_type,
-                        user_id,
-                        account_id,
-                        event_id
-                    )
-                );
+                dispatch(noteTextsSetInfo(noteTexts, event_type, user_id, account_id, event_id));
                 dispatch(noteTextsNotLoading());
             })
             .catch(error => {

@@ -5,10 +5,7 @@ export type Amount = {
     currency: string | "EUR";
 };
 
-export type AccountType =
-    | "MonetaryAccountLight"
-    | "MonetaryAccountBank"
-    | "MonetaryAccountJoint";
+export type AccountType = "MonetaryAccountLight" | "MonetaryAccountBank" | "MonetaryAccountJoint";
 
 export type Avatar = {
     uuid: string;
@@ -80,12 +77,7 @@ export type ExtendedAlias = Alias & {
     country: string;
 };
 
-export type EventTypes =
-    | "Payment"
-    | "BunqMeTab"
-    | "RequestInquiry"
-    | "RequestResponse"
-    | "MasterCardAction";
+export type EventTypes = "Payment" | "BunqMeTab" | "RequestInquiry" | "RequestResponse" | "MasterCardAction";
 
 export type EventObject = {
     type: EventTypes;
@@ -117,10 +109,7 @@ export type LabelCard = {
 
 export type MonetaryAccountSetting = {
     color: string;
-    default_avatar_status:
-        | "AVATAR_DEFAULT"
-        | "AVATAR_CUSTOM"
-        | "AVATAR_UNDETERMINED";
+    default_avatar_status: "AVATAR_DEFAULT" | "AVATAR_CUSTOM" | "AVATAR_UNDETERMINED";
     restriction_chat: "ALLOW_INCOMING" | "BLOCK_INCOMING";
 };
 
@@ -136,24 +125,9 @@ export type PaymentAlias = {
     switft_account_number: null | string;
 };
 
-export type PaymentSubType =
-    | "PAYMENT"
-    | "WITHDRAWAL"
-    | "REVERSAL"
-    | "REQUEST"
-    | "BILLING"
-    | "SCT"
-    | "SDD"
-    | "NLO";
+export type PaymentSubType = "PAYMENT" | "WITHDRAWAL" | "REVERSAL" | "REQUEST" | "BILLING" | "SCT" | "SDD" | "NLO";
 
-export type PaymentType =
-    | "MASTERCARD"
-    | "BUNQ"
-    | "EBA_SCT"
-    | "EBA_SDD"
-    | "IDEAL"
-    | "SWIFT"
-    | "FIS";
+export type PaymentType = "MASTERCARD" | "BUNQ" | "EBA_SCT" | "EBA_SDD" | "IDEAL" | "SWIFT" | "FIS";
 
 export type RequestStatus = "ACCEPTED" | "PENDING" | "REJECTED" | "REVOKED";
 
@@ -164,18 +138,9 @@ export type RequestSplitTheBill =
     | "RequestResponse"
     | "MasterCardAction";
 
-export type RequestResponseType =
-    | "DIRECT_DEBIT"
-    | "DIRECT_DEBIT_B2B"
-    | "IDEAL"
-    | "SOFORT"
-    | "INTERNAL";
+export type RequestResponseType = "DIRECT_DEBIT" | "DIRECT_DEBIT_B2B" | "IDEAL" | "SOFORT" | "INTERNAL";
 
-export type RequestResponseSubType =
-    | "ONCE"
-    | "RECURRING"
-    | "DIRECT_DEBIT"
-    | "NONE";
+export type RequestResponseSubType = "ONCE" | "RECURRING" | "DIRECT_DEBIT" | "NONE";
 
 export type RequestReferenceSplitTheBill = {
     type: "RequestInquiry" | "RequestInquiryBatch";
@@ -190,8 +155,4 @@ export type RuleCollectionList = {
 };
 
 // all valid rule types
-export type RuleTypes =
-    | "VALUE"
-    | "TRANSACTION_AMOUNT"
-    | "ITEM_TYPE"
-    | "ACCOUNT_TYPE";
+export type RuleTypes = "VALUE" | "TRANSACTION_AMOUNT" | "ITEM_TYPE" | "ACCOUNT_TYPE";

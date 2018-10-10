@@ -27,14 +27,8 @@ import FullAccess from "../../Components/ListItems/ShareInviteBankTypes/FullAcce
 import DraftAccess from "../../Components/ListItems/ShareInviteBankTypes/DraftAccess";
 import ShowOnly from "../../Components/ListItems/ShareInviteBankTypes/ShowOnly";
 
-import {
-    filterShareInviteBankInquiries,
-    filterShareInviteBankResponses
-} from "../../Helpers/DataFilters";
-import {
-    getInternationalFormat,
-    isValidPhonenumber
-} from "../../Helpers/PhoneLib";
+import { filterShareInviteBankInquiries, filterShareInviteBankResponses } from "../../Helpers/DataFilters";
+import { getInternationalFormat, isValidPhonenumber } from "../../Helpers/PhoneLib";
 import { getUTCDate } from "../../Helpers/Utils";
 
 import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_responses";
@@ -120,18 +114,11 @@ class Connect extends React.Component {
         const nextAccountId = parseFloat(nextProps.match.params.accountId);
         const accountId = parseFloat(this.props.match.params.accountId);
 
-        if (
-            accountsLoading === false &&
-            initialBunqConnect &&
-            nextAccountId !== accountId
-        ) {
+        if (accountsLoading === false && initialBunqConnect && nextAccountId !== accountId) {
             this.props.accountsUpdate(user.id);
 
-            if(this.props.limitedPermissions === false){
-                this.props.shareInviteBankInquiriesInfoUpdate(
-                    user.id,
-                    nextAccountId
-                );
+            if (this.props.limitedPermissions === false) {
+                this.props.shareInviteBankInquiriesInfoUpdate(user.id, nextAccountId);
             }
             this.props.shareInviteBankResponsesInfoUpdate(user.id);
         }
@@ -164,10 +151,7 @@ class Connect extends React.Component {
     handleChangeFormatted = name => valueObject => {
         this.setState(
             {
-                [name]:
-                    valueObject.formattedValue.length > 0
-                        ? valueObject.floatValue
-                        : ""
+                [name]: valueObject.formattedValue.length > 0 ? valueObject.floatValue : ""
             },
             () => {
                 this.validateForm();
@@ -260,14 +244,7 @@ class Connect extends React.Component {
     };
 
     validateForm = () => {
-        const {
-            budget,
-            target,
-            targets,
-            targetType,
-            timeLimit,
-            setTimeLimit
-        } = this.state;
+        const { budget, target, targets, targetType, timeLimit, setTimeLimit } = this.state;
 
         const budgetErrorCondition = budget < 0.01 || budget > 10000;
         const timeLimitError = setTimeLimit === true && timeLimit === null;
@@ -286,8 +263,7 @@ class Connect extends React.Component {
 
         this.setState({
             budgetError: budgetErrorCondition,
-            validForm:
-                !budgetErrorCondition && !timeLimitError && targets.length > 0
+            validForm: !budgetErrorCondition && !timeLimitError && targets.length > 0
         });
     };
 
@@ -298,10 +274,7 @@ class Connect extends React.Component {
 
             // set timelimit if set
             if (this.state.accessLevel !== "draft" && this.state.setTimeLimit) {
-                const timeFormatted = format(
-                    getUTCDate(this.state.timeLimit),
-                    "YYYY-MM-dd HH:mm:ss"
-                );
+                const timeFormatted = format(getUTCDate(this.state.timeLimit), "YYYY-MM-dd HH:mm:ss");
                 shareOptions = {
                     end_date: timeFormatted
                 };
@@ -367,9 +340,7 @@ class Connect extends React.Component {
                         value: target.value.trim()
                     };
                 } else if (validPhone) {
-                    const formattedNumber = getInternationalFormat(
-                        target.value
-                    );
+                    const formattedNumber = getInternationalFormat(target.value);
                     if (formattedNumber) {
                         targetInfo = {
                             type: "PHONE_NUMBER",
@@ -393,12 +364,7 @@ class Connect extends React.Component {
     };
 
     render() {
-        const {
-            accounts,
-            shareInviteBankResponses,
-            shareInviteBankInquiries,
-            t
-        } = this.props;
+        const { accounts, shareInviteBankResponses, shareInviteBankInquiries, t } = this.props;
 
         const accountId = parseFloat(this.props.match.params.accountId);
         if (!accountId) return <Redirect to="/" />;
@@ -406,12 +372,8 @@ class Connect extends React.Component {
         const accountInfo = accounts.find(account => account.id === accountId);
         if (!accountInfo) return <Redirect to="/" />;
 
-        const filteredInviteResponses = shareInviteBankResponses.filter(
-            filterShareInviteBankResponses(accountInfo.id)
-        );
-        const filteredInviteInquiries = shareInviteBankInquiries.filter(
-            filterShareInviteBankInquiries(accountInfo.id)
-        );
+        const filteredInviteResponses = shareInviteBankResponses.filter(filterShareInviteBankResponses(accountInfo.id));
+        const filteredInviteInquiries = shareInviteBankInquiries.filter(filterShareInviteBankInquiries(accountInfo.id));
 
         const accessLevelForm = (
             <List>
@@ -456,28 +418,19 @@ class Connect extends React.Component {
                 </Helmet>
 
                 <Grid item xs={12} sm={12} md={2} lg={3}>
-                    <Button
-                        onClick={this.props.history.goBack}
-                        style={styles.btn}
-                    >
+                    <Button onClick={this.props.history.goBack} style={styles.btn}>
                         <ArrowBackIcon />
                     </Button>
                 </Grid>
 
                 <Grid item xs={12} sm={12} md={5} lg={6}>
                     <Paper style={styles.paper}>
-                        <TypographyTranslate
-                            variant="headline"
-                            style={{ marginBottom: "25px" }}
-                        >
+                        <TypographyTranslate variant="headline" style={{ marginBottom: "25px" }}>
                             Send a Connect request
                         </TypographyTranslate>
 
                         <List dense>
-                            <AccountListItem
-                                account={accountInfo}
-                                clickable={false}
-                            />
+                            <AccountListItem account={accountInfo} clickable={false} />
                         </List>
 
                         <TargetSelection
@@ -499,10 +452,7 @@ class Connect extends React.Component {
                         <Grid container spacing={8}>
                             {this.state.accessLevel !== "draft" ? (
                                 <Grid item xs={12}>
-                                    <TypographyTranslate
-                                        variant="subheading"
-                                        style={{ marginBottom: 8 }}
-                                    >
+                                    <TypographyTranslate variant="subheading" style={{ marginBottom: 8 }}>
                                         Settings
                                     </TypographyTranslate>
                                 </Grid>
@@ -511,9 +461,7 @@ class Connect extends React.Component {
                             {this.state.accessLevel === "full" ? (
                                 <BudgetFields
                                     t={t}
-                                    handleChangeFormatted={
-                                        this.handleChangeFormatted
-                                    }
+                                    handleChangeFormatted={this.handleChangeFormatted}
                                     handleChangeDirect={this.handleChangeDirect}
                                     handleChange={this.handleChange}
                                     budgetFrequency={this.state.budgetFrequency}
@@ -523,8 +471,7 @@ class Connect extends React.Component {
                                 />
                             ) : null}
 
-                            {this.state.accessLevel === "full" ||
-                            this.state.accessLevel === "showOnly" ? (
+                            {this.state.accessLevel === "full" || this.state.accessLevel === "showOnly" ? (
                                 <TimeLimitFields
                                     t={t}
                                     handleChangeDirect={this.handleChangeDirect}
@@ -534,10 +481,7 @@ class Connect extends React.Component {
                             ) : null}
 
                             <Grid item xs={12}>
-                                <TypographyTranslate
-                                    variant="subheading"
-                                    style={{ marginBottom: 8 }}
-                                >
+                                <TypographyTranslate variant="subheading" style={{ marginBottom: 8 }}>
                                     Advanced settings
                                 </TypographyTranslate>
                             </Grid>
@@ -586,10 +530,7 @@ class Connect extends React.Component {
                                 <ButtonTranslate
                                     variant="raised"
                                     color="primary"
-                                    disabled={
-                                        !this.state.validForm ||
-                                        this.props.shareInviteBankInquiryLoading
-                                    }
+                                    disabled={!this.state.validForm || this.props.shareInviteBankInquiryLoading}
                                     onClick={this.sendConnectRequest}
                                     style={styles.btn}
                                 >
@@ -600,31 +541,21 @@ class Connect extends React.Component {
                     </Paper>
                 </Grid>
 
-                {filteredInviteResponses.length > 0 ||
-                filteredInviteInquiries.length > 0 ? (
+                {filteredInviteResponses.length > 0 || filteredInviteInquiries.length > 0 ? (
                     <Grid item xs={12} sm={12} md={5} lg={3}>
                         <Grid container spacing={8}>
                             {filteredInviteInquiries.length > 0 ? (
                                 <Grid item xs={12} sm={12}>
                                     <Paper style={styles.paperList}>
                                         <List dense>
-                                            <ListSubheader>
-                                                Shared With:
-                                            </ListSubheader>
-                                            {filteredInviteInquiries.map(
-                                                filteredInviteInquiry => (
-                                                    <ConnectListItem
-                                                        t={t}
-                                                        connectInfo={
-                                                            filteredInviteInquiry.ShareInviteBankInquiry
-                                                        }
-                                                        BunqJSClient={
-                                                            this.props
-                                                                .BunqJSClient
-                                                        }
-                                                    />
-                                                )
-                                            )}
+                                            <ListSubheader>Shared With:</ListSubheader>
+                                            {filteredInviteInquiries.map(filteredInviteInquiry => (
+                                                <ConnectListItem
+                                                    t={t}
+                                                    connectInfo={filteredInviteInquiry.ShareInviteBankInquiry}
+                                                    BunqJSClient={this.props.BunqJSClient}
+                                                />
+                                            ))}
                                         </List>
                                     </Paper>
                                 </Grid>
@@ -634,23 +565,14 @@ class Connect extends React.Component {
                                 <Grid item xs={12} sm={12}>
                                     <Paper style={styles.paperList}>
                                         <List dense>
-                                            <ListSubheader>
-                                                Shared By:
-                                            </ListSubheader>
-                                            {filteredInviteResponses.map(
-                                                filteredInviteResponse => (
-                                                    <ConnectListItem
-                                                        t={t}
-                                                        connectInfo={
-                                                            filteredInviteResponse.ShareInviteBankResponse
-                                                        }
-                                                        BunqJSClient={
-                                                            this.props
-                                                                .BunqJSClient
-                                                        }
-                                                    />
-                                                )
-                                            )}
+                                            <ListSubheader>Shared By:</ListSubheader>
+                                            {filteredInviteResponses.map(filteredInviteResponse => (
+                                                <ConnectListItem
+                                                    t={t}
+                                                    connectInfo={filteredInviteResponse.ShareInviteBankResponse}
+                                                    BunqJSClient={this.props.BunqJSClient}
+                                                />
+                                            ))}
                                         </List>
                                     </Paper>
                                 </Grid>
@@ -670,15 +592,11 @@ const mapStateToProps = state => {
         user: state.user.user,
         limitedPermissions: state.user.limited_permissions,
 
-        shareInviteBankResponses:
-            state.share_invite_bank_responses.share_invite_bank_responses,
-        shareInviteBankResponsesLoading:
-            state.share_invite_bank_responses.loading,
+        shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
+        shareInviteBankResponsesLoading: state.share_invite_bank_responses.loading,
 
-        shareInviteBankInquiries:
-            state.share_invite_bank_inquiries.share_invite_bank_inquiries,
-        shareInviteBankInquiriesLoading:
-            state.share_invite_bank_inquiries.loading,
+        shareInviteBankInquiries: state.share_invite_bank_inquiries.share_invite_bank_inquiries,
+        shareInviteBankInquiriesLoading: state.share_invite_bank_inquiries.loading,
 
         accounts: state.accounts.accounts,
         accountsLoading: state.accounts.loading,
@@ -693,28 +611,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
 
-        accountsUpdate: userId =>
-            dispatch(accountsUpdate(BunqJSClient, userId)),
+        accountsUpdate: userId => dispatch(accountsUpdate(BunqJSClient, userId)),
 
         shareInviteBankInquiriesInfoUpdate: (userId, accountId) =>
-            dispatch(
-                shareInviteBankInquiriesInfoUpdate(
-                    BunqJSClient,
-                    userId,
-                    accountId
-                )
-            ),
+            dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId, accountId)),
         shareInviteBankResponsesInfoUpdate: (userId, accountId) =>
             dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId)),
 
-        shareInviteBankInquirySend: (
-            userId,
-            accountId,
-            counterparty,
-            shareDetail,
-            shareOptions,
-            shareStatus
-        ) =>
+        shareInviteBankInquirySend: (userId, accountId, counterparty, shareDetail, shareOptions, shareStatus) =>
             dispatch(
                 shareInviteBankInquirySend(
                     BunqJSClient,

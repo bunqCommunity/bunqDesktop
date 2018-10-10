@@ -17,12 +17,7 @@ const styles = {
 };
 
 export default props => {
-    const {
-        t,
-        handleChange,
-        handleChangeDirect,
-        handleChangeFormatted
-    } = props;
+    const { t, handleChange, handleChangeDirect, handleChangeFormatted } = props;
 
     return (
         <Grid item xs={12}>
@@ -33,11 +28,7 @@ export default props => {
                         control={
                             <Switch
                                 checked={props.setBudget}
-                                onChange={e =>
-                                    handleChangeDirect("setBudget")(
-                                        !props.setBudget
-                                    )
-                                }
+                                onChange={e => handleChangeDirect("setBudget")(!props.setBudget)}
                                 value="setBudget"
                                 color="primary"
                             />
@@ -52,40 +43,23 @@ export default props => {
                             <FormControl style={styles.formControl}>
                                 <Select
                                     value={props.budgetFrequency}
-                                    input={
-                                        <Input name="field" id="field-helper" />
-                                    }
+                                    input={<Input name="field" id="field-helper" />}
                                     onChange={handleChange("budgetFrequency")}
                                 >
-                                    <TranslateMenuItem value={"ONCE"}>
-                                        Once
-                                    </TranslateMenuItem>
-                                    <TranslateMenuItem value={"DAILY"}>
-                                        Daily
-                                    </TranslateMenuItem>
-                                    <TranslateMenuItem value={"WEEKLY"}>
-                                        Weekly
-                                    </TranslateMenuItem>
-                                    <TranslateMenuItem value={"MONTHLY"}>
-                                        Monthly
-                                    </TranslateMenuItem>
-                                    <TranslateMenuItem value={"YEARLY"}>
-                                        Yearly
-                                    </TranslateMenuItem>
+                                    <TranslateMenuItem value={"ONCE"}>Once</TranslateMenuItem>
+                                    <TranslateMenuItem value={"DAILY"}>Daily</TranslateMenuItem>
+                                    <TranslateMenuItem value={"WEEKLY"}>Weekly</TranslateMenuItem>
+                                    <TranslateMenuItem value={"MONTHLY"}>Monthly</TranslateMenuItem>
+                                    <TranslateMenuItem value={"YEARLY"}>Yearly</TranslateMenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>
                         <Grid item xs={12}>
-                            <FormControl
-                                style={styles.formControl}
-                                error={props.budgetError}
-                            >
+                            <FormControl style={styles.formControl} error={props.budgetError}>
                                 <MoneyFormatInput
                                     id="budget"
                                     value={props.budget}
-                                    onValueChange={handleChangeFormatted(
-                                        "budget"
-                                    )}
+                                    onValueChange={handleChangeFormatted("budget")}
                                 />
                             </FormControl>
                         </Grid>

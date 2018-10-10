@@ -49,10 +49,7 @@ export function toggleInactivityCheck(checkInactivity) {
 }
 
 export function setInactivityCheckDuration(inactivityCheckDuration) {
-    return setGenericOption(
-        "inactivity_check_duration",
-        inactivityCheckDuration
-    );
+    return setGenericOption("inactivity_check_duration", inactivityCheckDuration);
 }
 
 export function toggleAutomaticUpdatesEnabled(updateAutomatically) {
@@ -60,17 +57,11 @@ export function toggleAutomaticUpdatesEnabled(updateAutomatically) {
 }
 
 export function toggleAutomaticUpdatesSendNotification(sendNotification) {
-    return setGenericOption(
-        "automatic_update_send_notification",
-        sendNotification
-    );
+    return setGenericOption("automatic_update_send_notification", sendNotification);
 }
 
 export function setAutomaticUpdateDuration(automaticUpdateDuration) {
-    return setGenericOption(
-        "automatic_update_duration",
-        automaticUpdateDuration
-    );
+    return setGenericOption("automatic_update_duration", automaticUpdateDuration);
 }
 
 export function overwriteSettingsLocation(location) {

@@ -61,10 +61,7 @@ class AccountQRFullscreen extends React.PureComponent {
         let dialogContent = null;
         switch (this.props.mode) {
             case "ACCOUNT":
-                const accountId =
-                    this.props.accountId !== false
-                        ? this.props.accountId
-                        : this.props.selectedAccount;
+                const accountId = this.props.accountId !== false ? this.props.accountId : this.props.selectedAccount;
 
                 let accountInfo = false;
                 let IBAN = "";
@@ -87,16 +84,10 @@ class AccountQRFullscreen extends React.PureComponent {
                                 <LazyAttachmentImage
                                     height={45}
                                     BunqJSClient={this.props.BunqJSClient}
-                                    imageUUID={
-                                        accountInfo.avatar.image[0]
-                                            .attachment_public_uuid
-                                    }
+                                    imageUUID={accountInfo.avatar.image[0].attachment_public_uuid}
                                 />
                             </Avatar>
-                            <ListItemText
-                                primary={accountInfo.description}
-                                secondary={formatIban(IBAN)}
-                            />
+                            <ListItemText primary={accountInfo.description} secondary={formatIban(IBAN)} />
                         </ListItem>
                     </React.Fragment>
                 );
@@ -154,6 +145,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default withStyles(styles)(
-    connect(mapStateToProps)(AccountQRFullscreen)
-);
+export default withStyles(styles)(connect(mapStateToProps)(AccountQRFullscreen));

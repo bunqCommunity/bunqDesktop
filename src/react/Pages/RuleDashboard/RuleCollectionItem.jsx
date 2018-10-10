@@ -28,23 +28,12 @@ class RuleCollectionItem extends React.Component {
         });
 
         const enabledText = ruleCollection.isEnabled() ? "Enabled" : "Disabled";
-        const secondaryText = `${t(enabledText)} - ${
-            ruleCollection.getRules().length
-        } ${t("rules")}`;
+        const secondaryText = `${t(enabledText)} - ${ruleCollection.getRules().length} ${t("rules")}`;
 
         return [
-            <ListItem
-                button
-                component={NavLink}
-                to={`/rule-page/${ruleCollection.id}`}
-            >
-                <ListItemText
-                    primary={ruleCollection.getTitle()}
-                    secondary={secondaryText}
-                />
-                <ListItemSecondaryAction>
-                    {categoryIcons}
-                </ListItemSecondaryAction>
+            <ListItem button component={NavLink} to={`/rule-page/${ruleCollection.id}`}>
+                <ListItemText primary={ruleCollection.getTitle()} secondary={secondaryText} />
+                <ListItemSecondaryAction>{categoryIcons}</ListItemSecondaryAction>
             </ListItem>,
             <Divider />
         ];

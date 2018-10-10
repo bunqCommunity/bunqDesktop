@@ -46,9 +46,7 @@ class MasterCardActionListItem extends React.Component {
 
         let imageUUID = false;
         if (masterCardAction.counterparty_alias.avatar) {
-            imageUUID =
-                masterCardAction.counterparty_alias.avatar.image[0]
-                    .attachment_public_uuid;
+            imageUUID = masterCardAction.counterparty_alias.avatar.image[0].attachment_public_uuid;
         }
         const displayName = masterCardAction.counterparty_alias.display_name;
         let paymentAmount = masterCardAction.getAmount();
@@ -62,9 +60,7 @@ class MasterCardActionListItem extends React.Component {
             <ListItem
                 button
                 component={NavLink}
-                to={`/mastercard-action-info/${masterCardAction.id}/${
-                    masterCardAction.monetary_account_id
-                }`}
+                to={`/mastercard-action-info/${masterCardAction.id}/${masterCardAction.monetary_account_id}`}
             >
                 <Avatar style={styles.smallAvatar}>
                     <LazyAttachmentImage
@@ -74,25 +70,13 @@ class MasterCardActionListItem extends React.Component {
                         imageUUID={imageUUID}
                     />
                 </Avatar>
-                <ListItemText
-                    style={styles.listItemText}
-                    primary={displayName}
-                    secondary={secondaryText}
-                />
+                <ListItemText style={styles.listItemText} primary={displayName} secondary={secondaryText} />
                 <ListItemSecondaryAction style={{ marginTop: -16 }}>
-                    <MoneyAmountLabel
-                        style={styles.moneyAmountLabel}
-                        info={masterCardAction}
-                        type="masterCardAction"
-                    >
+                    <MoneyAmountLabel style={styles.moneyAmountLabel} info={masterCardAction} type="masterCardAction">
                         {formattedPaymentAmount}
                     </MoneyAmountLabel>
                 </ListItemSecondaryAction>
-                <CategoryIcons
-                    style={{ marginTop: 26 }}
-                    type={"MasterCardAction"}
-                    id={masterCardAction.id}
-                />
+                <CategoryIcons style={{ marginTop: 26 }} type={"MasterCardAction"} id={masterCardAction.id} />
             </ListItem>,
 
             <Divider />

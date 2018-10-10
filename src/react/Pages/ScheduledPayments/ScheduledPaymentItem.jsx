@@ -56,42 +56,25 @@ class ScheduledPaymentItem extends React.Component {
             schedule.recurrence_unit
         );
 
-        const formattedPaymentAmount = formatMoney(
-            scheduledPaymentInfo.payment.amount.value
-        );
+        const formattedPaymentAmount = formatMoney(scheduledPaymentInfo.payment.amount.value);
 
         let imageUUID = false;
         if (scheduledPaymentInfo.payment.counterparty_alias.avatar) {
-            imageUUID =
-                scheduledPaymentInfo.payment.counterparty_alias.avatar.image[0]
-                    .attachment_public_uuid;
+            imageUUID = scheduledPaymentInfo.payment.counterparty_alias.avatar.image[0].attachment_public_uuid;
         }
 
         const nextPaymentText = scheduledPaymentInfo.schedule.time_next
-            ? `${nextPaymentTextTranslate}: ${humanReadableDate(
-                  scheduledPaymentInfo.schedule.time_next
-              )}`
+            ? `${nextPaymentTextTranslate}: ${humanReadableDate(scheduledPaymentInfo.schedule.time_next)}`
             : scheduleExpiredTranslate;
 
         return (
             <React.Fragment>
-                <ListItem
-                    key={key}
-                    button
-                    onClick={this.props.selectScheduledPayment}
-                >
+                <ListItem key={key} button onClick={this.props.selectScheduledPayment}>
                     <Avatar style={styles.smallAvatar}>
-                        <LazyAttachmentImage
-                            height={50}
-                            BunqJSClient={BunqJSClient}
-                            imageUUID={imageUUID}
-                        />
+                        <LazyAttachmentImage height={50} BunqJSClient={BunqJSClient} imageUUID={imageUUID} />
                     </Avatar>
 
-                    <ListItemText
-                        primary={scheduleTextResult.primary}
-                        secondary={scheduleTextResult.secondary}
-                    />
+                    <ListItemText primary={scheduleTextResult.primary} secondary={scheduleTextResult.secondary} />
 
                     <ListItemSecondaryAction>
                         <MoneyAmountLabel
@@ -105,18 +88,12 @@ class ScheduledPaymentItem extends React.Component {
                 </ListItem>
 
                 <ListItem>
-                    <ListItemText
-                        inset
-                        primary={nextPaymentText}
-                        secondary={description}
-                    />
+                    <ListItemText inset primary={nextPaymentText} secondary={description} />
 
                     <ListItemSecondaryAction>
                         <IconButton
                             disabled={this.props.deleteLoading}
-                            onClick={this.props.deleteScheduledPayment(
-                                scheduledPaymentInfo
-                            )}
+                            onClick={this.props.deleteScheduledPayment(scheduledPaymentInfo)}
                         >
                             <DeleteIcon />
                         </IconButton>

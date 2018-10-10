@@ -39,11 +39,7 @@ const classStyles = theme => ({
     badge: {
         top: -8,
         right: -8,
-        border: `2px solid ${
-            theme.palette.type === "light"
-                ? theme.palette.grey[200]
-                : theme.palette.grey[900]
-        }`
+        border: `2px solid ${theme.palette.type === "light" ? theme.palette.grey[200] : theme.palette.grey[900]}`
     }
 });
 
@@ -85,17 +81,12 @@ class RequestInquiryBatchListItem extends React.Component {
         const numberOfPayments = requestInquiries.length;
 
         // calculate how much was paid to this inquiry
-        const totalPaidAmount = requestInquiries.reduce(
-            (accumulator, requestInquiry) => {
-                if (requestInquiry.status !== "ACCEPTED") return accumulator;
+        const totalPaidAmount = requestInquiries.reduce((accumulator, requestInquiry) => {
+            if (requestInquiry.status !== "ACCEPTED") return accumulator;
 
-                const paidAmount = parseFloat(
-                    requestInquiry.amount_responded.value
-                );
-                return accumulator + paidAmount;
-            },
-            0
-        );
+            const paidAmount = parseFloat(requestInquiry.amount_responded.value);
+            return accumulator + paidAmount;
+        }, 0);
 
         // count how many of each type
         requestInquiries.forEach(requestInquiry => {
@@ -137,45 +128,31 @@ class RequestInquiryBatchListItem extends React.Component {
                       theme.palette.requestInquiry.accepted
                     : theme.palette.requestInquiry.expired;
         if (requestItemCounts.pending === 0) {
-            if (
-                requestItemCounts.rejected > 0 ||
-                requestItemCounts.revoked > 0
-            ) {
+            if (requestItemCounts.rejected > 0 || requestItemCounts.revoked > 0) {
                 strikeThrough = true;
             }
         }
 
         // human readable money amounts
-        const formattedInquiredAmount = formatMoney(
-            requestInquiryBatch.getTotalAmountInquired()
-        );
+        const formattedInquiredAmount = formatMoney(requestInquiryBatch.getTotalAmountInquired());
         const formattedTotalPaidAmount = formatMoney(totalPaidAmount);
 
         // get imageUUId if monetary details are set
         let imageUUID = false;
         if (monetaryAccountId) {
             // get monetary details for this batch
-            monetaryAccountInfo = accounts.find(
-                account => account.id === monetaryAccountId
-            );
+            monetaryAccountInfo = accounts.find(account => account.id === monetaryAccountId);
             if (monetaryAccountInfo && monetaryAccountInfo.avatar) {
-                imageUUID =
-                    monetaryAccountInfo.avatar.image[0].attachment_public_uuid;
+                imageUUID = monetaryAccountInfo.avatar.image[0].attachment_public_uuid;
             }
         }
 
         // avatar object on its own
-        const shareIcon = (
-            <Share color={"inherit"} style={{ color: eventColor }} />
-        );
+        const shareIcon = <Share color={"inherit"} style={{ color: eventColor }} />;
         const avatarStandalone = (
             <Avatar style={styles.smallAvatar}>
                 {imageUUID ? (
-                    <LazyAttachmentImage
-                        height={50}
-                        BunqJSClient={this.props.BunqJSClient}
-                        imageUUID={imageUUID}
-                    />
+                    <LazyAttachmentImage height={50} BunqJSClient={this.props.BunqJSClient} imageUUID={imageUUID} />
                 ) : (
                     shareIcon
                 )}
@@ -187,11 +164,7 @@ class RequestInquiryBatchListItem extends React.Component {
             numberOfPayments <= 0 ? (
                 avatarStandalone
             ) : (
-                <Badge
-                    badgeContent={numberOfPayments}
-                    color="primary"
-                    classes={{ badge: this.props.classes.badge }}
-                >
+                <Badge badgeContent={numberOfPayments} color="primary" classes={{ badge: this.props.classes.badge }}>
                     {avatarStandalone}
                 </Badge>
             );
@@ -210,15 +183,10 @@ class RequestInquiryBatchListItem extends React.Component {
             const requestItemCount = requestItemCounts[requestCounterType];
 
             if (requestItemCount > 0) {
-                const partString = `${requestItemCount} ${t(
-                    requestCounterType
-                )}`;
+                const partString = `${requestItemCount} ${t(requestCounterType)}`;
 
                 // create a new string
-                secondaryText =
-                    secondaryText === false
-                        ? partString
-                        : `${secondaryText}, ${partString}`;
+                secondaryText = secondaryText === false ? partString : `${secondaryText}, ${partString}`;
             }
         });
 
@@ -231,9 +199,7 @@ class RequestInquiryBatchListItem extends React.Component {
                         style={{
                             ...styles.moneyAmountLabel,
                             color: eventColor,
-                            textDecoration: strikeThrough
-                                ? "line-through"
-                                : "none"
+                            textDecoration: strikeThrough ? "line-through" : "none"
                         }}
                         variant="body2"
                     >
@@ -243,47 +209,28 @@ class RequestInquiryBatchListItem extends React.Component {
             </ListItem>,
             <Collapse in={this.state.extraInfoOpen} unmountOnExit>
                 <ListItem dense>
-                    <ListItemText
-                        primary={t("Created")}
-                        secondary={createdDate}
-                    />
+                    <ListItemText primary={t("Created")} secondary={createdDate} />
                 </ListItem>
 
                 <ListItem dense>
-                    <ListItemText
-                        primary={t("Total requested amount")}
-                        secondary={formattedInquiredAmount}
-                    />
+                    <ListItemText primary={t("Total requested amount")} secondary={formattedInquiredAmount} />
                 </ListItem>
 
                 <ListItem dense>
-                    <ListItemText
-                        primary={t("Total received amount")}
-                        secondary={formattedTotalPaidAmount}
-                    />
+                    <ListItemText primary={t("Total received amount")} secondary={formattedTotalPaidAmount} />
                 </ListItem>
 
                 {updatedDate !== createdDate ? (
                     <ListItem dense>
-                        <ListItemText
-                            primary={t("Updated")}
-                            secondary={updatedDate}
-                        />
+                        <ListItemText primary={t("Updated")} secondary={updatedDate} />
                     </ListItem>
                 ) : null}
 
                 <ListItem button dense onClick={this.togglePayments}>
-                    <ListItemText
-                        primary={t("Number of requests")}
-                        secondary={"" + numberOfPayments}
-                    />
+                    <ListItemText primary={t("Number of requests")} secondary={"" + numberOfPayments} />
                     <ListItemSecondaryAction>
                         <Icon color="action">
-                            {this.state.paymentsOpen ? (
-                                <ArrowUpwardIcon />
-                            ) : (
-                                <ArrowDownwardIcon />
-                            )}
+                            {this.state.paymentsOpen ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
                         </Icon>
                     </ListItemSecondaryAction>
                 </ListItem>
@@ -299,9 +246,7 @@ class RequestInquiryBatchListItem extends React.Component {
                     })}
                 </Collapse>
             </Collapse>,
-            <Divider
-                style={{ marginBottom: this.state.paymentsOpen ? 12 : 0 }}
-            />
+            <Divider style={{ marginBottom: this.state.paymentsOpen ? 12 : 0 }} />
         ];
     }
 }
@@ -311,8 +256,4 @@ RequestInquiryBatchListItem.defaultProps = {
     minimalDisplay: false
 };
 
-export default withTheme()(
-    translate("translations")(
-        withStyles(classStyles)(RequestInquiryBatchListItem)
-    )
-);
+export default withTheme()(translate("translations")(withStyles(classStyles)(RequestInquiryBatchListItem)));

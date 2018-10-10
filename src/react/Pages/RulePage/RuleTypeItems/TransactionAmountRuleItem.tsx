@@ -63,9 +63,7 @@ class TransactionAmountRuleItem extends React.Component<IPropTypes, any> {
         return (
             <TableRow>
                 <TableCell>
-                    <TranslateTypography variant="subheading">
-                        Transaction amount
-                    </TranslateTypography>
+                    <TranslateTypography variant="subheading">Transaction amount</TranslateTypography>
                 </TableCell>
 
                 <TableCell style={styles.tableCell}>
@@ -73,28 +71,13 @@ class TransactionAmountRuleItem extends React.Component<IPropTypes, any> {
                         <Select
                             value={rule.matchType}
                             onChange={this.handleMatchTypeChange}
-                            input={
-                                <Input
-                                    name="match-type"
-                                    id="match-type-helper"
-                                />
-                            }
+                            input={<Input name="match-type" id="match-type-helper" />}
                         >
-                            <TranslateMenuItem value={"MORE"}>
-                                More than
-                            </TranslateMenuItem>
-                            <TranslateMenuItem value={"MORE_EQUALS"}>
-                                Equals or more than
-                            </TranslateMenuItem>
-                            <TranslateMenuItem value={"EXACTLY"}>
-                                Exactly
-                            </TranslateMenuItem>
-                            <TranslateMenuItem value={"LESS"}>
-                                Less than
-                            </TranslateMenuItem>
-                            <TranslateMenuItem value={"LESS_EQUALS"}>
-                                Equals or less than
-                            </TranslateMenuItem>
+                            <TranslateMenuItem value={"MORE"}>More than</TranslateMenuItem>
+                            <TranslateMenuItem value={"MORE_EQUALS"}>Equals or more than</TranslateMenuItem>
+                            <TranslateMenuItem value={"EXACTLY"}>Exactly</TranslateMenuItem>
+                            <TranslateMenuItem value={"LESS"}>Less than</TranslateMenuItem>
+                            <TranslateMenuItem value={"LESS_EQUALS"}>Equals or less than</TranslateMenuItem>
                         </Select>
                     </FormControl>
                 </TableCell>

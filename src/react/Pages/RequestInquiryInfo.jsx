@@ -75,9 +75,7 @@ class RequestInquiryInfo extends React.Component {
             const { requestInquiryId, accountId } = this.props.match.params;
             this.props.requestInquiryUpdate(
                 this.props.user.id,
-                accountId === undefined
-                    ? this.props.accountsSelectedAccount
-                    : accountId,
+                accountId === undefined ? this.props.accountsSelectedAccount : accountId,
                 requestInquiryId
             );
             this.setState({ initialUpdate: true });
@@ -89,15 +87,12 @@ class RequestInquiryInfo extends React.Component {
             this.props.user &&
             this.props.user.id &&
             this.props.initialBunqConnect &&
-            this.props.match.params.requestInquiryId !==
-                this.props.match.params.requestInquiryId
+            this.props.match.params.requestInquiryId !== this.props.match.params.requestInquiryId
         ) {
             const { requestInquiryId, accountId } = this.props.match.params;
             this.props.requestInquiryUpdate(
                 this.props.user.id,
-                accountId === undefined
-                    ? this.props.accountsSelectedAccount
-                    : accountId,
+                accountId === undefined ? this.props.accountsSelectedAccount : accountId,
                 requestInquiryId
             );
             this.setState({ initialUpdate: true });
@@ -110,24 +105,18 @@ class RequestInquiryInfo extends React.Component {
         const { requestInquiryId, accountId } = this.props.match.params;
         this.props.requestInquiryCancel(
             this.props.user.id,
-            accountId === undefined
-                ? this.props.accountsSelectedAccount
-                : accountId,
+            accountId === undefined ? this.props.accountsSelectedAccount : accountId,
             requestInquiryId
         );
     };
 
     startPayment = event => {
         const requestInquiryInfo = this.props.requestInquiryInfo;
-        this.props.history.push(
-            `/pay?amount=${requestInquiryInfo.getAmount()}`
-        );
+        this.props.history.push(`/pay?amount=${requestInquiryInfo.getAmount()}`);
     };
     startRequest = event => {
         const requestInquiryInfo = this.props.requestInquiryInfo;
-        this.props.history.push(
-            `/request?amount=${requestInquiryInfo.getAmount()}`
-        );
+        this.props.history.push(`/request?amount=${requestInquiryInfo.getAmount()}`);
     };
     createPdfExport = () => {
         const { requestInquiryInfo } = this.props;
@@ -168,11 +157,7 @@ class RequestInquiryInfo extends React.Component {
 
         let content;
         let noteTextsForm = null;
-        if (
-            requestInquiryInfo === false ||
-            requestInquiryInfoLoading === true ||
-            this.state.initialUpdate === false
-        ) {
+        if (requestInquiryInfo === false || requestInquiryInfoLoading === true || this.state.initialUpdate === false) {
             content = (
                 <Grid container spacing={24} justify={"center"}>
                     <Grid item xs={12}>
@@ -184,9 +169,7 @@ class RequestInquiryInfo extends React.Component {
             );
         } else {
             const requestInquiry = requestInquiryInfo.RequestInquiry;
-            const paymentDateCreated = humanReadableDate(
-                requestInquiry.created
-            );
+            const paymentDateCreated = humanReadableDate(requestInquiry.created);
             const paymentDate = humanReadableDate(requestInquiry.updated);
             const paymentAmount = requestInquiry.amount_inquired.value;
             const formattedPaymentAmount = formatMoney(paymentAmount);
@@ -206,20 +189,10 @@ class RequestInquiryInfo extends React.Component {
                 );
             }
 
-            noteTextsForm = (
-                <NoteTextForm
-                    BunqJSClient={this.props.BunqJSClient}
-                    event={requestInquiry}
-                />
-            );
+            noteTextsForm = <NoteTextForm BunqJSClient={this.props.BunqJSClient} event={requestInquiry} />;
 
             content = (
-                <Grid
-                    container
-                    spacing={24}
-                    align={"center"}
-                    justify={"center"}
-                >
+                <Grid container spacing={24} align={"center"} justify={"center"}>
                     <TransactionHeader
                         BunqJSClient={this.props.BunqJSClient}
                         to={requestInquiry.counterparty_alias}
@@ -244,10 +217,7 @@ class RequestInquiryInfo extends React.Component {
                             {formattedPaymentAmount}
                         </MoneyAmountLabel>
 
-                        <Typography
-                            style={{ textAlign: "center" }}
-                            variant={"body1"}
-                        >
+                        <Typography style={{ textAlign: "center" }} variant={"body1"}>
                             {requestInquiryLabel}
                         </Typography>
 
@@ -258,9 +228,7 @@ class RequestInquiryInfo extends React.Component {
                                       <ListItem>
                                           <ListItemText
                                               primary={"Description"}
-                                              secondary={
-                                                  requestInquiry.description
-                                              }
+                                              secondary={requestInquiry.description}
                                           />
                                       </ListItem>
                                   ]
@@ -268,10 +236,7 @@ class RequestInquiryInfo extends React.Component {
 
                             <Divider />
                             <ListItem>
-                                <ListItemText
-                                    primary={t("Date")}
-                                    secondary={paymentDate}
-                                />
+                                <ListItemText primary={t("Date")} secondary={paymentDate} />
                             </ListItem>
                             {requestInquiry.bunqme_share_url ? (
                                 <React.Fragment>
@@ -279,16 +244,10 @@ class RequestInquiryInfo extends React.Component {
                                     <ListItem>
                                         <ListItemText
                                             primary={"bunq.me Url"}
-                                            secondary={
-                                                requestInquiry.bunqme_share_url
-                                            }
+                                            secondary={requestInquiry.bunqme_share_url}
                                         />
                                         <ListItemSecondaryAction>
-                                            <CopyToClipboard
-                                                text={
-                                                    requestInquiry.bunqme_share_url
-                                                }
-                                            >
+                                            <CopyToClipboard text={requestInquiry.bunqme_share_url}>
                                                 <IconButton>
                                                     <CopyIcon />
                                                 </IconButton>
@@ -303,10 +262,7 @@ class RequestInquiryInfo extends React.Component {
                                     <ListItem>
                                         <ListItemText
                                             primary={"IBAN"}
-                                            secondary={
-                                                requestInquiry
-                                                    .counterparty_alias.iban
-                                            }
+                                            secondary={requestInquiry.counterparty_alias.iban}
                                         />
                                     </ListItem>
                                 </React.Fragment>
@@ -319,10 +275,7 @@ class RequestInquiryInfo extends React.Component {
                                 <Grid item xs={12} sm={6}>
                                     <TranslateButton
                                         variant="raised"
-                                        disabled={
-                                            requestInquiryLoading ||
-                                            requestInquiryInfoLoading
-                                        }
+                                        disabled={requestInquiryLoading || requestInquiryInfoLoading}
                                         onClick={this.cancelInquiry}
                                         color="secondary"
                                         style={styles.button}
@@ -333,18 +286,14 @@ class RequestInquiryInfo extends React.Component {
                             </Grid>
                         ) : null}
 
-                        <CategorySelector
-                            type={"RequestInquiry"}
-                            item={requestInquiryInfo}
-                        />
+                        <CategorySelector type={"RequestInquiry"} item={requestInquiryInfo} />
                     </Grid>
                 </Grid>
             );
         }
 
         const exportData =
-            this.props.requestInquiryInfo &&
-            this.props.requestInquiryInfo._rawData
+            this.props.requestInquiryInfo && this.props.requestInquiryInfo._rawData
                 ? this.props.requestInquiryInfo._rawData.RequestInquiry
                 : {};
 
@@ -355,19 +304,14 @@ class RequestInquiryInfo extends React.Component {
                 </Helmet>
 
                 <ExportDialog
-                    closeModal={event =>
-                        this.setState({ displayExport: false })
-                    }
+                    closeModal={event => this.setState({ displayExport: false })}
                     title={t("Export info")}
                     open={this.state.displayExport}
                     object={exportData}
                 />
 
                 <Grid item xs={12} sm={2} lg={3}>
-                    <Button
-                        onClick={this.props.history.goBack}
-                        style={styles.btn}
-                    >
+                    <Button onClick={this.props.history.goBack} style={styles.btn}>
                         <ArrowBackIcon />
                     </Button>
                 </Grid>
@@ -408,8 +352,7 @@ class RequestInquiryInfo extends React.Component {
                         {
                             name: t("View debug information"),
                             icon: HelpIcon,
-                            onClick: event =>
-                                this.setState({ displayExport: true })
+                            onClick: event => this.setState({ displayExport: true })
                         }
                     ]}
                 />
@@ -435,27 +378,12 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        applicationSetPDFMode: enabled =>
-            dispatch(applicationSetPDFMode(enabled)),
+        applicationSetPDFMode: enabled => dispatch(applicationSetPDFMode(enabled)),
 
         requestInquiryUpdate: (user_id, account_id, request_inquiry_id) =>
-            dispatch(
-                requestInquiryUpdate(
-                    BunqJSClient,
-                    user_id,
-                    account_id,
-                    request_inquiry_id
-                )
-            ),
+            dispatch(requestInquiryUpdate(BunqJSClient, user_id, account_id, request_inquiry_id)),
         requestInquiryCancel: (user_id, account_id, request_inquiry_id) =>
-            dispatch(
-                requestInquiryCancel(
-                    BunqJSClient,
-                    user_id,
-                    account_id,
-                    request_inquiry_id
-                )
-            )
+            dispatch(requestInquiryCancel(BunqJSClient, user_id, account_id, request_inquiry_id))
     };
 };
 

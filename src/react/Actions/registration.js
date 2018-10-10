@@ -1,10 +1,6 @@
 import store from "store";
 import Logger from "../Helpers/Logger";
-import {
-    decryptString,
-    derivePasswordKey,
-    encryptString
-} from "../Helpers/Crypto";
+import { decryptString, derivePasswordKey, encryptString } from "../Helpers/Crypto";
 import { applicationSetStatus } from "./application";
 import { openSnackbar } from "./snackbar";
 
@@ -19,11 +15,7 @@ export const API_KEY_IV_LOCATION = "BUNQDESKTOP_API_IV";
  * @param encrypted_api_key
  * @returns {{type: string, payload: {api_key: *}}}
  */
-export function registrationSetApiKeyBasic(
-    api_key,
-    encrypted_api_key = false,
-    permitted_ips = []
-) {
+export function registrationSetApiKeyBasic(api_key, encrypted_api_key = false, permitted_ips = []) {
     return {
         type: "REGISTRATION_SET_API_KEY",
         payload: {
@@ -40,11 +32,7 @@ export function registrationSetApiKeyBasic(
  * @param encryptionKey
  * @returns {function(*)}
  */
-export function registrationSetApiKey(
-    api_key,
-    derivedPassword,
-    permitted_ips = []
-) {
+export function registrationSetApiKey(api_key, derivedPassword, permitted_ips = []) {
     return dispatch => {
         encryptString(api_key, derivedPassword.key)
             .then(encrypedData => {
@@ -54,19 +42,8 @@ export function registrationSetApiKey(
                 // now store the salt for the currently used password
                 store.set(SALT_LOCATION, derivedPassword.salt);
 
-                dispatch(
-                    registrationSetApiKeyBasic(
-                        api_key,
-                        encrypedData.encryptedString,
-                        permitted_ips
-                    )
-                );
-                dispatch(
-                    registrationEnsureStoredApiKey(
-                        encrypedData.encryptedString,
-                        encrypedData.iv
-                    )
-                );
+                dispatch(registrationSetApiKeyBasic(api_key, encrypedData.encryptedString, permitted_ips));
+                dispatch(registrationEnsureStoredApiKey(encrypedData.encryptedString, encrypedData.iv));
             })
             .catch(Logger.error);
     };
@@ -118,9 +95,7 @@ export function registrationRemoveStoredApiKey(index) {
  * @returns {function(*)}
  */
 export function registrationLoadApiKey(derivedPassword) {
-    const failedMessage = window.t(
-        "We failed to load the stored API key Try again or re-enter the key"
-    );
+    const failedMessage = window.t("We failed to load the stored API key Try again or re-enter the key");
     const statusMessage = window.t("Attempting to load your API key");
 
     return dispatch => {
@@ -145,18 +120,12 @@ export function registrationLoadApiKey(derivedPassword) {
                     // clear the password so the user can try again
                     dispatch(registrationClearPassword());
                     dispatch(openSnackbar(failedMessage));
-                    Logger.error(
-                        `Failed to load API key: with length: ${
-                            decryptedString.length
-                        }`
-                    );
+                    Logger.error(`Failed to load API key: with length: ${decryptedString.length}`);
 
                     return;
                 }
 
-                dispatch(
-                    registrationSetApiKeyBasic(decryptedString, encryptedApiKey)
-                );
+                dispatch(registrationSetApiKeyBasic(decryptedString, encryptedApiKey));
             })
             .catch(_ => {
                 // clear the password so the user can try again
@@ -174,14 +143,8 @@ export function registrationLoadApiKey(derivedPassword) {
  * @param derivedPassword
  * @returns {function(*)}
  */
-export function registrationLoadStoredApiKey(
-    BunqJSClient,
-    storedKeyIndex,
-    derivedPassword
-) {
-    const failedMessage = window.t(
-        "We failed to load the stored API key Try again or re-enter the key"
-    );
+export function registrationLoadStoredApiKey(BunqJSClient, storedKeyIndex, derivedPassword) {
+    const failedMessage = window.t("We failed to load the stored API key Try again or re-enter the key");
     const statusMessage = window.t("Attempting to load your API key");
     const statusMessage2 = window.t("Removing data from previous session");
 
@@ -216,11 +179,7 @@ export function registrationLoadStoredApiKey(
                     dispatch(registrationClearPassword());
                     dispatch(registrationNotLoading());
                     dispatch(openSnackbar(failedMessage));
-                    Logger.error(
-                        `Failed to load API key: with length: ${
-                            decryptedString.length
-                        }`
-                    );
+                    Logger.error(`Failed to load API key: with length: ${decryptedString.length}`);
 
                     return;
                 }
@@ -233,30 +192,17 @@ export function registrationLoadStoredApiKey(
                 dispatch(registrationSetEnvironment(encryptedEnvironment));
 
                 // check if api key is different
-                if (
-                    BunqJSClient.apiKey &&
-                    BunqJSClient.apiKey !== decryptedString
-                ) {
+                if (BunqJSClient.apiKey && BunqJSClient.apiKey !== decryptedString) {
                     // remove the old api key
                     dispatch(applicationSetStatus(statusMessage2));
 
                     // destroy the session associated with the previous
-                    dispatch(
-                        registrationSetApiKeyBasic(
-                            decryptedString,
-                            encryptedApiKey
-                        )
-                    );
+                    dispatch(registrationSetApiKeyBasic(decryptedString, encryptedApiKey));
                     dispatch(registrationNotLoading());
                 } else {
                     // nothing changes, just set the api key but do nothing else
                     dispatch(registrationNotLoading());
-                    dispatch(
-                        registrationSetApiKeyBasic(
-                            decryptedString,
-                            encryptedApiKey
-                        )
-                    );
+                    dispatch(registrationSetApiKeyBasic(decryptedString, encryptedApiKey));
                 }
             })
             .catch(_ => {
@@ -290,19 +236,10 @@ export function registrationDerivePassword(password) {
         derivePasswordKey(password, salt, 250000)
             .then(derivedPassword => {
                 // create a quick identifier based on this exact key
-                derivePasswordKey(
-                    derivedPassword.key + "identifier",
-                    salt,
-                    100000
-                )
+                derivePasswordKey(derivedPassword.key + "identifier", salt, 100000)
                     .then(derivedIdentifier => {
                         dispatch(registrationNotLoading());
-                        dispatch(
-                            registrationSetDerivedPassword(
-                                derivedPassword,
-                                derivedIdentifier.key
-                            )
-                        );
+                        dispatch(registrationSetDerivedPassword(derivedPassword, derivedIdentifier.key));
                     })
                     .catch(error => {
                         Logger.error(error);
@@ -402,8 +339,7 @@ export function registrationSetDeviceName(device_name) {
  * @returns {{type: string, payload: {environment: *}}}
  */
 export function registrationSetEnvironment(environment) {
-    if (environment !== "PRODUCTION" && environment !== "SANDBOX")
-        environment = "SANDBOX";
+    if (environment !== "PRODUCTION" && environment !== "SANDBOX") environment = "SANDBOX";
     return {
         type: "REGISTRATION_SET_ENVIRONMENT",
         payload: {

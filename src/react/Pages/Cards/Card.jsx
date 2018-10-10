@@ -19,10 +19,7 @@ import AccountListItem from "../../Components/AccountList/AccountListItem";
 import TypographyTranslate from "../../Components/TranslationHelpers/Typography";
 
 import { cardUpdate } from "../../Actions/card";
-import {
-    cardUpdateCvc2Codes,
-    cardCvc2CodesClear
-} from "../../Actions/card_cvc2";
+import { cardUpdateCvc2Codes, cardCvc2CodesClear } from "../../Actions/card_cvc2";
 
 const styles = {
     gridContainer: {
@@ -93,9 +90,7 @@ class Card extends React.Component {
                 if (event.wheelDelta > 0) {
                     this.goPreviousCard();
                 } else {
-                    const filteredCards = this.props.cards.filter(
-                        this.filterCards
-                    );
+                    const filteredCards = this.props.cards.filter(this.filterCards);
 
                     this.goNextCard(filteredCards);
                 }
@@ -106,10 +101,7 @@ class Card extends React.Component {
 
     cardUpdateCvc2Codes = event => {
         const cardInfo = this.props.cards[this.state.selectedCardIndex];
-        this.props.cardUpdateCvc2Codes(
-            this.props.user.id,
-            cardInfo.CardDebit.id
-        );
+        this.props.cardUpdateCvc2Codes(this.props.user.id, cardInfo.CardDebit.id);
     };
 
     handleKeyDown = event => {
@@ -230,19 +222,10 @@ class Card extends React.Component {
 
         if (this.props.cardsLoading) {
             return (
-                <Grid
-                    container
-                    spacing={24}
-                    style={styles.gridContainer}
-                    justify="center"
-                    alignItems="center"
-                >
+                <Grid container spacing={24} style={styles.gridContainer} justify="center" alignItems="center">
                     <Grid item xs={12} style={{ textAlign: "center" }}>
                         <CircularProgress size={75} />
-                        <TypographyTranslate
-                            variant="display1"
-                            style={{ textAlign: "center" }}
-                        >
+                        <TypographyTranslate variant="display1" style={{ textAlign: "center" }}>
                             Loading cards
                         </TypographyTranslate>
                     </Grid>
@@ -252,18 +235,9 @@ class Card extends React.Component {
 
         if (cards.length === 0) {
             return (
-                <Grid
-                    container
-                    spacing={24}
-                    style={styles.gridContainer}
-                    justify="center"
-                    alignItems="center"
-                >
+                <Grid container spacing={24} style={styles.gridContainer} justify="center" alignItems="center">
                     <Grid item xs={12}>
-                        <TypographyTranslate
-                            variant="display1"
-                            style={{ textAlign: "center" }}
-                        >
+                        <TypographyTranslate variant="display1" style={{ textAlign: "center" }}>
                             You don't have any cards
                         </TypographyTranslate>
                     </Grid>
@@ -276,47 +250,39 @@ class Card extends React.Component {
         const carouselTranslate = "translateY(-" + translateOffset + "px)";
 
         // account connected to the currently selected card
-        const connectedAccounts = cardInfo.pin_code_assignment.map(
-            assignment => {
-                // try to find the connected accoutn by ID
-                const currentAccount = this.props.accounts.find(
-                    account => account.id == assignment.monetary_account_id
-                );
+        const connectedAccounts = cardInfo.pin_code_assignment.map(assignment => {
+            // try to find the connected accoutn by ID
+            const currentAccount = this.props.accounts.find(account => account.id == assignment.monetary_account_id);
 
-                let connectedText = "";
-                switch (assignment.type) {
-                    case "PRIMARY":
-                        connectedText = t("Primary account");
-                        break;
-                    case "SECONDARY":
-                        connectedText = t("Secondary account");
-                        break;
-                }
-
-                // return the accout item for this account
-                return (
-                    <React.Fragment>
-                        <ListSubheader style={{ height: 28, marginBottom: 8 }}>
-                            {connectedText}
-                        </ListSubheader>
-                        {!currentAccount ? null : (
-                            <AccountListItem
-                                BunqJSClient={this.props.BunqJSClient}
-                                clickable={false}
-                                account={currentAccount}
-                            />
-                        )}
-                    </React.Fragment>
-                );
+            let connectedText = "";
+            switch (assignment.type) {
+                case "PRIMARY":
+                    connectedText = t("Primary account");
+                    break;
+                case "SECONDARY":
+                    connectedText = t("Secondary account");
+                    break;
             }
-        );
+
+            // return the accout item for this account
+            return (
+                <React.Fragment>
+                    <ListSubheader style={{ height: 28, marginBottom: 8 }}>{connectedText}</ListSubheader>
+                    {!currentAccount ? null : (
+                        <AccountListItem
+                            BunqJSClient={this.props.BunqJSClient}
+                            clickable={false}
+                            account={currentAccount}
+                        />
+                    )}
+                </React.Fragment>
+            );
+        });
 
         let displayCvcInfo = null;
         if (cardInfo.type === "MASTERCARD" && cardInfo.status === "ACTIVE") {
             // if id is different but not null we don't show the cvc list
-            const idsSet =
-                this.props.cvcCardId === cardInfo.id &&
-                this.props.cvcCardId !== null;
+            const idsSet = this.props.cvcCardId === cardInfo.id && this.props.cvcCardId !== null;
 
             let cvc2CodeList = null;
             if (idsSet) {
@@ -324,8 +290,7 @@ class Card extends React.Component {
                     this.props.cvc2Codes.length > 0 ? (
                         <List>
                             {this.props.cvc2Codes.map(cvc2_code => {
-                                const timeMs =
-                                    cvc2_code.expiry_time.getTime() + 3600000;
+                                const timeMs = cvc2_code.expiry_time.getTime() + 3600000;
                                 return (
                                     <ListItem>
                                         <ListItemText
@@ -333,13 +298,8 @@ class Card extends React.Component {
                                             secondary={
                                                 <Countdown
                                                     date={timeMs}
-                                                    onComplete={
-                                                        this.props
-                                                            .cardCvc2CodesClear
-                                                    }
-                                                    renderer={
-                                                        this.countDownRenderer
-                                                    }
+                                                    onComplete={this.props.cardCvc2CodesClear}
+                                                    renderer={this.countDownRenderer}
                                                 />
                                             }
                                         />
@@ -348,10 +308,7 @@ class Card extends React.Component {
                             })}
                         </List>
                     ) : (
-                        <TypographyTranslate
-                            variant="body2"
-                            style={{ textAlign: "center" }}
-                        >
+                        <TypographyTranslate variant="body2" style={{ textAlign: "center" }}>
                             No CVC codes available
                         </TypographyTranslate>
                     );
@@ -380,55 +337,32 @@ class Card extends React.Component {
         }
 
         let second_line = cardInfo.second_line;
-        if (
-            second_line.length === 0 &&
-            cardInfo.type === "MAESTRO_MOBILE_NFC"
-        ) {
+        if (second_line.length === 0 && cardInfo.type === "MAESTRO_MOBILE_NFC") {
             second_line = "Apple Pay";
         }
 
         return (
             <Grid container spacing={24} style={styles.gridContainer}>
-                <Button
-                    style={styles.activityButton}
-                    onClick={this.toggleInactiveCards}
-                >
-                    {this.state.displayInactive
-                        ? t("Hide inactive cards")
-                        : t("Display inactive cards")}
+                <Button style={styles.activityButton} onClick={this.toggleInactiveCards}>
+                    {this.state.displayInactive ? t("Hide inactive cards") : t("Display inactive cards")}
                 </Button>
 
                 <Grid item xs={6} className="animated fadeInLeft">
-                    <ul
-                        className="carousel"
-                        style={{ transform: carouselTranslate }}
-                    >
+                    <ul className="carousel" style={{ transform: carouselTranslate }}>
                         {cards}
                     </ul>
                 </Grid>
                 <Grid item xs={6} className="animated fadeInRight">
-                    <Grid
-                        container
-                        spacing={24}
-                        alignItems={"center"}
-                        style={styles.cardInfoContainer}
-                    >
+                    <Grid container spacing={24} alignItems={"center"} style={styles.cardInfoContainer}>
                         <Grid item xs={12}>
                             <Paper style={styles.cardInfoPaper}>
                                 <Grid container spacing={16}>
                                     <Grid item xs={12} sm={6}>
-                                        <Typography variant={"title"}>
-                                            {cardInfo.name_on_card}
-                                        </Typography>
-                                        <Typography variant={"subheading"}>
-                                            {second_line}
-                                        </Typography>
+                                        <Typography variant={"title"}>{cardInfo.name_on_card}</Typography>
+                                        <Typography variant={"subheading"}>{second_line}</Typography>
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
-                                        <Typography
-                                            variant={"body2"}
-                                            style={{ textAlign: "right" }}
-                                        >
+                                        <Typography variant={"body2"} style={{ textAlign: "right" }}>
                                             {t("Expires")}: <br />
                                             {cardInfo.expiry_date}
                                         </Typography>
@@ -443,32 +377,23 @@ class Card extends React.Component {
                                     <ListItem>
                                         <ListItemText
                                             primary={t("Card status")}
-                                            secondary={this.getCardStatus(
-                                                cardInfo
-                                            )}
+                                            secondary={this.getCardStatus(cardInfo)}
                                         />
                                     </ListItem>
                                     <Divider />
                                     <ListItem>
-                                        <ListItemText
-                                            primary={t("Country")}
-                                            secondary={cardInfo.country}
-                                        />
+                                        <ListItemText primary={t("Country")} secondary={cardInfo.country} />
                                     </ListItem>
                                     <Divider />
                                     <ListItem>
                                         <ListItemText
                                             primary={t("Order status")}
-                                            secondary={this.getCardOrderStatus(
-                                                cardInfo
-                                            )}
+                                            secondary={this.getCardOrderStatus(cardInfo)}
                                         />
                                     </ListItem>
                                 </List>
 
-                                {this.props.limitedPermissions
-                                    ? null
-                                    : displayCvcInfo}
+                                {this.props.limitedPermissions ? null : displayCvcInfo}
                             </Paper>
                         </Grid>
                     </Grid>
@@ -499,8 +424,7 @@ const mapDispatchToProps = (dispatch, props) => {
     return {
         cardUpdate: userId => dispatch(cardUpdate(BunqJSClient, userId)),
         // list all cvc2 codes
-        cardUpdateCvc2Codes: (userId, cardId) =>
-            dispatch(cardUpdateCvc2Codes(BunqJSClient, userId, cardId)),
+        cardUpdateCvc2Codes: (userId, cardId) => dispatch(cardUpdateCvc2Codes(BunqJSClient, userId, cardId)),
         cardCvc2CodesClear: () => dispatch(cardCvc2CodesClear())
     };
 };

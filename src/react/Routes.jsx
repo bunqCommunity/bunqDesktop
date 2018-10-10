@@ -25,21 +25,15 @@ const privateRoutes = [
     },
     {
         path: "/request",
-        component: CL(() =>
-            import(/* webpackChunkName: "requestinquiry" */ "./Pages/RequestInquiry/RequestInquiry")
-        )
+        component: CL(() => import(/* webpackChunkName: "requestinquiry" */ "./Pages/RequestInquiry/RequestInquiry"))
     },
     {
         path: "/bunqme-tab",
-        component: CL(() =>
-            import(/* webpackChunkName: "bunqmetab" */ "./Pages/BunqMeTab/BunqMeTab")
-        )
+        component: CL(() => import(/* webpackChunkName: "bunqmetab" */ "./Pages/BunqMeTab/BunqMeTab"))
     },
     {
         path: "/card",
-        component: CL(() =>
-            import(/* webpackChunkName: "cards" */ "./Pages/Cards/Card")
-        )
+        component: CL(() => import(/* webpackChunkName: "cards" */ "./Pages/Cards/Card"))
     },
     {
         path: "/scheduled-payments",
@@ -52,21 +46,15 @@ const privateRoutes = [
      */
     {
         path: "/exports",
-        component: CL(() =>
-            import(/* webpackChunkName: "exports" */ "./Pages/Exports")
-        )
+        component: CL(() => import(/* webpackChunkName: "exports" */ "./Pages/Exports"))
     },
     {
         path: "/stats",
-        component: CL(() =>
-            import(/* webpackChunkName: "stats" */ "./Pages/Stats/Stats")
-        )
+        component: CL(() => import(/* webpackChunkName: "stats" */ "./Pages/Stats/Stats"))
     },
     {
         path: "/contacts",
-        component: CL(() =>
-            import(/* webpackChunkName: "contacts" */ "./Pages/Contacts/Contacts")
-        )
+        component: CL(() => import(/* webpackChunkName: "contacts" */ "./Pages/Contacts/Contacts"))
     },
     {
         path: "/category-dashboard",
@@ -76,24 +64,18 @@ const privateRoutes = [
     },
     {
         path: "/rules-dashboard",
-        component: CL(() =>
-            import(/* webpackChunkName: "rules_dashboard" */ "./Pages/RuleDashboard/RuleDashboard")
-        )
+        component: CL(() => import(/* webpackChunkName: "rules_dashboard" */ "./Pages/RuleDashboard/RuleDashboard"))
     },
     {
         path: "/rule-page/:ruleId",
-        component: CL(() =>
-            import(/* webpackChunkName: "rules_page" */ "./Pages/RulePage/RulePage")
-        )
+        component: CL(() => import(/* webpackChunkName: "rules_page" */ "./Pages/RulePage/RulePage"))
     },
     /**
      * Event info pages
      */
     {
         path: "/payment/:paymentId/:accountId?",
-        component: CL(() =>
-            import(/* webpackChunkName: "paymentinfo" */ "./Pages/PaymentInfo")
-        )
+        component: CL(() => import(/* webpackChunkName: "paymentinfo" */ "./Pages/PaymentInfo"))
     },
     {
         path: "/request-response-info/:requestResponseId/:accountId?",
@@ -103,42 +85,30 @@ const privateRoutes = [
     },
     {
         path: "/request-inquiry-info/:requestInquiryId/:accountId?",
-        component: CL(() =>
-            import(/* webpackChunkName: "requestinquiryinfo" */ "./Pages/RequestInquiryInfo")
-        )
+        component: CL(() => import(/* webpackChunkName: "requestinquiryinfo" */ "./Pages/RequestInquiryInfo"))
     },
     {
         path: "/mastercard-action-info/:masterCardActionId/:accountId?",
-        component: CL(() =>
-            import(/* webpackChunkName: "mastercardactioninfo" */ "./Pages/MasterCardActionInfo")
-        )
+        component: CL(() => import(/* webpackChunkName: "mastercardactioninfo" */ "./Pages/MasterCardActionInfo"))
     },
     /**
      * Monetary account info and settings pages
      */
     {
         path: "/account-info/:accountId",
-        component: CL(() =>
-            import(/* webpackChunkName: "accountinfo" */ "./Pages/AccountInfo")
-        )
+        component: CL(() => import(/* webpackChunkName: "accountinfo" */ "./Pages/AccountInfo"))
     },
     {
         path: "/new-account",
-        component: CL(() =>
-            import(/* webpackChunkName: "addaccount" */ "./Pages/AddAccount")
-        )
+        component: CL(() => import(/* webpackChunkName: "addaccount" */ "./Pages/AddAccount"))
     },
     {
         path: "/connect/:accountId",
-        component: CL(() =>
-            import(/* webpackChunkName: "connect" */ "./Pages/Connect/Connect")
-        )
+        component: CL(() => import(/* webpackChunkName: "connect" */ "./Pages/Connect/Connect"))
     },
     {
         path: "/profile",
-        component: CL(() =>
-            import(/* webpackChunkName: "profile" */ "./Pages/Profile/Profile")
-        )
+        component: CL(() => import(/* webpackChunkName: "profile" */ "./Pages/Profile/Profile"))
     }
 ];
 
@@ -146,27 +116,19 @@ const privateRoutes = [
 const standardRoutes = [
     {
         path: "/settings",
-        component: CL(() =>
-            import(/* webpackChunkName: "settings" */ "./Pages/Settings")
-        )
+        component: CL(() => import(/* webpackChunkName: "settings" */ "./Pages/Settings"))
     },
     {
         path: "/application-info",
-        component: CL(() =>
-            import(/* webpackChunkName: "applicationinfo" */ "./Pages/ApplicationInfo")
-        )
+        component: CL(() => import(/* webpackChunkName: "applicationinfo" */ "./Pages/ApplicationInfo"))
     },
     {
         path: "/debug-page",
-        component: CL(() =>
-            import(/* webpackChunkName: "debug" */ "./Pages/DebugPage")
-        )
+        component: CL(() => import(/* webpackChunkName: "debug" */ "./Pages/DebugPage"))
     },
     {
         path: "/disclaimer",
-        component: CL(() =>
-            import(/* webpackChunkName: "disclaimer" */ "./Pages/Disclaimer")
-        )
+        component: CL(() => import(/* webpackChunkName: "disclaimer" */ "./Pages/Disclaimer"))
     },
     {
         path: "/login",
@@ -174,9 +136,7 @@ const standardRoutes = [
     },
     {
         path: "/switch-api-keys",
-        component: CL(() =>
-            import(/* webpackChunkName: "switch_api_keys" */ "./Pages/SwitchApiKeys")
-        )
+        component: CL(() => import(/* webpackChunkName: "switch_api_keys" */ "./Pages/SwitchApiKeys"))
     }
 ];
 
@@ -204,9 +164,7 @@ export default class Routes extends React.Component {
                     apiKey={this.props.apiKey}
                     userType={this.props.userType}
                     derivedPassword={this.props.derivedPassword}
-                    render={props => (
-                        <Component {...props} {...this.props.childProps} />
-                    )}
+                    render={props => <Component {...props} {...this.props.childProps} />}
                     {...props}
                 />
             );
@@ -214,14 +172,7 @@ export default class Routes extends React.Component {
         const stantardRouteComponents = standardRoutes.map(route => {
             const { component, ...props } = route;
             const Component = route.component;
-            return (
-                <Route
-                    render={props => (
-                        <Component {...props} {...this.props.childProps} />
-                    )}
-                    {...props}
-                />
-            );
+            return <Route render={props => <Component {...props} {...this.props.childProps} />} {...props} />;
         });
 
         const publicRouteComponents = publicRoutes.map(route => {
@@ -230,9 +181,7 @@ export default class Routes extends React.Component {
             return (
                 <PublicRoute
                     derivedPassword={this.props.derivedPassword}
-                    render={props => (
-                        <Component {...props} {...this.props.childProps} />
-                    )}
+                    render={props => <Component {...props} {...this.props.childProps} />}
                     {...props}
                 />
             );
@@ -241,22 +190,12 @@ export default class Routes extends React.Component {
         return (
             <Route
                 render={wrapperProps => (
-                    <Switch
-                        key={wrapperProps.location.key}
-                        location={wrapperProps.location}
-                    >
+                    <Switch key={wrapperProps.location.key} location={wrapperProps.location}>
                         {privateRouteComponents}
                         {stantardRouteComponents}
                         {publicRouteComponents}
 
-                        <Route
-                            render={props => (
-                                <NotFound
-                                    {...props}
-                                    {...this.props.childProps}
-                                />
-                            )}
-                        />
+                        <Route render={props => <NotFound {...props} {...this.props.childProps} />} />
                     </Switch>
                 )}
             />

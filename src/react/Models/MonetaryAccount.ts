@@ -1,12 +1,4 @@
-import {
-    AccountType,
-    MonetaryAccountSetting,
-    AllCoOwner,
-    Alias,
-    Avatar,
-    Balance,
-    Amount
-} from "../Types/Types";
+import { AccountType, MonetaryAccountSetting, AllCoOwner, Alias, Avatar, Balance, Amount } from "../Types/Types";
 
 import NotificationFilter from "@bunq-community/bunq-js-client/src/Types/NotificationFilter";
 

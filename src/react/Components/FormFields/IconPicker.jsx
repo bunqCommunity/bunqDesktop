@@ -49,10 +49,7 @@ class IconPicker extends React.Component {
             // loop through items and match
             let iconList = this.state.icons.filter(icon => {
                 const alternateIcon = icon.replace("_", " ");
-                return (
-                    icon.includes(searchTerm) ||
-                    alternateIcon.includes(searchTerm)
-                );
+                return icon.includes(searchTerm) || alternateIcon.includes(searchTerm);
             });
 
             this.setState({
@@ -91,11 +88,7 @@ class IconPicker extends React.Component {
                 >
                     {this.props.buttonLabel}
                 </Button>
-                <Dialog
-                    key={"randomkey2"}
-                    open={this.state.open}
-                    onClose={this.handleClose}
-                >
+                <Dialog key={"randomkey2"} open={this.state.open} onClose={this.handleClose}>
                     <DialogTitle>{this.props.t("Pick an icon")}</DialogTitle>
                     <TextField
                         label={"Search for icons"}

@@ -40,8 +40,7 @@ class NoteTextForm extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.event && !this.props.noteTextsLoading)
-            this.updateNotes();
+        if (this.props.event && !this.props.noteTextsLoading) this.updateNotes();
     }
 
     getSnapshotBeforeUpdate(nextProps, nextState) {
@@ -72,12 +71,7 @@ class NoteTextForm extends React.Component {
             //     event.monetary_account_id,
             //     event.id
             // );
-            this.props.noteTextsUpdate(
-                parsedEventType,
-                user.id,
-                event.monetary_account_id,
-                event.id
-            );
+            this.props.noteTextsUpdate(parsedEventType, user.id, event.monetary_account_id, event.id);
         }
     };
 
@@ -112,17 +106,10 @@ class NoteTextForm extends React.Component {
     };
 
     render() {
-        const {
-            event,
-            user,
-            noteTexts,
-            noteTextsEventId,
-            noteTextsLoading
-        } = this.props;
+        const { event, user, noteTexts, noteTextsEventId, noteTextsLoading } = this.props;
 
         // ignore if event mismatch
-        if (!event || !noteTextsEventId || noteTextsEventId !== event.id)
-            return null;
+        if (!event || !noteTextsEventId || noteTextsEventId !== event.id) return null;
 
         const parsedEventType = NoteTextTypeParser(event);
 
@@ -151,20 +138,14 @@ class NoteTextForm extends React.Component {
                     </Grid>
 
                     <Grid item xs={12} sm={8} md={10}>
-                        <TextField
-                            style={styles.textField}
-                            onChange={this.onChange}
-                            value={this.state.message}
-                        />
+                        <TextField style={styles.textField} onChange={this.onChange} value={this.state.message} />
                     </Grid>
                     <Grid item xs={12} sm={4} md={2}>
                         <TranslateButton
                             variant="raised"
                             color="primary"
                             style={styles.button}
-                            disabled={
-                                noteTextsLoading || !this.state.messageValid
-                            }
+                            disabled={noteTextsLoading || !this.state.messageValid}
                             onClick={this.addNote}
                         >
                             Send
@@ -201,32 +182,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         noteTextsUpdate: (event_type, user_id, account_id, event_id) =>
-            dispatch(
-                noteTextsUpdate(
-                    BunqJSClient,
-                    event_type,
-                    user_id,
-                    account_id,
-                    event_id
-                )
-            ),
-        notesTextsAddNote: (
-            event_type,
-            user_id,
-            account_id,
-            event_id,
-            content
-        ) =>
-            dispatch(
-                notesTextsAddNote(
-                    BunqJSClient,
-                    event_type,
-                    user_id,
-                    account_id,
-                    event_id,
-                    content
-                )
-            ),
+            dispatch(noteTextsUpdate(BunqJSClient, event_type, user_id, account_id, event_id)),
+        notesTextsAddNote: (event_type, user_id, account_id, event_id, content) =>
+            dispatch(notesTextsAddNote(BunqJSClient, event_type, user_id, account_id, event_id, content)),
         // notesTextsUpdateNote: (
         //     event_type,
         //     user_id,
@@ -246,23 +204,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         //             note_id
         //         )
         //     ),
-        notesTextsDeleteNote: (
-            event_type,
-            user_id,
-            account_id,
-            event_id,
-            note_id
-        ) =>
-            dispatch(
-                notesTextsDeleteNote(
-                    BunqJSClient,
-                    event_type,
-                    user_id,
-                    account_id,
-                    event_id,
-                    note_id
-                )
-            )
+        notesTextsDeleteNote: (event_type, user_id, account_id, event_id, note_id) =>
+            dispatch(notesTextsDeleteNote(BunqJSClient, event_type, user_id, account_id, event_id, note_id))
     };
 };
 

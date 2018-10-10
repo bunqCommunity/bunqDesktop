@@ -89,10 +89,7 @@ class Profile extends React.Component {
             this.userToState();
         }
 
-        if (
-            oldProps.accountsLoading === true &&
-            this.props.accountsLoading === false
-        ) {
+        if (oldProps.accountsLoading === true && this.props.accountsLoading === false) {
             const totalBalance = this.calculateTotalBalance();
             this.setState({
                 totalBalance: totalBalance
@@ -118,10 +115,7 @@ class Profile extends React.Component {
     normalizeAddress = address => {
         const formattedAddress = {};
         Object.keys(address).forEach(key => {
-            formattedAddress[key] =
-                address[key] !== null && typeof address[key] !== "undefined"
-                    ? address[key]
-                    : "";
+            formattedAddress[key] = address[key] !== null && typeof address[key] !== "undefined" ? address[key] : "";
         });
         return formattedAddress;
     };
@@ -166,10 +160,7 @@ class Profile extends React.Component {
             public_nick_name: public_nick_name
         };
 
-        const apiHandler =
-            userType === "UserPerson"
-                ? BunqJSClient.api.userPerson
-                : BunqJSClient.api.userCompany;
+        const apiHandler = userType === "UserPerson" ? BunqJSClient.api.userPerson : BunqJSClient.api.userCompany;
 
         apiHandler
             .put(user.id, userInfo)
@@ -200,12 +191,8 @@ class Profile extends React.Component {
                             <TableHead>
                                 <TableRow>
                                     <TableCell>{t("Days")}</TableCell>
-                                    <TableCell numeric>
-                                        {t("Estimated total cost")}
-                                    </TableCell>
-                                    <TableCell numeric>
-                                        {t("Balance after payments")}
-                                    </TableCell>
+                                    <TableCell numeric>{t("Estimated total cost")}</TableCell>
+                                    <TableCell numeric>{t("Balance after payments")}</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -217,30 +204,20 @@ class Profile extends React.Component {
                                     // go through the days to calculate historic change
                                     for (let day = 0; day < days; day++) {
                                         const thousands = accountBalance / 1000;
-                                        let nextPayment =
-                                            (thousands * 2.4) / 100;
+                                        let nextPayment = (thousands * 2.4) / 100;
 
                                         // update balance
-                                        accountBalance =
-                                            accountBalance - nextPayment;
-                                        totalPayment =
-                                            totalPayment + nextPayment;
+                                        accountBalance = accountBalance - nextPayment;
+                                        totalPayment = totalPayment + nextPayment;
                                     }
 
                                     return (
                                         <TableRow key={`days${days}`}>
-                                            <TableCell
-                                                component="th"
-                                                scope="row"
-                                            >
+                                            <TableCell component="th" scope="row">
                                                 {days}
                                             </TableCell>
-                                            <TableCell numeric>
-                                                {formatMoney(totalPayment)}
-                                            </TableCell>
-                                            <TableCell numeric>
-                                                {formatMoney(accountBalance)}
-                                            </TableCell>
+                                            <TableCell numeric>{formatMoney(totalPayment)}</TableCell>
+                                            <TableCell numeric>{formatMoney(accountBalance)}</TableCell>
                                         </TableRow>
                                     );
                                 })}
@@ -264,9 +241,7 @@ class Profile extends React.Component {
                                     step={0.01}
                                     type="number"
                                     label="Total account balance"
-                                    value={parseFloat(
-                                        totalBalance ? totalBalance : 0
-                                    ).toFixed(2)}
+                                    value={parseFloat(totalBalance ? totalBalance : 0).toFixed(2)}
                                     onChange={this.onChange("totalBalance")}
                                 />
                             </Grid>
@@ -275,9 +250,7 @@ class Profile extends React.Component {
                                 {hasSafeKeepingFee ? (
                                     costsTable
                                 ) : (
-                                    <TranslateTypography variant="subheading">
-                                        No safekeeping fee
-                                    </TranslateTypography>
+                                    <TranslateTypography variant="subheading">No safekeeping fee</TranslateTypography>
                                 )}
                             </Grid>
                         </Grid>
@@ -299,34 +272,24 @@ class Profile extends React.Component {
                             </Grid>
 
                             <Grid item xs={12} sm={6}>
-                                <TranslateTypography
-                                    variant={"title"}
-                                    style={styles.title}
-                                >
+                                <TranslateTypography variant={"title"} style={styles.title}>
                                     Main address
                                 </TranslateTypography>
                                 <Address
                                     t={t}
                                     address={this.state.address_main}
-                                    onChange={this.onChangeAddress(
-                                        "address_main"
-                                    )}
+                                    onChange={this.onChangeAddress("address_main")}
                                 />
                             </Grid>
 
                             <Grid item xs={12} sm={6}>
-                                <TranslateTypography
-                                    variant={"title"}
-                                    style={styles.title}
-                                >
+                                <TranslateTypography variant={"title"} style={styles.title}>
                                     Postal address
                                 </TranslateTypography>
                                 <Address
                                     t={t}
                                     address={this.state.address_postal}
-                                    onChange={this.onChangeAddress(
-                                        "address_postal"
-                                    )}
+                                    onChange={this.onChangeAddress("address_postal")}
                                 />
                             </Grid>
 
@@ -395,11 +358,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
-        userLogin: (userType, updated) =>
-            dispatch(userLogin(BunqJSClient, userType, updated)),
+        userLogin: (userType, updated) => dispatch(userLogin(BunqJSClient, userType, updated)),
 
-        BunqErrorHandler: (error, message) =>
-            BunqErrorHandler(dispatch, error, message)
+        BunqErrorHandler: (error, message) => BunqErrorHandler(dispatch, error, message)
     };
 };
 

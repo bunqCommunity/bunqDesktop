@@ -1,12 +1,4 @@
-import {
-    app,
-    shell,
-    Menu,
-    Tray,
-    ipcMain,
-    nativeImage,
-    BrowserWindow
-} from "electron";
+import { app, shell, Menu, Tray, ipcMain, nativeImage, BrowserWindow } from "electron";
 import os from "os";
 import fs from "fs";
 import url from "url";
@@ -33,10 +25,7 @@ process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 1;
 const platform = os.platform();
 const userDataPath = app.getPath("userData");
 
-const imagesDir = path.join(
-    __dirname,
-    `..${path.sep}app${path.sep}images${path.sep}`
-);
+const imagesDir = path.join(__dirname, `..${path.sep}app${path.sep}images${path.sep}`);
 let trayIcon = "";
 if (platform === "darwin") {
     trayIcon = nativeImage.createFromPath(`${imagesDir}logoTemplate@1x.png`);
@@ -63,12 +52,7 @@ const notificationIcon = nativeImage.createFromPath(`${imagesDir}256x256.png`);
 
 // hide/show different native menus based on env
 const setApplicationMenu = () => {
-    let menus = [
-        editMenuTemplate,
-        viewMenuTemplate,
-        windowMenuTemplate,
-        helpMenuTemplate
-    ];
+    let menus = [editMenuTemplate, viewMenuTemplate, windowMenuTemplate, helpMenuTemplate];
 
     // modify templates if on darwin
     menus = darwinMenuTemplates(menus);
@@ -99,15 +83,11 @@ log.transports.file.appName = "BunqDesktop";
 log.transports.file.level = "debug";
 log.transports.file.maxSize = 512 * 1024;
 log.transports.file.format = "{h}:{i}:{s}:{ms} {text}";
-log.transports.file.file = `${userDataPath}${path.sep}BunqDesktop.${
-    env.name
-}.log.txt`;
+log.transports.file.file = `${userDataPath}${path.sep}BunqDesktop.${env.name}.log.txt`;
 
 // hot reloading
 if (process.env.NODE_ENV === "development") {
-    require("electron-reload")(
-        path.join(__dirname, `..${path.sep}app${path.sep}**`)
-    );
+    require("electron-reload")(path.join(__dirname, `..${path.sep}app${path.sep}**`));
 }
 
 // set the correct path before the app loads
@@ -117,9 +97,7 @@ app.on("ready", () => {
     setApplicationMenu();
 
     const USE_NATIVE_FRAME_STORED = settings.get("USE_NATIVE_FRAME");
-    const USE_NATIVE_FRAME =
-        USE_NATIVE_FRAME_STORED !== undefined &&
-        USE_NATIVE_FRAME_STORED === true;
+    const USE_NATIVE_FRAME = USE_NATIVE_FRAME_STORED !== undefined && USE_NATIVE_FRAME_STORED === true;
 
     // setup the main window
     const mainWindow = createWindow("main", {

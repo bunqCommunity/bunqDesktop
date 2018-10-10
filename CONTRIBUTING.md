@@ -18,5 +18,6 @@ You're going to need [`git`](https://git-scm.com/) to get the project, and [`nod
 2. Install the required dependencies
 3. Run `yarn` in the repo directory to install dependencies
 4. Create a branch for your PR
+5. Optionally, if your PR includes code changes make sure to run `yarn run prettier` to ensure the project follows the codestyle as much as possible
 
 [egghead]: https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github

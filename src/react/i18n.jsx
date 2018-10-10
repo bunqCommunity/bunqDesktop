@@ -36,10 +36,7 @@ const addLocaleKey = async data => {
         const targetPath = path.join(__dirname, "../src/react/Locales/en.json");
 
         // write the updated file back to the locale files
-        fs.writeFileSync(
-            targetPath,
-            JSON.stringify(tempLocaleData, null, "\t")
-        );
+        fs.writeFileSync(targetPath, JSON.stringify(tempLocaleData, null, "\t"));
     } catch (ex) {}
 };
 

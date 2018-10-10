@@ -71,9 +71,7 @@ export default (name, options) => {
 
     state = ensureVisibleOnSomeDisplay(restore());
 
-    win = new BrowserWindow(
-        Object.assign({ titleBarStyle: "hidden" }, options, state)
-    );
+    win = new BrowserWindow(Object.assign({ titleBarStyle: "hidden" }, options, state));
 
     win.on("close", saveState);
 

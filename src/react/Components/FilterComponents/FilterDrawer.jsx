@@ -196,31 +196,19 @@ class FilterDrawer extends React.Component {
                         <Radio
                             style={styles.radioBtn}
                             icon={<CompareArrowsIcon />}
-                            checkedIcon={
-                                <CompareArrowsIcon color={"primary"} />
-                            }
+                            checkedIcon={<CompareArrowsIcon color={"primary"} />}
                             value={"default"}
                         />
                         <Radio
                             style={styles.radioBtn}
                             icon={<ArrowDownward />}
-                            checkedIcon={
-                                <ArrowDownward
-                                    style={{ color: receivedPayment }}
-                                    color={"inherit"}
-                                />
-                            }
+                            checkedIcon={<ArrowDownward style={{ color: receivedPayment }} color={"inherit"} />}
                             value={"received"}
                         />
                         <Radio
                             style={styles.radioBtn}
                             icon={<ArrowUpward />}
-                            checkedIcon={
-                                <ArrowUpward
-                                    style={{ color: sentPayment }}
-                                    color={"inherit"}
-                                />
-                            }
+                            checkedIcon={<ArrowUpward style={{ color: sentPayment }} color={"inherit"} />}
                             value={"sent"}
                         />
                     </RadioGroup>
@@ -248,31 +236,19 @@ class FilterDrawer extends React.Component {
                         <Radio
                             style={styles.radioBtn}
                             icon={<CompareArrowsIcon />}
-                            checkedIcon={
-                                <CompareArrowsIcon color={"primary"} />
-                            }
+                            checkedIcon={<CompareArrowsIcon color={"primary"} />}
                             value={"default"}
                         />
                         <Radio
                             style={styles.radioBtn}
                             icon={<ArrowDownward />}
-                            checkedIcon={
-                                <ArrowDownward
-                                    style={{ color: sentPayment }}
-                                    color={"inherit"}
-                                />
-                            }
+                            checkedIcon={<ArrowDownward style={{ color: sentPayment }} color={"inherit"} />}
                             value={"received"}
                         />
                         <Radio
                             style={styles.radioBtn}
                             icon={<ArrowUpward />}
-                            checkedIcon={
-                                <ArrowUpward
-                                    style={{ color: receivedPayment }}
-                                    color={"inherit"}
-                                />
-                            }
+                            checkedIcon={<ArrowUpward style={{ color: receivedPayment }} color={"inherit"} />}
                             value={"sent"}
                         />
                     </RadioGroup>
@@ -300,9 +276,7 @@ class FilterDrawer extends React.Component {
                         <Radio
                             style={styles.radioBtn}
                             icon={<CompareArrowsIcon />}
-                            checkedIcon={
-                                <CompareArrowsIcon color={"primary"} />
-                            }
+                            checkedIcon={<CompareArrowsIcon color={"primary"} />}
                             value={"default"}
                         />
                         <Radio
@@ -311,9 +285,7 @@ class FilterDrawer extends React.Component {
                             checkedIcon={
                                 <CheckCircle
                                     style={{
-                                        color:
-                                            theme.palette.bunqMeTabs
-                                                .awaiting_payment
+                                        color: theme.palette.bunqMeTabs.awaiting_payment
                                     }}
                                     color={"inherit"}
                                 />
@@ -326,8 +298,7 @@ class FilterDrawer extends React.Component {
                             checkedIcon={
                                 <Cancel
                                     style={{
-                                        color:
-                                            theme.palette.bunqMeTabs.cancelled
+                                        color: theme.palette.bunqMeTabs.cancelled
                                     }}
                                     color={"inherit"}
                                 />
@@ -350,9 +321,7 @@ class FilterDrawer extends React.Component {
                     </RadioGroup>
                 </ListItem>
 
-                <ListSubheader style={styles.subheaderTitle}>
-                    {t("Date range filter")}
-                </ListSubheader>
+                <ListSubheader style={styles.subheaderTitle}>{t("Date range filter")}</ListSubheader>
                 <ListItem style={styles.listItem}>
                     <DatePicker
                         id="from-date"
@@ -402,10 +371,7 @@ class FilterDrawer extends React.Component {
 
                 <CategorySelection t={t} />
 
-                <AccountSelection
-                    BunqJSClient={this.props.BunqJSClient}
-                    t={t}
-                />
+                <AccountSelection BunqJSClient={this.props.BunqJSClient} t={t} />
 
                 <ListItem style={styles.listFiller} />
 
@@ -414,28 +380,17 @@ class FilterDrawer extends React.Component {
                     <ListItemIcon>
                         <ClearIcon />
                     </ListItemIcon>
-                    <Typography variant="subheading">
-                        {t("Clear filters")}
-                    </Typography>
+                    <Typography variant="subheading">{t("Clear filters")}</Typography>
                 </ListItem>
             </List>
         );
 
         const button = this.props.bigButton ? (
-            <Button
-                variant="raised"
-                key={"button"}
-                onClick={this.openDrawer}
-                {...this.props.buttonProps}
-            >
+            <Button variant="raised" key={"button"} onClick={this.openDrawer} {...this.props.buttonProps}>
                 {t("Filter")} <FilterListIcon />
             </Button>
         ) : (
-            <IconButton
-                key={"iconbutton"}
-                onClick={this.openDrawer}
-                {...this.props.buttonProps}
-            >
+            <IconButton key={"iconbutton"} onClick={this.openDrawer} {...this.props.buttonProps}>
                 <FilterListIcon />
             </IconButton>
         );
@@ -485,16 +440,13 @@ const mapDispatchToProps = dispatch => {
         resetFilters: () => dispatch(resetFilters()),
 
         setPaymentFilterType: type => dispatch(setPaymentFilterType(type)),
-        togglePaymentFilterVisibility: () =>
-            dispatch(togglePaymentFilterVisibility()),
+        togglePaymentFilterVisibility: () => dispatch(togglePaymentFilterVisibility()),
 
         setRequestFilterType: type => dispatch(setRequestFilterType(type)),
-        toggleRequestFilterVisibility: () =>
-            dispatch(toggleRequestFilterVisibility()),
+        toggleRequestFilterVisibility: () => dispatch(toggleRequestFilterVisibility()),
 
         setBunqMeTabFilterType: type => dispatch(setBunqMeTabFilterType(type)),
-        toggleBunqMeTabFilterVisibility: () =>
-            dispatch(toggleBunqMeTabFilterVisibility()),
+        toggleBunqMeTabFilterVisibility: () => dispatch(toggleBunqMeTabFilterVisibility()),
 
         setFromDateFilter: date => dispatch(setFromDateFilter(date)),
         setToDateFilter: date => dispatch(setToDateFilter(date)),

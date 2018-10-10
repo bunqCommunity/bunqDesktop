@@ -125,11 +125,5 @@ export default props => {
         }
     };
 
-    return (
-        <Bar
-            height={defaultOptions.height}
-            data={chartData}
-            options={chartOptions}
-        />
-    );
+    return <Bar height={defaultOptions.height} data={chartData} options={chartOptions} />;
 };

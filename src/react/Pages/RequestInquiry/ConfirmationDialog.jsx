@@ -35,9 +35,7 @@ export default class ConfirmationDialog extends React.Component {
             if (splitRequest) {
                 // get split amount for this target
                 const splitAmountValue =
-                    typeof splitAmounts[targetItem.value] === "undefined"
-                        ? 1
-                        : splitAmounts[targetItem.value];
+                    typeof splitAmounts[targetItem.value] === "undefined" ? 1 : splitAmounts[targetItem.value];
 
                 // calculate percentage and then monetary amount
                 const percentage = splitAmountValue / totalSplit;
@@ -50,40 +48,27 @@ export default class ConfirmationDialog extends React.Component {
 
             return [
                 <ListItem>
-                    <ListItemText
-                        primary={primaryText}
-                        secondary={secondaryText}
-                    />
+                    <ListItemText primary={primaryText} secondary={secondaryText} />
                 </ListItem>,
                 <Divider />
             ];
         });
 
         return (
-            <Dialog
-                open={confirmModalOpen}
-                keepMounted
-                onClose={this.closeModal}
-            >
+            <Dialog open={confirmModalOpen} keepMounted onClose={this.closeModal}>
                 <DialogTitle>Confirm the request</DialogTitle>
                 <DialogContent>
                     <List>
                         <ListItem>
                             <ListItemText
                                 primary={t("To") + ":"}
-                                secondary={`${account.description} ${
-                                    account.balance.value
-                                }`}
+                                secondary={`${account.description} ${account.balance.value}`}
                             />
                         </ListItem>
                         <ListItem>
                             <ListItemText
                                 primary={t("Description")}
-                                secondary={
-                                    description.length <= 0
-                                        ? t("None")
-                                        : description
-                                }
+                                secondary={description.length <= 0 ? t("None") : description}
                             />
                         </ListItem>
                         <ListItem>
@@ -94,18 +79,10 @@ export default class ConfirmationDialog extends React.Component {
                     </List>
                 </DialogContent>
                 <DialogActions>
-                    <Button
-                        variant="raised"
-                        onClick={this.props.closeModal}
-                        color="secondary"
-                    >
+                    <Button variant="raised" onClick={this.props.closeModal} color="secondary">
                         {t("Cancel")}
                     </Button>
-                    <Button
-                        variant="raised"
-                        onClick={this.props.sendInquiry}
-                        color="primary"
-                    >
+                    <Button variant="raised" onClick={this.props.sendInquiry} color="primary">
                         {t("Confirm")}
                     </Button>
                 </DialogActions>

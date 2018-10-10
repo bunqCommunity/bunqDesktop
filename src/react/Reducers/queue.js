@@ -16,9 +16,7 @@ export default function reducer(state = defaultState, action) {
                 ...state,
                 request_counter: setCounterValue,
                 max_request_counter:
-                    state.max_request_counter > setCounterValue
-                        ? state.max_request_counter
-                        : setCounterValue,
+                    state.max_request_counter > setCounterValue ? state.max_request_counter : setCounterValue,
                 loading: setCounterLoading
             };
 
@@ -30,9 +28,7 @@ export default function reducer(state = defaultState, action) {
                 ...state,
                 request_counter: increasedCounter,
                 max_request_counter:
-                    state.max_request_counter > increasedCounter
-                        ? state.max_request_counter
-                        : increasedCounter,
+                    state.max_request_counter > increasedCounter ? state.max_request_counter : increasedCounter,
                 loading: increasedLoading
             };
 
@@ -41,9 +37,7 @@ export default function reducer(state = defaultState, action) {
             const decreasedLoading = decreasedCounter > 0;
 
             // reset to 0 if no longer loading
-            const maxRequestCounter = decreasedLoading
-                ? state.max_request_counter
-                : 0;
+            const maxRequestCounter = decreasedLoading ? state.max_request_counter : 0;
 
             return {
                 ...state,

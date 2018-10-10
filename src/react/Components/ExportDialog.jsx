@@ -52,27 +52,15 @@ export default class ExportDialog extends React.Component {
         }
 
         return (
-            <Dialog
-                TransitionComponent={Transition}
-                keepMounted
-                open={open}
-                onClose={closeModal}
-            >
+            <Dialog TransitionComponent={Transition} keepMounted open={open} onClose={closeModal}>
                 <DialogTitle>{title}</DialogTitle>
                 <DialogContent>
                     {anonymizedObject ? (
-                        <ReactJsonWrapper
-                            style={styles.textField}
-                            data={anonymizedObject}
-                            name="Export Data"
-                        />
+                        <ReactJsonWrapper style={styles.textField} data={anonymizedObject} name="Export Data" />
                     ) : null}
                 </DialogContent>
                 <DialogActions>
-                    <TranslateButton
-                        variant="raised"
-                        onClick={this.onAnonymizeChange}
-                    >
+                    <TranslateButton variant="raised" onClick={this.onAnonymizeChange}>
                         {anonymize ? "Original" : "Anonymize"}
                     </TranslateButton>
 
@@ -82,11 +70,7 @@ export default class ExportDialog extends React.Component {
                         </TranslateButton>
                     </CopyToClipboard>
 
-                    <TranslateButton
-                        variant="raised"
-                        onClick={closeModal}
-                        color="primary"
-                    >
+                    <TranslateButton variant="raised" onClick={closeModal} color="primary">
                         Ok
                     </TranslateButton>
                 </DialogActions>

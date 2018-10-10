@@ -63,8 +63,7 @@ class EventData extends React.Component {
                                     ...styles.icon,
                                     color:
                                         change > 0
-                                            ? theme.palette.common
-                                                  .receivedPayment
+                                            ? theme.palette.common.receivedPayment
                                             : theme.palette.common.sentPayment
                                 }}
                             />

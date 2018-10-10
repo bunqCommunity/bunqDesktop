@@ -1,9 +1,6 @@
 import React from "react";
 import NumberFormat from "react-number-format";
-import {
-    preferedThousandSeparator,
-    preferedDecimalSeparator
-} from "../../Helpers/Utils";
+import { preferedThousandSeparator, preferedDecimalSeparator } from "../../Helpers/Utils";
 
 import { withTheme } from "@material-ui/core/styles";
 

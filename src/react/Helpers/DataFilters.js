@@ -34,10 +34,7 @@ export const paymentFilter = options => payment => {
     }
 
     // hide payments linkd to an accepted request
-    if (
-        payment.sub_type === "REQUEST" &&
-        options.displayRequestPayments === false
-    ) {
+    if (payment.sub_type === "REQUEST" && options.displayRequestPayments === false) {
         return false;
     }
 
@@ -80,18 +77,9 @@ export const paymentFilter = options => payment => {
         }
     }
 
-    if (
-        options.selectedCategories &&
-        options.categories &&
-        options.categoryConnections
-    ) {
+    if (options.selectedCategories && options.categories && options.categoryConnections) {
         if (options.selectedCategories.length > 0) {
-            const categories = CategoryHelper(
-                options.categories,
-                options.categoryConnections,
-                "Payment",
-                payment.id
-            );
+            const categories = CategoryHelper(options.categories, options.categoryConnections, "Payment", payment.id);
 
             // no categories linked so always unmatched
             if (categories.length === 0) {
@@ -119,22 +107,15 @@ export const paymentFilter = options => payment => {
         if (options.selectedAccountIds.length > 0) {
             // check if the payment is connected to a selected account
             const foundIndex = options.selectedAccountIds.findIndex(
-                selectedAccountId =>
-                    selectedAccountId === payment.monetary_account_id
+                selectedAccountId => selectedAccountId === payment.monetary_account_id
             );
 
             // if true only return true if account id is in the filter, else return false
-            return options.toggleAccountIds === false
-                ? foundIndex > -1
-                : foundIndex === -1;
+            return options.toggleAccountIds === false ? foundIndex > -1 : foundIndex === -1;
         }
     }
 
-    return checkDateRange(
-        options.dateFromFilter,
-        options.dateToFilter,
-        payment.created
-    );
+    return checkDateRange(options.dateFromFilter, options.dateToFilter, payment.created);
 };
 
 export const bunqMeTabsFilter = options => bunqMeTab => {
@@ -142,28 +123,20 @@ export const bunqMeTabsFilter = options => bunqMeTab => {
         return false;
     }
 
-    const dateCheck = checkDateRange(
-        options.dateFromFilter,
-        options.dateToFilter,
-        bunqMeTab.BunqMeTab.created
-    );
+    const dateCheck = checkDateRange(options.dateFromFilter, options.dateToFilter, bunqMeTab.BunqMeTab.created);
     if (!dateCheck) return false;
 
     if (options.searchTerm && options.searchTerm.length > 0) {
-        const searchMatches = [
-            bunqMeTab.bunqme_tab_entry.description.toLowerCase()
-        ].some(text => text.includes(options.searchTerm));
+        const searchMatches = [bunqMeTab.bunqme_tab_entry.description.toLowerCase()].some(text =>
+            text.includes(options.searchTerm)
+        );
         if (!searchMatches) return false;
     }
 
     // don't show bunqme requests if amount filter is set
     if (options.amountFilterAmount !== "") return false;
 
-    if (
-        options.selectedCategories &&
-        options.categories &&
-        options.categoryConnections
-    ) {
+    if (options.selectedCategories && options.categories && options.categoryConnections) {
         if (options.selectedCategories.length > 0) {
             const categories = CategoryHelper(
                 options.categories,
@@ -198,14 +171,11 @@ export const bunqMeTabsFilter = options => bunqMeTab => {
         if (options.selectedAccountIds.length > 0) {
             // check if the payment is connected to a selected account
             const foundIndex = options.selectedAccountIds.findIndex(
-                selectedAccountId =>
-                    selectedAccountId === bunqMeTab.monetary_account_id
+                selectedAccountId => selectedAccountId === bunqMeTab.monetary_account_id
             );
 
             // if true only return true if account id is in the filter, else return false
-            return options.toggleAccountIds === false
-                ? foundIndex > -1
-                : foundIndex === -1;
+            return options.toggleAccountIds === false ? foundIndex > -1 : foundIndex === -1;
         }
     }
 
@@ -254,11 +224,7 @@ export const masterCardActionFilter = options => masterCardAction => {
         }
     }
 
-    if (
-        options.selectedCategories &&
-        options.categories &&
-        options.categoryConnections
-    ) {
+    if (options.selectedCategories && options.categories && options.categoryConnections) {
         if (options.selectedCategories.length > 0) {
             const categories = CategoryHelper(
                 options.categories,
@@ -293,22 +259,15 @@ export const masterCardActionFilter = options => masterCardAction => {
         if (options.selectedAccountIds.length > 0) {
             // check if the payment is connected to a selected account
             const foundIndex = options.selectedAccountIds.findIndex(
-                selectedAccountId =>
-                    selectedAccountId === masterCardAction.monetary_account_id
+                selectedAccountId => selectedAccountId === masterCardAction.monetary_account_id
             );
 
             // if true only return true if account id is in the filter, else return false
-            return options.toggleAccountIds === false
-                ? foundIndex > -1
-                : foundIndex === -1;
+            return options.toggleAccountIds === false ? foundIndex > -1 : foundIndex === -1;
         }
     }
 
-    return checkDateRange(
-        options.dateFromFilter,
-        options.dateToFilter,
-        masterCardAction.MasterCardAction.created
-    );
+    return checkDateRange(options.dateFromFilter, options.dateToFilter, masterCardAction.MasterCardAction.created);
 };
 
 export const requestResponseFilter = options => requestResponse => {
@@ -327,27 +286,18 @@ export const requestResponseFilter = options => requestResponse => {
     }
 
     // hide accepted payments
-    if (
-        requestResponse.RequestResponse.status === "ACCEPTED" &&
-        options.displayAcceptedRequests !== true
-    ) {
+    if (requestResponse.RequestResponse.status === "ACCEPTED" && options.displayAcceptedRequests !== true) {
         return false;
     }
 
     if (isRequestType) {
         // check payment type since this is a payment
-        if (
-            options.requestType !== "sent" &&
-            options.requestType !== "default"
-        ) {
+        if (options.requestType !== "sent" && options.requestType !== "default") {
             return false;
         }
     } else {
         // check the request type since this is an actual request
-        if (
-            options.requestType !== "sent" &&
-            options.requestType !== "default"
-        ) {
+        if (options.requestType !== "sent" && options.requestType !== "default") {
             return false;
         }
     }
@@ -378,11 +328,7 @@ export const requestResponseFilter = options => requestResponse => {
         }
     }
 
-    if (
-        options.selectedCategories &&
-        options.categories &&
-        options.categoryConnections
-    ) {
+    if (options.selectedCategories && options.categories && options.categoryConnections) {
         if (options.selectedCategories.length > 0) {
             const categories = CategoryHelper(
                 options.categories,
@@ -417,22 +363,15 @@ export const requestResponseFilter = options => requestResponse => {
         if (options.selectedAccountIds.length > 0) {
             // check if the payment is connected to a selected account
             const foundIndex = options.selectedAccountIds.findIndex(
-                selectedAccountId =>
-                    selectedAccountId === requestResponse.monetary_account_id
+                selectedAccountId => selectedAccountId === requestResponse.monetary_account_id
             );
 
             // if true only return true if account id is in the filter, else return false
-            return options.toggleAccountIds === false
-                ? foundIndex > -1
-                : foundIndex === -1;
+            return options.toggleAccountIds === false ? foundIndex > -1 : foundIndex === -1;
         }
     }
 
-    return checkDateRange(
-        options.dateFromFilter,
-        options.dateToFilter,
-        requestResponse.RequestResponse.updated
-    );
+    return checkDateRange(options.dateFromFilter, options.dateToFilter, requestResponse.RequestResponse.updated);
 };
 
 export const requestInquiryFilter = options => requestInquiry => {
@@ -440,17 +379,11 @@ export const requestInquiryFilter = options => requestInquiry => {
         return false;
     }
 
-    if (
-        requestInquiry.RequestInquiry.status === "ACCEPTED" &&
-        options.displayAcceptedRequests !== true
-    ) {
+    if (requestInquiry.RequestInquiry.status === "ACCEPTED" && options.displayAcceptedRequests !== true) {
         return false;
     }
 
-    if (
-        options.requestType !== "received" &&
-        options.requestType !== "default"
-    ) {
+    if (options.requestType !== "received" && options.requestType !== "default") {
         return false;
     }
 
@@ -479,11 +412,7 @@ export const requestInquiryFilter = options => requestInquiry => {
         }
     }
 
-    if (
-        options.selectedCategories &&
-        options.categories &&
-        options.categoryConnections
-    ) {
+    if (options.selectedCategories && options.categories && options.categoryConnections) {
         if (options.selectedCategories.length > 0) {
             const categories = CategoryHelper(
                 options.categories,
@@ -518,22 +447,15 @@ export const requestInquiryFilter = options => requestInquiry => {
         if (options.selectedAccountIds.length > 0) {
             // check if the payment is connected to a selected account
             const foundIndex = options.selectedAccountIds.findIndex(
-                selectedAccountId =>
-                    selectedAccountId === requestInquiry.monetary_account_id
+                selectedAccountId => selectedAccountId === requestInquiry.monetary_account_id
             );
 
             // if true only return true if account id is in the filter, else return false
-            return options.toggleAccountIds === false
-                ? foundIndex > -1
-                : foundIndex === -1;
+            return options.toggleAccountIds === false ? foundIndex > -1 : foundIndex === -1;
         }
     }
 
-    return checkDateRange(
-        options.dateFromFilter,
-        options.dateToFilter,
-        requestInquiry.RequestInquiry.updated
-    );
+    return checkDateRange(options.dateFromFilter, options.dateToFilter, requestInquiry.RequestInquiry.updated);
 };
 
 export const requestInquiryBatchFilter = options => requestInquiryBatch => {
@@ -541,10 +463,7 @@ export const requestInquiryBatchFilter = options => requestInquiryBatch => {
         return false;
     }
 
-    if (
-        options.requestType !== "received" &&
-        options.requestType !== "default"
-    ) {
+    if (options.requestType !== "received" && options.requestType !== "default") {
         return false;
     }
 
@@ -570,8 +489,7 @@ export const requestInquiryBatchFilter = options => requestInquiryBatch => {
 };
 
 export const shareInviteBankResponseFilter = options => shareInviteBankResponse => {
-    const shareInviteBankResponseInfo =
-        shareInviteBankResponse.ShareInviteBankResponse;
+    const shareInviteBankResponseInfo = shareInviteBankResponse.ShareInviteBankResponse;
 
     if (shareInviteBankResponseInfo.status !== "PENDING") {
         return false;
@@ -592,19 +510,11 @@ export const shareInviteBankResponseFilter = options => shareInviteBankResponse 
     ) {
         return false;
     }
-    if (
-        options.bunqMeTabType !== "default" ||
-        options.paymentType !== "default" ||
-        options.requestType !== "default"
-    ) {
+    if (options.bunqMeTabType !== "default" || options.paymentType !== "default" || options.requestType !== "default") {
         return false;
     }
 
-    return checkDateRange(
-        options.dateFromFilter,
-        options.dateToFilter,
-        shareInviteBankResponseInfo.updated
-    );
+    return checkDateRange(options.dateFromFilter, options.dateToFilter, shareInviteBankResponseInfo.updated);
 };
 
 export const shareInviteBankInquiryFilter = options => shareInviteBankInquiry => {
@@ -632,19 +542,11 @@ export const shareInviteBankInquiryFilter = options => shareInviteBankInquiry =>
     ) {
         return false;
     }
-    if (
-        options.bunqMeTabType !== "default" ||
-        options.paymentType !== "default" ||
-        options.requestType !== "default"
-    ) {
+    if (options.bunqMeTabType !== "default" || options.paymentType !== "default" || options.requestType !== "default") {
         return false;
     }
 
-    return checkDateRange(
-        options.dateFromFilter,
-        options.dateToFilter,
-        shareInviteBankInquiryInfo.updated
-    );
+    return checkDateRange(options.dateFromFilter, options.dateToFilter, shareInviteBankInquiryInfo.updated);
 };
 
 export const filterShareInviteBankResponses = accountId => shareInviteBankResponse => {
@@ -652,25 +554,20 @@ export const filterShareInviteBankResponses = accountId => shareInviteBankRespon
 
     return (
         shareInviteBankResponse.ShareInviteBankResponse.status === "ACCEPTED" &&
-        shareInviteBankResponse.ShareInviteBankResponse.monetary_account_id ===
-            accountId
+        shareInviteBankResponse.ShareInviteBankResponse.monetary_account_id === accountId
     );
 };
 
 export const filterShareInviteBankInquiries = accountId => shareInviteBankInquiry => {
     if (shareInviteBankInquiry.ShareInviteBankInquiry) {
         return (
-            shareInviteBankInquiry.ShareInviteBankInquiry.status ===
-                "ACCEPTED" &&
-            shareInviteBankInquiry.ShareInviteBankInquiry
-                .monetary_account_id === accountId
+            shareInviteBankInquiry.ShareInviteBankInquiry.status === "ACCEPTED" &&
+            shareInviteBankInquiry.ShareInviteBankInquiry.monetary_account_id === accountId
         );
     } else if (shareInviteBankInquiry.ShareInviteBankResponse) {
         return (
-            shareInviteBankInquiry.ShareInviteBankResponse.status ===
-                "ACCEPTED" &&
-            shareInviteBankInquiry.ShareInviteBankResponse
-                .monetary_account_id === accountId
+            shareInviteBankInquiry.ShareInviteBankResponse.status === "ACCEPTED" &&
+            shareInviteBankInquiry.ShareInviteBankResponse.monetary_account_id === accountId
         );
     }
     return false;

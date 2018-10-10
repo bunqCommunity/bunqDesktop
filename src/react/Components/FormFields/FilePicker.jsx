@@ -36,9 +36,7 @@ class FilePicker extends React.Component {
     render() {
         const { value, style, buttonContent } = this.props;
 
-        const defaultLabel = (
-            <TypographyTranslate>Pick location</TypographyTranslate>
-        );
+        const defaultLabel = <TypographyTranslate>Pick location</TypographyTranslate>;
 
         return (
             <Grid container spacing={16} style={style}>

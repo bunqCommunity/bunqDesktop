@@ -2,8 +2,7 @@ import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { storeDecryptString } from "../Helpers/CryptoWorkerWrapper";
 import RequestInquiryBatch from "../Models/RequestInquiryBatch";
 
-export const STORED_REQUEST_INQUIRY_BATCHES =
-    "BUNQDESKTOP_STORED_REQUEST_INQUIRY_BATCHES";
+export const STORED_REQUEST_INQUIRY_BATCHES = "BUNQDESKTOP_STORED_REQUEST_INQUIRY_BATCHES";
 
 export function requestInquiryBatchesSetInfo(
     requestInquiryBatches,
@@ -11,9 +10,7 @@ export function requestInquiryBatchesSetInfo(
     resetOldItems = false,
     BunqJSClient = false
 ) {
-    const type = resetOldItems
-        ? "REQUEST_INQUIRY_BATCHES_SET_INFO"
-        : "REQUEST_INQUIRY_BATCHES_UPDATE_INFO";
+    const type = resetOldItems ? "REQUEST_INQUIRY_BATCHES_SET_INFO" : "REQUEST_INQUIRY_BATCHES_UPDATE_INFO";
 
     return {
         type: type,
@@ -28,21 +25,11 @@ export function requestInquiryBatchesSetInfo(
 export function loadStoredrequestInquiryBatches(BunqJSClient) {
     return dispatch => {
         dispatch(requestInquiryBatchesLoading());
-        storeDecryptString(
-            STORED_REQUEST_INQUIRY_BATCHES,
-            BunqJSClient.Session.encryptionKey
-        )
+        storeDecryptString(STORED_REQUEST_INQUIRY_BATCHES, BunqJSClient.Session.encryptionKey)
             .then(data => {
                 if (data && data.items) {
-                    const requestInquiryBatchesNew = data.items.map(
-                        item => new RequestInquiryBatch(item)
-                    );
-                    dispatch(
-                        requestInquiryBatchesSetInfo(
-                            requestInquiryBatchesNew,
-                            data.account_id
-                        )
-                    );
+                    const requestInquiryBatchesNew = data.items.map(item => new RequestInquiryBatch(item));
+                    dispatch(requestInquiryBatchesSetInfo(requestInquiryBatchesNew, data.account_id));
                 }
                 dispatch(requestInquiryBatchesNotLoading());
             })
@@ -62,27 +49,16 @@ export function requestInquiryBatchesUpdate(
         older_id: false
     }
 ) {
-    const failedMessage = window.t(
-        "We failed to load the batched request inquiries for this monetary account"
-    );
+    const failedMessage = window.t("We failed to load the batched request inquiries for this monetary account");
 
     return dispatch => {
         dispatch(requestInquiryBatchesLoading());
         BunqJSClient.api.requestInquiryBatch
             .list(user_id, accountId, options)
             .then(requestInquiryBatches => {
-                const requestInquiryBatchesNew = requestInquiryBatches.map(
-                    item => new RequestInquiryBatch(item)
-                );
+                const requestInquiryBatchesNew = requestInquiryBatches.map(item => new RequestInquiryBatch(item));
 
-                dispatch(
-                    requestInquiryBatchesSetInfo(
-                        requestInquiryBatchesNew,
-                        accountId,
-                        false,
-                        BunqJSClient
-                    )
-                );
+                dispatch(requestInquiryBatchesSetInfo(requestInquiryBatchesNew, accountId, false, BunqJSClient));
                 dispatch(requestInquiryBatchesNotLoading());
             })
             .catch(error => {

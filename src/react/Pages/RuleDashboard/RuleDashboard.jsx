@@ -65,21 +65,17 @@ class RuleDashboard extends React.Component {
             });
         } else if (ruleCollectionsReceived["category-rules"]) {
             // parse array inside category-rules key and loop through them
-            ruleCollectionsReceived["category-rules"].forEach(
-                ruleCollectionObject => {
-                    // parse a single category rule
-                    this.importSingleRuleCollection(ruleCollectionObject);
-                }
-            );
+            ruleCollectionsReceived["category-rules"].forEach(ruleCollectionObject => {
+                // parse a single category rule
+                this.importSingleRuleCollection(ruleCollectionObject);
+            });
         } else {
             // parse a single category rule
             this.importSingleRuleCollection(ruleCollectionsReceived);
         }
     };
     importSingleRuleCollection = ruleCollectionObject => {
-        const isValid = RuleCollection.validateRuleCollection(
-            ruleCollectionObject
-        );
+        const isValid = RuleCollection.validateRuleCollection(ruleCollectionObject);
 
         if (isValid !== true) {
             // display error
@@ -105,19 +101,11 @@ class RuleDashboard extends React.Component {
     render() {
         const { categoryRules, categories, t } = this.props;
 
-        const categoryRulesList = Object.keys(categoryRules).map(
-            categoryRuleId => (
-                <RuleCollectionItem
-                    ruleCollection={categoryRules[categoryRuleId]}
-                    categories={categories}
-                    t={t}
-                />
-            )
-        );
+        const categoryRulesList = Object.keys(categoryRules).map(categoryRuleId => (
+            <RuleCollectionItem ruleCollection={categoryRules[categoryRuleId]} categories={categories} t={t} />
+        ));
 
-        const categoryRulesArray = Object.keys(categoryRules).map(
-            id => categoryRules[id]
-        );
+        const categoryRulesArray = Object.keys(categoryRules).map(id => categoryRules[id]);
 
         return (
             <Grid container spacing={16}>
@@ -157,28 +145,16 @@ class RuleDashboard extends React.Component {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Button
-                                    variant="raised"
-                                    style={styles.newRuleButton}
-                                    onClick={this.openImportDialog}
-                                >
+                                <Button variant="raised" style={styles.newRuleButton} onClick={this.openImportDialog}>
                                     {t("Import")}
-                                    <FileDownloadIcon
-                                        style={styles.buttonIcons}
-                                    />
+                                    <FileDownloadIcon style={styles.buttonIcons} />
                                 </Button>
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Button
-                                    variant="raised"
-                                    style={styles.newRuleButton}
-                                    onClick={this.openExportDialog}
-                                >
+                                <Button variant="raised" style={styles.newRuleButton} onClick={this.openExportDialog}>
                                     {t("Export")}
-                                    <FileUploadIcon
-                                        style={styles.buttonIcons}
-                                    />
+                                    <FileUploadIcon style={styles.buttonIcons} />
                                 </Button>
                             </Grid>
                         </Grid>
@@ -189,9 +165,7 @@ class RuleDashboard extends React.Component {
                     <Paper style={styles.paper}>
                         <Grid container spacing={16}>
                             <Grid item xs={12} sm={3} md={6}>
-                                <TranslateTypography variant={"headline"}>
-                                    Rules
-                                </TranslateTypography>
+                                <TranslateTypography variant={"headline"}>Rules</TranslateTypography>
                             </Grid>
 
                             <Grid item xs={12}>
@@ -218,10 +192,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
-        setCategoryConnectionMultiple: (...params) =>
-            dispatch(setCategoryConnectionMultiple(...params)),
-        setCategoryRule: rule_collection =>
-            dispatch(setCategoryRule(rule_collection))
+        setCategoryConnectionMultiple: (...params) => dispatch(setCategoryConnectionMultiple(...params)),
+        setCategoryRule: rule_collection => dispatch(setCategoryRule(rule_collection))
     };
 };
 

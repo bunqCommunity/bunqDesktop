@@ -27,25 +27,15 @@ class MainDialog extends React.Component {
         if (modalText) {
             // if multiline, user multiple typographies to show the newlines
             const splitTexts = modalText.split("\n");
-            fixedModalText = splitTexts.map(splitText => (
-                <Typography variant="body1">{splitText}</Typography>
-            ));
+            fixedModalText = splitTexts.map(splitText => <Typography variant="body1">{splitText}</Typography>);
         }
 
         return (
-            <Dialog
-                open={modalOpen}
-                TransitionComponent={Transition}
-                onClose={this.props.closeModal}
-            >
+            <Dialog open={modalOpen} TransitionComponent={Transition} onClose={this.props.closeModal}>
                 <DialogTitle>{modalTitle}</DialogTitle>
                 <DialogContent>{fixedModalText}</DialogContent>
                 <DialogActions>
-                    <Button
-                        variant="raised"
-                        onClick={this.props.closeModal}
-                        color="primary"
-                    >
+                    <Button variant="raised" onClick={this.props.closeModal} color="primary">
                         Ok
                     </Button>
                 </DialogActions>

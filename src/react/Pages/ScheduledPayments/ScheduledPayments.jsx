@@ -52,10 +52,7 @@ class ScheduledPayments extends React.Component {
     }
 
     updateScheduledPayments = (userId, accountId) => {
-        if (
-            !this.props.initialBunqConnect ||
-            this.props.scheduledPaymentsLoading
-        ) {
+        if (!this.props.initialBunqConnect || this.props.scheduledPaymentsLoading) {
             return;
         }
         if (!userId) userId = this.props.user.id;
@@ -67,11 +64,7 @@ class ScheduledPayments extends React.Component {
         if (this.state.deleteLoading === false) {
             this.setState({ deleteLoading: true });
             this.props.BunqJSClient.api.schedulePayment
-                .delete(
-                    this.props.user.id,
-                    this.props.accountsAccountId,
-                    scheduledPaymentInfo.id
-                )
+                .delete(this.props.user.id, this.props.accountsAccountId, scheduledPaymentInfo.id)
                 .then(result => {
                     this.updateScheduledPayments();
                     this.setState({ deleteLoading: false });
@@ -80,11 +73,7 @@ class ScheduledPayments extends React.Component {
                     if (err.response && err.response.status === 404) {
                         // likely a batch payment
                         this.props.BunqJSClient.api.schedulePaymentBatch
-                            .delete(
-                                this.props.user.id,
-                                this.props.accountsAccountId,
-                                scheduledPaymentInfo.id
-                            )
+                            .delete(this.props.user.id, this.props.accountsAccountId, scheduledPaymentInfo.id)
                             .then(result => {
                                 this.updateScheduledPayments();
                                 this.setState({ deleteLoading: false });
@@ -100,8 +89,7 @@ class ScheduledPayments extends React.Component {
         }
     };
 
-    toggleInactive = event =>
-        this.setState({ showInactive: !this.state.showInactive });
+    toggleInactive = event => this.setState({ showInactive: !this.state.showInactive });
 
     validateForm = () => {};
 
@@ -112,27 +100,20 @@ class ScheduledPayments extends React.Component {
     render() {
         const t = this.props.t;
 
-        const scheduledPayments = this.props.scheduledPayments.map(
-            (scheduledPayment, key) => {
-                return (
-                    <ScheduledPaymentItem
-                        t={t}
-                        key={key}
-                        BunqJSClient={this.props.BunqJSClient}
-                        scheduledPayment={scheduledPayment}
-                        showInactive={this.state.showInactive}
-                        deleteLoading={
-                            this.state.deleteLoading ||
-                            this.props.scheduledPaymentsLoading
-                        }
-                        deleteScheduledPayment={this.deleteScheduledPayment}
-                        selectScheduledPayment={this.selectScheduledPayment(
-                            key
-                        )}
-                    />
-                );
-            }
-        );
+        const scheduledPayments = this.props.scheduledPayments.map((scheduledPayment, key) => {
+            return (
+                <ScheduledPaymentItem
+                    t={t}
+                    key={key}
+                    BunqJSClient={this.props.BunqJSClient}
+                    scheduledPayment={scheduledPayment}
+                    showInactive={this.state.showInactive}
+                    deleteLoading={this.state.deleteLoading || this.props.scheduledPaymentsLoading}
+                    deleteScheduledPayment={this.deleteScheduledPayment}
+                    selectScheduledPayment={this.selectScheduledPayment(key)}
+                />
+            );
+        });
 
         return (
             <Grid container spacing={24}>
@@ -162,20 +143,12 @@ class ScheduledPayments extends React.Component {
                     <Paper style={styles.paper}>
                         <Grid container spacing={16}>
                             <Grid item xs={8} md={10}>
-                                <TranslateTypography variant={"headline"}>
-                                    Scheduled payments
-                                </TranslateTypography>
+                                <TranslateTypography variant={"headline"}>Scheduled payments</TranslateTypography>
                             </Grid>
 
                             <Grid item xs={2} md={1}>
-                                <IconButton
-                                    onClick={() => this.toggleInactive()}
-                                >
-                                    {this.state.showInactive ? (
-                                        <VisibleIcon />
-                                    ) : (
-                                        <InvisibleIcon />
-                                    )}
+                                <IconButton onClick={() => this.toggleInactive()}>
+                                    {this.state.showInactive ? <VisibleIcon /> : <InvisibleIcon />}
                                 </IconButton>
                             </Grid>
 
@@ -183,11 +156,7 @@ class ScheduledPayments extends React.Component {
                                 {this.props.scheduledPaymentsLoading ? (
                                     <CircularProgress />
                                 ) : (
-                                    <IconButton
-                                        onClick={() =>
-                                            this.updateScheduledPayments()
-                                        }
-                                    >
+                                    <IconButton onClick={() => this.updateScheduledPayments()}>
                                         <RefreshIcon />
                                     </IconButton>
                                 )}
@@ -195,16 +164,11 @@ class ScheduledPayments extends React.Component {
 
                             <Grid item xs={12}>
                                 <List>
-                                    {this.props.scheduledPaymentsLoading ? (
-                                        <LinearProgress />
-                                    ) : null}
+                                    {this.props.scheduledPaymentsLoading ? <LinearProgress /> : null}
                                     {scheduledPayments.length > 0 ? (
                                         scheduledPayments
                                     ) : (
-                                        <Typography
-                                            variant={"body2"}
-                                            style={{ textAlign: "center" }}
-                                        >
+                                        <Typography variant={"body2"} style={{ textAlign: "center" }}>
                                             {t("No scheduled payments")}
                                         </Typography>
                                     )}
@@ -233,9 +197,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
         scheduledPaymentsInfoUpdate: (userId, accountId) =>
-            dispatch(
-                scheduledPaymentsInfoUpdate(BunqJSClient, userId, accountId)
-            )
+            dispatch(scheduledPaymentsInfoUpdate(BunqJSClient, userId, accountId))
     };
 };
 

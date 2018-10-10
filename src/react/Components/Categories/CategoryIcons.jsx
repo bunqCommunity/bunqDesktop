@@ -19,9 +19,7 @@ class CategoryIcons extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState, _) {
-        if (
-            this.props.categories_last_udate !== nextProps.categories_last_udate
-        ) {
+        if (this.props.categories_last_udate !== nextProps.categories_last_udate) {
             return true;
         }
 

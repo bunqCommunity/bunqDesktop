@@ -2,10 +2,7 @@ const store = require("store");
 
 export const USER_TYPE_LOCATION = "BUNQDESKTOP_USER_TYPE";
 
-const userDefault =
-    store.get(USER_TYPE_LOCATION) !== undefined
-        ? store.get(USER_TYPE_LOCATION)
-        : false;
+const userDefault = store.get(USER_TYPE_LOCATION) !== undefined ? store.get(USER_TYPE_LOCATION) : false;
 
 export const defaultState = {
     user: false,

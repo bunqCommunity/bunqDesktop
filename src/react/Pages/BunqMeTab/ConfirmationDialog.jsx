@@ -21,41 +21,23 @@ class ConfirmationDialog extends React.Component {
         }
 
         return (
-            <Dialog
-                open={confirmModalOpen}
-                keepMounted
-                onClose={this.props.closeModal}
-            >
+            <Dialog open={confirmModalOpen} keepMounted onClose={this.props.closeModal}>
                 <DialogTitle>{t("Confirm the request")}</DialogTitle>
                 <DialogContent>
                     <List>
                         <ListItem>
-                            <ListItemText
-                                primary={t("Description")}
-                                secondary={description}
-                            />
+                            <ListItemText primary={t("Description")} secondary={description} />
                         </ListItem>
                         <ListItem>
-                            <ListItemText
-                                primary={t("Amount")}
-                                secondary={formatMoney(amount)}
-                            />
+                            <ListItemText primary={t("Amount")} secondary={formatMoney(amount)} />
                         </ListItem>
                     </List>
                 </DialogContent>
                 <DialogActions>
-                    <ButtonTranslate
-                        variant="raised"
-                        onClick={this.props.closeModal}
-                        color="secondary"
-                    >
+                    <ButtonTranslate variant="raised" onClick={this.props.closeModal} color="secondary">
                         Cancel
                     </ButtonTranslate>
-                    <ButtonTranslate
-                        variant="raised"
-                        onClick={this.props.sendInquiry}
-                        color="primary"
-                    >
+                    <ButtonTranslate variant="raised" onClick={this.props.sendInquiry} color="primary">
                         Confirm
                     </ButtonTranslate>
                 </DialogActions>

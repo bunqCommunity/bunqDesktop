@@ -38,9 +38,7 @@ class MinimumAge extends React.Component {
 
         return (
             <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="minimumAge">
-                    {t("Set a minimum age?")}
-                </InputLabel>
+                <InputLabel htmlFor="minimumAge">{t("Set a minimum age?")}</InputLabel>
                 <Input
                     className={classes.input}
                     id="minimumAge"
@@ -56,10 +54,7 @@ class MinimumAge extends React.Component {
                     onChange={handleChange}
                     endAdornment={
                         <InputAdornment position="end">
-                            <IconButton
-                                onMouseDown={handleToggle}
-                                onClick={handleToggle}
-                            >
+                            <IconButton onMouseDown={handleToggle} onClick={handleToggle}>
                                 {setMinimumAge ? <Check /> : <NotInterested />}
                             </IconButton>
                         </InputAdornment>

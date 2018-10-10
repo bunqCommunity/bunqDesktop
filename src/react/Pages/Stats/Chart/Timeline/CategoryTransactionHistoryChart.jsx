@@ -1,9 +1,6 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
-import {
-    moneyTemplate,
-    sortLinearChartTooltips
-} from "../../../../Helpers/StatsFormattingTemplates";
+import { moneyTemplate, sortLinearChartTooltips } from "../../../../Helpers/StatsFormattingTemplates";
 
 export default props => {
     const defaultOptions = {
@@ -80,11 +77,8 @@ export default props => {
             itemSort: sortLinearChartTooltips,
             callbacks: {
                 label: function(tooltipItem, chart) {
-                    const datasetLabel =
-                        chart.datasets[tooltipItem.datasetIndex].label || "";
-                    return `${datasetLabel}: ${moneyTemplate(
-                        tooltipItem.yLabel
-                    )}`;
+                    const datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || "";
+                    return `${datasetLabel}: ${moneyTemplate(tooltipItem.yLabel)}`;
                 }
             }
         },
@@ -115,11 +109,5 @@ export default props => {
         return null;
     }
 
-    return (
-        <Bar
-            height={defaultOptions.height}
-            data={chartData}
-            options={chartOptions}
-        />
-    );
+    return <Bar height={defaultOptions.height} data={chartData} options={chartOptions} />;
 };

@@ -26,10 +26,7 @@ import AllowBunqMe from "./Options/AllowBunqMe";
 import { openSnackbar } from "../../Actions/snackbar";
 import { requestInquirySend } from "../../Actions/request_inquiry";
 
-import {
-    getInternationalFormat,
-    isValidPhonenumber
-} from "../../Helpers/PhoneLib";
+import { getInternationalFormat, isValidPhonenumber } from "../../Helpers/PhoneLib";
 import TotalSplitHelper from "./TotalSplitHelper";
 
 const styles = {
@@ -176,10 +173,7 @@ class RequestInquiry extends React.Component {
     handleChangeFormatted = valueObject => {
         this.setState(
             {
-                amount:
-                    valueObject.formattedValue.length > 0
-                        ? valueObject.floatValue
-                        : ""
+                amount: valueObject.formattedValue.length > 0 ? valueObject.floatValue : ""
             },
             this.validateForm
         );
@@ -218,9 +212,7 @@ class RequestInquiry extends React.Component {
 
     // add a target from the current text inputs to the target list
     addTarget = () => {
-        const duplicateTargetMessage = this.props.t(
-            "This target seems to be added already"
-        );
+        const duplicateTargetMessage = this.props.t("This target seems to be added already");
         this.validateTargetInput(valid => {
             // target is valid, add it to the list
             if (valid) {
@@ -310,11 +302,8 @@ class RequestInquiry extends React.Component {
 
         const amountErrorCondition = amount < 0.01 || amount > 10000;
         const descriptionErrorCondition = description.length > 140;
-        const minimumAgeErrorCondition =
-            setMinimumAge === true &&
-            (minimumAgeInt < 12 || minimumAgeInt > 100);
-        const redurectUrlErrorCondition =
-            setRedirectUrl === true && redirectUrl.length < 5;
+        const minimumAgeErrorCondition = setMinimumAge === true && (minimumAgeInt < 12 || minimumAgeInt > 100);
+        const redurectUrlErrorCondition = setRedirectUrl === true && redirectUrl.length < 5;
 
         // check if the target is valid based onthe targetType
         let targetErrorCondition = false;
@@ -390,9 +379,7 @@ class RequestInquiry extends React.Component {
                             value: target.value.trim()
                         };
                     } else if (validPhone) {
-                        const formattedNumber = getInternationalFormat(
-                            target.value
-                        );
+                        const formattedNumber = getInternationalFormat(target.value);
                         if (formattedNumber) {
                             targetInfo = {
                                 type: "PHONE_NUMBER",
@@ -415,13 +402,10 @@ class RequestInquiry extends React.Component {
             if (splitRequest) {
                 // default to 1 if split is enabled
                 const splitAmountValue =
-                    typeof splitAmounts[target.value] !== "undefined"
-                        ? splitAmounts[target.value]
-                        : 1;
+                    typeof splitAmounts[target.value] !== "undefined" ? splitAmounts[target.value] : 1;
 
                 // calculate the percentage for this split vs total
-                const percentage =
-                    totalSplit > 0 ? splitAmountValue / totalSplit : 0;
+                const percentage = totalSplit > 0 ? splitAmountValue / totalSplit : 0;
 
                 // calculate the actual amount
                 const moneyAmount = amount * percentage;
@@ -478,14 +462,8 @@ class RequestInquiry extends React.Component {
             <Paper style={styles.paper}>
                 <Grid container spacing={8}>
                     <Grid item xs={12} style={styles.titleGrid}>
-                        <Switch
-                            color="primary"
-                            checked={this.state.expandedCollapse}
-                            onClick={this.toggleExpanded}
-                        />
-                        <TranslateTypography variant={"title"}>
-                            Advanced options
-                        </TranslateTypography>
+                        <Switch color="primary" checked={this.state.expandedCollapse} onClick={this.toggleExpanded} />
+                        <TranslateTypography variant={"title"}>Advanced options</TranslateTypography>
                     </Grid>
                     <Collapse in={this.state.expandedCollapse} unmountOnExit>
                         <Grid item xs={12}>
@@ -495,9 +473,7 @@ class RequestInquiry extends React.Component {
                                 minimumAge={this.state.minimumAge}
                                 setMinimumAge={this.state.setMinimumAge}
                                 minimumAgeError={this.state.minimumAgeError}
-                                handleToggle={this.handleToggle(
-                                    "setMinimumAge"
-                                )}
+                                handleToggle={this.handleToggle("setMinimumAge")}
                                 handleChange={this.handleChange("minimumAge")}
                             />
 
@@ -506,9 +482,7 @@ class RequestInquiry extends React.Component {
                                 redirectUrl={this.state.redirectUrl}
                                 setRedirectUrl={this.state.setRedirectUrl}
                                 redirectUrlError={this.state.redirectUrlError}
-                                handleToggle={this.handleToggle(
-                                    "setRedirectUrl"
-                                )}
+                                handleToggle={this.handleToggle("setRedirectUrl")}
                                 handleChange={this.handleChange("redirectUrl")}
                             />
 
@@ -532,9 +506,7 @@ class RequestInquiry extends React.Component {
 
                 <Grid item xs={12} sm={10} md={8} lg={6} xl={4}>
                     <Paper style={styles.paper}>
-                        <TypographyTranslate variant="headline">
-                            Request Payment
-                        </TypographyTranslate>
+                        <TypographyTranslate variant="headline">Request Payment</TypographyTranslate>
 
                         <AccountSelectorDialog
                             value={this.state.selectedAccount}
@@ -568,20 +540,13 @@ class RequestInquiry extends React.Component {
                             multiline={true}
                         />
 
-                        <FormControl
-                            style={styles.formControlAlt}
-                            error={this.state.amountError}
-                            fullWidth
-                        >
+                        <FormControl style={styles.formControlAlt} error={this.state.amountError} fullWidth>
                             <MoneyFormatInput
                                 id="amount"
                                 value={this.state.amount}
                                 onValueChange={this.handleChangeFormatted}
                                 onKeyPress={ev => {
-                                    if (
-                                        ev.key === "Enter" &&
-                                        this.state.validForm
-                                    ) {
+                                    if (ev.key === "Enter" && this.state.validForm) {
                                         this.openModal();
                                         ev.preventDefault();
                                     }
@@ -610,8 +575,7 @@ class RequestInquiry extends React.Component {
                             color="primary"
                             disabled={
                                 !this.state.validForm ||
-                                (this.props.requestInquiryLoading ||
-                                    (totalSplit <= 0 && splitRequest === true))
+                                (this.props.requestInquiryLoading || (totalSplit <= 0 && splitRequest === true))
                             }
                             style={styles.payButton}
                             onClick={this.openModal}
@@ -657,14 +621,7 @@ const mapDispatchToProps = (dispatch, props) => {
     const { BunqJSClient } = props;
     return {
         requestInquirySend: (userId, accountId, requestInquiries) =>
-            dispatch(
-                requestInquirySend(
-                    BunqJSClient,
-                    userId,
-                    accountId,
-                    requestInquiries
-                )
-            ),
+            dispatch(requestInquirySend(BunqJSClient, userId, accountId, requestInquiries)),
         openSnackbar: message => dispatch(openSnackbar(message))
     };
 };

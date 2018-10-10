@@ -38,14 +38,8 @@ const TransactionHeader = props => {
     const fromAlias = props.from;
     const toAlias = props.to;
 
-    const fromAvatar =
-        fromAlias.avatar !== null
-            ? fromAlias.avatar.image[0].attachment_public_uuid
-            : false;
-    const toAvatar =
-        toAlias.avatar !== null
-            ? toAlias.avatar.image[0].attachment_public_uuid
-            : false;
+    const fromAvatar = fromAlias.avatar !== null ? fromAlias.avatar.image[0].attachment_public_uuid : false;
+    const toAvatar = toAlias.avatar !== null ? toAlias.avatar.image[0].attachment_public_uuid : false;
 
     // swap the orientation based on prop
     const swap = props.swap !== undefined && props.swap !== false;
@@ -57,15 +51,11 @@ const TransactionHeader = props => {
     let fromIsCounterparty = false;
     let toLabelName = toAlias.display_name;
     const secondaryToLabelName =
-        toAlias.display_name === toAlias.label_user.display_name
-            ? false
-            : toAlias.label_user.display_name;
+        toAlias.display_name === toAlias.label_user.display_name ? false : toAlias.label_user.display_name;
 
     let fromLabelName = fromAlias.display_name;
     const secondaryFromLabelName =
-        fromAlias.display_name === fromAlias.label_user.display_name
-            ? false
-            : fromAlias.label_user.display_name;
+        fromAlias.display_name === fromAlias.label_user.display_name ? false : fromAlias.label_user.display_name;
 
     // accounts list is available
     if (props.accounts) {
@@ -130,28 +120,18 @@ const TransactionHeader = props => {
                 />
             </Avatar>
             <Typography variant="subheading">{fromLabelName}</Typography>
-            {secondaryFromLabelName && (
-                <Typography variant="subheading">
-                    {secondaryFromLabelName}
-                </Typography>
-            )}
+            {secondaryFromLabelName && <Typography variant="subheading">{secondaryFromLabelName}</Typography>}
         </Grid>,
 
         <Hidden smDown>
             <Grid item md={2} style={styles.arrow}>
-                <ArrowForwardIcon
-                    style={{ color: arrowColor }}
-                    color={"inherit"}
-                />
+                <ArrowForwardIcon style={{ color: arrowColor }} color={"inherit"} />
             </Grid>
         </Hidden>,
 
         <Hidden mdUp>
             <Grid item xs={12} style={styles.arrow}>
-                <ArrowDownIcon
-                    style={{ color: arrowColor }}
-                    color={"inherit"}
-                />
+                <ArrowDownIcon style={{ color: arrowColor }} color={"inherit"} />
             </Grid>
         </Hidden>,
 
@@ -174,11 +154,7 @@ const TransactionHeader = props => {
             </Avatar>
 
             <Typography variant="subheading">{toLabelName}</Typography>
-            {secondaryToLabelName && (
-                <Typography variant="subheading">
-                    {secondaryToLabelName}
-                </Typography>
-            )}
+            {secondaryToLabelName && <Typography variant="subheading">{secondaryToLabelName}</Typography>}
         </Grid>
     ];
 

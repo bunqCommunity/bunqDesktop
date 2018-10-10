@@ -80,11 +80,7 @@ class Dashboard extends React.Component {
                 description: "Please daddy??",
                 allow_bunqme: true
             };
-            this.props.requestInquirySend(
-                this.props.user.id,
-                this.props.selectedAccount,
-                [requestInquiry]
-            );
+            this.props.requestInquirySend(this.props.user.id, this.props.selectedAccount, [requestInquiry]);
         }
     };
 
@@ -93,9 +89,7 @@ class Dashboard extends React.Component {
         const user = this.props.user;
         const userTypes = Object.keys(this.props.users);
 
-        const displayName = this.props.user.display_name
-            ? this.props.user.display_name
-            : t("user");
+        const displayName = this.props.user.display_name ? this.props.user.display_name : t("user");
 
         const profileAvatar = user ? (
             <Avatar style={styles.bigAvatar}>
@@ -123,35 +117,23 @@ class Dashboard extends React.Component {
                             {this.props.limitedPermissions ? (
                                 profileAvatar
                             ) : (
-                                <NavLink to={"/profile"}>
-                                    {profileAvatar}
-                                </NavLink>
+                                <NavLink to={"/profile"}>{profileAvatar}</NavLink>
                             )}
 
-                            <Typography
-                                variant="title"
-                                gutterBottom
-                                style={styles.title}
-                            >
+                            <Typography variant="title" gutterBottom style={styles.title}>
                                 {`${t("Welcome")} ${displayName}`}
                             </Typography>
                         </Grid>
 
                         <Grid item xs={6} style={styles.headerButtonWrapper}>
                             {userTypes.length > 1 ? (
-                                <Button
-                                    style={styles.btn}
-                                    onClick={this.props.logoutUser}
-                                >
+                                <Button style={styles.btn} onClick={this.props.logoutUser}>
                                     {t("Switch user")}
                                 </Button>
                             ) : null}
 
                             <Tooltip id="tooltip-fab" title="Switch API keys">
-                                <IconButton
-                                    style={styles.iconButton}
-                                    onClick={this.props.registrationLogOut}
-                                >
+                                <IconButton style={styles.iconButton} onClick={this.props.registrationLogOut}>
                                     <KeyIcon />
                                 </IconButton>
                             </Tooltip>
@@ -177,9 +159,7 @@ class Dashboard extends React.Component {
                                 <Paper>
                                     <AccountList
                                         BunqJSClient={this.props.BunqJSClient}
-                                        initialBunqConnect={
-                                            this.props.initialBunqConnect
-                                        }
+                                        initialBunqConnect={this.props.initialBunqConnect}
                                     />
 
                                     {/*<LoadOlderButton*/}
@@ -199,13 +179,7 @@ class Dashboard extends React.Component {
                                                 padding: 16
                                             }}
                                         >
-                                            <Button
-                                                onClick={this.addMoney}
-                                                disabled={
-                                                    this.props
-                                                        .requestInquiryLoading
-                                                }
-                                            >
+                                            <Button onClick={this.addMoney} disabled={this.props.requestInquiryLoading}>
                                                 <MoneyIcon />
                                             </Button>
                                         </div>
@@ -218,9 +192,7 @@ class Dashboard extends React.Component {
                             <Paper>
                                 <CombinedList
                                     BunqJSClient={this.props.BunqJSClient}
-                                    initialBunqConnect={
-                                        this.props.initialBunqConnect
-                                    }
+                                    initialBunqConnect={this.props.initialBunqConnect}
                                     displayRequestPayments={false}
                                     displayAcceptedRequests={true}
                                 />
@@ -262,16 +234,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
         // send a request, used for sandbox button
         requestInquirySend: (userId, accountId, requestInquiries) =>
-            dispatch(
-                requestInquirySend(
-                    BunqJSClient,
-                    userId,
-                    accountId,
-                    requestInquiries
-                )
-            ),
-        userLogin: (type, updated = false) =>
-            dispatch(userLogin(BunqJSClient, type, updated))
+            dispatch(requestInquirySend(BunqJSClient, userId, accountId, requestInquiries)),
+        userLogin: (type, updated = false) => dispatch(userLogin(BunqJSClient, type, updated))
     };
 };
 export default connect(

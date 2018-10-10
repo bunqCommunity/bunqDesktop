@@ -79,32 +79,17 @@ class QueueManager extends React.Component {
 
         // no initial sync completed or manual sync was triggered
         if (!this.state.initialSync || queueTriggerSync) {
-            if (
-                user &&
-                !queueLoading &&
-                !userLoading &&
-                accounts &&
-                !accountsLoading &&
-                accounts.length > 0
-            ) {
+            if (user && !queueLoading && !userLoading && accounts && !accountsLoading && accounts.length > 0) {
                 // if we continue, limit deep search to 5
-                const continueCount =
-                    queueTriggerSync !== false ? REQUEST_DEPTH_LIMIT : false;
+                const continueCount = queueTriggerSync !== false ? REQUEST_DEPTH_LIMIT : false;
 
                 // clear existing timeout if it exists
                 if (this.delayedQueue) clearTimeout(this.delayedQueue);
                 // delay the queue update
-                this.delayedQueue = setTimeout(
-                    () => this.triggerQueueUpdate(continueCount),
-                    100
-                );
+                this.delayedQueue = setTimeout(() => this.triggerQueueUpdate(continueCount), 100);
             }
         } else {
-            if (
-                !queueLoading &&
-                prevProps.queueLoading === true &&
-                queueRequestCounter === 0
-            ) {
+            if (!queueLoading && prevProps.queueLoading === true && queueRequestCounter === 0) {
                 // clear existing timeout if it exists
                 if (this.delayedSetState) clearTimeout(this.delayedSetState);
                 // delay the queue update
@@ -124,12 +109,7 @@ class QueueManager extends React.Component {
      * @param continueLoading
      */
     triggerQueueUpdate = (continueLoading = false) => {
-        const {
-            queueTriggerSync,
-            accounts,
-            user,
-            limitedPermissions
-        } = this.props;
+        const { queueTriggerSync, accounts, user, limitedPermissions } = this.props;
 
         if (queueTriggerSync) this.props.queueResetSyncState();
 
@@ -159,38 +139,13 @@ class QueueManager extends React.Component {
 
             this.paymentsUpdate(userId, accountId, false, continueLoading);
             this.bunqMeTabsUpdate(userId, accountId, false, continueLoading);
-            this.requestResponsesUpdate(
-                userId,
-                accountId,
-                false,
-                continueLoading
-            );
-            this.requestInquiriesUpdate(
-                userId,
-                accountId,
-                false,
-                continueLoading
-            );
-            this.requestInquiryBatchesUpdate(
-                userId,
-                accountId,
-                false,
-                continueLoading
-            );
-            this.masterCardActionsUpdate(
-                userId,
-                accountId,
-                false,
-                continueLoading
-            );
+            this.requestResponsesUpdate(userId, accountId, false, continueLoading);
+            this.requestInquiriesUpdate(userId, accountId, false, continueLoading);
+            this.requestInquiryBatchesUpdate(userId, accountId, false, continueLoading);
+            this.masterCardActionsUpdate(userId, accountId, false, continueLoading);
 
             if (!limitedPermissions) {
-                this.shareInviteBankInquiriesUpdate(
-                    userId,
-                    accountId,
-                    false,
-                    continueLoading
-                );
+                this.shareInviteBankInquiriesUpdate(userId, accountId, false, continueLoading);
             }
         });
     };
@@ -216,73 +171,52 @@ class QueueManager extends React.Component {
             // get events for this account and fallback to empty list
             const payments = this.state.payments[account.id] || [];
             const bunqMeTabs = this.state.bunqMeTabs[account.id] || [];
-            const requestResponses =
-                this.state.requestResponses[account.id] || [];
-            const requestInquiries =
-                this.state.requestInquiries[account.id] || [];
-            const requestInquiryBatches =
-                this.state.requestInquiryBatches[account.id] || [];
-            const masterCardActions =
-                this.state.masterCardActions[account.id] || [];
-            const shareInviteBankInquiries =
-                this.state.shareInviteBankInquiries[account.id] || [];
+            const requestResponses = this.state.requestResponses[account.id] || [];
+            const requestInquiries = this.state.requestInquiries[account.id] || [];
+            const requestInquiryBatches = this.state.requestInquiryBatches[account.id] || [];
+            const masterCardActions = this.state.masterCardActions[account.id] || [];
+            const shareInviteBankInquiries = this.state.shareInviteBankInquiries[account.id] || [];
 
             // count the new events for each type and account
-            const newestPayment = this.props.payments.find(
-                payment => account.id === payment.monetary_account_id
-            );
-            if (newestPayment)
-                newerPaymentCount += payments.filter(
-                    payment => payment.id > newestPayment.id
-                ).length;
+            const newestPayment = this.props.payments.find(payment => account.id === payment.monetary_account_id);
+            if (newestPayment) newerPaymentCount += payments.filter(payment => payment.id > newestPayment.id).length;
 
             const newestBunqMeTab = this.props.bunqMeTabs.find(
                 bunqMeTab => account.id === bunqMeTab.monetary_account_id
             );
             if (newestBunqMeTab)
-                newerBunqMeTabsCount += bunqMeTabs.filter(
-                    bunqMeTab => bunqMeTab.id > newestBunqMeTab.id
-                ).length;
+                newerBunqMeTabsCount += bunqMeTabs.filter(bunqMeTab => bunqMeTab.id > newestBunqMeTab.id).length;
 
             const newestRequestResponse = this.props.requestResponses.find(
-                requestResponse =>
-                    account.id === requestResponse.monetary_account_id
+                requestResponse => account.id === requestResponse.monetary_account_id
             );
             if (newestRequestResponse)
                 newerRequestResponsesCount += requestResponses.filter(
-                    requestResponse =>
-                        requestResponse.id > newestRequestResponse.id
+                    requestResponse => requestResponse.id > newestRequestResponse.id
                 ).length;
 
             const newestRequestInquiry = this.props.requestInquiries.find(
-                requestInquiry =>
-                    account.id === requestInquiry.monetary_account_id
+                requestInquiry => account.id === requestInquiry.monetary_account_id
             );
             if (newestRequestInquiry)
                 newerRequestInquiriesCount += requestInquiries.filter(
-                    requestInquiry =>
-                        requestInquiry.id > newestRequestInquiry.id
+                    requestInquiry => requestInquiry.id > newestRequestInquiry.id
                 ).length;
 
             const newestMasterCardAction = this.props.masterCardActions.find(
-                masterCardAction =>
-                    account.id === masterCardAction.monetary_account_id
+                masterCardAction => account.id === masterCardAction.monetary_account_id
             );
             if (newestMasterCardAction)
                 newerMasterCardActionsCount += masterCardActions.filter(
-                    masterCardAction =>
-                        masterCardAction.id > newestMasterCardAction.id
+                    masterCardAction => masterCardAction.id > newestMasterCardAction.id
                 ).length;
 
             const newestShareInviteBankInquiry = this.props.shareInviteBankInquiries.find(
-                shareInviteBankInquiry =>
-                    account.id === shareInviteBankInquiry.monetary_account_id
+                shareInviteBankInquiry => account.id === shareInviteBankInquiry.monetary_account_id
             );
             if (newestShareInviteBankInquiry)
                 newerShareInviteBankInquiriesCount += shareInviteBankInquiries.filter(
-                    shareInviteBankInquiry =>
-                        shareInviteBankInquiry.id >
-                        newestShareInviteBankInquiry.id
+                    shareInviteBankInquiry => shareInviteBankInquiry.id > newestShareInviteBankInquiry.id
                 ).length;
 
             // count the total amount of events
@@ -301,34 +235,19 @@ class QueueManager extends React.Component {
                 this.props.bunqMeTabsSetInfo(bunqMeTabs, account.id);
             }
             if (requestResponses.length > 0) {
-                this.props.requestResponsesSetInfo(
-                    requestResponses,
-                    account.id
-                );
+                this.props.requestResponsesSetInfo(requestResponses, account.id);
             }
             if (requestInquiries.length > 0) {
-                this.props.requestInquiriesSetInfo(
-                    requestInquiries,
-                    account.id
-                );
+                this.props.requestInquiriesSetInfo(requestInquiries, account.id);
             }
             if (requestInquiryBatches.length > 0) {
-                this.props.requestInquiryBatchesSetInfo(
-                    requestInquiryBatches,
-                    account.id
-                );
+                this.props.requestInquiryBatchesSetInfo(requestInquiryBatches, account.id);
             }
             if (masterCardActions.length > 0) {
-                this.props.masterCardActionsSetInfo(
-                    masterCardActions,
-                    account.id
-                );
+                this.props.masterCardActionsSetInfo(masterCardActions, account.id);
             }
             if (shareInviteBankInquiries.length > 0) {
-                this.props.shareInviteBankInquiriesSetInfo(
-                    shareInviteBankInquiries,
-                    account.id
-                );
+                this.props.shareInviteBankInquiriesSetInfo(shareInviteBankInquiries, account.id);
             }
         });
 
@@ -362,9 +281,7 @@ class QueueManager extends React.Component {
             ipcRenderer.send("loaded-new-events", totalNewEvents);
         }
 
-        const snackbarMessage = `${standardMessage}${
-            extraMessage ? `, ${extraMessage}` : ""
-        }`;
+        const snackbarMessage = `${standardMessage}${extraMessage ? `, ${extraMessage}` : ""}`;
 
         // display a message to notify the user
         this.props.openSnackbar(snackbarMessage);
@@ -396,8 +313,7 @@ class QueueManager extends React.Component {
             if (
                 forceReset ||
                 (this.automaticUpdateTimerDuration !== null &&
-                    this.automaticUpdateTimerDuration !==
-                        this.props.automaticUpdateDuration)
+                    this.automaticUpdateTimerDuration !== this.props.automaticUpdateDuration)
             ) {
                 this.resetTimer();
             }
@@ -424,12 +340,7 @@ class QueueManager extends React.Component {
         }
     };
 
-    paymentsUpdate = (
-        user_id,
-        account_id,
-        olderId = false,
-        continueLoading = false
-    ) => {
+    paymentsUpdate = (user_id, account_id, olderId = false, continueLoading = false) => {
         const { BunqJSClient } = this.props;
 
         if (olderId !== false) this.props.queueIncreaseRequestCounter();
@@ -444,20 +355,12 @@ class QueueManager extends React.Component {
                 const paymentsNew = payments.map(item => new Payment(item));
 
                 // more payments can be loaded for this account
-                if (
-                    paymentsNew.length === 200 &&
-                    (continueLoading !== false && continueLoading > 0)
-                ) {
+                if (paymentsNew.length === 200 && (continueLoading !== false && continueLoading > 0)) {
                     const oldestPaymentIndex = paymentsNew.length - 1;
                     const oldestPayment = paymentsNew[oldestPaymentIndex];
 
                     // re-run the payments to continue deeper into the acocunt
-                    this.paymentsUpdate(
-                        user_id,
-                        account_id,
-                        oldestPayment.id,
-                        continueLoading - 1
-                    );
+                    this.paymentsUpdate(user_id, account_id, oldestPayment.id, continueLoading - 1);
                 }
 
                 const currentPayments = { ...this.state.payments };
@@ -483,12 +386,7 @@ class QueueManager extends React.Component {
             });
     };
 
-    bunqMeTabsUpdate = (
-        user_id,
-        account_id,
-        olderId = false,
-        continueLoading = false
-    ) => {
+    bunqMeTabsUpdate = (user_id, account_id, olderId = false, continueLoading = false) => {
         const { BunqJSClient } = this.props;
 
         if (olderId !== false) this.props.queueIncreaseRequestCounter();
@@ -500,35 +398,22 @@ class QueueManager extends React.Component {
             })
             .then(bunqMeTabs => {
                 // turn plain objects into Model objects
-                const bunqMeTabsNew = bunqMeTabs.map(
-                    item => new BunqMeTab(item)
-                );
+                const bunqMeTabsNew = bunqMeTabs.map(item => new BunqMeTab(item));
 
                 // more bunqMeTabs can be loaded for this account
-                if (
-                    bunqMeTabsNew.length === 200 &&
-                    (continueLoading !== false && continueLoading > 0)
-                ) {
+                if (bunqMeTabsNew.length === 200 && (continueLoading !== false && continueLoading > 0)) {
                     const oldestBunqMeTabIndex = bunqMeTabsNew.length - 1;
                     const oldestBunqMeTab = bunqMeTabsNew[oldestBunqMeTabIndex];
 
                     // re-run the bunqMeTabs to continue deeper into the acocunt
-                    this.bunqMeTabsUpdate(
-                        user_id,
-                        account_id,
-                        oldestBunqMeTab.id,
-                        continueLoading - 1
-                    );
+                    this.bunqMeTabsUpdate(user_id, account_id, oldestBunqMeTab.id, continueLoading - 1);
                 }
 
                 const currentBunqMeTabs = { ...this.state.bunqMeTabs };
                 const accountBunqMeTabs = currentBunqMeTabs[account_id] || [];
 
                 // merge existing and new
-                const mergedBunqMeTabs = [
-                    ...accountBunqMeTabs,
-                    ...bunqMeTabsNew
-                ];
+                const mergedBunqMeTabs = [...accountBunqMeTabs, ...bunqMeTabsNew];
 
                 // update the list for the account id
                 currentBunqMeTabs[account_id] = mergedBunqMeTabs;
@@ -547,12 +432,7 @@ class QueueManager extends React.Component {
             });
     };
 
-    requestResponsesUpdate = (
-        user_id,
-        account_id,
-        olderId = false,
-        continueLoading = false
-    ) => {
+    requestResponsesUpdate = (user_id, account_id, olderId = false, continueLoading = false) => {
         const { BunqJSClient } = this.props;
 
         if (olderId !== false) this.props.queueIncreaseRequestCounter();
@@ -564,40 +444,24 @@ class QueueManager extends React.Component {
             })
             .then(requestResponses => {
                 // turn plain objects into Model objects
-                const requestResponsesNew = requestResponses.map(
-                    item => new RequestResponse(item)
-                );
+                const requestResponsesNew = requestResponses.map(item => new RequestResponse(item));
 
                 // more requestResponses can be loaded for this account
-                if (
-                    requestResponsesNew.length === 200 &&
-                    (continueLoading !== false && continueLoading > 0)
-                ) {
-                    const oldestRequestResponseIndex =
-                        requestResponsesNew.length - 1;
-                    const oldestRequestResponse =
-                        requestResponsesNew[oldestRequestResponseIndex];
+                if (requestResponsesNew.length === 200 && (continueLoading !== false && continueLoading > 0)) {
+                    const oldestRequestResponseIndex = requestResponsesNew.length - 1;
+                    const oldestRequestResponse = requestResponsesNew[oldestRequestResponseIndex];
 
                     // re-run the requestResponses to continue deeper into the acocunt
-                    this.requestResponsesUpdate(
-                        user_id,
-                        account_id,
-                        oldestRequestResponse.id,
-                        continueLoading - 1
-                    );
+                    this.requestResponsesUpdate(user_id, account_id, oldestRequestResponse.id, continueLoading - 1);
                 }
 
                 const currentRequestResponses = {
                     ...this.state.requestResponses
                 };
-                const accountRequestResponses =
-                    currentRequestResponses[account_id] || [];
+                const accountRequestResponses = currentRequestResponses[account_id] || [];
 
                 // merge existing and new
-                const mergedRequestResponses = [
-                    ...accountRequestResponses,
-                    ...requestResponsesNew
-                ];
+                const mergedRequestResponses = [...accountRequestResponses, ...requestResponsesNew];
 
                 // update the list for the account id
                 currentRequestResponses[account_id] = mergedRequestResponses;
@@ -616,12 +480,7 @@ class QueueManager extends React.Component {
             });
     };
 
-    requestInquiriesUpdate = (
-        user_id,
-        account_id,
-        olderId = false,
-        continueLoading = false
-    ) => {
+    requestInquiriesUpdate = (user_id, account_id, olderId = false, continueLoading = false) => {
         const { BunqJSClient } = this.props;
 
         if (olderId !== false) this.props.queueIncreaseRequestCounter();
@@ -633,40 +492,24 @@ class QueueManager extends React.Component {
             })
             .then(requestInquiries => {
                 // turn plain objects into Model objects
-                const requestInquiriesNew = requestInquiries.map(
-                    item => new RequestInquiry(item)
-                );
+                const requestInquiriesNew = requestInquiries.map(item => new RequestInquiry(item));
 
                 // more requestInquiries can be loaded for this account
-                if (
-                    requestInquiriesNew.length === 200 &&
-                    (continueLoading !== false && continueLoading > 0)
-                ) {
-                    const oldestRequestInquiryIndex =
-                        requestInquiriesNew.length - 1;
-                    const oldestRequestInquiry =
-                        requestInquiriesNew[oldestRequestInquiryIndex];
+                if (requestInquiriesNew.length === 200 && (continueLoading !== false && continueLoading > 0)) {
+                    const oldestRequestInquiryIndex = requestInquiriesNew.length - 1;
+                    const oldestRequestInquiry = requestInquiriesNew[oldestRequestInquiryIndex];
 
                     // re-run the requestInquiries to continue deeper into the acocunt
-                    this.requestInquiriesUpdate(
-                        user_id,
-                        account_id,
-                        oldestRequestInquiry.id,
-                        continueLoading - 1
-                    );
+                    this.requestInquiriesUpdate(user_id, account_id, oldestRequestInquiry.id, continueLoading - 1);
                 }
 
                 const currentRequestInquiries = {
                     ...this.state.requestInquiries
                 };
-                const accountRequestInquiries =
-                    currentRequestInquiries[account_id] || [];
+                const accountRequestInquiries = currentRequestInquiries[account_id] || [];
 
                 // merge existing and new
-                const mergedRequestInquiries = [
-                    ...accountRequestInquiries,
-                    ...requestInquiriesNew
-                ];
+                const mergedRequestInquiries = [...accountRequestInquiries, ...requestInquiriesNew];
 
                 // update the list for the account id
                 currentRequestInquiries[account_id] = mergedRequestInquiries;
@@ -685,12 +528,7 @@ class QueueManager extends React.Component {
             });
     };
 
-    requestInquiryBatchesUpdate = (
-        user_id,
-        account_id,
-        olderId = false,
-        continueLoading = false
-    ) => {
+    requestInquiryBatchesUpdate = (user_id, account_id, olderId = false, continueLoading = false) => {
         const { BunqJSClient } = this.props;
 
         if (olderId !== false) this.props.queueIncreaseRequestCounter();
@@ -702,45 +540,27 @@ class QueueManager extends React.Component {
             })
             .then(requestInquiryBatches => {
                 // turn plain objects into Model objects
-                const requestInquiryBatchesNew = requestInquiryBatches.map(
-                    item => new RequestInquiryBatch(item)
-                );
+                const requestInquiryBatchesNew = requestInquiryBatches.map(item => new RequestInquiryBatch(item));
 
                 // more requestInquiryBatches can be loaded for this account
-                if (
-                    requestInquiryBatchesNew.length === 200 &&
-                    (continueLoading !== false && continueLoading > 0)
-                ) {
-                    const oldestRequestInquiryIndex =
-                        requestInquiryBatchesNew.length - 1;
-                    const oldestRequestInquiry =
-                        requestInquiryBatchesNew[oldestRequestInquiryIndex];
+                if (requestInquiryBatchesNew.length === 200 && (continueLoading !== false && continueLoading > 0)) {
+                    const oldestRequestInquiryIndex = requestInquiryBatchesNew.length - 1;
+                    const oldestRequestInquiry = requestInquiryBatchesNew[oldestRequestInquiryIndex];
 
                     // re-run the requestInquiryBatches to continue deeper into the acocunt
-                    this.requestInquiryBatchesUpdate(
-                        user_id,
-                        account_id,
-                        oldestRequestInquiry.id,
-                        continueLoading - 1
-                    );
+                    this.requestInquiryBatchesUpdate(user_id, account_id, oldestRequestInquiry.id, continueLoading - 1);
                 }
 
                 const currentRequestInquiryBatches = {
                     ...this.state.requestInquiryBatches
                 };
-                const accountRequestInquiryBatches =
-                    currentRequestInquiryBatches[account_id] || [];
+                const accountRequestInquiryBatches = currentRequestInquiryBatches[account_id] || [];
 
                 // merge existing and new
-                const mergedRequestInquiryBatches = [
-                    ...accountRequestInquiryBatches,
-                    ...requestInquiryBatchesNew
-                ];
+                const mergedRequestInquiryBatches = [...accountRequestInquiryBatches, ...requestInquiryBatchesNew];
 
                 // update the list for the account id
-                currentRequestInquiryBatches[
-                    account_id
-                ] = mergedRequestInquiryBatches;
+                currentRequestInquiryBatches[account_id] = mergedRequestInquiryBatches;
 
                 // set these requestInquiryBatches in the state
                 this.setState({
@@ -756,12 +576,7 @@ class QueueManager extends React.Component {
             });
     };
 
-    masterCardActionsUpdate = (
-        user_id,
-        account_id,
-        olderId = false,
-        continueLoading = false
-    ) => {
+    masterCardActionsUpdate = (user_id, account_id, olderId = false, continueLoading = false) => {
         const { BunqJSClient } = this.props;
 
         if (olderId !== false) this.props.queueIncreaseRequestCounter();
@@ -773,40 +588,24 @@ class QueueManager extends React.Component {
             })
             .then(masterCardActions => {
                 // turn plain objects into Model objects
-                const masterCardActionsNew = masterCardActions.map(
-                    item => new MasterCardAction(item)
-                );
+                const masterCardActionsNew = masterCardActions.map(item => new MasterCardAction(item));
 
                 // more masterCardActions can be loaded for this account
-                if (
-                    masterCardActionsNew.length === 200 &&
-                    (continueLoading !== false && continueLoading > 0)
-                ) {
-                    const oldestMasterCardActionIndex =
-                        masterCardActionsNew.length - 1;
-                    const oldestMasterCardAction =
-                        masterCardActionsNew[oldestMasterCardActionIndex];
+                if (masterCardActionsNew.length === 200 && (continueLoading !== false && continueLoading > 0)) {
+                    const oldestMasterCardActionIndex = masterCardActionsNew.length - 1;
+                    const oldestMasterCardAction = masterCardActionsNew[oldestMasterCardActionIndex];
 
                     // re-run the masterCardActions to continue deeper into the acocunt
-                    this.masterCardActionsUpdate(
-                        user_id,
-                        account_id,
-                        oldestMasterCardAction.id,
-                        continueLoading - 1
-                    );
+                    this.masterCardActionsUpdate(user_id, account_id, oldestMasterCardAction.id, continueLoading - 1);
                 }
 
                 const currentMasterCardActions = {
                     ...this.state.masterCardActions
                 };
-                const accountMasterCardActions =
-                    currentMasterCardActions[account_id] || [];
+                const accountMasterCardActions = currentMasterCardActions[account_id] || [];
 
                 // merge existing and new
-                const mergedMasterCardActions = [
-                    ...accountMasterCardActions,
-                    ...masterCardActionsNew
-                ];
+                const mergedMasterCardActions = [...accountMasterCardActions, ...masterCardActionsNew];
 
                 // update the list for the account id
                 currentMasterCardActions[account_id] = mergedMasterCardActions;
@@ -825,12 +624,7 @@ class QueueManager extends React.Component {
             });
     };
 
-    shareInviteBankInquiriesUpdate = (
-        user_id,
-        account_id,
-        olderId = false,
-        continueLoading = false
-    ) => {
+    shareInviteBankInquiriesUpdate = (user_id, account_id, olderId = false, continueLoading = false) => {
         const { BunqJSClient } = this.props;
 
         if (olderId !== false) this.props.queueIncreaseRequestCounter();
@@ -842,16 +636,9 @@ class QueueManager extends React.Component {
             })
             .then(shareInviteBankInquiries => {
                 // more shareInviteBankInquiries can be loaded for this account
-                if (
-                    shareInviteBankInquiries.length === 200 &&
-                    (continueLoading !== false && continueLoading > 0)
-                ) {
-                    const oldestShareInviteBankInquiryIndex =
-                        shareInviteBankInquiries.length - 1;
-                    const oldestShareInviteBankInquiry =
-                        shareInviteBankInquiries[
-                            oldestShareInviteBankInquiryIndex
-                        ];
+                if (shareInviteBankInquiries.length === 200 && (continueLoading !== false && continueLoading > 0)) {
+                    const oldestShareInviteBankInquiryIndex = shareInviteBankInquiries.length - 1;
+                    const oldestShareInviteBankInquiry = shareInviteBankInquiries[oldestShareInviteBankInquiryIndex];
 
                     // re-run the shareInviteBankInquiries to continue deeper into the acocunt
                     this.shareInviteBankInquiriesUpdate(
@@ -865,8 +652,7 @@ class QueueManager extends React.Component {
                 const currentShareInviteBankInquiries = {
                     ...this.state.shareInviteBankInquiries
                 };
-                const accountShareInviteBankInquiries =
-                    currentShareInviteBankInquiries[account_id] || [];
+                const accountShareInviteBankInquiries = currentShareInviteBankInquiries[account_id] || [];
 
                 // merge existing and new
                 const mergedShareInviteBankInquiries = [
@@ -875,9 +661,7 @@ class QueueManager extends React.Component {
                 ];
 
                 // update the list for the account id
-                currentShareInviteBankInquiries[
-                    account_id
-                ] = mergedShareInviteBankInquiries;
+                currentShareInviteBankInquiries[account_id] = mergedShareInviteBankInquiries;
 
                 // set these shareInviteBankInquiries in the state
                 this.setState({
@@ -910,8 +694,7 @@ const mapStateToProps = state => {
         syncOnStartup: state.options.sync_on_startup,
 
         automaticUpdateEnabled: state.options.automatic_update_enabled,
-        automaticUpdateSendNotification:
-            state.options.automatic_update_send_notification,
+        automaticUpdateSendNotification: state.options.automatic_update_send_notification,
         automaticUpdateDuration: state.options.automatic_update_duration,
 
         queueRequestCounter: state.queue.request_counter,
@@ -922,84 +705,37 @@ const mapStateToProps = state => {
         bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
         masterCardActions: state.master_card_actions.master_card_actions,
         requestInquiries: state.request_inquiries.request_inquiries,
-        requestInquiryBatches:
-            state.request_inquiry_batches.request_inquiry_batches,
+        requestInquiryBatches: state.request_inquiry_batches.request_inquiry_batches,
         requestResponses: state.request_responses.request_responses,
-        shareInviteBankInquiries:
-            state.share_invite_bank_inquiries.share_invite_bank_inquiries
+        shareInviteBankInquiries: state.share_invite_bank_inquiries.share_invite_bank_inquiries
     };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        openSnackbar: (message, duration = 4000) =>
-            dispatch(openSnackbar(message, duration)),
+        openSnackbar: (message, duration = 4000) => dispatch(openSnackbar(message, duration)),
 
-        queueDecreaseRequestCounter: () =>
-            dispatch(queueDecreaseRequestCounter()),
-        queueIncreaseRequestCounter: () =>
-            dispatch(queueIncreaseRequestCounter()),
-        queueSetRequestCounter: counter =>
-            dispatch(queueSetRequestCounter(counter)),
+        queueDecreaseRequestCounter: () => dispatch(queueDecreaseRequestCounter()),
+        queueIncreaseRequestCounter: () => dispatch(queueIncreaseRequestCounter()),
+        queueSetRequestCounter: counter => dispatch(queueSetRequestCounter(counter)),
         queueStartSync: () => dispatch(queueStartSync()),
         queueFinishedSync: () => dispatch(queueFinishedSync()),
         queueResetSyncState: () => dispatch(queueResetSyncState()),
 
-        paymentsSetInfo: (payments, accountId) =>
-            dispatch(paymentsSetInfo(payments, accountId, false, BunqJSClient)),
+        paymentsSetInfo: (payments, accountId) => dispatch(paymentsSetInfo(payments, accountId, false, BunqJSClient)),
         bunqMeTabsSetInfo: (bunqMeTabs, accountId) =>
-            dispatch(
-                bunqMeTabsSetInfo(bunqMeTabs, accountId, false, BunqJSClient)
-            ),
+            dispatch(bunqMeTabsSetInfo(bunqMeTabs, accountId, false, BunqJSClient)),
         masterCardActionsSetInfo: (masterCardActions, accountId) =>
-            dispatch(
-                masterCardActionsSetInfo(
-                    masterCardActions,
-                    accountId,
-                    false,
-                    BunqJSClient
-                )
-            ),
+            dispatch(masterCardActionsSetInfo(masterCardActions, accountId, false, BunqJSClient)),
         requestInquiriesSetInfo: (requestInquiries, accountId) =>
-            dispatch(
-                requestInquiriesSetInfo(
-                    requestInquiries,
-                    accountId,
-                    false,
-                    BunqJSClient
-                )
-            ),
+            dispatch(requestInquiriesSetInfo(requestInquiries, accountId, false, BunqJSClient)),
         requestInquiryBatchesSetInfo: (requestInquiryBatches, accountId) =>
-            dispatch(
-                requestInquiryBatchesSetInfo(
-                    requestInquiryBatches,
-                    accountId,
-                    false,
-                    BunqJSClient
-                )
-            ),
+            dispatch(requestInquiryBatchesSetInfo(requestInquiryBatches, accountId, false, BunqJSClient)),
         requestResponsesSetInfo: (requestResponses, accountId) =>
-            dispatch(
-                requestResponsesSetInfo(
-                    requestResponses,
-                    accountId,
-                    false,
-                    BunqJSClient
-                )
-            ),
-        shareInviteBankInquiriesSetInfo: (
-            shareInviteBankInquiries,
-            accountId
-        ) =>
-            dispatch(
-                shareInviteBankInquiriesSetInfo(
-                    shareInviteBankInquiries,
-                    accountId,
-                    false,
-                    BunqJSClient
-                )
-            )
+            dispatch(requestResponsesSetInfo(requestResponses, accountId, false, BunqJSClient)),
+        shareInviteBankInquiriesSetInfo: (shareInviteBankInquiries, accountId) =>
+            dispatch(shareInviteBankInquiriesSetInfo(shareInviteBankInquiries, accountId, false, BunqJSClient))
     };
 };
 

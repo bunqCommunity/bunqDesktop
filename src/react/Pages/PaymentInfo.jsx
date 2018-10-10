@@ -68,17 +68,11 @@ class PaymentInfo extends React.Component {
     }
 
     componentDidMount() {
-        if (
-            this.props.user &&
-            this.props.user.id &&
-            this.props.initialBunqConnect
-        ) {
+        if (this.props.user && this.props.user.id && this.props.initialBunqConnect) {
             const { paymentId, accountId } = this.props.match.params;
             this.props.updatePayment(
                 this.props.user.id,
-                accountId === undefined
-                    ? this.props.accountsSelectedAccount
-                    : accountId,
+                accountId === undefined ? this.props.accountsSelectedAccount : accountId,
                 paymentId
             );
             this.setState({ initialUpdate: true });
@@ -90,15 +84,12 @@ class PaymentInfo extends React.Component {
             this.props.user &&
             this.props.user.id &&
             this.props.initialBunqConnect &&
-            this.props.match.params.paymentId !==
-                nextProps.match.params.paymentId
+            this.props.match.params.paymentId !== nextProps.match.params.paymentId
         ) {
             const { paymentId, accountId } = this.props.match.params;
             this.props.updatePayment(
                 this.props.user.id,
-                accountId === undefined
-                    ? this.props.accountsSelectedAccount
-                    : accountId,
+                accountId === undefined ? this.props.accountsSelectedAccount : accountId,
                 paymentId
             );
             this.setState({ initialUpdate: true });
@@ -107,13 +98,10 @@ class PaymentInfo extends React.Component {
     }
     componentDidUpdate() {}
 
-    toggleCategoryDialog = event =>
-        this.setState({ displayCategories: !this.state.displayCategories });
+    toggleCategoryDialog = event => this.setState({ displayCategories: !this.state.displayCategories });
 
     startPaymentIban = alias => {
-        this.props.history.push(
-            `/pay?iban=${alias.iban}&iban-name=${alias.display_name}`
-        );
+        this.props.history.push(`/pay?iban=${alias.iban}&iban-name=${alias.display_name}`);
     };
     startPayment = event => {
         const paymentInfo = this.props.paymentInfo;
@@ -146,13 +134,7 @@ class PaymentInfo extends React.Component {
     };
 
     render() {
-        const {
-            accountsSelectedAccount,
-            paymentInfo,
-            paymentLoading,
-            pdfSaveModeEnabled,
-            t
-        } = this.props;
+        const { accountsSelectedAccount, paymentInfo, paymentLoading, pdfSaveModeEnabled, t } = this.props;
         const paramAccountId = this.props.match.params.accountId;
 
         // we require a selected account before we can display payment information
@@ -163,11 +145,7 @@ class PaymentInfo extends React.Component {
 
         let content;
         let noteTextsForm = null;
-        if (
-            paymentInfo === false ||
-            paymentLoading === true ||
-            this.state.initialUpdate === false
-        ) {
+        if (paymentInfo === false || paymentLoading === true || this.state.initialUpdate === false) {
             content = (
                 <Grid container spacing={24} justify={"center"}>
                     <Grid item xs={12}>
@@ -201,20 +179,10 @@ class PaymentInfo extends React.Component {
                 );
             }
 
-            noteTextsForm = (
-                <NoteTextForm
-                    BunqJSClient={this.props.BunqJSClient}
-                    event={payment}
-                />
-            );
+            noteTextsForm = <NoteTextForm BunqJSClient={this.props.BunqJSClient} event={payment} />;
 
             content = (
-                <Grid
-                    container
-                    spacing={24}
-                    align={"center"}
-                    justify={"center"}
-                >
+                <Grid container spacing={24} align={"center"} justify={"center"}>
                     <TransactionHeader
                         BunqJSClient={this.props.BunqJSClient}
                         to={payment.counterparty_alias}
@@ -244,10 +212,7 @@ class PaymentInfo extends React.Component {
                             {formattedPaymentAmount}
                         </MoneyAmountLabel>
 
-                        <Typography
-                            style={{ textAlign: "center" }}
-                            variant={"body1"}
-                        >
+                        <Typography style={{ textAlign: "center" }} variant={"body1"}>
                             {paymentLabel}
                         </Typography>
 
@@ -256,46 +221,31 @@ class PaymentInfo extends React.Component {
                                 <React.Fragment>
                                     <Divider />
                                     <ListItem>
-                                        <ListItemText
-                                            primary={t("Description")}
-                                            secondary={paymentDescription}
-                                        />
+                                        <ListItemText primary={t("Description")} secondary={paymentDescription} />
                                     </ListItem>
                                 </React.Fragment>
                             ) : null}
 
                             <Divider />
                             <ListItem>
-                                <ListItemText
-                                    primary={t("Date")}
-                                    secondary={paymentDate}
-                                />
+                                <ListItemText primary={t("Date")} secondary={paymentDate} />
                             </ListItem>
 
                             <Divider />
                             <ListItem>
                                 <ListItemText
                                     primary={t("Payment Type")}
-                                    secondary={paymentTypeParser(
-                                        payment.type,
-                                        t
-                                    )}
+                                    secondary={paymentTypeParser(payment.type, t)}
                                 />
                             </ListItem>
 
                             <Divider />
                             <ListItem>
-                                <ListItemText
-                                    primary={"IBAN"}
-                                    secondary={formatIban(counterPartyIban)}
-                                />
+                                <ListItemText primary={"IBAN"} secondary={formatIban(counterPartyIban)} />
                             </ListItem>
 
                             <Divider />
-                            <GeoLocationListItem
-                                t={t}
-                                geoLocation={paymentInfo.geolocation}
-                            />
+                            <GeoLocationListItem t={t} geoLocation={paymentInfo.geolocation} />
                         </List>
 
                         <CategoryChips type={"Payment"} id={payment.id} />
@@ -357,9 +307,7 @@ class PaymentInfo extends React.Component {
         }
 
         const exportData =
-            this.props.paymentInfo && this.props.paymentInfo._rawData
-                ? this.props.paymentInfo._rawData.Payment
-                : {};
+            this.props.paymentInfo && this.props.paymentInfo._rawData ? this.props.paymentInfo._rawData.Payment : {};
 
         return (
             <Grid container spacing={24}>
@@ -368,19 +316,14 @@ class PaymentInfo extends React.Component {
                 </Helmet>
 
                 <ExportDialog
-                    closeModal={event =>
-                        this.setState({ displayExport: false })
-                    }
+                    closeModal={event => this.setState({ displayExport: false })}
                     title={t("Export info")}
                     open={this.state.displayExport}
                     object={exportData}
                 />
 
                 <Grid item xs={12} sm={2} lg={3}>
-                    <Button
-                        onClick={this.props.history.goBack}
-                        style={styles.btn}
-                    >
+                    <Button onClick={this.props.history.goBack} style={styles.btn}>
                         <ArrowBackIcon />
                     </Button>
                 </Grid>
@@ -412,13 +355,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        applicationSetPDFMode: enabled =>
-            dispatch(applicationSetPDFMode(enabled)),
+        applicationSetPDFMode: enabled => dispatch(applicationSetPDFMode(enabled)),
 
         updatePayment: (user_id, account_id, payment_id) =>
-            dispatch(
-                paymentsUpdate(BunqJSClient, user_id, account_id, payment_id)
-            ),
+            dispatch(paymentsUpdate(BunqJSClient, user_id, account_id, payment_id)),
 
         setTheme: theme => dispatch(setTheme(theme))
     };

@@ -38,10 +38,7 @@ import { openSnackbar } from "../Actions/snackbar";
 import { paySchedule, paySend } from "../Actions/pay";
 
 import scheduleTexts from "../Helpers/ScheduleTexts";
-import {
-    getInternationalFormat,
-    isValidPhonenumber
-} from "../Helpers/PhoneLib";
+import { getInternationalFormat, isValidPhonenumber } from "../Helpers/PhoneLib";
 import { formatMoney, getUTCDate } from "../Helpers/Utils";
 import { filterShareInviteBankResponses } from "../Helpers/DataFilters";
 import GetShareDetailBudget from "../Helpers/GetShareDetailBudget";
@@ -183,10 +180,7 @@ class Pay extends React.Component {
     handleChangeFormatted = valueObject => {
         this.setState(
             {
-                amount:
-                    valueObject.formattedValue.length > 0
-                        ? valueObject.floatValue
-                        : ""
+                amount: valueObject.formattedValue.length > 0 ? valueObject.floatValue : ""
             },
             () => {
                 this.validateForm();
@@ -236,9 +230,7 @@ class Pay extends React.Component {
         const account = accounts[selectedAccount];
 
         // check if the selected account item has connect details
-        const filteredInviteResponses = shareInviteBankResponses.filter(
-            filterShareInviteBankResponses(account.id)
-        );
+        const filteredInviteResponses = shareInviteBankResponses.filter(filterShareInviteBankResponses(account.id));
 
         // no results means no checks required
         if (filteredInviteResponses.length > 0) {
@@ -327,9 +319,7 @@ class Pay extends React.Component {
 
     // add a target from the current text inputs to the target list
     addTarget = () => {
-        const duplicateTarget = this.props.t(
-            "This target seems to be added already"
-        );
+        const duplicateTarget = this.props.t("This target seems to be added already");
         this.validateTargetInput(valid => {
             // target is valid, add it to the list
             if (valid) {
@@ -337,9 +327,7 @@ class Pay extends React.Component {
 
                 let foundDuplicate = false;
                 let targetValue =
-                    this.state.targetType === "TRANSFER"
-                        ? this.state.selectedTargetAccount
-                        : this.state.target.trim();
+                    this.state.targetType === "TRANSFER" ? this.state.selectedTargetAccount : this.state.target.trim();
 
                 if (isValidPhonenumber(targetValue)) {
                     // valid phone number, we must format as international
@@ -356,10 +344,7 @@ class Pay extends React.Component {
                 });
 
                 if (!foundDuplicate) {
-                    if (
-                        this.props.limitedPermissions &&
-                        this.state.targetType !== "TRANSFER"
-                    ) {
+                    if (this.props.limitedPermissions && this.state.targetType !== "TRANSFER") {
                         // limited permissions and new target isn't a transfer
                         this.setState({
                             sendDraftPayment: true
@@ -394,16 +379,9 @@ class Pay extends React.Component {
 
     // validate only the taret inputs
     validateTargetInput = (callback = () => {}) => {
-        const {
-            target,
-            ibanName,
-            selectedAccount,
-            selectedTargetAccount,
-            targetType
-        } = this.state;
+        const { target, ibanName, selectedAccount, selectedTargetAccount, targetType } = this.state;
 
-        const ibanNameErrorCondition =
-            ibanName.length < 1 || ibanName.length > 64;
+        const ibanNameErrorCondition = ibanName.length < 1 || ibanName.length > 64;
 
         // check if the target is valid based onthe targetType
         let targetErrorCondition = false;
@@ -416,15 +394,12 @@ class Pay extends React.Component {
                 targetErrorCondition = !validEmail && !validPhone;
                 break;
             case "TRANSFER":
-                targetErrorCondition =
-                    selectedAccount === selectedTargetAccount;
+                targetErrorCondition = selectedAccount === selectedTargetAccount;
                 break;
             default:
             case "IBAN":
                 const filteredTarget = target.replace(/ /g, "");
-                targetErrorCondition =
-                    iban.isValid(filteredTarget) === false ||
-                    ibanNameErrorCondition === true;
+                targetErrorCondition = iban.isValid(filteredTarget) === false || ibanNameErrorCondition === true;
                 break;
         }
 
@@ -439,14 +414,7 @@ class Pay extends React.Component {
 
     // validates all the possible input combinations
     validateForm = () => {
-        const {
-            description,
-            amount,
-            ibanName,
-            selectedAccount,
-            sendDraftPayment,
-            targets
-        } = this.state;
+        const { description, amount, ibanName, selectedAccount, sendDraftPayment, targets } = this.state;
 
         const account = this.props.accounts[selectedAccount];
 
@@ -476,8 +444,7 @@ class Pay extends React.Component {
             (amount > accountBalance && sendDraftPayment === false);
         const amountErrorCondition = amount < 0.01 || amount > 10000;
         const descriptionErrorCondition = description.length > 140;
-        const ibanNameErrorCondition =
-            ibanName.length < 1 || ibanName.length > 64;
+        const ibanNameErrorCondition = ibanName.length < 1 || ibanName.length > 64;
 
         this.setState({
             amountError: amountErrorCondition,
@@ -495,11 +462,7 @@ class Pay extends React.Component {
 
     // send the actual payment
     sendPayment = () => {
-        if (
-            !this.state.validForm ||
-            this.props.payLoading ||
-            this.state.targets.length <= 0
-        ) {
+        if (!this.state.validForm || this.props.payLoading || this.state.targets.length <= 0) {
             return false;
         }
         this.closeModal();
@@ -538,9 +501,7 @@ class Pay extends React.Component {
                             value: target.value.trim()
                         };
                     } else if (validPhone) {
-                        const formattedNumber = getInternationalFormat(
-                            target.value
-                        );
+                        const formattedNumber = getInternationalFormat(target.value);
                         if (formattedNumber) {
                             targetInfo = {
                                 type: "PHONE_NUMBER",
@@ -585,42 +546,20 @@ class Pay extends React.Component {
 
         if (schedulePayment) {
             const schedule = {
-                time_start: format(
-                    getUTCDate(scheduleStartDate),
-                    "YYYY-MM-dd HH:mm:ss"
-                ),
+                time_start: format(getUTCDate(scheduleStartDate), "YYYY-MM-dd HH:mm:ss"),
                 recurrence_unit: recurrenceUnit,
                 // on once size has to be 1
-                recurrence_size: parseInt(
-                    recurrenceUnit !== "ONCE" ? recurrenceSize : 1
-                )
+                recurrence_size: parseInt(recurrenceUnit !== "ONCE" ? recurrenceSize : 1)
             };
 
             if (scheduleEndDate) {
-                schedule.time_end = format(
-                    getUTCDate(scheduleEndDate),
-                    "YYYY-MM-dd HH:mm:ss"
-                );
+                schedule.time_end = format(getUTCDate(scheduleEndDate), "YYYY-MM-dd HH:mm:ss");
             }
 
-            this.props.paySchedule(
-                userId,
-                account.id,
-                description,
-                amountInfo,
-                targetInfoList,
-                schedule
-            );
+            this.props.paySchedule(userId, account.id, description, amountInfo, targetInfoList, schedule);
         } else {
             // regular payment/draft
-            this.props.paySend(
-                userId,
-                account.id,
-                description,
-                amountInfo,
-                targetInfoList,
-                sendDraftPayment
-            );
+            this.props.paySend(userId, account.id, description, amountInfo, targetInfoList, sendDraftPayment);
         }
     };
 
@@ -647,9 +586,7 @@ class Pay extends React.Component {
             // regular balance value
             accountBalance = account.balance ? account.balance.value : 0;
             if (filteredInviteResponses.length > 0) {
-                const connectBudget = GetShareDetailBudget(
-                    filteredInviteResponses
-                );
+                const connectBudget = GetShareDetailBudget(filteredInviteResponses);
                 if (connectBudget) {
                     accountBalance = connectBudget;
                 }
@@ -669,10 +606,7 @@ class Pay extends React.Component {
 
             scheduledPaymentText = (
                 <ListItem>
-                    <ListItemText
-                        primary={scheduleTextResult.primary}
-                        secondary={scheduleTextResult.secondary}
-                    />
+                    <ListItemText primary={scheduleTextResult.primary} secondary={scheduleTextResult.secondary} />
                 </ListItem>
             );
         }
@@ -695,65 +629,42 @@ class Pay extends React.Component {
                         primaryText = `${t("Contact")}: ${targetItem.value}`;
                         break;
                     case "IBAN":
-                        primaryText = `${t("IBAN")}: ${targetItem.value.replace(
-                            / /g,
-                            ""
-                        )}`;
+                        primaryText = `${t("IBAN")}: ${targetItem.value.replace(/ /g, "")}`;
                         secondaryText = `${t("Name")}: ${targetItem.name}`;
                         break;
                     case "TRANSFER":
-                        const targetAccountInfo = this.props.accounts[
-                            targetItem.value
-                        ];
-                        primaryText = `${t("Transfer")}: ${
-                            targetAccountInfo.description
-                        }`;
+                        const targetAccountInfo = this.props.accounts[targetItem.value];
+                        primaryText = `${t("Transfer")}: ${targetAccountInfo.description}`;
                         break;
                 }
 
                 return [
                     <ListItem>
-                        <ListItemText
-                            primary={primaryText}
-                            secondary={secondaryText}
-                        />
+                        <ListItemText primary={primaryText} secondary={secondaryText} />
                     </ListItem>,
                     <Divider />
                 ];
             });
 
             confirmationModal = (
-                <Dialog
-                    open={this.state.confirmModalOpen}
-                    keepMounted
-                    onClose={this.closeModal}
-                >
+                <Dialog open={this.state.confirmModalOpen} keepMounted onClose={this.closeModal}>
                     <DialogTitle>{t("Confirm the payment")}</DialogTitle>
                     <DialogContent>
                         <List>
                             <ListItem>
                                 <ListItemText
                                     primary={t("From")}
-                                    secondary={`${
-                                        account.description
-                                    } ${accountBalance}`}
+                                    secondary={`${account.description} ${accountBalance}`}
                                 />
                             </ListItem>
                             <ListItem>
                                 <ListItemText
                                     primary={t("Description")}
-                                    secondary={
-                                        description.length <= 0
-                                            ? "None"
-                                            : description
-                                    }
+                                    secondary={description.length <= 0 ? "None" : description}
                                 />
                             </ListItem>
                             <ListItem>
-                                <ListItemText
-                                    primary={t("Amount")}
-                                    secondary={formatMoney(amount)}
-                                />
+                                <ListItemText primary={t("Amount")} secondary={formatMoney(amount)} />
                             </ListItem>
                             <ListItem>
                                 <ListItemText primary="Targets: " />
@@ -765,18 +676,10 @@ class Pay extends React.Component {
                         </List>
                     </DialogContent>
                     <DialogActions>
-                        <Button
-                            variant="raised"
-                            onClick={this.closeModal}
-                            color="secondary"
-                        >
+                        <Button variant="raised" onClick={this.closeModal} color="secondary">
                             {t("Cancel")}
                         </Button>
-                        <Button
-                            variant="raised"
-                            onClick={this.sendPayment}
-                            color="primary"
-                        >
+                        <Button variant="raised" onClick={this.sendPayment} color="primary">
                             {t("Confirm")}
                         </Button>
                     </DialogActions>
@@ -803,30 +706,21 @@ class Pay extends React.Component {
                 <Helmet>
                     <title>{`bunqDesktop - Pay`}</title>
                 </Helmet>
-                <MuiPickersUtilsProvider
-                    utils={DateFnsUtils}
-                    locale={localeData}
-                >
+                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={localeData}>
                     <Grid item xs={12} sm={10} md={8} lg={6} xl={4}>
                         <Paper style={styles.paper}>
-                            <Typography variant="headline">
-                                {t("New Payment")}
-                            </Typography>
+                            <Typography variant="headline">{t("New Payment")}</Typography>
 
                             <AccountSelectorDialog
                                 value={this.state.selectedAccount}
-                                onChange={this.handleChangeDirect(
-                                    "selectedAccount"
-                                )}
+                                onChange={this.handleChangeDirect("selectedAccount")}
                                 accounts={this.props.accounts}
                                 BunqJSClient={this.props.BunqJSClient}
                                 hiddenConnectTypes={["showOnly"]}
                             />
                             {this.state.insufficientFundsCondition !== false ? (
                                 <InputLabel error={true}>
-                                    {t(
-                                        "Your source account does not have sufficient funds!"
-                                    )}
+                                    {t("Your source account does not have sufficient funds!")}
                                 </InputLabel>
                             ) : null}
 
@@ -863,9 +757,7 @@ class Pay extends React.Component {
                                         control={
                                             <Switch
                                                 color="primary"
-                                                checked={
-                                                    this.state.sendDraftPayment
-                                                }
+                                                checked={this.state.sendDraftPayment}
                                                 onChange={this.draftChange}
                                             />
                                         }
@@ -879,14 +771,8 @@ class Pay extends React.Component {
                                             control={
                                                 <Switch
                                                     color="primary"
-                                                    checked={
-                                                        this.state
-                                                            .schedulePayment
-                                                    }
-                                                    onChange={
-                                                        this
-                                                            .schedulePaymentChange
-                                                    }
+                                                    checked={this.state.schedulePayment}
+                                                    onChange={this.schedulePaymentChange}
                                                 />
                                             }
                                             label={t("Schedule payment")}
@@ -906,20 +792,13 @@ class Pay extends React.Component {
                                 />
                             </Grid>
 
-                            <FormControl
-                                style={styles.formControlAlt}
-                                error={this.state.amountError}
-                                fullWidth
-                            >
+                            <FormControl style={styles.formControlAlt} error={this.state.amountError} fullWidth>
                                 <MoneyFormatInput
                                     id="amount"
                                     value={this.state.amount}
                                     onValueChange={this.handleChangeFormatted}
                                     onKeyPress={ev => {
-                                        if (
-                                            ev.key === "Enter" &&
-                                            this.state.validForm
-                                        ) {
+                                        if (ev.key === "Enter" && this.state.validForm) {
                                             this.openModal();
                                             ev.preventDefault();
                                         }
@@ -930,10 +809,7 @@ class Pay extends React.Component {
                             <Button
                                 variant="raised"
                                 color="primary"
-                                disabled={
-                                    !this.state.validForm ||
-                                    this.props.payLoading
-                                }
+                                disabled={!this.state.validForm || this.props.payLoading}
                                 style={styles.payButton}
                                 onClick={this.openModal}
                             >
@@ -958,8 +834,7 @@ const mapStateToProps = state => {
 
         language: state.options.language,
 
-        shareInviteBankResponses:
-            state.share_invite_bank_responses.share_invite_bank_responses,
+        shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
 
         user: state.user.user,
         limitedPermissions: state.user.limited_permissions
@@ -969,46 +844,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, props) => {
     const { BunqJSClient } = props;
     return {
-        paySend: (
-            userId,
-            accountId,
-            description,
-            amount,
-            targets,
-            draft = false,
-            schedule = false
-        ) =>
-            dispatch(
-                paySend(
-                    BunqJSClient,
-                    userId,
-                    accountId,
-                    description,
-                    amount,
-                    targets,
-                    draft,
-                    schedule
-                )
-            ),
-        paySchedule: (
-            userId,
-            accountId,
-            description,
-            amount,
-            targets,
-            schedule
-        ) =>
-            dispatch(
-                paySchedule(
-                    BunqJSClient,
-                    userId,
-                    accountId,
-                    description,
-                    amount,
-                    targets,
-                    schedule
-                )
-            ),
+        paySend: (userId, accountId, description, amount, targets, draft = false, schedule = false) =>
+            dispatch(paySend(BunqJSClient, userId, accountId, description, amount, targets, draft, schedule)),
+        paySchedule: (userId, accountId, description, amount, targets, schedule) =>
+            dispatch(paySchedule(BunqJSClient, userId, accountId, description, amount, targets, schedule)),
         openSnackbar: message => dispatch(openSnackbar(message))
     };
 };

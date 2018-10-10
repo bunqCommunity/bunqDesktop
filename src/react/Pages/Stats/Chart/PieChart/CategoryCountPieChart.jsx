@@ -18,12 +18,7 @@ export default props => {
         const category = props.categories[categoryKey];
 
         // add the total count of this category to the data set
-        data.push(
-            categoryCount.reduce(
-                (accumulator, currentValue) => accumulator + currentValue,
-                0
-            )
-        );
+        data.push(categoryCount.reduce((accumulator, currentValue) => accumulator + currentValue, 0));
         // add the category color
         colors.push(category.color);
         // add the category label

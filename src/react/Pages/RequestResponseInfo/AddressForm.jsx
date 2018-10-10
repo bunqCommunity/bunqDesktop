@@ -50,14 +50,7 @@ class AddressForm extends React.Component {
 
     // validates inputs and returns an address object or false to the parent component
     validateForm = () => {
-        const {
-            city,
-            country,
-            street,
-            house_number,
-            postal_code,
-            po_box
-        } = this.state;
+        const { city, country, street, house_number, postal_code, po_box } = this.state;
 
         let hasError = false;
         const errors = {
@@ -112,15 +105,11 @@ class AddressForm extends React.Component {
         const t = this.props.t;
         if (this.props.visible === false) return null;
 
-        const requiredStatus = this.props.required
-            ? "(required)"
-            : "(optional)";
+        const requiredStatus = this.props.required ? "(required)" : "(optional)";
         return (
             <Grid container spacing={24}>
                 <Grid item xs={12}>
-                    <Typography variant="subheading">
-                        {`${this.props.labelValue} - ${requiredStatus}`}
-                    </Typography>
+                    <Typography variant="subheading">{`${this.props.labelValue} - ${requiredStatus}`}</Typography>
                 </Grid>
                 <Collapse in={this.state.open}>
                     <Grid item xs={12} md={6}>

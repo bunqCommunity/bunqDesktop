@@ -16,11 +16,7 @@ import CustomIcon from "../CustomIcon";
 import CategoryIcon from "../Categories/CategoryIcon";
 import CategoryChip from "../Categories/CategoryChip";
 
-import {
-    addCategoryIdFilter,
-    removeCategoryIdFilter,
-    toggleCategoryIdFilter
-} from "../../Actions/filters";
+import { addCategoryIdFilter, removeCategoryIdFilter, toggleCategoryIdFilter } from "../../Actions/filters";
 
 const styles = {
     listItem: {
@@ -70,11 +66,7 @@ class CategorySelection extends React.Component {
 
             // display big chip or smaller icon
             return bigChips ? (
-                <CategoryChip
-                    key={key}
-                    category={category}
-                    onDelete={this.removeCategory(key)}
-                />
+                <CategoryChip key={key} category={category} onDelete={this.removeCategory(key)} />
             ) : (
                 <IconButton>
                     <CategoryIcon key={key} category={category} />
@@ -82,33 +74,31 @@ class CategorySelection extends React.Component {
             );
         });
 
-        const categoryMenuItems = Object.keys(categories).map(
-            (categoryId, key) => {
-                const category = categories[categoryId];
+        const categoryMenuItems = Object.keys(categories).map((categoryId, key) => {
+            const category = categories[categoryId];
 
-                // don't display already selected items
-                if (selectedCategories.includes(categoryId)) {
-                    return null;
-                }
-
-                return (
-                    <MenuItem key={key} onClick={this.addCategory(categoryId)}>
-                        <ListItemIcon>
-                            <CustomIcon
-                                style={{
-                                    height: 24,
-                                    color: category.color,
-                                    marginRight: 16
-                                }}
-                            >
-                                {category.icon}
-                            </CustomIcon>
-                        </ListItemIcon>
-                        {category.label}
-                    </MenuItem>
-                );
+            // don't display already selected items
+            if (selectedCategories.includes(categoryId)) {
+                return null;
             }
-        );
+
+            return (
+                <MenuItem key={key} onClick={this.addCategory(categoryId)}>
+                    <ListItemIcon>
+                        <CustomIcon
+                            style={{
+                                height: 24,
+                                color: category.color,
+                                marginRight: 16
+                            }}
+                        >
+                            {category.icon}
+                        </CustomIcon>
+                    </ListItemIcon>
+                    {category.label}
+                </MenuItem>
+            );
+        });
 
         return (
             <React.Fragment>
@@ -120,16 +110,11 @@ class CategorySelection extends React.Component {
                             placement="left"
                             title={t(
                                 `Click to ${
-                                    this.props.toggleCategoryFilter
-                                        ? "include"
-                                        : "exclude"
+                                    this.props.toggleCategoryFilter ? "include" : "exclude"
                                 } the selected categories`
                             )}
                         >
-                            <IconButton
-                                aria-haspopup="true"
-                                onClick={this.props.toggleCategoryIdFilter}
-                            >
+                            <IconButton aria-haspopup="true" onClick={this.props.toggleCategoryIdFilter}>
                                 {this.props.toggleCategoryFilter ? (
                                     <FilterListIcon className="icon-rotate-180" />
                                 ) : (
@@ -138,18 +123,11 @@ class CategorySelection extends React.Component {
                             </IconButton>
                         </Tooltip>
 
-                        <IconButton
-                            aria-haspopup="true"
-                            onClick={this.handleClick}
-                        >
+                        <IconButton aria-haspopup="true" onClick={this.handleClick}>
                             <AddIcon />
                         </IconButton>
                     </ListItemSecondaryAction>
-                    <Menu
-                        anchorEl={this.state.anchorEl}
-                        open={Boolean(anchorEl)}
-                        onClose={this.handleClose}
-                    >
+                    <Menu anchorEl={this.state.anchorEl} open={Boolean(anchorEl)} onClose={this.handleClose}>
                         {categoryMenuItems}
                     </Menu>
                 </ListSubheader>

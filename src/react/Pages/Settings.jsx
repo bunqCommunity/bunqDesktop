@@ -54,10 +54,7 @@ import {
     setAnalyticsEnabled,
     toggleAutomaticUpdatesSendNotification
 } from "../Actions/options";
-import {
-    registrationClearPrivateData,
-    registrationLogOut
-} from "../Actions/registration";
+import { registrationClearPrivateData, registrationLogOut } from "../Actions/registration";
 
 const styles = {
     sideButton: {
@@ -124,9 +121,7 @@ class Settings extends React.Component {
     };
 
     handleNativeFrameCheckChange = event => {
-        this.props.openSnackbar(
-            this.props.t("Restart the application to view these changes!")
-        );
+        this.props.openSnackbar(this.props.t("Restart the application to view these changes!"));
         this.props.setNativeFrame(!this.props.nativeFrame);
     };
 
@@ -142,11 +137,7 @@ class Settings extends React.Component {
     handleAnalyticsEnabledChange = event => {
         // if next state is false, display a mesage
         if (!this.props.analyticsEnabled === false) {
-            this.props.openSnackbar(
-                this.props.t(
-                    "Restart the application to start without Google Analytics!"
-                )
-            );
+            this.props.openSnackbar(this.props.t("Restart the application to start without Google Analytics!"));
         }
         this.props.setAnalyticsEnabled(!this.props.analyticsEnabled);
     };
@@ -160,9 +151,7 @@ class Settings extends React.Component {
         this.props.setInactivityCheckDuration(event.target.value);
     };
     handleAutomaticUpdatesEnabledChane = event => {
-        this.props.toggleAutomaticUpdatesEnabled(
-            !this.props.automaticUpdateEnabled
-        );
+        this.props.toggleAutomaticUpdatesEnabled(!this.props.automaticUpdateEnabled);
     };
     handleAutomaticUpdateDurationChane = event => {
         this.props.setAutomaticUpdateDuration(event.target.value);
@@ -171,9 +160,7 @@ class Settings extends React.Component {
         this.props.setSyncOnStartup(!this.props.syncOnStartup);
     };
     handleAutomaticUpdatesSendNotificationChange = event => {
-        this.props.toggleAutomaticUpdatesSendNotification(
-            !this.props.automaticUpdateSendNotification
-        );
+        this.props.toggleAutomaticUpdatesSendNotification(!this.props.automaticUpdateSendNotification);
     };
     handleResetBunqDesktop = event => {
         if (this.state.clearConfirmation === false) {
@@ -185,9 +172,7 @@ class Settings extends React.Component {
 
     displayImportDialog = newPath => {
         this.setState({
-            importTargetLocation: `${newPath}${
-                path.sep
-            }BunqDesktopSettings.json`,
+            importTargetLocation: `${newPath}${path.sep}BunqDesktopSettings.json`,
             openImportDialog: true
         });
     };
@@ -209,45 +194,29 @@ class Settings extends React.Component {
 
         const clearBunqDesktopText1 = t("Are you absolutely sure");
         const clearBunqDesktopTex2 = t("Reset bunqDesktop");
-        const clearBunqDesktopText = this.state.clearConfirmation
-            ? clearBunqDesktopText1
-            : clearBunqDesktopTex2;
+        const clearBunqDesktopText = this.state.clearConfirmation ? clearBunqDesktopText1 : clearBunqDesktopTex2;
 
         const settingsContainer = (
             <Grid container spacing={16}>
                 <Grid item xs={12} md={6} lg={8}>
-                    <TypographyTranslate variant={"headline"}>
-                        Settings
-                    </TypographyTranslate>
+                    <TypographyTranslate variant={"headline"}>Settings</TypographyTranslate>
                 </Grid>
 
                 <Grid item xs={6} md={3} lg={2}>
-                    <Button
-                        variant="raised"
-                        color="secondary"
-                        style={styles.button}
-                        onClick={this.clearPrivateData}
-                    >
+                    <Button variant="raised" color="secondary" style={styles.button} onClick={this.clearPrivateData}>
                         {t("Remove keys")} <RemoveIcon />
                     </Button>
                 </Grid>
 
                 <Grid item xs={6} md={3} lg={2}>
-                    <Button
-                        variant="raised"
-                        color="primary"
-                        style={styles.button}
-                        onClick={this.logout}
-                    >
+                    <Button variant="raised" color="primary" style={styles.button} onClick={this.logout}>
                         {t("Logout")} <LogoutIcon />
                     </Button>
                 </Grid>
 
                 <Grid item xs={12} md={6}>
                     <FormControl style={styles.formControl}>
-                        <InputLabel htmlFor="theme-selection">
-                            {t("Theme")}
-                        </InputLabel>
+                        <InputLabel htmlFor="theme-selection">{t("Theme")}</InputLabel>
                         <Select
                             value={this.props.theme}
                             onChange={this.handleThemeChange}
@@ -255,9 +224,7 @@ class Settings extends React.Component {
                             style={styles.selectField}
                         >
                             {Object.keys(this.props.themeList).map(themeKey => (
-                                <MenuItem value={themeKey}>
-                                    {humanReadableThemes[themeKey]}
-                                </MenuItem>
+                                <MenuItem value={themeKey}>{humanReadableThemes[themeKey]}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>
@@ -265,9 +232,7 @@ class Settings extends React.Component {
 
                 <Grid item xs={12} md={6}>
                     <FormControl style={styles.formControl}>
-                        <InputLabel htmlFor="theme-selection">
-                            Language
-                        </InputLabel>
+                        <InputLabel htmlFor="theme-selection">Language</InputLabel>
                         <Select
                             value={this.props.language}
                             onChange={this.handleLanguageChange}
@@ -275,28 +240,20 @@ class Settings extends React.Component {
                             style={styles.selectField}
                         >
                             {SUPPORTED_LANGUAGES.map(language => (
-                                <MenuItem value={language}>
-                                    {getPrettyLanguage(language)}
-                                </MenuItem>
+                                <MenuItem value={language}>{getPrettyLanguage(language)}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>
                 </Grid>
 
                 {/* automatic updates */}
-                <Grid
-                    item
-                    xs={12}
-                    md={this.props.automaticUpdateEnabled ? 6 : 12}
-                >
+                <Grid item xs={12} md={this.props.automaticUpdateEnabled ? 6 : 12}>
                     <FormControlLabel
                         control={
                             <Switch
                                 id="inactivity-check-selection"
                                 checked={this.props.automaticUpdateEnabled}
-                                onChange={
-                                    this.handleAutomaticUpdatesEnabledChane
-                                }
+                                onChange={this.handleAutomaticUpdatesEnabledChane}
                             />
                         }
                         label={t("Update automatically in the background")}
@@ -340,13 +297,8 @@ class Settings extends React.Component {
                         control={
                             <Switch
                                 id="notification-on-new-events"
-                                checked={
-                                    this.props.automaticUpdateSendNotification
-                                }
-                                onChange={
-                                    this
-                                        .handleAutomaticUpdatesSendNotificationChange
-                                }
+                                checked={this.props.automaticUpdateSendNotification}
+                                onChange={this.handleAutomaticUpdatesSendNotificationChange}
                             />
                         }
                         label={t("Send a notification on new events")}
@@ -419,9 +371,7 @@ class Settings extends React.Component {
                                 onChange={this.handleAutomaticThemeChange}
                             />
                         }
-                        label={t(
-                            "Automatically switch theme based on the time"
-                        )}
+                        label={t("Automatically switch theme based on the time")}
                     />
                 </Grid>
 
@@ -492,9 +442,7 @@ class Settings extends React.Component {
                                 onChange={this.handleAnalyticsEnabledChange}
                             />
                         }
-                        label={t(
-                            "Allow basic and anonymous Google Analytics tracking"
-                        )}
+                        label={t("Allow basic and anonymous Google Analytics tracking")}
                     />
                 </Grid>
 
@@ -512,12 +460,7 @@ class Settings extends React.Component {
                 <Grid item xs={12} />
 
                 <Grid item xs={12} sm={4}>
-                    <ButtonTranslate
-                        variant="raised"
-                        component={NavLink}
-                        to={"/debug-page"}
-                        style={styles.button}
-                    >
+                    <ButtonTranslate variant="raised" component={NavLink} to={"/debug-page"} style={styles.button}>
                         Debug application
                     </ButtonTranslate>
                 </Grid>
@@ -547,55 +490,32 @@ class Settings extends React.Component {
                     <DialogTitle>Change settings location</DialogTitle>
 
                     <DialogContent>
+                        <DialogContentText>You are about to change the settings location to:</DialogContentText>
+                        <DialogContentText>{this.state.importTargetLocation}</DialogContentText>
                         <DialogContentText>
-                            You are about to change the settings location to:
-                        </DialogContentText>
-                        <DialogContentText>
-                            {this.state.importTargetLocation}
-                        </DialogContentText>
-                        <DialogContentText>
-                            Would you like to import the settings file or
-                            overwrite the settings currently in bunqDesktop?
+                            Would you like to import the settings file or overwrite the settings currently in
+                            bunqDesktop?
                         </DialogContentText>
                     </DialogContent>
 
                     <DialogActions>
-                        <ButtonTranslate
-                            variant="raised"
-                            onClick={() =>
-                                this.setState({ openImportDialog: false })
-                            }
-                        >
+                        <ButtonTranslate variant="raised" onClick={() => this.setState({ openImportDialog: false })}>
                             Cancel
                         </ButtonTranslate>
-                        <ButtonTranslate
-                            variant="raised"
-                            onClick={this.overwriteSettingsFile}
-                            color="secondary"
-                        >
+                        <ButtonTranslate variant="raised" onClick={this.overwriteSettingsFile} color="secondary">
                             Overwrite file
                         </ButtonTranslate>
-                        <ButtonTranslate
-                            variant="raised"
-                            onClick={this.importSettingsFile}
-                            color="primary"
-                        >
+                        <ButtonTranslate variant="raised" onClick={this.importSettingsFile} color="primary">
                             Import file
                         </ButtonTranslate>
                     </DialogActions>
                 </Dialog>
 
                 <Grid item xs={12} sm={2}>
-                    <Button
-                        onClick={this.props.history.goBack}
-                        style={styles.sideButton}
-                    >
+                    <Button onClick={this.props.history.goBack} style={styles.sideButton}>
                         <ArrowBackIcon />
                     </Button>
-                    <Button
-                        onClick={() => this.props.history.push("/")}
-                        style={styles.sideButton}
-                    >
+                    <Button onClick={() => this.props.history.push("/")} style={styles.sideButton}>
                         <HomeIcon />
                     </Button>
                 </Grid>
@@ -624,8 +544,7 @@ const mapStateToProps = state => {
         checkInactivity: state.options.check_inactivity,
         inactivityCheckDuration: state.options.inactivity_check_duration,
         automaticUpdateEnabled: state.options.automatic_update_enabled,
-        automaticUpdateSendNotification:
-            state.options.automatic_update_send_notification,
+        automaticUpdateSendNotification: state.options.automatic_update_send_notification,
         automaticUpdateDuration: state.options.automatic_update_duration
     };
 };
@@ -636,23 +555,18 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         openSnackbar: message => dispatch(openSnackbar(message)),
 
         // options and options_drawer handlers
-        setSyncOnStartup: syncOnStartup =>
-            dispatch(setSyncOnStartup(syncOnStartup)),
+        setSyncOnStartup: syncOnStartup => dispatch(setSyncOnStartup(syncOnStartup)),
         openSnackbar: message => dispatch(openSnackbar(message)),
-        setAutomaticThemeChange: automaticThemeChange =>
-            dispatch(setAutomaticThemeChange(automaticThemeChange)),
+        setAutomaticThemeChange: automaticThemeChange => dispatch(setAutomaticThemeChange(automaticThemeChange)),
         setTheme: theme => dispatch(setTheme(theme)),
         setLanguage: language => dispatch(setLanguage(language)),
         setLanguage: language => dispatch(setLanguage(language)),
         setNativeFrame: useFrame => dispatch(setNativeFrame(useFrame)),
-        setStickyMenu: userStickyMenu =>
-            dispatch(setStickyMenu(userStickyMenu)),
+        setStickyMenu: userStickyMenu => dispatch(setStickyMenu(userStickyMenu)),
         setHideBalance: hideBalance => dispatch(setHideBalance(hideBalance)),
-        setMinimizeToTray: minimizeToTray =>
-            dispatch(setMinimizeToTray(minimizeToTray)),
+        setMinimizeToTray: minimizeToTray => dispatch(setMinimizeToTray(minimizeToTray)),
         setAnalyticsEnabled: enabled => dispatch(setAnalyticsEnabled(enabled)),
-        toggleInactivityCheck: inactivityCheck =>
-            dispatch(toggleInactivityCheck(inactivityCheck)),
+        toggleInactivityCheck: inactivityCheck => dispatch(toggleInactivityCheck(inactivityCheck)),
         setInactivityCheckDuration: inactivityCheckDuration =>
             dispatch(setInactivityCheckDuration(inactivityCheckDuration)),
         toggleAutomaticUpdatesEnabled: updateAutomatically =>
@@ -661,14 +575,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(toggleAutomaticUpdatesSendNotification(sendNotifcation)),
         setAutomaticUpdateDuration: automaticUpdateDuration =>
             dispatch(setAutomaticUpdateDuration(automaticUpdateDuration)),
-        overwriteSettingsLocation: location =>
-            dispatch(overwriteSettingsLocation(location)),
-        loadSettingsLocation: location =>
-            dispatch(loadSettingsLocation(location)),
+        overwriteSettingsLocation: location => dispatch(overwriteSettingsLocation(location)),
+        loadSettingsLocation: location => dispatch(loadSettingsLocation(location)),
 
         // clear api key from bunqjsclient and bunqdesktop
-        clearPrivateData: () =>
-            dispatch(registrationClearPrivateData(BunqJSClient)),
+        clearPrivateData: () => dispatch(registrationClearPrivateData(BunqJSClient)),
         // logout of current session without destroying stored keys
         logOut: () => dispatch(registrationLogOut(BunqJSClient)),
         // full hard reset off all storage

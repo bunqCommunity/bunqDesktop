@@ -75,15 +75,13 @@ class GeoLocationMap extends React.Component {
             if (this.props.theme === "DefaultTheme") {
                 // light theme
                 this.setState({
-                    mapStyle:
-                        "mapbox://styles/bunqcommunity/cjmngc001153m2ss143lhxlzw",
+                    mapStyle: "mapbox://styles/bunqcommunity/cjmngc001153m2ss143lhxlzw",
                     mapStyleMode: this.props.theme
                 });
             } else {
                 // dark theme
                 this.setState({
-                    mapStyle:
-                        "mapbox://styles/bunqcommunity/cjmnlb1gjcg012slt1urnvlpo",
+                    mapStyle: "mapbox://styles/bunqcommunity/cjmnlb1gjcg012slt1urnvlpo",
                     mapStyleMode: this.props.theme
                 });
             }
@@ -99,16 +97,10 @@ class GeoLocationMap extends React.Component {
 
             // check if a onresize handler is set yet
             if (this.onResizeHandler === null) {
-                this.onResizeHandler = window.addEventListener(
-                    "resize",
-                    this.onResize
-                );
+                this.onResizeHandler = window.addEventListener("resize", this.onResize);
             }
 
-            if (
-                viewport.width !== containerWidth ||
-                viewport.height !== containerHeight
-            ) {
+            if (viewport.width !== containerWidth || viewport.height !== containerHeight) {
                 this.setState({
                     show: true,
                     viewport: {
@@ -133,20 +125,12 @@ class GeoLocationMap extends React.Component {
                 style={styles.map}
                 mapStyle={mapStyle}
                 mapboxApiAccessToken={MAPBOX_TOKEN}
-                onViewportChange={newViewport =>
-                    this.setState({ viewport: { ...viewport, ...newViewport } })
-                }
+                onViewportChange={newViewport => this.setState({ viewport: { ...viewport, ...newViewport } })}
             >
-                <Marker
-                    latitude={geoLocation.latitude}
-                    longitude={geoLocation.longitude}
-                >
+                <Marker latitude={geoLocation.latitude} longitude={geoLocation.longitude}>
                     <MarkerIcon
                         style={{
-                            color:
-                                this.props.theme === "DefaultTheme"
-                                    ? "#0029ff"
-                                    : "white"
+                            color: this.props.theme === "DefaultTheme" ? "#0029ff" : "white"
                         }}
                     />
                 </Marker>

@@ -30,15 +30,7 @@ class SplitAmountForm extends React.Component {
     }
 
     render() {
-        const {
-            BunqJSClient,
-            account,
-            targets,
-            splitAmounts,
-            splitRequest,
-            toggleSplitRequest,
-            amount
-        } = this.props;
+        const { BunqJSClient, account, targets, splitAmounts, splitRequest, toggleSplitRequest, amount } = this.props;
 
         if (targets.length === 0) return null;
         if (!amount) return null;
@@ -61,14 +53,9 @@ class SplitAmountForm extends React.Component {
             <Paper style={styles.paper}>
                 <Grid container spacing={8}>
                     <Grid item xs={12} style={styles.titleGrid}>
-                        <Switch
-                            checked={splitRequest}
-                            onChange={toggleSplitRequest}
-                        />
+                        <Switch checked={splitRequest} onChange={toggleSplitRequest} />
 
-                        <TranslateTypography variant={"title"}>
-                            Split request
-                        </TranslateTypography>
+                        <TranslateTypography variant={"title"}>Split request</TranslateTypography>
                     </Grid>
                     {splitRequest ? (
                         <Grid item xs={12}>

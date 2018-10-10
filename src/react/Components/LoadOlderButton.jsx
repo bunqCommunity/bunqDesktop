@@ -37,12 +37,9 @@ class LoadOlderButton extends React.Component {
         // check if an older id is set for this account
         let paymentsOlderId = paymentsOlderIds[accountsAccountId] || false;
         let bunqMeTabsOlderId = bunqMeTabsOlderIds[accountsAccountId] || false;
-        let requestResponsesOlderId =
-            requestResponsesOlderIds[accountsAccountId] || false;
-        let requestInquiriesOlderId =
-            requestInquiriesOlderIds[accountsAccountId] || false;
-        let masterCardActionsOlderId =
-            masterCardActionsOlderIds[accountsAccountId] || false;
+        let requestResponsesOlderId = requestResponsesOlderIds[accountsAccountId] || false;
+        let requestInquiriesOlderId = requestInquiriesOlderIds[accountsAccountId] || false;
+        let masterCardActionsOlderId = masterCardActionsOlderIds[accountsAccountId] || false;
 
         // check if the stored selected account isn't already loaded
         if (
@@ -51,31 +48,11 @@ class LoadOlderButton extends React.Component {
             accountsAccountId !== paymentsAccountId &&
             paymentsLoading === false
         ) {
-            this.props.paymentsUpdate(
-                user.id,
-                accountsAccountId,
-                paymentsOlderId
-            );
-            this.props.bunqMeTabsUpdate(
-                user.id,
-                accountsAccountId,
-                bunqMeTabsOlderId
-            );
-            this.props.requestResponsesUpdate(
-                user.id,
-                accountsAccountId,
-                requestResponsesOlderId
-            );
-            this.props.requestInquiriesUpdate(
-                user.id,
-                accountsAccountId,
-                requestInquiriesOlderId
-            );
-            this.props.masterCardActionsUpdate(
-                user.id,
-                accountsAccountId,
-                masterCardActionsOlderId
-            );
+            this.props.paymentsUpdate(user.id, accountsAccountId, paymentsOlderId);
+            this.props.bunqMeTabsUpdate(user.id, accountsAccountId, bunqMeTabsOlderId);
+            this.props.requestResponsesUpdate(user.id, accountsAccountId, requestResponsesOlderId);
+            this.props.requestInquiriesUpdate(user.id, accountsAccountId, requestInquiriesOlderId);
+            this.props.masterCardActionsUpdate(user.id, accountsAccountId, masterCardActionsOlderId);
         }
     };
 
@@ -111,11 +88,7 @@ class LoadOlderButton extends React.Component {
                         onClick={this.update}
                         disabled={loadingState}
                     >
-                        {this.props.buttonContent ? (
-                            this.props.buttonContent
-                        ) : (
-                            <RefreshIcon />
-                        )}
+                        {this.props.buttonContent ? this.props.buttonContent : <RefreshIcon />}
                     </Button>
                 )}
             </div>

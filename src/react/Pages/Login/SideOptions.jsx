@@ -76,9 +76,7 @@ export default props => {
             <Card style={styles.card} className="animated fadeIn">
                 <CardContent style={styles.cardContent}>
                     <FormControl style={styles.formControl}>
-                        <InputLabel style={styles.inputLabel}>
-                            API Key
-                        </InputLabel>
+                        <InputLabel style={styles.inputLabel}>API Key</InputLabel>
                         <Input
                             style={styles.apiInput}
                             className={"text-input"}
@@ -86,10 +84,7 @@ export default props => {
                             value={apiKey}
                             error={!apiKeyValid}
                             onKeyPress={ev => {
-                                if (
-                                    ev.key === "Enter" &&
-                                    buttonDisabled === false
-                                ) {
+                                if (ev.key === "Enter" && buttonDisabled === false) {
                                     setRegistration();
                                     ev.preventDefault();
                                 }
@@ -100,10 +95,7 @@ export default props => {
                     <FormControlLabel
                         style={styles.toggle}
                         label={
-                            <TranslateTypography
-                                variant="body1"
-                                style={styles.text}
-                            >
+                            <TranslateTypography variant="body1" style={styles.text}>
                                 Enable sandbox mode?
                             </TranslateTypography>
                         }
@@ -119,10 +111,7 @@ export default props => {
                     <FormControlLabel
                         style={styles.toggle}
                         label={
-                            <TranslateTypography
-                                variant="body1"
-                                style={styles.text}
-                            >
+                            <TranslateTypography variant="body1" style={styles.text}>
                                 Enable wildcard mode?
                             </TranslateTypography>
                         }
@@ -137,9 +126,7 @@ export default props => {
 
                     {wildcardMode && (
                         <FormControl style={styles.formControl}>
-                            <InputLabel style={styles.inputLabel}>
-                                Current IP Address
-                            </InputLabel>
+                            <InputLabel style={styles.inputLabel}>Current IP Address</InputLabel>
                             <Input
                                 style={styles.apiInput}
                                 className={"text-input"}

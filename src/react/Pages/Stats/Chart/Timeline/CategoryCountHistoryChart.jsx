@@ -98,11 +98,5 @@ export default props => {
         return null;
     }
 
-    return (
-        <Bar
-            height={defaultOptions.height}
-            data={chartData}
-            options={chartOptions}
-        />
-    );
+    return <Bar height={defaultOptions.height} data={chartData} options={chartOptions} />;
 };

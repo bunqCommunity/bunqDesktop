@@ -16,10 +16,7 @@ export const getInternationalFormat = (number, region = "NL") => {
         const parsedNumber = phoneUtil.parseAndKeepRawInput(number, region);
 
         // format as international number
-        const formattedPhone = phoneUtil.format(
-            parsedNumber,
-            PNF.INTERNATIONAL
-        );
+        const formattedPhone = phoneUtil.format(parsedNumber, PNF.INTERNATIONAL);
 
         // remove spaces and minus chars
         return formattedPhone.replace(/[\- ]/g, "");

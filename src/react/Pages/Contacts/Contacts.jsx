@@ -46,21 +46,13 @@ class Contacts extends React.Component {
             contacts: {}
         };
 
-        ipcRenderer.on(
-            "received-oauth-google-access-token",
-            this.handleGoogleCallback
-        );
-        ipcRenderer.on(
-            "received-oauth-office-365-access-token",
-            this.handleOffice365Callback
-        );
+        ipcRenderer.on("received-oauth-google-access-token", this.handleGoogleCallback);
+        ipcRenderer.on("received-oauth-office-365-access-token", this.handleOffice365Callback);
         ipcRenderer.on("received-oauth-failed", this.handleError);
     }
 
     handleError = event => {
-        const failedMessage = this.props.t(
-            "Failed to validate the authentication tokens"
-        );
+        const failedMessage = this.props.t("Failed to validate the authentication tokens");
 
         this.props.openSnackbar(failedMessage);
     };
@@ -144,9 +136,7 @@ class Contacts extends React.Component {
                 <Grid item xs={12} sm={10} md={6} lg={4}>
                     <Grid container spacing={8} justify={"center"}>
                         <Grid item xs={8} md={9} style={styles.row}>
-                            <TranslateTypography variant={"headline"}>
-                                Contacts
-                            </TranslateTypography>
+                            <TranslateTypography variant={"headline"}>Contacts</TranslateTypography>
                         </Grid>
 
                         <Grid item xs={4} md={3} style={styles.row}>
@@ -202,9 +192,7 @@ class Contacts extends React.Component {
                                     title="Office 365"
                                     contactType="Office365"
                                     logo="./images/office-365-logo.svg"
-                                    canImport={
-                                        !!this.state.office365AccessToken
-                                    }
+                                    canImport={!!this.state.office365AccessToken}
                                     loading={this.props.contactsLoading}
                                     clear={this.props.clearContacts}
                                     contacts={contacts}
@@ -231,16 +219,11 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, props) => {
     const { BunqJSClient } = props;
     return {
-        contactInfoUpdateGoogle: accessToken =>
-            dispatch(contactInfoUpdateGoogle(BunqJSClient, accessToken)),
-        contactInfoUpdateApple: filePaths =>
-            dispatch(contactInfoUpdateApple(BunqJSClient, filePaths)),
-        contactInfoUpdateOffice365: accessToken =>
-            dispatch(contactInfoUpdateOffice365(BunqJSClient, accessToken)),
-        contactsSetInfoType: (contacts, type) =>
-            dispatch(contactsSetInfoType(contacts, type, BunqJSClient)),
-        clearContacts: (type = false) =>
-            dispatch(contactsClear(BunqJSClient, type)),
+        contactInfoUpdateGoogle: accessToken => dispatch(contactInfoUpdateGoogle(BunqJSClient, accessToken)),
+        contactInfoUpdateApple: filePaths => dispatch(contactInfoUpdateApple(BunqJSClient, filePaths)),
+        contactInfoUpdateOffice365: accessToken => dispatch(contactInfoUpdateOffice365(BunqJSClient, accessToken)),
+        contactsSetInfoType: (contacts, type) => dispatch(contactsSetInfoType(contacts, type, BunqJSClient)),
+        clearContacts: (type = false) => dispatch(contactsClear(BunqJSClient, type)),
         openSnackbar: message => dispatch(openSnackbar(message))
     };
 };

@@ -1,11 +1,4 @@
-export const setCategory = (
-    id = false,
-    label,
-    color,
-    icon,
-    priority = 5,
-    options = {}
-) => {
+export const setCategory = (id = false, label, color, icon, priority = 5, options = {}) => {
     return {
         type: "CATEGORIES_SET_CATEGORY",
         payload: {
@@ -48,11 +41,7 @@ export const removeCategory = categoryId => {
     };
 };
 
-export const removeCategoryConnection = (
-    categoryId,
-    itemType = false,
-    itemId = false
-) => {
+export const removeCategoryConnection = (categoryId, itemType = false, itemId = false) => {
     return {
         type: "CATEGORIES_REMOVE_CATEGORY_CONNECTION",
         payload: {

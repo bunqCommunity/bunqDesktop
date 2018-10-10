@@ -20,9 +20,7 @@ export function loadStoredAccounts(BunqJSClient) {
             .then(data => {
                 if (data && data.items) {
                     // turn plain objects back into MonetaryAccount objects
-                    const accountsOld = data.items.map(
-                        item => new MonetaryAccount(item)
-                    );
+                    const accountsOld = data.items.map(item => new MonetaryAccount(item));
                     dispatch(accountsSetInfo(accountsOld, BunqJSClient));
                 }
             })
@@ -39,9 +37,7 @@ export function accountsUpdate(BunqJSClient, userId) {
             .list(userId)
             .then(accounts => {
                 // turn plain objects into MonetaryAccount objects
-                const accountsNew = accounts.map(
-                    item => new MonetaryAccount(item)
-                );
+                const accountsNew = accounts.map(item => new MonetaryAccount(item));
 
                 dispatch(accountsSetInfo(accountsNew, BunqJSClient));
                 dispatch(accountsNotLoading());
@@ -53,17 +49,8 @@ export function accountsUpdate(BunqJSClient, userId) {
     };
 }
 
-export function createAccount(
-    BunqJSClient,
-    userId,
-    currency,
-    description,
-    dailyLimit,
-    color
-) {
-    const failedMessage = window.t(
-        "We received the following error while creating your account"
-    );
+export function createAccount(BunqJSClient, userId, currency, description, dailyLimit, color) {
+    const failedMessage = window.t("We received the following error while creating your account");
     const successMessage = window.t("Account created successfully!");
 
     return dispatch => {
@@ -86,22 +73,14 @@ export function createAccount(
 }
 
 export function accountsDeactivate(BunqJSClient, userId, accountId, reason) {
-    const failedMessage = window.t(
-        "We received the following error while deactivating your account"
-    );
+    const failedMessage = window.t("We received the following error while deactivating your account");
     const successMessage = window.t("Account deactivated successfully!");
 
     return dispatch => {
         dispatch(updateAccountStatusLoading());
 
         BunqJSClient.api.monetaryAccountBank
-            .putCancel(
-                userId,
-                accountId,
-                "CANCELLED",
-                "REDEMPTION_VOLUNTARY",
-                reason
-            )
+            .putCancel(userId, accountId, "CANCELLED", "REDEMPTION_VOLUNTARY", reason)
             .then(result => {
                 dispatch(openSnackbar(successMessage));
                 dispatch(accountsUpdate(BunqJSClient, userId));
@@ -114,15 +93,8 @@ export function accountsDeactivate(BunqJSClient, userId, accountId, reason) {
     };
 }
 
-export function accountsUpdateSettings(
-    BunqJSClient,
-    userId,
-    accountId,
-    monetaryAccountSettings
-) {
-    const failedMessage = window.t(
-        "We received the following error updating the settings for your account"
-    );
+export function accountsUpdateSettings(BunqJSClient, userId, accountId, monetaryAccountSettings) {
+    const failedMessage = window.t("We received the following error updating the settings for your account");
     const successMessage = window.t("Account settings updated successfully!");
 
     return dispatch => {

@@ -108,14 +108,11 @@ class LoginPassword extends React.Component {
         const { hasStoredApiKey, storedApiKeys } = this.props;
         const { password, passwordValid, passwordRepeatValid } = this.state;
         if (password.length < 7) {
-            this.props.openSnackbar(
-                "The password you entered should be atleast 7 characters long!"
-            );
+            this.props.openSnackbar("The password you entered should be atleast 7 characters long!");
             return;
         }
 
-        const isExistingInstallation =
-            hasStoredApiKey || (storedApiKeys && storedApiKeys.length > 0);
+        const isExistingInstallation = hasStoredApiKey || (storedApiKeys && storedApiKeys.length > 0);
 
         // main password field is valid
         if (passwordValid) {
@@ -204,31 +201,22 @@ class LoginPassword extends React.Component {
             analyticsEnabled,
             t
         } = this.props;
-        const {
-            passwordValid,
-            passwordRepeatValid,
-            hasReadWarning
-        } = this.state;
+        const { passwordValid, passwordRepeatValid, hasReadWarning } = this.state;
 
         if (derivedPassword !== false) {
             return <Redirect to="/login" />;
         }
-        if (
-            hasReadWarning === false ||
-            typeof analyticsEnabled === "undefined"
-        ) {
+        if (hasReadWarning === false || typeof analyticsEnabled === "undefined") {
             return <Redirect to="/disclaimer" />;
         }
 
-        const isExistingInstallation =
-            hasStoredApiKey || (storedApiKeys && storedApiKeys.length > 0);
+        const isExistingInstallation = hasStoredApiKey || (storedApiKeys && storedApiKeys.length > 0);
 
         const buttonDisabled =
             // invalid password
             passwordValid === false ||
             // no existing installation so repeat password is required
-            (isExistingInstallation === false &&
-                passwordRepeatValid === false) ||
+            (isExistingInstallation === false && passwordRepeatValid === false) ||
             // if loading we block disabled
             registrationLoading === true;
 
@@ -244,14 +232,8 @@ class LoginPassword extends React.Component {
             </CardContent>
         ) : (
             <CardContent style={styles.cardContent}>
-                <Typography
-                    variant="headline"
-                    component="h2"
-                    style={styles.text}
-                >
-                    {isExistingInstallation
-                        ? t("Enter your password")
-                        : t("Enter a password")}
+                <Typography variant="headline" component="h2" style={styles.text}>
+                    {isExistingInstallation ? t("Enter your password") : t("Enter a password")}
                 </Typography>
 
                 <FormControl style={styles.formControl}>
@@ -267,10 +249,7 @@ class LoginPassword extends React.Component {
                         type={this.state.showPassword ? "text" : "password"}
                         onKeyPress={ev => {
                             this.handleKeyEvent(ev);
-                            if (
-                                ev.key === "Enter" &&
-                                buttonDisabled === false
-                            ) {
+                            if (ev.key === "Enter" && buttonDisabled === false) {
                                 this.setRegistration();
                                 ev.preventDefault();
                             }
@@ -283,17 +262,9 @@ class LoginPassword extends React.Component {
                                     onMouseDown={this.toggleShowPassword}
                                 >
                                     {this.state.showPassword ? (
-                                        <VisibilityOff
-                                            style={
-                                                styles.passwordVisibilityIcon
-                                            }
-                                        />
+                                        <VisibilityOff style={styles.passwordVisibilityIcon} />
                                     ) : (
-                                        <Visibility
-                                            style={
-                                                styles.passwordVisibilityIcon
-                                            }
-                                        />
+                                        <Visibility style={styles.passwordVisibilityIcon} />
                                     )}
                                 </IconButton>
                             </InputAdornment>
@@ -309,19 +280,12 @@ class LoginPassword extends React.Component {
                             inputRef={ref => (this.passwordRepeatInput = ref)}
                             style={styles.passwordInput}
                             error={!this.state.passwordRepeatValid}
-                            type={
-                                this.state.showPasswordRepeat
-                                    ? "text"
-                                    : "password"
-                            }
+                            type={this.state.showPasswordRepeat ? "text" : "password"}
                             onChange={this.handlePasswordChangeRepeat}
                             value={this.state.passwordRepeat}
                             onKeyPress={ev => {
                                 this.handleKeyEvent(ev);
-                                if (
-                                    ev.key === "Enter" &&
-                                    buttonDisabled === false
-                                ) {
+                                if (ev.key === "Enter" && buttonDisabled === false) {
                                     this.setRegistration();
                                     ev.preventDefault();
                                 }
@@ -331,22 +295,12 @@ class LoginPassword extends React.Component {
                                     <IconButton
                                         aria-label="Toggle password visibility"
                                         onClick={this.toggleShowPasswordRepeat}
-                                        onMouseDown={
-                                            this.toggleShowPasswordRepeat
-                                        }
+                                        onMouseDown={this.toggleShowPasswordRepeat}
                                     >
                                         {this.state.showPasswordRepeat ? (
-                                            <VisibilityOff
-                                                style={
-                                                    styles.passwordVisibilityIcon
-                                                }
-                                            />
+                                            <VisibilityOff style={styles.passwordVisibilityIcon} />
                                         ) : (
-                                            <Visibility
-                                                style={
-                                                    styles.passwordVisibilityIcon
-                                                }
-                                            />
+                                            <Visibility style={styles.passwordVisibilityIcon} />
                                         )}
                                     </IconButton>
                                 </InputAdornment>
@@ -364,12 +318,7 @@ class LoginPassword extends React.Component {
                     </Typography>
                 ) : null}
 
-                <Grid
-                    container
-                    spacing={16}
-                    justify="center"
-                    style={{ marginTop: 16 }}
-                >
+                <Grid container spacing={16} justify="center" style={{ marginTop: 16 }}>
                     {hasStoredApiKey ? (
                         <Grid item xs={6} sm={4}>
                             <TranslateButton
@@ -383,8 +332,7 @@ class LoginPassword extends React.Component {
                         </Grid>
                     ) : null}
 
-                    {(hasStoredApiKey === true && useNoPassword === true) ||
-                    hasStoredApiKey === false ? (
+                    {(hasStoredApiKey === true && useNoPassword === true) || hasStoredApiKey === false ? (
                         <React.Fragment>
                             <Grid item xs={6} sm={4} />
                             <Grid item xs={6} sm={4}>
@@ -419,33 +367,16 @@ class LoginPassword extends React.Component {
         );
 
         return (
-            <Grid
-                container
-                spacing={16}
-                justify={"center"}
-                alignItems={"center"}
-                style={styles.wrapperContainer}
-            >
+            <Grid container spacing={16} justify={"center"} alignItems={"center"} style={styles.wrapperContainer}>
                 <Helmet>
                     <title>{`bunqDesktop - ${t("Password Setup")}`}</title>
                 </Helmet>
 
-                <Grid
-                    item
-                    xs={12}
-                    sm={8}
-                    md={5}
-                    lg={4}
-                    style={{ zIndex: 1 }}
-                    className="animated zoomIn login-wrapper"
-                >
+                <Grid item xs={12} sm={8} md={5} lg={4} style={{ zIndex: 1 }} className="animated zoomIn login-wrapper">
                     <Card>{cardContent}</Card>
                 </Grid>
 
-                <img
-                    src="./images/svg/login-bg2.svg"
-                    id="login-background-image"
-                />
+                <img src="./images/svg/login-bg2.svg" id="login-background-image" />
 
                 <span className="bunqdesktop-text-wrapper">
                     <span className="bunqdesktop-text-first">bunq</span>
@@ -480,16 +411,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // use no password
         useNoPasswordLogin: () => dispatch(registrationUseNoPassword()),
         // use password
-        usePasswordLogin: password =>
-            dispatch(registrationUsePassword(password)),
+        usePasswordLogin: password => dispatch(registrationUsePassword(password)),
 
         // clear api key from bunqjsclient and bunqdesktop
         logOut: () => dispatch(registrationLogOut(BunqJSClient)),
 
-        setEnvironment: environment =>
-            dispatch(registrationSetEnvironment(environment)),
-        setDeviceName: device_name =>
-            dispatch(registrationSetDeviceName(device_name))
+        setEnvironment: environment => dispatch(registrationSetEnvironment(environment)),
+        setDeviceName: device_name => dispatch(registrationSetDeviceName(device_name))
     };
 };
 

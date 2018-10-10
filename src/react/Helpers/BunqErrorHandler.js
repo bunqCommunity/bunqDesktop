@@ -10,9 +10,7 @@ import ErrorCodes from "@bunq-community/bunq-js-client/dist/Helpers/ErrorCodes";
 const defaultErrorMessage = (dispatch, customError = false) => {
     dispatch(
         openModal(
-            customError
-                ? customError
-                : "Something went wrong while trying to send a request",
+            customError ? customError : "Something went wrong while trying to send a request",
             "Something went wrong"
         )
     );
@@ -28,12 +26,8 @@ const defaultErrorMessage = (dispatch, customError = false) => {
 export default (dispatch, error, customError = false, BunqJSClient = false) => {
     const response = error.response;
 
-    const offlineError = window.t(
-        "We received a network error while trying to send a request! You might be offline"
-    );
-    const invalidResponseError = window.t(
-        "We couldn't validate the response given by bunq!"
-    );
+    const offlineError = window.t("We received a network error while trying to send a request! You might be offline");
+    const invalidResponseError = window.t("We couldn't validate the response given by bunq!");
     const invalidAuthenticationError = window.t(
         "The API key or IP you are currently on is not valid for the selected bunq environment"
     );
@@ -78,14 +72,10 @@ export default (dispatch, error, customError = false, BunqJSClient = false) => {
         // error contains an error description
         if (errorObject && errorObject.error_description) {
             const message =
-                customError === false
-                    ? "We received the following error while sending a request to bunq"
-                    : customError;
+                customError === false ? "We received the following error while sending a request to bunq" : customError;
 
             // add response id when possible
-            const responseIdText = responseId
-                ? `\n\nResponse-Id: ${responseId}`
-                : "";
+            const responseIdText = responseId ? `\n\nResponse-Id: ${responseId}` : "";
 
             // specific message based on api error description
             let errorMessage = errorObject.error_description;
@@ -95,19 +85,11 @@ export default (dispatch, error, customError = false, BunqJSClient = false) => {
                     errorMessage = invalidAuthenticationError;
 
                     // reset to api screen if possible
-                    if (BunqJSClient)
-                        dispatch(
-                            registrationResetToApiScreenSoft(BunqJSClient)
-                        );
+                    if (BunqJSClient) dispatch(registrationResetToApiScreenSoft(BunqJSClient));
                     break;
             }
 
-            return dispatch(
-                openModal(
-                    `${message}:\n ${errorMessage}${responseIdText}`,
-                    "Something went wrong"
-                )
-            );
+            return dispatch(openModal(`${message}:\n ${errorMessage}${responseIdText}`, "Something went wrong"));
         }
     }
 

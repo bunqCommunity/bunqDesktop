@@ -94,10 +94,7 @@ class BunqMeTabForm extends React.Component {
     handleChangeFormatted = valueObject => {
         this.setState(
             {
-                amount:
-                    valueObject.formattedValue.length > 0
-                        ? valueObject.floatValue
-                        : ""
+                amount: valueObject.formattedValue.length > 0 ? valueObject.floatValue : ""
             },
             this.validateForm
         );
@@ -109,17 +106,13 @@ class BunqMeTabForm extends React.Component {
 
         const amountErrorCondition = amount < 0.01 || amount > 10000;
         const descriptionErrorCondition = description.length > 140;
-        const redurectUrlErrorCondition =
-            setRedirectUrl === true && redirectUrl.length < 5;
+        const redurectUrlErrorCondition = setRedirectUrl === true && redirectUrl.length < 5;
 
         this.setState({
             amountError: amountErrorCondition,
             redurectUrlError: redurectUrlErrorCondition,
             descriptionError: descriptionErrorCondition,
-            validForm:
-                !amountErrorCondition &&
-                !redurectUrlErrorCondition &&
-                !descriptionErrorCondition
+            validForm: !amountErrorCondition && !redurectUrlErrorCondition && !descriptionErrorCondition
         });
     };
 
@@ -142,13 +135,7 @@ class BunqMeTabForm extends React.Component {
         this.closeModal();
 
         const { accounts, user } = this.props;
-        const {
-            selectedAccount,
-            description,
-            amount,
-            setRedirectUrl,
-            redirectUrl
-        } = this.state;
+        const { selectedAccount, description, amount, setRedirectUrl, redirectUrl } = this.state;
         const account = accounts[selectedAccount];
         const userId = user.id;
 
@@ -161,13 +148,7 @@ class BunqMeTabForm extends React.Component {
             redirect_url: setRedirectUrl ? redirectUrl : false
         };
 
-        this.props.bunqMeTabSend(
-            userId,
-            account.id,
-            description,
-            amountInfo,
-            options
-        );
+        this.props.bunqMeTabSend(userId, account.id, description, amountInfo, options);
         this.clearForm();
     };
 
@@ -178,9 +159,7 @@ class BunqMeTabForm extends React.Component {
 
         return [
             <div style={styles.paper}>
-                <TypographyTranslate variant="headline">
-                    Create new bunqme request
-                </TypographyTranslate>
+                <TypographyTranslate variant="headline">Create new bunqme request</TypographyTranslate>
 
                 <AccountSelectorDialog
                     value={this.state.selectedAccount}
@@ -199,11 +178,7 @@ class BunqMeTabForm extends React.Component {
                     margin="normal"
                 />
 
-                <FormControl
-                    style={styles.formControlAlt}
-                    error={this.state.amountError}
-                    fullWidth
-                >
+                <FormControl style={styles.formControlAlt} error={this.state.amountError} fullWidth>
                     <MoneyFormatInput
                         id="amount"
                         value={this.state.amount}
@@ -220,9 +195,7 @@ class BunqMeTabForm extends React.Component {
                 <ButtonTranslate
                     variant="raised"
                     color="primary"
-                    disabled={
-                        !this.state.validForm || this.props.bunqMeTabLoading
-                    }
+                    disabled={!this.state.validForm || this.props.bunqMeTabLoading}
                     style={styles.payButton}
                     onClick={this.openModal}
                 >
@@ -253,16 +226,7 @@ const mapDispatchToProps = (dispatch, props) => {
     const { BunqJSClient } = props;
     return {
         bunqMeTabSend: (userId, accountId, description, amount, options) =>
-            dispatch(
-                bunqMeTabSend(
-                    BunqJSClient,
-                    userId,
-                    accountId,
-                    description,
-                    amount,
-                    options
-                )
-            ),
+            dispatch(bunqMeTabSend(BunqJSClient, userId, accountId, description, amount, options)),
         openSnackbar: message => dispatch(openSnackbar(message))
     };
 };

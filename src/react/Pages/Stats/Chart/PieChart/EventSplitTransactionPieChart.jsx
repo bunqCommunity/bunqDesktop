@@ -37,30 +37,12 @@ export default props => {
             {
                 data: [
                     props.paymentTransactionHistory.reduce(countReducer, 0),
-                    props.masterCardPaymentTransactionHistory.reduce(
-                        countReducer,
-                        0
-                    ),
-                    props.maestroPaymentTransactionHistory.reduce(
-                        countReducer,
-                        0
-                    ),
-                    props.tapAndPayPaymentTransactionHistory.reduce(
-                        countReducer,
-                        0
-                    ),
-                    props.applePayPaymentTransactionHistory.reduce(
-                        countReducer,
-                        0
-                    ),
-                    props.requestInquiryTransactionHistory.reduce(
-                        countReducer,
-                        0
-                    ),
-                    props.requestResponseTransactionHistory.reduce(
-                        countReducer,
-                        0
-                    ),
+                    props.masterCardPaymentTransactionHistory.reduce(countReducer, 0),
+                    props.maestroPaymentTransactionHistory.reduce(countReducer, 0),
+                    props.tapAndPayPaymentTransactionHistory.reduce(countReducer, 0),
+                    props.applePayPaymentTransactionHistory.reduce(countReducer, 0),
+                    props.requestInquiryTransactionHistory.reduce(countReducer, 0),
+                    props.requestResponseTransactionHistory.reduce(countReducer, 0),
                     props.bunqMeTabTransactionHistory.reduce(countReducer, 0)
                 ],
                 backgroundColor: [
@@ -103,9 +85,7 @@ export default props => {
                     const datasetLabel = chart.labels[tooltipItem.index] || "";
 
                     // get the actual value and format a label
-                    return `${datasetLabel}: ${moneyTemplate(
-                        chart.datasets[0].data[tooltipItem.index]
-                    )}`;
+                    return `${datasetLabel}: ${moneyTemplate(chart.datasets[0].data[tooltipItem.index])}`;
                 }
             }
         }

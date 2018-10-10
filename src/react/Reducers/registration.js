@@ -1,31 +1,16 @@
 import store from "store";
-import {
-    SALT_LOCATION,
-    API_KEY_IV_LOCATION,
-    API_KEY_LOCATION,
-    API_KEYS_LOCATION
-} from "../Actions/registration";
+import { SALT_LOCATION, API_KEY_IV_LOCATION, API_KEY_LOCATION, API_KEYS_LOCATION } from "../Actions/registration";
 
 export const USE_NO_PASSWORD_LOCATION = "USE_NO_PASSWORD_LOCATION";
 export const DEVICE_NAME_LOCATION = "BUNQDESKTOP_DEVICE_NAME";
 export const ENVIRONMENT_LOCATION = "BUNQDESKTOP_ENVIRONMENT";
 
-const deviceNameDefault =
-    store.get(DEVICE_NAME_LOCATION) !== undefined
-        ? store.get(DEVICE_NAME_LOCATION)
-        : "My Device";
+const deviceNameDefault = store.get(DEVICE_NAME_LOCATION) !== undefined ? store.get(DEVICE_NAME_LOCATION) : "My Device";
 const useNoPasswordDefault =
-    store.get(USE_NO_PASSWORD_LOCATION) !== undefined
-        ? store.get(USE_NO_PASSWORD_LOCATION)
-        : false;
+    store.get(USE_NO_PASSWORD_LOCATION) !== undefined ? store.get(USE_NO_PASSWORD_LOCATION) : false;
 const environmentDefault =
-    store.get(ENVIRONMENT_LOCATION) !== undefined
-        ? store.get(ENVIRONMENT_LOCATION)
-        : "PRODUCTION";
-const storedApiKeysDefault =
-    store.get(API_KEYS_LOCATION) !== undefined
-        ? store.get(API_KEYS_LOCATION)
-        : [];
+    store.get(ENVIRONMENT_LOCATION) !== undefined ? store.get(ENVIRONMENT_LOCATION) : "PRODUCTION";
+const storedApiKeysDefault = store.get(API_KEYS_LOCATION) !== undefined ? store.get(API_KEYS_LOCATION) : [];
 
 export const defaultState = {
     // unencrypted api key, this should NEVER be stored elsewhere

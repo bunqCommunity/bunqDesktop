@@ -23,10 +23,7 @@ export default function reducer(state = defaultState, action) {
                     if (newContact.name === stateContact.name) {
                         foundExisting = true;
                         // combine the lists
-                        stateContact.emails = uniqueArray([
-                            ...stateContact.emails,
-                            ...newContact.emails
-                        ]);
+                        stateContact.emails = uniqueArray([...stateContact.emails, ...newContact.emails]);
                         stateContact.phoneNumbers = uniqueArray([
                             ...stateContact.phoneNumbers,
                             ...newContact.phoneNumbers
@@ -127,9 +124,7 @@ export default function reducer(state = defaultState, action) {
 
                 // remove the data completely
                 if (action.payload.BunqJSClient) {
-                    action.payload.BunqJSClient.Session.asyncStorageRemove(
-                        STORED_CONTACTS
-                    )
+                    action.payload.BunqJSClient.Session.asyncStorageRemove(STORED_CONTACTS)
                         .then(() => {})
                         .catch(() => {});
                 }

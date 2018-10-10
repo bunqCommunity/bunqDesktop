@@ -49,9 +49,7 @@ class ScheduledPaymentsEditDialog extends React.Component {
     componentWillReceiveProps(newProps) {
         // track changes
         if (newProps.selectedPaymentIndex !== this.state.selectedPaymentIndex) {
-            const info = this.props.scheduledPayments[
-                newProps.selectedPaymentIndex
-            ];
+            const info = this.props.scheduledPayments[newProps.selectedPaymentIndex];
             if (!info) {
                 this.setState({ selectedPaymentIndex: false });
                 return false;
@@ -83,8 +81,7 @@ class ScheduledPaymentsEditDialog extends React.Component {
         );
     };
     handleAmountChange = valueObject => {
-        let amount =
-            valueObject.formattedValue.length > 0 ? valueObject.floatValue : 0;
+        let amount = valueObject.formattedValue.length > 0 ? valueObject.floatValue : 0;
         if (amount < 0) amount = amount * -1;
 
         this.setState(
@@ -109,18 +106,9 @@ class ScheduledPaymentsEditDialog extends React.Component {
     };
 
     editPayment = () => {
-        const {
-            amount,
-            description,
-            recurrenceUnit,
-            recurrenceSize,
-            scheduleEndDate,
-            scheduleStartDate
-        } = this.state;
+        const { amount, description, recurrenceUnit, recurrenceSize, scheduleEndDate, scheduleStartDate } = this.state;
 
-        let scheduledPayment = this.props.scheduledPayments[
-            this.props.selectedPaymentIndex
-        ];
+        let scheduledPayment = this.props.scheduledPayments[this.props.selectedPaymentIndex];
         if (!scheduledPayment) return false;
         scheduledPayment = scheduledPayment.ScheduledPayment;
 
@@ -140,17 +128,12 @@ class ScheduledPaymentsEditDialog extends React.Component {
 
         // setup the new schedule object
         const scheduleInfo = {
-            recurrence_size: parseInt(
-                recurrenceUnit !== "ONCE" ? recurrenceSize : 1
-            ),
+            recurrence_size: parseInt(recurrenceUnit !== "ONCE" ? recurrenceSize : 1),
             recurrence_unit: recurrenceUnit,
             time_start: format(scheduleStartDate, "YYYY-MM-dd HH:mm:ss")
         };
         if (scheduleEndDate) {
-            scheduleInfo.time_end = format(
-                scheduleEndDate,
-                "YYYY-MM-dd HH:mm:ss"
-            );
+            scheduleInfo.time_end = format(scheduleEndDate, "YYYY-MM-dd HH:mm:ss");
         }
 
         this.props.scheduledPaymentUpdate(
@@ -172,14 +155,12 @@ class ScheduledPaymentsEditDialog extends React.Component {
         if (!open) return null;
         if (!scheduledPayments[selectedPaymentIndex]) return null;
 
-        const scheduledPayment =
-            scheduledPayments[selectedPaymentIndex].ScheduledPayment;
+        const scheduledPayment = scheduledPayments[selectedPaymentIndex].ScheduledPayment;
 
         // check if there is a counterparty with an avatar
         let imageUUID = false;
         if (scheduledPayment.payment.counterparty_alias.avatar) {
-            const counterPartyAvatar =
-                scheduledPayment.payment.counterparty_alias.avatar;
+            const counterPartyAvatar = scheduledPayment.payment.counterparty_alias.avatar;
 
             if (counterPartyAvatar.image) {
                 imageUUID = counterPartyAvatar.image[0].attachment_public_uuid;
@@ -194,22 +175,13 @@ class ScheduledPaymentsEditDialog extends React.Component {
                     <ListItem>
                         {imageUUID && (
                             <Avatar style={styles.smallAvatar}>
-                                <AttachmentImage
-                                    height={60}
-                                    BunqJSClient={BunqJSClient}
-                                    imageUUID={imageUUID}
-                                />
+                                <AttachmentImage height={60} BunqJSClient={BunqJSClient} imageUUID={imageUUID} />
                             </Avatar>
                         )}
 
                         <ListItemText
-                            primary={
-                                scheduledPayment.payment.counterparty_alias
-                                    .display_name
-                            }
-                            secondary={
-                                scheduledPayment.payment.counterparty_alias.iban
-                            }
+                            primary={scheduledPayment.payment.counterparty_alias.display_name}
+                            secondary={scheduledPayment.payment.counterparty_alias.iban}
                         />
                     </ListItem>
 
@@ -248,20 +220,14 @@ class ScheduledPaymentsEditDialog extends React.Component {
                 </DialogContent>
 
                 <DialogActions>
-                    <ButtonTranslate
-                        variant="raised"
-                        onClick={this.closeDialog}
-                        color="secondary"
-                    >
+                    <ButtonTranslate variant="raised" onClick={this.closeDialog} color="secondary">
                         Cancel
                     </ButtonTranslate>
                     {this.props.limitedPermissions ? null : (
                         <ButtonTranslate
                             variant="raised"
                             onClick={this.editPayment}
-                            disabled={
-                                !isValid || this.props.scheduledPaymentsLoading
-                            }
+                            disabled={!isValid || this.props.scheduledPaymentsLoading}
                             color="primary"
                         >
                             Update
@@ -287,8 +253,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        scheduledPaymentUpdate: (...params) =>
-            dispatch(scheduledPaymentUpdate(BunqJSClient, ...params))
+        scheduledPaymentUpdate: (...params) => dispatch(scheduledPaymentUpdate(BunqJSClient, ...params))
     };
 };
 

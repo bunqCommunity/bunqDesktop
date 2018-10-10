@@ -18,13 +18,7 @@ const styles = {
     }
 };
 
-export default ({
-    icon: PropIcon,
-    to: targetUrl,
-    text,
-    exact = false,
-    ...rest
-}) => {
+export default ({ icon: PropIcon, to: targetUrl, text, exact = false, ...rest }) => {
     // check if this item is considered active
     const isActive =
         null !==
@@ -44,9 +38,7 @@ export default ({
     return (
         <ListItem style={styles.listBottomItem} {...rest}>
             <PropIcon color={iconColor} style={styles.propIcon} />
-            <TranslateTypography variant="subheading">
-                {text}
-            </TranslateTypography>
+            <TranslateTypography variant="subheading">{text}</TranslateTypography>
         </ListItem>
     );
 };

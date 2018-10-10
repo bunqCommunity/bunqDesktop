@@ -47,9 +47,7 @@ class PaymentListItem extends React.Component {
 
         let imageUUID = false;
         if (payment.counterparty_alias.avatar) {
-            imageUUID =
-                payment.counterparty_alias.avatar.image[0]
-                    .attachment_public_uuid;
+            imageUUID = payment.counterparty_alias.avatar.image[0].attachment_public_uuid;
         }
         const displayName = payment.counterparty_alias.display_name;
         const paymentAmount = parseFloat(payment.amount.value);
@@ -92,26 +90,21 @@ class PaymentListItem extends React.Component {
 
             // on transfers we attempt to use our own alias instead
             if (payment.alias.avatar) {
-                imageUUID =
-                    payment.alias.avatar.image[0].attachment_public_uuid;
+                imageUUID = payment.alias.avatar.image[0].attachment_public_uuid;
             }
 
             // format secondary text
             const connectWord = paymentAmount < 0 ? fromText : toText;
             const connectWordSecondary = paymentAmount > 0 ? fromText : toText;
-            secondaryText = `${t("Transferred")} ${connectWord} ${
-                accountInfo.description
-            } ${connectWordSecondary} ${counterpartyAccountInfo.description}`;
+            secondaryText = `${t("Transferred")} ${connectWord} ${accountInfo.description} ${connectWordSecondary} ${
+                counterpartyAccountInfo.description
+            }`;
         }
 
         const defaultImage = defaultPaymentImage(payment);
 
         return [
-            <ListItem
-                button
-                to={`/payment/${payment.id}/${payment.monetary_account_id}`}
-                component={NavLink}
-            >
+            <ListItem button to={`/payment/${payment.id}/${payment.monetary_account_id}`} component={NavLink}>
                 <Avatar style={styles.smallAvatar}>
                     <LazyAttachmentImage
                         height={50}
@@ -120,25 +113,13 @@ class PaymentListItem extends React.Component {
                         imageUUID={imageUUID}
                     />
                 </Avatar>
-                <ListItemText
-                    style={styles.listItemText}
-                    primary={primaryText}
-                    secondary={secondaryText}
-                />
+                <ListItemText style={styles.listItemText} primary={primaryText} secondary={secondaryText} />
                 <ListItemSecondaryAction style={{ marginTop: -16 }}>
-                    <MoneyAmountLabel
-                        style={styles.moneyAmountLabel}
-                        info={payment}
-                        type="payment"
-                    >
+                    <MoneyAmountLabel style={styles.moneyAmountLabel} info={payment} type="payment">
                         {formattedPaymentAmount}
                     </MoneyAmountLabel>
                 </ListItemSecondaryAction>
-                <CategoryIcons
-                    style={{ marginTop: 26 }}
-                    type={"Payment"}
-                    id={payment.id}
-                />
+                <CategoryIcons style={{ marginTop: 26 }} type={"Payment"} id={payment.id} />
             </ListItem>,
             <Divider />
         ];

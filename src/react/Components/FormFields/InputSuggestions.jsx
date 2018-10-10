@@ -94,10 +94,8 @@ class InputSuggestions extends React.Component {
             // ignore item if it is already a direct match
             if (inputValue === inputField) return false;
 
-            const nameMatches =
-                inputName.length > 0 && inputName.includes(inputValue);
-            const fieldMatches =
-                inputField.length > 0 && inputField.includes(inputValue);
+            const nameMatches = inputName.length > 0 && inputName.includes(inputValue);
+            const fieldMatches = inputField.length > 0 && inputField.includes(inputValue);
 
             // check if either name or field matches the search query
             if (!nameMatches && !fieldMatches) return false;
@@ -121,18 +119,14 @@ class InputSuggestions extends React.Component {
                         if (this.props.onKeyDown) this.props.onKeyDown(event);
 
                         // prevent default for arrow keys and change selected item in list
-                        if (
-                            event.key === "ArrowUp" ||
-                            event.key === "ArrowDown"
-                        ) {
+                        if (event.key === "ArrowUp" || event.key === "ArrowDown") {
                             this.changeIndex(event.key === "ArrowDown", count);
                             event.preventDefault();
                         }
 
                         // select the current item
                         if (event.key === "Enter") {
-                            const info =
-                                filteredItems[this.state.selectedIndex];
+                            const info = filteredItems[this.state.selectedIndex];
                             // only call event if info is set/visible
                             if (this.state.visible === true && info) {
                                 this.onSelectItem(info)(event);
@@ -142,8 +136,7 @@ class InputSuggestions extends React.Component {
 
                         // select the current item
                         if (event.key === "Tab") {
-                            const info =
-                                filteredItems[this.state.selectedIndex];
+                            const info = filteredItems[this.state.selectedIndex];
                             // only call event if info is set/visible
                             if (this.state.visible === true && info) {
                                 this.onSelectItem(info)(event);
@@ -161,17 +154,9 @@ class InputSuggestions extends React.Component {
                     {...otherProps}
                 />
                 {this.state.visible ? (
-                    <Paper
-                        key="paper-wrapper"
-                        style={styles.suggestionsWrapper}
-                        square
-                    >
+                    <Paper key="paper-wrapper" style={styles.suggestionsWrapper} square>
                         {filteredItems.map((filteredItem, index) => (
-                            <ListItem
-                                button
-                                key={index}
-                                onClick={this.onSelectItem(filteredItem)}
-                            >
+                            <ListItem button key={index} onClick={this.onSelectItem(filteredItem)}>
                                 {index === this.state.selectedIndex ? (
                                     <ListItemIcon>
                                         <ArrowRightIcon />

@@ -13,11 +13,7 @@ import ExportDialog from "../../Components/ExportDialog";
 import TypographyTranslate from "../../Components/TranslationHelpers/Typography";
 import ButtonTranslate from "../../Components/TranslationHelpers/Button";
 
-import {
-    removeCategory,
-    removeCategoryConnection,
-    setCategory
-} from "../../Actions/categories";
+import { removeCategory, removeCategoryConnection, setCategory } from "../../Actions/categories";
 import { openSnackbar } from "../../Actions/snackbar";
 
 const styles = {
@@ -83,21 +79,13 @@ class CategoryDashboard extends React.Component {
             if (!category.priority) return false;
 
             // add this category
-            this.props.setCategory(
-                category.id,
-                category.label,
-                category.color,
-                category.icon,
-                category.priority
-            );
+            this.props.setCategory(category.id, category.label, category.color, category.icon, category.priority);
         });
     };
 
     loadDefaultCategories = () => {
         axios
-            .get(
-                "https://raw.githubusercontent.com/bunqCommunity/bunqDesktopTemplates/master/categories.json"
-            )
+            .get("https://raw.githubusercontent.com/bunqCommunity/bunqDesktopTemplates/master/categories.json")
             .then(response => {
                 this.setState({ defaultCategories: response.data });
             })
@@ -146,18 +134,14 @@ class CategoryDashboard extends React.Component {
 
                 <ExportDialog
                     title={t("Export categories")}
-                    closeModal={() =>
-                        this.setState({ openExportDialog: false })
-                    }
+                    closeModal={() => this.setState({ openExportDialog: false })}
                     open={this.state.openExportDialog}
                     object={this.props.categories}
                 />
 
                 <ImportDialog
                     title={t("Import categories")}
-                    closeModal={() =>
-                        this.setState({ openImportDialog: false })
-                    }
+                    closeModal={() => this.setState({ openImportDialog: false })}
                     importData={this.importCategories}
                     open={this.state.openImportDialog}
                 />
@@ -167,9 +151,7 @@ class CategoryDashboard extends React.Component {
                         variant="raised"
                         color="primary"
                         style={{ width: "100%" }}
-                        onClick={() =>
-                            this.setState({ openExportDialog: true })
-                        }
+                        onClick={() => this.setState({ openExportDialog: true })}
                     >
                         Export
                     </ButtonTranslate>
@@ -179,9 +161,7 @@ class CategoryDashboard extends React.Component {
                         variant="raised"
                         color="primary"
                         style={{ width: "100%" }}
-                        onClick={() =>
-                            this.setState({ openImportDialog: true })
-                        }
+                        onClick={() => this.setState({ openImportDialog: true })}
                     >
                         Import
                     </ButtonTranslate>
@@ -192,9 +172,7 @@ class CategoryDashboard extends React.Component {
                         <Grid item xs={12} md={4}>
                             <Paper>
                                 <CategoryEditor
-                                    selectedCategoryId={
-                                        this.state.selectedCategoryId
-                                    }
+                                    selectedCategoryId={this.state.selectedCategoryId}
                                     deselectChip={this.deselectChip}
                                 />
                             </Paper>
@@ -223,11 +201,7 @@ class CategoryDashboard extends React.Component {
                                     variant="raised"
                                     color="primary"
                                     style={styles.buttons}
-                                    onClick={e =>
-                                        this.importCategories(
-                                            this.state.defaultCategories
-                                        )
-                                    }
+                                    onClick={e => this.importCategories(this.state.defaultCategories)}
                                     disabled={!this.state.defaultCategories}
                                 >
                                     Import default categories
@@ -256,8 +230,7 @@ const mapDispatchToProps = dispatch => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
         removeCategory: (...params) => dispatch(removeCategory(...params)),
-        removeCategoryConnection: (...params) =>
-            dispatch(removeCategoryConnection(...params)),
+        removeCategoryConnection: (...params) => dispatch(removeCategoryConnection(...params)),
         setCategory: (...params) => dispatch(setCategory(...params))
     };
 };

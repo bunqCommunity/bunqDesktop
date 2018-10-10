@@ -28,23 +28,13 @@ export default class ErrorBoundary extends React.Component {
             // You can render any custom fallback UI
             return (
                 <div style={{ marginTop: 30 }}>
-                    <TranslateTypography variant="display1">
-                        Something went wrong!
-                    </TranslateTypography>
-                    <Typography
-                        variant="body2"
-                        component="summary"
-                        style={{ whiteSpace: "pre-wrap" }}
-                    >
+                    <TranslateTypography variant="display1">Something went wrong!</TranslateTypography>
+                    <Typography variant="body2" component="summary" style={{ whiteSpace: "pre-wrap" }}>
                         {this.state.error.stack}
                     </Typography>
                     <br />
                     {this.props.recoverableError === true ? (
-                        <TranslateButton
-                            variant="raised"
-                            color="primary"
-                            onClick={this.clearError}
-                        >
+                        <TranslateButton variant="raised" color="primary" onClick={this.clearError}>
                             Return to dashboard
                         </TranslateButton>
                     ) : null}
