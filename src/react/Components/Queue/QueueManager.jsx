@@ -2,7 +2,6 @@ import React from "react";
 import { ipcRenderer } from "electron";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
-
 import Payment from "../../Models/Payment";
 import BunqMeTab from "../../Models/BunqMeTab";
 import RequestResponse from "../../Models/RequestResponse";
@@ -12,7 +11,6 @@ import MasterCardAction from "../../Models/MasterCardAction";
 
 import NotificationHelper from "../../Helpers/NotificationHelper";
 
-import { openSnackbar } from "../../Actions/snackbar";
 import {
     queueDecreaseRequestCounter,
     queueIncreaseRequestCounter,
@@ -28,6 +26,7 @@ import { requestInquiriesSetInfo } from "../../Actions/request_inquiries";
 import { requestInquiryBatchesSetInfo } from "../../Actions/request_inquiry_batches";
 import { requestResponsesSetInfo } from "../../Actions/request_responses";
 import { shareInviteBankInquiriesSetInfo } from "../../Actions/share_invite_bank_inquiries";
+import { openSnackbar } from "../../Actions/snackbar";
 
 export const REQUEST_DEPTH_LIMIT = 1;
 
@@ -366,11 +365,8 @@ class QueueManager extends React.Component {
                 const currentPayments = { ...this.state.payments };
                 const accountPayments = currentPayments[account_id] || [];
 
-                // merge existing and new
-                const mergedPayments = [...accountPayments, ...paymentsNew];
-
                 // update the list for the account id
-                currentPayments[account_id] = mergedPayments;
+                currentPayments[account_id] = [...accountPayments, ...paymentsNew];
 
                 // set these payments in the state
                 this.setState({
@@ -380,7 +376,7 @@ class QueueManager extends React.Component {
                 // decrease the request count since this request is done
                 this.props.queueDecreaseRequestCounter();
             })
-            .catch(error => {
+            .catch(() => {
                 // ignore errors
                 this.props.queueDecreaseRequestCounter();
             });
@@ -412,11 +408,8 @@ class QueueManager extends React.Component {
                 const currentBunqMeTabs = { ...this.state.bunqMeTabs };
                 const accountBunqMeTabs = currentBunqMeTabs[account_id] || [];
 
-                // merge existing and new
-                const mergedBunqMeTabs = [...accountBunqMeTabs, ...bunqMeTabsNew];
-
                 // update the list for the account id
-                currentBunqMeTabs[account_id] = mergedBunqMeTabs;
+                currentBunqMeTabs[account_id] = [...accountBunqMeTabs, ...bunqMeTabsNew];
 
                 // set these bunqMeTabs in the state
                 this.setState({
@@ -426,7 +419,7 @@ class QueueManager extends React.Component {
                 // decrease the request count since this request is done
                 this.props.queueDecreaseRequestCounter();
             })
-            .catch(error => {
+            .catch(() => {
                 // ignore errors
                 this.props.queueDecreaseRequestCounter();
             });
@@ -460,11 +453,8 @@ class QueueManager extends React.Component {
                 };
                 const accountRequestResponses = currentRequestResponses[account_id] || [];
 
-                // merge existing and new
-                const mergedRequestResponses = [...accountRequestResponses, ...requestResponsesNew];
-
                 // update the list for the account id
-                currentRequestResponses[account_id] = mergedRequestResponses;
+                currentRequestResponses[account_id] = [...accountRequestResponses, ...requestResponsesNew];
 
                 // set these requestResponses in the state
                 this.setState({
@@ -474,7 +464,7 @@ class QueueManager extends React.Component {
                 // decrease the request count since this request is done
                 this.props.queueDecreaseRequestCounter();
             })
-            .catch(error => {
+            .catch(() => {
                 // ignore errors
                 this.props.queueDecreaseRequestCounter();
             });
@@ -508,11 +498,8 @@ class QueueManager extends React.Component {
                 };
                 const accountRequestInquiries = currentRequestInquiries[account_id] || [];
 
-                // merge existing and new
-                const mergedRequestInquiries = [...accountRequestInquiries, ...requestInquiriesNew];
-
                 // update the list for the account id
-                currentRequestInquiries[account_id] = mergedRequestInquiries;
+                currentRequestInquiries[account_id] = [...accountRequestInquiries, ...requestInquiriesNew];
 
                 // set these requestInquiries in the state
                 this.setState({
@@ -522,7 +509,7 @@ class QueueManager extends React.Component {
                 // decrease the request count since this request is done
                 this.props.queueDecreaseRequestCounter();
             })
-            .catch(error => {
+            .catch(() => {
                 // ignore errors
                 this.props.queueDecreaseRequestCounter();
             });
@@ -556,11 +543,11 @@ class QueueManager extends React.Component {
                 };
                 const accountRequestInquiryBatches = currentRequestInquiryBatches[account_id] || [];
 
-                // merge existing and new
-                const mergedRequestInquiryBatches = [...accountRequestInquiryBatches, ...requestInquiryBatchesNew];
-
                 // update the list for the account id
-                currentRequestInquiryBatches[account_id] = mergedRequestInquiryBatches;
+                currentRequestInquiryBatches[account_id] = [
+                    ...accountRequestInquiryBatches,
+                    ...requestInquiryBatchesNew
+                ];
 
                 // set these requestInquiryBatches in the state
                 this.setState({
@@ -570,7 +557,7 @@ class QueueManager extends React.Component {
                 // decrease the request count since this request is done
                 this.props.queueDecreaseRequestCounter();
             })
-            .catch(error => {
+            .catch(() => {
                 // ignore errors
                 this.props.queueDecreaseRequestCounter();
             });
@@ -604,11 +591,8 @@ class QueueManager extends React.Component {
                 };
                 const accountMasterCardActions = currentMasterCardActions[account_id] || [];
 
-                // merge existing and new
-                const mergedMasterCardActions = [...accountMasterCardActions, ...masterCardActionsNew];
-
                 // update the list for the account id
-                currentMasterCardActions[account_id] = mergedMasterCardActions;
+                currentMasterCardActions[account_id] = [...accountMasterCardActions, ...masterCardActionsNew];
 
                 // set these masterCardActions in the state
                 this.setState({
@@ -618,7 +602,7 @@ class QueueManager extends React.Component {
                 // decrease the request count since this request is done
                 this.props.queueDecreaseRequestCounter();
             })
-            .catch(error => {
+            .catch(() => {
                 // ignore errors
                 this.props.queueDecreaseRequestCounter();
             });
@@ -654,14 +638,11 @@ class QueueManager extends React.Component {
                 };
                 const accountShareInviteBankInquiries = currentShareInviteBankInquiries[account_id] || [];
 
-                // merge existing and new
-                const mergedShareInviteBankInquiries = [
+                // update the list for the account id
+                currentShareInviteBankInquiries[account_id] = [
                     ...accountShareInviteBankInquiries,
                     ...shareInviteBankInquiries
                 ];
-
-                // update the list for the account id
-                currentShareInviteBankInquiries[account_id] = mergedShareInviteBankInquiries;
 
                 // set these shareInviteBankInquiries in the state
                 this.setState({
@@ -671,7 +652,7 @@ class QueueManager extends React.Component {
                 // decrease the request count since this request is done
                 this.props.queueDecreaseRequestCounter();
             })
-            .catch(error => {
+            .catch(() => {
                 // ignore errors
                 this.props.queueDecreaseRequestCounter();
             });
