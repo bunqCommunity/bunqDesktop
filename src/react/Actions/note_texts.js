@@ -27,7 +27,8 @@ export function notesTextsAddNote(BunqJSClient, event_type, user_id, account_id,
             })
             .catch(error => {
                 dispatch(noteTextsNotLoading());
-                BunqErrorHandler(dispatch, error, failedMessage);
+                // disable bunq error handler since this is too inconsistent for now
+                // BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }
