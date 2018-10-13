@@ -10,14 +10,6 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 
 import InfoIcon from "@material-ui/icons/Info";
 
-import BunqMeTabListItem from "../ListItems/BunqMeTabListItem";
-import PaymentListItem from "../ListItems/PaymentListItem";
-import MasterCardActionListItem from "../ListItems/MasterCardActionListItem";
-import RequestResponseListItem from "../ListItems/RequestResponseListItem";
-import RequestInquiryListItem from "../ListItems/RequestInquiryListItem";
-import RequestInquiryBatchListItem from "../ListItems/RequestInquiryBatchListItem";
-import ShareInviteBankInquiryListItem from "../ListItems/ShareInviteBankInquiryListItem";
-import ShareInviteBankResponseListItem from "../ListItems/ShareInviteBankResponseListItem";
 import ClearBtn from "../FilterComponents/ClearFilter";
 import FilterDrawer from "../FilterComponents/FilterDrawer";
 import ListControls from "./ListControls";
@@ -27,17 +19,17 @@ import { openSnackbar } from "../../Actions/snackbar";
 import { bunqMeTabPut } from "../../Actions/bunq_me_tab";
 import { nextPage, previousPage, setPage, setPageSize, firstPage } from "../../Actions/pagination";
 
-import { humanReadableDate, UTCDateToLocalDate } from "../../Helpers/Utils";
+import { humanReadableDate } from "../../Helpers/Utils";
 import {
-    paymentFilter,
-    bunqMeTabsFilter,
-    masterCardActionFilter,
-    requestInquiryFilter,
-    requestInquiryBatchFilter,
-    requestResponseFilter,
-    shareInviteBankInquiryFilter,
-    shareInviteBankResponseFilter
-} from "../../Helpers/DataFilters";
+    paymentMapper,
+    bunqMeTabsMapper,
+    masterCardActionMapper,
+    requestInquiryBatchMapper,
+    requestInquiryMapper,
+    requestResponseMapper,
+    shareInviteBankInquiryMapper,
+    shareInviteBankResponseMapper
+} from "./MapperFunctions";
 import FilterDisabledChecker from "../../Helpers/FilterDisabledChecker";
 
 const styles = {
@@ -111,18 +103,18 @@ class CombinedList extends React.Component {
     }
 
     loadEvents = () => {
+        const settings = this.getSettings();
+
         // create arrays of the different endpoint types
-        const { bunqMeTabs, hiddenPaymentIds } = this.bunqMeTabsMapper();
-
+        const { bunqMeTabs, hiddenPaymentIds } = bunqMeTabsMapper(settings);
         // load regular payments while hiding the ones connected to the bunq me tabs
-        const payments = this.paymentMapper(hiddenPaymentIds);
-        const masterCardActions = this.masterCardActionMapper();
-        const requestResponses = this.requestResponseMapper(false, true);
-        const { requestInquiryBatches, hiddenRequestInquiryIds } = this.requestInquiryBatchMapper();
-
+        const payments = paymentMapper(settings, hiddenPaymentIds);
+        const masterCardActions = masterCardActionMapper(settings);
+        const requestResponses = requestResponseMapper(settings, false, true);
+        const { requestInquiryBatches, hiddenRequestInquiryIds } = requestInquiryBatchMapper(settings);
         // load request inquiries while hiding requests connected to the request inquiry batches
-        const requestInquiries = this.requestInquiryMapper(hiddenRequestInquiryIds);
-        const shareInviteBankInquiries = this.shareInviteBankInquiryMapper();
+        const requestInquiries = requestInquiryMapper(settings, hiddenRequestInquiryIds);
+        const shareInviteBankInquiries = shareInviteBankInquiryMapper(settings);
 
         // combine the list, order by date and group by day
         const events = [
@@ -149,360 +141,15 @@ class CombinedList extends React.Component {
 
     toggleEventData = event => this.setState({ displayEventData: !this.state.displayEventData });
 
-    getCommonFilters = () => {
+    getSettings = () => {
         return {
-            dateFromFilter: this.props.dateFromFilter,
-            dateToFilter: this.props.dateToFilter,
-
-            searchTerm: this.props.searchTerm,
-
-            categories: this.props.categories,
-            categoryConnections: this.props.categoryConnections,
-
-            selectedCategories: this.props.selectedCategories,
-            toggleCategoryFilter: this.props.toggleCategoryFilter,
+            ...this.props,
 
             displayAcceptedRequests: !!this.props.displayAcceptedRequests,
             displayRequestPayments: !!this.props.displayRequestPayments,
 
-            selectedAccountIds: this.props.selectedAccountIds,
-            toggleAccountIds: this.props.toggleAccountIds,
-
-            amountFilterAmount: this.props.amountFilterAmount,
-            amountFilterType: this.props.amountFilterType
+            copiedValue: this.copiedValue
         };
-    };
-
-    paymentMapper = (hiddenPaymentIds = []) => {
-        if (this.props.hiddenTypes.includes("Payment")) return [];
-
-        return this.props.payments
-            .filter(
-                paymentFilter({
-                    paymentVisibility: this.props.paymentVisibility,
-                    paymentType: this.props.paymentType,
-                    ...this.getCommonFilters()
-                })
-            )
-            .filter(event => {
-                if (this.props.accountId) {
-                    if (event.monetary_account_id !== this.props.accountId) {
-                        return false;
-                    }
-                }
-
-                // if hidden ids are set, check if this event is included
-                if (hiddenPaymentIds.length > 0) {
-                    if (hiddenPaymentIds.includes(event.id)) {
-                        return false;
-                    }
-                }
-
-                return true;
-            })
-            .map(payment => {
-                return {
-                    component: (
-                        <PaymentListItem
-                            payment={payment}
-                            accounts={this.props.accounts}
-                            BunqJSClient={this.props.BunqJSClient}
-                        />
-                    ),
-                    filterDate: UTCDateToLocalDate(payment.created),
-                    info: payment
-                };
-            });
-    };
-
-    bunqMeTabsMapper = () => {
-        if (this.props.hiddenTypes.includes("BunqMeTab")) {
-            return {
-                hiddenPaymentIds: [],
-                bunqMeTabs: []
-            };
-        }
-
-        let hiddenPaymentIds = [];
-        const bunqMeTabs = this.props.bunqMeTabs
-            .filter(
-                bunqMeTabsFilter({
-                    bunqMeTabVisibility: this.props.bunqMeTabVisibility,
-                    bunqMeTabType: this.props.bunqMeTabType,
-                    ...this.getCommonFilters()
-                })
-            )
-            .filter(event => {
-                if (this.props.accountId) {
-                    if (event.monetary_account_id !== this.props.accountId) {
-                        return false;
-                    }
-                }
-                return true;
-            })
-            .map(bunqMeTab => {
-                bunqMeTab.result_inquiries.forEach(resultInquiry => {
-                    const payment = resultInquiry.payment.Payment;
-                    const paymentId = payment.id;
-
-                    // add to the list if not already set
-                    if (!hiddenPaymentIds.includes(paymentId)) {
-                        hiddenPaymentIds.push(paymentId);
-                    }
-                });
-
-                return {
-                    component: (
-                        <BunqMeTabListItem
-                            bunqMeTab={bunqMeTab}
-                            BunqJSClient={this.props.BunqJSClient}
-                            copiedValue={this.copiedValue}
-                            bunqMeTabLoading={this.props.bunqMeTabLoading}
-                            bunqMeTabsLoading={this.props.bunqMeTabsLoading}
-                            bunqMeTabPut={this.props.bunqMeTabPut}
-                            accounts={this.props.accounts}
-                            user={this.props.user}
-                        />
-                    ),
-                    filterDate: UTCDateToLocalDate(bunqMeTab.updated),
-                    info: bunqMeTab
-                };
-            });
-
-        return {
-            bunqMeTabs,
-            hiddenPaymentIds
-        };
-    };
-
-    masterCardActionMapper = () => {
-        if (this.props.hiddenTypes.includes("MasterCardAction")) return [];
-
-        return this.props.masterCardActions
-            .filter(
-                masterCardActionFilter({
-                    paymentVisibility: this.props.paymentVisibility,
-                    paymentType: this.props.paymentType,
-                    ...this.getCommonFilters()
-                })
-            )
-            .filter(event => {
-                if (this.props.accountId) {
-                    if (event.monetary_account_id !== this.props.accountId) {
-                        return false;
-                    }
-                }
-                return true;
-            })
-            .map(masterCardAction => {
-                return {
-                    component: (
-                        <MasterCardActionListItem
-                            masterCardAction={masterCardAction}
-                            BunqJSClient={this.props.BunqJSClient}
-                        />
-                    ),
-                    filterDate: UTCDateToLocalDate(masterCardAction.created),
-                    info: masterCardAction
-                };
-            });
-    };
-
-    requestInquiryMapper = (hiddenRequestInquiryIds = []) => {
-        if (this.props.hiddenTypes.includes("RequestInquiry")) return [];
-
-        return this.props.requestInquiries
-            .filter(
-                requestInquiryFilter({
-                    requestVisibility: this.props.requestVisibility,
-                    requestType: this.props.requestType,
-                    ...this.getCommonFilters()
-                })
-            )
-            .filter(event => {
-                if (this.props.accountId) {
-                    if (event.monetary_account_id !== this.props.accountId) {
-                        return false;
-                    }
-                }
-
-                // if hidden ids are set, check if this event is included
-                if (hiddenRequestInquiryIds.length > 0 && event.batch_id) {
-                    if (hiddenRequestInquiryIds.includes(event.batch_id)) {
-                        return false;
-                    }
-                }
-
-                return true;
-            })
-            .map(requestInquiry => {
-                return {
-                    component: (
-                        <RequestInquiryListItem
-                            requestInquiry={requestInquiry}
-                            BunqJSClient={this.props.BunqJSClient}
-                        />
-                    ),
-                    filterDate: UTCDateToLocalDate(requestInquiry.created),
-                    info: requestInquiry
-                };
-            });
-    };
-
-    requestResponseMapper = (onlyPending = false, onlyNonPending = false) => {
-        if (this.props.hiddenTypes.includes("RequestResponse")) return [];
-
-        return this.props.requestResponses
-            .filter(requestResponse => {
-                if (onlyPending === true) {
-                    return requestResponse.RequestResponse.status === "PENDING";
-                }
-
-                if (onlyNonPending === true) {
-                    return requestResponse.RequestResponse.status !== "PENDING";
-                }
-
-                return true;
-            })
-            .filter(
-                requestResponseFilter({
-                    requestVisibility: this.props.requestVisibility,
-                    paymentVisibility: this.props.paymentVisibility,
-                    requestType: this.props.requestType,
-                    paymentType: this.props.paymentType,
-                    ...this.getCommonFilters()
-                })
-            )
-            .filter(event => {
-                if (this.props.accountId) {
-                    if (event.monetary_account_id !== this.props.accountId) {
-                        return false;
-                    }
-                }
-                return true;
-            })
-            .map(requestResponse => {
-                return {
-                    component: (
-                        <RequestResponseListItem
-                            requestResponse={requestResponse}
-                            BunqJSClient={this.props.BunqJSClient}
-                        />
-                    ),
-                    filterDate: UTCDateToLocalDate(
-                        requestResponse.status === "ACCEPTED" ? requestResponse.time_responded : requestResponse.created
-                    ),
-                    info: requestResponse
-                };
-            });
-    };
-
-    requestInquiryBatchMapper = () => {
-        if (this.props.hiddenTypes.includes("RequestInquiryBatch")) {
-            return {
-                hiddenRequestInquiryIds: [],
-                requestInquiryBatches: []
-            };
-        }
-
-        let hiddenRequestInquiryIds = [];
-        const requestInquiryBatches = this.props.requestInquiryBatches
-            .filter(
-                requestInquiryBatchFilter({
-                    requestVisibility: this.props.requestVisibility,
-                    requestType: this.props.requestType,
-                    ...this.getCommonFilters()
-                })
-            )
-            .filter(requestInquiryBatch => {
-                // TODO loop through inquiries and check if account id matches
-
-                const requestInquiry = requestInquiryBatch.request_inquiries[0];
-                if (requestInquiry && this.props.accountId) {
-                    if (requestInquiry.monetary_account_id !== this.props.accountId) {
-                        return false;
-                    }
-                }
-
-                return true;
-            })
-            .map(requestInquiryBatch => {
-                // hide requests with the following batch id
-                hiddenRequestInquiryIds.push(requestInquiryBatch.id);
-
-                return {
-                    component: (
-                        <RequestInquiryBatchListItem
-                            accounts={this.props.accounts}
-                            requestInquiryBatch={requestInquiryBatch}
-                            BunqJSClient={this.props.BunqJSClient}
-                        />
-                    ),
-                    filterDate: UTCDateToLocalDate(requestInquiryBatch.updated),
-                    info: requestInquiryBatch
-                };
-            });
-
-        return {
-            requestInquiryBatches: requestInquiryBatches,
-            hiddenRequestInquiryIds: hiddenRequestInquiryIds
-        };
-    };
-
-    shareInviteBankInquiryMapper = () => {
-        if (this.props.hiddenTypes.includes("ShareInviteBankInquiry")) return [];
-
-        return this.props.shareInviteBankInquiries
-            .filter(
-                shareInviteBankInquiryFilter({
-                    bunqMeTabType: this.props.bunqMeTabType,
-                    paymentType: this.props.paymentType,
-                    requestType: this.props.requestType,
-                    ...this.getCommonFilters()
-                })
-            )
-            .map(shareInviteBankInquiry => {
-                const shareInviteBankInquiryInfo = shareInviteBankInquiry.ShareInviteBankInquiry
-                    ? shareInviteBankInquiry.ShareInviteBankInquiry
-                    : shareInviteBankInquiry.ShareInviteBankResponse;
-
-                return {
-                    component: (
-                        <ShareInviteBankInquiryListItem
-                            BunqJSClient={this.props.BunqJSClient}
-                            shareInviteBankInquiry={shareInviteBankInquiryInfo}
-                            openSnackbar={this.props.openSnackbar}
-                            user={this.props.user}
-                        />
-                    ),
-                    filterDate: UTCDateToLocalDate(shareInviteBankInquiryInfo.created),
-                    info: shareInviteBankInquiry
-                };
-            });
-    };
-
-    shareInviteBankResponseMapper = () => {
-        if (this.props.hiddenTypes.includes("ShareInviteBankResponse")) return [];
-
-        return this.props.shareInviteBankResponses
-            .filter(
-                shareInviteBankResponseFilter({
-                    bunqMeTabType: this.props.bunqMeTabType,
-                    paymentType: this.props.paymentType,
-                    requestType: this.props.requestType,
-                    ...this.getCommonFilters()
-                })
-            )
-            .map(shareInviteBankResponse => {
-                return (
-                    <ShareInviteBankResponseListItem
-                        BunqJSClient={this.props.BunqJSClient}
-                        shareInviteBankResponse={shareInviteBankResponse.ShareInviteBankResponse}
-                        openSnackbar={this.props.openSnackbar}
-                        user={this.props.user}
-                    />
-                );
-            });
     };
 
     lastPage = page => () => {
@@ -571,8 +218,9 @@ class CombinedList extends React.Component {
                 <Divider />
             );
 
-        const requestResponsesPending = this.requestResponseMapper(true);
-        const shareInviteBankResponses = this.shareInviteBankResponseMapper();
+        const settings = this.getSettings();
+        const requestResponsesPending = requestResponseMapper(settings, true);
+        const shareInviteBankResponses = shareInviteBankResponseMapper(settings);
 
         // directly create a list for the pending requests
         const pendingRequestResponseComponents = requestResponsesPending.map(
@@ -643,7 +291,7 @@ class CombinedList extends React.Component {
                         <FilterDrawer />
                     </ListItemSecondaryAction>
                 </ListSubheader>
-                
+
                 <ListControls
                     page={page}
                     pageCount={pageCount}
