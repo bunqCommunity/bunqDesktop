@@ -1,20 +1,13 @@
 import React from "react";
-import { translate } from "react-i18next";
 import { connect } from "react-redux";
-import Grid from "@material-ui/core/Grid";
+import { translate } from "react-i18next";
+import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import TextField from "@material-ui/core/TextField";
-import MenuItem from "@material-ui/core/MenuItem";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 
-import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
-import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
-import SkipNextIcon from "@material-ui/icons/SkipNext";
-import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
 import InfoIcon from "@material-ui/icons/Info";
 
 import BunqMeTabListItem from "../ListItems/BunqMeTabListItem";
@@ -27,6 +20,7 @@ import ShareInviteBankInquiryListItem from "../ListItems/ShareInviteBankInquiryL
 import ShareInviteBankResponseListItem from "../ListItems/ShareInviteBankResponseListItem";
 import ClearBtn from "../FilterComponents/ClearFilter";
 import FilterDrawer from "../FilterComponents/FilterDrawer";
+import ListControls from "./ListControls";
 import EventData from "./EventData";
 
 import { openSnackbar } from "../../Actions/snackbar";
@@ -649,68 +643,18 @@ class CombinedList extends React.Component {
                         <FilterDrawer />
                     </ListItemSecondaryAction>
                 </ListSubheader>
-
-                <ListSubheader>
-                    <Grid container>
-                        <Grid item xs={1}>
-                            <IconButton style={styles.button} onClick={this.props.firstPage} disabled={page === 0}>
-                                <SkipPreviousIcon />
-                            </IconButton>
-                        </Grid>
-
-                        <Grid item xs={1}>
-                            <IconButton style={styles.button} onClick={this.props.previousPage} disabled={page === 0}>
-                                <KeyboardArrowLeftIcon />
-                            </IconButton>
-                        </Grid>
-
-                        <Grid item xs={4} style={styles.centerPaginationDiv}>
-                            <TextField
-                                style={styles.pageField}
-                                value={page + 1}
-                                type={"number"}
-                                inputProps={{
-                                    min: 1,
-                                    max: pageCount,
-                                    step: 1
-                                }}
-                                onChange={this.setPage(pageCount)}
-                            />
-                        </Grid>
-
-                        <Grid item xs={4} style={styles.centerPaginationDiv}>
-                            <TextField select style={styles.pageField} value={pageSize} onChange={this.setPageSize}>
-                                <MenuItem value={5}>5</MenuItem>
-                                <MenuItem value={10}>10</MenuItem>
-                                <MenuItem value={20}>20</MenuItem>
-                                <MenuItem value={30}>30</MenuItem>
-                                <MenuItem value={50}>50</MenuItem>
-                                <MenuItem value={100}>100</MenuItem>
-                                <MenuItem value={0}>All</MenuItem>
-                            </TextField>
-                        </Grid>
-
-                        <Grid item xs={1}>
-                            <IconButton
-                                style={styles.button}
-                                onClick={this.props.nextPage}
-                                disabled={page + 1 >= pageCount}
-                            >
-                                <KeyboardArrowRightIcon />
-                            </IconButton>
-                        </Grid>
-
-                        <Grid item xs={1}>
-                            <IconButton
-                                style={styles.button}
-                                onClick={this.lastPage(pageCount - 1)}
-                                disabled={page + 1 >= pageCount}
-                            >
-                                <SkipNextIcon />
-                            </IconButton>
-                        </Grid>
-                    </Grid>
-                </ListSubheader>
+                
+                <ListControls
+                    page={page}
+                    pageCount={pageCount}
+                    pageSize={pageSize}
+                    lastPage={this.lastPage}
+                    setPage={this.setPage}
+                    setPageSize={this.setPageSize}
+                    nextPage={this.props.nextPage}
+                    firstPage={this.props.firstPage}
+                    previousPage={this.props.previousPage}
+                />
 
                 <EventData t={t} events={events} open={this.state.displayEventData} />
 
