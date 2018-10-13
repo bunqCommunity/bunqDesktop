@@ -1,7 +1,9 @@
 import store from "store";
+import { ipcRenderer } from "electron";
 import settings from "../ImportWrappers/electronSettings";
 
 import { STORED_ACCOUNTS } from "../Actions/accounts";
+import { formatMoney } from "../Helpers/Utils";
 
 export const SELECTED_ACCOUNT_LOCAION = "BUNQDESKTOP_SELECTED_ACCOUNT";
 export const EXCLUDED_ACCOUNT_IDS = "BUNQDESKTOP_EXCLUDED_ACCOUNT_IDS";
@@ -33,6 +35,20 @@ export default (state = defaultState, action) => {
                     .then(() => {})
                     .catch(() => {});
             }
+
+            ipcRenderer.send(
+                "set-tray-accounts",
+                action.payload.accounts
+                    .filter(account => {
+                        return account && account.status === "ACTIVE";
+                    })
+                    .map(account => {
+                        return {
+                            description: account.description,
+                            balance: formatMoney(account.getBalance())
+                        };
+                    })
+            );
 
             return {
                 ...state,
@@ -101,6 +117,9 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_CLEAR_USER_INFO":
             store.remove(SELECTED_ACCOUNT_LOCAION);
             store.remove(STORED_ACCOUNTS);
+
+            ipcRenderer.send("set-tray-accounts", false);
+            ipcRenderer.send("set-tray-balance", false);
             return {
                 ...state,
                 accounts: [],

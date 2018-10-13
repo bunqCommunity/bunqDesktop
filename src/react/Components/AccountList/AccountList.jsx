@@ -1,4 +1,5 @@
 import React from "react";
+import { ipcRenderer } from "electron";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import List from "@material-ui/core/List";
@@ -49,7 +50,9 @@ class AccountList extends React.Component {
         super(props, context);
         this.state = {
             fetchedAccounts: false,
-            accountTotalSelectionMode: false
+            accountTotalSelectionMode: false,
+
+            totalBalance: 0
         };
     }
 
@@ -58,7 +61,59 @@ class AccountList extends React.Component {
     }
 
     componentDidUpdate(previousProps) {
+        const { excludedAccountIds, shareInviteBankResponses, accounts } = this.props;
         this.checkUpdateRequirement(this.props);
+
+        const accountsTrayItems = [];
+        const totalBalance = accounts
+            .filter(account => {
+                return account && account.status === "ACTIVE";
+            })
+            .reduce((total, account) => {
+                const accountTrayItem = {
+                    description: account.description,
+                    balance: formatMoney(account.getBalance())
+                };
+
+                if (account.balance) {
+                    if (excludedAccountIds) {
+                        const isExcluded = excludedAccountIds.some(
+                            excludedAccountId => account.id === excludedAccountId
+                        );
+                        // is excluded so we don't calculate anything
+                        if (isExcluded) return total;
+                    }
+
+                    // get responses for this account
+                    const filteredResponses = shareInviteBankResponses.filter(
+                        filterShareInviteBankResponses(account.id)
+                    );
+
+                    // get budget from this response
+                    if (filteredResponses.length > 0) {
+                        const connectBudget = GetShareDetailBudget(filteredResponses);
+
+                        if (connectBudget) {
+                            accountTrayItem.balance = formatMoney(parseFloat(connectBudget));
+                            accountsTrayItems.push(accountTrayItem);
+
+                            return total + parseFloat(connectBudget);
+                        }
+                    }
+                    accountsTrayItems.push(accountTrayItem);
+                    return total + parseFloat(account.balance.value);
+                }
+                accountsTrayItems.push(accountTrayItem);
+                return total;
+            }, 0);
+
+        if (this.state.totalBalance !== totalBalance) {
+            this.setState({
+                totalBalance: totalBalance
+            });
+            ipcRenderer.send("set-tray-balance", formatMoney(totalBalance));
+            ipcRenderer.send("set-tray-accounts", accountsTrayItems);
+        }
     }
 
     updateAccounts = () => {
@@ -74,8 +129,7 @@ class AccountList extends React.Component {
     };
 
     checkUpdateRequirement = (props = this.props) => {
-        const { accounts, accountsSelectedId, paymentsAccountId, paymentsLoading, initialBunqConnect, user } = props;
-
+        const { accounts, accountsSelectedId, initialBunqConnect } = props;
         if (!initialBunqConnect) {
             return;
         }
@@ -111,7 +165,7 @@ class AccountList extends React.Component {
     };
 
     render() {
-        const { t, shareInviteBankResponses, shareInviteBankInquiries, excludedAccountIds = [] } = this.props;
+        const { t, shareInviteBankResponses, excludedAccountIds = [] } = this.props;
         const { accountTotalSelectionMode } = this.state;
 
         let accounts = [];
@@ -160,30 +214,7 @@ class AccountList extends React.Component {
                 });
         }
 
-        const totalBalance = this.props.accounts.reduce((total, account) => {
-            if (account.balance) {
-                if (excludedAccountIds) {
-                    const isExcluded = excludedAccountIds.some(excludedAccountId => account.id === excludedAccountId);
-
-                    // is excluded so we don't calculate anything
-                    if (isExcluded) return total;
-                }
-
-                // get responses for this account
-                const filteredResponses = shareInviteBankResponses.filter(filterShareInviteBankResponses(account.id));
-
-                // get budget from this response
-                if (filteredResponses.length > 0) {
-                    const connectBudget = GetShareDetailBudget(filteredResponses);
-
-                    if (connectBudget) return total + parseFloat(connectBudget);
-                }
-
-                return total + parseFloat(account.balance.value);
-            }
-            return total;
-        }, 0);
-        const formattedTotalBalance = formatMoney(totalBalance, true);
+        const formattedTotalBalance = formatMoney(this.state.totalBalance, true);
 
         return (
             <List dense={this.props.denseMode} style={styles.list}>
@@ -238,7 +269,6 @@ const mapStateToProps = state => {
         shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
         shareInviteBankResponsesLoading: state.share_invite_bank_responses.loading,
 
-        shareInviteBankInquiries: state.share_invite_bank_inquiries.share_invite_bank_inquiries,
         shareInviteBankInquiriesLoading: state.share_invite_bank_inquiries.loading,
 
         paymentsLoading: state.payments.loading,

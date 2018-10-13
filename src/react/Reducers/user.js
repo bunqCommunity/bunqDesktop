@@ -1,3 +1,5 @@
+import { ipcRenderer } from "electron";
+
 const store = require("store");
 
 export const USER_TYPE_LOCATION = "BUNQDESKTOP_USER_TYPE";
@@ -16,6 +18,8 @@ export default (state = defaultState, action) => {
     switch (action.type) {
         case "USER_SET_INFO":
             store.set(USER_TYPE_LOCATION, action.payload.user_type);
+            ipcRenderer.send("set-tray-loggedin", action.payload.user.display_name);
+
             return {
                 ...state,
                 user: action.payload.user,
@@ -26,6 +30,8 @@ export default (state = defaultState, action) => {
 
         case "USER_LOGOUT":
             store.remove(USER_TYPE_LOCATION);
+            ipcRenderer.send("set-tray-loggedin", false);
+
             return {
                 ...state,
                 user: false,
@@ -56,6 +62,9 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_CLEAR_PRIVATE_DATA":
         case "REGISTRATION_CLEAR_USER_INFO":
             store.remove(USER_TYPE_LOCATION);
+            ipcRenderer.send("set-tray-loggedin", false);
+            ipcRenderer.send("set-tray-balance", false);
+
             return {
                 user: false,
                 user_type: false,

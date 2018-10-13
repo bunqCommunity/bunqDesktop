@@ -14,7 +14,7 @@ import darwinMenuTemplates from "./menu/darwin_menu_templates";
 import createWindow from "./helpers/window";
 import registerShortcuts from "./helpers/shortcuts";
 import registerTouchBar from "./helpers/touchbar";
-import changePage from "./helpers/react_navigate";
+import setupTrayIcon from "./helpers/tray";
 import settingsHelper from "./helpers/settings";
 import oauth from "./helpers/oauth";
 import env from "./env";
@@ -115,42 +115,7 @@ app.on("ready", () => {
     registerTouchBar(mainWindow, null);
 
     // setup the tray handler
-    const tray = new Tray(trayIcon);
-    const contextMenu = Menu.buildFromTemplate([
-        {
-            label: "Dashboard",
-            click: () => changePage(mainWindow, "/")
-        },
-        {
-            label: "Update",
-            click: () => mainWindow.webContents.send("trigger-queue-sync")
-        },
-        {
-            label: "Pay",
-            click: () => changePage(mainWindow, "/pay")
-        },
-        {
-            label: "Request",
-            click: () => changePage(mainWindow, "/request")
-        },
-        {
-            label: "Cards",
-            click: () => changePage(mainWindow, "/card")
-        },
-        { type: "separator" },
-        {
-            label: "Quit",
-            click: () => app.quit()
-        }
-    ]);
-    tray.setContextMenu(contextMenu);
-    tray.setToolTip("bunqDesktop");
-
-    // Event handlers
-    tray.on("click", () => {
-        // show app on single click
-        mainWindow.show();
-    });
+    const tray = setupTrayIcon(mainWindow, trayIcon);
 
     // on ready, show the main window
     mainWindow.on("ready-to-show", function() {
