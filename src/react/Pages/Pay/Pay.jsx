@@ -2,46 +2,41 @@ import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
-import EmailValidator from "email-validator";
-import format from "date-fns/format";
 import iban from "iban";
-import DateFnsUtils from "material-ui-pickers/utils/date-fns-utils";
-import MuiPickersUtilsProvider from "material-ui-pickers/utils/MuiPickersUtilsProvider";
+import format from "date-fns/format";
+import EmailValidator from "email-validator";
 import enLocale from "date-fns/locale/en-US";
 import deLocale from "date-fns/locale/de";
 import nlLocale from "date-fns/locale/nl";
+import DateFnsUtils from "material-ui-pickers/utils/date-fns-utils";
+import MuiPickersUtilsProvider from "material-ui-pickers/utils/MuiPickersUtilsProvider";
 
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Switch from "@material-ui/core/Switch";
-import Divider from "@material-ui/core/Divider";
 import TextField from "@material-ui/core/TextField";
 import InputLabel from "@material-ui/core/InputLabel";
 import Typography from "@material-ui/core/Typography";
-import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
 
-import AccountSelectorDialog from "../Components/FormFields/AccountSelectorDialog";
-import MoneyFormatInput from "../Components/FormFields/MoneyFormatInput";
-import TargetSelection from "../Components/FormFields/TargetSelection";
-import SchedulePaymentForm from "../Components/FormFields/SchedulePaymentForm";
+import ConfirmationDialog from "./ConfirmationDialog";
+import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
+import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
+import TargetSelection from "../../Components/FormFields/TargetSelection";
+import SchedulePaymentForm from "../../Components/FormFields/SchedulePaymentForm";
 
-import { openSnackbar } from "../Actions/snackbar";
-import { paySchedule, paySend } from "../Actions/pay";
+import { openSnackbar } from "../../Actions/snackbar";
+import { paySchedule, paySend } from "../../Actions/pay";
 
-import scheduleTexts from "../Helpers/ScheduleTexts";
-import { getInternationalFormat, isValidPhonenumber } from "../Helpers/PhoneLib";
-import { formatMoney, getUTCDate } from "../Helpers/Utils";
-import { filterShareInviteBankResponses } from "../Helpers/DataFilters";
-import GetShareDetailBudget from "../Helpers/GetShareDetailBudget";
+import scheduleTexts from "../../Helpers/ScheduleTexts";
+import { getInternationalFormat, isValidPhonenumber } from "../../Helpers/PhoneLib";
+import { formatMoney, getUTCDate } from "../../Helpers/Utils";
+import { filterShareInviteBankResponses } from "../../Helpers/DataFilters";
+import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
 
 const styles = {
     payButton: {
@@ -68,49 +63,37 @@ class Pay extends React.Component {
         super(props, context);
         this.state = {
             confirmModalOpen: false,
-
             // if true, a draft-payment will be sent instead of a default payment
             sendDraftPayment: false,
-
             // if true the schedule payment form is shown
             schedulePayment: false,
             scheduleStartDate: getUTCDate(new Date()),
             scheduleEndDate: null,
             recurrenceSize: 1,
             recurrenceUnit: "ONCE",
-
             // when false, don't allow payment request
             validForm: false,
-
             // source wallet has insuffient funds
             insufficientFundsCondition: false,
-
             // the "from" account selection picker
             selectedAccount: 0,
-
             // amount input field
             amountError: false,
             amount: "",
-
             // description input field
             descriptionError: false,
             description: "",
-
             // target field input field
             targetError: false,
             target: "",
-
             // a list of all the targets
             targets: [],
-
             // name field for IBAN targets
             ibanNameError: false,
             ibanName: "",
-
             // targeted account for transfers
             selectedTargetAccount: 1,
             selectedTargetAccountError: false,
-
             // defines which type is used
             targetType: "CONTACT"
         };
@@ -225,10 +208,33 @@ class Pay extends React.Component {
         const outgoingPaymentsConnectMessage = t(
             "It is not possible to send outgoing payments using a draft-only account"
         );
+        const outgoingPaymentsMessage = t(
+            "It is not possible to send outgoing payments without draft mode when using a OAuth API key"
+        );
+
+        // check if on oauth session
+        if (this.props.limitedPermissions) {
+            // check if outgoing payments are done
+            const hasOutGoing = this.state.targets.some(target => {
+                return target.type !== "TRANSFER";
+            });
+
+            if (hasOutGoing) {
+                // draft payment is enforced when doing outgoing payments on a oauth session
+                if (!sendDraftPayment) {
+                    this.setState({
+                        sendDraftPayment: true
+                    });
+                }
+
+                // notify the user
+                this.props.openSnackbar(outgoingPaymentsMessage);
+                return;
+            }
+        }
 
         // get current account
         const account = accounts[selectedAccount];
-
         // check if the selected account item has connect details
         const filteredInviteResponses = shareInviteBankResponses.filter(filterShareInviteBankResponses(account.id));
 
@@ -255,49 +261,19 @@ class Pay extends React.Component {
     };
 
     draftChange = () => {
-        const sendDraftPayment = !this.state.sendDraftPayment;
-        const outgoingPaymentsMessage = this.props.t(
-            "It is not possible to send outgoing payments without draft mode when using a OAuth API key"
-        );
+        const schedulePayment = this.state.schedulePayment;
+        const sendDraftPayment = this.state.sendDraftPayment;
 
         // check if a draft only account is selected and force
         this.checkDraftOnly();
 
-        // check if on oauth session
-        if (this.props.limitedPermissions) {
-            // check if outgoing payments are done
-            const hasOutGoing = this.state.targets.some(target => {
-                return target.type !== "TRANSFER";
-            });
-
-            if (hasOutGoing) {
-                // draft payment is enforced when doing outgoing payments on a oauth session
-                if (!this.state.sendDraftPayment) {
-                    this.setState({
-                        sendDraftPayment: true
-                    });
-                }
-
-                // notify the user
-                this.props.openSnackbar(outgoingPaymentsMessage);
-                return;
-            }
-        }
-
         this.setState(
             {
-                sendDraftPayment: sendDraftPayment
+                sendDraftPayment: !sendDraftPayment,
+                schedulePayment: sendDraftPayment ? false : schedulePayment
             },
             this.validateForm
         );
-        if (sendDraftPayment) {
-            this.setState(
-                {
-                    schedulePayment: false
-                },
-                this.validateForm
-            );
-        }
     };
 
     // remove a key from the target list
@@ -611,82 +587,6 @@ class Pay extends React.Component {
             );
         }
 
-        let confirmationModal = null;
-        if (this.state.confirmModalOpen) {
-            // create a list of ListItems with our targets
-            const confirmationModelTargets = targets.map(targetItem => {
-                let primaryText = "";
-                let secondaryText = "";
-
-                switch (targetItem.type) {
-                    case "PHONE":
-                        primaryText = `${t("Phone")}: ${targetItem.value}`;
-                        break;
-                    case "EMAIL":
-                        primaryText = `${t("Email")}: ${targetItem.value}`;
-                        break;
-                    case "CONTACT":
-                        primaryText = `${t("Contact")}: ${targetItem.value}`;
-                        break;
-                    case "IBAN":
-                        primaryText = `${t("IBAN")}: ${targetItem.value.replace(/ /g, "")}`;
-                        secondaryText = `${t("Name")}: ${targetItem.name}`;
-                        break;
-                    case "TRANSFER":
-                        const targetAccountInfo = this.props.accounts[targetItem.value];
-                        primaryText = `${t("Transfer")}: ${targetAccountInfo.description}`;
-                        break;
-                }
-
-                return [
-                    <ListItem>
-                        <ListItemText primary={primaryText} secondary={secondaryText} />
-                    </ListItem>,
-                    <Divider />
-                ];
-            });
-
-            confirmationModal = (
-                <Dialog open={this.state.confirmModalOpen} keepMounted onClose={this.closeModal}>
-                    <DialogTitle>{t("Confirm the payment")}</DialogTitle>
-                    <DialogContent>
-                        <List>
-                            <ListItem>
-                                <ListItemText
-                                    primary={t("From")}
-                                    secondary={`${account.description} ${accountBalance}`}
-                                />
-                            </ListItem>
-                            <ListItem>
-                                <ListItemText
-                                    primary={t("Description")}
-                                    secondary={description.length <= 0 ? "None" : description}
-                                />
-                            </ListItem>
-                            <ListItem>
-                                <ListItemText primary={t("Amount")} secondary={formatMoney(amount)} />
-                            </ListItem>
-                            <ListItem>
-                                <ListItemText primary="Targets: " />
-                            </ListItem>
-                            <Divider />
-                            {confirmationModelTargets}
-
-                            {scheduledPaymentText ? scheduledPaymentText : null}
-                        </List>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button variant="contained" onClick={this.closeModal} color="secondary">
-                            {t("Cancel")}
-                        </Button>
-                        <Button variant="contained" onClick={this.sendPayment} color="primary">
-                            {t("Confirm")}
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-            );
-        }
-
         let localeData;
         switch (this.props.language) {
             case "nl":
@@ -817,7 +717,17 @@ class Pay extends React.Component {
                             </Button>
                         </Paper>
 
-                        {confirmationModal}
+                        <ConfirmationDialog
+                            closeModal={this.closeModal}
+                            sendPayment={this.sendPayment}
+                            amount={amount}
+                            account={account}
+                            targets={targets}
+                            description={description}
+                            accountBalance={accountBalance}
+                            scheduledPaymentText={scheduledPaymentText}
+                            confirmModalOpen={this.state.confirmModalOpen}
+                        />
                     </Grid>
                 </MuiPickersUtilsProvider>
             </Grid>

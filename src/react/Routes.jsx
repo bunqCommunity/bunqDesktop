@@ -21,7 +21,7 @@ const privateRoutes = [
     },
     {
         path: "/pay",
-        component: CL(() => import(/* webpackChunkName: "pay" */ "./Pages/Pay"))
+        component: CL(() => import(/* webpackChunkName: "pay" */ "./Pages/Pay/Pay"))
     },
     {
         path: "/request",
