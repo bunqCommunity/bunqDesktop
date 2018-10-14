@@ -73,11 +73,7 @@ class RequestInquiryInfo extends React.Component {
     componentDidMount() {
         if (this.props.initialBunqConnect) {
             const { requestInquiryId, accountId } = this.props.match.params;
-            this.props.requestInquiryUpdate(
-                this.props.user.id,
-                accountId === undefined ? this.props.accountsSelectedAccount : accountId,
-                requestInquiryId
-            );
+            this.props.requestInquiryUpdate(this.props.user.id, accountId, requestInquiryId);
             this.setState({ initialUpdate: true });
         }
     }
@@ -90,11 +86,7 @@ class RequestInquiryInfo extends React.Component {
             this.props.match.params.requestInquiryId !== this.props.match.params.requestInquiryId
         ) {
             const { requestInquiryId, accountId } = this.props.match.params;
-            this.props.requestInquiryUpdate(
-                this.props.user.id,
-                accountId === undefined ? this.props.accountsSelectedAccount : accountId,
-                requestInquiryId
-            );
+            this.props.requestInquiryUpdate(this.props.user.id, accountId, requestInquiryId);
             this.setState({ initialUpdate: true });
         }
         return null;
@@ -103,11 +95,7 @@ class RequestInquiryInfo extends React.Component {
 
     cancelInquiry = () => {
         const { requestInquiryId, accountId } = this.props.match.params;
-        this.props.requestInquiryCancel(
-            this.props.user.id,
-            accountId === undefined ? this.props.accountsSelectedAccount : accountId,
-            requestInquiryId
-        );
+        this.props.requestInquiryCancel(this.props.user.id, accountId, requestInquiryId);
     };
 
     startPayment = event => {
@@ -140,20 +128,8 @@ class RequestInquiryInfo extends React.Component {
     };
 
     render() {
-        const {
-            accountsSelectedAccount,
-            requestInquiryInfo,
-            requestInquiryLoading,
-            requestInquiryInfoLoading,
-            t
-        } = this.props;
+        const { requestInquiryInfo, requestInquiryLoading, requestInquiryInfoLoading, t } = this.props;
         const paramAccountId = this.props.match.params.accountId;
-
-        // we require a selected account before we can display payment information
-        if (accountsSelectedAccount === false && paramAccountId !== undefined) {
-            // no account_id set
-            return <Redirect to={"/"} />;
-        }
 
         let content;
         let noteTextsForm = null;
@@ -369,9 +345,7 @@ const mapStateToProps = state => {
 
         requestInquiryLoading: state.request_inquiry.loading,
 
-        pdfSaveModeEnabled: state.application.pdf_save_mode_enabled,
-
-        accountsSelectedAccount: state.accounts.selected_account
+        pdfSaveModeEnabled: state.application.pdf_save_mode_enabled
     };
 };
 

@@ -68,11 +68,7 @@ class MasterCardActionInfo extends React.Component {
     componentDidMount() {
         if (this.props.initialBunqConnect && this.props.user && this.props.user.id) {
             const { masterCardActionId, accountId } = this.props.match.params;
-            this.props.masterCardActionInfoUpdate(
-                this.props.user.id,
-                accountId === undefined ? this.props.accountsSelectedAccount : accountId,
-                masterCardActionId
-            );
+            this.props.masterCardActionInfoUpdate(this.props.user.id, accountId, masterCardActionId);
             this.setState({ initialUpdate: true });
         }
     }
@@ -85,11 +81,7 @@ class MasterCardActionInfo extends React.Component {
             this.props.match.params.masterCardActionId !== this.props.match.params.masterCardActionId
         ) {
             const { masterCardActionId, accountId } = this.props.match.params;
-            this.props.masterCardActionInfoUpdate(
-                this.props.user.id,
-                accountId === undefined ? this.props.accountsSelectedAccount : accountId,
-                masterCardActionId
-            );
+            this.props.masterCardActionInfoUpdate(this.props.user.id, accountId, masterCardActionId);
             this.setState({ initialUpdate: true });
         }
         return null;
@@ -128,14 +120,7 @@ class MasterCardActionInfo extends React.Component {
     };
 
     render() {
-        const { accountsSelectedAccount, masterCardActionInfo, masterCardActionLoading, theme, t } = this.props;
-        const paramAccountId = this.props.match.params.accountId;
-
-        // we require a selected account before we can display payment information
-        if (accountsSelectedAccount === false && paramAccountId !== undefined) {
-            // no account_id set
-            return <Redirect to={"/"} />;
-        }
+        const { masterCardActionInfo, masterCardActionLoading, t } = this.props;
 
         let content;
         let noteTextsForm = null;
@@ -348,8 +333,7 @@ const mapStateToProps = state => {
         masterCardActionInfo: state.master_card_action_info.master_card_action_info,
         masterCardActionLoading: state.master_card_action_info.loading,
 
-        accounts: state.accounts.accounts,
-        accountsSelectedAccount: state.accounts.selected_account
+        accounts: state.accounts.accounts
     };
 };
 

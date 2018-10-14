@@ -162,27 +162,26 @@ class Dashboard extends React.Component {
                                         initialBunqConnect={this.props.initialBunqConnect}
                                     />
 
-                                    {/*<LoadOlderButton*/}
-                                    {/*wrapperStyle={{ padding: 8 }}*/}
-                                    {/*buttonStyle={{ width: "100%" }}*/}
-                                    {/*buttonContent={t("Load more events")}*/}
-                                    {/*BunqJSClient={this.props.BunqJSClient}*/}
-                                    {/*initialBunqConnect={*/}
-                                    {/*this.props.initialBunqConnect*/}
-                                    {/*}*/}
-                                    {/*/>*/}
-
                                     {this.props.environment === "SANDBOX" ? (
-                                        <div
-                                            style={{
-                                                textAlign: "center",
-                                                padding: 16
-                                            }}
-                                        >
-                                            <Button onClick={this.addMoney} disabled={this.props.requestInquiryLoading}>
-                                                <MoneyIcon />
-                                            </Button>
-                                        </div>
+                                        !this.props.limitedPermissions ? (
+                                            <div
+                                                style={{
+                                                    textAlign: "center",
+                                                    padding: 16
+                                                }}
+                                            >
+                                                <Button
+                                                    onClick={this.addMoney}
+                                                    disabled={this.props.requestInquiryLoading}
+                                                >
+                                                    <MoneyIcon />
+                                                </Button>
+                                            </div>
+                                        ) : (
+                                            <Typography variant="body1" style={{ margin: 8 }}>
+                                                Logged in as OAuth sandbox user. Requesting money isn't possible.
+                                            </Typography>
+                                        )
                                     ) : null}
                                 </Paper>
                             </StickyBox>

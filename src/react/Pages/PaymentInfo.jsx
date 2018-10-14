@@ -70,11 +70,7 @@ class PaymentInfo extends React.Component {
     componentDidMount() {
         if (this.props.user && this.props.user.id && this.props.initialBunqConnect) {
             const { paymentId, accountId } = this.props.match.params;
-            this.props.updatePayment(
-                this.props.user.id,
-                accountId === undefined ? this.props.accountsSelectedAccount : accountId,
-                paymentId
-            );
+            this.props.updatePayment(this.props.user.id, accountId, paymentId);
             this.setState({ initialUpdate: true });
         }
     }
@@ -87,11 +83,7 @@ class PaymentInfo extends React.Component {
             this.props.match.params.paymentId !== nextProps.match.params.paymentId
         ) {
             const { paymentId, accountId } = this.props.match.params;
-            this.props.updatePayment(
-                this.props.user.id,
-                accountId === undefined ? this.props.accountsSelectedAccount : accountId,
-                paymentId
-            );
+            this.props.updatePayment(this.props.user.id, accountId, paymentId);
             this.setState({ initialUpdate: true });
         }
         return null;
@@ -134,14 +126,7 @@ class PaymentInfo extends React.Component {
     };
 
     render() {
-        const { accountsSelectedAccount, paymentInfo, paymentLoading, pdfSaveModeEnabled, t } = this.props;
-        const paramAccountId = this.props.match.params.accountId;
-
-        // we require a selected account before we can display payment information
-        if (accountsSelectedAccount === false && paramAccountId !== undefined) {
-            // no account_id set
-            return <Redirect to={"/"} />;
-        }
+        const { paymentInfo, paymentLoading, pdfSaveModeEnabled, t } = this.props;
 
         let content;
         let noteTextsForm = null;
@@ -347,7 +332,6 @@ const mapStateToProps = state => {
         paymentInfo: state.payment_info.payment,
         paymentLoading: state.payment_info.loading,
 
-        accountsSelectedAccount: state.accounts.selected_account,
         accounts: state.accounts.accounts
     };
 };

@@ -77,7 +77,7 @@ class RequestResponseInfo extends React.Component {
             const { requestResponseId, accountId } = this.props.match.params;
             this.props.requestResponseUpdate(
                 this.props.user.id,
-                accountId === undefined ? this.props.accountsSelectedAccount : accountId,
+                accountId,
                 requestResponseId
             );
             this.setState({ initialUpdate: true });
@@ -94,7 +94,7 @@ class RequestResponseInfo extends React.Component {
             const { requestResponseId, accountId } = this.props.match.params;
             this.props.requestResponseUpdate(
                 this.props.user.id,
-                accountId === undefined ? this.props.accountsSelectedAccount : accountId,
+                accountId,
                 requestResponseId
             );
             this.setState({ initialUpdate: true });
@@ -121,7 +121,7 @@ class RequestResponseInfo extends React.Component {
         const { requestResponseId, accountId } = this.props.match.params;
         this.props.requestResponseReject(
             this.props.user.id,
-            accountId === undefined ? this.props.accountsSelectedAccount : accountId,
+            accountId,
             requestResponseId
         );
     };
@@ -171,20 +171,12 @@ class RequestResponseInfo extends React.Component {
     render() {
         const {
             t,
-            accountsSelectedAccount,
             requestResponseInfo,
             requestResponseInfoLoading,
             requestResponseLoading,
             limitedPermissions,
             accounts
         } = this.props;
-        const paramAccountId = this.props.match.params.accountId;
-
-        // we require a selected account before we can display payment information
-        if (accountsSelectedAccount === false && paramAccountId !== undefined) {
-            // no account_id set
-            return <Redirect to={"/"} />;
-        }
 
         let content;
         let noteTextsForm = null;
@@ -482,8 +474,7 @@ const mapStateToProps = state => {
 
         requestResponseLoading: state.request_response.loading,
 
-        accounts: state.accounts.accounts,
-        accountsSelectedAccount: state.accounts.selected_account
+        accounts: state.accounts.accounts
     };
 };
 

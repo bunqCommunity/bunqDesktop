@@ -120,8 +120,6 @@ const mapStateToProps = state => {
 
         paymentsLoading: state.payments.loading,
 
-        accountsAccountId: state.accounts.selected_account,
-
         hideBalance: state.options.hide_balance,
 
         selectedAccountIds: state.account_id_filter.selected_account_ids,
