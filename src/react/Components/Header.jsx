@@ -148,6 +148,7 @@ class Header extends React.Component {
         const developmentEnvWarning =
             this.props.environment === "SANDBOX" ? (
                 <TranslateTypography
+                    variant="body2"
                     style={{
                         marginLeft: 53,
                         lineHeight: `${styles.header.height}px`,

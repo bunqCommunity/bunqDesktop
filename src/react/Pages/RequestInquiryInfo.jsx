@@ -128,8 +128,13 @@ class RequestInquiryInfo extends React.Component {
     };
 
     render() {
-        const { requestInquiryInfo, requestInquiryLoading, requestInquiryInfoLoading, t } = this.props;
-        const paramAccountId = this.props.match.params.accountId;
+        const {
+            limitedPermissions,
+            requestInquiryInfo,
+            requestInquiryLoading,
+            requestInquiryInfoLoading,
+            t
+        } = this.props;
 
         let content;
         let noteTextsForm = null;
@@ -246,7 +251,7 @@ class RequestInquiryInfo extends React.Component {
                             <Divider />
                         </List>
 
-                        {requestInquiry.status === "PENDING" ? (
+                        {!limitedPermissions && requestInquiry.status === "PENDING" ? (
                             <Grid container spacing={16} justify="center">
                                 <Grid item xs={12} sm={6}>
                                     <TranslateButton
@@ -299,7 +304,6 @@ class RequestInquiryInfo extends React.Component {
                 </Grid>
 
                 <SpeedDial
-                    hidden={false}
                     actions={[
                         {
                             name: t("Send payment"),
@@ -340,6 +344,8 @@ class RequestInquiryInfo extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+        limitedPermissions: state.user.limited_permissions,
+
         requestInquiryInfo: state.request_inquiry_info.request_inquiry_info,
         requestInquiryInfoLoading: state.request_inquiry_info.loading,
 

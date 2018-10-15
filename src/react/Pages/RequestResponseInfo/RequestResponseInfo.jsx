@@ -3,7 +3,6 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { ipcRenderer } from "electron";
 import Helmet from "react-helmet";
-import Redirect from "react-router-dom/Redirect";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
@@ -421,7 +420,6 @@ class RequestResponseInfo extends React.Component {
                 </Grid>
 
                 <SpeedDial
-                    hidden={false}
                     actions={[
                         {
                             name: t("Send payment"),

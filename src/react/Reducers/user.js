@@ -9,7 +9,6 @@ const userDefault = store.get(USER_TYPE_LOCATION) !== undefined ? store.get(USER
 export const defaultState = {
     user: false,
     user_type: userDefault,
-    limitedPermissions: false,
     loading: false,
     initialCheck: false
 };

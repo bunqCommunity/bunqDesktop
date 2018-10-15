@@ -59,7 +59,9 @@ export default (mainWindow, trayIcon) => {
         const contextMenu = Menu.buildFromTemplate(menuItems);
 
         tray.setContextMenu(contextMenu);
-        tray.setToolTip("bunqDesktop");
+
+        const tooltipText = `bunqDesktop - ${loggedInText}`
+        tray.setToolTip(tooltipText);
     };
 
     ipcMain.on("set-tray-loggedin", (event, loggedinText) => {
@@ -101,4 +103,6 @@ export default (mainWindow, trayIcon) => {
         // show app on single click
         mainWindow.show();
     });
+
+    return tray;
 };

@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { withTheme } from "@material-ui/core/styles";
 import { ipcRenderer } from "electron";
 import Helmet from "react-helmet";
-import Redirect from "react-router-dom/Redirect";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
@@ -247,7 +246,6 @@ class MasterCardActionInfo extends React.Component {
                         />
 
                         <SpeedDial
-                            hidden={false}
                             actions={[
                                 {
                                     name: t("Send payment"),
