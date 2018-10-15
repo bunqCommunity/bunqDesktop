@@ -1,6 +1,7 @@
 import { app, ipcMain, Menu, MenuItem, Tray } from "electron";
 import changePage from "./react_navigate";
 
+let displayTrayInfo = false;
 let loggedInText = "Not logged in";
 let balanceLabel = "Balance: $2000.21";
 let balanceVisible = false;
@@ -16,11 +17,11 @@ export default (mainWindow, trayIcon) => {
         });
         const totalBalanceMenuItem = new MenuItem({
             label: balanceLabel,
-            visible: balanceVisible
+            visible: displayTrayInfo && balanceVisible
         });
         const accountsMenuItem = new MenuItem({
             label: "Accounts",
-            visible: accountsVisible,
+            visible: displayTrayInfo && accountsVisible,
             submenu: accountLabels
         });
 
@@ -60,7 +61,7 @@ export default (mainWindow, trayIcon) => {
 
         tray.setContextMenu(contextMenu);
 
-        const tooltipText = `bunqDesktop - ${loggedInText}`
+        const tooltipText = `bunqDesktop - ${loggedInText}`;
         tray.setToolTip(tooltipText);
     };
 
@@ -93,6 +94,14 @@ export default (mainWindow, trayIcon) => {
         } else {
             balanceVisible = true;
             balanceLabel = `Balance: ${totalBalance}`;
+        }
+        updateTrayMenu();
+    });
+    ipcMain.on("set-tray-display", (event, displayTrayInfoChange) => {
+        if (!displayTrayInfoChange) {
+            displayTrayInfo = false;
+        } else {
+            displayTrayInfo = true;
         }
         updateTrayMenu();
     });

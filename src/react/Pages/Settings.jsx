@@ -40,6 +40,7 @@ import {
     setSyncOnStartup,
     setHideBalance,
     setMinimizeToTray,
+    setDisplayTrayInfo,
     setNativeFrame,
     setStickyMenu,
     setTheme,
@@ -130,6 +131,9 @@ class Settings extends React.Component {
     };
     handleMinimizeToTrayChange = event => {
         this.props.setMinimizeToTray(!this.props.minimizeToTray);
+    };
+    handleDisplayTrayInfoChange = event => {
+        this.props.setDisplayTrayInfo(!this.props.displayTrayInfo);
     };
     handleHideBalanceCheckChange = event => {
         this.props.setHideBalance(!this.props.hideBalance);
@@ -251,7 +255,6 @@ class Settings extends React.Component {
                     <FormControlLabel
                         control={
                             <Switch
-                                id="inactivity-check-selection"
                                 checked={this.props.automaticUpdateEnabled}
                                 onChange={this.handleAutomaticUpdatesEnabledChane}
                             />
@@ -296,7 +299,6 @@ class Settings extends React.Component {
                     <FormControlLabel
                         control={
                             <Switch
-                                id="notification-on-new-events"
                                 checked={this.props.automaticUpdateSendNotification}
                                 onChange={this.handleAutomaticUpdatesSendNotificationChange}
                             />
@@ -309,11 +311,7 @@ class Settings extends React.Component {
                 <Grid item xs={12} md={6}>
                     <FormControlLabel
                         control={
-                            <Switch
-                                id="sync-on-startup"
-                                checked={this.props.syncOnStartup}
-                                onChange={this.handleSyncOnStartupChange}
-                            />
+                            <Switch checked={this.props.syncOnStartup} onChange={this.handleSyncOnStartupChange} />
                         }
                         label={t("Run background sync on startup")}
                     />
@@ -323,11 +321,7 @@ class Settings extends React.Component {
                 <Grid item xs={12} md={6}>
                     <FormControlLabel
                         control={
-                            <Switch
-                                id="hide-balance-selection"
-                                checked={this.props.hideBalance}
-                                onChange={this.handleHideBalanceCheckChange}
-                            />
+                            <Switch checked={this.props.hideBalance} onChange={this.handleHideBalanceCheckChange} />
                         }
                         label={t("Hide account balances")}
                     />
@@ -337,11 +331,7 @@ class Settings extends React.Component {
                 <Grid item xs={12} md={6}>
                     <FormControlLabel
                         control={
-                            <Switch
-                                id="nativeframe-selection"
-                                checked={this.props.nativeFrame}
-                                onChange={this.handleNativeFrameCheckChange}
-                            />
+                            <Switch checked={this.props.nativeFrame} onChange={this.handleNativeFrameCheckChange} />
                         }
                         label={t("Use the native frame")}
                     />
@@ -350,13 +340,7 @@ class Settings extends React.Component {
                 {/* use sticky menu */}
                 <Grid item xs={12} md={6}>
                     <FormControlLabel
-                        control={
-                            <Switch
-                                id="sticky-menu-selection"
-                                checked={this.props.stickyMenu}
-                                onChange={this.handleStickyMenuCheckChange}
-                            />
-                        }
+                        control={<Switch checked={this.props.stickyMenu} onChange={this.handleStickyMenuCheckChange} />}
                         label={t("Enable sticky menu")}
                     />
                 </Grid>
@@ -366,7 +350,6 @@ class Settings extends React.Component {
                     <FormControlLabel
                         control={
                             <Switch
-                                id="automatic-change-selection"
                                 checked={this.props.automaticThemeChange}
                                 onChange={this.handleAutomaticThemeChange}
                             />
@@ -380,7 +363,6 @@ class Settings extends React.Component {
                     <FormControlLabel
                         control={
                             <Switch
-                                id="inactivity-check-selection"
                                 checked={this.props.checkInactivity}
                                 onChange={this.handleHideInactivityCheckChange}
                             />
@@ -422,13 +404,19 @@ class Settings extends React.Component {
                 <Grid item xs={12} md={6}>
                     <FormControlLabel
                         control={
-                            <Switch
-                                id="minimize-to-try-selection"
-                                checked={this.props.minimizeToTray}
-                                onChange={this.handleMinimizeToTrayChange}
-                            />
+                            <Switch checked={this.props.minimizeToTray} onChange={this.handleMinimizeToTrayChange} />
                         }
                         label={t("Minimize to tray")}
+                    />
+                </Grid>
+
+                {/* display account info and total balance */}
+                <Grid item xs={12} md={6}>
+                    <FormControlLabel
+                        control={
+                            <Switch checked={this.props.displayTrayInfo} onChange={this.handleDisplayTrayInfoChange} />
+                        }
+                        label={t("Display user info in the tray menu")}
                     />
                 </Grid>
 
@@ -437,7 +425,6 @@ class Settings extends React.Component {
                     <FormControlLabel
                         control={
                             <Switch
-                                id="set-analytics-enabled"
                                 checked={!!this.props.analyticsEnabled}
                                 onChange={this.handleAnalyticsEnabledChange}
                             />
@@ -535,6 +522,7 @@ const mapStateToProps = state => {
         language: state.options.language,
         hideBalance: state.options.hide_balance,
         minimizeToTray: state.options.minimize_to_tray,
+        displayTrayInfo: state.options.display_tray_info,
         nativeFrame: state.options.native_frame,
         stickyMenu: state.options.sticky_menu,
         analyticsEnabled: state.options.analytics_enabled,
@@ -565,6 +553,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         setStickyMenu: userStickyMenu => dispatch(setStickyMenu(userStickyMenu)),
         setHideBalance: hideBalance => dispatch(setHideBalance(hideBalance)),
         setMinimizeToTray: minimizeToTray => dispatch(setMinimizeToTray(minimizeToTray)),
+        setDisplayTrayInfo: displayTrayInfo => dispatch(setDisplayTrayInfo(displayTrayInfo)),
         setAnalyticsEnabled: enabled => dispatch(setAnalyticsEnabled(enabled)),
         toggleInactivityCheck: inactivityCheck => dispatch(toggleInactivityCheck(inactivityCheck)),
         setInactivityCheckDuration: inactivityCheckDuration =>

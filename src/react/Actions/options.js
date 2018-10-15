@@ -44,6 +44,10 @@ export function setMinimizeToTray(minimizeToTray) {
     return setGenericOption("minimize_to_tray", minimizeToTray);
 }
 
+export function setDisplayTrayInfo(displayTrayInfo) {
+    return setGenericOption("display_tray_info", displayTrayInfo);
+}
+
 export function toggleInactivityCheck(checkInactivity) {
     return setGenericOption("check_inactivity", checkInactivity);
 }
