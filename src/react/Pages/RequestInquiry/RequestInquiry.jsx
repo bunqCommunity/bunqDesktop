@@ -15,8 +15,7 @@ import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDi
 import TargetSelection from "../../Components/FormFields/TargetSelection";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
 import RedirectUrl from "../../Components/FormFields/RedirectUrl";
-import TypographyTranslate from "../../Components/TranslationHelpers/Typography";
-import ButtonTranslate from "../../Components/TranslationHelpers/Button";
+import TranslateButton from "../../Components/TranslationHelpers/Button";
 import ConfirmationDialog from "./ConfirmationDialog";
 
 import SplitAmountForm from "./SplitAmountForm";
@@ -506,7 +505,7 @@ class RequestInquiry extends React.Component {
 
                 <Grid item xs={12} sm={10} md={8} lg={6} xl={4}>
                     <Paper style={styles.paper}>
-                        <TypographyTranslate variant="h5">Request Payment</TypographyTranslate>
+                        <TranslateTypography variant="h5">Request Payment</TranslateTypography>
 
                         <AccountSelectorDialog
                             value={this.state.selectedAccount}
@@ -570,7 +569,7 @@ class RequestInquiry extends React.Component {
                     {advancedOptionsForm}
 
                     <Paper style={styles.paper}>
-                        <ButtonTranslate
+                        <TranslateButton
                             variant="contained"
                             color="primary"
                             disabled={
@@ -581,7 +580,7 @@ class RequestInquiry extends React.Component {
                             onClick={this.openModal}
                         >
                             Send request
-                        </ButtonTranslate>
+                        </TranslateButton>
                     </Paper>
 
                     <ConfirmationDialog

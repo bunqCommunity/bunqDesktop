@@ -10,7 +10,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 
-import ButtonTranslate from "../../Components/TranslationHelpers/Button";
+import TranslateButton from "../../Components/TranslationHelpers/Button";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
 import SchedulePaymentForm from "../../Components/FormFields/SchedulePaymentForm";
 import AttachmentImage from "../../Components/AttachmentImage/AttachmentImage";
@@ -220,18 +220,18 @@ class ScheduledPaymentsEditDialog extends React.Component {
                 </DialogContent>
 
                 <DialogActions>
-                    <ButtonTranslate variant="contained" onClick={this.closeDialog} color="secondary">
+                    <TranslateButton variant="contained" onClick={this.closeDialog} color="secondary">
                         Cancel
-                    </ButtonTranslate>
+                    </TranslateButton>
                     {this.props.limitedPermissions ? null : (
-                        <ButtonTranslate
+                        <TranslateButton
                             variant="contained"
                             onClick={this.editPayment}
                             disabled={!isValid || this.props.scheduledPaymentsLoading}
                             color="primary"
                         >
                             Update
-                        </ButtonTranslate>
+                        </TranslateButton>
                     )}
                 </DialogActions>
             </Dialog>

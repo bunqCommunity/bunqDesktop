@@ -7,8 +7,8 @@ import FormControl from "@material-ui/core/FormControl";
 
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
-import TypographyTranslate from "../../Components/TranslationHelpers/Typography";
-import ButtonTranslate from "../../Components/TranslationHelpers/Button";
+import TranslateTypography from "../../Components/TranslationHelpers/Typography";
+import TranslateButton from "../../Components/TranslationHelpers/Button";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { bunqMeTabSend } from "../../Actions/bunq_me_tab";
@@ -159,7 +159,7 @@ class BunqMeTabForm extends React.Component {
 
         return [
             <div style={styles.paper}>
-                <TypographyTranslate variant="h5">Create new bunqme request</TypographyTranslate>
+                <TranslateTypography variant="h5">Create new bunqme request</TranslateTypography>
 
                 <AccountSelectorDialog
                     value={this.state.selectedAccount}
@@ -192,7 +192,7 @@ class BunqMeTabForm extends React.Component {
                     />
                 </FormControl>
 
-                <ButtonTranslate
+                <TranslateButton
                     variant="contained"
                     color="primary"
                     disabled={!this.state.validForm || this.props.bunqMeTabLoading}
@@ -200,7 +200,7 @@ class BunqMeTabForm extends React.Component {
                     onClick={this.openModal}
                 >
                     Create request
-                </ButtonTranslate>
+                </TranslateButton>
             </div>,
             <ConfirmationDialog
                 closeModal={this.closeModal}

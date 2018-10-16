@@ -15,8 +15,8 @@ import { openSnackbar } from "../Actions/snackbar";
 import { createAccount } from "../Actions/accounts";
 
 import MoneyFormatInput from "../Components/FormFields/MoneyFormatInput";
-import ButtonTranslate from "../Components/TranslationHelpers/Button";
-import TypographyTranslate from "../Components/TranslationHelpers/Typography";
+import TranslateButton from "../Components/TranslationHelpers/Button";
+import TranslateTypography from "../Components/TranslationHelpers/Typography";
 
 const styles = {
     bigAvatar: {
@@ -127,9 +127,9 @@ class AddAccount extends React.Component {
 
                 <Grid item xs={12} sm={6} md={4}>
                     <Paper style={styles.paper}>
-                        <TypographyTranslate variant="h5" style={{ marginBottom: "25px" }}>
+                        <TranslateTypography variant="h5" style={{ marginBottom: "25px" }}>
                             Add an account
-                        </TypographyTranslate>
+                        </TranslateTypography>
 
                         <div style={styles.colorPickerWrapper}>
                             <CirclePicker
@@ -150,7 +150,7 @@ class AddAccount extends React.Component {
                         />
 
                         <FormControl error={this.state.limitError}>
-                            <TypographyTranslate type="body2">Daily limit</TypographyTranslate>
+                            <TranslateTypography type="body2">Daily limit</TranslateTypography>
                             <MoneyFormatInput
                                 id="limit"
                                 onValueChange={this.handleChangeFormatted}
@@ -158,7 +158,7 @@ class AddAccount extends React.Component {
                             />
                         </FormControl>
 
-                        <ButtonTranslate
+                        <TranslateButton
                             variant="contained"
                             color="primary"
                             disabled={!this.state.validForm || this.props.accountsLoading}
@@ -166,19 +166,19 @@ class AddAccount extends React.Component {
                             style={styles.btn}
                         >
                             Create account
-                        </ButtonTranslate>
+                        </TranslateButton>
                     </Paper>
                 </Grid>
 
                 {accountsAmount === 25 ? (
                     <Grid item xs={12} sm={6} md={4}>
                         <Paper style={{ padding: 8 }}>
-                            <TypographyTranslate variant="subtitle1">Attention!</TypographyTranslate>
-                            <TypographyTranslate variant="body2">
+                            <TranslateTypography variant="subtitle1">Attention!</TranslateTypography>
+                            <TranslateTypography variant="body2">
                                 Creating a new account when you've reached the limit of 25 accounts comes at additional
                                 costs You may have to create the new account using the official bunq app to approve
                                 these
-                            </TypographyTranslate>
+                            </TranslateTypography>
                         </Paper>
                     </Grid>
                 ) : null}

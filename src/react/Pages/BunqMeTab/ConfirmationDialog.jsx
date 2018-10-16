@@ -10,7 +10,7 @@ import Dialog from "@material-ui/core/Dialog";
 
 import { formatMoney } from "../../Helpers/Utils";
 
-import ButtonTranslate from "../../Components/TranslationHelpers/Button";
+import TranslateButton from "../../Components/TranslationHelpers/Button";
 
 class ConfirmationDialog extends React.Component {
     render() {
@@ -34,12 +34,12 @@ class ConfirmationDialog extends React.Component {
                     </List>
                 </DialogContent>
                 <DialogActions>
-                    <ButtonTranslate variant="contained" onClick={this.props.closeModal} color="secondary">
+                    <TranslateButton variant="contained" onClick={this.props.closeModal} color="secondary">
                         Cancel
-                    </ButtonTranslate>
-                    <ButtonTranslate variant="contained" onClick={this.props.sendInquiry} color="primary">
+                    </TranslateButton>
+                    <TranslateButton variant="contained" onClick={this.props.sendInquiry} color="primary">
                         Confirm
-                    </ButtonTranslate>
+                    </TranslateButton>
                 </DialogActions>
             </Dialog>
         );

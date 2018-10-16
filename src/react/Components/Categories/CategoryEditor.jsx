@@ -119,7 +119,7 @@ class CategoryEditor extends React.Component {
         return (
             <Grid container spacing={16} style={styles.newCategoryContainer}>
                 <Grid item xs={12}>
-                    <TranslateTypography type={"title"} style={styles.titles}>
+                    <TranslateTypography variant="h6" style={styles.titles}>
                         Add a new category
                     </TranslateTypography>
                 </Grid>

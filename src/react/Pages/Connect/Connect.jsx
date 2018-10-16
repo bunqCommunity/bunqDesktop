@@ -21,8 +21,8 @@ import ConnectListItem from "./ConnectListItem";
 import ConnectSettingItem from "./ConnectSettingItem";
 import AccountListItem from "../../Components/AccountList/AccountListItem";
 import TargetSelection from "../../Components/FormFields/TargetSelection";
-import TypographyTranslate from "../../Components/TranslationHelpers/Typography";
-import ButtonTranslate from "../../Components/TranslationHelpers/Button";
+import TranslateTypography from "../../Components/TranslationHelpers/Typography";
+import TranslateButton from "../../Components/TranslationHelpers/Button";
 import FullAccess from "../../Components/ListItems/ShareInviteBankTypes/FullAccess";
 import DraftAccess from "../../Components/ListItems/ShareInviteBankTypes/DraftAccess";
 import ShowOnly from "../../Components/ListItems/ShareInviteBankTypes/ShowOnly";
@@ -425,9 +425,9 @@ class Connect extends React.Component {
 
                 <Grid item xs={12} sm={12} md={5} lg={6}>
                     <Paper style={styles.paper}>
-                        <TypographyTranslate variant="h5" style={{ marginBottom: "25px" }}>
+                        <TranslateTypography variant="h5" style={{ marginBottom: "25px" }}>
                             Send a Connect request
-                        </TypographyTranslate>
+                        </TranslateTypography>
 
                         <List dense>
                             <AccountListItem account={accountInfo} clickable={false} />
@@ -452,9 +452,9 @@ class Connect extends React.Component {
                         <Grid container spacing={8}>
                             {this.state.accessLevel !== "draft" ? (
                                 <Grid item xs={12}>
-                                    <TypographyTranslate variant="subtitle1" style={{ marginBottom: 8 }}>
+                                    <TranslateTypography variant="subtitle1" style={{ marginBottom: 8 }}>
                                         Settings
-                                    </TypographyTranslate>
+                                    </TranslateTypography>
                                 </Grid>
                             ) : null}
 
@@ -481,9 +481,9 @@ class Connect extends React.Component {
                             ) : null}
 
                             <Grid item xs={12}>
-                                <TypographyTranslate variant="subtitle1" style={{ marginBottom: 8 }}>
+                                <TranslateTypography variant="subtitle1" style={{ marginBottom: 8 }}>
                                     Advanced settings
-                                </TypographyTranslate>
+                                </TranslateTypography>
                             </Grid>
 
                             <ConnectSettingItem
@@ -527,7 +527,7 @@ class Connect extends React.Component {
                             />
 
                             <Grid item xs={12}>
-                                <ButtonTranslate
+                                <TranslateButton
                                     variant="contained"
                                     color="primary"
                                     disabled={!this.state.validForm || this.props.shareInviteBankInquiryLoading}
@@ -535,7 +535,7 @@ class Connect extends React.Component {
                                     style={styles.btn}
                                 >
                                     Connect your account
-                                </ButtonTranslate>
+                                </TranslateButton>
                             </Grid>
                         </Grid>
                     </Paper>

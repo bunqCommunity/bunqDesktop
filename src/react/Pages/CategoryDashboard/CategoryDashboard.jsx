@@ -10,8 +10,8 @@ import CategoryEditor from "../../Components/Categories/CategoryEditor";
 import CategoryChip from "../../Components/Categories/CategoryChip";
 import ImportDialog from "../../Components/ImportDialog";
 import ExportDialog from "../../Components/ExportDialog";
-import TypographyTranslate from "../../Components/TranslationHelpers/Typography";
-import ButtonTranslate from "../../Components/TranslationHelpers/Button";
+import TranslateTypography from "../../Components/TranslationHelpers/Typography";
+import TranslateButton from "../../Components/TranslationHelpers/Button";
 
 import { removeCategory, removeCategoryConnection, setCategory } from "../../Actions/categories";
 import { openSnackbar } from "../../Actions/snackbar";
@@ -127,9 +127,9 @@ class CategoryDashboard extends React.Component {
                 </Helmet>
 
                 <Grid item xs={12} md={8}>
-                    <TypographyTranslate variant="h6" gutterBottom>
+                    <TranslateTypography variant="h6" gutterBottom>
                         Categories
-                    </TypographyTranslate>
+                    </TranslateTypography>
                 </Grid>
 
                 <ExportDialog
@@ -147,24 +147,24 @@ class CategoryDashboard extends React.Component {
                 />
 
                 <Grid item xs={6} md={2}>
-                    <ButtonTranslate
+                    <TranslateButton
                         variant="contained"
                         color="primary"
                         style={{ width: "100%" }}
                         onClick={() => this.setState({ openExportDialog: true })}
                     >
                         Export
-                    </ButtonTranslate>
+                    </TranslateButton>
                 </Grid>
                 <Grid item xs={6} md={2}>
-                    <ButtonTranslate
+                    <TranslateButton
                         variant="contained"
                         color="primary"
                         style={{ width: "100%" }}
                         onClick={() => this.setState({ openImportDialog: true })}
                     >
                         Import
-                    </ButtonTranslate>
+                    </TranslateButton>
                 </Grid>
 
                 <Grid item xs={12}>
@@ -188,16 +188,16 @@ class CategoryDashboard extends React.Component {
                     <Grid container spacing={16}>
                         <Grid item xs={12} md={4}>
                             <Paper style={{ padding: 8 }}>
-                                <ButtonTranslate
+                                <TranslateButton
                                     variant="contained"
                                     color="primary"
                                     style={styles.buttons}
                                     onClick={this.loadDefaultCategories}
                                 >
                                     Load default categories
-                                </ButtonTranslate>
+                                </TranslateButton>
 
-                                <ButtonTranslate
+                                <TranslateButton
                                     variant="contained"
                                     color="primary"
                                     style={styles.buttons}
@@ -205,7 +205,7 @@ class CategoryDashboard extends React.Component {
                                     disabled={!this.state.defaultCategories}
                                 >
                                     Import default categories
-                                </ButtonTranslate>
+                                </TranslateButton>
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={8}>

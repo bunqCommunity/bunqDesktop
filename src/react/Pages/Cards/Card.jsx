@@ -16,7 +16,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 import CardListItem from "./CardListItem";
 import AccountListItem from "../../Components/AccountList/AccountListItem";
-import TypographyTranslate from "../../Components/TranslationHelpers/Typography";
+import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 
 import { cardUpdate } from "../../Actions/card";
 import { cardUpdateCvc2Codes, cardCvc2CodesClear } from "../../Actions/card_cvc2";
@@ -225,9 +225,9 @@ class Card extends React.Component {
                 <Grid container spacing={24} style={styles.gridContainer} justify="center" alignItems="center">
                     <Grid item xs={12} style={{ textAlign: "center" }}>
                         <CircularProgress size={75} />
-                        <TypographyTranslate variant="h4" style={{ textAlign: "center" }}>
+                        <TranslateTypography variant="h4" style={{ textAlign: "center" }}>
                             Loading cards
-                        </TypographyTranslate>
+                        </TranslateTypography>
                     </Grid>
                 </Grid>
             );
@@ -237,9 +237,9 @@ class Card extends React.Component {
             return (
                 <Grid container spacing={24} style={styles.gridContainer} justify="center" alignItems="center">
                     <Grid item xs={12}>
-                        <TypographyTranslate variant="h4" style={{ textAlign: "center" }}>
+                        <TranslateTypography variant="h4" style={{ textAlign: "center" }}>
                             You don't have any cards
-                        </TypographyTranslate>
+                        </TranslateTypography>
                     </Grid>
                 </Grid>
             );
@@ -308,9 +308,9 @@ class Card extends React.Component {
                             })}
                         </List>
                     ) : (
-                        <TypographyTranslate variant="body2" style={{ textAlign: "center" }}>
+                        <TranslateTypography variant="body2" style={{ textAlign: "center" }}>
                             No CVC codes available
-                        </TypographyTranslate>
+                        </TranslateTypography>
                     );
             }
 
@@ -326,12 +326,12 @@ class Card extends React.Component {
             //                 ? t("Update CVC Codes")
             //                 : t("View CVC Codes")}
             //         </Button>
-            //         <TypographyTranslate
+            //         <TranslateTypography
             //             variant="caption"
             //             style={{ textAlign: "center" }}
             //         >
             //             This does not create new codes yet!
-            //         </TypographyTranslate>
+            //         </TranslateTypography>
             //     </React.Fragment>
             // );
         }

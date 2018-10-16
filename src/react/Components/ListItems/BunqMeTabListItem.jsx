@@ -143,12 +143,6 @@ class BunqMeTabListItem extends React.Component {
                         </IconButton>
                     </CopyToClipboard>
                 </ListItemSecondaryAction>
-
-                {/*<CategoryIcons*/}
-                {/*style={{ marginTop: 26 }}*/}
-                {/*type={"BunqMeTab"}*/}
-                {/*id={bunqMeTab.id}*/}
-                {/*/>*/}
             </ListItem>,
             <Collapse in={this.state.extraInfoOpen} unmountOnExit>
                 <ListItem dense>

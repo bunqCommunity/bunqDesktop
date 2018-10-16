@@ -74,11 +74,7 @@ class RequestResponseInfo extends React.Component {
     componentDidMount() {
         if (this.props.initialBunqConnect) {
             const { requestResponseId, accountId } = this.props.match.params;
-            this.props.requestResponseUpdate(
-                this.props.user.id,
-                accountId,
-                requestResponseId
-            );
+            this.props.requestResponseUpdate(this.props.user.id, accountId, requestResponseId);
             this.setState({ initialUpdate: true });
         }
     }
@@ -91,11 +87,7 @@ class RequestResponseInfo extends React.Component {
             this.props.match.params.requestResponseId !== this.props.match.params.requestResponseId
         ) {
             const { requestResponseId, accountId } = this.props.match.params;
-            this.props.requestResponseUpdate(
-                this.props.user.id,
-                accountId,
-                requestResponseId
-            );
+            this.props.requestResponseUpdate(this.props.user.id, accountId, requestResponseId);
             this.setState({ initialUpdate: true });
         }
         return null;
@@ -118,11 +110,7 @@ class RequestResponseInfo extends React.Component {
 
     rejectRequest = () => {
         const { requestResponseId, accountId } = this.props.match.params;
-        this.props.requestResponseReject(
-            this.props.user.id,
-            accountId,
-            requestResponseId
-        );
+        this.props.requestResponseReject(this.props.user.id, accountId, requestResponseId);
     };
 
     acceptRequest = () => {
@@ -254,7 +242,7 @@ class RequestResponseInfo extends React.Component {
                                     {formattedPaymentAmount}
                                 </MoneyAmountLabel>
 
-                                <Typography style={{ textAlign: "center" }} type={"body1"}>
+                                <Typography style={{ textAlign: "center" }} variant="body2">
                                     {requestResponseLabel}
                                 </Typography>
 

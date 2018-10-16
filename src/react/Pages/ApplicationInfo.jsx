@@ -18,7 +18,7 @@ const shell = require("electron").shell;
 const app = remote.app;
 
 import NavLink from "../Components/Routing/NavLink";
-import ButtonTranslate from "../Components/TranslationHelpers/Button";
+import TranslateButton from "../Components/TranslationHelpers/Button";
 
 import { openSnackbar } from "../Actions/snackbar";
 import { allReleases } from "../Helpers/VersionChecker";
@@ -123,9 +123,9 @@ class ApplicationInfo extends React.Component {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <ButtonTranslate variant="contained" component={NavLink} to={"/"}>
+                                <TranslateButton variant="contained" component={NavLink} to={"/"}>
                                     Back
-                                </ButtonTranslate>
+                                </TranslateButton>
                             </Grid>
 
                             <Grid item xs={12}>

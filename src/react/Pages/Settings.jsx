@@ -30,8 +30,8 @@ const SUPPORTED_LANGUAGES = packageInfo.supported_languages;
 
 import NavLink from "../Components/Routing/NavLink";
 import FilePicker from "../Components/FormFields/FilePicker";
-import ButtonTranslate from "../Components/TranslationHelpers/Button";
-import TypographyTranslate from "../Components/TranslationHelpers/Typography";
+import TranslateButton from "../Components/TranslationHelpers/Button";
+import TranslateTypography from "../Components/TranslationHelpers/Typography";
 import MenuItemTranslate from "../Components/TranslationHelpers/MenuItem";
 
 import { openSnackbar } from "../Actions/snackbar";
@@ -203,7 +203,7 @@ class Settings extends React.Component {
         const settingsContainer = (
             <Grid container spacing={16}>
                 <Grid item xs={12} md={6} lg={8}>
-                    <TypographyTranslate variant="h5">Settings</TypographyTranslate>
+                    <TranslateTypography variant="h5">Settings</TranslateTypography>
                 </Grid>
 
                 <Grid item xs={6} md={3} lg={2}>
@@ -447,9 +447,9 @@ class Settings extends React.Component {
                 <Grid item xs={12} />
 
                 <Grid item xs={12} sm={4}>
-                    <ButtonTranslate variant="contained" component={NavLink} to={"/debug-page"} style={styles.button}>
+                    <TranslateButton variant="contained" component={NavLink} to={"/debug-page"} style={styles.button}>
                         Debug application
-                    </ButtonTranslate>
+                    </TranslateButton>
                 </Grid>
 
                 <Grid item xs={12} sm={4} />
@@ -486,15 +486,15 @@ class Settings extends React.Component {
                     </DialogContent>
 
                     <DialogActions>
-                        <ButtonTranslate variant="contained" onClick={() => this.setState({ openImportDialog: false })}>
+                        <TranslateButton variant="contained" onClick={() => this.setState({ openImportDialog: false })}>
                             Cancel
-                        </ButtonTranslate>
-                        <ButtonTranslate variant="contained" onClick={this.overwriteSettingsFile} color="secondary">
+                        </TranslateButton>
+                        <TranslateButton variant="contained" onClick={this.overwriteSettingsFile} color="secondary">
                             Overwrite file
-                        </ButtonTranslate>
-                        <ButtonTranslate variant="contained" onClick={this.importSettingsFile} color="primary">
+                        </TranslateButton>
+                        <TranslateButton variant="contained" onClick={this.importSettingsFile} color="primary">
                             Import file
-                        </ButtonTranslate>
+                        </TranslateButton>
                     </DialogActions>
                 </Dialog>
 

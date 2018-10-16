@@ -26,7 +26,7 @@ import LazyAttachmentImage from "../Components/AttachmentImage/LazyAttachmentIma
 import NavLink from "../Components/Routing/NavLink";
 import CombinedList from "../Components/CombinedList/CombinedList";
 import AccountCard from "../Components/AccountCard";
-import ButtonTranslate from "../Components/TranslationHelpers/Button";
+import TranslateButton from "../Components/TranslationHelpers/Button";
 import { filterShareInviteBankResponses, filterShareInviteBankInquiries } from "../Helpers/DataFilters";
 
 import { openSnackbar } from "../Actions/snackbar";
@@ -313,15 +313,15 @@ class AccountInfo extends React.Component {
                         </DialogContent>
 
                         <DialogActions>
-                            <ButtonTranslate
+                            <TranslateButton
                                 variant="contained"
                                 onClick={this.toggleDeactivateDialog}
                                 color="primary"
                                 autoFocus
                             >
                                 Cancel
-                            </ButtonTranslate>
-                            <ButtonTranslate
+                            </TranslateButton>
+                            <TranslateButton
                                 variant="contained"
                                 onClick={this.deactivateAccount}
                                 color="secondary"
@@ -332,7 +332,7 @@ class AccountInfo extends React.Component {
                                 }
                             >
                                 Agree
-                            </ButtonTranslate>
+                            </TranslateButton>
                         </DialogActions>
                     </Dialog>
 
@@ -366,22 +366,22 @@ class AccountInfo extends React.Component {
                         </DialogContent>
 
                         <DialogActions>
-                            <ButtonTranslate
+                            <TranslateButton
                                 variant="contained"
                                 onClick={this.toggleSettingsDialog}
                                 color="secondary"
                                 autoFocus
                             >
                                 Cancel
-                            </ButtonTranslate>
-                            <ButtonTranslate
+                            </TranslateButton>
+                            <TranslateButton
                                 variant="contained"
                                 onClick={this.editAccount}
                                 disabled={this.props.accountsLoading || this.state.settingsDescription.length === 0}
                                 color="primary"
                             >
                                 Update
-                            </ButtonTranslate>
+                            </TranslateButton>
                         </DialogActions>
                     </Dialog>
 
