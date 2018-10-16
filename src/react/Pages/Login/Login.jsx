@@ -51,7 +51,8 @@ const styles = {
     cardWrapper: {
         display: "flex",
         textAlign: "center",
-        alignItems: "flex-start"
+        alignItems: "flex-start",
+        position: "relative"
     },
     cardWrapperInner: {
         textAlign: "center"

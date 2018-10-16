@@ -12,9 +12,11 @@ import TranslateButton from "../../Components/TranslationHelpers/Button";
 
 const styles = {
     card: {
+        position: "absolute",
         width: 250,
         marginLeft: 8,
-        marginTop: 48
+        marginTop: 48,
+        left: 250
     },
     cardContent: {
         backgroundColor: "#ffffff",
