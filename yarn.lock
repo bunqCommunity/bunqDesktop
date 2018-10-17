@@ -947,10 +947,10 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@bunq-community/bunq-js-client@^0.25.6":
-  version "0.25.6"
-  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.25.6.tgz#d928d2820fe1f3d4a9c037d1a1b42740594f4002"
-  integrity sha512-2lxbOfrThCcGIHd0nbqamr0yLvPZSNk2Eu1twuP+NJKS0OajECSilauSd2YidF8SnpdGV5whia6+OguIhFfoow==
+"@bunq-community/bunq-js-client@^0.27.0":
+  version "0.27.0"
+  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.27.0.tgz#747a717e733d63a3843b425d6aa4bc81594d30de"
+  integrity sha512-O+s0Be27peXOfMJZ4Ncx1Zsxnm7T1MDHZM5n/DBPngy1tA5mhlD+Qmq2zUWGuHk0sBrY2GP8wMfUV/z0WUT2iw==
   dependencies:
     "@babel/cli" "^7.0.0"
     "@babel/core" "^7.0.0"
