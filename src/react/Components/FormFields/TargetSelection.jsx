@@ -167,7 +167,7 @@ class TargetSelection extends React.Component {
                         items={this.state.ibanList}
                         id="ibanName"
                         label={t("IBAN name")}
-                        error={this.props.targetError}
+                        error={this.props.ibanNameError}
                         value={this.props.ibanName}
                         onChange={this.props.handleChange("ibanName")}
                         onChangeName={this.props.handleChangeDirect("ibanName")}
