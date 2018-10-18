@@ -73,37 +73,39 @@ class InputSuggestions extends React.Component {
 
         let count = 0;
 
-        const filteredItems = items.filter(item => {
-            // already over limit
-            if (count >= 5) return false;
+        const inputValue = this.props.value.toLowerCase().trim();
 
-            // don't both if visible is false
-            if (!this.state.visible) return false;
+        // no input so no search
+        let filteredItems = [];
+        if (inputValue && inputValue.length > 0){
+            filteredItems = items.filter(item => {
+                // already over limit
+                if (count >= 5) return false;
 
-            // check if a valid value is set
-            if (!this.props.value) return false;
+                // don't both if visible is false
+                if (!this.state.visible) return false;
 
-            // input data to lowercase
-            const inputValue = this.props.value.toLowerCase().trim();
-            const inputName = item.name.toLowerCase().trim();
-            const inputField = item.field.toLowerCase().trim();
+                // check if a valid value is set
+                if (!this.props.value) return false;
 
-            // no input so no search
-            if (!inputValue || inputValue.length === 0) return false;
+                // input data to lowercase
+                const inputName = item.name.toLowerCase().trim();
+                const inputField = item.field.toLowerCase().trim();
 
-            // ignore item if it is already a direct match
-            if (inputValue === inputField) return false;
+                // ignore item if it is already a direct match
+                if (inputValue === inputField) return false;
 
-            const nameMatches = inputName.length > 0 && inputName.includes(inputValue);
-            const fieldMatches = inputField.length > 0 && inputField.includes(inputValue);
+                const nameMatches = inputName.length > 0 && inputName.includes(inputValue);
+                const fieldMatches = inputField.length > 0 && inputField.includes(inputValue);
 
-            // check if either name or field matches the search query
-            if (!nameMatches && !fieldMatches) return false;
+                // check if either name or field matches the search query
+                if (!nameMatches && !fieldMatches) return false;
 
-            count++;
+                count++;
 
-            return true;
-        });
+                return true;
+            });
+        }
 
         // allow component to be overwritten by custom
         const InputFieldComponent = InputComponent ? InputComponent : TextField;

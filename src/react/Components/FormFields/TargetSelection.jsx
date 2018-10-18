@@ -80,6 +80,16 @@ class TargetSelection extends React.Component {
         this.props.openSnackbar(this.props.t(`Copied to your clipboard`));
     };
 
+    onIbanChange = e => {
+        const iban = e.target.value;
+        const upperCaseIban = iban.toUpperCase();
+        this.props.handleChangeDirect("target")(upperCaseIban);
+    };
+    onIbanChangeDirect = iban => {
+        const upperCaseIban = iban.toUpperCase();
+        this.props.handleChangeDirect("target")(upperCaseIban);
+    };
+
     render() {
         const t = this.props.t;
         let targetContent = null;
@@ -143,24 +153,25 @@ class TargetSelection extends React.Component {
                         autoFocus
                         fullWidth
                         id="target"
-                        items={this.state.ibanList}
                         label={t("IBAN number")}
+                        items={this.state.ibanList}
                         error={this.props.targetError}
                         value={this.props.target}
-                        onChange={this.props.handleChange("target")}
+                        onChange={this.onIbanChange}
                         onChangeName={this.props.handleChangeDirect("ibanName")}
-                        onSelectItem={this.props.handleChangeDirect("target")}
+                        onSelectItem={this.onIbanChangeDirect}
                         onKeyPress={this.enterKeySubmit}
                     />,
-                    <TextField
+                    <InputSuggestions
                         fullWidth
-                        required
-                        error={this.props.ibanNameError}
+                        items={this.state.ibanList}
                         id="ibanName"
                         label={t("IBAN name")}
+                        error={this.props.targetError}
                         value={this.props.ibanName}
                         onChange={this.props.handleChange("ibanName")}
-                        margin="normal"
+                        onChangeName={this.props.handleChangeDirect("ibanName")}
+                        onSelectItem={this.props.handleChangeDirect("target")}
                         onKeyPress={this.enterKeySubmit}
                     />
                 ];
