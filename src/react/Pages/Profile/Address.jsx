@@ -1,6 +1,9 @@
 import React from "react";
+import { Field } from "redux-form";
 import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
+
+import renderTextField from "../../Components/ReduxForm/Fields/renderTextField";
+import { required } from "../../Components/ReduxForm/Validators";
 
 const styles = {
     textField: {
@@ -9,56 +12,61 @@ const styles = {
 };
 
 export default props => {
-    const { t, address } = props;
+    const { t, subAddressKey } = props;
 
     return (
         <Grid container spacing={8}>
             <Grid item xs={12}>
-                <TextField
+                <Field
                     style={styles.textField}
-                    label={t("City")}
-                    value={address.city ? address.city : ""}
-                    onChange={props.onChange("city")}
+                    component={renderTextField}
+                    name={`${subAddressKey}.city`}
+                    label="City"
+                    validate={[required]}
                 />
             </Grid>
             <Grid item xs={12}>
-                <TextField
+                <Field
                     style={styles.textField}
-                    label={t("Country")}
-                    value={address.country ? address.country : ""}
-                    onChange={props.onChange("country")}
+                    component={renderTextField}
+                    name={`${subAddressKey}.country`}
+                    label="Country"
+                    validate={[required]}
                 />
             </Grid>
             <Grid item xs={12}>
-                <TextField
+                <Field
                     style={styles.textField}
-                    label={t("House number")}
-                    value={address.house_number ? address.house_number : ""}
-                    onChange={props.onChange("house_number")}
+                    component={renderTextField}
+                    name={`${subAddressKey}.house_number`}
+                    label="House number"
+                    validate={[required]}
                 />
             </Grid>
             <Grid item xs={12}>
-                <TextField
+                <Field
                     style={styles.textField}
-                    label={t("Postal code")}
-                    value={address.postal_code ? address.postal_code : ""}
-                    onChange={props.onChange("postal_code")}
+                    component={renderTextField}
+                    name={`${subAddressKey}.postal_code`}
+                    label="Postal code"
+                    validate={[required]}
                 />
             </Grid>
             <Grid item xs={12}>
-                <TextField
+                <Field
                     style={styles.textField}
-                    label={t("PO box")}
-                    value={address.po_box ? address.po_box : ""}
-                    onChange={props.onChange("po_box")}
+                    component={renderTextField}
+                    name={`${subAddressKey}.po_box`}
+                    label="PO box"
                 />
             </Grid>
             <Grid item xs={12}>
-                <TextField
+                <Field
                     style={styles.textField}
-                    label={t("Street")}
-                    value={address.street ? address.street : ""}
-                    onChange={props.onChange("street")}
+                    component={renderTextField}
+                    name={`${subAddressKey}.street`}
+                    label="Street"
+                    validate={[required]}
                 />
             </Grid>
         </Grid>
