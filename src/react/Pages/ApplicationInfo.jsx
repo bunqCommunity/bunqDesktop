@@ -10,6 +10,7 @@ import Avatar from "@material-ui/core/Avatar";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import TextField from "@material-ui/core/TextField";
 
 import FolderIcon from "@material-ui/icons/Folder";
 
@@ -19,6 +20,7 @@ const app = remote.app;
 
 import NavLink from "../Components/Routing/NavLink";
 import TranslateButton from "../Components/TranslationHelpers/Button";
+import TranslateTypography from "../Components/TranslationHelpers/Typography";
 
 import { openSnackbar } from "../Actions/snackbar";
 import { allReleases } from "../Helpers/VersionChecker";
@@ -82,6 +84,8 @@ class ApplicationInfo extends React.Component {
             );
         });
 
+        const userDataPath = app.getPath("userData");
+
         return (
             <Grid container spacing={24} justify={"center"}>
                 <Helmet>
@@ -117,13 +121,29 @@ class ApplicationInfo extends React.Component {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Typography variant="body1">
-                                    {t("Application data")}: {app.getPath("userData")}
-                                </Typography>
+                                <TranslateTypography variant="body1">
+                                    Application files
+                                </TranslateTypography>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth={true}
+                                    inputProps={{readOnly: true}}
+                                    value={userDataPath}
+                                    label={t("Application files")}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth={true}
+                                    inputProps={{readOnly: true}}
+                                    value={Logger.transports.file.file}
+                                    label={t("Log file")}
+                                />
                             </Grid>
 
                             <Grid item xs={12}>
-                                <TranslateButton variant="contained" component={NavLink} to={"/"}>
+                                <TranslateButton variant="outlined" component={NavLink} to={"/"}>
                                     Back
                                 </TranslateButton>
                             </Grid>

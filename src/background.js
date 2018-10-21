@@ -23,7 +23,7 @@ import env from "./env";
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 1;
 
 const platform = os.platform();
-const userDataPath = app.getPath("userData");
+let userDataPath = app.getPath("userData");
 
 const imagesDir = path.join(__dirname, `..${path.sep}app${path.sep}images${path.sep}`);
 let trayIcon = "";
@@ -76,14 +76,15 @@ const getWindowUrl = fileName => {
 // Save userData in separate folders for each environment
 if (env.name !== "production") {
     app.setPath("userData", `${userDataPath} (${env.name})`);
+    userDataPath = app.getPath("userData");
 }
 
 // setup the logger
-log.transports.file.appName = "BunqDesktop";
+log.transports.file.appName = "bunqDesktop";
 log.transports.file.level = "debug";
 log.transports.file.maxSize = 512 * 1024;
 log.transports.file.format = "{h}:{i}:{s}:{ms} {text}";
-log.transports.file.file = `${userDataPath}${path.sep}BunqDesktop.${env.name}.log.txt`;
+log.transports.file.file = `${userDataPath}${path.sep}bunqDesktop.${env.name}.log.txt`;
 
 // hot reloading
 if (process.env.NODE_ENV === "development") {

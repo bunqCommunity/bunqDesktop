@@ -207,13 +207,13 @@ class Settings extends React.Component {
                 </Grid>
 
                 <Grid item xs={6} md={3} lg={2}>
-                    <Button variant="contained" color="secondary" style={styles.button} onClick={this.clearPrivateData}>
+                    <Button variant="outlined" color="secondary" style={styles.button} onClick={this.clearPrivateData}>
                         {t("Remove keys")} <RemoveIcon />
                     </Button>
                 </Grid>
 
                 <Grid item xs={6} md={3} lg={2}>
-                    <Button variant="contained" color="primary" style={styles.button} onClick={this.logout}>
+                    <Button variant="outlined" color="primary" style={styles.button} onClick={this.logout}>
                         {t("Logout")} <LogoutIcon />
                     </Button>
                 </Grid>
@@ -447,7 +447,7 @@ class Settings extends React.Component {
                 <Grid item xs={12} />
 
                 <Grid item xs={12} sm={4}>
-                    <TranslateButton variant="contained" component={NavLink} to={"/debug-page"} style={styles.button}>
+                    <TranslateButton variant="outlined" component={NavLink} to={"/debug-page"} style={styles.button}>
                         Debug application
                     </TranslateButton>
                 </Grid>
@@ -456,7 +456,7 @@ class Settings extends React.Component {
 
                 <Grid item xs={12} sm={4}>
                     <Button
-                        variant="contained"
+                        variant="outlined"
                         color="secondary"
                         style={styles.button}
                         onClick={this.handleResetBunqDesktop}

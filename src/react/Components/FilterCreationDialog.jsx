@@ -80,7 +80,7 @@ export default props => {
                         copyItems
                     ) : (
                         <ListItem>
-                            <ListItemText primary="primary text" secondary="secondary text" />
+                            <ListItemText primary="No items found" />
                         </ListItem>
                     )}
                 </List>

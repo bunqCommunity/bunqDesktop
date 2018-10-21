@@ -141,7 +141,7 @@ class Contacts extends React.Component {
 
                         <Grid item xs={4} md={3} style={styles.row}>
                             <TranslateButton
-                                variant="contained"
+                                variant="outlined"
                                 color="secondary"
                                 style={styles.button}
                                 disabled={this.props.contactsLoading}

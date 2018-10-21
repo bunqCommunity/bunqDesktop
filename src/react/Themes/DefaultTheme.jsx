@@ -4,6 +4,7 @@ export default {
         useNextVariants: true
     },
     palette: {
+        type: "light",
         common: {
             receivedPayment: "#008000",
             sentPayment: "#ff0000"
@@ -31,8 +32,7 @@ export default {
             awaiting_payment: "#62ca04",
             cancelled: "#a4a6a4",
             expired: "#a4a6a4"
-        },
-        type: "light"
+        }
     },
     styles: {
         moneyInput: {

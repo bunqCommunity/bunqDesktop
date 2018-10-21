@@ -386,7 +386,7 @@ class FilterDrawer extends React.Component {
         );
 
         const button = this.props.bigButton ? (
-            <Button variant="contained" key={"button"} onClick={this.openDrawer} {...this.props.buttonProps}>
+            <Button variant="outlined" key={"button"} onClick={this.openDrawer} {...this.props.buttonProps}>
                 {t("Filter")} <FilterListIcon />
             </Button>
         ) : (

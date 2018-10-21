@@ -12,7 +12,6 @@ import DateFnsUtils from "material-ui-pickers/utils/date-fns-utils";
 import MuiPickersUtilsProvider from "material-ui-pickers/utils/MuiPickersUtilsProvider";
 
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Switch from "@material-ui/core/Switch";
 import TextField from "@material-ui/core/TextField";
@@ -28,6 +27,7 @@ import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDi
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
 import TargetSelection from "../../Components/FormFields/TargetSelection";
 import SchedulePaymentForm from "../../Components/FormFields/SchedulePaymentForm";
+import TranslateButton from "../../Components/TranslationHelpers/Button";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { paySchedule, paySend } from "../../Actions/pay";
@@ -706,15 +706,15 @@ class Pay extends React.Component {
                                 />
                             </FormControl>
 
-                            <Button
+                            <TranslateButton
                                 variant="contained"
                                 color="primary"
                                 disabled={!this.state.validForm || this.props.payLoading}
                                 style={styles.payButton}
                                 onClick={this.openModal}
                             >
-                                {t("Pay")}
-                            </Button>
+                                Pay
+                            </TranslateButton>
                         </Paper>
 
                         <ConfirmationDialog

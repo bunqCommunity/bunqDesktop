@@ -15,7 +15,6 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 import AccountList from "../../Components/AccountList/AccountList";
-import LoadOlderButton from "../../Components/LoadOlderButton";
 import ClearBtn from "../../Components/FilterComponents/ClearFilter";
 import FilterDrawer from "../../Components/FilterComponents/FilterDrawer";
 
@@ -489,15 +488,6 @@ class Stats extends React.Component {
                                         />
                                     }
                                     label="Transaction amount vs. event count"
-                                />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <LoadOlderButton
-                                    wrapperStyle={{ margin: 0 }}
-                                    buttonStyle={{ width: "100%" }}
-                                    BunqJSClient={this.props.BunqJSClient}
-                                    initialBunqConnect={this.props.initialBunqConnect}
                                 />
                             </Grid>
 

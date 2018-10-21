@@ -151,17 +151,6 @@ class NoteTextForm extends React.Component {
                             Send
                         </TranslateButton>
                     </Grid>
-
-                    {/*<Grid item xs={12}>*/}
-                    {/*<Button*/}
-                    {/*variant="contained"*/}
-                    {/*style={styles.button}*/}
-                    {/*disabled={noteTextsLoading}*/}
-                    {/*onClick={this.updateNotes}*/}
-                    {/*>*/}
-                    {/*list note*/}
-                    {/*</Button>*/}
-                    {/*</Grid>*/}
                 </Grid>
             </Paper>
         );

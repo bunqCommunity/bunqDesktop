@@ -146,7 +146,7 @@ class RuleDashboard extends React.Component {
 
                             <Grid item xs={12}>
                                 <Button
-                                    variant="contained"
+                                    variant="outlined"
                                     style={styles.newRuleButton}
                                     onClick={this.openImportDialog}
                                 >
@@ -157,7 +157,7 @@ class RuleDashboard extends React.Component {
 
                             <Grid item xs={12}>
                                 <Button
-                                    variant="contained"
+                                    variant="outlined"
                                     style={styles.newRuleButton}
                                     onClick={this.openExportDialog}
                                 >

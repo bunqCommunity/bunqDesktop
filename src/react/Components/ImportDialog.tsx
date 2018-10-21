@@ -72,12 +72,12 @@ class ImportDialog extends React.Component<any, any> {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <TranslateButton variant="contained" onClick={closeModal} color="secondary">
+                    <TranslateButton variant="outlined" onClick={closeModal} color="secondary">
                         Cancel
                     </TranslateButton>
 
                     {showAsNewButton ? (
-                        <TranslateButton variant="contained" onClick={this.importDataNew}>
+                        <TranslateButton variant="outlined" onClick={this.importDataNew}>
                             Import as new
                         </TranslateButton>
                     ) : null}
