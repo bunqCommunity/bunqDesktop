@@ -77,7 +77,7 @@ class InputSuggestions extends React.Component {
 
         // no input so no search
         let filteredItems = [];
-        if (inputValue && inputValue.length > 0){
+        if (inputValue && inputValue.length > 0) {
             filteredItems = items.filter(item => {
                 // already over limit
                 if (count >= 5) return false;

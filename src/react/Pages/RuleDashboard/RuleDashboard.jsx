@@ -104,8 +104,7 @@ class RuleDashboard extends React.Component {
         const categoryRulesList = Object.keys(categoryRules).map(categoryRuleId => (
             <RuleCollectionItem ruleCollection={categoryRules[categoryRuleId]} categories={categories} t={t} />
         ));
-
-        const categoryRulesArray = Object.keys(categoryRules).map(id => categoryRules[id]);
+        const categoryRulesArray = Object.values(categoryRules);
 
         return (
             <Grid container spacing={16}>
@@ -145,22 +144,14 @@ class RuleDashboard extends React.Component {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Button
-                                    variant="outlined"
-                                    style={styles.newRuleButton}
-                                    onClick={this.openImportDialog}
-                                >
+                                <Button variant="outlined" style={styles.newRuleButton} onClick={this.openImportDialog}>
                                     {t("Import")}
                                     <FileDownloadIcon style={styles.buttonIcons} />
                                 </Button>
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Button
-                                    variant="outlined"
-                                    style={styles.newRuleButton}
-                                    onClick={this.openExportDialog}
-                                >
+                                <Button variant="outlined" style={styles.newRuleButton} onClick={this.openExportDialog}>
                                     {t("Export")}
                                     <FileUploadIcon style={styles.buttonIcons} />
                                 </Button>

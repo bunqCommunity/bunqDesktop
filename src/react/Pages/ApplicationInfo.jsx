@@ -121,14 +121,12 @@ class ApplicationInfo extends React.Component {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <TranslateTypography variant="body1">
-                                    Application files
-                                </TranslateTypography>
+                                <TranslateTypography variant="body1">Application files</TranslateTypography>
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
                                     fullWidth={true}
-                                    inputProps={{readOnly: true}}
+                                    inputProps={{ readOnly: true }}
                                     value={userDataPath}
                                     label={t("Application files")}
                                 />
@@ -136,7 +134,7 @@ class ApplicationInfo extends React.Component {
                             <Grid item xs={12}>
                                 <TextField
                                     fullWidth={true}
-                                    inputProps={{readOnly: true}}
+                                    inputProps={{ readOnly: true }}
                                     value={Logger.transports.file.file}
                                     label={t("Log file")}
                                 />
