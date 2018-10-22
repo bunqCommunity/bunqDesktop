@@ -1,5 +1,5 @@
 import React from "react";
-import { Field } from "redux-form";
+import { Field, reduxForm } from "redux-form";
 import Grid from "@material-ui/core/Grid";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
@@ -17,7 +17,7 @@ const styles = {
     }
 };
 
-export default props => {
+let ProfileDetailsForm = props => {
     const { t, handleSubmit, pristine, submitting, valid } = props;
 
     return (
@@ -61,3 +61,9 @@ export default props => {
         </Grid>
     );
 };
+
+ProfileDetailsForm = reduxForm({
+    form: "profileDetails"
+})(ProfileDetailsForm);
+
+export default ProfileDetailsForm;
