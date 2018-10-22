@@ -25,6 +25,11 @@ const styles = {
         width: 60,
         height: 60
     },
+    avatarSub: {
+        position: "absolute",
+        left: 60,
+        bottom: 4
+    },
     secondaryIcon: {
         width: 26,
         height: 26,
@@ -71,14 +76,19 @@ class AccountListItem extends React.Component {
         formattedBalance = this.props.hideBalance ? "" : formatMoney(formattedBalance, true);
 
         // check if any of the selected account ids are for this account
-        let displaySelectIcon = false;
+        let displayStyle = {};
         let accountIsSelected = false;
         if (selectedAccountIds.length !== 0) {
             // check if the selected account ids list contains this account
-            accountIsSelected = selectedAccountIds.some(selectedAccountId => selectedAccountId === account.id);
-
+            accountIsSelected = selectedAccountIds.some(id => id === account.id);
             // switch if toggle is true
-            displaySelectIcon = toggleAccountIds ? !accountIsSelected : accountIsSelected;
+            const isSelected = toggleAccountIds ? !accountIsSelected : accountIsSelected;
+            displayStyle = isSelected
+                ? {
+                      borderLeft: "4px solid #1da1f2",
+                      paddingLeft: 20
+                  }
+                : {};
         }
 
         // decide which onClick event is used based on
@@ -90,7 +100,7 @@ class AccountListItem extends React.Component {
         const onClickHandler = this.props.onClick ? e => this.props.onClick(user.id, account.id) : defaultClickHandler;
 
         return (
-            <ListItem divider button onClick={onClickHandler}>
+            <ListItem divider button onClick={onClickHandler} style={displayStyle}>
                 <Avatar style={styles.bigAvatar}>
                     <LazyAttachmentImage
                         height={60}
@@ -98,14 +108,14 @@ class AccountListItem extends React.Component {
                         imageUUID={account.avatar.image[0].attachment_public_uuid}
                     />
                 </Avatar>
-                <div style={{ position: "absolute", left: 60, bottom: 4 }}>{avatarSub}</div>
+                <div style={styles.avatarSub}>{avatarSub}</div>
                 <ListItemText primary={account.description} secondary={formattedBalance} />
                 <ListItemSecondaryAction>
                     {this.props.secondaryAction ? (
                         this.props.secondaryAction
                     ) : (
                         <IconButton to={`/account-info/${account.id}`} component={NavLink}>
-                            {displaySelectIcon ? <KeyboardArrowRightIcon /> : <InfoIcon />}
+                            <InfoIcon />
                         </IconButton>
                     )}
                 </ListItemSecondaryAction>

@@ -2,11 +2,11 @@ import React from "react";
 import { ipcRenderer } from "electron";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
-import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import Checkbox from "@material-ui/core/Checkbox";
-import ListItem from "@material-ui/core/ListItem";
 import IconButton from "@material-ui/core/IconButton";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 
