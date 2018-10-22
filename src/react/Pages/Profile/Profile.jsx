@@ -15,7 +15,7 @@ import TableRow from "@material-ui/core/TableRow";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
-import Address from "./Address";
+import ProfileDetailsForm from "./ProfileDetailsForm";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { userLogin } from "../../Actions/user";
@@ -50,27 +50,8 @@ class Profile extends React.Component {
         super(props, context);
         this.state = {
             loading: false,
-
-            public_nick_name: "",
-
-            address_main: {
-                city: "",
-                country: "",
-                house_number: "",
-                postal_code: "",
-                po_box: "",
-                street: ""
-            },
-            address_postal: {
-                city: "",
-                country: "",
-                house_number: "",
-                postal_code: "",
-                po_box: "",
-                street: ""
-            },
-
-            totalBalance: 0
+            totalBalance: 0,
+            normalizedUserInfo: false
         };
     }
 
@@ -84,6 +65,12 @@ class Profile extends React.Component {
     }
 
     componentDidUpdate(oldProps) {
+        if (oldProps.userLoading === false && this.props.userLoading === true) {
+            // if user data is loading, reset the initial user state
+            this.setState({
+                normalizedUserInfo: false
+            });
+        }
         if (oldProps.userLoading === true && this.props.userLoading === false) {
             this.userToState();
         }
@@ -105,9 +92,11 @@ class Profile extends React.Component {
     userToState = () => {
         const user = this.props.user;
         this.setState({
-            public_nick_name: user.public_nick_name,
-            address_main: this.normalizeAddress(user.address_main),
-            address_postal: this.normalizeAddress(user.address_postal)
+            normalizedUserInfo: {
+                public_nick_name: user.public_nick_name,
+                address_main: this.normalizeAddress(user.address_main),
+                address_postal: this.normalizeAddress(user.address_postal)
+            }
         });
     };
 
@@ -119,22 +108,15 @@ class Profile extends React.Component {
         return formattedAddress;
     };
 
-    onChangeAddress = addressType => type => event => {
-        // set the value for this address and type
-        this.state[addressType][type] = event.target.value;
-        // update the actual state
-        this.setState({
-            [addressType]: this.state[addressType]
-        });
-    };
     onChange = key => event => {
         this.setState({
             [key]: event.target.value
         });
     };
 
-    updateSettings = () => {
-        const { address_postal, address_main, public_nick_name } = this.state;
+    updateSettings = data => {
+        const { address_postal, address_main, public_nick_name } = data;
+
         const { t, user, userType, BunqJSClient } = this.props;
         const errorMessage = t("We failed to update your user information");
         this.setState({ loading: true });
@@ -260,49 +242,12 @@ class Profile extends React.Component {
             content = (
                 <React.Fragment>
                     <Paper style={styles.paper}>
-                        <Grid container spacing={16}>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label={t("Public nick name")}
-                                    style={styles.textField}
-                                    value={this.state.public_nick_name}
-                                    onChange={this.onChange("public_nick_name")}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} sm={6}>
-                                <TranslateTypography variant="h6" style={styles.title}>
-                                    Main address
-                                </TranslateTypography>
-                                <Address
-                                    t={t}
-                                    address={this.state.address_main}
-                                    onChange={this.onChangeAddress("address_main")}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} sm={6}>
-                                <TranslateTypography variant="h6" style={styles.title}>
-                                    Postal address
-                                </TranslateTypography>
-                                <Address
-                                    t={t}
-                                    address={this.state.address_postal}
-                                    onChange={this.onChangeAddress("address_postal")}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} sm={6}>
-                                <Button
-                                    disabled={this.state.loading}
-                                    onClick={this.updateSettings}
-                                    variant="contained"
-                                    color={"primary"}
-                                >
-                                    Update
-                                </Button>
-                            </Grid>
-                        </Grid>
+                        {this.state.normalizedUserInfo && (
+                            <ProfileDetailsForm
+                                initialValues={this.state.normalizedUserInfo}
+                                onSubmit={this.updateSettings}
+                            />
+                        )}
                     </Paper>
 
                     {businessInfo}

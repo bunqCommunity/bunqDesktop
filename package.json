@@ -236,6 +236,7 @@
         "react-visibility-sensor": "^3.11.0",
         "react-windowed-list": "^2.0.0",
         "redux": "^3.7.2",
+        "redux-form": "^7.4.2",
         "redux-logger": "^3.0.6",
         "redux-mock-store": "^1.5.1",
         "redux-thunk": "^2.2.0",
