@@ -402,10 +402,8 @@ class RequestInquiry extends React.Component {
                 // default to 1 if split is enabled
                 const splitAmountValue =
                     typeof splitAmounts[target.value] !== "undefined" ? splitAmounts[target.value] : 1;
-
                 // calculate the percentage for this split vs total
                 const percentage = totalSplit > 0 ? splitAmountValue / totalSplit : 0;
-
                 // calculate the actual amount
                 const moneyAmount = amount * percentage;
 
