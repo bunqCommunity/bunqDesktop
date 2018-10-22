@@ -1,6 +1,8 @@
 import React from "react";
-import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 
 const styles = {
     sideBarPaper: {
@@ -10,13 +12,14 @@ const styles = {
 };
 
 export default props => {
+    const { t, data, splitCardTypes } = props;
     return (
         <Paper style={styles.sideBarPaper}>
             <List dense component="nav">
                 <ListItem>
-                    <ListItemText primary={t("Payments")} secondary={this.props.payments.length} />
+                    <ListItemText primary={t("Payments")} secondary={props.payments.length} />
                 </ListItem>
-                {this.state.splitCardTypes ? (
+                {splitCardTypes ? (
                     <React.Fragment>
                         <ListItem>
                             <ListItemText
@@ -45,17 +48,17 @@ export default props => {
                     </React.Fragment>
                 ) : (
                     <ListItem>
-                        <ListItemText primary={t("Card payments")} secondary={this.props.masterCardActions.length} />
+                        <ListItemText primary={t("Card payments")} secondary={props.masterCardActions.length} />
                     </ListItem>
                 )}
                 <ListItem>
-                    <ListItemText primary={t("Requests sent")} secondary={this.props.requestInquiries.length} />
+                    <ListItemText primary={t("Requests sent")} secondary={props.requestInquiries.length} />
                 </ListItem>
                 <ListItem>
-                    <ListItemText primary={t("Requests received")} secondary={this.props.requestResponses.length} />
+                    <ListItemText primary={t("Requests received")} secondary={props.requestResponses.length} />
                 </ListItem>
                 <ListItem>
-                    <ListItemText primary={t("bunqme Requests")} secondary={this.props.bunqMeTabs.length} />
+                    <ListItemText primary={t("bunqme Requests")} secondary={props.bunqMeTabs.length} />
                 </ListItem>
             </List>
         </Paper>

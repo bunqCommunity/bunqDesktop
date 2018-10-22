@@ -24,7 +24,12 @@ import CategoryTransactionHistoryChart from "./Chart/Timeline/CategoryTransactio
 
 const StatsWorker = require("worker-loader!../../WebWorkers/stats.worker.js");
 
-const styles = {};
+const styles = {
+    sideBarPaper: {
+        padding: 16,
+        marginBottom: 16
+    }
+};
 
 class Stats extends React.Component {
     constructor(props, context) {

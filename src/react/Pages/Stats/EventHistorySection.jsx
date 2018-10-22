@@ -16,39 +16,9 @@ export default props => {
                 {displayTransactionAmount ? "Event transaction history" : "Event history count"}
             </ChartTitle>
 
-            <div>
-                {splitCardTypes ? (
-                    displayTransactionAmount ? (
-                        <EventTypeSplitTransactionHistoryChart
-                            height={500}
-                            theme={theme}
-                            labels={data.labels}
-                            requestInquiryTransactionHistory={data.requestInquiryTransactionHistory}
-                            requestResponseTransactionHistory={data.requestResponseTransactionHistory}
-                            bunqMeTabTransactionHistory={data.bunqMeTabTransactionHistory}
-                            paymentTransactionHistory={data.paymentTransactionHistory}
-                            masterCardPaymentTransactionHistory={data.masterCardPaymentTransactionHistory}
-                            maestroPaymentTransactionHistory={data.maestroPaymentTransactionHistory}
-                            tapAndPayPaymentTransactionHistory={data.tapAndPayPaymentTransactionHistory}
-                            applePayPaymentTransactionHistory={data.applePayPaymentTransactionHistory}
-                        />
-                    ) : (
-                        <EventTypeSplitHistoryChart
-                            height={500}
-                            theme={theme}
-                            labels={data.labels}
-                            requestInquiryHistory={data.requestInquiryHistory}
-                            requestResponseHistory={data.requestResponseHistory}
-                            bunqMeTabHistory={data.bunqMeTabHistory}
-                            paymentHistory={data.paymentHistory}
-                            masterCardPaymentCountHistory={data.masterCardPaymentCountHistory}
-                            maestroPaymentCountHistory={data.maestroPaymentCountHistory}
-                            tapAndPayPaymentCountHistory={data.tapAndPayPaymentCountHistory}
-                            applePayPaymentCountHistory={data.applePayPaymentCountHistory}
-                        />
-                    )
-                ) : displayTransactionAmount ? (
-                    <EventTypeTransactionHistoryChart
+            {splitCardTypes ? (
+                displayTransactionAmount ? (
+                    <EventTypeSplitTransactionHistoryChart
                         height={500}
                         theme={theme}
                         labels={data.labels}
@@ -56,10 +26,13 @@ export default props => {
                         requestResponseTransactionHistory={data.requestResponseTransactionHistory}
                         bunqMeTabTransactionHistory={data.bunqMeTabTransactionHistory}
                         paymentTransactionHistory={data.paymentTransactionHistory}
-                        masterCardActionTransactionHistory={data.masterCardActionTransactionHistory}
+                        masterCardPaymentTransactionHistory={data.masterCardPaymentTransactionHistory}
+                        maestroPaymentTransactionHistory={data.maestroPaymentTransactionHistory}
+                        tapAndPayPaymentTransactionHistory={data.tapAndPayPaymentTransactionHistory}
+                        applePayPaymentTransactionHistory={data.applePayPaymentTransactionHistory}
                     />
                 ) : (
-                    <EventTypeHistoryChart
+                    <EventTypeSplitHistoryChart
                         height={500}
                         theme={theme}
                         labels={data.labels}
@@ -67,10 +40,35 @@ export default props => {
                         requestResponseHistory={data.requestResponseHistory}
                         bunqMeTabHistory={data.bunqMeTabHistory}
                         paymentHistory={data.paymentHistory}
-                        masterCardActionHistory={data.masterCardActionHistory}
+                        masterCardPaymentCountHistory={data.masterCardPaymentCountHistory}
+                        maestroPaymentCountHistory={data.maestroPaymentCountHistory}
+                        tapAndPayPaymentCountHistory={data.tapAndPayPaymentCountHistory}
+                        applePayPaymentCountHistory={data.applePayPaymentCountHistory}
                     />
-                )}
-            </div>
+                )
+            ) : displayTransactionAmount ? (
+                <EventTypeTransactionHistoryChart
+                    height={500}
+                    theme={theme}
+                    labels={data.labels}
+                    requestInquiryTransactionHistory={data.requestInquiryTransactionHistory}
+                    requestResponseTransactionHistory={data.requestResponseTransactionHistory}
+                    bunqMeTabTransactionHistory={data.bunqMeTabTransactionHistory}
+                    paymentTransactionHistory={data.paymentTransactionHistory}
+                    masterCardActionTransactionHistory={data.masterCardActionTransactionHistory}
+                />
+            ) : (
+                <EventTypeHistoryChart
+                    height={500}
+                    theme={theme}
+                    labels={data.labels}
+                    requestInquiryHistory={data.requestInquiryHistory}
+                    requestResponseHistory={data.requestResponseHistory}
+                    bunqMeTabHistory={data.bunqMeTabHistory}
+                    paymentHistory={data.paymentHistory}
+                    masterCardActionHistory={data.masterCardActionHistory}
+                />
+            )}
         </Paper>
     );
 };

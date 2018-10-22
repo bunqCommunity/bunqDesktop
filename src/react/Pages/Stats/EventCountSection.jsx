@@ -48,7 +48,7 @@ export default props => {
                             ) : (
                                 <EventTransactionPieChart
                                     theme={theme}
-                                    payments={props.payments} // TODO GET FROM PROPS
+                                    payments={props.payments}
                                     requestInquiryTransactionHistory={data.requestInquiryTransactionHistory}
                                     requestResponseTransactionHistory={data.requestResponseTransactionHistory}
                                     bunqMeTabTransactionHistory={data.bunqMeTabTransactionHistory}
@@ -81,6 +81,7 @@ export default props => {
                         )}
                     </Paper>
                 </Grid>
+
                 <Grid item xs={12} sm={6}>
                     <Paper
                         style={{
