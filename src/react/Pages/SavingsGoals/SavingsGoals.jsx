@@ -72,26 +72,6 @@ class SavingsGoals extends React.Component {
         //     this.importSingleRuleCollection(ruleCollectionsReceived);
         // }
     };
-    importSingleRuleCollection = savingsGoal => {
-        // const isValid = RuleCollection.validateRuleCollection(savingsGoal);
-        //
-        // if (isValid !== true) {
-        //     // display error
-        //     this.props.openSnackbar(isValid.message);
-        //     return;
-        // }
-        // const ruleCollection = new RuleCollection();
-        //
-        // // import the data
-        // ruleCollection.fromObject(ruleCollectionObject);
-        //
-        // // ensure we have a valid ID
-        // ruleCollection.ensureId();
-        //
-        // // save the item
-        // this.saveRuleCollection(ruleCollection);
-    };
-
     render() {
         const { t, savingsGoals } = this.props;
 
@@ -154,21 +134,20 @@ class SavingsGoals extends React.Component {
                     </Paper>
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
-                    <Paper style={styles.paper}>
-                        <Grid container spacing={16}>
-                            <Grid item xs={12} sm={3} md={6}>
-                                <TranslateTypography variant="h5">Savings goals</TranslateTypography>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <List>
-                                    <Divider />
-                                    {savingsGoalsList}
-                                </List>
-                            </Grid>
+                <Grid item xs={12} sm={9}>
+                    <Grid container spacing={8}>
+                        <Grid item xs={12}>
+                            <Paper style={styles.paper}>
+                                <Grid container spacing={16}>
+                                    <Grid item xs={12} sm={3} md={6}>
+                                        <TranslateTypography variant="h5">Savings goals</TranslateTypography>
+                                    </Grid>
+                                </Grid>
+                            </Paper>
                         </Grid>
-                    </Paper>
+
+                        {savingsGoalsList}
+                    </Grid>
                 </Grid>
             </Grid>
         );

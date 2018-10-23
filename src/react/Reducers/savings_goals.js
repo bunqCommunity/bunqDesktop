@@ -12,7 +12,7 @@ const savingsGoalsStoredDefault =
 // map stored values to objects
 const mappedSavingsGoals = {};
 Object.keys(savingsGoalsStoredDefault).map(savingsGoal => {
-    const savingsGoalObject = new SavingsGoal(savingsGoal);
+    const savingsGoalObject = new SavingsGoal(savingsGoalsStoredDefault[savingsGoal]);
     mappedSavingsGoals[savingsGoalObject.id] = savingsGoalObject;
 });
 

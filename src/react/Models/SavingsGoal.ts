@@ -6,14 +6,15 @@ export type SavingsGoalSettings = {
 
 export default class SavingsGoal {
     private _id: string | false = false;
-    private _expires: Date | false;
     private _started: Date;
-    private _title: string;
-    private _description: string;
+    private _expires: Date | false;
+    private _ended: Date | false;
+    private _title: string = "";
+    private _description: string = "";
     private _accountIds: number[];
     private _goalAmount: number;
-    private _icon: number;
-    private _settings: SavingsGoalSettings;
+    private _color: number;
+    private _settings: SavingsGoalSettings = {};
 
     private _rawData: any;
 
@@ -28,6 +29,7 @@ export default class SavingsGoal {
 
         this._started = new Date(this._started);
         this._expires = this._expires ? new Date(this._expires) : false;
+        this._ended = this._ended ? new Date(this._ended) : false;
     }
 
     public toJSON(): any {
@@ -47,11 +49,14 @@ export default class SavingsGoal {
     get id(): string | false {
         return this._id;
     }
+    get started(): Date {
+        return this._started;
+    }
     get expires(): Date | false {
         return this._expires;
     }
-    get started(): Date {
-        return this._started;
+    get ended(): Date | false {
+        return this._ended;
     }
     get title(): string {
         return this._title;
@@ -65,10 +70,13 @@ export default class SavingsGoal {
     get goalAmount(): number {
         return this._goalAmount;
     }
-    get icon(): number {
-        return this._icon;
+    get color(): number {
+        return this._color;
     }
     get settings(): SavingsGoalSettings {
         return this._settings;
+    }
+    get isExpired(): boolean {
+        return this._expires && this._expires < new Date();
     }
 }
