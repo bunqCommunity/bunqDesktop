@@ -40,11 +40,12 @@ import request_responses from "./request_responses";
 import request_response from "./request_response";
 import request_response_info from "./request_response_info";
 import scheduled_payments from "./scheduled_payments";
+import savings_goals from "./savings_goals";
+import search_filter from "./search_filter";
 import share_invite_bank_inquiries from "./share_invite_bank_inquiries";
 import share_invite_bank_inquiry from "./share_invite_bank_inquiry";
 import share_invite_bank_responses from "./share_invite_bank_responses";
 import snackbar from "./snackbar";
-import search_filter from "./search_filter";
 import sidebar from "./sidebar";
 import user from "./user";
 import users from "./users";
@@ -90,6 +91,7 @@ export default combineReducers({
     request_response,
     request_response_info,
     scheduled_payments,
+    savings_goals,
     search_filter,
     share_invite_bank_inquiries,
     share_invite_bank_inquiry,

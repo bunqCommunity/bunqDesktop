@@ -25,6 +25,7 @@ import CreateIcon from "@material-ui/icons/Create";
 
 import EventIcon from "@material-ui/icons/Event";
 import FileUploadIcon from "./CustomSVG/FileUpload";
+import TrophyIcon from "./CustomSVG/Trophy";
 
 import QueueSidebarListItem from "./Queue/QueueSidebarListItem";
 import NavLink from "./Routing/NavLink";
@@ -143,6 +144,12 @@ class Sidebar extends React.Component {
                       to="/rules-dashboard"
                       icon={CreateIcon}
                       text="Category rules"
+                      location={this.props.location}
+                  />,
+                  <ListItemWrapper
+                      to="/savings-goals"
+                      icon={TrophyIcon}
+                      text="Savings goals"
                       location={this.props.location}
                   />
               ];
