@@ -1,10 +1,17 @@
 import React from "react";
+import { withStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import ListItem from "@material-ui/core/ListItem";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Typography from "@material-ui/core/Typography";
 import { formatMoney, humanReadableDate } from "../../Helpers/Utils";
+
+const styleOverrides = {
+    barColorPrimary: {
+        background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)"
+    }
+};
 
 const styles = {
     listItem: {
@@ -29,28 +36,47 @@ const styles = {
     },
     progressLabels: {
         textAlign: "center"
+    },
+    progressLabelGrid: {
+        position: "relative",
+        height: 20
+    },
+    progressLabel: {
+        position: "absolute"
     }
 };
 
 class SavingsGoalListItem extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+        this.state = {
+            open: false
+        };
     }
 
     render() {
-        const { t, savingsGoal } = this.props;
+        const { t, classes, savingsGoal, accounts } = this.props;
 
-        const startValue = 0;
-        const currentValue = 20;
+        const totalSaved = accounts.reduce((accumulator, account) => {
+            if (savingsGoal.accountIds.includes(account.id)) {
+                return accumulator + account.getBalance();
+            }
+            return accumulator;
+        }, 0);
+
+        const startValue = savingsGoal.getSetting("startAmount") || 0;
+        const currentValue = totalSaved;
         const endValue = savingsGoal.goalAmount;
         const normalise = value => ((value - startValue) * 100) / (endValue - startValue);
-        const percentage = currentValue > endValue ? 100 : normalise(currentValue);
+        // normalise to 0 or 100 if bigger than end amount or smaller than start amount
+        const percentage = currentValue > endValue ? 100 : currentValue < startValue ? 0 : normalise(currentValue);
 
-        const isExpired = false;
-        const startAmount = formatMoney(savingsGoal.getSetting("startAmount") || 0);
-        const currentAmount = formatMoney(savingsGoal.goalAmount * 0.7);
+        const startAmount = formatMoney(startValue);
+        const currentAmount = formatMoney(currentValue);
         const endAmount = formatMoney(savingsGoal.goalAmount);
+
+        const minusAmount = percentage < 10 ? 10 : 15;
+        const progressLabelStyle = { ...styles.progressLabel, left: `calc(${percentage}% - ${minusAmount}px` };
 
         return (
             <Grid item xs={12}>
@@ -67,9 +93,6 @@ class SavingsGoalListItem extends React.Component {
                                 <Typography variant="h6" style={styles.currentAmountText}>
                                     {currentAmount}
                                 </Typography>
-                                <Typography variant="body2" style={styles.currentAmountText}>
-                                    {percentage}%
-                                </Typography>
                             </Grid>
 
                             <Grid item xs={4} sm={2} md={1}>
@@ -80,7 +103,10 @@ class SavingsGoalListItem extends React.Component {
                             <Grid item xs={4} sm={8} md={10} style={styles.linearProgressWrapper}>
                                 <LinearProgress
                                     style={styles.linearProgress}
-                                    color={isExpired ? "secondary" : "primary"}
+                                    // color={savingsGoals.isExpired ? "secondary" : "primary"}
+                                    classes={{
+                                        barColorPrimary: classes.barColorPrimary
+                                    }}
                                     variant="determinate"
                                     value={percentage}
                                 />
@@ -90,6 +116,13 @@ class SavingsGoalListItem extends React.Component {
                                     {endAmount}
                                 </Typography>
                             </Grid>
+
+                            <Grid item xs={4} sm={2} md={1} />
+                            <Grid item xs={4} sm={8} md={10} style={styles.progressLabelGrid}>
+                                <div style={progressLabelStyle}>
+                                    <Typography variant="body2">{percentage.toFixed(1)}%</Typography>
+                                </div>
+                            </Grid>
                         </Grid>
                     </ListItem>
                 </Paper>
@@ -98,4 +131,4 @@ class SavingsGoalListItem extends React.Component {
     }
 }
 
-export default SavingsGoalListItem;
+export default withStyles(styleOverrides)(SavingsGoalListItem);

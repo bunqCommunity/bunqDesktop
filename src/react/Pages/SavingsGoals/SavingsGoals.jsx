@@ -73,10 +73,10 @@ class SavingsGoals extends React.Component {
         // }
     };
     render() {
-        const { t, savingsGoals } = this.props;
+        const { t, savingsGoals, accounts } = this.props;
 
         const savingsGoalsList = Object.keys(savingsGoals).map(savingsGoalId => (
-            <SavingsGoalListItem savingsGoal={savingsGoals[savingsGoalId]} />
+            <SavingsGoalListItem accounts={accounts} savingsGoal={savingsGoals[savingsGoalId]} />
         ));
         const savingsGoalsArray = Object.values(savingsGoals);
 
@@ -156,6 +156,8 @@ class SavingsGoals extends React.Component {
 
 const mapStateToProps = state => {
     return {
+        accounts: state.accounts.accounts,
+
         savingsGoals: state.savings_goals.savings_goals
     };
 };

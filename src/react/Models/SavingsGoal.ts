@@ -4,11 +4,14 @@ export type SavingsGoalSettings = {
     startAmount?: number;
 };
 
+export type SavingsGoalStatus = "ACTIVE" | "CANCELED" | "EXPIRED" | "COMPLETED" | "FAILED";
+
 export default class SavingsGoal {
     private _id: string | false = false;
     private _started: Date;
     private _expires: Date | false;
     private _ended: Date | false;
+    private _status: SavingsGoalStatus;
     private _title: string = "";
     private _description: string = "";
     private _accountIds: number[];
@@ -57,6 +60,9 @@ export default class SavingsGoal {
     }
     get ended(): Date | false {
         return this._ended;
+    }
+    get status(): SavingsGoalStatus {
+        return this._status;
     }
     get title(): string {
         return this._title;
