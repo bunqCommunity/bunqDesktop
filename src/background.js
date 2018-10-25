@@ -1,4 +1,4 @@
-import { app, shell, Menu, Tray, ipcMain, nativeImage, BrowserWindow } from "electron";
+import { app, shell, Menu, Tray, ipcMain, nativeImage, systemPreferences, BrowserWindow } from "electron";
 import os from "os";
 import fs from "fs";
 import url from "url";
@@ -153,6 +153,18 @@ app.on("ready", () => {
     mainWindow.on("close", function(event) {
         app.quit();
     });
+
+    // system preferences listen for mojave events
+    if (platform === "darwin") {
+        systemPreferences.subscribeNotification("AppleInterfaceThemeChangedNotification", () => {
+            // toggle back to regular theme or dark theme if apple them changed
+            if (systemPreferences.isDarkMode() && settings.get("BUNQDESKTOP_THEME") !== "DarkTheme") {
+                mainWindow.webContents.send("toggle-theme");
+            } else if (!systemPreferences.isDarkMode() && settings.get("BUNQDESKTOP_THEME") === "DarkTheme") {
+                mainWindow.webContents.send("toggle-theme");
+            }
+        });
+    }
 
     // register oauth handlers
     oauth(mainWindow, log);
