@@ -156,13 +156,18 @@ app.on("ready", () => {
 
     // system preferences listen for mojave events
     if (platform === "darwin") {
-        systemPreferences.subscribeNotification("AppleInterfaceThemeChangedNotification", () => {
+        const setCorrectTheme = () => {
             // toggle back to regular theme or dark theme if apple them changed
             if (systemPreferences.isDarkMode() && settings.get("BUNQDESKTOP_THEME") !== "DarkTheme") {
                 mainWindow.webContents.send("toggle-theme");
             } else if (!systemPreferences.isDarkMode() && settings.get("BUNQDESKTOP_THEME") === "DarkTheme") {
                 mainWindow.webContents.send("toggle-theme");
             }
+        };
+        
+        setCorrectTheme();
+        systemPreferences.subscribeNotification("AppleInterfaceThemeChangedNotification", () => {
+            setCorrectTheme();
         });
     }
 
