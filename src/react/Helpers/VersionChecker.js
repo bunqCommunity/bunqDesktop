@@ -16,11 +16,9 @@ const isSemVer = (function() {
         return d
             ? (c ? d[1] || "==" : "") +
                   '"' +
-                  (d[2] + ".0.0")
-                      .match(/\d+(?:\.\d+){0,2}/)[0]
-                      .replace(/(?:^|\.)(\d+)/g, function(g, f) {
-                          return Array(9 - f.length).join(0) + f;
-                      }) +
+                  (d[2] + ".0.0").match(/\d+(?:\.\d+){0,2}/)[0].replace(/(?:^|\.)(\d+)/g, function(g, f) {
+                      return Array(9 - f.length).join(0) + f;
+                  }) +
                   (d[3] || "~") +
                   '"'
             : c
@@ -42,17 +40,13 @@ export default async () => {
     const currentVersion = process.env.CURRENT_VERSION;
     try {
         const response = await axios
-            .get(
-                "https://api.github.com/repos/bunqCommunity/bunqDesktop/releases/latest"
-            )
+            .get("https://api.github.com/repos/bunqCommunity/bunqDesktop/releases/latest")
             .then(response => response.data);
         const latestVersion = response.tag_name;
         return {
             currentVersion: currentVersion,
             latestVersion: latestVersion,
-            newerLink: isSemVer(currentVersion, `<${latestVersion}`)
-                ? response.html_url
-                : false
+            newerLink: isSemVer(currentVersion, `<${latestVersion}`) ? response.html_url : false
         };
     } catch (ex) {
         // fallback to no-update
@@ -65,6 +59,4 @@ export default async () => {
 };
 
 export const allReleases = () =>
-    axios
-        .get("https://api.github.com/repos/bunqCommunity/bunqDesktop/releases")
-        .then(response => response.data);
+    axios.get("https://api.github.com/repos/bunqCommunity/bunqDesktop/releases").then(response => response.data);

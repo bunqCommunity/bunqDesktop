@@ -18,17 +18,20 @@ export const ANALYTICS_ENABLED = "ANALYTICS_ENABLED";
 export const LANGUAGE_LOCATION = "BUNQDESKTOP_LANGUAGE";
 export const USE_NATIVE_FRAME_LOCATION = "USE_NATIVE_FRAME";
 export const MINIMIZE_TO_TRAY_LOCATION = "MINIMIZE_TO_TRAY";
+export const DISPLAY_TRAY_INFO_LOCATION = "DISPLAY_TRAY_INFO";
 export const USE_STICKY_MENU_LOCATION = "USE_STICKY_MENU";
 export const CHECK_INACTIVITY_ENABLED_LOCATION = "CHECK_INACTIVITY_ENABLED";
 export const CHECK_INACTIVITY_DURATION_LOCATION = "CHECK_INACTIVITY_DURATION";
 export const AUTOMATIC_UPDATE_ENABLED_LOCATION = "AUTOMATIC_UPDATE_ENABLED";
-export const AUTOMATIC_UPDATE_SEND_NOTIFICATION_LOCATION =
-    "AUTOMATIC_UPDATE_SEND_NOTIFICATION";
+export const AUTOMATIC_UPDATE_SEND_NOTIFICATION_LOCATION = "AUTOMATIC_UPDATE_SEND_NOTIFICATION";
 export const AUTOMATIC_UPDATE_DURATION_LOCATION = "AUTOMATIC_UPDATE_DURATION";
 export const AUTOMATIC_THEME_CHANGE_LOCATION = "AUTOMATIC_THEME_CHANGE";
 export const HIDE_BALANCE_LOCATION = "HIDE_BALANCE";
 
-// maps settings to locations and defaults, ignore means it'll be ignored (duhh)
+/**
+ * maps settings to locations and defaults
+ * ignore means it'll be ignored in the automatic load/save functions
+ */
 const settingsStoredMap = {
     sync_on_startup: { location: SYNC_ON_STARTUP_LOCATION, default: true },
     theme: { location: THEME_LOCATION, default: "DefaultTheme" },
@@ -36,6 +39,7 @@ const settingsStoredMap = {
     language: { location: LANGUAGE_LOCATION, default: "en" },
     native_frame: { location: USE_NATIVE_FRAME_LOCATION, default: false },
     minimize_to_tray: { location: MINIMIZE_TO_TRAY_LOCATION, default: false },
+    display_tray_info: { location: DISPLAY_TRAY_INFO_LOCATION, default: true },
     sticky_menu: { location: USE_STICKY_MENU_LOCATION, default: false },
     check_inactivity: {
         location: CHECK_INACTIVITY_ENABLED_LOCATION,
@@ -109,6 +113,12 @@ export default function reducer(state = defaultState, action) {
             const settingInfo = settingsStoredMap[settingKey];
 
             if (!settingInfo) return { ...state };
+
+            switch (settingKey) {
+                case "display_tray_info":
+                    ipcRenderer.send("set-tray-display", settingValue);
+                    break;
+            }
 
             settings.set(settingInfo.location, settingValue);
             return {

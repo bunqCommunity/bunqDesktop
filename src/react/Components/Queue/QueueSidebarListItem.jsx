@@ -30,8 +30,7 @@ class QueueSidebarListItem extends React.Component {
         // throttle updates by 250ms to gather up rapid redux events
         if (
             nextProps.queueRequestCounter !== this.state.queueRequestCounter ||
-            nextProps.queueMaxRequestCounter !==
-                this.state.queueMaxRequestCounter
+            nextProps.queueMaxRequestCounter !== this.state.queueMaxRequestCounter
         ) {
             if (this.updateDelay) clearTimeout(this.updateDelay);
             this.updateDelay = setTimeout(this.setQueueRequestCounter, 250);
@@ -41,10 +40,7 @@ class QueueSidebarListItem extends React.Component {
         if (nextState.queueRequestCounter !== this.state.queueRequestCounter) {
             return true;
         }
-        if (
-            nextState.queueMaxRequestCounter !==
-            this.state.queueMaxRequestCounter
-        ) {
+        if (nextState.queueMaxRequestCounter !== this.state.queueMaxRequestCounter) {
             return true;
         }
 
@@ -70,12 +66,8 @@ class QueueSidebarListItem extends React.Component {
         let secondaryQueueText = t("Queue is empty");
         if (queueLoading) {
             const percentageIncrement = 100 / queueMaxRequestCounter;
-            currentPercentage =
-                (queueMaxRequestCounter - queueRequestCounter) *
-                percentageIncrement;
-            secondaryQueueText = `${queueRequestCounter} ${t(
-                "requests in queue"
-            )}`;
+            currentPercentage = (queueMaxRequestCounter - queueRequestCounter) * percentageIncrement;
+            secondaryQueueText = `${queueRequestCounter} ${t("requests in queue")}`;
         }
 
         const clickDisabled = queueLoading || queueTriggerSync;
@@ -101,13 +93,7 @@ class QueueSidebarListItem extends React.Component {
                         secondary={secondaryQueueText}
                     />
                 </ListItem>
-                {queueLoading && (
-                    <LinearProgress
-                        key="progress"
-                        variant="determinate"
-                        value={currentPercentage}
-                    />
-                )}
+                {queueLoading && <LinearProgress key="progress" variant="determinate" value={currentPercentage} />}
             </React.Fragment>
         );
     }

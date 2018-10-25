@@ -15,11 +15,7 @@ import FilterListIcon from "@material-ui/icons/FilterList";
 
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 
-import {
-    addAccountIdFilter,
-    removeAccountIdFilter,
-    toggleAccountIdFilter
-} from "../../Actions/filters";
+import { addAccountIdFilter, removeAccountIdFilter, toggleAccountIdFilter } from "../../Actions/filters";
 
 const styles = {
     listItem: {
@@ -58,32 +54,25 @@ class AccountSelection extends React.Component {
         const { anchorEl } = this.state;
         const { accounts, selectedAccountIds } = this.props;
 
-        const selectedAccountChipItems = selectedAccountIds.map(
-            (accountId, key) => {
-                const account = accounts.find(
-                    account => account.id === accountId
-                );
+        const selectedAccountChipItems = selectedAccountIds.map((accountId, key) => {
+            const account = accounts.find(account => account.id === accountId);
 
-                // ensure account exists
-                if (!account) return null;
+            // ensure account exists
+            if (!account) return null;
 
-                // display big chip or smaller icon
-                return (
-                    <IconButton onClick={this.removeAccountId(account.id)}>
-                        <Avatar>
-                            <LazyAttachmentImage
-                                BunqJSClient={this.props.BunqJSClient}
-                                imageUUID={
-                                    account.avatar.image[0]
-                                        .attachment_public_uuid
-                                }
-                                style={{ width: 40, height: 40 }}
-                            />
-                        </Avatar>
-                    </IconButton>
-                );
-            }
-        );
+            // display big chip or smaller icon
+            return (
+                <IconButton onClick={this.removeAccountId(account.id)}>
+                    <Avatar>
+                        <LazyAttachmentImage
+                            BunqJSClient={this.props.BunqJSClient}
+                            imageUUID={account.avatar.image[0].attachment_public_uuid}
+                            style={{ width: 40, height: 40 }}
+                        />
+                    </Avatar>
+                </IconButton>
+            );
+        });
 
         const accountMenuItems = Object.keys(accounts)
             .filter(accountIndex => {
@@ -108,10 +97,7 @@ class AccountSelection extends React.Component {
                                 <LazyAttachmentImage
                                     height={40}
                                     BunqJSClient={this.props.BunqJSClient}
-                                    imageUUID={
-                                        account.avatar.image[0]
-                                            .attachment_public_uuid
-                                    }
+                                    imageUUID={account.avatar.image[0].attachment_public_uuid}
                                 />
                             </Avatar>
                         </ListItemIcon>
@@ -129,17 +115,10 @@ class AccountSelection extends React.Component {
                         <Tooltip
                             placement="left"
                             title={t(
-                                `Click to ${
-                                    this.props.toggleAccountIds
-                                        ? "include"
-                                        : "exclude"
-                                } the selected accounts`
+                                `Click to ${this.props.toggleAccountIds ? "include" : "exclude"} the selected accounts`
                             )}
                         >
-                            <IconButton
-                                aria-haspopup="true"
-                                onClick={this.props.toggleAccountIdFilter}
-                            >
+                            <IconButton aria-haspopup="true" onClick={this.props.toggleAccountIdFilter}>
                                 {this.props.toggleAccountIds ? (
                                     <FilterListIcon className="icon-rotate-180" />
                                 ) : (
@@ -148,24 +127,15 @@ class AccountSelection extends React.Component {
                             </IconButton>
                         </Tooltip>
 
-                        <IconButton
-                            aria-haspopup="true"
-                            onClick={this.handleClick}
-                        >
+                        <IconButton aria-haspopup="true" onClick={this.handleClick}>
                             <AddIcon />
                         </IconButton>
                     </ListItemSecondaryAction>
-                    <Menu
-                        anchorEl={this.state.anchorEl}
-                        open={Boolean(anchorEl)}
-                        onClose={this.handleClose}
-                    >
+                    <Menu anchorEl={this.state.anchorEl} open={Boolean(anchorEl)} onClose={this.handleClose}>
                         {accountMenuItems}
                     </Menu>
                 </ListSubheader>
-                <ListItem style={styles.listItem}>
-                    {selectedAccountChipItems}
-                </ListItem>
+                <ListItem style={styles.listItem}>{selectedAccountChipItems}</ListItem>
             </React.Fragment>
         );
     }
@@ -182,8 +152,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        addAccountIdFilter: accountId =>
-            dispatch(addAccountIdFilter(accountId)),
+        addAccountIdFilter: accountId => dispatch(addAccountIdFilter(accountId)),
         removeAccountIdFilter: index => dispatch(removeAccountIdFilter(index)),
         toggleAccountIdFilter: () => dispatch(toggleAccountIdFilter())
     };

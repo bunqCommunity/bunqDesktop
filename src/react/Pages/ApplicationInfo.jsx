@@ -10,6 +10,7 @@ import Avatar from "@material-ui/core/Avatar";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import TextField from "@material-ui/core/TextField";
 
 import FolderIcon from "@material-ui/icons/Folder";
 
@@ -18,7 +19,8 @@ const shell = require("electron").shell;
 const app = remote.app;
 
 import NavLink from "../Components/Routing/NavLink";
-import ButtonTranslate from "../Components/TranslationHelpers/Button";
+import TranslateButton from "../Components/TranslationHelpers/Button";
+import TranslateTypography from "../Components/TranslationHelpers/Typography";
 
 import { openSnackbar } from "../Actions/snackbar";
 import { allReleases } from "../Helpers/VersionChecker";
@@ -73,29 +75,21 @@ class ApplicationInfo extends React.Component {
         const releaseItems = this.state.releases.slice(0, 10).map(release => {
             const preRelease = release.prerelease ? " (Pre-Release)" : "";
             return (
-                <ListItem
-                    button
-                    component="a"
-                    className="js-external-link"
-                    rel="noopener"
-                    href={release.html_url}
-                >
+                <ListItem button component="a" className="js-external-link" rel="noopener" href={release.html_url}>
                     <ListItemText
                         primary={`v${release.tag_name} ${preRelease}`}
-                        secondary={`${t("Released")}: ${humanReadableDate(
-                            release.published_at
-                        )}`}
+                        secondary={`${t("Released")}: ${humanReadableDate(release.published_at)}`}
                     />
                 </ListItem>
             );
         });
 
+        const userDataPath = app.getPath("userData");
+
         return (
             <Grid container spacing={24} justify={"center"}>
                 <Helmet>
-                    <title>{`bunqDesktop - ${t(
-                        "Application Information"
-                    )}`}</title>
+                    <title>{`bunqDesktop - ${t("Application Information")}`}</title>
                 </Helmet>
 
                 <Grid item xs={12} sm={8}>
@@ -108,58 +102,52 @@ class ApplicationInfo extends React.Component {
                                         rel="noopener"
                                         href="https://github.com/bunqCommunity/bunqDesktop"
                                     >
-                                        <Avatar
-                                            style={styles.avatar}
-                                            src="./images/512x512.png"
-                                        />
+                                        <Avatar style={styles.avatar} src="./images/512x512.png" />
                                     </a>
                                 </div>
 
                                 <div style={{ flexGrow: 1, marginTop: 4 }}>
-                                    <Typography variant={"headline"}>
-                                        bunqDesktop
-                                    </Typography>
-                                    <Typography variant={"body2"}>
-                                        {`${t("Version")}: ${
-                                            process.env.CURRENT_VERSION
-                                        }`}
+                                    <Typography variant="h5">bunqDesktop</Typography>
+                                    <Typography variant="body1">
+                                        {`${t("Version")}: ${process.env.CURRENT_VERSION}`}
                                     </Typography>
                                 </div>
 
                                 <div>
-                                    <IconButton
-                                        onClick={() =>
-                                            shell.openItem(
-                                                app.getPath("userData")
-                                            )
-                                        }
-                                    >
+                                    <IconButton onClick={() => shell.openItem(app.getPath("userData"))}>
                                         <FolderIcon />
                                     </IconButton>
                                 </div>
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Typography variant={"body2"}>
-                                    {t("Application data")}:{" "}
-                                    {app.getPath("userData")}
-                                </Typography>
+                                <TranslateTypography variant="body1">Application files</TranslateTypography>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth={true}
+                                    inputProps={{ readOnly: true }}
+                                    value={userDataPath}
+                                    label={t("Application files")}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth={true}
+                                    inputProps={{ readOnly: true }}
+                                    value={Logger.transports.file.file}
+                                    label={t("Log file")}
+                                />
                             </Grid>
 
                             <Grid item xs={12}>
-                                <ButtonTranslate
-                                    variant="raised"
-                                    component={NavLink}
-                                    to={"/"}
-                                >
+                                <TranslateButton variant="outlined" component={NavLink} to={"/"}>
                                     Back
-                                </ButtonTranslate>
+                                </TranslateButton>
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Typography variant={"title"}>
-                                    Releases
-                                </Typography>
+                                <Typography variant="h6">Releases</Typography>
                                 <List>{releaseItems}</List>
                             </Grid>
                         </Grid>

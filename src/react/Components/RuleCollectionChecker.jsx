@@ -22,14 +22,10 @@ class RuleCollectionChecker extends React.Component {
     }
 
     componentDidUpdate(oldProps) {
-        const updatedToggle =
-            oldProps.updateToggle === true && this.props.updateToggle == false;
+        const updatedToggle = oldProps.updateToggle === true && this.props.updateToggle == false;
 
         // check if update state changed or queue finished
-        if (
-            updatedToggle ||
-            this.props.queueFinishedSync !== oldProps.queueFinishedSync
-        ) {
+        if (updatedToggle || this.props.queueFinishedSync !== oldProps.queueFinishedSync) {
             // updateToggle went from true to false, update worker
             this.triggerWorkerEvent();
         }
@@ -63,15 +59,9 @@ class RuleCollectionChecker extends React.Component {
     triggerWorkerEvent = () => {
         // use json format
         const payments = this.props.payments.map(item => item.toJSON());
-        const requestInquiries = this.props.requestInquiries.map(item =>
-            item.toJSON()
-        );
-        const requestResponses = this.props.requestResponses.map(item =>
-            item.toJSON()
-        );
-        const masterCardActions = this.props.masterCardActions.map(item =>
-            item.toJSON()
-        );
+        const requestInquiries = this.props.requestInquiries.map(item => item.toJSON());
+        const requestResponses = this.props.requestResponses.map(item => item.toJSON());
+        const masterCardActions = this.props.masterCardActions.map(item => item.toJSON());
         const bunqMeTabs = this.props.bunqMeTabs.map(item => item.toJSON());
 
         // get results for all our rule collections
@@ -116,10 +106,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        setCategoryConnectionMultiple: (...params) =>
-            dispatch(setCategoryConnectionMultiple(...params)),
-        setCategoryRule: rule_collection =>
-            dispatch(setCategoryRule(rule_collection))
+        setCategoryConnectionMultiple: (...params) => dispatch(setCategoryConnectionMultiple(...params)),
+        setCategoryRule: rule_collection => dispatch(setCategoryRule(rule_collection))
     };
 };
 

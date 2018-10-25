@@ -6,11 +6,7 @@ import TextField from "@material-ui/core/TextField";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 
-import {
-    setAmountFilterAmount,
-    setAmountFilterType,
-    clearAmountFilter
-} from "../../Actions/filters";
+import { setAmountFilterAmount, setAmountFilterType, clearAmountFilter } from "../../Actions/filters";
 
 class AmountFilter extends React.Component {
     constructor(props, context) {
@@ -38,10 +34,7 @@ class AmountFilter extends React.Component {
                 />
                 <FormControl>
                     <InputLabel>Type</InputLabel>
-                    <Select
-                        value={this.props.amountFilterType}
-                        onChange={this.handleTypeChange}
-                    >
+                    <Select value={this.props.amountFilterType} onChange={this.handleTypeChange}>
                         <MenuItem value="EQUALS">{`=`}</MenuItem>
                         <MenuItem value="LESS">{`<`}</MenuItem>
                         <MenuItem value="MORE">{`>`}</MenuItem>
@@ -61,8 +54,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        setAmountFilterAmount: amount =>
-            dispatch(setAmountFilterAmount(amount)),
+        setAmountFilterAmount: amount => dispatch(setAmountFilterAmount(amount)),
         setAmountFilterType: amount => dispatch(setAmountFilterType(amount)),
         clearAmountFilter: () => dispatch(clearAmountFilter())
     };

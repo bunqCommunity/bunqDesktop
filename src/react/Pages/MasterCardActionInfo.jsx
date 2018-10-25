@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { withTheme } from "@material-ui/core/styles";
 import { ipcRenderer } from "electron";
 import Helmet from "react-helmet";
-import Redirect from "react-router-dom/Redirect";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
@@ -34,10 +33,7 @@ import CategoryChips from "../Components/Categories/CategoryChips";
 import NoteTextForm from "../Components/NoteTexts/NoteTextForm";
 
 import { formatMoney, humanReadableDate } from "../Helpers/Utils";
-import {
-    masterCardActionText,
-    masterCardActionParser
-} from "../Helpers/StatusTexts";
+import { masterCardActionText, masterCardActionParser } from "../Helpers/StatusTexts";
 import { masterCardActionInfoUpdate } from "../Actions/master_card_action_info";
 import { applicationSetPDFMode } from "../Actions/application";
 
@@ -69,19 +65,9 @@ class MasterCardActionInfo extends React.Component {
     }
 
     componentDidMount() {
-        if (
-            this.props.initialBunqConnect &&
-            this.props.user &&
-            this.props.user.id
-        ) {
+        if (this.props.initialBunqConnect && this.props.user && this.props.user.id) {
             const { masterCardActionId, accountId } = this.props.match.params;
-            this.props.masterCardActionInfoUpdate(
-                this.props.user.id,
-                accountId === undefined
-                    ? this.props.accountsSelectedAccount
-                    : accountId,
-                masterCardActionId
-            );
+            this.props.masterCardActionInfoUpdate(this.props.user.id, accountId, masterCardActionId);
             this.setState({ initialUpdate: true });
         }
     }
@@ -91,25 +77,17 @@ class MasterCardActionInfo extends React.Component {
             this.props.user &&
             this.props.user.id &&
             this.props.initialBunqConnect &&
-            this.props.match.params.masterCardActionId !==
-                this.props.match.params.masterCardActionId
+            this.props.match.params.masterCardActionId !== this.props.match.params.masterCardActionId
         ) {
             const { masterCardActionId, accountId } = this.props.match.params;
-            this.props.masterCardActionInfoUpdate(
-                this.props.user.id,
-                accountId === undefined
-                    ? this.props.accountsSelectedAccount
-                    : accountId,
-                masterCardActionId
-            );
+            this.props.masterCardActionInfoUpdate(this.props.user.id, accountId, masterCardActionId);
             this.setState({ initialUpdate: true });
         }
         return null;
     }
     componentDidUpdate() {}
 
-    toggleCategoryDialog = event =>
-        this.setState({ displayCategories: !this.state.displayCategories });
+    toggleCategoryDialog = event => this.setState({ displayCategories: !this.state.displayCategories });
     startPayment = event => {
         const paymentInfo = this.props.masterCardActionInfo;
         this.props.history.push(`/pay?amount=${paymentInfo.getAmount()}`);
@@ -132,9 +110,7 @@ class MasterCardActionInfo extends React.Component {
 
         // format a file name
         const timeStamp = masterCardActionInfo.updated.getTime();
-        const fileName = `card-payment-${
-            masterCardActionInfo.id
-        }-${timeStamp}.pdf`;
+        const fileName = `card-payment-${masterCardActionInfo.id}-${timeStamp}.pdf`;
 
         // delay for a short period to let the application update and then create a pdf
         setTimeout(() => {
@@ -143,28 +119,11 @@ class MasterCardActionInfo extends React.Component {
     };
 
     render() {
-        const {
-            accountsSelectedAccount,
-            masterCardActionInfo,
-            masterCardActionLoading,
-            theme,
-            t
-        } = this.props;
-        const paramAccountId = this.props.match.params.accountId;
-
-        // we require a selected account before we can display payment information
-        if (accountsSelectedAccount === false && paramAccountId !== undefined) {
-            // no account_id set
-            return <Redirect to={"/"} />;
-        }
+        const { masterCardActionInfo, masterCardActionLoading, t } = this.props;
 
         let content;
         let noteTextsForm = null;
-        if (
-            masterCardActionInfo === false ||
-            masterCardActionLoading === true ||
-            this.state.initialUpdate === false
-        ) {
+        if (masterCardActionInfo === false || masterCardActionLoading === true || this.state.initialUpdate === false) {
             content = (
                 <Grid container spacing={24} justify={"center"}>
                     <Grid item xs={12}>
@@ -177,12 +136,9 @@ class MasterCardActionInfo extends React.Component {
         } else {
             const masterCardAction = masterCardActionInfo;
             let paymentAmount = masterCardAction.getAmount();
-            paymentAmount =
-                paymentAmount > 0 ? paymentAmount * -1 : paymentAmount;
+            paymentAmount = paymentAmount > 0 ? paymentAmount * -1 : paymentAmount;
             const paymentDate = humanReadableDate(masterCardAction.created);
-            const paymentDateUpdated = humanReadableDate(
-                masterCardAction.updated
-            );
+            const paymentDateUpdated = humanReadableDate(masterCardAction.updated);
             const formattedPaymentAmount = formatMoney(paymentAmount, true);
             const paymentLabel = masterCardActionText(masterCardAction, t);
 
@@ -200,20 +156,10 @@ class MasterCardActionInfo extends React.Component {
                 );
             }
 
-            noteTextsForm = (
-                <NoteTextForm
-                    BunqJSClient={this.props.BunqJSClient}
-                    event={masterCardAction}
-                />
-            );
+            noteTextsForm = <NoteTextForm BunqJSClient={this.props.BunqJSClient} event={masterCardAction} />;
 
             content = (
-                <Grid
-                    container
-                    spacing={24}
-                    align={"center"}
-                    justify={"center"}
-                >
+                <Grid container spacing={24} align={"center"} justify={"center"}>
                     <TransactionHeader
                         BunqJSClient={this.props.BunqJSClient}
                         to={masterCardAction.counterparty_alias}
@@ -241,10 +187,7 @@ class MasterCardActionInfo extends React.Component {
                             {formattedPaymentAmount}
                         </MoneyAmountLabel>
 
-                        <Typography
-                            style={{ textAlign: "center" }}
-                            variant={"body1"}
-                        >
+                        <Typography style={{ textAlign: "center" }} variant="body2">
                             {paymentLabel}
                         </Typography>
 
@@ -255,9 +198,7 @@ class MasterCardActionInfo extends React.Component {
                                       <ListItem>
                                           <ListItemText
                                               primary={t("Description")}
-                                              secondary={
-                                                  masterCardAction.description
-                                              }
+                                              secondary={masterCardAction.description}
                                           />
                                       </ListItem>
                                   ]
@@ -265,55 +206,37 @@ class MasterCardActionInfo extends React.Component {
 
                             <Divider />
                             <ListItem>
-                                <ListItemText
-                                    primary={t("Date")}
-                                    secondary={paymentDate}
-                                />
+                                <ListItemText primary={t("Date")} secondary={paymentDate} />
                             </ListItem>
                             <Divider />
                             <ListItem>
                                 <ListItemText
                                     primary={t("Payment Type")}
-                                    secondary={masterCardActionParser(
-                                        masterCardAction,
-                                        t
-                                    )}
+                                    secondary={masterCardActionParser(masterCardAction, t)}
                                 />
                             </ListItem>
                             <Divider />
                             <ListItem>
-                                <ListItemText
-                                    primary={t("Card")}
-                                    secondary={
-                                        masterCardAction.label_card.second_line
-                                    }
-                                />
+                                <ListItemText primary={t("Card")} secondary={masterCardAction.label_card.second_line} />
                             </ListItem>
                             <Divider />
                             <ListItem>
                                 <ListItemText
                                     primary={t("Authorisation Type")}
-                                    secondary={
-                                        masterCardAction.authorisation_type
-                                    }
+                                    secondary={masterCardAction.authorisation_type}
                                 />
                             </ListItem>
                             <Divider />
                             <ListItem>
                                 <ListItemText
                                     primary={t("Authorisation Status")}
-                                    secondary={
-                                        masterCardAction.authorisation_status
-                                    }
+                                    secondary={masterCardAction.authorisation_status}
                                 />
                             </ListItem>
                             <Divider />
                         </List>
 
-                        <CategoryChips
-                            type={"MasterCardAction"}
-                            id={masterCardActionInfo.id}
-                        />
+                        <CategoryChips type={"MasterCardAction"} id={masterCardActionInfo.id} />
 
                         <CategorySelectorDialog
                             type={"MasterCardAction"}
@@ -323,7 +246,6 @@ class MasterCardActionInfo extends React.Component {
                         />
 
                         <SpeedDial
-                            hidden={false}
                             actions={[
                                 {
                                     name: t("Send payment"),
@@ -357,8 +279,7 @@ class MasterCardActionInfo extends React.Component {
                                 {
                                     name: t("View debug information"),
                                     icon: HelpIcon,
-                                    onClick: event =>
-                                        this.setState({ displayExport: true })
+                                    onClick: event => this.setState({ displayExport: true })
                                 }
                             ]}
                         />
@@ -368,8 +289,7 @@ class MasterCardActionInfo extends React.Component {
         }
 
         const exportData =
-            this.props.masterCardActionInfo &&
-            this.props.masterCardActionInfo._rawData
+            this.props.masterCardActionInfo && this.props.masterCardActionInfo._rawData
                 ? this.props.masterCardActionInfo._rawData.MasterCardAction
                 : {};
 
@@ -380,19 +300,14 @@ class MasterCardActionInfo extends React.Component {
                 </Helmet>
 
                 <ExportDialog
-                    closeModal={event =>
-                        this.setState({ displayExport: false })
-                    }
+                    closeModal={event => this.setState({ displayExport: false })}
                     title={t("Export info")}
                     open={this.state.displayExport}
                     object={exportData}
                 />
 
                 <Grid item xs={12} sm={2} lg={3}>
-                    <Button
-                        onClick={this.props.history.goBack}
-                        style={styles.btn}
-                    >
+                    <Button onClick={this.props.history.goBack} style={styles.btn}>
                         <ArrowBackIcon />
                     </Button>
                 </Grid>
@@ -413,34 +328,20 @@ const mapStateToProps = state => {
 
         pdfSaveModeEnabled: state.application.pdf_save_mode_enabled,
 
-        masterCardActionInfo:
-            state.master_card_action_info.master_card_action_info,
+        masterCardActionInfo: state.master_card_action_info.master_card_action_info,
         masterCardActionLoading: state.master_card_action_info.loading,
 
-        accounts: state.accounts.accounts,
-        accountsSelectedAccount: state.accounts.selected_account
+        accounts: state.accounts.accounts
     };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        applicationSetPDFMode: enabled =>
-            dispatch(applicationSetPDFMode(enabled)),
+        applicationSetPDFMode: enabled => dispatch(applicationSetPDFMode(enabled)),
 
-        masterCardActionInfoUpdate: (
-            user_id,
-            account_id,
-            master_card_action_id
-        ) =>
-            dispatch(
-                masterCardActionInfoUpdate(
-                    BunqJSClient,
-                    user_id,
-                    account_id,
-                    master_card_action_id
-                )
-            )
+        masterCardActionInfoUpdate: (user_id, account_id, master_card_action_id) =>
+            dispatch(masterCardActionInfoUpdate(BunqJSClient, user_id, account_id, master_card_action_id))
     };
 };
 

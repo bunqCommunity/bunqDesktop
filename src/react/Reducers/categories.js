@@ -5,30 +5,21 @@ import { generateGUID } from "../Helpers/Utils";
 const defaultCategories = require("@bunq-community/bunqdesktop-templates/categories.json");
 
 export const BUNQDESKTOP_CATEGORIES = "BUNQDESKTOP_CATEGORIES";
-export const BUNQDESKTOP_CATEGORY_CONNECTIONS =
-    "BUNQDESKTOP_CATEGORY_CONNECTIONS";
+export const BUNQDESKTOP_CATEGORY_CONNECTIONS = "BUNQDESKTOP_CATEGORY_CONNECTIONS";
 
 const categoriesStored = settings.get(BUNQDESKTOP_CATEGORIES);
-const categoryConnectionsStored = settings.get(
-    BUNQDESKTOP_CATEGORY_CONNECTIONS
-);
+const categoryConnectionsStored = settings.get(BUNQDESKTOP_CATEGORY_CONNECTIONS);
 
 // default values if no data is stored
 const categoriesStoredDefault =
-    categoriesStored !== undefined
-        ? JSON.parse(JSON.stringify(categoriesStored))
-        : defaultCategories;
+    categoriesStored !== undefined ? JSON.parse(JSON.stringify(categoriesStored)) : defaultCategories;
 
 const categoryConnectionsStoredDefault =
-    categoryConnectionsStored !== undefined
-        ? JSON.parse(JSON.stringify(categoryConnectionsStored))
-        : {};
+    categoryConnectionsStored !== undefined ? JSON.parse(JSON.stringify(categoryConnectionsStored)) : {};
 
 // store the default categories
-if (categoriesStored === undefined)
-    settings.set(BUNQDESKTOP_CATEGORIES, defaultCategories);
-if (categoryConnectionsStored === undefined)
-    settings.set(BUNQDESKTOP_CATEGORY_CONNECTIONS, {});
+if (categoriesStored === undefined) settings.set(BUNQDESKTOP_CATEGORIES, defaultCategories);
+if (categoryConnectionsStored === undefined) settings.set(BUNQDESKTOP_CATEGORY_CONNECTIONS, {});
 
 // construct the default state
 export const defaultState = {
@@ -51,9 +42,7 @@ export default function reducer(state = defaultState, action) {
             };
 
         case "CATEGORIES_SET_CATEGORY":
-            const randomId = action.payload.id
-                ? action.payload.id
-                : generateGUID();
+            const randomId = action.payload.id ? action.payload.id : generateGUID();
 
             categories[randomId] = {
                 id: randomId,
@@ -89,10 +78,7 @@ export default function reducer(state = defaultState, action) {
             }
 
             settings.set(BUNQDESKTOP_CATEGORIES, currentCategories);
-            settings.set(
-                BUNQDESKTOP_CATEGORY_CONNECTIONS,
-                currentCategoryConnections
-            );
+            settings.set(BUNQDESKTOP_CATEGORY_CONNECTIONS, currentCategoryConnections);
             return {
                 ...state,
                 last_update: new Date().getTime(),
@@ -117,23 +103,16 @@ export default function reducer(state = defaultState, action) {
                         // remove all existing connections for this category > type
                         delete currentCategoryConnections2[categoryId][type];
                     } else {
-                        const idIndex = currentCategoryConnections2[categoryId][
-                            type
-                        ].indexOf(id);
+                        const idIndex = currentCategoryConnections2[categoryId][type].indexOf(id);
                         // remove all existing connections for this category > type > id
                         if (idIndex > -1) {
-                            currentCategoryConnections2[categoryId][
-                                type
-                            ].splice(idIndex, 1);
+                            currentCategoryConnections2[categoryId][type].splice(idIndex, 1);
                         }
                     }
                 }
             }
 
-            settings.set(
-                BUNQDESKTOP_CATEGORY_CONNECTIONS,
-                currentCategoryConnections2
-            );
+            settings.set(BUNQDESKTOP_CATEGORY_CONNECTIONS, currentCategoryConnections2);
             return {
                 ...state,
                 last_update: new Date().getTime(),
@@ -141,10 +120,7 @@ export default function reducer(state = defaultState, action) {
             };
 
         case "CATEGORIES_SET_CATEGORY_CONNECTIONS":
-            settings.set(
-                BUNQDESKTOP_CATEGORY_CONNECTIONS,
-                action.payload.category_connections
-            );
+            settings.set(BUNQDESKTOP_CATEGORY_CONNECTIONS, action.payload.category_connections);
             return {
                 ...state,
                 last_update: new Date().getTime(),
@@ -164,17 +140,11 @@ export default function reducer(state = defaultState, action) {
             }
 
             // prevent duplicates
-            if (
-                category_connections[categoryId2][itemType].includes(itemId) ===
-                false
-            ) {
+            if (category_connections[categoryId2][itemType].includes(itemId) === false) {
                 category_connections[categoryId2][itemType].push(itemId);
             }
 
-            settings.set(
-                BUNQDESKTOP_CATEGORY_CONNECTIONS,
-                category_connections
-            );
+            settings.set(BUNQDESKTOP_CATEGORY_CONNECTIONS, category_connections);
             return {
                 ...state,
                 last_update: new Date().getTime(),
@@ -182,8 +152,7 @@ export default function reducer(state = defaultState, action) {
             };
 
         case "CATEGORIES_SET_CATEGORY_CONNECTION_MULTIPLE":
-            const categoryConnectionMultiple =
-                action.payload.category_connections;
+            const categoryConnectionMultiple = action.payload.category_connections;
 
             categoryConnectionMultiple.forEach(categoryConnectionItem => {
                 const catId = categoryConnectionItem.category_id;
@@ -198,19 +167,13 @@ export default function reducer(state = defaultState, action) {
                 }
 
                 // prevent duplicates
-                if (
-                    category_connections[catId][catType].includes(eventId) ===
-                    false
-                ) {
+                if (category_connections[catId][catType].includes(eventId) === false) {
                     category_connections[catId][catType].push(eventId);
                 }
             });
 
             // update settings
-            settings.set(
-                BUNQDESKTOP_CATEGORY_CONNECTIONS,
-                category_connections
-            );
+            settings.set(BUNQDESKTOP_CATEGORY_CONNECTIONS, category_connections);
             // return new state
             return {
                 ...state,
@@ -221,27 +184,18 @@ export default function reducer(state = defaultState, action) {
         // update categories in new settings location
         case "OPTIONS_OVERWRITE_SETTINGS_LOCATION":
             settings.set(BUNQDESKTOP_CATEGORIES, state.categories);
-            settings.set(
-                BUNQDESKTOP_CATEGORY_CONNECTIONS,
-                state.category_connections
-            );
+            settings.set(BUNQDESKTOP_CATEGORY_CONNECTIONS, state.category_connections);
             return { ...state };
 
         // load categories from new settings location
         case "OPTIONS_LOAD_SETTINGS_LOCATION":
             const storedCategories = settings.get(BUNQDESKTOP_CATEGORIES);
-            const storedConnections = settings.get(
-                BUNQDESKTOP_CATEGORY_CONNECTIONS
-            );
+            const storedConnections = settings.get(BUNQDESKTOP_CATEGORY_CONNECTIONS);
             return {
                 ...state,
                 last_update: new Date().getTime(),
-                categories: storedCategories
-                    ? storedCategories
-                    : state.categories,
-                category_connections: storedConnections
-                    ? storedConnections
-                    : state.category_connections
+                categories: storedCategories ? storedCategories : state.categories,
+                category_connections: storedConnections ? storedConnections : state.category_connections
             };
     }
     return state;

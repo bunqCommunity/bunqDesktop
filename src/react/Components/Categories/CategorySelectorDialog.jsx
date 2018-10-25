@@ -21,11 +21,7 @@ class CategorySelectorDialog extends React.Component {
             <Dialog open={open} onClose={onClose}>
                 <DialogTitle>{t("Manage categories")}</DialogTitle>
                 <DialogContent>
-                    <CategorySelector
-                        displayToggleButton={false}
-                        type={type}
-                        item={item}
-                    />
+                    <CategorySelector displayToggleButton={false} type={type} item={item} />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={onClose}>Ok</Button>

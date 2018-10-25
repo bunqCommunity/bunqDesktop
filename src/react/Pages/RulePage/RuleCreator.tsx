@@ -35,10 +35,7 @@ import ItemTypeRuleItem from "./RuleTypeItems/ItemTypeRuleItem";
 
 import Rule from "../../Types/Rules/Rule";
 import { RuleTypes } from "../../Types/Types";
-import {
-    default as RuleCollection,
-    RuleCollectionMatchType
-} from "../../Types/RuleCollection";
+import { default as RuleCollection, RuleCollectionMatchType } from "../../Types/RuleCollection";
 
 const styles = {
     title: {
@@ -192,20 +189,11 @@ class RuleCreator extends React.Component<any, any> {
 
         // put the item_type first because these are checked the fastest
         rules = rules.sort((ruleA: Rule, ruleB: Rule) => {
-            if (
-                ruleA.ruleType === "ITEM_TYPE" &&
-                ruleB.ruleType === "ITEM_TYPE"
-            ) {
+            if (ruleA.ruleType === "ITEM_TYPE" && ruleB.ruleType === "ITEM_TYPE") {
                 return 0;
-            } else if (
-                ruleA.ruleType !== "ITEM_TYPE" &&
-                ruleB.ruleType === "ITEM_TYPE"
-            ) {
+            } else if (ruleA.ruleType !== "ITEM_TYPE" && ruleB.ruleType === "ITEM_TYPE") {
                 return 1;
-            } else if (
-                ruleA.ruleType === "ITEM_TYPE" &&
-                ruleB.ruleType !== "ITEM_TYPE"
-            ) {
+            } else if (ruleA.ruleType === "ITEM_TYPE" && ruleB.ruleType !== "ITEM_TYPE") {
                 return -1;
             }
         });
@@ -287,13 +275,7 @@ class RuleCreator extends React.Component<any, any> {
     };
 
     render() {
-        const {
-            categories,
-            title,
-            rules,
-            titleError,
-            goToDashboard
-        } = this.state;
+        const { categories, title, rules, titleError, goToDashboard } = this.state;
         const t = this.props.t;
 
         if (goToDashboard) {
@@ -310,31 +292,17 @@ class RuleCreator extends React.Component<any, any> {
             }
         });
 
-        const includedChips = Object.keys(categoriesIncluded).map(
-            categoryId => {
-                const categoryInfo = categoriesIncluded[categoryId];
-                return (
-                    <CategoryChip
-                        key={categoryId}
-                        category={categoryInfo}
-                        onDelete={this.removeCategory(categoryInfo)}
-                    />
-                );
-            }
-        );
+        const includedChips = Object.keys(categoriesIncluded).map(categoryId => {
+            const categoryInfo = categoriesIncluded[categoryId];
+            return (
+                <CategoryChip key={categoryId} category={categoryInfo} onDelete={this.removeCategory(categoryInfo)} />
+            );
+        });
 
-        const excludedChips = Object.keys(categoriesExcluded).map(
-            categoryId => {
-                const categoryInfo = categoriesExcluded[categoryId];
-                return (
-                    <CategoryChip
-                        key={categoryId}
-                        category={categoryInfo}
-                        onClick={this.addCategory(categoryInfo)}
-                    />
-                );
-            }
-        );
+        const excludedChips = Object.keys(categoriesExcluded).map(categoryId => {
+            const categoryInfo = categoriesExcluded[categoryId];
+            return <CategoryChip key={categoryId} category={categoryInfo} onClick={this.addCategory(categoryInfo)} />;
+        });
 
         const ruleItems = rules.map((rule: Rule, ruleKey: string) => {
             switch (rule.ruleType) {
@@ -388,7 +356,7 @@ class RuleCreator extends React.Component<any, any> {
                 <Paper style={styles.wrapper}>
                     <Grid container spacing={16}>
                         <Grid item xs={11}>
-                            <Typography variant="title" style={styles.subTitle}>
+                            <Typography variant="h6" style={styles.subTitle}>
                                 {t("Settings")}
                             </Typography>
                         </Grid>
@@ -410,12 +378,7 @@ class RuleCreator extends React.Component<any, any> {
                             />
                         </Grid>
 
-                        <Grid
-                            item
-                            xs={12}
-                            sm={6}
-                            style={styles.checkboxGridWrapper}
-                        >
+                        <Grid item xs={12} sm={6} style={styles.checkboxGridWrapper}>
                             <FormControlLabel
                                 control={
                                     <Switch
@@ -430,31 +393,17 @@ class RuleCreator extends React.Component<any, any> {
 
                         <Grid item xs={12} sm={6}>
                             <FormControl style={styles.inputField}>
-                                <InputLabel>
-                                    {t("Match requirements")}
-                                </InputLabel>
-                                <Select
-                                    value={this.state.matchType}
-                                    onChange={this.handleMatchTypeChange}
-                                >
-                                    <MenuItem value={"AND"}>
-                                        {t("Require all rules to match")}
-                                    </MenuItem>
-                                    <MenuItem value={"OR"}>
-                                        {t("Only require 1 rule to match")}
-                                    </MenuItem>
+                                <InputLabel>{t("Match requirements")}</InputLabel>
+                                <Select value={this.state.matchType} onChange={this.handleMatchTypeChange}>
+                                    <MenuItem value={"AND"}>{t("Require all rules to match")}</MenuItem>
+                                    <MenuItem value={"OR"}>{t("Only require 1 rule to match")}</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>
 
-                        <Grid
-                            item
-                            xs={12}
-                            sm={6}
-                            style={styles.saveButtonGridWrapper}
-                        >
+                        <Grid item xs={12} sm={6} style={styles.saveButtonGridWrapper}>
                             <Button
-                                variant="raised"
+                                variant="contained"
                                 color="primary"
                                 style={{ width: "100%" }}
                                 onClick={this.saveRuleCollection}
@@ -471,20 +420,14 @@ class RuleCreator extends React.Component<any, any> {
                         <TableHead key={"tableHead"}>
                             <TableRow>
                                 <TableCell style={{ paddingLeft: 0 }}>
-                                    <Typography
-                                        variant="title"
-                                        style={styles.subTitle}
-                                    >
+                                    <Typography variant="h6" style={styles.subTitle}>
                                         {t("Rules")}
                                     </Typography>
                                 </TableCell>
                                 <TableCell>{null}</TableCell>
                                 <TableCell>{null}</TableCell>
                                 <TableCell>
-                                    <NewRuleItemMenu
-                                        addRule={this.addRule}
-                                        openImportDialog={this.openImportDialog}
-                                    />
+                                    <NewRuleItemMenu addRule={this.addRule} openImportDialog={this.openImportDialog} />
                                 </TableCell>
                             </TableRow>
                         </TableHead>
@@ -493,14 +436,11 @@ class RuleCreator extends React.Component<any, any> {
                 </Paper>
 
                 <Paper style={styles.wrapper} key={"categoryChipsWrapper"}>
-                    <Typography variant="title" style={styles.subTitle}>
+                    <Typography variant="h6" style={styles.subTitle}>
                         {t("Categories")}
                     </Typography>
                     <div>
-                        <Typography
-                            variant="subheading"
-                            style={styles.subTitle}
-                        >
+                        <Typography variant="subtitle1" style={styles.subTitle}>
                             {t("Categories that will be added")}
                         </Typography>
                         {includedChips}

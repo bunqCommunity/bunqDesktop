@@ -6,17 +6,8 @@ export type ValueRule = {
     value: string;
 };
 
-export type ValueRuleField =
-    | "DESCRIPTION"
-    | "IBAN"
-    | "COUNTERPARTY_NAME"
-    | "CUSTOM";
+export type ValueRuleField = "DESCRIPTION" | "IBAN" | "COUNTERPARTY_NAME" | "CUSTOM";
 
-export type ValueRuleMatchType =
-    | "REGEX"
-    | "EXACT"
-    | "CONTAINS"
-    | "ENDS_WITH"
-    | "STARTS_WITH";
+export type ValueRuleMatchType = "REGEX" | "EXACT" | "CONTAINS" | "ENDS_WITH" | "STARTS_WITH";
 
 export default ValueRule;

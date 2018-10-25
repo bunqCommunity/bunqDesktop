@@ -73,12 +73,9 @@ export default class RequestInquiryBatch implements Event {
      * @returns {number}
      */
     public getTotalAmountResponded(): number {
-        return this.request_inquiries.reduce(
-            (accumulator, requestInquiry: RequestInquiry) => {
-                return accumulator + requestInquiry.getDelta();
-            },
-            0
-        );
+        return this.request_inquiries.reduce((accumulator, requestInquiry: RequestInquiry) => {
+            return accumulator + requestInquiry.getDelta();
+        }, 0);
     }
 
     /**

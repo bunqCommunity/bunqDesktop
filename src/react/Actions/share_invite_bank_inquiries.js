@@ -1,14 +1,9 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { storeDecryptString } from "../Helpers/CryptoWorkerWrapper";
 
-export const STORED_SHARE_INVITE_BANK_INQUIRIES =
-    "BUNQDESKTOP_SHARE_INVITE_BANK_INQUIRIES";
+export const STORED_SHARE_INVITE_BANK_INQUIRIES = "BUNQDESKTOP_SHARE_INVITE_BANK_INQUIRIES";
 
-export function shareInviteBankInquiriesSetInfo(
-    share_invite_bank_inquiries,
-    account_id,
-    BunqJSClient = false
-) {
+export function shareInviteBankInquiriesSetInfo(share_invite_bank_inquiries, account_id, BunqJSClient = false) {
     return {
         type: "SHARE_INVITE_INQUIRIES_SET_INFO",
         payload: {
@@ -22,18 +17,10 @@ export function shareInviteBankInquiriesSetInfo(
 export function loadStoredShareInviteBankInquiries(BunqJSClient) {
     return dispatch => {
         dispatch(shareInviteBankInquiriesLoading());
-        storeDecryptString(
-            STORED_SHARE_INVITE_BANK_INQUIRIES,
-            BunqJSClient.Session.encryptionKey
-        )
+        storeDecryptString(STORED_SHARE_INVITE_BANK_INQUIRIES, BunqJSClient.Session.encryptionKey)
             .then(data => {
                 if (data && data.items) {
-                    dispatch(
-                        shareInviteBankInquiriesSetInfo(
-                            data.items,
-                            data.account_id
-                        )
-                    );
+                    dispatch(shareInviteBankInquiriesSetInfo(data.items, data.account_id));
                 }
                 dispatch(shareInviteBankInquiriesNotLoading());
             })
@@ -53,9 +40,7 @@ export function shareInviteBankInquiriesInfoUpdate(
         older_id: false
     }
 ) {
-    const failedMessage = window.t(
-        "We failed to load the share invite inquiries for this monetary account"
-    );
+    const failedMessage = window.t("We failed to load the share invite inquiries for this monetary account");
 
     return dispatch => {
         dispatch(shareInviteBankInquiriesLoading());
@@ -63,13 +48,7 @@ export function shareInviteBankInquiriesInfoUpdate(
         BunqJSClient.api.shareInviteBankInquiry
             .list(user_id, account_id, options)
             .then(shareInviteBankInquiries => {
-                dispatch(
-                    shareInviteBankInquiriesSetInfo(
-                        shareInviteBankInquiries,
-                        account_id,
-                        BunqJSClient
-                    )
-                );
+                dispatch(shareInviteBankInquiriesSetInfo(shareInviteBankInquiries, account_id, BunqJSClient));
                 dispatch(shareInviteBankInquiriesNotLoading());
             })
             .catch(error => {

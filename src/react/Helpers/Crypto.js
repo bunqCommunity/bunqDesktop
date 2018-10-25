@@ -7,11 +7,7 @@ const forge = require("./CustomForge");
  * @param iterations - integer, recommended value is between 8k and 20k
  * @returns {Promise.<{key: string, salt: string}>}
  */
-export const derivePasswordKey = async (
-    password,
-    salt = false,
-    iterations = 10000
-) => {
+export const derivePasswordKey = async (password, salt = false, iterations = 10000) => {
     if (salt === false) {
         // no salt given, create a new random one
         salt = forge.random.getBytesSync(256);
@@ -23,19 +19,13 @@ export const derivePasswordKey = async (
     // asynchronously derive a key from the password
     const derivedKey = await new Promise((resolve, reject) => {
         // derive a 32-byte key from the password
-        forge.pkcs5.pbkdf2(
-            password,
-            salt,
-            iterations,
-            16,
-            (errorMessage, derivedKey) => {
-                if (errorMessage) {
-                    reject(errorMessage);
-                } else {
-                    resolve(derivedKey);
-                }
+        forge.pkcs5.pbkdf2(password, salt, iterations, 16, (errorMessage, derivedKey) => {
+            if (errorMessage) {
+                reject(errorMessage);
+            } else {
+                resolve(derivedKey);
             }
-        );
+        });
     });
 
     // encode the bytes as hex

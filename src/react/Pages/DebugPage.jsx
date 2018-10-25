@@ -25,12 +25,8 @@ class DebugPage extends React.Component {
             ...this.props.reduxState,
             registration: {
                 ...registrationInfo,
-                api_key: registrationInfo.api_key
-                    ? "HIDDEN"
-                    : registrationInfo.api_key,
-                derivedPassword: registrationInfo.derivedPassword
-                    ? "HIDDEN"
-                    : registrationInfo.derivedPassword
+                api_key: registrationInfo.api_key ? "HIDDEN" : registrationInfo.api_key,
+                derivedPassword: registrationInfo.derivedPassword ? "HIDDEN" : registrationInfo.derivedPassword
             }
         };
 
@@ -41,17 +37,11 @@ class DebugPage extends React.Component {
                 </Helmet>
 
                 <Grid item xs={12}>
-                    <Button onClick={() => this.props.history.push("/")}>
-                        Home
-                    </Button>
+                    <Button onClick={() => this.props.history.push("/")}>Home</Button>
                 </Grid>
 
                 <Grid item xs={12}>
-                    <ReactJsonWrapper
-                        style={styles.paper}
-                        data={modifiedState}
-                        name="bunqDesktopState"
-                    />
+                    <ReactJsonWrapper style={styles.paper} data={modifiedState} name="bunqDesktopState" />
                 </Grid>
             </Grid>
         );

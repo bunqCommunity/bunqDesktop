@@ -36,17 +36,10 @@ class BunqMeTabList extends React.Component {
     };
 
     render() {
-        const loadingContent = this.props.bunqMeTabsLoading ? (
-            <LinearProgress />
-        ) : (
-            <Divider />
-        );
+        const loadingContent = this.props.bunqMeTabsLoading ? <LinearProgress /> : <Divider />;
 
         const bunqMeTabs = this.props.bunqMeTabs.map(bunqMeTab => {
-            if (
-                this.state.showInactiveTabs === false &&
-                bunqMeTab.BunqMeTab.status !== "WAITING_FOR_PAYMENT"
-            ) {
+            if (this.state.showInactiveTabs === false && bunqMeTab.BunqMeTab.status !== "WAITING_FOR_PAYMENT") {
                 return null;
             }
             return (
@@ -72,11 +65,7 @@ class BunqMeTabList extends React.Component {
                             aria-label="Display or hide expired and cancelled bunqme requests"
                             onClick={this.toggleTabVisibility}
                         >
-                            {this.state.showInactiveTabs ? (
-                                <Visible />
-                            ) : (
-                                <VisibleOff />
-                            )}
+                            {this.state.showInactiveTabs ? <Visible /> : <VisibleOff />}
                         </IconButton>
                         {this.props.secondaryActions}
                     </ListItemSecondaryAction>
@@ -104,9 +93,7 @@ const mapDispatchToProps = (dispatch, props) => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
         bunqMeTabPut: (userId, accountId, tabId, status) =>
-            dispatch(
-                bunqMeTabPut(BunqJSClient, userId, accountId, tabId, status)
-            )
+            dispatch(bunqMeTabPut(BunqJSClient, userId, accountId, tabId, status))
     };
 };
 

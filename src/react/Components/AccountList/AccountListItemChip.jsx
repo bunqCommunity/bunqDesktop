@@ -43,9 +43,7 @@ export default props => {
                 <Avatar>
                     <LazyAttachmentImage
                         BunqJSClient={BunqJSClient}
-                        imageUUID={
-                            account.avatar.image[0].attachment_public_uuid
-                        }
+                        imageUUID={account.avatar.image[0].attachment_public_uuid}
                         style={{ width: 32, height: 32 }}
                     />
                 </Avatar>

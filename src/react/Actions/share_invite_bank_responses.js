@@ -1,13 +1,9 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { storeDecryptString } from "../Helpers/CryptoWorkerWrapper";
 
-export const STORED_SHARE_INVITE_BANK_RESPONSES =
-    "BUNQDESKTOP_SHARE_INVITE_BANK_RESPONSES";
+export const STORED_SHARE_INVITE_BANK_RESPONSES = "BUNQDESKTOP_SHARE_INVITE_BANK_RESPONSES";
 
-export function shareInviteBankResponsesSetInfo(
-    share_invite_bank_responses,
-    BunqJSClient = false
-) {
+export function shareInviteBankResponsesSetInfo(share_invite_bank_responses, BunqJSClient = false) {
     return {
         type: "SHARE_INVITE_RESPONSES_SET_INFO",
         payload: {
@@ -20,10 +16,7 @@ export function shareInviteBankResponsesSetInfo(
 export function loadStoredShareInviteBankResponses(BunqJSClient) {
     return dispatch => {
         dispatch(shareInviteBankResponsesLoading());
-        storeDecryptString(
-            STORED_SHARE_INVITE_BANK_RESPONSES,
-            BunqJSClient.Session.encryptionKey
-        )
+        storeDecryptString(STORED_SHARE_INVITE_BANK_RESPONSES, BunqJSClient.Session.encryptionKey)
             .then(data => {
                 if (data && data.items) {
                     dispatch(shareInviteBankResponsesSetInfo(data.items));
@@ -45,9 +38,7 @@ export function shareInviteBankResponsesInfoUpdate(
         older_id: false
     }
 ) {
-    const failedMessage = window.t(
-        "We failed to load the share invite responses for this account"
-    );
+    const failedMessage = window.t("We failed to load the share invite responses for this account");
 
     return dispatch => {
         dispatch(shareInviteBankResponsesLoading());
@@ -55,12 +46,7 @@ export function shareInviteBankResponsesInfoUpdate(
         BunqJSClient.api.shareInviteBankResponse
             .list(user_id, options)
             .then(shareInviteBankResponses => {
-                dispatch(
-                    shareInviteBankResponsesSetInfo(
-                        shareInviteBankResponses,
-                        BunqJSClient
-                    )
-                );
+                dispatch(shareInviteBankResponsesSetInfo(shareInviteBankResponses, BunqJSClient));
                 dispatch(shareInviteBankResponsesNotLoading());
             })
             .catch(error => {

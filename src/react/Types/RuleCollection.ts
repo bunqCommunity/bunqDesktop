@@ -218,8 +218,7 @@ export default class RuleCollection {
 
                         // don't push invalid/missing iban values
                         if (ibanAlias) dataToCheck.push(ibanAlias);
-                        if (ibanCounterparty)
-                            dataToCheck.push(ibanCounterparty);
+                        if (ibanCounterparty) dataToCheck.push(ibanCounterparty);
                         break;
 
                     case "RequestResponse":
@@ -235,9 +234,7 @@ export default class RuleCollection {
                 break;
             case "COUNTERPARTY_NAME":
                 if (event.item.counterparty_alias) {
-                    dataToCheck.push(
-                        event.item.counterparty_alias.display_name
-                    );
+                    dataToCheck.push(event.item.counterparty_alias.display_name);
                 }
                 break;
             case "CUSTOM":
@@ -313,10 +310,7 @@ export default class RuleCollection {
      * @param {EventObject} event
      * @returns {boolean}
      */
-    private checkTransactionAmountRule(
-        rule: TransactionAmountRule,
-        event: EventObject
-    ): boolean {
+    private checkTransactionAmountRule(rule: TransactionAmountRule, event: EventObject): boolean {
         let amount: number = 0;
         switch (event.type) {
             case "Payment":
@@ -370,10 +364,7 @@ export default class RuleCollection {
      * @param {EventObject} event
      * @returns {boolean}
      */
-    private checkAccountTypeRule(
-        rule: AccountRule,
-        event: EventObject
-    ): boolean {
+    private checkAccountTypeRule(rule: AccountRule, event: EventObject): boolean {
         if (event.item.monetary_account_id !== rule.accountId) {
             return false;
         }
@@ -415,10 +406,7 @@ export default class RuleCollection {
         // simply check if the event type matches the requried rule type
         switch (rule.matchType) {
             case "PAYMENT":
-                return (
-                    event.type === "Payment" ||
-                    event.type === "MasterCardAction"
-                );
+                return event.type === "Payment" || event.type === "MasterCardAction";
             case "PAYMENT_RECEIVED":
                 // not a payment so false
                 if (event.type !== "Payment") return false;
@@ -436,10 +424,7 @@ export default class RuleCollection {
             case "MASTERCARD_PAYMENT":
                 return event.type === "MasterCardAction";
             case "REQUEST":
-                return (
-                    event.type === "RequestResponse" ||
-                    event.type === "RequestInquiry"
-                );
+                return event.type === "RequestResponse" || event.type === "RequestInquiry";
             case "REQUEST_INQUIRY":
                 return event.type === "RequestInquiry";
             case "REQUEST_RESPONSE":
@@ -495,9 +480,7 @@ export default class RuleCollection {
      * @param ruleCollection
      * @returns {ValidationResult | true}
      */
-    public static validateRuleCollection(
-        ruleCollection: any
-    ): ValidationResult | true {
+    public static validateRuleCollection(ruleCollection: any): ValidationResult | true {
         // basic type checks
         if (typeof ruleCollection.categories !== "object")
             return {
@@ -538,9 +521,7 @@ export default class RuleCollection {
             };
 
         // validate that all given categories are strings
-        const allCategoriesAreStrings = ruleCollection.categories.every(
-            categoryId => typeof categoryId === "string"
-        );
+        const allCategoriesAreStrings = ruleCollection.categories.every(categoryId => typeof categoryId === "string");
         if (allCategoriesAreStrings === false)
             return {
                 valid: false,
@@ -548,9 +529,7 @@ export default class RuleCollection {
             };
 
         // validate that all given rules are valid rules
-        const allRulesAreValid = ruleCollection.rules.every(
-            rule => this.validateRule(rule) === true
-        );
+        const allRulesAreValid = ruleCollection.rules.every(rule => this.validateRule(rule) === true);
         if (allRulesAreValid === false)
             return {
                 valid: false,

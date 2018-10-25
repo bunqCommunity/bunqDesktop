@@ -2,9 +2,9 @@
 
 
 # bunqDesktop 
-![Github latest version](https://img.shields.io/github/release/bunqcommunity/bunqdesktop.svg) 
-![Download count for one click installers](https://img.shields.io/github/downloads/bunqCommunity/bunqDesktop/total.svg) 
-![build status for master branch](https://api.travis-ci.org/bunqCommunity/bunqDesktop.svg?branch=master) 
+[![Github latest version](https://img.shields.io/github/release/bunqcommunity/bunqdesktop.svg) ](https://github.com/bunqCommunity/bunqDesktop/releases/latest)
+[![Download count for one click installers](https://img.shields.io/github/downloads/bunqCommunity/bunqDesktop/total.svg) ](https://github.com/bunqCommunity/bunqDesktop/releases)
+[![build status for master branch](https://api.travis-ci.org/bunqCommunity/bunqDesktop.svg?branch=master) ](https://travis-ci.org/bunqCommunity/bunqDesktop)
 [![MIT License](https://img.shields.io/npm/l/all-contributors-cli.svg?style=flat-square)](https://github.com/bunqCommunity/bunqDesktop/blob/master/LICENSE) 
 
 #### The unofficial, free and open source desktop application for the bunq API. 

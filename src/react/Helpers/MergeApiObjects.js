@@ -46,15 +46,10 @@ export default (accountId, newItems, oldItems) => {
         .map(eventId => mergedItemsObject[eventId]);
 
     // filter the merge list on the account ID to extract the newer and older id for this monetary account
-    const accountFilteredItems = mergedItemsArray.filter(
-        mergedItem => mergedItem.monetary_account_id === accountId
-    );
+    const accountFilteredItems = mergedItemsArray.filter(mergedItem => mergedItem.monetary_account_id === accountId);
 
     // get the newest and older id for the new combined list
-    const {
-        0: newestMergedItem,
-        [accountFilteredItems.length - 1]: oldestMergedItem
-    } = accountFilteredItems;
+    const { 0: newestMergedItem, [accountFilteredItems.length - 1]: oldestMergedItem } = accountFilteredItems;
 
     const newesMergedtId = newestMergedItem ? newestMergedItem.id : false;
     const oldestMergedId = oldestMergedItem ? oldestMergedItem.id : false;

@@ -3,11 +3,7 @@ import RequestResponse from "../Models/RequestResponse";
 
 import { requestResponsesSetInfo } from "./request_responses";
 
-export function requestResponseSetInfo(
-    request_response_info,
-    account_id,
-    request_response_id
-) {
+export function requestResponseSetInfo(request_response_info, account_id, request_response_id) {
     return {
         type: "REQUEST_RESPONSE_INFO_SET_INFO",
         payload: {
@@ -18,12 +14,7 @@ export function requestResponseSetInfo(
     };
 }
 
-export function requestResponseUpdate(
-    BunqJSClient,
-    user_id,
-    account_id,
-    request_response_id
-) {
+export function requestResponseUpdate(BunqJSClient, user_id, account_id, request_response_id) {
     const failedMessage = window.t("We failed to load the request information");
 
     return dispatch => {
@@ -31,26 +22,11 @@ export function requestResponseUpdate(
         BunqJSClient.api.requestResponse
             .get(user_id, account_id, request_response_id)
             .then(requestResponse => {
-                const requestResponseInfo = new RequestResponse(
-                    requestResponse
-                );
+                const requestResponseInfo = new RequestResponse(requestResponse);
                 // update this item in the list and the stored data
-                dispatch(
-                    requestResponsesSetInfo(
-                        [requestResponseInfo],
-                        parseInt(account_id),
-                        false,
-                        BunqJSClient
-                    )
-                );
+                dispatch(requestResponsesSetInfo([requestResponseInfo], parseInt(account_id), false, BunqJSClient));
 
-                dispatch(
-                    requestResponseSetInfo(
-                        requestResponseInfo,
-                        parseInt(account_id),
-                        request_response_id
-                    )
-                );
+                dispatch(requestResponseSetInfo(requestResponseInfo, parseInt(account_id), request_response_id));
                 dispatch(requestResponseNotLoading());
             })
             .catch(error => {

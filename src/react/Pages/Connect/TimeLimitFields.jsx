@@ -26,11 +26,7 @@ export default props => {
                         control={
                             <Switch
                                 checked={props.setTimeLimit}
-                                onChange={e =>
-                                    handleChangeDirect("setTimeLimit")(
-                                        !props.setTimeLimit
-                                    )
-                                }
+                                onChange={e => handleChangeDirect("setTimeLimit")(!props.setTimeLimit)}
                                 value="setBudget"
                                 color="primary"
                             />

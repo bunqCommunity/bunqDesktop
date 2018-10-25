@@ -125,10 +125,7 @@ export const { preferedThousandSeparator, preferedDecimalSeparator } = (() => {
  */
 export const formatMoney = (value, stayNegative = false) => {
     let parsedValue = parseFloat(value);
-    parsedValue =
-        parsedValue < 0 && stayNegative === false
-            ? parsedValue * -1
-            : parsedValue;
+    parsedValue = parsedValue < 0 && stayNegative === false ? parsedValue * -1 : parsedValue;
 
     const localeType = window.BUNQDESKTOP_LANGUAGE_SETTING || "nl";
 
@@ -220,11 +217,7 @@ export const UTCDateToLocalDate = date => {
  * @param localization
  * @returns {string}
  */
-export const humanReadableDate = (
-    date,
-    displayHoursMins = true,
-    localization = "nl"
-) => {
+export const humanReadableDate = (date, displayHoursMins = true, localization = "nl") => {
     const currentDate = new Date();
     const createDate = UTCDateToLocalDate(date);
 
@@ -233,9 +226,7 @@ export const humanReadableDate = (
     const month = createDate.toLocaleString(localeType, { month: "long" });
 
     // hide hours:minutes:seconds if disabled
-    const hoursMinutes = displayHoursMins
-        ? createDate.toLocaleTimeString(localeType)
-        : "";
+    const hoursMinutes = displayHoursMins ? createDate.toLocaleTimeString(localeType) : "";
 
     // different year, add it to the label
     if (currentDate.getFullYear() !== createDate.getFullYear()) {
@@ -271,18 +262,5 @@ export const generateGUID = () => {
             .toString(16)
             .substring(1);
     }
-    return (
-        s4() +
-        s4() +
-        "-" +
-        s4() +
-        "-" +
-        s4() +
-        "-" +
-        s4() +
-        "-" +
-        s4() +
-        s4() +
-        s4()
-    );
+    return s4() + s4() + "-" + s4() + "-" + s4() + "-" + s4() + "-" + s4() + s4() + s4();
 };

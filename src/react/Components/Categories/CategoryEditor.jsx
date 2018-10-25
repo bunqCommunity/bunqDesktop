@@ -62,13 +62,8 @@ class CategoryEditor extends React.Component {
             const stateChanges = {
                 categoryId: this.props.selectedCategoryId
             };
-            if (
-                this.props.selectedCategoryId &&
-                this.props.categories[this.props.selectedCategoryId]
-            ) {
-                const categoryInfo = this.props.categories[
-                    this.props.selectedCategoryId
-                ];
+            if (this.props.selectedCategoryId && this.props.categories[this.props.selectedCategoryId]) {
+                const categoryInfo = this.props.categories[this.props.selectedCategoryId];
                 stateChanges.label = categoryInfo.label;
                 stateChanges.icon = categoryInfo.icon;
                 stateChanges.color = categoryInfo.color;
@@ -124,7 +119,7 @@ class CategoryEditor extends React.Component {
         return (
             <Grid container spacing={16} style={styles.newCategoryContainer}>
                 <Grid item xs={12}>
-                    <TranslateTypography type={"title"} style={styles.titles}>
+                    <TranslateTypography variant="h6" style={styles.titles}>
                         Add a new category
                     </TranslateTypography>
                 </Grid>
@@ -151,9 +146,7 @@ class CategoryEditor extends React.Component {
                         }
                     />
 
-                    <CustomIcon style={{ color: this.state.color }}>
-                        {this.state.icon}
-                    </CustomIcon>
+                    <CustomIcon style={{ color: this.state.color }}>{this.state.icon}</CustomIcon>
                 </Grid>
 
                 <Grid item xs={12}>
@@ -195,7 +188,7 @@ class CategoryEditor extends React.Component {
 
                     {this.props.selectedCategoryId ? (
                         <TranslateButton
-                            variant="raised"
+                            variant="contained"
                             color="secondary"
                             style={styles.button}
                             onClick={this.props.deselectChip}
@@ -205,18 +198,13 @@ class CategoryEditor extends React.Component {
                     ) : null}
 
                     <TranslateButton
-                        variant="raised"
-                        disabled={
-                            this.state.labelError ||
-                            this.state.label.length === 0
-                        }
+                        variant="contained"
+                        disabled={this.state.labelError || this.state.label.length === 0}
                         color="primary"
                         style={styles.button}
                         onClick={this.saveCategory}
                     >
-                        {this.props.selectedCategoryId
-                            ? t("Update category")
-                            : t("Add new category")}
+                        {this.props.selectedCategoryId ? t("Update category") : t("Add new category")}
                     </TranslateButton>
                 </Grid>
             </Grid>

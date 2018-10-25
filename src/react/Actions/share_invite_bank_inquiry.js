@@ -11,9 +11,7 @@ export function shareInviteBankInquirySend(
     shareOptions,
     shareStatus = "PENDING"
 ) {
-    const failedMessage = window.t(
-        "We received the following error while sending your connect request"
-    );
+    const failedMessage = window.t("We received the following error while sending your connect request");
     const successMessage = window.t("Connect request was sent successfully!");
 
     return dispatch => {
@@ -28,13 +26,7 @@ export function shareInviteBankInquirySend(
                 dispatch(openSnackbar(successMessage));
 
                 // update the payments, accounts and share list
-                dispatch(
-                    shareInviteBankInquiriesInfoUpdate(
-                        BunqJSClient,
-                        userId,
-                        accountId
-                    )
-                );
+                dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId, accountId));
                 dispatch(shareInviteBankInquiryNotLoading());
             })
             .catch(error => {

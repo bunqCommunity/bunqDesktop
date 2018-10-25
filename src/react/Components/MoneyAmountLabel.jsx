@@ -4,8 +4,7 @@ import { withTheme } from "@material-ui/core/styles";
 
 class MoneyAmountLabel extends React.Component {
     shouldComponentUpdate(nextProps) {
-        if (nextProps.theme.themeName !== this.props.theme.themeName)
-            return true;
+        if (nextProps.theme.themeName !== this.props.theme.themeName) return true;
         if (nextProps.children !== this.props.children) return true;
         if (nextProps.type !== this.props.type) return true;
         if (nextProps.status !== this.props.status) return true;
@@ -100,9 +99,7 @@ class MoneyAmountLabel extends React.Component {
 
         // switch between incoming/outgoing colors
         const paymentColor =
-            info.amount.value < 0
-                ? theme.palette.common.sentPayment
-                : theme.palette.common.receivedPayment;
+            info.amount.value < 0 ? theme.palette.common.sentPayment : theme.palette.common.receivedPayment;
 
         return {
             color: paymentColor,

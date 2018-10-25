@@ -36,14 +36,8 @@ export default props => {
         handleChange
     } = props;
 
-    scheduleEndDate =
-        scheduleEndDate !== null
-            ? UTCDateToLocalDate(scheduleEndDate)
-            : scheduleEndDate;
-    scheduleStartDate =
-        scheduleStartDate !== null
-            ? UTCDateToLocalDate(scheduleStartDate)
-            : scheduleStartDate;
+    scheduleEndDate = scheduleEndDate !== null ? UTCDateToLocalDate(scheduleEndDate) : scheduleEndDate;
+    scheduleStartDate = scheduleStartDate !== null ? UTCDateToLocalDate(scheduleStartDate) : scheduleStartDate;
 
     const wrapDateChange = name => value => {
         handleChangeDirect(name)(getUTCDate(value));
@@ -51,20 +45,11 @@ export default props => {
 
     let scheduledPaymentText = null;
     if (schedulePayment) {
-        const scheduleTextResult = scheduleTexts(
-            t,
-            scheduleStartDate,
-            scheduleEndDate,
-            recurrenceSize,
-            recurrenceUnit
-        );
+        const scheduleTextResult = scheduleTexts(t, scheduleStartDate, scheduleEndDate, recurrenceSize, recurrenceUnit);
 
         scheduledPaymentText = (
             <ListItem>
-                <ListItemText
-                    primary={scheduleTextResult.primary}
-                    secondary={scheduleTextResult.secondary}
-                />
+                <ListItemText primary={scheduleTextResult.primary} secondary={scheduleTextResult.secondary} />
             </ListItem>
         );
     }
@@ -90,9 +75,7 @@ export default props => {
                                         wrapDateChange("scheduleEndDate")(date);
                                     }
                                 } else {
-                                    wrapDateChange("scheduleStartDate")(
-                                        new Date()
-                                    );
+                                    wrapDateChange("scheduleStartDate")(new Date());
                                 }
                             }}
                             ampm={false}
@@ -115,9 +98,7 @@ export default props => {
                                 if (!date || date > scheduleStartDate) {
                                     wrapDateChange("scheduleEndDate")(date);
                                 } else {
-                                    wrapDateChange("scheduleEndDate")(
-                                        scheduleStartDate
-                                    );
+                                    wrapDateChange("scheduleEndDate")(scheduleStartDate);
                                 }
                             }}
                             clearable={true}
@@ -152,24 +133,12 @@ export default props => {
                                 input={<Input name="field" id="field-helper" />}
                                 onChange={handleChange("recurrenceUnit")}
                             >
-                                <TranslateMenuItem value={"ONCE"}>
-                                    Once
-                                </TranslateMenuItem>
-                                <TranslateMenuItem value={"HOURLY"}>
-                                    Hours
-                                </TranslateMenuItem>
-                                <TranslateMenuItem value={"DAILY"}>
-                                    Days
-                                </TranslateMenuItem>
-                                <TranslateMenuItem value={"WEEKLY"}>
-                                    Weeks
-                                </TranslateMenuItem>
-                                <TranslateMenuItem value={"MONTHLY"}>
-                                    Months
-                                </TranslateMenuItem>
-                                <TranslateMenuItem value={"YEARLY"}>
-                                    Years
-                                </TranslateMenuItem>
+                                <TranslateMenuItem value={"ONCE"}>Once</TranslateMenuItem>
+                                <TranslateMenuItem value={"HOURLY"}>Hours</TranslateMenuItem>
+                                <TranslateMenuItem value={"DAILY"}>Days</TranslateMenuItem>
+                                <TranslateMenuItem value={"WEEKLY"}>Weeks</TranslateMenuItem>
+                                <TranslateMenuItem value={"MONTHLY"}>Months</TranslateMenuItem>
+                                <TranslateMenuItem value={"YEARLY"}>Years</TranslateMenuItem>
                             </Select>
                         </FormControl>
                     </Grid>

@@ -46,24 +46,11 @@ class NewRuleItemMenu extends React.Component<any, any> {
                 >
                     <AddIcon />
                 </IconButton>
-                <Menu
-                    id="long-menu"
-                    anchorEl={this.state.anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={this.handleClose}
-                >
-                    <MenuItem onClick={this.addRule("VALUE")}>
-                        Value check
-                    </MenuItem>
-                    <MenuItem onClick={this.addRule("TRANSACTION_AMOUNT")}>
-                        Transaction amount
-                    </MenuItem>
-                    <MenuItem onClick={this.addRule("ITEM_TYPE")}>
-                        Event type
-                    </MenuItem>
-                    <MenuItem onClick={this.addRule("ACCOUNT_TYPE")}>
-                        Account
-                    </MenuItem>
+                <Menu id="long-menu" anchorEl={this.state.anchorEl} open={Boolean(anchorEl)} onClose={this.handleClose}>
+                    <MenuItem onClick={this.addRule("VALUE")}>Value check</MenuItem>
+                    <MenuItem onClick={this.addRule("TRANSACTION_AMOUNT")}>Transaction amount</MenuItem>
+                    <MenuItem onClick={this.addRule("ITEM_TYPE")}>Event type</MenuItem>
+                    <MenuItem onClick={this.addRule("ACCOUNT_TYPE")}>Account</MenuItem>
                     <Divider />
 
                     <MenuItem onClick={this.openImportDialog}>

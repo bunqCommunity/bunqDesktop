@@ -105,7 +105,7 @@ class ShareInviteBankResponseListItem extends React.Component {
             <React.Fragment>
                 <TranslateButton
                     style={styles.buttons}
-                    variant="raised"
+                    variant="contained"
                     color="primary"
                     onClick={this.accept}
                     disabled={this.state.loading}
@@ -114,7 +114,7 @@ class ShareInviteBankResponseListItem extends React.Component {
                 </TranslateButton>
                 <TranslateButton
                     style={styles.buttons}
-                    variant="raised"
+                    variant="contained"
                     color="secondary"
                     onClick={this.reject}
                     disabled={this.state.loading}
@@ -124,41 +124,26 @@ class ShareInviteBankResponseListItem extends React.Component {
             </React.Fragment>
         );
 
-        const shareDetailTypes = Object.keys(
-            shareInviteBankResponse.share_detail
-        );
+        const shareDetailTypes = Object.keys(shareInviteBankResponse.share_detail);
         const shareDetailType = shareDetailTypes[0];
 
         let shareTypeObject = null;
         switch (shareDetailType) {
             case "ShareDetailPayment":
-                shareTypeObject = (
-                    <FullAccess t={t} secondaryActions={connectActions} />
-                );
+                shareTypeObject = <FullAccess t={t} secondaryActions={connectActions} />;
                 break;
             case "ShareDetailDraftPayment":
-                shareTypeObject = (
-                    <DraftAccess t={t} secondaryActions={connectActions} />
-                );
+                shareTypeObject = <DraftAccess t={t} secondaryActions={connectActions} />;
                 break;
             case "ShareDetailReadOnly":
-                shareTypeObject = (
-                    <ShowOnly t={t} secondaryActions={connectActions} />
-                );
+                shareTypeObject = <ShowOnly t={t} secondaryActions={connectActions} />;
                 break;
         }
 
         return [
-            <ListItem
-                button
-                onClick={e => this.setState({ open: !this.state.open })}
-            >
+            <ListItem button onClick={e => this.setState({ open: !this.state.open })}>
                 <Avatar style={styles.smallAvatar}>
-                    <LazyAttachmentImage
-                        height={50}
-                        BunqJSClient={this.props.BunqJSClient}
-                        imageUUID={imageUUID}
-                    />
+                    <LazyAttachmentImage height={50} BunqJSClient={this.props.BunqJSClient} imageUUID={imageUUID} />
                 </Avatar>
                 <ListItemText
                     style={styles.listItemText}
@@ -190,8 +175,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        shareInviteBankResponsesInfoUpdate: userId =>
-            dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId))
+        shareInviteBankResponsesInfoUpdate: userId => dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId))
     };
 };
 export default connect(

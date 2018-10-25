@@ -89,36 +89,15 @@ class Sidebar extends React.Component {
     }
 
     render() {
-        const {
-            t,
-            classes,
-            theme,
-            open,
-            userType,
-            derivedPassword,
-            limitedPermissions,
-            apiKey
-        } = this.props;
+        const { t, classes, theme, open, userType, derivedPassword, limitedPermissions, apiKey } = this.props;
 
         // if true, disable certain items in the menu
-        const disableNavigationItems =
-            userType === false || derivedPassword === false || apiKey === false;
+        const disableNavigationItems = userType === false || derivedPassword === false || apiKey === false;
         const navigationItems = disableNavigationItems
             ? null
             : [
-                  <ListItemWrapper
-                      exact
-                      to="/"
-                      icon={HomeIcon}
-                      text="Dashboard"
-                      location={this.props.location}
-                  />,
-                  <ListItemWrapper
-                      to="/pay"
-                      icon={ArrowUpwardIcon}
-                      text={"Pay"}
-                      location={this.props.location}
-                  />,
+                  <ListItemWrapper exact to="/" icon={HomeIcon} text="Dashboard" location={this.props.location} />,
+                  <ListItemWrapper to="/pay" icon={ArrowUpwardIcon} text={"Pay"} location={this.props.location} />,
                   limitedPermissions ? null : (
                       <ListItemWrapper
                           to="/request"
@@ -133,12 +112,7 @@ class Sidebar extends React.Component {
                       text={"bunqme Requests"}
                       location={this.props.location}
                   />,
-                  <ListItemWrapper
-                      to="/card"
-                      icon={CardIcon}
-                      text={"Cards"}
-                      location={this.props.location}
-                  />,
+                  <ListItemWrapper to="/card" icon={CardIcon} text={"Cards"} location={this.props.location} />,
                   <ListItemWrapper
                       to="/scheduled-payments"
                       icon={EventIcon}
@@ -152,12 +126,7 @@ class Sidebar extends React.Component {
                       location={this.props.location}
                   />,
                   <Divider />,
-                  <ListItemWrapper
-                      to="/stats"
-                      icon={TimeLineIcon}
-                      text={"Stats"}
-                      location={this.props.location}
-                  />,
+                  <ListItemWrapper to="/stats" icon={TimeLineIcon} text={"Stats"} location={this.props.location} />,
                   <ListItemWrapper
                       to="/contacts"
                       icon={ContactsIcon}
@@ -183,16 +152,11 @@ class Sidebar extends React.Component {
                 <NavLink to="/application-info" style={styles.bunqLink}>
                     <ListItem button>
                         <ListItemIcon>
-                            <Avatar
-                                style={styles.avatar}
-                                src="./images/512x512.png"
-                            />
+                            <Avatar style={styles.avatar} src="./images/512x512.png" />
                         </ListItemIcon>
                         <ListItemText
                             primary="bunqDesktop"
-                            secondary={`${t("Version")} ${
-                                process.env.CURRENT_VERSION
-                            }`}
+                            secondary={`${t("Version")} ${process.env.CURRENT_VERSION}`}
                         />
                     </ListItem>
                 </NavLink>
@@ -203,12 +167,7 @@ class Sidebar extends React.Component {
 
                 <QueueSidebarListItem t={t} />
 
-                <ListItemWrapper
-                    to="/settings"
-                    icon={SettingsIcon}
-                    text={"Settings"}
-                    location={this.props.location}
-                />
+                <ListItemWrapper to="/settings" icon={SettingsIcon} text={"Settings"} location={this.props.location} />
             </List>
         );
 
@@ -222,9 +181,7 @@ class Sidebar extends React.Component {
                             open={open}
                             onClose={this.props.closeDrawer}
                             className="options-drawer"
-                            anchor={
-                                theme.direction === "rtl" ? "right" : "left"
-                            }
+                            anchor={theme.direction === "rtl" ? "right" : "left"}
                             SlideProps={{
                                 style: { top: 50 }
                             }}

@@ -4,17 +4,12 @@ export default shareInviteBankResponses => {
 
     // check if atleast one item was found
     if (shareInviteResponseFirst) {
-        const shareInviteResponse =
-            shareInviteResponseFirst.ShareInviteBankResponse;
+        const shareInviteResponse = shareInviteResponseFirst.ShareInviteBankResponse;
 
         // check if share details are available
-        if (
-            shareInviteResponse.share_detail &&
-            shareInviteResponse.share_detail.ShareDetailPayment
-        ) {
+        if (shareInviteResponse.share_detail && shareInviteResponse.share_detail.ShareDetailPayment) {
             // get budget from share invite bank response
-            const budgetInfo =
-                shareInviteResponse.share_detail.ShareDetailPayment.budget;
+            const budgetInfo = shareInviteResponse.share_detail.ShareDetailPayment.budget;
 
             if (budgetInfo) {
                 // get the available balance for this budget

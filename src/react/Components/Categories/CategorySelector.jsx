@@ -8,10 +8,7 @@ import Collapse from "@material-ui/core/Collapse";
 import TranslateButton from "../TranslationHelpers/Button";
 
 import CategoryChips from "./CategoryChips";
-import {
-    removeCategoryConnection,
-    setCategoryConnection
-} from "../../Actions/categories";
+import { removeCategoryConnection, setCategoryConnection } from "../../Actions/categories";
 
 const styles = {
     title: { textAlign: "center" },
@@ -38,11 +35,7 @@ class CategorySelector extends React.Component {
         const { item, type } = this.props;
         if (item[type]) {
             const itemInfo = item[type];
-            this.props.removeCategoryConnection(
-                event.category.id,
-                type,
-                itemInfo.id
-            );
+            this.props.removeCategoryConnection(event.category.id, type, itemInfo.id);
         }
     };
 
@@ -50,11 +43,7 @@ class CategorySelector extends React.Component {
         const { item, type } = this.props;
         if (item[type]) {
             const itemInfo = item[type];
-            this.props.setCategoryConnection(
-                event.category.id,
-                type,
-                itemInfo.id
-            );
+            this.props.setCategoryConnection(event.category.id, type, itemInfo.id);
         }
     };
 
@@ -80,11 +69,7 @@ class CategorySelector extends React.Component {
 
                 <Grid item xs={12}>
                     {displayToggleButton ? (
-                        <TranslateButton
-                            onClick={_ =>
-                                this.setState({ open: !this.state.open })
-                            }
-                        >
+                        <TranslateButton onClick={_ => this.setState({ open: !this.state.open })}>
                             {this.state.open ? "Cancel" : "Manage categories"}
                         </TranslateButton>
                     ) : null}
@@ -96,12 +81,7 @@ class CategorySelector extends React.Component {
 
                 <Grid item xs={12}>
                     <Collapse in={this.state.open}>
-                        <CategoryChips
-                            type={type}
-                            id={itemInfo.id}
-                            onClick={this.handleConnect}
-                            reverseChips={true}
-                        />
+                        <CategoryChips type={type} id={itemInfo.id} onClick={this.handleConnect} reverseChips={true} />
                     </Collapse>
                 </Grid>
             </Grid>
@@ -124,10 +104,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        setCategoryConnection: (...params) =>
-            dispatch(setCategoryConnection(...params)),
-        removeCategoryConnection: (...params) =>
-            dispatch(removeCategoryConnection(...params))
+        setCategoryConnection: (...params) => dispatch(setCategoryConnection(...params)),
+        removeCategoryConnection: (...params) => dispatch(removeCategoryConnection(...params))
     };
 };
 

@@ -4,12 +4,7 @@ import Payment from "../Models/Payment";
 
 export const STORED_PAYMENTS = "BUNQDESKTOP_STORED_PAYMENTS";
 
-export function paymentsSetInfo(
-    payments,
-    account_id,
-    resetOldItems = false,
-    BunqJSClient = false
-) {
+export function paymentsSetInfo(payments, account_id, resetOldItems = false, BunqJSClient = false) {
     const type = resetOldItems ? "PAYMENTS_SET_INFO" : "PAYMENTS_UPDATE_INFO";
 
     return {
@@ -29,9 +24,7 @@ export function loadStoredPayments(BunqJSClient) {
             .then(data => {
                 if (data && data.items) {
                     // turn plain objects into Model objects
-                    const paymentsNew = data.items.map(
-                        item => new Payment(item)
-                    );
+                    const paymentsNew = data.items.map(item => new Payment(item));
 
                     dispatch(paymentsSetInfo(paymentsNew, data.account_id));
                 }
@@ -53,9 +46,7 @@ export function paymentInfoUpdate(
         older_id: false
     }
 ) {
-    const failedMessage = window.t(
-        "We failed to load the payments for this monetary account"
-    );
+    const failedMessage = window.t("We failed to load the payments for this monetary account");
 
     return dispatch => {
         dispatch(paymentsLoading());
@@ -66,14 +57,7 @@ export function paymentInfoUpdate(
                 // turn plain objects into Model objects
                 const paymentsNew = payments.map(item => new Payment(item));
 
-                dispatch(
-                    paymentsSetInfo(
-                        paymentsNew,
-                        account_id,
-                        false,
-                        BunqJSClient
-                    )
-                );
+                dispatch(paymentsSetInfo(paymentsNew, account_id, false, BunqJSClient));
                 dispatch(paymentsNotLoading());
             })
             .catch(error => {

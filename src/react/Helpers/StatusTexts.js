@@ -65,8 +65,7 @@ export const requestInquiryText = (requestInquiry, t) => {
 export const paymentText = (payment, t) => {
     const sentPaymentLabel = t("Sent payment with ");
     const receivedPaymentLabel = t("Received payment with ");
-    const label =
-        payment.amount.value < 0 ? sentPaymentLabel : receivedPaymentLabel;
+    const label = payment.amount.value < 0 ? sentPaymentLabel : receivedPaymentLabel;
 
     return `${label}${paymentTypeParser(payment.type, t)}`;
 };
@@ -90,24 +89,17 @@ export const paymentTypeParser = (paymentType, t) => {
 export const masterCardActionText = (masterCardAction, t) => {
     switch (masterCardAction.authorisation_status) {
         case "AUTHORISED":
-            return `${t("Sent payment with ")}${masterCardActionParser(
-                masterCardAction,
-                t
-            )}`;
+            return `${t("Sent payment with ")}${masterCardActionParser(masterCardAction, t)}`;
         case "BLOCKED":
-            return `${t("The payment was blocked due to ")}${
-                masterCardAction.decision_description
-            }`;
+            return `${t("The payment was blocked due to ")}${masterCardAction.decision_description}`;
         case "CLEARING_REFUND":
-            return `${t("Payment was refunded due to ")}${
-                masterCardAction.decision_description
-            }`;
+            return `${t("Payment was refunded due to ")}${masterCardAction.decision_description}`;
         case "REVERSED":
             return t("The payment was reversed");
         default:
-            return `${t("The payment currently has the status ")}${
-                masterCardAction.authorisation_status
-            } - ${masterCardAction.authorisation_type}`;
+            return `${t("The payment currently has the status ")}${masterCardAction.authorisation_status} - ${
+                masterCardAction.authorisation_type
+            }`;
     }
 };
 

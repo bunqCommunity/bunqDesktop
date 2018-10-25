@@ -15,12 +15,8 @@ export function requestResponseAccept(
         address_billing: false
     }
 ) {
-    const failedMessage = window.t(
-        "We received the following error while trying to accept your request response"
-    );
-    const successMessage = window.t(
-        "Request response was successfully accepted!"
-    );
+    const failedMessage = window.t("We received the following error while trying to accept your request response");
+    const successMessage = window.t("Request response was successfully accepted!");
 
     return dispatch => {
         dispatch(requestResponseLoading());
@@ -35,17 +31,8 @@ export function requestResponseAccept(
                 dispatch(requestResponseNotLoading());
 
                 // update the information page
-                dispatch(
-                    requestResponseUpdate(
-                        BunqJSClient,
-                        userId,
-                        accountId,
-                        requestResponseId
-                    )
-                );
-                dispatch(
-                    requestInquiryBatchesUpdate(BunqJSClient, userId, accountId)
-                );
+                dispatch(requestResponseUpdate(BunqJSClient, userId, accountId, requestResponseId));
+                dispatch(requestInquiryBatchesUpdate(BunqJSClient, userId, accountId));
             })
             .catch(error => {
                 dispatch(requestResponseNotLoading());
@@ -54,15 +41,8 @@ export function requestResponseAccept(
     };
 }
 
-export function requestResponseReject(
-    BunqJSClient,
-    userId,
-    accountId,
-    requestResponseId
-) {
-    const failedMessage = window.t(
-        "We received the following error while trying to cancel the request"
-    );
+export function requestResponseReject(BunqJSClient, userId, accountId, requestResponseId) {
+    const failedMessage = window.t("We received the following error while trying to cancel the request");
     const successMessage = window.t("Request was rejected successfully!");
 
     return dispatch => {
@@ -74,14 +54,7 @@ export function requestResponseReject(
                 dispatch(requestResponseNotLoading());
 
                 // update the information page
-                dispatch(
-                    requestResponseUpdate(
-                        BunqJSClient,
-                        userId,
-                        accountId,
-                        requestResponseId
-                    )
-                );
+                dispatch(requestResponseUpdate(BunqJSClient, userId, accountId, requestResponseId));
             })
             .catch(error => {
                 dispatch(requestResponseNotLoading());

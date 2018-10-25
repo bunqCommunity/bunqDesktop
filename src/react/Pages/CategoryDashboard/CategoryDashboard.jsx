@@ -10,14 +10,10 @@ import CategoryEditor from "../../Components/Categories/CategoryEditor";
 import CategoryChip from "../../Components/Categories/CategoryChip";
 import ImportDialog from "../../Components/ImportDialog";
 import ExportDialog from "../../Components/ExportDialog";
-import TypographyTranslate from "../../Components/TranslationHelpers/Typography";
-import ButtonTranslate from "../../Components/TranslationHelpers/Button";
+import TranslateTypography from "../../Components/TranslationHelpers/Typography";
+import TranslateButton from "../../Components/TranslationHelpers/Button";
 
-import {
-    removeCategory,
-    removeCategoryConnection,
-    setCategory
-} from "../../Actions/categories";
+import { removeCategory, removeCategoryConnection, setCategory } from "../../Actions/categories";
 import { openSnackbar } from "../../Actions/snackbar";
 
 const styles = {
@@ -83,21 +79,13 @@ class CategoryDashboard extends React.Component {
             if (!category.priority) return false;
 
             // add this category
-            this.props.setCategory(
-                category.id,
-                category.label,
-                category.color,
-                category.icon,
-                category.priority
-            );
+            this.props.setCategory(category.id, category.label, category.color, category.icon, category.priority);
         });
     };
 
     loadDefaultCategories = () => {
         axios
-            .get(
-                "https://raw.githubusercontent.com/bunqCommunity/bunqDesktopTemplates/master/categories.json"
-            )
+            .get("https://raw.githubusercontent.com/bunqCommunity/bunqDesktopTemplates/master/categories.json")
             .then(response => {
                 this.setState({ defaultCategories: response.data });
             })
@@ -139,52 +127,44 @@ class CategoryDashboard extends React.Component {
                 </Helmet>
 
                 <Grid item xs={12} md={8}>
-                    <TypographyTranslate variant="title" gutterBottom>
+                    <TranslateTypography variant="h6" gutterBottom>
                         Categories
-                    </TypographyTranslate>
+                    </TranslateTypography>
                 </Grid>
 
                 <ExportDialog
                     title={t("Export categories")}
-                    closeModal={() =>
-                        this.setState({ openExportDialog: false })
-                    }
+                    closeModal={() => this.setState({ openExportDialog: false })}
                     open={this.state.openExportDialog}
                     object={this.props.categories}
                 />
 
                 <ImportDialog
                     title={t("Import categories")}
-                    closeModal={() =>
-                        this.setState({ openImportDialog: false })
-                    }
+                    closeModal={() => this.setState({ openImportDialog: false })}
                     importData={this.importCategories}
                     open={this.state.openImportDialog}
                 />
 
                 <Grid item xs={6} md={2}>
-                    <ButtonTranslate
-                        variant="raised"
+                    <TranslateButton
+                        variant="outlined"
                         color="primary"
                         style={{ width: "100%" }}
-                        onClick={() =>
-                            this.setState({ openExportDialog: true })
-                        }
+                        onClick={() => this.setState({ openExportDialog: true })}
                     >
                         Export
-                    </ButtonTranslate>
+                    </TranslateButton>
                 </Grid>
                 <Grid item xs={6} md={2}>
-                    <ButtonTranslate
-                        variant="raised"
+                    <TranslateButton
+                        variant="outlined"
                         color="primary"
                         style={{ width: "100%" }}
-                        onClick={() =>
-                            this.setState({ openImportDialog: true })
-                        }
+                        onClick={() => this.setState({ openImportDialog: true })}
                     >
                         Import
-                    </ButtonTranslate>
+                    </TranslateButton>
                 </Grid>
 
                 <Grid item xs={12}>
@@ -192,9 +172,7 @@ class CategoryDashboard extends React.Component {
                         <Grid item xs={12} md={4}>
                             <Paper>
                                 <CategoryEditor
-                                    selectedCategoryId={
-                                        this.state.selectedCategoryId
-                                    }
+                                    selectedCategoryId={this.state.selectedCategoryId}
                                     deselectChip={this.deselectChip}
                                 />
                             </Paper>
@@ -210,28 +188,23 @@ class CategoryDashboard extends React.Component {
                     <Grid container spacing={16}>
                         <Grid item xs={12} md={4}>
                             <Paper style={{ padding: 8 }}>
-                                <ButtonTranslate
-                                    variant="raised"
+                                <TranslateButton
+                                    variant="outlined"
                                     color="primary"
                                     style={styles.buttons}
                                     onClick={this.loadDefaultCategories}
                                 >
                                     Load default categories
-                                </ButtonTranslate>
+                                </TranslateButton>
 
-                                <ButtonTranslate
-                                    variant="raised"
-                                    color="primary"
+                                <TranslateButton
+                                    variant="outlined"
                                     style={styles.buttons}
-                                    onClick={e =>
-                                        this.importCategories(
-                                            this.state.defaultCategories
-                                        )
-                                    }
+                                    onClick={e => this.importCategories(this.state.defaultCategories)}
                                     disabled={!this.state.defaultCategories}
                                 >
                                     Import default categories
-                                </ButtonTranslate>
+                                </TranslateButton>
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={8}>
@@ -256,8 +229,7 @@ const mapDispatchToProps = dispatch => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
         removeCategory: (...params) => dispatch(removeCategory(...params)),
-        removeCategoryConnection: (...params) =>
-            dispatch(removeCategoryConnection(...params)),
+        removeCategoryConnection: (...params) => dispatch(removeCategoryConnection(...params)),
         setCategory: (...params) => dispatch(setCategory(...params))
     };
 };

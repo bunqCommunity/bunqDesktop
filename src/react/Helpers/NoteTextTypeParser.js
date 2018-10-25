@@ -2,7 +2,8 @@ export default event => {
     const eventType = event.eventType;
 
     if (eventType === "MasterCardAction") {
-        return "mastercard-action";
+        return false;
+        // return "mastercard-action";
     } else if (eventType === "Payment") {
         return false;
 

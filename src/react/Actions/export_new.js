@@ -11,22 +11,13 @@ export function exportNew(
         regional_format: "EUROPEAN"
     }
 ) {
-    const failedMessage = window.t(
-        "We failed to create the export for this monetary account"
-    );
+    const failedMessage = window.t("We failed to create the export for this monetary account");
 
     return dispatch => {
         dispatch(exportNewLoading());
 
         BunqJSClient.api.customerStatementExport
-            .post(
-                user_id,
-                account_id,
-                statement_format,
-                date_start,
-                date_end,
-                options
-            )
+            .post(user_id, account_id, statement_format, date_start, date_end, options)
             .then(exportCreated => {
                 dispatch(exportNewNotLoading());
             })

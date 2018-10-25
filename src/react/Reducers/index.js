@@ -1,4 +1,5 @@
 import { combineReducers } from "redux";
+import { reducer as formReducer } from "redux-form";
 
 import amount_filter from "./amount_filter";
 import account_id_filter from "./account_id_filter";
@@ -65,6 +66,7 @@ export default combineReducers({
     date_filter,
     export_new,
     exports,
+    form: formReducer,
     general_filter,
     modal,
     master_card_actions,

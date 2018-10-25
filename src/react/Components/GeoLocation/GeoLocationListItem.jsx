@@ -31,17 +31,9 @@ class GeoLocationListItem extends React.Component {
         return (
             <React.Fragment>
                 <ListItem button onClick={this.onClick}>
-                    <ListItemText
-                        primary={t("Geolocation")}
-                        secondary={t("Click to view")}
-                    />
+                    <ListItemText primary={t("Geolocation")} secondary={t("Click to view")} />
                 </ListItem>
-                <GeoLocationView
-                    t={t}
-                    onClose={this.onClose}
-                    visible={this.state.visible}
-                    geoLocation={geoLocation}
-                />
+                <GeoLocationView t={t} onClose={this.onClose} visible={this.state.visible} geoLocation={geoLocation} />
             </React.Fragment>
         );
     }

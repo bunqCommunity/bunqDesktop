@@ -3,7 +3,6 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { ipcRenderer } from "electron";
 import Helmet from "react-helmet";
-import Redirect from "react-router-dom/Redirect";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
@@ -34,16 +33,10 @@ import NoteTextForm from "../../Components/NoteTexts/NoteTextForm";
 import GeoLocationListItem from "../../Components/GeoLocation/GeoLocationListItem";
 
 import { formatMoney, humanReadableDate } from "../../Helpers/Utils";
-import {
-    requestResponseText,
-    requestResponseTypeParser
-} from "../../Helpers/StatusTexts";
+import { requestResponseText, requestResponseTypeParser } from "../../Helpers/StatusTexts";
 
 import { requestResponseUpdate } from "../../Actions/request_response_info";
-import {
-    requestResponseReject,
-    requestResponseAccept
-} from "../../Actions/request_response";
+import { requestResponseReject, requestResponseAccept } from "../../Actions/request_response";
 import { applicationSetPDFMode } from "../../Actions/application";
 
 const styles = {
@@ -81,13 +74,7 @@ class RequestResponseInfo extends React.Component {
     componentDidMount() {
         if (this.props.initialBunqConnect) {
             const { requestResponseId, accountId } = this.props.match.params;
-            this.props.requestResponseUpdate(
-                this.props.user.id,
-                accountId === undefined
-                    ? this.props.accountsSelectedAccount
-                    : accountId,
-                requestResponseId
-            );
+            this.props.requestResponseUpdate(this.props.user.id, accountId, requestResponseId);
             this.setState({ initialUpdate: true });
         }
     }
@@ -97,17 +84,10 @@ class RequestResponseInfo extends React.Component {
             this.props.user &&
             this.props.user.id &&
             this.props.initialBunqConnect &&
-            this.props.match.params.requestResponseId !==
-                this.props.match.params.requestResponseId
+            this.props.match.params.requestResponseId !== this.props.match.params.requestResponseId
         ) {
             const { requestResponseId, accountId } = this.props.match.params;
-            this.props.requestResponseUpdate(
-                this.props.user.id,
-                accountId === undefined
-                    ? this.props.accountsSelectedAccount
-                    : accountId,
-                requestResponseId
-            );
+            this.props.requestResponseUpdate(this.props.user.id, accountId, requestResponseId);
             this.setState({ initialUpdate: true });
         }
         return null;
@@ -116,15 +96,11 @@ class RequestResponseInfo extends React.Component {
 
     startPayment = event => {
         const requestResponseInfo = this.props.requestResponseInfo;
-        this.props.history.push(
-            `/pay?amount=${requestResponseInfo.getAmount()}`
-        );
+        this.props.history.push(`/pay?amount=${requestResponseInfo.getAmount()}`);
     };
     startRequest = event => {
         const requestResponseInfo = this.props.requestResponseInfo;
-        this.props.history.push(
-            `/request?amount=${requestResponseInfo.getAmount()}`
-        );
+        this.props.history.push(`/request?amount=${requestResponseInfo.getAmount()}`);
     };
     toggleCreateFilterDialog = e => {
         this.setState({
@@ -134,13 +110,7 @@ class RequestResponseInfo extends React.Component {
 
     rejectRequest = () => {
         const { requestResponseId, accountId } = this.props.match.params;
-        this.props.requestResponseReject(
-            this.props.user.id,
-            accountId === undefined
-                ? this.props.accountsSelectedAccount
-                : accountId,
-            requestResponseId
-        );
+        this.props.requestResponseReject(this.props.user.id, accountId, requestResponseId);
     };
 
     acceptRequest = () => {
@@ -188,20 +158,12 @@ class RequestResponseInfo extends React.Component {
     render() {
         const {
             t,
-            accountsSelectedAccount,
             requestResponseInfo,
             requestResponseInfoLoading,
             requestResponseLoading,
             limitedPermissions,
             accounts
         } = this.props;
-        const paramAccountId = this.props.match.params.accountId;
-
-        // we require a selected account before we can display payment information
-        if (accountsSelectedAccount === false && paramAccountId !== undefined) {
-            // no account_id set
-            return <Redirect to={"/"} />;
-        }
 
         let content;
         let noteTextsForm = null;
@@ -228,16 +190,10 @@ class RequestResponseInfo extends React.Component {
                 ? humanReadableDate(requestResponse.time_responded)
                 : false;
             let paymentAmount = requestResponse.amount_inquired.value;
-            paymentAmount =
-                requestResponse.status === "ACCEPTED"
-                    ? paymentAmount * -1
-                    : paymentAmount;
+            paymentAmount = requestResponse.status === "ACCEPTED" ? paymentAmount * -1 : paymentAmount;
 
             const formattedPaymentAmount = formatMoney(paymentAmount);
-            const requestResponseLabel = requestResponseText(
-                requestResponse,
-                t
-            );
+            const requestResponseLabel = requestResponseText(requestResponse, t);
 
             if (this.props.pdfSaveModeEnabled) {
                 return (
@@ -253,22 +209,12 @@ class RequestResponseInfo extends React.Component {
                 );
             }
 
-            noteTextsForm = (
-                <NoteTextForm
-                    BunqJSClient={this.props.BunqJSClient}
-                    event={requestResponse}
-                />
-            );
+            noteTextsForm = <NoteTextForm BunqJSClient={this.props.BunqJSClient} event={requestResponse} />;
 
             content = (
                 <React.Fragment>
                     <Paper style={styles.paper}>
-                        <Grid
-                            container
-                            spacing={24}
-                            align={"center"}
-                            justify={"center"}
-                        >
+                        <Grid container spacing={24} align={"center"} justify={"center"}>
                             <TransactionHeader
                                 BunqJSClient={this.props.BunqJSClient}
                                 to={requestResponse.alias}
@@ -296,10 +242,7 @@ class RequestResponseInfo extends React.Component {
                                     {formattedPaymentAmount}
                                 </MoneyAmountLabel>
 
-                                <Typography
-                                    style={{ textAlign: "center" }}
-                                    type={"body1"}
-                                >
+                                <Typography style={{ textAlign: "center" }} variant="body2">
                                     {requestResponseLabel}
                                 </Typography>
 
@@ -310,9 +253,7 @@ class RequestResponseInfo extends React.Component {
                                               <ListItem>
                                                   <ListItemText
                                                       primary={t("Description")}
-                                                      secondary={
-                                                          requestResponse.description
-                                                      }
+                                                      secondary={requestResponse.description}
                                                   />
                                               </ListItem>
                                           ]
@@ -320,38 +261,25 @@ class RequestResponseInfo extends React.Component {
 
                                     <Divider />
                                     <ListItem>
-                                        <ListItemText
-                                            primary={t("Received")}
-                                            secondary={createdDate}
-                                        />
+                                        <ListItemText primary={t("Received")} secondary={createdDate} />
                                     </ListItem>
 
                                     {timeRespondedDate ? (
                                         <React.Fragment>
                                             <Divider />
                                             <ListItem>
-                                                <ListItemText
-                                                    primary={t("Paid")}
-                                                    secondary={
-                                                        timeRespondedDate
-                                                    }
-                                                />
+                                                <ListItemText primary={t("Paid")} secondary={timeRespondedDate} />
                                             </ListItem>
                                         </React.Fragment>
                                     ) : null}
 
-                                    {requestResponse.counterparty_alias &&
-                                    requestResponse.counterparty_alias.iban ? (
+                                    {requestResponse.counterparty_alias && requestResponse.counterparty_alias.iban ? (
                                         <React.Fragment>
                                             <Divider />
                                             <ListItem>
                                                 <ListItemText
                                                     primary={t("IBAN")}
-                                                    secondary={
-                                                        requestResponse
-                                                            .counterparty_alias
-                                                            .iban
-                                                    }
+                                                    secondary={requestResponse.counterparty_alias.iban}
                                                 />
                                             </ListItem>
                                         </React.Fragment>
@@ -361,54 +289,36 @@ class RequestResponseInfo extends React.Component {
                                     <ListItem>
                                         <ListItemText
                                             primary={t("Type")}
-                                            secondary={requestResponseTypeParser(
-                                                requestResponse,
-                                                t
-                                            )}
+                                            secondary={requestResponseTypeParser(requestResponse, t)}
                                         />
                                     </ListItem>
 
                                     <Divider />
                                     <ListItem>
-                                        <ListItemText
-                                            primary={t("Status")}
-                                            secondary={requestResponse.status}
-                                        />
+                                        <ListItemText primary={t("Status")} secondary={requestResponse.status} />
                                     </ListItem>
 
                                     <Divider />
                                     <ListItem>
-                                        <ListItemText
-                                            primary={t("Sub type")}
-                                            secondary={requestResponse.sub_type}
-                                        />
+                                        <ListItemText primary={t("Sub type")} secondary={requestResponse.sub_type} />
                                     </ListItem>
 
                                     <Divider />
-                                    <GeoLocationListItem
-                                        t={t}
-                                        geoLocation={
-                                            requestResponse.geolocation
-                                        }
-                                    />
+                                    <GeoLocationListItem t={t} geoLocation={requestResponse.geolocation} />
                                 </List>
 
-                                <CategorySelector
-                                    type={"RequestResponse"}
-                                    item={requestResponseInfo}
-                                />
+                                <CategorySelector type={"RequestResponse"} item={requestResponseInfo} />
                             </Grid>
                         </Grid>
                     </Paper>
 
-                    {!limitedPermissions &&
-                    requestResponse.status === "PENDING" ? (
+                    {!limitedPermissions && requestResponse.status === "PENDING" ? (
                         !this.state.accepted ? (
                             <Paper style={styles.paper}>
                                 <Grid container spacing={16}>
                                     <Grid item xs={12} sm={6}>
                                         <TranslateButton
-                                            variant="raised"
+                                            variant="contained"
                                             color="primary"
                                             style={styles.button}
                                             disabled={this.state.accepted}
@@ -424,12 +334,9 @@ class RequestResponseInfo extends React.Component {
 
                                     <Grid item xs={12} sm={6}>
                                         <TranslateButton
-                                            variant="raised"
+                                            variant="contained"
                                             color="secondary"
-                                            disabled={
-                                                requestResponseInfoLoading ||
-                                                requestResponseLoading
-                                            }
+                                            disabled={requestResponseInfoLoading || requestResponseLoading}
                                             onClick={this.rejectRequest}
                                             style={styles.button}
                                         >
@@ -440,29 +347,20 @@ class RequestResponseInfo extends React.Component {
                             </Paper>
                         ) : (
                             <Paper style={styles.paper}>
-                                <Grid
-                                    container
-                                    spacing={24}
-                                    align={"center"}
-                                    justify={"center"}
-                                >
+                                <Grid container spacing={24} align={"center"} justify={"center"}>
                                     <Grid item xs={12}>
                                         <AccountSelectorDialog
                                             value={this.state.selectedAccount}
-                                            onChange={this.handleChangeDirect(
-                                                "selectedAccount"
-                                            )}
+                                            onChange={this.handleChangeDirect("selectedAccount")}
                                             accounts={accounts}
-                                            BunqJSClient={
-                                                this.props.BunqJSClient
-                                            }
+                                            BunqJSClient={this.props.BunqJSClient}
                                             hiddenConnectTypes={["showOnly"]}
                                         />
                                     </Grid>
 
                                     <Grid item xs={12}>
                                         <TranslateButton
-                                            variant="raised"
+                                            variant="contained"
                                             disabled={false}
                                             color="primary"
                                             style={styles.button}
@@ -480,8 +378,7 @@ class RequestResponseInfo extends React.Component {
         }
 
         const exportData =
-            this.props.requestResponseInfo &&
-            this.props.requestResponseInfo._rawData
+            this.props.requestResponseInfo && this.props.requestResponseInfo._rawData
                 ? this.props.requestResponseInfo._rawData.RequestResponse
                 : {};
 
@@ -492,19 +389,14 @@ class RequestResponseInfo extends React.Component {
                 </Helmet>
 
                 <ExportDialog
-                    closeModal={event =>
-                        this.setState({ displayExport: false })
-                    }
+                    closeModal={event => this.setState({ displayExport: false })}
                     title={t("Export info")}
                     open={this.state.displayExport}
                     object={exportData}
                 />
 
                 <Grid item xs={12} sm={2} lg={3}>
-                    <Button
-                        onClick={this.props.history.goBack}
-                        style={styles.btn}
-                    >
+                    <Button onClick={this.props.history.goBack} style={styles.btn}>
                         <ArrowBackIcon />
                     </Button>
                 </Grid>
@@ -516,7 +408,6 @@ class RequestResponseInfo extends React.Component {
                 </Grid>
 
                 <SpeedDial
-                    hidden={false}
                     actions={[
                         {
                             name: t("Send payment"),
@@ -545,8 +436,7 @@ class RequestResponseInfo extends React.Component {
                         {
                             name: t("View debug information"),
                             icon: HelpIcon,
-                            onClick: event =>
-                                this.setState({ displayExport: true })
+                            onClick: event => this.setState({ displayExport: true })
                         }
                     ]}
                 />
@@ -566,57 +456,27 @@ const mapStateToProps = state => {
         requestResponseAccountId: state.request_response_info.account_id,
         requestResponseInfoLoading: state.request_response_info.loading,
 
-        shareInviteBankResponses:
-            state.share_invite_bank_responses.share_invite_bank_responses,
+        shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
 
         requestResponseLoading: state.request_response.loading,
 
-        accounts: state.accounts.accounts,
-        accountsSelectedAccount: state.accounts.selected_account
+        accounts: state.accounts.accounts
     };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        applicationSetPDFMode: enabled =>
-            dispatch(applicationSetPDFMode(enabled)),
+        applicationSetPDFMode: enabled => dispatch(applicationSetPDFMode(enabled)),
 
         requestResponseUpdate: (user_id, account_id, request_response_id) =>
+            dispatch(requestResponseUpdate(BunqJSClient, user_id, account_id, request_response_id)),
+        requestResponseAccept: (user_id, account_id, request_response_id, amount_responded, options) =>
             dispatch(
-                requestResponseUpdate(
-                    BunqJSClient,
-                    user_id,
-                    account_id,
-                    request_response_id
-                )
-            ),
-        requestResponseAccept: (
-            user_id,
-            account_id,
-            request_response_id,
-            amount_responded,
-            options
-        ) =>
-            dispatch(
-                requestResponseAccept(
-                    BunqJSClient,
-                    user_id,
-                    account_id,
-                    request_response_id,
-                    amount_responded,
-                    options
-                )
+                requestResponseAccept(BunqJSClient, user_id, account_id, request_response_id, amount_responded, options)
             ),
         requestResponseReject: (user_id, account_id, request_response_id) =>
-            dispatch(
-                requestResponseReject(
-                    BunqJSClient,
-                    user_id,
-                    account_id,
-                    request_response_id
-                )
-            )
+            dispatch(requestResponseReject(BunqJSClient, user_id, account_id, request_response_id))
     };
 };
 

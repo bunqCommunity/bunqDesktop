@@ -4,15 +4,8 @@ import RequestResponse from "../Models/RequestResponse";
 
 export const STORED_REQUEST_RESPONSES = "BUNQDESKTOP_STORED_REQUEST_RESPONSES";
 
-export function requestResponsesSetInfo(
-    requestResponses,
-    account_id,
-    resetOldItems = false,
-    BunqJSClient = false
-) {
-    const type = resetOldItems
-        ? "REQUEST_RESPONSES_SET_INFO"
-        : "REQUEST_RESPONSES_UPDATE_INFO";
+export function requestResponsesSetInfo(requestResponses, account_id, resetOldItems = false, BunqJSClient = false) {
+    const type = resetOldItems ? "REQUEST_RESPONSES_SET_INFO" : "REQUEST_RESPONSES_UPDATE_INFO";
 
     return {
         type: type,
@@ -27,21 +20,11 @@ export function requestResponsesSetInfo(
 export function loadStoredRequestResponses(BunqJSClient) {
     return dispatch => {
         dispatch(requestResponsesLoading());
-        storeDecryptString(
-            STORED_REQUEST_RESPONSES,
-            BunqJSClient.Session.encryptionKey
-        )
+        storeDecryptString(STORED_REQUEST_RESPONSES, BunqJSClient.Session.encryptionKey)
             .then(data => {
                 if (data && data.items) {
-                    const newRequestResponses = data.items.map(
-                        item => new RequestResponse(item)
-                    );
-                    dispatch(
-                        requestResponsesSetInfo(
-                            newRequestResponses,
-                            data.account_id
-                        )
-                    );
+                    const newRequestResponses = data.items.map(item => new RequestResponse(item));
+                    dispatch(requestResponsesSetInfo(newRequestResponses, data.account_id));
                 }
                 dispatch(requestResponsesNotLoading());
             })
@@ -61,26 +44,15 @@ export function requestResponsesUpdate(
         older_id: false
     }
 ) {
-    const failedMessage = window.t(
-        "We received the following error while loading your request responses"
-    );
+    const failedMessage = window.t("We received the following error while loading your request responses");
 
     return dispatch => {
         dispatch(requestResponsesLoading());
         BunqJSClient.api.requestResponse
             .list(userId, accountId, options)
             .then(requestResponses => {
-                const newRequestResponses = requestResponses.map(
-                    item => new RequestResponse(item)
-                );
-                dispatch(
-                    requestResponsesSetInfo(
-                        newRequestResponses,
-                        accountId,
-                        false,
-                        BunqJSClient
-                    )
-                );
+                const newRequestResponses = requestResponses.map(item => new RequestResponse(item));
+                dispatch(requestResponsesSetInfo(newRequestResponses, accountId, false, BunqJSClient));
                 dispatch(requestResponsesNotLoading());
             })
             .catch(error => {

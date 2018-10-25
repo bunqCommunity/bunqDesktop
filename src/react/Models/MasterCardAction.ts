@@ -1,9 +1,4 @@
-import {
-    Amount,
-    LabelCard,
-    PaymentAlias,
-    RequestReferenceSplitTheBill
-} from "../Types/Types";
+import { Amount, LabelCard, PaymentAlias, RequestReferenceSplitTheBill } from "../Types/Types";
 import Event, { EventType } from "../Types/Event";
 
 export type PanEntryModeUser = "ATM" | "ICC" | "MAGNETIC_STRIPE" | "E_COMMERCE";
@@ -51,8 +46,7 @@ export default class MasterCardAction implements Event {
         this._rawData = masterCardActionObject;
 
         // get the direct object
-        const masterCardActionInfo: any =
-            masterCardActionObject.MasterCardAction;
+        const masterCardActionInfo: any = masterCardActionObject.MasterCardAction;
 
         // go through all keys and set the data
         Object.keys(masterCardActionInfo).forEach(key => {

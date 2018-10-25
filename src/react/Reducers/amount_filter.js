@@ -6,10 +6,7 @@ export const defaultState = {
 export default function reducer(state = defaultState, action) {
     switch (action.type) {
         case "AMOUNT_FILTER_SET_AMOUNT":
-            const newAmount =
-                action.payload.amount === ""
-                    ? ""
-                    : parseFloat(action.payload.amount);
+            const newAmount = action.payload.amount === "" ? "" : parseFloat(action.payload.amount);
 
             return {
                 ...state,

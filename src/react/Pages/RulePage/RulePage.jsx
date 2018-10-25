@@ -9,10 +9,7 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import RuleCreator from "./RuleCreator.tsx";
 import RuleCollection from "../../Types/RuleCollection";
 import RuleCollectionPreview from "./RuleCollectionPreview";
-import {
-    setCategoryRule,
-    removeCategoryRule
-} from "../../Actions/category_rules";
+import { setCategoryRule, removeCategoryRule } from "../../Actions/category_rules";
 import { openSnackbar } from "../../Actions/snackbar";
 
 class RulesPage extends React.Component {
@@ -81,11 +78,7 @@ class RulesPage extends React.Component {
         if (!this.state.checkedInitial) return null;
 
         let ruleCollection;
-        if (
-            ruleCollectionId !== "null" &&
-            ruleCollectionId !== null &&
-            categoryRules[ruleCollectionId]
-        ) {
+        if (ruleCollectionId !== "null" && ruleCollectionId !== null && categoryRules[ruleCollectionId]) {
             ruleCollection = categoryRules[ruleCollectionId];
         } else {
             ruleCollection = new RuleCollection(this.state.initialRules);
@@ -97,15 +90,9 @@ class RulesPage extends React.Component {
         }
 
         const payments = this.props.payments.map(item => item.toJSON());
-        const requestInquiries = this.props.requestInquiries.map(item =>
-            item.toJSON()
-        );
-        const requestResponses = this.props.requestResponses.map(item =>
-            item.toJSON()
-        );
-        const masterCardActions = this.props.masterCardActions.map(item =>
-            item.toJSON()
-        );
+        const requestInquiries = this.props.requestInquiries.map(item => item.toJSON());
+        const requestResponses = this.props.requestResponses.map(item => item.toJSON());
+        const masterCardActions = this.props.masterCardActions.map(item => item.toJSON());
         const bunqMeTabs = this.props.bunqMeTabs.map(item => item.toJSON());
 
         return (
@@ -178,10 +165,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
-        setCategoryRule: rule_collection =>
-            dispatch(setCategoryRule(rule_collection)),
-        removeCategoryRule: category_rule_id =>
-            dispatch(removeCategoryRule(category_rule_id))
+        setCategoryRule: rule_collection => dispatch(setCategoryRule(rule_collection)),
+        removeCategoryRule: category_rule_id => dispatch(removeCategoryRule(category_rule_id))
     };
 };
 

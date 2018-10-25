@@ -10,10 +10,7 @@ import {
     requestInquiryColor,
     requestResponseColor
 } from "../../Colors";
-import {
-    moneyTemplate,
-    sortLinearChartTooltips
-} from "../../../../Helpers/StatsFormattingTemplates";
+import { moneyTemplate, sortLinearChartTooltips } from "../../../../Helpers/StatsFormattingTemplates";
 
 export default props => {
     const defaultOptions = {
@@ -140,11 +137,8 @@ export default props => {
             itemSort: sortLinearChartTooltips,
             callbacks: {
                 label: function(tooltipItem, chart) {
-                    const datasetLabel =
-                        chart.datasets[tooltipItem.datasetIndex].label || "";
-                    return `${datasetLabel}: ${moneyTemplate(
-                        tooltipItem.yLabel
-                    )}`;
+                    const datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || "";
+                    return `${datasetLabel}: ${moneyTemplate(tooltipItem.yLabel)}`;
                 }
             }
         },
@@ -171,11 +165,5 @@ export default props => {
         }
     };
 
-    return (
-        <Bar
-            height={defaultOptions.height}
-            data={chartData}
-            options={chartOptions}
-        />
-    );
+    return <Bar height={defaultOptions.height} data={chartData} options={chartOptions} />;
 };

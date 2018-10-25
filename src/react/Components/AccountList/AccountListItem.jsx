@@ -18,16 +18,17 @@ import { formatMoney } from "../../Helpers/Utils";
 import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
 
 import { accountsSelectAccount } from "../../Actions/accounts.js";
-import {
-    addAccountIdFilter,
-    removeAccountIdFilter,
-    toggleAccountIdFilter
-} from "../../Actions/filters";
+import { addAccountIdFilter, removeAccountIdFilter, toggleAccountIdFilter } from "../../Actions/filters";
 
 const styles = {
     bigAvatar: {
         width: 60,
         height: 60
+    },
+    avatarSub: {
+        position: "absolute",
+        left: 60,
+        bottom: 4
     },
     secondaryIcon: {
         width: 26,
@@ -44,13 +45,7 @@ class AccountListItem extends React.Component {
     }
 
     render() {
-        const {
-            user,
-            account,
-            shareInviteBankResponses,
-            selectedAccountIds,
-            toggleAccountIds
-        } = this.props;
+        const { user, account, shareInviteBankResponses, selectedAccountIds, toggleAccountIds } = this.props;
 
         if (account.status !== "ACTIVE") {
             return null;
@@ -73,30 +68,27 @@ class AccountListItem extends React.Component {
 
         let formattedBalance = account.balance ? account.balance.value : 0;
         if (shareInviteBankResponses.length > 0) {
-            const connectBudget = GetShareDetailBudget(
-                shareInviteBankResponses
-            );
+            const connectBudget = GetShareDetailBudget(shareInviteBankResponses);
             if (connectBudget) {
                 formattedBalance = connectBudget;
             }
         }
-        formattedBalance = this.props.hideBalance
-            ? ""
-            : formatMoney(formattedBalance, true);
+        formattedBalance = this.props.hideBalance ? "" : formatMoney(formattedBalance, true);
 
         // check if any of the selected account ids are for this account
-        let displaySelectIcon = false;
+        let displayStyle = {};
         let accountIsSelected = false;
         if (selectedAccountIds.length !== 0) {
             // check if the selected account ids list contains this account
-            accountIsSelected = selectedAccountIds.some(
-                selectedAccountId => selectedAccountId === account.id
-            );
-
+            accountIsSelected = selectedAccountIds.some(id => id === account.id);
             // switch if toggle is true
-            displaySelectIcon = toggleAccountIds
-                ? !accountIsSelected
-                : accountIsSelected;
+            const isSelected = toggleAccountIds ? !accountIsSelected : accountIsSelected;
+            displayStyle = isSelected
+                ? {
+                      borderLeft: "4px solid #1da1f2",
+                      paddingLeft: 20
+                  }
+                : {};
         }
 
         // decide which onClick event is used based on
@@ -105,41 +97,25 @@ class AccountListItem extends React.Component {
             : e => this.props.addAccountIdFilter(account.id);
 
         // allow overwrite by props
-        const onClickHandler = this.props.onClick
-            ? e => this.props.onClick(user.id, account.id)
-            : defaultClickHandler;
+        const onClickHandler = this.props.onClick ? e => this.props.onClick(user.id, account.id) : defaultClickHandler;
 
         return (
-            <ListItem divider button onClick={onClickHandler}>
+            <ListItem divider button onClick={onClickHandler} style={displayStyle}>
                 <Avatar style={styles.bigAvatar}>
                     <LazyAttachmentImage
                         height={60}
                         BunqJSClient={this.props.BunqJSClient}
-                        imageUUID={
-                            account.avatar.image[0].attachment_public_uuid
-                        }
+                        imageUUID={account.avatar.image[0].attachment_public_uuid}
                     />
                 </Avatar>
-                <div style={{ position: "absolute", left: 60, bottom: 4 }}>
-                    {avatarSub}
-                </div>
-                <ListItemText
-                    primary={account.description}
-                    secondary={formattedBalance}
-                />
+                <div style={styles.avatarSub}>{avatarSub}</div>
+                <ListItemText primary={account.description} secondary={formattedBalance} />
                 <ListItemSecondaryAction>
                     {this.props.secondaryAction ? (
                         this.props.secondaryAction
                     ) : (
-                        <IconButton
-                            to={`/account-info/${account.id}`}
-                            component={NavLink}
-                        >
-                            {displaySelectIcon ? (
-                                <KeyboardArrowRightIcon />
-                            ) : (
-                                <InfoIcon />
-                            )}
+                        <IconButton to={`/account-info/${account.id}`} component={NavLink}>
+                            <InfoIcon />
                         </IconButton>
                     )}
                 </ListItemSecondaryAction>
@@ -154,8 +130,6 @@ const mapStateToProps = state => {
 
         paymentsLoading: state.payments.loading,
 
-        accountsAccountId: state.accounts.selected_account,
-
         hideBalance: state.options.hide_balance,
 
         selectedAccountIds: state.account_id_filter.selected_account_ids,
@@ -168,8 +142,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         selectAccount: acountId => dispatch(accountsSelectAccount(acountId)),
 
-        addAccountIdFilter: accountId =>
-            dispatch(addAccountIdFilter(accountId)),
+        addAccountIdFilter: accountId => dispatch(addAccountIdFilter(accountId)),
         removeAccountIdFilter: index => dispatch(removeAccountIdFilter(index)),
         toggleAccountIdFilter: () => dispatch(toggleAccountIdFilter())
     };

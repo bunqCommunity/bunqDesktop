@@ -27,9 +27,7 @@ class AddAccount extends React.Component {
                 <Avatar style={styles.bigAvatar}>
                     <AddBoxIcon />
                 </Avatar>
-                <ListItemText
-                    secondary={this.props.t("Open a new bank account")}
-                />
+                <ListItemText secondary={this.props.t("Open a new bank account")} />
             </ListItem>
         );
     }

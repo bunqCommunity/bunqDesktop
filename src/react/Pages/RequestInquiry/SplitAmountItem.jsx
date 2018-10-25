@@ -75,26 +75,13 @@ class SplitAmountItem extends React.Component {
     };
 
     render() {
-        const {
-            BunqJSClient,
-            account,
-            target,
-            splitAmount,
-            totalSplit,
-            amount
-        } = this.props;
+        const { BunqJSClient, account, target, splitAmount, totalSplit, amount } = this.props;
 
-        const splitAmountValue =
-            typeof splitAmount !== "undefined" ? splitAmount : 1;
+        const splitAmountValue = typeof splitAmount !== "undefined" ? splitAmount : 1;
 
         let targetInfo = null;
         if (account) {
-            targetInfo = (
-                <AccountListItemChip
-                    BunqJSClient={BunqJSClient}
-                    account={account}
-                />
-            );
+            targetInfo = <AccountListItemChip BunqJSClient={BunqJSClient} account={account} />;
         } else {
             let Icon = null;
             switch (target.type) {
@@ -133,12 +120,8 @@ class SplitAmountItem extends React.Component {
             <TableRow style={styles.tableRow}>
                 <TableCell>{targetInfo}</TableCell>
                 <TableCell>
-                    <span style={styles.previewAmountLabel}>
-                        {formatMoney(moneyAmount)}
-                    </span>
-                    <span style={styles.percentageLabel}>
-                        {prettyPercentage}%
-                    </span>
+                    <span style={styles.previewAmountLabel}>{formatMoney(moneyAmount)}</span>
+                    <span style={styles.percentageLabel}>{prettyPercentage}%</span>
                 </TableCell>
                 <TableCell style={styles.buttons}>
                     <IconButton onClick={this.removeSplit}>

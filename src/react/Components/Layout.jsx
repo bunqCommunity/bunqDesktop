@@ -50,11 +50,7 @@ import {
     registrationNotLoading,
     registrationResetToApiScreenSoft
 } from "../Actions/registration";
-import {
-    setHideBalance,
-    setTheme,
-    setAutomaticThemeChange
-} from "../Actions/options";
+import { setHideBalance, setTheme, setAutomaticThemeChange } from "../Actions/options";
 import { loadStoredContacts } from "../Actions/contacts";
 import { loadStoredShareInviteBankResponses } from "../Actions/share_invite_bank_responses";
 import { loadStoredShareInviteBankInquiries } from "../Actions/share_invite_bank_inquiries";
@@ -114,11 +110,7 @@ class Layout extends React.Component {
             this.props.queueStartSync();
         });
         ipcRenderer.on("toggle-theme", event => {
-            this.props.setTheme(
-                this.props.theme === "DefaultTheme"
-                    ? "DarkTheme"
-                    : "DefaultTheme"
-            );
+            this.props.setTheme(this.props.theme === "DefaultTheme" ? "DarkTheme" : "DefaultTheme");
         });
 
         // access the translations globally
@@ -143,9 +135,7 @@ class Layout extends React.Component {
             VersionChecker().then(versionInfo => {
                 if (versionInfo.newerLink !== false) {
                     this.props.openSnackbar(
-                        `A new version (v${
-                            versionInfo.latestVersion
-                        }) is available! You are currently using ${
+                        `A new version (v${versionInfo.latestVersion}) is available! You are currently using ${
                             versionInfo.currentVersion
                         }`,
                         8000
@@ -171,14 +161,10 @@ class Layout extends React.Component {
     }
 
     componentWillUpdate(nextProps) {
-
         // make sure language is up-to-date
         this.checkLanguageChange(nextProps);
 
-        if (
-            nextProps.apiKey !== this.props.apiKey ||
-            nextProps.environment !== this.props.environment
-        ) {
+        if (nextProps.apiKey !== this.props.apiKey || nextProps.environment !== this.props.environment) {
             if (this.props.apiKey !== false) {
                 // clear our old data associated with the previous session
                 this.props.registrationClearUserInfo();
@@ -198,10 +184,7 @@ class Layout extends React.Component {
      */
     checkLanguageChange = newProps => {
         const { i18n } = this.props;
-        if (
-            newProps.language !== this.props.language ||
-            newProps.i18n.language !== this.props.language
-        ) {
+        if (newProps.language !== this.props.language || newProps.i18n.language !== this.props.language) {
             // update back-end language
             ipcRenderer.send("change-language", newProps.language);
 
@@ -253,34 +236,28 @@ class Layout extends React.Component {
             nextProps = this.props;
         }
 
-        if (
-            nextProps.apiKey === false &&
-            this.state.initialBunqConnect === true
-        ) {
+        if (nextProps.apiKey === false && this.state.initialBunqConnect === true) {
             // api key not set but bunq connect is true so we reset it
             this.setState({ initialBunqConnect: true });
         }
 
         // run only if apikey is not false or first setup AND the registration isnt already loading
         if (
-            (this.state.initialBunqConnect === false ||
-                nextProps.apiKey !== false) &&
+            (this.state.initialBunqConnect === false || nextProps.apiKey !== false) &&
             nextProps.registrationIsLoading === false
         ) {
             // registration is loading now
             nextProps.registrationLoading();
 
             // if we have a derivedPassword we use it to encrypt the bunqjsclient data
-            const encryptionKey =
-                nextProps.derivedPassword !== false
-                    ? nextProps.derivedPassword.key
-                    : false;
+            const encryptionKey = nextProps.derivedPassword !== false ? nextProps.derivedPassword.key : false;
 
             // api key was modified
             return this.setupBunqClient(
                 nextProps.apiKey,
                 nextProps.deviceName,
                 nextProps.environment,
+                nextProps.permittedIps,
                 encryptionKey,
                 true
             )
@@ -304,6 +281,7 @@ class Layout extends React.Component {
      * @param apiKey             - the bunq api key
      * @param deviceName         - device name used in the bunq app
      * @param environment        - Production/sandbox environment
+     * @param permittedIPs       - Permitted IP addresses for the api key
      * @param encryptionKey      - Key used to encrypt/decrypt all data
      * @param allowReRun         - When true the function can call itself to restart in certain situations
      * @returns {Promise<void>}
@@ -312,6 +290,7 @@ class Layout extends React.Component {
         apiKey,
         deviceName,
         environment = "SANDBOX",
+        permittedIps = [],
         encryptionKey = false,
         allowReRun = false
     ) => {
@@ -324,12 +303,7 @@ class Layout extends React.Component {
         const statusMessage3 = t("Creating a new session");
 
         try {
-            await this.props.BunqJSClient.run(
-                apiKey,
-                [],
-                environment,
-                encryptionKey
-            );
+            await this.props.BunqJSClient.run(apiKey, permittedIps, environment, encryptionKey);
         } catch (exception) {
             this.props.openModal(error1, errorTitle);
             throw exception;
@@ -344,11 +318,7 @@ class Layout extends React.Component {
         try {
             await this.props.BunqJSClient.install();
         } catch (exception) {
-            this.props.BunqErrorHandler(
-                exception,
-                false,
-                this.props.BunqJSClient
-            );
+            this.props.BunqErrorHandler(exception, false, this.props.BunqJSClient);
             throw exception;
         }
 
@@ -356,11 +326,7 @@ class Layout extends React.Component {
         try {
             await this.props.BunqJSClient.registerDevice(deviceName);
         } catch (exception) {
-            this.props.BunqErrorHandler(
-                exception,
-                false,
-                this.props.BunqJSClient
-            );
+            this.props.BunqErrorHandler(exception, false, this.props.BunqJSClient);
             throw exception;
         }
 
@@ -373,8 +339,7 @@ class Layout extends React.Component {
             // custom error handling to prevent
             if (exception.errorCode) {
                 switch (exception.errorCode) {
-                    case this.props.BunqJSClient.errorCodes
-                        .INSTALLATION_HAS_SESSION:
+                    case this.props.BunqJSClient.errorCodes.INSTALLATION_HAS_SESSION:
                         if (allowReRun) {
                             // this might be solved by reseting the bunq client
                             await BunqJSClient.destroyApiSession();
@@ -384,6 +349,7 @@ class Layout extends React.Component {
                                 apiKey,
                                 deviceName,
                                 environment,
+                                permittedIps,
                                 encryptionKey,
                                 false
                             );
@@ -458,10 +424,7 @@ class Layout extends React.Component {
         const selectedTheme = ThemeList[this.props.theme]
             ? ThemeList[this.props.theme]
             : ThemeList[Object.keys(ThemeList)[0]];
-        const strippedLocation = this.props.location.pathname.replace(
-            /\W/g,
-            ""
-        );
+        const strippedLocation = this.props.location.pathname.replace(/\W/g, "");
 
         const isLoading =
             this.props.paymentsLoading ||
@@ -470,9 +433,7 @@ class Layout extends React.Component {
             this.props.requestInquiriesLoading ||
             this.props.requestResponsesLoading;
 
-        const contentContainerClass = this.props.stickyMenu
-            ? classes.contentContainerSticky
-            : classes.contentContainer;
+        const contentContainerClass = this.props.stickyMenu ? classes.contentContainerSticky : classes.contentContainer;
         const RouteComponent = this.props.routesComponent;
         return (
             <MuiThemeProvider theme={selectedTheme}>
@@ -483,18 +444,14 @@ class Layout extends React.Component {
                     <QueueManager BunqJSClient={this.props.BunqJSClient} />
 
                     <Header BunqJSClient={this.props.BunqJSClient} />
-                    <Sidebar
-                        BunqJSClient={this.props.BunqJSClient}
-                        location={this.props.location}
-                    />
+                    <Sidebar BunqJSClient={this.props.BunqJSClient} location={this.props.location} />
                     <Grid
                         container
                         spacing={16}
                         justify={"center"}
                         className={`${contentContainerClass} ${strippedLocation}-page`}
                         style={{
-                            backgroundColor:
-                                selectedTheme.palette.background.default,
+                            backgroundColor: selectedTheme.palette.background.default,
                             padding: 16
                         }}
                     >
@@ -502,10 +459,7 @@ class Layout extends React.Component {
                         <MainSnackbar />
 
                         <Grid item xs={12}>
-                            <ErrorBoundary
-                                recoverableError={true}
-                                history={this.props.history}
-                            >
+                            <ErrorBoundary recoverableError={true} history={this.props.history}>
                                 <RouteComponent
                                     apiKey={this.props.apiKey}
                                     userType={this.props.userType}
@@ -535,6 +489,7 @@ const mapStateToProps = state => {
         registrationIsLoading: state.registration.loading,
         environment: state.registration.environment,
         deviceName: state.registration.device_name,
+        permittedIps: state.registration.permitted_ips,
         apiKey: state.registration.api_key,
 
         user: state.user.user,
@@ -553,53 +508,39 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        openSnackbar: (message, duration = 4000) =>
-            dispatch(openSnackbar(message, duration)),
+        openSnackbar: (message, duration = 4000) => dispatch(openSnackbar(message, duration)),
         openModal: (message, title) => dispatch(openModal(message, title)),
-        BunqErrorHandler: (error, customError = false) =>
-            BunqErrorHandler(dispatch, error, customError),
+        BunqErrorHandler: (error, customError = false) => BunqErrorHandler(dispatch, error, customError),
 
         // options
-        setAutomaticThemeChange: automaticThemeChange =>
-            dispatch(setAutomaticThemeChange(automaticThemeChange)),
+        setAutomaticThemeChange: automaticThemeChange => dispatch(setAutomaticThemeChange(automaticThemeChange)),
         setHideBalance: hideBalance => dispatch(setHideBalance(hideBalance)),
         setTheme: theme => dispatch(setTheme(theme)),
 
         // set the current application status
-        applicationSetStatus: status_message =>
-            dispatch(applicationSetStatus(status_message)),
+        applicationSetStatus: status_message => dispatch(applicationSetStatus(status_message)),
 
         registrationLoading: () => dispatch(registrationLoading()),
         registrationNotLoading: () => dispatch(registrationNotLoading()),
-        registrationResetToApiScreenSoft: () =>
-            dispatch(registrationResetToApiScreenSoft(BunqJSClient)),
+        registrationResetToApiScreenSoft: () => dispatch(registrationResetToApiScreenSoft(BunqJSClient)),
 
         // get latest user list from BunqJSClient
-        usersUpdate: (updated = false) =>
-            dispatch(usersUpdate(BunqJSClient, updated)),
+        usersUpdate: (updated = false) => dispatch(usersUpdate(BunqJSClient, updated)),
         // login the user with a specific type from the list
-        userLogin: (userType, updated = false) =>
-            dispatch(userLogin(BunqJSClient, userType, updated)),
+        userLogin: (userType, updated = false) => dispatch(userLogin(BunqJSClient, userType, updated)),
 
         queueStartSync: () => dispatch(queueStartSync()),
 
         loadStoredPayments: () => dispatch(loadStoredPayments(BunqJSClient)),
         loadStoredContacts: () => dispatch(loadStoredContacts(BunqJSClient)),
-        loadStoredBunqMeTabs: () =>
-            dispatch(loadStoredBunqMeTabs(BunqJSClient)),
-        loadStoredMasterCardActions: () =>
-            dispatch(loadStoredMasterCardActions(BunqJSClient)),
-        loadStoredRequestInquiries: () =>
-            dispatch(loadStoredRequestInquiries(BunqJSClient)),
-        loadStoredrequestInquiryBatches: () =>
-            dispatch(loadStoredrequestInquiryBatches(BunqJSClient)),
+        loadStoredBunqMeTabs: () => dispatch(loadStoredBunqMeTabs(BunqJSClient)),
+        loadStoredMasterCardActions: () => dispatch(loadStoredMasterCardActions(BunqJSClient)),
+        loadStoredRequestInquiries: () => dispatch(loadStoredRequestInquiries(BunqJSClient)),
+        loadStoredrequestInquiryBatches: () => dispatch(loadStoredrequestInquiryBatches(BunqJSClient)),
         loadStoredAccounts: () => dispatch(loadStoredAccounts(BunqJSClient)),
-        loadStoredRequestResponses: () =>
-            dispatch(loadStoredRequestResponses(BunqJSClient)),
-        loadStoredShareInviteBankResponses: () =>
-            dispatch(loadStoredShareInviteBankResponses(BunqJSClient)),
-        loadStoredShareInviteBankInquiries: () =>
-            dispatch(loadStoredShareInviteBankInquiries(BunqJSClient)),
+        loadStoredRequestResponses: () => dispatch(loadStoredRequestResponses(BunqJSClient)),
+        loadStoredShareInviteBankResponses: () => dispatch(loadStoredShareInviteBankResponses(BunqJSClient)),
+        loadStoredShareInviteBankInquiries: () => dispatch(loadStoredShareInviteBankInquiries(BunqJSClient)),
 
         // functions to clear user data
         registrationClearUserInfo: () => dispatch(registrationClearUserInfo())

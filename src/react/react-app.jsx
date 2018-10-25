@@ -20,7 +20,4 @@ Analytics();
 const BunqJSClientInstance = new BunqJSClient(store, Logger);
 BunqJSClientInstance.setKeepAlive(false);
 
-ReactDOM.render(
-    <App BunqJSClient={BunqJSClientInstance} />,
-    document.getElementById("app")
-);
+ReactDOM.render(<App BunqJSClient={BunqJSClientInstance} />, document.getElementById("app"));

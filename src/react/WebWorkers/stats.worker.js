@@ -46,13 +46,7 @@ const roundMoney = amount => {
     return Math.round(amount * 100) / 100;
 };
 
-const paymentMapper = (
-    payments,
-    paymentFilterSettings,
-    categories,
-    categoryConnections,
-    hiddenPaymentIds = []
-) => {
+const paymentMapper = (payments, paymentFilterSettings, categories, categoryConnections, hiddenPaymentIds = []) => {
     const data = [];
     payments
         .map(payment => new Payment(payment))
@@ -71,23 +65,13 @@ const paymentMapper = (
                 date: payment.created,
                 change: payment.getDelta(),
                 type: "payment",
-                categories: CategoryHelper(
-                    categories,
-                    categoryConnections,
-                    "Payment",
-                    payment.id
-                )
+                categories: CategoryHelper(categories, categoryConnections, "Payment", payment.id)
             });
         });
     return data;
 };
 
-const bunqMeTabMapper = (
-    bunqMeTabs,
-    bunqMeTabFilterSettings,
-    categories,
-    categoryConnections
-) => {
+const bunqMeTabMapper = (bunqMeTabs, bunqMeTabFilterSettings, categories, categoryConnections) => {
     const data = [];
     const hiddenPaymentIds = [];
     bunqMeTabs
@@ -108,12 +92,7 @@ const bunqMeTabMapper = (
                 date: bunqMeTab.created,
                 change: bunqMeTab.getDelta(),
                 type: "bunqMeTab",
-                categories: CategoryHelper(
-                    categories,
-                    categoryConnections,
-                    "BunqMeTab",
-                    bunqMeTab.id
-                )
+                categories: CategoryHelper(categories, categoryConnections, "BunqMeTab", bunqMeTab.id)
             });
         });
     return {
@@ -122,12 +101,7 @@ const bunqMeTabMapper = (
     };
 };
 
-const masterCardActionMapper = (
-    masterCardActions,
-    paymentFilterSettings,
-    categories,
-    categoryConnections
-) => {
+const masterCardActionMapper = (masterCardActions, paymentFilterSettings, categories, categoryConnections) => {
     const data = [];
     masterCardActions
         .map(masterCardAction => new MasterCardAction(masterCardAction))
@@ -168,24 +142,14 @@ const masterCardActionMapper = (
                     change: masterCardAction.getDelta(),
                     type: "masterCardAction",
                     subType: paymentSubType,
-                    categories: CategoryHelper(
-                        categories,
-                        categoryConnections,
-                        "MasterCardAction",
-                        masterCardAction.id
-                    )
+                    categories: CategoryHelper(categories, categoryConnections, "MasterCardAction", masterCardAction.id)
                 });
             }
         });
     return data;
 };
 
-const requestInquiryMapper = (
-    requestInquiries,
-    requestFilterSettings,
-    categories,
-    categoryConnections
-) => {
+const requestInquiryMapper = (requestInquiries, requestFilterSettings, categories, categoryConnections) => {
     const data = [];
     requestInquiries
         .map(requestInquiry => new RequestInquiry(requestInquiry))
@@ -195,30 +159,20 @@ const requestInquiryMapper = (
                 date: requestInquiry.created,
                 change: requestInquiry.getDelta(),
                 type: "requestInquiry",
-                categories: CategoryHelper(
-                    categories,
-                    categoryConnections,
-                    "RequestInquiry",
-                    requestInquiry.id
-                )
+                categories: CategoryHelper(categories, categoryConnections, "RequestInquiry", requestInquiry.id)
             });
         });
     return data;
 };
 
-const requestResponseMapper = (
-    requestResponses,
-    requestFilterSettings,
-    categories,
-    categoryConnections
-) => {
+const requestResponseMapper = (requestResponses, requestFilterSettings, categories, categoryConnections) => {
     const data = [];
     requestResponses
         .map(requestResponse => new RequestResponse(requestResponse))
         .filter(requestResponseFilter(requestFilterSettings))
         .map(requestResponse => {
             let registeredType = "requestResponse";
-            switch(requestResponse.type){
+            switch (requestResponse.type) {
                 case "SOFORT":
                 case "IDEAL":
                     registeredType = "payment";
@@ -233,12 +187,7 @@ const requestResponseMapper = (
                 date: requestResponse.created,
                 change: requestResponse.getDelta(),
                 type: registeredType,
-                categories: CategoryHelper(
-                    categories,
-                    categoryConnections,
-                    "RequestResponse",
-                    requestResponse.id
-                )
+                categories: CategoryHelper(categories, categoryConnections, "RequestResponse", requestResponse.id)
             });
         });
     return data;
@@ -258,10 +207,7 @@ const formatLabels = (events, type, timeFrom, timeTo) => {
     switch (type) {
         case "yearly":
             // calculate difference in years between the two dates
-            const yearDifference = differenceInCalendarYears(
-                startDate,
-                endDate
-            );
+            const yearDifference = differenceInCalendarYears(startDate, endDate);
 
             for (let year = 0; year <= yearDifference; year++) {
                 const itemDate = subYears(startDate, year);
@@ -276,14 +222,10 @@ const formatLabels = (events, type, timeFrom, timeTo) => {
 
         case "monthly":
             // calculate difference in months between the two dates
-            let monthDifference = differenceInCalendarMonths(
-                startDate,
-                endDate
-            );
+            let monthDifference = differenceInCalendarMonths(startDate, endDate);
 
             // limit to 24 months if no explicit date is set
-            monthDifference =
-                monthDifference > 24 && !timeFrom ? 24 : monthDifference;
+            monthDifference = monthDifference > 24 && !timeFrom ? 24 : monthDifference;
 
             for (let month = 0; month <= monthDifference; month++) {
                 const itemDate = subMonths(startDate, month);
@@ -301,8 +243,7 @@ const formatLabels = (events, type, timeFrom, timeTo) => {
             let weekDifference = differenceInCalendarWeeks(startDate, endDate);
 
             // limit to 53 weeks if no explicit date is set
-            weekDifference =
-                weekDifference > 53 && !timeFrom ? 53 : weekDifference;
+            weekDifference = weekDifference > 53 && !timeFrom ? 53 : weekDifference;
 
             for (let week = 0; week <= weekDifference; week++) {
                 const itemDate = subWeeks(startDate, week);
@@ -320,8 +261,7 @@ const formatLabels = (events, type, timeFrom, timeTo) => {
             let dayDifference = differenceInCalendarDays(startDate, endDate);
 
             // limit to 60 days if no explicit date is set
-            dayDifference =
-                dayDifference > 60 && !timeFrom ? 60 : dayDifference;
+            dayDifference = dayDifference > 60 && !timeFrom ? 60 : dayDifference;
 
             for (let day = 0; day <= dayDifference; day++) {
                 const itemDate = subDays(startDate, day);
@@ -434,11 +374,7 @@ const getData = (
         const categoryTransactionInfo = {};
         // loop through them while making sure no references exist
         Object.keys(categoryTransactionList).forEach(
-            key =>
-                (categoryTransactionInfo[key] = Object.assign(
-                    {},
-                    categoryTransactionList[key]
-                ))
+            key => (categoryTransactionInfo[key] = Object.assign({}, categoryTransactionList[key]))
         );
 
         const timescaleInfo = {
@@ -486,8 +422,7 @@ const getData = (
 
                 if (item.change > 0) {
                     // received money since change is positive
-                    categoryTransactionInfo[category.id].received +=
-                        item.change;
+                    categoryTransactionInfo[category.id].received += item.change;
                 }
                 if (item.change < 0) {
                     // sent money since change is negative
@@ -508,18 +443,15 @@ const getData = (
         switch (type) {
             case "yearly":
                 timeToFixed = timeTo === null ? null : addYears(timeTo, 1);
-                timeFromFixed =
-                    timeFrom === null ? null : subYears(timeFrom, 1);
+                timeFromFixed = timeFrom === null ? null : subYears(timeFrom, 1);
                 break;
             case "monthly":
                 timeToFixed = timeTo === null ? null : addMonths(timeTo, 1);
-                timeFromFixed =
-                    timeFrom === null ? null : subMonths(timeFrom, 1);
+                timeFromFixed = timeFrom === null ? null : subMonths(timeFrom, 1);
                 break;
             case "weekly":
                 timeToFixed = timeTo === null ? null : addWeeks(timeTo, 1);
-                timeFromFixed =
-                    timeFrom === null ? null : subWeeks(timeFrom, 1);
+                timeFromFixed = timeFrom === null ? null : subWeeks(timeFrom, 1);
                 break;
             case "daily":
                 timeToFixed = timeTo === null ? null : addDays(timeTo, 1);
@@ -527,32 +459,20 @@ const getData = (
                 break;
         }
 
-        if (
-            timeToFixed === null ||
-            dataItem.date.getTime() <= timeToFixed.getTime()
-        ) {
-            if (
-                timeFromFixed === null ||
-                dataItem.date.getTime() >= timeFromFixed.getTime()
-            ) {
+        if (timeToFixed === null || dataItem.date.getTime() <= timeToFixed.getTime()) {
+            if (timeFromFixed === null || dataItem.date.getTime() >= timeFromFixed.getTime()) {
                 // only push this data and label if they are within the range
 
                 // update the category counts for each category
                 Object.keys(categoryInfo).forEach(categoryKey => {
-                    categoryCountHistory[categoryKey].push(
-                        categoryInfo[categoryKey]
-                    );
+                    categoryCountHistory[categoryKey].push(categoryInfo[categoryKey]);
                 });
                 Object.keys(categoryTransactionInfo).forEach(categoryKey => {
-                    categoryTransactionHistory[categoryKey].sent.push(
-                        categoryTransactionInfo[categoryKey].sent
-                    );
+                    categoryTransactionHistory[categoryKey].sent.push(categoryTransactionInfo[categoryKey].sent);
                     categoryTransactionHistory[categoryKey].received.push(
                         categoryTransactionInfo[categoryKey].received
                     );
-                    categoryTransactionHistory[categoryKey].total.push(
-                        categoryTransactionInfo[categoryKey].total
-                    );
+                    categoryTransactionHistory[categoryKey].total.push(categoryTransactionInfo[categoryKey].total);
                 });
 
                 // update balance and push it to the list
@@ -566,48 +486,24 @@ const getData = (
                 bunqMeTabCountHistory.push(timescaleInfo.bunqMeTab);
 
                 // masterCardAction individual counts per type
-                masterCardActionCountHistory.push(
-                    timescaleInfo.masterCardAction
-                );
+                masterCardActionCountHistory.push(timescaleInfo.masterCardAction);
                 maestroPaymentCountHistory.push(timescaleInfo.maestroPayment);
-                tapAndPayPaymentCountHistory.push(
-                    timescaleInfo.tapAndPayPayment
-                );
+                tapAndPayPaymentCountHistory.push(timescaleInfo.tapAndPayPayment);
                 applePayPaymentCountHistory.push(timescaleInfo.applePayPayment);
-                masterCardPaymentCountHistory.push(
-                    timescaleInfo.masterCardPayment
-                );
+                masterCardPaymentCountHistory.push(timescaleInfo.masterCardPayment);
 
                 // update the individual counts
-                paymentTransactionHistory.push(
-                    timescaleTransactionInfo.payment
-                );
-                requestInquiryTransactionHistory.push(
-                    timescaleTransactionInfo.requestInquiry
-                );
-                requestResponseTransactionHistory.push(
-                    timescaleTransactionInfo.requestResponse
-                );
-                bunqMeTabTransactionHistory.push(
-                    timescaleTransactionInfo.bunqMeTab
-                );
+                paymentTransactionHistory.push(timescaleTransactionInfo.payment);
+                requestInquiryTransactionHistory.push(timescaleTransactionInfo.requestInquiry);
+                requestResponseTransactionHistory.push(timescaleTransactionInfo.requestResponse);
+                bunqMeTabTransactionHistory.push(timescaleTransactionInfo.bunqMeTab);
 
                 // masterCardAction individual counts per type
-                masterCardActionTransactionHistory.push(
-                    timescaleTransactionInfo.masterCardAction
-                );
-                masterCardPaymentTransactionHistory.push(
-                    timescaleTransactionInfo.masterCardPayment
-                );
-                tapAndPayPaymentTransactionHistory.push(
-                    timescaleTransactionInfo.tapAndPayPayment
-                );
-                maestroPaymentTransactionHistory.push(
-                    timescaleTransactionInfo.maestroPayment
-                );
-                applePayPaymentTransactionHistory.push(
-                    timescaleTransactionInfo.applePayPayment
-                );
+                masterCardActionTransactionHistory.push(timescaleTransactionInfo.masterCardAction);
+                masterCardPaymentTransactionHistory.push(timescaleTransactionInfo.masterCardPayment);
+                tapAndPayPaymentTransactionHistory.push(timescaleTransactionInfo.tapAndPayPayment);
+                maestroPaymentTransactionHistory.push(timescaleTransactionInfo.maestroPayment);
+                applePayPaymentTransactionHistory.push(timescaleTransactionInfo.applePayPayment);
 
                 // push the label here so we can ignore certain days if required
                 labelData.push(label);
@@ -620,20 +516,12 @@ const getData = (
 
     // reverse each category separately
     Object.keys(categoryCountHistory).forEach(categoryKey => {
-        categoryCountHistory[categoryKey] = categoryCountHistory[
-            categoryKey
-        ].reverse();
+        categoryCountHistory[categoryKey] = categoryCountHistory[categoryKey].reverse();
     });
     Object.keys(categoryTransactionHistory).forEach(categoryKey => {
-        categoryTransactionHistory[
-            categoryKey
-        ].sent = categoryTransactionHistory[categoryKey].sent.reverse();
-        categoryTransactionHistory[
-            categoryKey
-        ].received = categoryTransactionHistory[categoryKey].received.reverse();
-        categoryTransactionHistory[
-            categoryKey
-        ].total = categoryTransactionHistory[categoryKey].total.reverse();
+        categoryTransactionHistory[categoryKey].sent = categoryTransactionHistory[categoryKey].sent.reverse();
+        categoryTransactionHistory[categoryKey].received = categoryTransactionHistory[categoryKey].received.reverse();
+        categoryTransactionHistory[categoryKey].total = categoryTransactionHistory[categoryKey].total.reverse();
     });
 
     return {

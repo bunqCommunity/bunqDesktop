@@ -4,9 +4,7 @@ export const helpMenuTemplate = {
         {
             label: "Learn More",
             click() {
-                require("electron").shell.openExternal(
-                    "https://github.com/bunqCommunity/bunqDesktop"
-                );
+                require("electron").shell.openExternal("https://github.com/bunqCommunity/bunqDesktop");
             }
         }
     ]

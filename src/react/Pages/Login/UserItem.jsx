@@ -59,10 +59,7 @@ class UserItem extends React.Component {
                     disableTypography={true}
                     avatar={
                         <Avatar>
-                            <LazyAttachmentImage
-                                BunqJSClient={this.props.BunqJSClient}
-                                imageUUID={imageUUID}
-                            />
+                            <LazyAttachmentImage BunqJSClient={this.props.BunqJSClient} imageUUID={imageUUID} />
                         </Avatar>
                     }
                     title={user.display_name}
@@ -71,8 +68,8 @@ class UserItem extends React.Component {
                     <Button
                         disabled={this.props.userLoading}
                         onClick={this.selectAccount(userKey)}
-                        variant="raised"
-                        color={"primary"}
+                        variant="contained"
+                        color="primary"
                         style={styles.loginButton}
                     >
                         Login
@@ -92,8 +89,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        loginUser: (type, updated = false) =>
-            dispatch(userLogin(BunqJSClient, type, updated))
+        loginUser: (type, updated = false) => dispatch(userLogin(BunqJSClient, type, updated))
     };
 };
 

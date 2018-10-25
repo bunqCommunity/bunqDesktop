@@ -51,9 +51,7 @@ class RequestResponseListItem extends React.Component {
 
         let imageUUID = false;
         if (requestResponse.counterparty_alias.avatar) {
-            imageUUID =
-                requestResponse.counterparty_alias.avatar.image[0]
-                    .attachment_public_uuid;
+            imageUUID = requestResponse.counterparty_alias.avatar.image[0].attachment_public_uuid;
         }
         const displayName = requestResponse.counterparty_alias.display_name;
         let paymentAmount = requestResponse.getAmount();
@@ -67,9 +65,7 @@ class RequestResponseListItem extends React.Component {
             <ListItem
                 button
                 component={NavLink}
-                to={`/request-response-info/${requestResponse.id}/${
-                    requestResponse.monetary_account_id
-                }`}
+                to={`/request-response-info/${requestResponse.id}/${requestResponse.monetary_account_id}`}
             >
                 <Avatar style={styles.smallAvatar}>
                     <LazyAttachmentImage
@@ -79,25 +75,13 @@ class RequestResponseListItem extends React.Component {
                         imageUUID={imageUUID}
                     />
                 </Avatar>
-                <ListItemText
-                    style={styles.listItemText}
-                    primary={displayName}
-                    secondary={paymentLabel}
-                />
+                <ListItemText style={styles.listItemText} primary={displayName} secondary={paymentLabel} />
                 <ListItemSecondaryAction style={{ marginTop: -16 }}>
-                    <MoneyAmountLabel
-                        style={styles.moneyAmountLabel}
-                        info={requestResponse}
-                        type="requestResponse"
-                    >
+                    <MoneyAmountLabel style={styles.moneyAmountLabel} info={requestResponse} type="requestResponse">
                         {formattedPaymentAmount}
                     </MoneyAmountLabel>
                 </ListItemSecondaryAction>
-                <CategoryIcons
-                    style={{ marginTop: 26 }}
-                    type={"RequestResponse"}
-                    id={requestResponse.id}
-                />
+                <CategoryIcons style={{ marginTop: 26 }} type={"RequestResponse"} id={requestResponse.id} />
             </ListItem>,
             <Divider />
         ];
