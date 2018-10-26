@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { translate } from "react-i18next";
 import Helmet from "react-helmet";
 import Grid from "@material-ui/core/Grid";
-import Divider from "@material-ui/core/Divider";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
@@ -12,7 +11,7 @@ import FileUploadIcon from "../../Components/CustomSVG/FileUpload";
 import FileDownloadIcon from "../../Components/CustomSVG/FileDownload";
 import AddIcon from "@material-ui/icons/Add";
 
-import SavingsGoalListItem from "./SavingsGoalListItem";
+import SavingsGoalListItemWrapper from "./SavingsGoalListItemWrapper";
 import NavLink from "../../Components/Routing/NavLink";
 import ExportDialog from "../../Components/ExportDialog";
 import ImportDialog from "../../Components/ImportDialog";
@@ -72,13 +71,14 @@ class SavingsGoals extends React.Component {
         //     this.importSingleRuleCollection(ruleCollectionsReceived);
         // }
     };
+
     render() {
-        const { t, savingsGoals, accounts } = this.props;
+        const { t, savingsGoals } = this.props;
 
         const savingsGoalsList = Object.keys(savingsGoals).map(savingsGoalId => (
-            <SavingsGoalListItem accounts={accounts} savingsGoal={savingsGoals[savingsGoalId]} />
+            <SavingsGoalListItemWrapper t={t} savingsGoal={savingsGoals[savingsGoalId]} />
         ));
-        const savingsGoalsArray = Object.values(savingsGoals);
+        const savingsGoalsArray = Object.keys(savingsGoals).map(savingsGoalId => savingsGoals[savingsGoalId].toJSON());
 
         return (
             <Grid container spacing={16}>
@@ -101,15 +101,19 @@ class SavingsGoals extends React.Component {
                     object={savingsGoalsArray}
                 />
 
+                <Grid item xs={12}>
+                    <TranslateTypography variant="h4">Savings goals</TranslateTypography>
+                </Grid>
+
                 <Grid item xs={12} sm={3}>
                     <Paper style={styles.paper}>
-                        <Grid container spacing={16}>
+                        <Grid container spacing={8}>
                             <Grid item xs={12}>
                                 <Button
                                     variant="contained"
                                     color="primary"
                                     component={NavLink}
-                                    to={`/rule-page/null`}
+                                    to={`/savings-goal-page/null`}
                                     style={styles.newRuleButton}
                                 >
                                     {t("New")}
@@ -136,16 +140,6 @@ class SavingsGoals extends React.Component {
 
                 <Grid item xs={12} sm={9}>
                     <Grid container spacing={8}>
-                        <Grid item xs={12}>
-                            <Paper style={styles.paper}>
-                                <Grid container spacing={16}>
-                                    <Grid item xs={12} sm={3} md={6}>
-                                        <TranslateTypography variant="h5">Savings goals</TranslateTypography>
-                                    </Grid>
-                                </Grid>
-                            </Paper>
-                        </Grid>
-
                         {savingsGoalsList}
                     </Grid>
                 </Grid>
@@ -156,8 +150,6 @@ class SavingsGoals extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        accounts: state.accounts.accounts,
-
         savingsGoals: state.savings_goals.savings_goals
     };
 };

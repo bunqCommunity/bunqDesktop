@@ -75,7 +75,7 @@ const privateRoutes = [
         component: CL(() => import(/* webpackChunkName: "savings_goals" */ "./Pages/SavingsGoals/SavingsGoals"))
     },
     {
-        path: "/savings-goal/:savingsGoalId",
+        path: "/savings-goal-page/:savingsGoalId",
         component: CL(() =>
             import(/* webpackChunkName: "savings_goal_page" */ "./Pages/SavingsGoalPage/SavingsGoalPage")
         )

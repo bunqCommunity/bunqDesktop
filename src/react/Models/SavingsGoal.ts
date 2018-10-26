@@ -21,7 +21,9 @@ export default class SavingsGoal {
 
     private _rawData: any;
 
-    constructor(savingsGoalObject: any) {
+    constructor(savingsGoalObject: any | undefined) {
+        if (!savingsGoalObject) return this;
+
         this._rawData = savingsGoalObject;
 
         // go through all keys and set the data
@@ -47,6 +49,10 @@ export default class SavingsGoal {
         if (!this.id) {
             this._id = generateGUID();
         }
+    }
+
+    public setTitle(title: string) {
+        this._title = title;
     }
 
     get id(): string | false {

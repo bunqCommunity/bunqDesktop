@@ -8,9 +8,9 @@ import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 
+import AddIcon from "@material-ui/icons/Add";
 import FileUploadIcon from "../../Components/CustomSVG/FileUpload";
 import FileDownloadIcon from "../../Components/CustomSVG/FileDownload";
-import AddIcon from "@material-ui/icons/Add";
 
 import NavLink from "../../Components/Routing/NavLink";
 import ExportDialog from "../../Components/ExportDialog";
@@ -19,6 +19,8 @@ import TranslateTypography from "../../Components/TranslationHelpers/Typography"
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { setSavingsGoal } from "../../Actions/savings_goals";
+
+import SavingsGoal from "../../Models/SavingsGoal";
 
 const styles = {
     paper: {
@@ -41,14 +43,18 @@ class SavingsGoalPage extends React.Component {
         };
     }
 
-
     render() {
-        const { t, savingsGoals } = this.props;
+        const { t, match, savingsGoals } = this.props;
+        const savingsGoalId = match.params.savingsGoalId;
 
-        const savingsGoalsList = Object.keys(savingsGoals).map(savingsGoalId => (
-            <SavingsGoalListItem savingsGoal={savingsGoals[savingsGoalId]} />
-        ));
-        const savingsGoalsArray = Object.values(savingsGoals);
+        let savingsGoal;
+        if (savingsGoalId !== "null" && savingsGoalId !== null && savingsGoals[savingsGoalId]) {
+            savingsGoal = savingsGoals[savingsGoalId];
+        } else {
+            savingsGoal = new SavingsGoal();
+            savingsGoal.setTitle("My goal!");
+            savingsGoal.ensureId();
+        }
 
         return (
             <Grid container spacing={16}>
@@ -66,49 +72,18 @@ class SavingsGoalPage extends React.Component {
 
                 <ExportDialog
                     closeModal={this.closeExportDialog}
-                    title={t("Export savings goals")}
+                    title={t("Export savings goal")}
                     open={this.state.openExportDialog}
-                    object={savingsGoalsArray}
+                    object={savingsGoal}
                 />
 
-                <Grid item xs={12} sm={3}>
-                    <Paper style={styles.paper}>
-                        <Grid container spacing={16}>
-                            <Grid item xs={12}>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    component={NavLink}
-                                    to={`/rule-page/null`}
-                                    style={styles.newRuleButton}
-                                >
-                                    {t("New")}
-                                    <AddIcon style={styles.buttonIcons} />
-                                </Button>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <Button variant="outlined" style={styles.newRuleButton} onClick={this.openImportDialog}>
-                                    {t("Import")}
-                                    <FileDownloadIcon style={styles.buttonIcons} />
-                                </Button>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <Button variant="outlined" style={styles.newRuleButton} onClick={this.openExportDialog}>
-                                    {t("Export")}
-                                    <FileUploadIcon style={styles.buttonIcons} />
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                </Grid>
+                <Grid item xs={12} sm={3} />
 
                 <Grid item xs={12} sm={6}>
                     <Paper style={styles.paper}>
                         <Grid container spacing={16}>
                             <Grid item xs={12} sm={3} md={6}>
-                                <TranslateTypography variant="h5">Savings goals</TranslateTypography>
+                                <TranslateTypography variant="h5">Savings goal</TranslateTypography>
                             </Grid>
 
                             <Grid item xs={12}>
@@ -134,7 +109,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
-        setSavingsGoal: rule_collection => dispatch(setSavingsGoal(rule_collection))
+        setSavingsGoal: savingsGoal => dispatch(setSavingsGoal(savingsGoal))
     };
 };
 
