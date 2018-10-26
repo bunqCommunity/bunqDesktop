@@ -3,6 +3,7 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import StickyBox from "react-sticky-box";
+import List from "@material-ui/core/List";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
@@ -11,6 +12,9 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import Avatar from "@material-ui/core/Avatar";
 import Tooltip from "@material-ui/core/Tooltip";
+import AppBar from "@material-ui/core/AppBar";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
 
 import MoneyIcon from "@material-ui/icons/AttachMoney";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
@@ -20,6 +24,7 @@ import CombinedList from "../Components/CombinedList/CombinedList";
 import AccountList from "../Components/AccountList/AccountList";
 import NavLink from "../Components/Routing/NavLink";
 import AttachmentImage from "../Components/AttachmentImage/AttachmentImage";
+import SavingsGoalListItemWrapper from "./SavingsGoals/SavingsGoalListItemWrapper";
 
 import { userLogin, userLogout } from "../Actions/user";
 import { requestInquirySend } from "../Actions/request_inquiry";
@@ -46,13 +51,18 @@ const styles = {
     },
     headerButtonWrapper: {
         textAlign: "right"
+    },
+    savingsGoalsPaper: {
+        padding: 12
     }
 };
 
 class Dashboard extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+        this.state = {
+            selectedTab: "accounts"
+        };
     }
 
     componentDidUpdate() {
@@ -84,9 +94,13 @@ class Dashboard extends React.Component {
         }
     };
 
+    handleChange = (event, value) => {
+        this.setState({ selectedTab: value });
+    };
+
     render() {
-        const t = this.props.t;
-        const user = this.props.user;
+        const { t, user, savingsGoals } = this.props;
+        const selectedTab = this.state.selectedTab;
         const userTypes = Object.keys(this.props.users);
 
         const displayName = this.props.user.display_name ? this.props.user.display_name : t("user");
@@ -100,6 +114,17 @@ class Dashboard extends React.Component {
                 />
             </Avatar>
         ) : null;
+
+        const savingsGoalsList = Object.keys(savingsGoals)
+            .filter(savingsGoalId => {
+                const savingsGoal = savingsGoals[savingsGoalId];
+
+                return !!savingsGoal.ended;
+            })
+            .map(savingsGoalId => (
+                <SavingsGoalListItemWrapper t={t} type="small" savingsGoal={savingsGoals[savingsGoalId]} />
+            ));
+        const tabsDisabled = savingsGoalsList.length === 0;
 
         return (
             <Grid container spacing={16}>
@@ -156,34 +181,59 @@ class Dashboard extends React.Component {
 
                         <Grid item xs={12} sm={5} md={4}>
                             <StickyBox className={"sticky-container"}>
-                                <Paper>
-                                    <AccountList
-                                        BunqJSClient={this.props.BunqJSClient}
-                                        initialBunqConnect={this.props.initialBunqConnect}
-                                    />
+                                {tabsDisabled === false && (
+                                    <AppBar position="static" color="default">
+                                        <Tabs
+                                            value={this.state.selectedTab}
+                                            onChange={this.handleChange}
+                                            color="primary"
+                                            indicatorColor="primary"
+                                            textColor="primary"
+                                            fullWidth
+                                        >
+                                            <Tab value="accounts" label="Accounts" />
+                                            <Tab value="savingsGoals" label="Savings goals" />
+                                        </Tabs>
+                                    </AppBar>
+                                )}
 
-                                    {this.props.environment === "SANDBOX" ? (
-                                        !this.props.limitedPermissions ? (
-                                            <div
-                                                style={{
-                                                    textAlign: "center",
-                                                    padding: 16
-                                                }}
-                                            >
-                                                <Button
-                                                    onClick={this.addMoney}
-                                                    disabled={this.props.requestInquiryLoading}
+                                {(selectedTab === "accounts" || tabsDisabled) && (
+                                    <Paper>
+                                        <AccountList
+                                            BunqJSClient={this.props.BunqJSClient}
+                                            initialBunqConnect={this.props.initialBunqConnect}
+                                        />
+
+                                        {this.props.environment === "SANDBOX" ? (
+                                            !this.props.limitedPermissions ? (
+                                                <div
+                                                    style={{
+                                                        textAlign: "center",
+                                                        padding: 16
+                                                    }}
                                                 >
-                                                    <MoneyIcon />
-                                                </Button>
-                                            </div>
-                                        ) : (
-                                            <Typography variant="body1" style={{ margin: 8 }}>
-                                                Logged in as OAuth sandbox user. Requesting money isn't possible.
-                                            </Typography>
-                                        )
-                                    ) : null}
-                                </Paper>
+                                                    <Button
+                                                        onClick={this.addMoney}
+                                                        disabled={this.props.requestInquiryLoading}
+                                                    >
+                                                        <MoneyIcon />
+                                                    </Button>
+                                                </div>
+                                            ) : (
+                                                <Typography variant="body1" style={{ margin: 8 }}>
+                                                    Logged in as OAuth sandbox user. Requesting money isn't possible.
+                                                </Typography>
+                                            )
+                                        ) : null}
+                                    </Paper>
+                                )}
+
+                                {selectedTab === "savingsGoals" &&
+                                    tabsDisabled === false && (
+                                        <Paper style={styles.savingsGoalsPaper}>
+                                            <List>{savingsGoalsList}</List>
+                                        </Paper>
+                                    )}
                             </StickyBox>
                         </Grid>
 
@@ -215,6 +265,8 @@ const mapStateToProps = state => {
 
         requestInquiryLoading: state.request_inquiry.loading,
         selectedAccount: state.accounts.selected_account,
+
+        savingsGoals: state.savings_goals.savings_goals,
 
         useNoPassword: state.registration.use_no_password,
         storedApiKeys: state.registration.stored_api_keys,
