@@ -534,7 +534,7 @@ class RequestInquiry extends React.Component {
                             label={t("Description")}
                             value={description}
                             onChange={this.handleChange("description")}
-                            multiline=
+                            multiline
                         />
 
                         <FormControl style={styles.formControlAlt} error={this.state.amountError} fullWidth>
