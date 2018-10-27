@@ -5,6 +5,7 @@ import ListItem from "@material-ui/core/ListItem";
 import Typography from "@material-ui/core/Typography";
 
 import LinearProgressCustom from "../../Components/LinearProgress";
+import NavLink from "../../Components/Routing/NavLink";
 
 import { formatMoney, humanReadableDate } from "../../Helpers/Utils";
 
@@ -59,7 +60,12 @@ class SavingsGoalListItem extends React.Component {
         return (
             <Grid item xs={12}>
                 <Paper>
-                    <ListItem button style={styles.listItem}>
+                    <ListItem
+                        button
+                        component={NavLink}
+                        to={`/savings-goal-page/${savingsGoal.id}`}
+                        style={styles.listItem}
+                    >
                         <Grid container>
                             <Grid item xs={12} sm={8} md={9} style={styles.headerTextsGrid}>
                                 <Typography variant="h5" style={styles.title}>

@@ -119,7 +119,7 @@ class Dashboard extends React.Component {
             .filter(savingsGoalId => {
                 const savingsGoal = savingsGoals[savingsGoalId];
 
-                return !savingsGoal.isEnded;
+                return !savingsGoal.isEnded && savingsGoal.isStarted;
             })
             .map(savingsGoalId => (
                 <SavingsGoalListItemWrapper t={t} type="small" savingsGoal={savingsGoals[savingsGoalId]} />

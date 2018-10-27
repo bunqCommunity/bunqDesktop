@@ -11,7 +11,6 @@ export default class SavingsGoal {
     private _started: Date;
     private _expires: Date | false;
     private _ended: Date | false;
-    private _status: SavingsGoalStatus;
     private _title: string = "";
     private _description: string = "";
     private _accountIds: number[];
@@ -32,23 +31,55 @@ export default class SavingsGoal {
             this[objectKey] = savingsGoalObject[key];
         });
 
-        this._started = new Date(this._started);
+        this._started = this._started ? new Date(this._started) : new Date();
         this._expires = this._expires ? new Date(this._expires) : false;
         this._ended = this._ended ? new Date(this._ended) : false;
     }
 
     public toJSON(): any {
-        return this._rawData;
+        return {
+            id: this._id,
+            started: this._started,
+            expires: this._expires,
+            ended: this._ended,
+            title: this._title,
+            description: this._description,
+            accountIds: this._accountIds,
+            goal_amount: this._goalAmount,
+            color: this._color,
+            settings: this._settings
+        };
     }
 
+    /**
+     * Gets an item from the settings
+     * @param {string} key
+     * @returns {any}
+     */
     public getSetting(key: string): any {
         return this._settings[key];
     }
 
+    /**
+     * Ensures an ID exists and is set
+     */
     public ensureId() {
         if (!this.id) {
             this._id = generateGUID();
         }
+    }
+
+    /**
+     * Date checkers for expired, ended and started properties
+     */
+    get isExpired(): boolean {
+        return this._expires && this._expires < new Date();
+    }
+    get isEnded(): boolean {
+        return this._ended !== false;
+    }
+    get isStarted(): boolean {
+        return this._started && this._started < new Date();
     }
 
     public setTitle(title: string) {
@@ -67,9 +98,6 @@ export default class SavingsGoal {
     get ended(): Date | false {
         return this._ended;
     }
-    get status(): SavingsGoalStatus {
-        return this._status;
-    }
     get title(): string {
         return this._title;
     }
@@ -87,8 +115,5 @@ export default class SavingsGoal {
     }
     get settings(): SavingsGoalSettings {
         return this._settings;
-    }
-    get isExpired(): boolean {
-        return this._expires && this._expires < new Date();
     }
 }

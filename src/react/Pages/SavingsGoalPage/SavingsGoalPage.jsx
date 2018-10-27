@@ -7,6 +7,7 @@ import Divider from "@material-ui/core/Divider";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
+import Typography from "@material-ui/core/Typography";
 
 import AddIcon from "@material-ui/icons/Add";
 import FileUploadIcon from "../../Components/CustomSVG/FileUpload";
@@ -21,6 +22,7 @@ import { openSnackbar } from "../../Actions/snackbar";
 import { setSavingsGoal } from "../../Actions/savings_goals";
 
 import SavingsGoal from "../../Models/SavingsGoal";
+import SavingsGoalForm from "./SavingsGoalForm";
 
 const styles = {
     paper: {
@@ -43,6 +45,10 @@ class SavingsGoalPage extends React.Component {
         };
     }
 
+    saveSavingsGoal = data => {
+        console.log("saveSavingsGoal()", data);
+    };
+
     render() {
         const { t, match, savingsGoals } = this.props;
         const savingsGoalId = match.params.savingsGoalId;
@@ -56,10 +62,12 @@ class SavingsGoalPage extends React.Component {
             savingsGoal.ensureId();
         }
 
+        console.log(savingsGoal, savingsGoalId);
+
         return (
             <Grid container spacing={16}>
                 <Helmet>
-                    <title>{`bunqDesktop - ${t("Savings goals")}`}</title>
+                    <title>{`bunqDesktop - ${t("Savings goal")}`}</title>
                 </Helmet>
 
                 <ImportDialog
@@ -74,23 +82,25 @@ class SavingsGoalPage extends React.Component {
                     closeModal={this.closeExportDialog}
                     title={t("Export savings goal")}
                     open={this.state.openExportDialog}
-                    object={savingsGoal}
+                    object={savingsGoal.toJSON()}
                 />
 
-                <Grid item xs={12} sm={3} />
+                <Grid item xs={12} sm={2} md={3} />
 
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={8} md={6} >
                     <Paper style={styles.paper}>
                         <Grid container spacing={16}>
-                            <Grid item xs={12} sm={3} md={6}>
-                                <TranslateTypography variant="h5">Savings goal</TranslateTypography>
+                            <Grid item xs={11}>
+                                <Typography variant="h6" style={styles.subTitle}>
+                                    {t("Savings goal")}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={1}>
+                                {/* menu */}
                             </Grid>
 
                             <Grid item xs={12}>
-                                <List>
-                                    <Divider />
-                                    {savingsGoalsList}
-                                </List>
+                                <SavingsGoalForm t={t} initialValues={savingsGoal.toJSON()} onSubmit={this.saveSavingsGoal} />
                             </Grid>
                         </Grid>
                     </Paper>

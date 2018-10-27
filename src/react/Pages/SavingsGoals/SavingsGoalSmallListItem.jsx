@@ -6,6 +6,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 
 import LinearProgressCustom from "../../Components/LinearProgress";
+import NavLink from "../../Components/Routing/NavLink";
 
 const styles = {
     listItem: {
@@ -21,7 +22,7 @@ const SavingsGoalSmallListItem = props => {
     const { savingsGoal, percentage } = props;
 
     return (
-        <ListItem button style={styles.listItem}>
+        <ListItem button component={NavLink} to={`/savings-goal-page/${savingsGoal.id}`} style={styles.listItem}>
             <Grid container>
                 <Grid xs={12}>
                     <ListItemText primary={savingsGoal.title} />

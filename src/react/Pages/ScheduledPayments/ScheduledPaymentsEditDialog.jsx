@@ -192,7 +192,7 @@ class ScheduledPaymentsEditDialog extends React.Component {
                         onChange={this.handleChange("description")}
                         error={!isValid}
                         placeholder={t("Description")}
-                        multiline={true}
+                        multiline=
                     />
 
                     <SchedulePaymentForm
