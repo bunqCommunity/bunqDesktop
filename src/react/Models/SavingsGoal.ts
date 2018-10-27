@@ -3,8 +3,15 @@ import { generateGUID } from "../Helpers/Utils";
 export type SavingsGoalSettings = {
     startAmount?: number;
 };
-
-export type SavingsGoalStatus = "ACTIVE" | "CANCELED" | "EXPIRED" | "COMPLETED" | "FAILED";
+export type SavingsGoalStatistics =
+    | false
+    | {
+          accountsTotalFunds?: number;
+          startAmount?: number;
+          savedAmount?: number;
+          goalAmount?: number;
+          percentage?: number;
+      };
 
 export default class SavingsGoal {
     private _id: string | false = false;
@@ -17,6 +24,7 @@ export default class SavingsGoal {
     private _goalAmount: number;
     private _color: number;
     private _settings: SavingsGoalSettings = {};
+    private _statistics: SavingsGoalStatistics = false;
 
     private _rawData: any;
 
@@ -61,12 +69,62 @@ export default class SavingsGoal {
     }
 
     /**
+     * Gets an item from the settings
+     * @param {string} key
+     * @returns {any}
+     */
+    public getStatistic(key: string): any {
+        if (this._statistics !== false) {
+            return this._statistics[key];
+        }
+
+        return false;
+    }
+
+    /**
      * Ensures an ID exists and is set
      */
     public ensureId() {
         if (!this.id) {
             this._id = generateGUID();
         }
+    }
+
+    /**
+     * Gets statistics based
+     * @param accounts
+     */
+    public getStatistics(accounts: any[], forceUpdate: boolean = false): SavingsGoalStatistics {
+        if (forceUpdate && this._statistics !== false) {
+            return this._statistics;
+        }
+
+        const accountsTotalFunds = accounts.reduce((accumulator, account) => {
+            if (this.accountIds.includes(account.id)) {
+                return accumulator + account.getBalance();
+            }
+            return accumulator;
+        }, 0);
+
+        const startValue = this.getSetting("startAmount") || 0;
+        const savedAmount = accountsTotalFunds > startValue ? accountsTotalFunds - startValue : 0;
+        const goalAmount = this.goalAmount;
+        const normalise = value => {
+            if (value > goalAmount) return 100;
+            if (value < startValue) return 0;
+            return ((value - startValue) * 100) / (goalAmount - startValue);
+        };
+        const percentage = normalise(accountsTotalFunds);
+
+        this._statistics = {
+            accountsTotalFunds: accountsTotalFunds,
+            startAmount: startValue,
+            savedAmount: savedAmount,
+            goalAmount: goalAmount,
+            percentage: percentage
+        };
+
+        return this._statistics;
     }
 
     /**
@@ -82,6 +140,9 @@ export default class SavingsGoal {
         return this._started && this._started < new Date();
     }
 
+    public setEnded(){
+        this._ended = new Date();
+    }
     public setTitle(title: string) {
         this._title = title;
     }

@@ -3,7 +3,6 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import StickyBox from "react-sticky-box";
-import List from "@material-ui/core/List";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
@@ -20,11 +19,12 @@ import MoneyIcon from "@material-ui/icons/AttachMoney";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import KeyIcon from "@material-ui/icons/VpnKey";
 
+import TranslateButton from "../Components/TranslationHelpers/Button";
 import CombinedList from "../Components/CombinedList/CombinedList";
 import AccountList from "../Components/AccountList/AccountList";
 import NavLink from "../Components/Routing/NavLink";
 import AttachmentImage from "../Components/AttachmentImage/AttachmentImage";
-import SavingsGoalListItemWrapper from "./SavingsGoals/SavingsGoalListItemWrapper";
+import SavingsGoalsList from "../Components/SavingsGoals/SavingsGoalsList";
 
 import { userLogin, userLogout } from "../Actions/user";
 import { requestInquirySend } from "../Actions/request_inquiry";
@@ -33,6 +33,10 @@ import { registrationLogOut } from "../Actions/registration";
 const styles = {
     btn: {
         width: "100%"
+    },
+    savingsGoalsButton: {
+        width: "100%",
+        marginTop: 16
     },
     bigAvatar: {
         width: 50,
@@ -45,15 +49,15 @@ const styles = {
         marginBottom: 0,
         marginLeft: 12
     },
+    savingsGoalsPaper: {
+        padding: 12
+    },
     titleWrapper: {
         display: "flex",
         alignItems: "center"
     },
     headerButtonWrapper: {
         textAlign: "right"
-    },
-    savingsGoalsPaper: {
-        padding: 12
     }
 };
 
@@ -115,16 +119,10 @@ class Dashboard extends React.Component {
             </Avatar>
         ) : null;
 
-        const savingsGoalsList = Object.keys(savingsGoals)
-            .filter(savingsGoalId => {
-                const savingsGoal = savingsGoals[savingsGoalId];
-
-                return !savingsGoal.isEnded && savingsGoal.isStarted;
-            })
-            .map(savingsGoalId => (
-                <SavingsGoalListItemWrapper t={t} type="small" savingsGoal={savingsGoals[savingsGoalId]} />
-            ));
-        const tabsDisabled = savingsGoalsList.length === 0;
+        const tabsEnabled = Object.keys(savingsGoals).some(savingsGoalId => {
+            const savingsGoal = savingsGoals[savingsGoalId];
+            return !savingsGoal.isEnded && savingsGoal.isStarted;
+        });
 
         return (
             <Grid container spacing={16}>
@@ -181,7 +179,7 @@ class Dashboard extends React.Component {
 
                         <Grid item xs={12} sm={5} md={4}>
                             <StickyBox className={"sticky-container"}>
-                                {tabsDisabled === false && (
+                                {tabsEnabled && (
                                     <AppBar position="static" color="default">
                                         <Tabs
                                             value={this.state.selectedTab}
@@ -197,7 +195,7 @@ class Dashboard extends React.Component {
                                     </AppBar>
                                 )}
 
-                                {(selectedTab === "accounts" || tabsDisabled) && (
+                                {(selectedTab === "accounts" || tabsEnabled === false) && (
                                     <Paper>
                                         <AccountList
                                             BunqJSClient={this.props.BunqJSClient}
@@ -229,9 +227,18 @@ class Dashboard extends React.Component {
                                 )}
 
                                 {selectedTab === "savingsGoals" &&
-                                    tabsDisabled === false && (
+                                    tabsEnabled && (
                                         <Paper style={styles.savingsGoalsPaper}>
-                                            <List>{savingsGoalsList}</List>
+                                            <SavingsGoalsList hiddenTypes={["ended", "expired"]} type="small" />
+
+                                            <TranslateButton
+                                                component={NavLink}
+                                                to="/savings-goals"
+                                                variant="outlined"
+                                                style={styles.savingsGoalsButton}
+                                            >
+                                                More details
+                                            </TranslateButton>
                                         </Paper>
                                     )}
                             </StickyBox>

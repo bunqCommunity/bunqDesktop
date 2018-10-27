@@ -5,8 +5,8 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 
-import LinearProgressCustom from "../../Components/LinearProgress";
-import NavLink from "../../Components/Routing/NavLink";
+import LinearProgressCustom from "../LinearProgress";
+import NavLink from "../Routing/NavLink";
 
 const styles = {
     listItem: {
@@ -19,7 +19,8 @@ const styles = {
 };
 
 const SavingsGoalSmallListItem = props => {
-    const { savingsGoal, percentage } = props;
+    const { t, savingsGoal, accounts } = props;
+    const { percentage } = savingsGoal.getStatistics(accounts);
 
     return (
         <ListItem button component={NavLink} to={`/savings-goal-page/${savingsGoal.id}`} style={styles.listItem}>

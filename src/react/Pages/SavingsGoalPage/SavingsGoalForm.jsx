@@ -83,15 +83,15 @@ let SavingsGoalForm = props => {
                 />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
-                <Field
-                    style={styles.amountField}
-                    name="goal_amount"
-                    label="Goal amount"
-                    component={renderAmountField}
-                    validate={[required, minValue(1)]}
-                />
-            </Grid>
+            {/*<Grid item xs={12} sm={6}>*/}
+                {/*<Field*/}
+                    {/*style={styles.amountField}*/}
+                    {/*name="goal_amount"*/}
+                    {/*label="Goal amount"*/}
+                    {/*component={renderAmountField}*/}
+                    {/*validate={[required, minValue(1)]}*/}
+                {/*/>*/}
+            {/*</Grid>*/}
 
             <Grid item xs={12}>
                 <TranslateButton

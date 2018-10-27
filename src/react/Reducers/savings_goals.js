@@ -26,9 +26,34 @@ export const defaultState = {
 };
 
 export default function reducer(state = defaultState, action) {
-    const savingsGoals = { ...state.savingsGoals };
+    const savingsGoals = { ...state.savings_goals };
 
     switch (action.type) {
+        case "ACCOUNTS_SET_INFO":
+            Object.keys(savingsGoals).forEach(savingsGoalId => {
+                const savingsGoal = savingsGoals[savingsGoalId];
+
+                // ignore savings goals already ended or expired
+                if (savingsGoal.isEnded || savingsGoal.isExpired) return;
+
+                // force update the statistics
+                savingsGoal.getStatistics(action.payload.accounts, true);
+
+                const savingsGoalPercentage = savingsGoal.getStatistic("percentage");
+                if (savingsGoalPercentage >= 100) {
+                    savingsGoal.setEnded();
+                }
+            });
+
+            // update settings
+            settings.set(BUNQDESKTOP_SAVINGS_GOALS, savingsGoals);
+
+            return {
+                ...state,
+                last_update: new Date().getTime(),
+                savings_goals: savingsGoals
+            };
+
         case "SAVINGS_GOALS_SET_SAVINGS_GOALS":
             settings.set(BUNQDESKTOP_SAVINGS_GOALS, action.payload.savings_goals);
             return {
