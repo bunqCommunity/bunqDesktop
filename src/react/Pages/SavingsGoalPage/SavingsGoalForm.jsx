@@ -48,13 +48,36 @@ let SavingsGoalForm = props => {
                     validate={[required, maxLength100Handler]}
                 />
             </Grid>
+
             <Grid item xs={12}>
                 <Field
                     fullWidth
-                    name="color"
-                    label="Color"
-                    component={renderColorPickerGradient}
-                    validate={[required]}
+                    multiline
+                    rows="2"
+                    style={styles.textField}
+                    name="description"
+                    label="Description"
+                    component={renderTextField}
+                    validate={[maxLength500Handler]}
+                />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+                <Field
+                    style={styles.amountField}
+                    name="goal_amount"
+                    label="Goal amount"
+                    component={renderAmountField}
+                    validate={[required, minValue0Handler]}
+                />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+                <Field
+                    style={styles.amountField}
+                    name="start_amount"
+                    label="Start amount"
+                    component={renderAmountField}
+                    validate={[minValue0Handler]}
                 />
             </Grid>
 
@@ -81,33 +104,10 @@ let SavingsGoalForm = props => {
             <Grid item xs={12}>
                 <Field
                     fullWidth
-                    multiline
-                    rows="2"
-                    margin="normal"
-                    style={styles.textField}
-                    name="description"
-                    label="Description"
-                    component={renderTextField}
-                    validate={[maxLength500Handler]}
-                />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-                <Field
-                    style={styles.amountField}
-                    name="goal_amount"
-                    label="Goal amount"
-                    component={renderAmountField}
-                    validate={[required, minValue0Handler]}
-                />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-                <Field
-                    style={styles.amountField}
-                    name="start_amount"
-                    label="Start amount"
-                    component={renderAmountField}
-                    validate={[minValue0Handler]}
+                    name="color"
+                    label="Color"
+                    component={renderColorPickerGradient}
+                    validate={[required]}
                 />
             </Grid>
 

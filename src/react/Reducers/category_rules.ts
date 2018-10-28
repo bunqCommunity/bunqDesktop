@@ -108,7 +108,7 @@ export default (state = defaultState, action) => {
             const storedCategoryRules = settings.get(STORED_CATEGORY_RULES);
             const parsedStoredList: RuleCollectionList = {};
 
-            if(storedCategoryRules){
+            if (storedCategoryRules) {
                 Object.keys(storedCategoryRules).forEach(id => {
                     parsedStoredList[id] = new RuleCollection(storedCategoryRules[id]);
                 });

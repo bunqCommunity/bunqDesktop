@@ -211,6 +211,7 @@ class Dashboard extends React.Component {
                                                     }}
                                                 >
                                                     <Button
+                                                        variant="outlined"
                                                         onClick={this.addMoney}
                                                         disabled={this.props.requestInquiryLoading}
                                                     >
@@ -230,6 +231,16 @@ class Dashboard extends React.Component {
                                     tabsEnabled && (
                                         <Paper style={styles.savingsGoalsPaper}>
                                             <SavingsGoalsList hiddenTypes={["ended", "expired"]} type="small" />
+
+                                            <TranslateButton
+                                                component={NavLink}
+                                                to="/savings-goal-page/null"
+                                                variant="outlined"
+                                                color="primary"
+                                                style={styles.savingsGoalsButton}
+                                            >
+                                                New savings goal
+                                            </TranslateButton>
 
                                             <TranslateButton
                                                 component={NavLink}

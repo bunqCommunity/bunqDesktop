@@ -32,7 +32,7 @@ const SavingsGoalSmallListItem = props => {
     }
 
     return (
-        <ListItem {...listItemProps} style={styles.listItem}>
+        <ListItem {...listItemProps} key={savingsGoal.id} style={styles.listItem}>
             <Grid container>
                 <Grid xs={12}>
                     <ListItemText primary={savingsGoal.title} />

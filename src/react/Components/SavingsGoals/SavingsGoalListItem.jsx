@@ -67,7 +67,7 @@ export default props => {
     return (
         <Grid item xs={12}>
             <Paper>
-                <ListItem {...listItemProps} style={styles.listItem}>
+                <ListItem {...listItemProps} key={savingsGoal.id} style={styles.listItem}>
                     <Grid container>
                         <Grid item xs={12} sm={8} md={9} style={styles.headerTextsGrid}>
                             <Typography variant="h5" style={styles.title}>

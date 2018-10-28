@@ -11,13 +11,14 @@ import Typography from "@material-ui/core/Typography";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
+import SavingsGoalForm from "./SavingsGoalForm";
 import ExportDialog from "../../Components/ExportDialog";
 import ImportDialog from "../../Components/ImportDialog";
-import SavingsGoalForm from "./SavingsGoalForm";
+import TranslateButton from "../../Components/TranslationHelpers/Button";
 import SavingsGoalListItemWrapper from "../../Components/SavingsGoals/SavingsGoalListItemWrapper";
 
 import { openSnackbar } from "../../Actions/snackbar";
-import { setSavingsGoal } from "../../Actions/savings_goals";
+import { setSavingsGoal, removeSavingsGoal } from "../../Actions/savings_goals";
 
 import SavingsGoal from "../../Models/SavingsGoal";
 
@@ -65,17 +66,24 @@ class SavingsGoalPage extends React.Component {
         this.props.history.push("/savings-goals");
     };
 
+    removeSavingsGoal = () => {
+        const savingsGoalId = this.props.match.params.savingsGoalId;
+
+        this.props.removeSavingsGoal(savingsGoalId);
+        this.props.history.push("/savings-goals");
+    };
+
     render() {
         const { t, match, savingsGoals } = this.props;
         const savingsGoalId = match.params.savingsGoalId;
 
         let savingsGoal;
-        if (savingsGoalId !== "null" && savingsGoalId !== null && savingsGoals[savingsGoalId]) {
+        const isExisting = savingsGoalId !== "null" && savingsGoalId !== null;
+        if (isExisting && savingsGoals[savingsGoalId]) {
             // take over without references
             savingsGoal = new SavingsGoal({ ...savingsGoals[savingsGoalId].toJSON() });
         } else {
             savingsGoal = new SavingsGoal();
-            savingsGoal.setTitle("My goal!");
             savingsGoal.ensureId();
         }
 
@@ -112,13 +120,23 @@ class SavingsGoalPage extends React.Component {
                 <Grid item xs={12} sm={8} md={6}>
                     <Paper style={styles.paper}>
                         <Grid container spacing={16}>
-                            <Grid item xs={11}>
+                            <Grid item style={{ flexGrow: 1 }}>
                                 <Typography variant="h6" style={styles.subTitle}>
                                     {t("Savings goal")}
                                 </Typography>
                             </Grid>
-                            <Grid item xs={1}>
-                                {/* menu */}
+                            <Grid item>
+                                {isExisting && (
+                                    <Grid item xs={12} sm={2} md={3}>
+                                        <TranslateButton
+                                            variant="outlined"
+                                            color="secondary"
+                                            onClick={this.removeSavingsGoal}
+                                        >
+                                            Remove
+                                        </TranslateButton>
+                                    </Grid>
+                                )}
                             </Grid>
 
                             <Grid item xs={12}>
@@ -132,9 +150,7 @@ class SavingsGoalPage extends React.Component {
                         </Grid>
                     </Paper>
 
-                    <Typography variant="h5">
-                        Previews
-                    </Typography>
+                    <Typography variant="h5">Previews</Typography>
 
                     <SavingsGoalListItemWrapper t={t} clickDisabled={true} savingsGoal={previewSavingsGoal} />
 
@@ -158,15 +174,15 @@ const mapStateToProps = state => {
 
         accounts: state.accounts.accounts,
 
-        // trigger updates on form changes
-        form: state.form
+        form: state.form.savingsGoal
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
-        setSavingsGoal: savingsGoal => dispatch(setSavingsGoal(savingsGoal))
+        setSavingsGoal: savingsGoal => dispatch(setSavingsGoal(savingsGoal)),
+        removeSavingsGoal: savingsGoalId => dispatch(removeSavingsGoal(savingsGoalId))
     };
 };
 

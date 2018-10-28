@@ -41,7 +41,10 @@ const SavingsGoalList = props => {
             } else if (savingsGoalA.isEnded && !savingsGoalB.isEnded) {
                 return 1;
             }
-            return savingsGoalA.started - savingsGoalB.started;
+            return (
+                savingsGoalA.getStatistic("percentage", props.accounts) <
+                savingsGoalB.getStatistic("percentage", props.accounts)
+            );
         })
         .map(savingsGoalId => (
             <SavingsGoalListItemWrapper
@@ -72,6 +75,8 @@ SavingsGoalList.defaultProps = {
 
 const mapStateToProps = state => {
     return {
+        accounts: state.accounts.accounts,
+
         savingsGoalsLastUpdate: state.savings_goals.last_update,
         savingsGoals: state.savings_goals.savings_goals
     };

@@ -2,7 +2,9 @@ import React from "react";
 import Grid from "@material-ui/core/Grid";
 import { HuePicker } from "react-color";
 
-const defaultColor = "linear-gradient(90deg, #667eea 0%, #764ba2 100%)";
+const defaultLeftColor = "#667eea";
+const defaultRightColor = "#764ba2";
+const defaultColor = `linear-gradient(90deg, ${defaultLeftColor} 0%, ${defaultRightColor} 100%)`;
 
 const styles = {
     huePickerGrid: {
@@ -15,8 +17,8 @@ const styles = {
 
 class GradientColorPicker extends React.Component {
     state = {
-        colorLeft: "#000",
-        colorRight: "#999"
+        colorLeft: defaultLeftColor,
+        colorRight: defaultRightColor
     };
 
     parseGradient() {
@@ -29,6 +31,13 @@ class GradientColorPicker extends React.Component {
                 this.setState({
                     colorLeft: matches[1],
                     colorRight: matches[2]
+                });
+            }
+        } else {
+            if (this.state.colorLeft !== defaultLeftColor || this.state.colorRight !== defaultRightColor) {
+                this.setState({
+                    colorLeft: defaultLeftColor,
+                    colorRight: defaultRightColor
                 });
             }
         }

@@ -1,3 +1,4 @@
+import MonetaryAccount from "./MonetaryAccount";
 import { generateGUID } from "../Helpers/Utils";
 
 export type SavingsGoalSettings = {
@@ -18,7 +19,7 @@ export default class SavingsGoal {
     private _started: Date;
     private _expires: Date | false = false;
     private _ended: Date | false = false;
-    private _title: string = "";
+    private _title: string = "My goal!";
     private _description: string = "";
     private _account_ids: number[] = [];
     private _goal_amount: number;
@@ -72,14 +73,20 @@ export default class SavingsGoal {
     }
 
     /**
-     * Gets an item from the settings
+     * Get a statistic and updates statistics if possible
      * @param {string} key
+     * @param {MonetaryAccount[] | false} accounts
      * @returns {any}
      */
-    public getStatistic(key: string): any {
+    public getStatistic(key: string, accounts: MonetaryAccount[] | false = false): any {
+        if (this._statistics === false && accounts !== false) {
+            this.getStatistics(accounts);
+        }
+
         if (this._statistics !== false) {
             return this._statistics[key] || false;
         }
+
         return false;
     }
 
@@ -140,9 +147,6 @@ export default class SavingsGoal {
 
     public setEnded(isEnded = true) {
         this._ended = isEnded ? new Date() : false;
-    }
-    public setTitle(title: string) {
-        this._title = title;
     }
 
     get id(): string | false {
