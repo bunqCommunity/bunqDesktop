@@ -3,9 +3,8 @@ import { translate } from "react-i18next";
 import TextField from "@material-ui/core/TextField";
 
 const renderTextField = ({ t, i18n, tReady, input, label, meta: { touched, error }, ...custom }) => {
-    if (error && !custom.helperText) {
-        custom.helperText = error;
-    }
+    if (!custom.helperText) custom.helperText = "";
+    if (error) custom.helperText = error;
 
     const labelValue = label && t(label);
     const errorValue = touched && !!error;
