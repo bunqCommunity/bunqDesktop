@@ -2,7 +2,7 @@ import React from "react";
 import { Provider } from "react-redux";
 import { HashRouter } from "react-router-dom";
 import DateFnsUtils from "material-ui-pickers/utils/date-fns-utils";
-import MuiPickersUtilsProvider from "material-ui-pickers/utils/MuiPickersUtilsProvider";
+import MuiPickersUtilsProvider from "material-ui-pickers/MuiPickersUtilsProvider";
 
 import Routes from "./Routes.jsx";
 import Layout from "./Components/Layout";

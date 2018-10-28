@@ -8,7 +8,6 @@ class MoneyFormatInput extends React.Component {
     render() {
         return (
             <NumberFormat
-                required
                 margin="normal"
                 placeholder="€ 0.00"
                 min={0}

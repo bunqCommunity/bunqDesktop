@@ -64,7 +64,6 @@ export default props => {
                             format="MMMM dd, YYYY HH:mm"
                             style={styles.textField}
                             value={scheduleStartDate}
-                            onChange={wrapDateChange("scheduleStartDate")}
                             onChange={date => {
                                 // reset to current time if
                                 if (!date || date > new Date()) {
