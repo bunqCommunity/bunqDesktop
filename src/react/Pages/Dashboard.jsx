@@ -11,15 +11,20 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import Avatar from "@material-ui/core/Avatar";
 import Tooltip from "@material-ui/core/Tooltip";
+import AppBar from "@material-ui/core/AppBar";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
 
 import MoneyIcon from "@material-ui/icons/AttachMoney";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import KeyIcon from "@material-ui/icons/VpnKey";
 
+import TranslateButton from "../Components/TranslationHelpers/Button";
 import CombinedList from "../Components/CombinedList/CombinedList";
 import AccountList from "../Components/AccountList/AccountList";
 import NavLink from "../Components/Routing/NavLink";
 import AttachmentImage from "../Components/AttachmentImage/AttachmentImage";
+import SavingsGoalsList from "../Components/SavingsGoals/SavingsGoalsList";
 
 import { userLogin, userLogout } from "../Actions/user";
 import { requestInquirySend } from "../Actions/request_inquiry";
@@ -28,6 +33,10 @@ import { registrationLogOut } from "../Actions/registration";
 const styles = {
     btn: {
         width: "100%"
+    },
+    savingsGoalsButton: {
+        width: "100%",
+        marginTop: 16
     },
     bigAvatar: {
         width: 50,
@@ -39,6 +48,9 @@ const styles = {
     title: {
         marginBottom: 0,
         marginLeft: 12
+    },
+    savingsGoalsPaper: {
+        padding: 12
     },
     titleWrapper: {
         display: "flex",
@@ -52,7 +64,9 @@ const styles = {
 class Dashboard extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+        this.state = {
+            selectedTab: "accounts"
+        };
     }
 
     componentDidUpdate() {
@@ -84,9 +98,13 @@ class Dashboard extends React.Component {
         }
     };
 
+    handleChange = (event, value) => {
+        this.setState({ selectedTab: value });
+    };
+
     render() {
-        const t = this.props.t;
-        const user = this.props.user;
+        const { t, user, savingsGoals } = this.props;
+        const selectedTab = this.state.selectedTab;
         const userTypes = Object.keys(this.props.users);
 
         const displayName = this.props.user.display_name ? this.props.user.display_name : t("user");
@@ -100,6 +118,11 @@ class Dashboard extends React.Component {
                 />
             </Avatar>
         ) : null;
+
+        const tabsEnabled = Object.keys(savingsGoals).some(savingsGoalId => {
+            const savingsGoal = savingsGoals[savingsGoalId];
+            return !savingsGoal.isEnded && savingsGoal.isStarted;
+        });
 
         return (
             <Grid container spacing={16}>
@@ -156,34 +179,79 @@ class Dashboard extends React.Component {
 
                         <Grid item xs={12} sm={5} md={4}>
                             <StickyBox className={"sticky-container"}>
-                                <Paper>
-                                    <AccountList
-                                        BunqJSClient={this.props.BunqJSClient}
-                                        initialBunqConnect={this.props.initialBunqConnect}
-                                    />
+                                {tabsEnabled && (
+                                    <AppBar position="static" color="default">
+                                        <Tabs
+                                            value={this.state.selectedTab}
+                                            onChange={this.handleChange}
+                                            color="primary"
+                                            indicatorColor="primary"
+                                            textColor="primary"
+                                            fullWidth
+                                        >
+                                            <Tab value="accounts" label="Accounts" />
+                                            <Tab value="savingsGoals" label="Savings goals" />
+                                        </Tabs>
+                                    </AppBar>
+                                )}
 
-                                    {this.props.environment === "SANDBOX" ? (
-                                        !this.props.limitedPermissions ? (
-                                            <div
-                                                style={{
-                                                    textAlign: "center",
-                                                    padding: 16
-                                                }}
-                                            >
-                                                <Button
-                                                    onClick={this.addMoney}
-                                                    disabled={this.props.requestInquiryLoading}
+                                {(selectedTab === "accounts" || tabsEnabled === false) && (
+                                    <Paper>
+                                        <AccountList
+                                            BunqJSClient={this.props.BunqJSClient}
+                                            initialBunqConnect={this.props.initialBunqConnect}
+                                        />
+
+                                        {this.props.environment === "SANDBOX" ? (
+                                            !this.props.limitedPermissions ? (
+                                                <div
+                                                    style={{
+                                                        textAlign: "center",
+                                                        padding: 16
+                                                    }}
                                                 >
-                                                    <MoneyIcon />
-                                                </Button>
-                                            </div>
-                                        ) : (
-                                            <Typography variant="body1" style={{ margin: 8 }}>
-                                                Logged in as OAuth sandbox user. Requesting money isn't possible.
-                                            </Typography>
-                                        )
-                                    ) : null}
-                                </Paper>
+                                                    <Button
+                                                        variant="outlined"
+                                                        onClick={this.addMoney}
+                                                        disabled={this.props.requestInquiryLoading}
+                                                    >
+                                                        <MoneyIcon />
+                                                    </Button>
+                                                </div>
+                                            ) : (
+                                                <Typography variant="body1" style={{ margin: 8 }}>
+                                                    Logged in as OAuth sandbox user. Requesting money isn't possible.
+                                                </Typography>
+                                            )
+                                        ) : null}
+                                    </Paper>
+                                )}
+
+                                {selectedTab === "savingsGoals" &&
+                                    tabsEnabled && (
+                                        <Paper style={styles.savingsGoalsPaper}>
+                                            <SavingsGoalsList hiddenTypes={["ended", "expired"]} type="small" />
+
+                                            <TranslateButton
+                                                component={NavLink}
+                                                to="/savings-goal-page/null"
+                                                variant="outlined"
+                                                color="primary"
+                                                style={styles.savingsGoalsButton}
+                                            >
+                                                New savings goal
+                                            </TranslateButton>
+
+                                            <TranslateButton
+                                                component={NavLink}
+                                                to="/savings-goals"
+                                                variant="outlined"
+                                                style={styles.savingsGoalsButton}
+                                            >
+                                                More details
+                                            </TranslateButton>
+                                        </Paper>
+                                    )}
                             </StickyBox>
                         </Grid>
 
@@ -215,6 +283,8 @@ const mapStateToProps = state => {
 
         requestInquiryLoading: state.request_inquiry.loading,
         selectedAccount: state.accounts.selected_account,
+
+        savingsGoals: state.savings_goals.savings_goals,
 
         useNoPassword: state.registration.use_no_password,
         storedApiKeys: state.registration.stored_api_keys,

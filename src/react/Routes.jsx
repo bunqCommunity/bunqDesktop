@@ -70,6 +70,16 @@ const privateRoutes = [
         path: "/rule-page/:ruleId",
         component: CL(() => import(/* webpackChunkName: "rules_page" */ "./Pages/RulePage/RulePage"))
     },
+    {
+        path: "/savings-goals",
+        component: CL(() => import(/* webpackChunkName: "savings_goals" */ "./Pages/SavingsGoals/SavingsGoals"))
+    },
+    {
+        path: "/savings-goal-page/:savingsGoalId",
+        component: CL(() =>
+            import(/* webpackChunkName: "savings_goal_page" */ "./Pages/SavingsGoalPage/SavingsGoalPage")
+        )
+    },
     /**
      * Event info pages
      */

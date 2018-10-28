@@ -9,7 +9,7 @@ import enLocale from "date-fns/locale/en-US";
 import deLocale from "date-fns/locale/de";
 import nlLocale from "date-fns/locale/nl";
 import DateFnsUtils from "material-ui-pickers/utils/date-fns-utils";
-import MuiPickersUtilsProvider from "material-ui-pickers/utils/MuiPickersUtilsProvider";
+import MuiPickersUtilsProvider from "material-ui-pickers/MuiPickersUtilsProvider";
 
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
