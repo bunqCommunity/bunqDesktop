@@ -24,7 +24,7 @@ const renderDateTimePicker = ({ t, i18n, tReady, input, label, meta: { touched, 
         if (date) {
             onChange(getUTCDate(date));
         } else {
-            onChange(getUTCDate(new Date()));
+            onChange(null);
         }
     };
 
@@ -36,6 +36,7 @@ const renderDateTimePicker = ({ t, i18n, tReady, input, label, meta: { touched, 
             okLabel={t("Ok")}
             todayLabel={t("Today")}
             ampm={false}
+            clearable
             value={fixedUtcDate}
             onChange={overWrittenOnChange}
             label={label && t(label)}

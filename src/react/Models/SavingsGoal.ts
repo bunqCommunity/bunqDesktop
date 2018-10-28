@@ -16,13 +16,14 @@ export type SavingsGoalStatistics =
 export default class SavingsGoal {
     private _id: string | false = false;
     private _started: Date;
-    private _expires: Date | false;
-    private _ended: Date | false;
+    private _expires: Date | false = false;
+    private _ended: Date | false = false;
     private _title: string = "";
     private _description: string = "";
-    private _accountIds: number[];
-    private _goalAmount: number;
-    private _color: number;
+    private _account_ids: number[] = [];
+    private _goal_amount: number;
+    private _start_amount: number = 0;
+    private _color: string = "#375cd7";
     private _settings: SavingsGoalSettings = {};
     private _statistics: SavingsGoalStatistics = false;
 
@@ -42,6 +43,7 @@ export default class SavingsGoal {
         this._started = this._started ? new Date(this._started) : new Date();
         this._expires = this._expires ? new Date(this._expires) : false;
         this._ended = this._ended ? new Date(this._ended) : false;
+        this._title = this._title && this._title.length > 0 ? this._title : "No title";
     }
 
     public toJSON(): any {
@@ -52,8 +54,9 @@ export default class SavingsGoal {
             ended: this._ended,
             title: this._title,
             description: this._description,
-            accountIds: this._accountIds,
-            goal_amount: this._goalAmount,
+            account_ids: this._account_ids,
+            goal_amount: this._goal_amount,
+            start_amount: this._start_amount,
             color: this._color,
             settings: this._settings
         };
@@ -65,7 +68,7 @@ export default class SavingsGoal {
      * @returns {any}
      */
     public getSetting(key: string): any {
-        return this._settings[key];
+        return this._settings[key] || false;
     }
 
     /**
@@ -75,9 +78,8 @@ export default class SavingsGoal {
      */
     public getStatistic(key: string): any {
         if (this._statistics !== false) {
-            return this._statistics[key];
+            return this._statistics[key] || false;
         }
-
         return false;
     }
 
@@ -94,21 +96,17 @@ export default class SavingsGoal {
      * Gets statistics based
      * @param accounts
      */
-    public getStatistics(accounts: any[], forceUpdate: boolean = false): SavingsGoalStatistics {
-        if (forceUpdate && this._statistics !== false) {
-            return this._statistics;
-        }
-
+    public getStatistics(accounts: any[]): SavingsGoalStatistics {
         const accountsTotalFunds = accounts.reduce((accumulator, account) => {
-            if (this.accountIds.includes(account.id)) {
+            if (this._account_ids.includes(account.id)) {
                 return accumulator + account.getBalance();
             }
             return accumulator;
         }, 0);
 
-        const startValue = this.getSetting("startAmount") || 0;
+        const startValue = this.startAmount || 0;
+        const goalAmount = this.goalAmount || 0;
         const savedAmount = accountsTotalFunds > startValue ? accountsTotalFunds - startValue : 0;
-        const goalAmount = this.goalAmount;
         const normalise = value => {
             if (value > goalAmount) return 100;
             if (value < startValue) return 0;
@@ -140,8 +138,8 @@ export default class SavingsGoal {
         return this._started && this._started < new Date();
     }
 
-    public setEnded(){
-        this._ended = new Date();
+    public setEnded(isEnded = true) {
+        this._ended = isEnded ? new Date() : false;
     }
     public setTitle(title: string) {
         this._title = title;
@@ -166,12 +164,15 @@ export default class SavingsGoal {
         return this._description;
     }
     get accountIds(): number[] {
-        return this._accountIds;
+        return this._account_ids;
     }
     get goalAmount(): number {
-        return this._goalAmount;
+        return this._goal_amount;
     }
-    get color(): number {
+    get startAmount(): number {
+        return this._start_amount;
+    }
+    get color(): string {
         return this._color;
     }
     get settings(): SavingsGoalSettings {

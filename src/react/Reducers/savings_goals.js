@@ -25,6 +25,15 @@ export const defaultState = {
     savings_goals: mappedSavingsGoals
 };
 
+const storeSavingsGoalsSafe = savingsGoals => {
+    const jsonSafeSavingsGoals = {};
+    Object.keys(savingsGoals).forEach(savingsGoalId => {
+        const savingsGoal = savingsGoals[savingsGoalId];
+        jsonSafeSavingsGoals[savingsGoalId] = savingsGoal.toJSON();
+    });
+    settings.set(BUNQDESKTOP_SAVINGS_GOALS, jsonSafeSavingsGoals);
+};
+
 export default function reducer(state = defaultState, action) {
     const savingsGoals = { ...state.savings_goals };
 
@@ -37,17 +46,15 @@ export default function reducer(state = defaultState, action) {
                 if (savingsGoal.isEnded || savingsGoal.isExpired) return;
 
                 // force update the statistics
-                savingsGoal.getStatistics(action.payload.accounts, true);
+                savingsGoal.getStatistics(action.payload.accounts);
 
                 const savingsGoalPercentage = savingsGoal.getStatistic("percentage");
                 if (savingsGoalPercentage >= 100) {
-                    savingsGoal.setEnded();
+                    savingsGoal.setEnded(true);
                 }
             });
 
-            // update settings
-            settings.set(BUNQDESKTOP_SAVINGS_GOALS, savingsGoals);
-
+            storeSavingsGoalsSafe(savingsGoals);
             return {
                 ...state,
                 last_update: new Date().getTime(),
@@ -55,7 +62,7 @@ export default function reducer(state = defaultState, action) {
             };
 
         case "SAVINGS_GOALS_SET_SAVINGS_GOALS":
-            settings.set(BUNQDESKTOP_SAVINGS_GOALS, action.payload.savings_goals);
+            storeSavingsGoalsSafe(action.payload.savings_goals);
             return {
                 ...state,
                 last_update: new Date().getTime(),
@@ -63,15 +70,10 @@ export default function reducer(state = defaultState, action) {
             };
 
         case "SAVINGS_GOALS_SET_SAVINGS_GOAL":
-            const randomId = action.payload.id ? action.payload.id : generateGUID();
+            const savingsGoal = action.payload.savings_goal;
+            savingsGoals[savingsGoal.id] = savingsGoal;
 
-            // set/overwrite savings goal by the ID
-            savingsGoals[randomId] = action.payload.savings_goal;
-
-            // ensure an id is set if this is a new savingsGoal
-            savingsGoals[randomId].ensureId();
-
-            settings.set(BUNQDESKTOP_SAVINGS_GOALS, savingsGoals);
+            storeSavingsGoalsSafe(savingsGoals);
             return {
                 ...state,
                 last_update: new Date().getTime(),
@@ -87,7 +89,7 @@ export default function reducer(state = defaultState, action) {
                 delete currentSavingsGoals[removeSavingsGoalId];
             }
 
-            settings.set(BUNQDESKTOP_SAVINGS_GOALS, currentSavingsGoals);
+            storeSavingsGoalsSafe(currentSavingsGoals);
             return {
                 ...state,
                 last_update: new Date().getTime(),
@@ -96,16 +98,26 @@ export default function reducer(state = defaultState, action) {
 
         // update savings_goals in new settings location
         case "OPTIONS_OVERWRITE_SETTINGS_LOCATION":
-            settings.set(BUNQDESKTOP_SAVINGS_GOALS, state.savings_goals);
+            storeSavingsGoalsSafe(state.savings_goals);
             return { ...state };
 
         // load savings_goals from new settings location
         case "OPTIONS_LOAD_SETTINGS_LOCATION":
             const storedSavingsGoals = settings.get(BUNQDESKTOP_SAVINGS_GOALS);
+            const parsedStoredList = {};
+            if (storedSavingsGoals) {
+                Object.keys(storedSavingsGoals).forEach(id => {
+                    parsedStoredList[id] = new SavingsGoal(storedSavingsGoals[id]);
+                });
+            }
+
             return {
                 ...state,
                 last_update: new Date().getTime(),
-                savings_goals: storedSavingsGoals ? storedSavingsGoals : state.savings_goals
+                savings_goals: {
+                    ...state.savings_goals,
+                    ...storedSavingsGoals
+                }
             };
     }
     return state;

@@ -6,23 +6,39 @@ import MoneyFormatInput from "../../FormFields/MoneyFormatInput";
 
 const styles = {
     formControl: {
-        marginBottom: 10
+        marginBottom: 10,
+        color: "#ffffff"
     }
 };
 
 const handleChangeFormatted = onChange => valueObject => {
-    onChange(valueObject.formattedValue.length > 0 ? valueObject.floatValue : "");
+    const onChangeValue = valueObject.formattedValue.length > 0 ? valueObject.floatValue : "";
+    onChange(onChangeValue);
 };
 
 const renderTextField = ({ t, i18n, tReady, input, formStyle = {}, label, meta: { touched, error }, ...custom }) => {
-    const { onChange, ...restInputProps } = input;
+    const { onChange, onBlur, onFocus, onDrop, ...restInputProps } = input;
 
-    const labelComponent = label && label.length > 0 ? <Typography variant="body2">{label}</Typography> : null;
+    const errorStyle = { color: error ? "#ec2616" : "" };
+
+    const labelComponent =
+        label && label.length > 0 ? (
+            <Typography variant="body1" style={errorStyle}>
+                {label}
+            </Typography>
+        ) : null;
+    const errorComponent = error && (
+        <Typography variant="body2" style={errorStyle}>
+            {error}
+        </Typography>
+    );
+    const handleOnChange = handleChangeFormatted(onChange);
 
     return (
         <FormControl style={styles.formControl} style={formStyle} error={touched && !!error} fullWidth>
             {labelComponent}
-            <MoneyFormatInput onValueChange={handleChangeFormatted(onChange)} {...restInputProps} {...custom} />
+            {errorComponent}
+            <MoneyFormatInput onValueChange={handleOnChange} {...restInputProps} {...custom} />
         </FormControl>
     );
 };

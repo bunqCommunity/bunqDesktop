@@ -6,7 +6,7 @@ const defaultStyle = {
         position: "relative",
         display: "flex",
         width: "100%",
-        height: 8,
+        borderRadius: 3,
         overflow: "hidden"
     },
     valueProgressBarStyle: {
@@ -20,7 +20,7 @@ const defaultStyle = {
 };
 
 const LinearProgress = props => {
-    const { theme, color = false, backgroundColor = false, style = {}, valueStyle = {}, value } = props;
+    const { theme, color = false, height = 8, backgroundColor = false, style = {}, valueStyle = {}, value } = props;
 
     let backgroundProgressBarColor = theme.palette.primary.main;
     if (color && theme.palette[color] && theme.palette[color].main) {
@@ -39,6 +39,7 @@ const LinearProgress = props => {
     const backgroundProgressBarStyle = {
         ...defaultStyle.backgroundProgressBar,
         ...style,
+        height: height,
         background: backgroundProgressBarColor
     };
     const valueProgressBarStyle = {

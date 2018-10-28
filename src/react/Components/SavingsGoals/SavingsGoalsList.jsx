@@ -44,7 +44,12 @@ const SavingsGoalList = props => {
             return savingsGoalA.started - savingsGoalB.started;
         })
         .map(savingsGoalId => (
-            <SavingsGoalListItemWrapper t={t} type={type} savingsGoal={savingsGoals[savingsGoalId]} />
+            <SavingsGoalListItemWrapper
+                key={savingsGoalId}
+                t={t}
+                type={type}
+                savingsGoal={savingsGoals[savingsGoalId]}
+            />
         ));
 
     switch (type) {

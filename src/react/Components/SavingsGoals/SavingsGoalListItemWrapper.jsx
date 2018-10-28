@@ -8,13 +8,27 @@ import SavingsGoalSmallListItem from "./SavingsGoalSmallListItem";
 import SavingsGoal from "../../Models/SavingsGoal";
 
 const SavingsGoalListItemWrapper = props => {
-    const { t, type, accounts, savingsGoal } = props;
+    const { t, type, accounts, clickDisabled = false, savingsGoal } = props;
 
     switch (type) {
         case "regular":
-            return <SavingsGoalListItem t={t} savingsGoal={savingsGoal} accounts={accounts} />;
+            return (
+                <SavingsGoalListItem
+                    t={t}
+                    clickDisabled={clickDisabled}
+                    savingsGoal={savingsGoal}
+                    accounts={accounts}
+                />
+            );
         case "small":
-            return <SavingsGoalSmallListItem t={t} savingsGoal={savingsGoal} accounts={accounts} />;
+            return (
+                <SavingsGoalSmallListItem
+                    t={t}
+                    clickDisabled={clickDisabled}
+                    savingsGoal={savingsGoal}
+                    accounts={accounts}
+                />
+            );
     }
     return null;
 };

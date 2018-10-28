@@ -22,8 +22,17 @@ const SavingsGoalSmallListItem = props => {
     const { t, savingsGoal, accounts } = props;
     const { percentage } = savingsGoal.getStatistics(accounts);
 
+    let listItemProps = {
+        button: true,
+        component: NavLink,
+        to: `/savings-goal-page/${savingsGoal.id}`
+    };
+    if (props.clickDisabled) {
+        listItemProps = {};
+    }
+
     return (
-        <ListItem button component={NavLink} to={`/savings-goal-page/${savingsGoal.id}`} style={styles.listItem}>
+        <ListItem {...listItemProps} style={styles.listItem}>
             <Grid container>
                 <Grid xs={12}>
                     <ListItemText primary={savingsGoal.title} />

@@ -1,6 +1,8 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { translate } from "react-i18next";
+import { getFormValues } from "redux-form";
 import Helmet from "react-helmet";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
@@ -12,6 +14,7 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ExportDialog from "../../Components/ExportDialog";
 import ImportDialog from "../../Components/ImportDialog";
 import SavingsGoalForm from "./SavingsGoalForm";
+import SavingsGoalListItemWrapper from "../../Components/SavingsGoals/SavingsGoalListItemWrapper";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { setSavingsGoal } from "../../Actions/savings_goals";
@@ -20,7 +23,8 @@ import SavingsGoal from "../../Models/SavingsGoal";
 
 const styles = {
     paper: {
-        padding: 16
+        padding: 16,
+        marginBottom: 16
     },
     newRuleButton: {
         width: "100%"
@@ -39,8 +43,26 @@ class SavingsGoalPage extends React.Component {
         };
     }
 
+    static contextTypes = {
+        store: PropTypes.object
+    };
+
+    get formValues() {
+        return getFormValues("savingsGoal")(this.context.store.getState());
+    }
+
     saveSavingsGoal = data => {
-        console.log("saveSavingsGoal()", data);
+        const savingsGoal = new SavingsGoal(data);
+
+        if (savingsGoal.isEnded) {
+            savingsGoal.getStatistics(this.props.accounts);
+            if (savingsGoal.getStatistic("percentage") < 100) {
+                savingsGoal.setEnded(false);
+            }
+        }
+
+        this.props.setSavingsGoal(savingsGoal);
+        this.props.history.push("/savings-goals");
     };
 
     render() {
@@ -49,12 +71,16 @@ class SavingsGoalPage extends React.Component {
 
         let savingsGoal;
         if (savingsGoalId !== "null" && savingsGoalId !== null && savingsGoals[savingsGoalId]) {
-            savingsGoal = savingsGoals[savingsGoalId];
+            // take over without references
+            savingsGoal = new SavingsGoal({ ...savingsGoals[savingsGoalId].toJSON() });
         } else {
             savingsGoal = new SavingsGoal();
             savingsGoal.setTitle("My goal!");
             savingsGoal.ensureId();
         }
+
+        // create a preview savingsgoal with the updated values
+        const previewSavingsGoal = new SavingsGoal(this.formValues);
 
         return (
             <Grid container spacing={16}>
@@ -100,9 +126,25 @@ class SavingsGoalPage extends React.Component {
                                     t={t}
                                     onSubmit={this.saveSavingsGoal}
                                     initialValues={savingsGoal.toJSON()}
+                                    savingsGoal={savingsGoal}
                                 />
                             </Grid>
                         </Grid>
+                    </Paper>
+
+                    <Typography variant="h5">
+                        Previews
+                    </Typography>
+
+                    <SavingsGoalListItemWrapper t={t} clickDisabled={true} savingsGoal={previewSavingsGoal} />
+
+                    <Paper style={{ marginTop: 16, padding: 8 }}>
+                        <SavingsGoalListItemWrapper
+                            t={t}
+                            clickDisabled={true}
+                            type="small"
+                            savingsGoal={previewSavingsGoal}
+                        />
                     </Paper>
                 </Grid>
             </Grid>
@@ -112,7 +154,12 @@ class SavingsGoalPage extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        savingsGoals: state.savings_goals.savings_goals
+        savingsGoals: state.savings_goals.savings_goals,
+
+        accounts: state.accounts.accounts,
+
+        // trigger updates on form changes
+        form: state.form
     };
 };
 

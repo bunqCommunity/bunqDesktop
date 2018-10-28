@@ -1,15 +1,21 @@
 import React from "react";
 import { Field, reduxForm } from "redux-form";
 import Grid from "@material-ui/core/Grid";
-import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
 
+import { required, maxLength, minValue, minArrayLength } from "../../Components/ReduxForm/Validators";
 import renderTextField from "../../Components/ReduxForm/Fields/renderTextField";
 import renderDateTimePicker from "../../Components/ReduxForm/Fields/renderDateTimePicker";
-import { required, maxLength, minValue } from "../../Components/ReduxForm/Validators";
 import renderAmountField from "../../Components/ReduxForm/Fields/renderAmountField";
+import renderAccountsPicker from "../../Components/ReduxForm/Fields/renderAccountsPicker";
+import renderColorPicker from "../../Components/ReduxForm/Fields/renderColorPicker";
+import GradientColorPicker from "../../Components/FormFields/GradientColorPicker";
+import renderColorPickerGradient from "../../Components/ReduxForm/Fields/renderColorPickerGradient";
 
 const styles = {
+    updateButton: {
+        width: "100%"
+    },
     title: {
         marginBottom: 8
     },
@@ -17,24 +23,38 @@ const styles = {
         width: "100%"
     },
     amountField: {
-        color: "#000000",
+        color: "#ffffff",
         fontSize: 24
     }
 };
+
+const maxLength500Handler = maxLength(500);
+const maxLength100Handler = maxLength(100);
+const minValue0Handler = minValue(0);
+const minArrayLength0Handler = minArrayLength(1, "account");
 
 let SavingsGoalForm = props => {
     const { t, handleSubmit, pristine, submitting, valid } = props;
 
     return (
         <Grid container spacing={8}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
                 <Field
                     fullWidth
                     style={styles.textField}
                     name="title"
                     label="Title"
                     component={renderTextField}
-                    validate={[required, maxLength(100)]}
+                    validate={[required, maxLength100Handler]}
+                />
+            </Grid>
+            <Grid item xs={12}>
+                <Field
+                    fullWidth
+                    name="color"
+                    label="Color"
+                    component={renderColorPickerGradient}
+                    validate={[required]}
                 />
             </Grid>
 
@@ -48,17 +68,6 @@ let SavingsGoalForm = props => {
                     validate={[required]}
                 />
             </Grid>
-
-            <Grid item xs={12} sm={6}>
-                <Field
-                    fullWidth
-                    style={styles.textField}
-                    name="ended"
-                    label="End date"
-                    component={renderDateTimePicker}
-                />
-            </Grid>
-
             <Grid item xs={12} sm={6}>
                 <Field
                     fullWidth
@@ -72,29 +81,48 @@ let SavingsGoalForm = props => {
             <Grid item xs={12}>
                 <Field
                     fullWidth
+                    multiline
+                    rows="2"
                     margin="normal"
                     style={styles.textField}
                     name="description"
                     label="Description"
                     component={renderTextField}
-                    validate={[required, maxLength(500)]}
-                    multiline
-                    rows="2"
+                    validate={[maxLength500Handler]}
                 />
             </Grid>
 
-            {/*<Grid item xs={12} sm={6}>*/}
-                {/*<Field*/}
-                    {/*style={styles.amountField}*/}
-                    {/*name="goal_amount"*/}
-                    {/*label="Goal amount"*/}
-                    {/*component={renderAmountField}*/}
-                    {/*validate={[required, minValue(1)]}*/}
-                {/*/>*/}
-            {/*</Grid>*/}
+            <Grid item xs={12} sm={6}>
+                <Field
+                    style={styles.amountField}
+                    name="goal_amount"
+                    label="Goal amount"
+                    component={renderAmountField}
+                    validate={[required, minValue0Handler]}
+                />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+                <Field
+                    style={styles.amountField}
+                    name="start_amount"
+                    label="Start amount"
+                    component={renderAmountField}
+                    validate={[minValue0Handler]}
+                />
+            </Grid>
+
+            <Grid item xs={12}>
+                <Field
+                    name="account_ids"
+                    label="Accounts"
+                    component={renderAccountsPicker}
+                    validate={[minArrayLength0Handler]}
+                />
+            </Grid>
 
             <Grid item xs={12}>
                 <TranslateButton
+                    style={styles.updateButton}
                     disabled={pristine || submitting || !valid}
                     onClick={handleSubmit}
                     variant="contained"
@@ -108,7 +136,14 @@ let SavingsGoalForm = props => {
 };
 
 SavingsGoalForm = reduxForm({
-    form: "savingsGoal"
+    form: "savingsGoal",
+    validate: values => {
+        const errors = {};
+        if (values.goal_amount && values.start_amount && values.goal_amount < values.start_amount) {
+            errors.start_amount = window.t("Start amount can't be more than the goal amount");
+        }
+        return errors;
+    }
 })(SavingsGoalForm);
 
 export default SavingsGoalForm;
