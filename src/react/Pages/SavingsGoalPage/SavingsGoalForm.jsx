@@ -8,8 +8,6 @@ import renderTextField from "../../Components/ReduxForm/Fields/renderTextField";
 import renderDateTimePicker from "../../Components/ReduxForm/Fields/renderDateTimePicker";
 import renderAmountField from "../../Components/ReduxForm/Fields/renderAmountField";
 import renderAccountsPicker from "../../Components/ReduxForm/Fields/renderAccountsPicker";
-import renderColorPicker from "../../Components/ReduxForm/Fields/renderColorPicker";
-import GradientColorPicker from "../../Components/FormFields/GradientColorPicker";
 import renderColorPickerGradient from "../../Components/ReduxForm/Fields/renderColorPickerGradient";
 
 const styles = {
