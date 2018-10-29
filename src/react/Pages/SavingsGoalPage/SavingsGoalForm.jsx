@@ -9,6 +9,7 @@ import renderDateTimePicker from "../../Components/ReduxForm/Fields/renderDateTi
 import renderAmountField from "../../Components/ReduxForm/Fields/renderAmountField";
 import renderAccountsPicker from "../../Components/ReduxForm/Fields/renderAccountsPicker";
 import renderColorPickerGradient from "../../Components/ReduxForm/Fields/renderColorPickerGradient";
+import renderAmountFieldCustom from "./renderAmountFieldCustom";
 
 const styles = {
     updateButton: {
@@ -22,6 +23,9 @@ const styles = {
     },
     amountField: {
         fontSize: 24
+    },
+    bottomMargin: {
+        marginBottom: 8
     }
 };
 
@@ -35,7 +39,7 @@ let SavingsGoalForm = props => {
 
     return (
         <Grid container spacing={8}>
-            <Grid item xs={12}>
+            <Grid item xs={12} style={styles.bottomMargin}>
                 <Field
                     fullWidth
                     style={styles.textField}
@@ -46,7 +50,7 @@ let SavingsGoalForm = props => {
                 />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} style={styles.bottomMargin}>
                 <Field
                     fullWidth
                     multiline
@@ -59,7 +63,7 @@ let SavingsGoalForm = props => {
                 />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6} style={styles.bottomMargin}>
                 <Field
                     style={styles.amountField}
                     name="goal_amount"
@@ -68,17 +72,17 @@ let SavingsGoalForm = props => {
                     validate={[required, minValue0Handler]}
                 />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6} style={styles.bottomMargin}>
                 <Field
                     style={styles.amountField}
                     name="start_amount"
                     label="Start amount"
-                    component={renderAmountField}
+                    component={renderAmountFieldCustom}
                     validate={[minValue0Handler]}
                 />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6} style={styles.bottomMargin}>
                 <Field
                     fullWidth
                     style={styles.textField}
@@ -88,7 +92,7 @@ let SavingsGoalForm = props => {
                     validate={[required]}
                 />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6} style={styles.bottomMargin}>
                 <Field
                     fullWidth
                     style={styles.textField}
@@ -98,7 +102,7 @@ let SavingsGoalForm = props => {
                 />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} style={styles.bottomMargin}>
                 <Field
                     fullWidth
                     name="color"
@@ -108,7 +112,7 @@ let SavingsGoalForm = props => {
                 />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} style={styles.bottomMargin}>
                 <Field
                     name="account_ids"
                     label="Accounts"

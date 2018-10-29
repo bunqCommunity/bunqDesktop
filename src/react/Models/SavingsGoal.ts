@@ -1,5 +1,6 @@
 import MonetaryAccount from "./MonetaryAccount";
 import { generateGUID } from "../Helpers/Utils";
+import { calculateTotalBalance } from "../Components/SavingsGoals/Helpers.js";
 
 export type SavingsGoalSettings = {
     startAmount?: number;
@@ -104,12 +105,7 @@ export default class SavingsGoal {
      * @param accounts
      */
     public getStatistics(accounts: any[]): SavingsGoalStatistics {
-        const accountsTotalFunds = accounts.reduce((accumulator, account) => {
-            if (this._account_ids.includes(account.id)) {
-                return accumulator + account.getBalance();
-            }
-            return accumulator;
-        }, 0);
+        const accountsTotalFunds = calculateTotalBalance(accounts, this._account_ids);
 
         const startValue = this.startAmount || 0;
         const goalAmount = this.goalAmount || 0;
