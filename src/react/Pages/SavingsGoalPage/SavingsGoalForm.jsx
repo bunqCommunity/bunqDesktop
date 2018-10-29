@@ -21,7 +21,6 @@ const styles = {
         width: "100%"
     },
     amountField: {
-        color: "#ffffff",
         fontSize: 24
     }
 };

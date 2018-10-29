@@ -6,8 +6,7 @@ import MoneyFormatInput from "../../FormFields/MoneyFormatInput";
 
 const styles = {
     formControl: {
-        marginBottom: 10,
-        color: "#ffffff"
+        marginBottom: 10
     }
 };
 
