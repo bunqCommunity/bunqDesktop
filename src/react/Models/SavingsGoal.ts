@@ -87,8 +87,6 @@ export default class SavingsGoal {
      * @param accounts
      */
     public getStatistics(accounts: any[], shareInviteBankResponses: any[] = []): SavingsGoalStatistics {
-        console.log(shareInviteBankResponses);
-
         const accountsTotalFunds = calculateTotalBalance(accounts, this._account_ids, shareInviteBankResponses);
 
         const startValue = this.startAmount || 0;
