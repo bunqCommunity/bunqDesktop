@@ -29,6 +29,7 @@ import pay from "./pay";
 import payments from "./payments";
 import payment_info from "./payment_info";
 import payment_filter from "./payment_filter";
+import pending_payments from "./pending_payments";
 import queue from "./queue";
 import registration from "./registration";
 import request_filter from "./request_filter";
@@ -79,6 +80,7 @@ export default combineReducers({
     pay,
     payment_info,
     payment_filter,
+    pending_payments,
     payments,
     queue,
     registration,

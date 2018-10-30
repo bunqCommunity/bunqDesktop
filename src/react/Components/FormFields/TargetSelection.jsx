@@ -7,7 +7,6 @@ import Grid from "@material-ui/core/Grid";
 import Radio from "@material-ui/core/Radio";
 import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
-import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
@@ -19,6 +18,7 @@ import InputSuggestions from "./InputSuggestions";
 import AccountSelectorDialog from "./AccountSelectorDialog";
 import { openSnackbar } from "../../Actions/snackbar";
 import { formatIban } from "../../Helpers/Utils";
+import TargetChipList from "./TargetChipList";
 
 const styles = {
     payButton: {
@@ -178,45 +178,13 @@ class TargetSelection extends React.Component {
                 break;
         }
 
-        const chipList = this.props.targets.map((target, targetKey) => {
-            let Icon = null;
-            let targetValue = target.value;
-            switch (target.type) {
-                case "EMAIL":
-                case "PHONE":
-                case "CONTACT":
-                    Icon = PersonIcon;
-                    break;
-                case "TRANSFER":
-                    // for transfers we can try to display a description
-                    if (this.props.accounts[target.value]) {
-                        targetValue = this.props.accounts[target.value].description;
-                    }
-                    Icon = CompareArrowsIcon;
-                    break;
-                default:
-                case "IBAN":
-                    Icon = AccountBalanceIcon;
-                    break;
-            }
-
-            return (
-                <Chip
-                    style={styles.chips}
-                    avatar={
-                        <Avatar>
-                            <Icon color="primary" />
-                        </Avatar>
-                    }
-                    label={
-                        <CopyToClipboard text={targetValue} onCopy={this.copiedValue}>
-                            <p>{targetValue}</p>
-                        </CopyToClipboard>
-                    }
-                    onDelete={event => this.props.removeTarget(targetKey)}
-                />
-            );
-        });
+        const chipList = (
+            <TargetChipList
+                targets={this.props.targets}
+                accounts={this.props.accounts}
+                onDelete={targetKey => this.props.removeTarget(targetKey)}
+            />
+        );
 
         return (
             <Grid container spacing={24}>
