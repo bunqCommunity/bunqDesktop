@@ -15,13 +15,13 @@ const renderColorPicker = ({ t, i18n, tReady, input, label, meta: { error }, ...
                     {label}
                 </Typography>
             </Grid>
-            <Grid item xs={12}>
-                {error && (
+            {error && (
+                <Grid item xs={12}>
                     <Typography variant="body2" style={{ color: "#ec2616" }}>
                         {error}
                     </Typography>
-                )}
-            </Grid>
+                </Grid>
+            )}
 
             <Grid item xs={12}>
                 <Typography variant="body1">Left</Typography>
