@@ -19,16 +19,17 @@ import MoneyIcon from "@material-ui/icons/AttachMoney";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import KeyIcon from "@material-ui/icons/VpnKey";
 
-import TranslateButton from "../Components/TranslationHelpers/Button";
-import CombinedList from "../Components/CombinedList/CombinedList";
-import AccountList from "../Components/AccountList/AccountList";
-import NavLink from "../Components/Routing/NavLink";
-import AttachmentImage from "../Components/AttachmentImage/AttachmentImage";
-import SavingsGoalsList from "../Components/SavingsGoals/SavingsGoalsList";
+import LimitedPremium from "./LimitedPremium";
+import TranslateButton from "../../Components/TranslationHelpers/Button";
+import CombinedList from "../../Components/CombinedList/CombinedList";
+import AccountList from "../../Components/AccountList/AccountList";
+import NavLink from "../../Components/Routing/NavLink";
+import AttachmentImage from "../../Components/AttachmentImage/AttachmentImage";
+import SavingsGoalsList from "../../Components/SavingsGoals/SavingsGoalsList";
 
-import { userLogin, userLogout } from "../Actions/user";
-import { requestInquirySend } from "../Actions/request_inquiry";
-import { registrationLogOut } from "../Actions/registration";
+import { userLogin, userLogout } from "../../Actions/user";
+import { requestInquirySend } from "../../Actions/request_inquiry";
+import { registrationLogOut } from "../../Actions/registration";
 
 const styles = {
     btn: {
@@ -44,6 +45,9 @@ const styles = {
     },
     iconButton: {
         marginLeft: 16
+    },
+    tabItems: {
+        minWidth: "20px"
     },
     title: {
         marginBottom: 0,
@@ -124,6 +128,11 @@ class Dashboard extends React.Component {
             return !savingsGoal.isEnded && savingsGoal.isStarted;
         });
 
+        let displayLimitedPremium = false;
+        if (user && user.customer_limit && user.customer_limit.limit_invite_user_premium_limited) {
+            displayLimitedPremium = true;
+        }
+
         return (
             <Grid container spacing={16}>
                 <Helmet>
@@ -189,8 +198,19 @@ class Dashboard extends React.Component {
                                             textColor="primary"
                                             fullWidth
                                         >
-                                            <Tab value="accounts" label="Accounts" />
-                                            <Tab value="savingsGoals" label="Savings goals" />
+                                            <Tab style={styles.tabItems} value="accounts" label={t("Accounts")} />
+                                            <Tab
+                                                style={styles.tabItems}
+                                                value="savingsGoals"
+                                                label={t("Savings goals")}
+                                            />
+                                            {displayLimitedPremium && (
+                                                <Tab
+                                                    style={styles.tabItems}
+                                                    value="limitedPremium"
+                                                    label={t("bunq promo")}
+                                                />
+                                            )}
                                         </Tabs>
                                     </AppBar>
                                 )}
@@ -251,6 +271,14 @@ class Dashboard extends React.Component {
                                                 More details
                                             </TranslateButton>
                                         </Paper>
+                                    )}
+
+                                {selectedTab === "limitedPremium" &&
+                                    tabsEnabled && (
+                                        <LimitedPremium
+                                            t={t}
+                                            user={user}
+                                        />
                                     )}
                             </StickyBox>
                         </Grid>
