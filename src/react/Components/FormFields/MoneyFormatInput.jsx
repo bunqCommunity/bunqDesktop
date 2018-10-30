@@ -10,9 +10,9 @@ class MoneyFormatInput extends React.Component {
 
         return (
             <NumberFormat
-                prefix={"€ "}
-                margin="normal"
                 min={0}
+                prefix="€ "
+                margin="normal"
                 decimalScale={2}
                 placeholder="€ 0.00"
                 className="money-input"

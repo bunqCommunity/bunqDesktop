@@ -56,7 +56,7 @@ const renderTextField = ({
 
     const errorStyle = { color: error ? "#ec2616" : "" };
     const errorComponent = error && (
-        <TranslateTypography variant="body2" style={{ ...errorStyle, flexGrow: 1 }}>
+        <TranslateTypography key="errorTypography" variant="body2" style={{ ...errorStyle, flexGrow: 1 }}>
             {error}
         </TranslateTypography>
     );
@@ -72,7 +72,7 @@ const renderTextField = ({
 
     return (
         <FormControl style={styles.formControl} style={formStyle} error={touched && !!error} fullWidth>
-            <div style={styles.labelWrapper}>
+            <div key="inputWrapper" style={styles.labelWrapper}>
                 <TranslateTypography variant="body1" style={{ ...errorStyle, ...styles.label }}>
                     {label}
                 </TranslateTypography>
@@ -83,12 +83,13 @@ const renderTextField = ({
             {errorComponent}
 
             <MoneyFormatInput
+                key="moneyInput"
                 onValueChange={handleOnChange}
                 style={{ ...styles.moneyInput, ...style }}
                 {...restInputProps}
                 {...custom}
             />
-            <TranslateButton variant="outlined" onClick={setAccountBalances}>
+            <TranslateButton key="helperTypography" variant="outlined" onClick={setAccountBalances}>
                 Use account balances
             </TranslateButton>
         </FormControl>

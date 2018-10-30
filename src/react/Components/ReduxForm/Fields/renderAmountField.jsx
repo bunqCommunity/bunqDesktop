@@ -22,22 +22,28 @@ const renderTextField = ({ t, i18n, tReady, input, formStyle = {}, label, meta: 
 
     const labelComponent =
         label && label.length > 0 ? (
-            <Typography variant="body1" style={errorStyle}>
+            <Typography key="labelTypography" variant="body1" style={errorStyle}>
                 {label}
             </Typography>
         ) : null;
     const errorComponent = error && (
-        <Typography variant="body2" style={errorStyle}>
+        <Typography key="errorTypography" variant="body2" style={errorStyle}>
             {error}
         </Typography>
     );
     const handleOnChange = handleChangeFormatted(onChange);
 
     return (
-        <FormControl style={styles.formControl} style={formStyle} error={touched && !!error} fullWidth>
+        <FormControl
+            key="inputWrapper"
+            style={styles.formControl}
+            style={formStyle}
+            error={touched && !!error}
+            fullWidth
+        >
             {labelComponent}
             {errorComponent}
-            <MoneyFormatInput onValueChange={handleOnChange} {...restInputProps} {...custom} />
+            <MoneyFormatInput key="moneyInput" onValueChange={handleOnChange} {...restInputProps} {...custom} />
         </FormControl>
     );
 };
