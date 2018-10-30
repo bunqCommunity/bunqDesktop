@@ -118,7 +118,7 @@ export default class SavingsGoal {
      * @returns {any}
      */
     public getStatistic(key: string, accounts: MonetaryAccount[] = [], shareInviteBankResponses: any[] = []): any {
-        if (this._statistics === false) {
+        if (this._statistics === false && accounts.length > 0) {
             this.getStatistics(accounts, shareInviteBankResponses);
         }
 
