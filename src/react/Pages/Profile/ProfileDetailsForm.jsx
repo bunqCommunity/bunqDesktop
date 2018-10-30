@@ -25,7 +25,6 @@ let ProfileDetailsForm = props => {
             <Grid item xs={12}>
                 <Field
                     fullWidth
-                    margin="normal"
                     style={styles.textField}
                     name="public_nick_name"
                     label="Public nick name"
@@ -53,7 +52,7 @@ let ProfileDetailsForm = props => {
                     disabled={pristine || submitting || !valid}
                     onClick={handleSubmit}
                     variant="contained"
-                    color={"primary"}
+                    color="primary"
                 >
                     Update
                 </TranslateButton>
