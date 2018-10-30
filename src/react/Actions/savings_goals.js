@@ -22,6 +22,20 @@ export const setSavingsGoal = savings_goal => {
     };
 };
 
+/**
+ * @param {any[]} accounts
+ * @param {any[]} shareInviteBankResponses
+ */
+export const updateStatisticsSavingsGoals = (accounts, shareInviteBankResponses) => {
+    return {
+        type: "SAVINGS_GOALS_UPDATE_STATISTICS",
+        payload: {
+            accounts: accounts,
+            shareInviteBankResponses: shareInviteBankResponses
+        }
+    };
+};
+
 export const removeSavingsGoal = savings_goal_id => {
     return {
         type: "SAVINGS_GOALS_REMOVE_SAVINGS_GOAL",

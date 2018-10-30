@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { translate } from "react-i18next";
 import Helmet from "react-helmet";
 import Grid from "@material-ui/core/Grid";
-import List from "@material-ui/core/List";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 
@@ -12,11 +11,12 @@ import FileDownloadIcon from "../../Components/CustomSVG/FileDownload";
 import AddIcon from "@material-ui/icons/Add";
 
 import SavingsGoalsList from "../../Components/SavingsGoals/SavingsGoalsList";
-import SavingsGoalListItemWrapper from "../../Components/SavingsGoals/SavingsGoalListItemWrapper";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import NavLink from "../../Components/Routing/NavLink";
 import ExportDialog from "../../Components/ExportDialog";
 import ImportDialog from "../../Components/ImportDialog";
+
+import SavingsGoal from "../../Models/SavingsGoal";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { setSavingsGoal } from "../../Actions/savings_goals";
@@ -51,26 +51,29 @@ class SavingsGoals extends React.Component {
         this.closeImportDialog();
 
         // check if ruleCollection info is an arrray
-        // if (
-        //     ruleCollectionsReceived &&
-        //     typeof ruleCollectionsReceived === "object" &&
-        //     ruleCollectionsReceived.constructor === Array
-        // ) {
-        //     // received object is an array so attempt to loop through them
-        //     ruleCollectionsReceived.forEach(ruleCollectionObject => {
-        //         // parse a single category rule
-        //         this.importSingleRuleCollection(ruleCollectionObject);
-        //     });
-        // } else if (ruleCollectionsReceived["category-rules"]) {
-        //     // parse array inside category-rules key and loop through them
-        //     ruleCollectionsReceived["category-rules"].forEach(ruleCollectionObject => {
-        //         // parse a single category rule
-        //         this.importSingleRuleCollection(ruleCollectionObject);
-        //     });
-        // } else {
-        //     // parse a single category rule
-        //     this.importSingleRuleCollection(ruleCollectionsReceived);
-        // }
+        if (
+            savingsGoalsReceived &&
+            typeof savingsGoalsReceived === "object" &&
+            savingsGoalsReceived.constructor === Array
+        ) {
+            // received object is an array so attempt to loop through them
+            savingsGoalsReceived.forEach(savingsGoalReceived => {
+                this.importSavingsGoal(savingsGoalReceived);
+            });
+        } else if (savingsGoalsReceived["savings-goals"]) {
+            savingsGoalsReceived["savings-goals"].forEach(savingsGoalReceived => {
+                this.importSavingsGoal(savingsGoalReceived);
+            });
+        } else {
+            this.importSavingsGoal(savingsGoalsReceived);
+        }
+    };
+
+    importSavingsGoal = savingsGoalObject => {
+        const savingsGoal = new SavingsGoal(savingsGoalObject);
+        savingsGoal.ensureId();
+
+        this.props.setSavingsGoal(savingsGoal);
     };
 
     render() {
@@ -85,7 +88,6 @@ class SavingsGoals extends React.Component {
 
                 <ImportDialog
                     title={t("Import savings goal")}
-                    showAsNewButton={true}
                     closeModal={this.closeImportDialog}
                     importData={this.importData}
                     open={this.state.openImportDialog}
