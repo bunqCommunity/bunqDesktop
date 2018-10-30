@@ -74,23 +74,6 @@ export default class SavingsGoal {
     }
 
     /**
-     * Get a statistic and updates statistics if possible
-     * @param {string} key
-     * @param {MonetaryAccount[]} accounts
-     * @param {any[]} shareInviteBankResponses
-     * @returns {any}
-     */
-    public getStatistic(key: string, accounts: MonetaryAccount[] = [], shareInviteBankResponses: any[] = []): any {
-        this.getStatistics(accounts, shareInviteBankResponses);
-
-        if (this._statistics !== false) {
-            return this._statistics[key] || false;
-        }
-
-        return false;
-    }
-
-    /**
      * Ensures an ID exists and is set
      */
     public ensureId() {
@@ -104,7 +87,9 @@ export default class SavingsGoal {
      * @param accounts
      */
     public getStatistics(accounts: any[], shareInviteBankResponses: any[] = []): SavingsGoalStatistics {
-        const accountsTotalFunds = calculateTotalBalance(accounts, this._account_ids);
+        console.log(shareInviteBankResponses);
+
+        const accountsTotalFunds = calculateTotalBalance(accounts, this._account_ids, shareInviteBankResponses);
 
         const startValue = this.startAmount || 0;
         const goalAmount = this.goalAmount || 0;
@@ -125,6 +110,25 @@ export default class SavingsGoal {
         };
 
         return this._statistics;
+    }
+
+    /**
+     * Get a statistic and updates statistics if possible
+     * @param {string} key
+     * @param {MonetaryAccount[]} accounts
+     * @param {any[]} shareInviteBankResponses
+     * @returns {any}
+     */
+    public getStatistic(key: string, accounts: MonetaryAccount[] = [], shareInviteBankResponses: any[] = []): any {
+        if (this._statistics === false) {
+            this.getStatistics(accounts, shareInviteBankResponses);
+        }
+
+        if (this._statistics !== false) {
+            return this._statistics[key] || false;
+        }
+
+        return false;
     }
 
     /**

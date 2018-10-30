@@ -14,7 +14,7 @@ export const calculateTotalBalance = (accounts, accountIds, shareInviteBankRespo
             if (filteredResponses.length > 0) {
                 const connectBudget = GetShareDetailBudget(filteredResponses);
                 if (connectBudget) {
-                    accountBalance = formatMoney(parseFloat(connectBudget));
+                    accountBalance = parseFloat(connectBudget);
                 }
             }
 
