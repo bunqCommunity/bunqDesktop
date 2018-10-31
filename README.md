@@ -80,7 +80,7 @@ Clone this project and install its dependencies.
 $ git clone git@github.com:bunqCommunity/bunqDesktop.git && cd bunqDesktop
 $ yarn 
 ```
-Run these commands in 2 seperate consoles. One compiles the react app and the second takes care of 
+Run these commands in 2 separate consoles. One compiles the react app and the second takes care of 
 running an electron instance with hot reloading.
 ```bash
 $ yarn webpack:dev
