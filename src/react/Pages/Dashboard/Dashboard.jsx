@@ -128,7 +128,7 @@ class Dashboard extends React.Component {
             return !savingsGoal.isEnded && savingsGoal.isStarted;
         });
         let displayLimitedPremium = false;
-        if (user && user.customer_limit && user.customer_limit.limit_invite_user_premium_limited) {
+        if (user && user.customer_limit && user.customer_limit.limit_amount_monthly) {
             displayLimitedPremium = true;
         }
         const tabsEnabled = displaySavingsGoals || displayLimitedPremium;

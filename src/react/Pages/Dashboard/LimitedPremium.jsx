@@ -30,13 +30,11 @@ const styles = {
 };
 
 export default ({ t, user, userLoading, userLogin }) => {
-    if (!user || !user.customer_limit || !user.customer_limit.limit_invite_user_premium_limited) {
+    if (!user || !user.customer_limit || !user.customer_limit.limit_amount_monthly) {
         return null;
     }
-    const premiumLimits = user.customer_limit.limit_invite_user_premium_limited;
-
-    const limitAmountMonthly = parseFloat(premiumLimits.limit_amount_monthly.value);
-    const spentAmountMonthly = parseFloat(premiumLimits.spent_amount_monthly.value);
+    const limitAmountMonthly = parseFloat(user.customer_limit.limit_amount_monthly.value);
+    const spentAmountMonthly = parseFloat(user.customer_limit.spent_amount_monthly.value);
 
     const limitAmountMonthlyLabel = formatMoney(limitAmountMonthly);
     const spentAmountMonthlyLabel = formatMoney(spentAmountMonthly);
