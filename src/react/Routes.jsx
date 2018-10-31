@@ -5,7 +5,7 @@ import PrivateRoute from "./Components/Routing/PrivateRoute";
 import PublicRoute from "./Components/Routing/PublicRoute";
 import CL from "./Components/CodeSplitting/ComponentLoader";
 
-import Dashboard from "./Pages/Dashboard";
+import Dashboard from "./Pages/Dashboard/Dashboard";
 import NotFound from "./Pages/NotFound";
 import LoginPassword from "./Pages/LoginPassword";
 import Login from "./Pages/Login/Login";
