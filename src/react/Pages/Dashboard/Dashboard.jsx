@@ -158,12 +158,16 @@ class Dashboard extends React.Component {
         }
 
         let userTypeLabel = "";
+        const OAuthLabel = t("OAuth");
         const businessLabel = t("Business");
         const personalLabel = t("Personal");
         const bunqPromoLabel = t("bunq promo");
         switch (userType) {
             case "UserCompany":
                 userTypeLabel = `${businessLabel} ${t("account")}`;
+                break;
+            case "UserApiKey":
+                userTypeLabel = `${OAuthLabel} ${t("account")}`;
                 break;
             default:
             case "UserPerson":
