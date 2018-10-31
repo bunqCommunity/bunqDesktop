@@ -19,7 +19,6 @@ import MoneyIcon from "@material-ui/icons/AttachMoney";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import KeyIcon from "@material-ui/icons/VpnKey";
 
-import LimitedPremium from "./LimitedPremium";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
 import CombinedList from "../../Components/CombinedList/CombinedList";
 import AccountList from "../../Components/AccountList/AccountList";
@@ -127,11 +126,11 @@ class Dashboard extends React.Component {
             const savingsGoal = savingsGoals[savingsGoalId];
             return !savingsGoal.isEnded && savingsGoal.isStarted;
         });
-        let displayLimitedPremium = false;
+        let isBunqPromoUser = false;
         if (user && user.customer_limit && user.customer_limit.limit_amount_monthly) {
-            displayLimitedPremium = true;
+            isBunqPromoUser = true;
         }
-        const tabsEnabled = displaySavingsGoals || displayLimitedPremium;
+        const tabsEnabled = displaySavingsGoals;
 
         let tabsComponent = null;
         if (tabsEnabled) {
@@ -148,9 +147,6 @@ class Dashboard extends React.Component {
                         <Tab style={styles.tabItems} value="accounts" label={t("Accounts")} />
                         {displaySavingsGoals && (
                             <Tab style={styles.tabItems} value="savingsGoals" label={t("Savings goals")} />
-                        )}
-                        {displayLimitedPremium && (
-                            <Tab style={styles.tabItems} value="limitedPremium" label={t("bunq promo")} />
                         )}
                     </Tabs>
                 </AppBar>
@@ -171,7 +167,7 @@ class Dashboard extends React.Component {
                 break;
             default:
             case "UserPerson":
-                if (displayLimitedPremium) {
+                if (isBunqPromoUser) {
                     userTypeLabel = `${bunqPromoLabel} ${t("account")}`;
                 } else {
                     userTypeLabel = `${personalLabel} ${t("account")}`;
@@ -298,9 +294,6 @@ class Dashboard extends React.Component {
                                             </TranslateButton>
                                         </Paper>
                                     )}
-
-                                {selectedTab === "limitedPremium" &&
-                                    displayLimitedPremium && <LimitedPremium t={t} user={user} />}
                             </StickyBox>
                         </Grid>
 
