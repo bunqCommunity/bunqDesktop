@@ -107,7 +107,7 @@ class Dashboard extends React.Component {
     };
 
     render() {
-        const { t, user, savingsGoals } = this.props;
+        const { t, user, userType, savingsGoals } = this.props;
         const selectedTab = this.state.selectedTab;
         const userTypes = Object.keys(this.props.users);
 
@@ -123,14 +123,56 @@ class Dashboard extends React.Component {
             </Avatar>
         ) : null;
 
-        const tabsEnabled = Object.keys(savingsGoals).some(savingsGoalId => {
+        const displaySavingsGoals = Object.keys(savingsGoals).some(savingsGoalId => {
             const savingsGoal = savingsGoals[savingsGoalId];
             return !savingsGoal.isEnded && savingsGoal.isStarted;
         });
-
         let displayLimitedPremium = false;
         if (user && user.customer_limit && user.customer_limit.limit_invite_user_premium_limited) {
             displayLimitedPremium = true;
+        }
+        const tabsEnabled = displaySavingsGoals || displayLimitedPremium;
+
+        let tabsComponent = null;
+        if (tabsEnabled) {
+            tabsComponent = (
+                <AppBar position="static" color="default">
+                    <Tabs
+                        value={this.state.selectedTab}
+                        onChange={this.handleChange}
+                        color="primary"
+                        indicatorColor="primary"
+                        textColor="primary"
+                        fullWidth
+                    >
+                        <Tab style={styles.tabItems} value="accounts" label={t("Accounts")} />
+                        {displaySavingsGoals && (
+                            <Tab style={styles.tabItems} value="savingsGoals" label={t("Savings goals")} />
+                        )}
+                        {displayLimitedPremium && (
+                            <Tab style={styles.tabItems} value="limitedPremium" label={t("bunq promo")} />
+                        )}
+                    </Tabs>
+                </AppBar>
+            );
+        }
+
+        let userTypeLabel = "";
+        const businessLabel = t("Business");
+        const personalLabel = t("Personal");
+        const bunqPromoLabel = t("bunq promo");
+        switch (userType) {
+            case "UserCompany":
+                userTypeLabel = `${businessLabel} ${t("account")}`;
+                break;
+            default:
+            case "UserPerson":
+                if (displayLimitedPremium) {
+                    userTypeLabel = `${bunqPromoLabel} ${t("account")}`;
+                } else {
+                    userTypeLabel = `${personalLabel} ${t("account")}`;
+                }
+                break;
         }
 
         return (
@@ -152,9 +194,14 @@ class Dashboard extends React.Component {
                                 <NavLink to={"/profile"}>{profileAvatar}</NavLink>
                             )}
 
-                            <Typography variant="h6" gutterBottom style={styles.title}>
-                                {`${t("Welcome")} ${displayName}`}
-                            </Typography>
+                            <div>
+                                <Typography variant="h5" gutterBottom style={styles.title}>
+                                    {displayName}
+                                </Typography>
+                                <Typography variant="body1" gutterBottom style={styles.title}>
+                                    {userTypeLabel}
+                                </Typography>
+                            </div>
                         </Grid>
 
                         <Grid item xs={6} style={styles.headerButtonWrapper}>
@@ -188,32 +235,7 @@ class Dashboard extends React.Component {
 
                         <Grid item xs={12} sm={5} md={4}>
                             <StickyBox className={"sticky-container"}>
-                                {tabsEnabled && (
-                                    <AppBar position="static" color="default">
-                                        <Tabs
-                                            value={this.state.selectedTab}
-                                            onChange={this.handleChange}
-                                            color="primary"
-                                            indicatorColor="primary"
-                                            textColor="primary"
-                                            fullWidth
-                                        >
-                                            <Tab style={styles.tabItems} value="accounts" label={t("Accounts")} />
-                                            <Tab
-                                                style={styles.tabItems}
-                                                value="savingsGoals"
-                                                label={t("Savings goals")}
-                                            />
-                                            {displayLimitedPremium && (
-                                                <Tab
-                                                    style={styles.tabItems}
-                                                    value="limitedPremium"
-                                                    label={t("bunq promo")}
-                                                />
-                                            )}
-                                        </Tabs>
-                                    </AppBar>
-                                )}
+                                {tabsComponent}
 
                                 {(selectedTab === "accounts" || tabsEnabled === false) && (
                                     <Paper>
@@ -248,7 +270,7 @@ class Dashboard extends React.Component {
                                 )}
 
                                 {selectedTab === "savingsGoals" &&
-                                    tabsEnabled && (
+                                    displaySavingsGoals && (
                                         <Paper style={styles.savingsGoalsPaper}>
                                             <SavingsGoalsList hiddenTypes={["ended", "expired"]} type="small" />
 
@@ -274,12 +296,7 @@ class Dashboard extends React.Component {
                                     )}
 
                                 {selectedTab === "limitedPremium" &&
-                                    tabsEnabled && (
-                                        <LimitedPremium
-                                            t={t}
-                                            user={user}
-                                        />
-                                    )}
+                                    displayLimitedPremium && <LimitedPremium t={t} user={user} />}
                             </StickyBox>
                         </Grid>
 
