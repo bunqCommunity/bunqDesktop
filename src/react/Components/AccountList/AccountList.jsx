@@ -32,9 +32,9 @@ import { requestResponsesUpdate } from "../../Actions/request_responses";
 import { bunqMeTabsUpdate } from "../../Actions/bunq_me_tabs";
 import { masterCardActionsUpdate } from "../../Actions/master_card_actions";
 import { requestInquiriesUpdate } from "../../Actions/request_inquiries";
+import { updateStatisticsSavingsGoals } from "../../Actions/savings_goals";
 import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_responses";
 import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiries";
-import { applicationSetLastAutoUpdate } from "../../Actions/application";
 
 const styles = {
     list: {
@@ -106,6 +106,14 @@ class AccountList extends React.Component {
                 accountsTrayItems.push(accountTrayItem);
                 return total;
             }, 0);
+
+        if (
+            (previousProps.accountsLoading && !this.props.accountsLoading) ||
+            (previousProps.shareInviteBankResponsesLoading && !this.props.shareInviteBankResponsesLoading)
+        ) {
+            // update the savings goals when the accounts are updated
+            this.props.updateStatisticsSavingsGoals(this.props.accounts, this.props.shareInviteBankResponses);
+        }
 
         if (this.state.totalBalance !== totalBalance) {
             this.setState({
@@ -302,7 +310,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId, accountId)),
         selectAccount: acountId => dispatch(accountsSelectAccount(acountId)),
 
-        applicationSetLastAutoUpdate: () => dispatch(applicationSetLastAutoUpdate())
+        updateStatisticsSavingsGoals: (accounts, shareInviteBankResponses) =>
+            dispatch(updateStatisticsSavingsGoals(accounts, shareInviteBankResponses))
     };
 };
 

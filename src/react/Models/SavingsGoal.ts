@@ -1,5 +1,6 @@
 import MonetaryAccount from "./MonetaryAccount";
 import { generateGUID } from "../Helpers/Utils";
+import { calculateTotalBalance } from "../Components/SavingsGoals/Helpers.js";
 
 export type SavingsGoalSettings = {
     startAmount?: number;
@@ -73,24 +74,6 @@ export default class SavingsGoal {
     }
 
     /**
-     * Get a statistic and updates statistics if possible
-     * @param {string} key
-     * @param {MonetaryAccount[] | false} accounts
-     * @returns {any}
-     */
-    public getStatistic(key: string, accounts: MonetaryAccount[] | false = false): any {
-        if (this._statistics === false && accounts !== false) {
-            this.getStatistics(accounts);
-        }
-
-        if (this._statistics !== false) {
-            return this._statistics[key] || false;
-        }
-
-        return false;
-    }
-
-    /**
      * Ensures an ID exists and is set
      */
     public ensureId() {
@@ -103,13 +86,8 @@ export default class SavingsGoal {
      * Gets statistics based
      * @param accounts
      */
-    public getStatistics(accounts: any[]): SavingsGoalStatistics {
-        const accountsTotalFunds = accounts.reduce((accumulator, account) => {
-            if (this._account_ids.includes(account.id)) {
-                return accumulator + account.getBalance();
-            }
-            return accumulator;
-        }, 0);
+    public getStatistics(accounts: any[], shareInviteBankResponses: any[] = []): SavingsGoalStatistics {
+        const accountsTotalFunds = calculateTotalBalance(accounts, this._account_ids, shareInviteBankResponses);
 
         const startValue = this.startAmount || 0;
         const goalAmount = this.goalAmount || 0;
@@ -130,6 +108,25 @@ export default class SavingsGoal {
         };
 
         return this._statistics;
+    }
+
+    /**
+     * Get a statistic and updates statistics if possible
+     * @param {string} key
+     * @param {MonetaryAccount[]} accounts
+     * @param {any[]} shareInviteBankResponses
+     * @returns {any}
+     */
+    public getStatistic(key: string, accounts: MonetaryAccount[] = [], shareInviteBankResponses: any[] = []): any {
+        if (this._statistics === false && accounts.length > 0) {
+            this.getStatistics(accounts, shareInviteBankResponses);
+        }
+
+        if (this._statistics !== false) {
+            return this._statistics[key] || false;
+        }
+
+        return false;
     }
 
     /**

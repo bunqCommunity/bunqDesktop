@@ -8,7 +8,7 @@ import SavingsGoalSmallListItem from "./SavingsGoalSmallListItem";
 import SavingsGoal from "../../Models/SavingsGoal";
 
 const SavingsGoalListItemWrapper = props => {
-    const { t, type, accounts, clickDisabled = false, savingsGoal } = props;
+    const { t, type, accounts, shareInviteBankResponses, clickDisabled = false, savingsGoal, ...restProps } = props;
 
     switch (type) {
         case "regular":
@@ -18,6 +18,8 @@ const SavingsGoalListItemWrapper = props => {
                     clickDisabled={clickDisabled}
                     savingsGoal={savingsGoal}
                     accounts={accounts}
+                    shareInviteBankResponses={shareInviteBankResponses}
+                    {...restProps}
                 />
             );
         case "small":
@@ -27,6 +29,8 @@ const SavingsGoalListItemWrapper = props => {
                     clickDisabled={clickDisabled}
                     savingsGoal={savingsGoal}
                     accounts={accounts}
+                    shareInviteBankResponses={shareInviteBankResponses}
+                    {...restProps}
                 />
             );
     }
@@ -45,7 +49,9 @@ SavingsGoalListItemWrapper.propTypes = {
 
 const mapStateToProps = state => {
     return {
-        accounts: state.accounts.accounts
+        accounts: state.accounts.accounts,
+
+        shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses
     };
 };
 

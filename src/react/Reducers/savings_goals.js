@@ -38,7 +38,7 @@ export default function reducer(state = defaultState, action) {
     const savingsGoals = { ...state.savings_goals };
 
     switch (action.type) {
-        case "ACCOUNTS_SET_INFO":
+        case "SAVINGS_GOALS_UPDATE_STATISTICS":
             Object.keys(savingsGoals).forEach(savingsGoalId => {
                 const savingsGoal = savingsGoals[savingsGoalId];
 
@@ -46,7 +46,7 @@ export default function reducer(state = defaultState, action) {
                 if (savingsGoal.isEnded || savingsGoal.isExpired) return;
 
                 // force update the statistics
-                savingsGoal.getStatistics(action.payload.accounts);
+                savingsGoal.getStatistics(action.payload.accounts, action.payload.shareInviteBankResponses);
 
                 const savingsGoalPercentage = savingsGoal.getStatistic("percentage");
                 if (savingsGoalPercentage >= 100) {
