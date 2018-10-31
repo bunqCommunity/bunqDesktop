@@ -163,7 +163,8 @@ class Profile extends React.Component {
         if (userLoading === false && this.state.loading === false) {
             let businessInfo = null;
             if (userType === "UserCompany") {
-                const hasSafeKeepingFee = totalBalance > 100000;
+                const safeKeepingValue = totalBalance - 100000;
+                const hasSafeKeepingFee = safeKeepingValue > 0;
 
                 let costsTable = null;
                 if (hasSafeKeepingFee) {
@@ -179,7 +180,7 @@ class Profile extends React.Component {
                             <TableBody>
                                 {[1, 7, 30, 90, 365].map(days => {
                                     // to keep track of the amount across the dates
-                                    let accountBalance = totalBalance;
+                                    let accountBalance = safeKeepingValue;
                                     let totalPayment = 0;
 
                                     // go through the days to calculate historic change
