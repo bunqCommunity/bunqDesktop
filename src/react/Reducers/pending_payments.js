@@ -1,6 +1,36 @@
+import { generateGUID } from "../Helpers/Utils";
+
 export const defaultState = {
     last_updated: new Date(),
-    pending_payments: {}
+    pending_payments: {
+        "random-payment-id": {
+            account_id: 6301,
+            id: "random-payment-id",
+            payment: {
+                amount: { currency: "EUR", value: "5.00" },
+                counterparty_alias: { type: "IBAN", value: "NL55BUNQ9900053427", name: "Angel Monoghan" },
+                description: "some description"
+            }
+        },
+        "random-payment-id2": {
+            account_id: 6301,
+            id: "random-payment-id2",
+            payment: {
+                amount: { currency: "EUR", value: "10.00" },
+                counterparty_alias: { type: "IBAN", value: "NL55BUNQ9900053427", name: "Angel Monoghan" },
+                description: "Different description hehe"
+            }
+        },
+        "other-account-payment-id": {
+            account_id: 8366,
+            id: "other-account-payment-id",
+            payment: {
+                amount: { currency: "EUR", value: "13.37" },
+                counterparty_alias: { type: "IBAN", value: "NL55BUNQ9900053427", name: "Angel Monoghan" },
+                description: "Other account description"
+            }
+        }
+    }
 };
 
 export default (state = defaultState, action) => {
@@ -9,9 +39,13 @@ export default (state = defaultState, action) => {
     switch (action.type) {
         case "PENDING_PAYMENTS_ADD_PAYMENT":
             const newPendingPayment = action.payload.pending_payment;
+            const pendingPaymentId = generateGUID();
+            newPendingPayment.id = pendingPaymentId;
 
-            if (!pendingPayments[action.payload.account_id]) pendingPayments[action.payload.account_id] = [];
-            pendingPayments[action.payload.account_id].push(newPendingPayment);
+            pendingPayments[pendingPaymentId] = {
+                account_id: action.payload.account_id,
+                payment: newPendingPayment
+            };
 
             return {
                 ...state,
@@ -22,34 +56,32 @@ export default (state = defaultState, action) => {
         case "PENDING_PAYMENTS_ADD_PAYMENTS":
             const newPendingPayments = action.payload.pending_payments;
 
-            if (!pendingPayments[action.payload.account_id]) pendingPayments[action.payload.account_id] = [];
-            pendingPayments[action.payload.account_id] = [
-                ...pendingPayments[action.payload.account_id],
-                ...newPendingPayments
-            ];
+            newPendingPayments.forEach(newPendingPayment => {
+                const pendingPaymentId2 = generateGUID();
+                newPendingPayment.id = pendingPaymentId2;
+
+                pendingPayments[pendingPaymentId2] = {
+                    account_id: action.payload.account_id,
+                    payment: newPendingPayment
+                };
+            });
 
             return {
                 ...state,
                 last_updated: new Date(),
                 pending_payments: pendingPayments
-            };
-
-        case "PENDING_PAYMENTS_IS_LOADING":
-            return {
-                ...state,
-                loading: true
-            };
-        case "PENDING_PAYMENTS_IS_NOT_LOADING":
-            return {
-                ...state,
-                loading: false
             };
 
         case "PENDING_PAYMENTS_CLEAR_ACCOUNT":
             const clearAccountId = action.payload.account_id;
-            if (pendingPayments[clearAccountId]) {
-                delete pendingPayments[clearAccountId];
-            }
+
+            Object.keys(pendingPayments).forEach(pendingPaymentId => {
+                const pendingPaymentInfo = pendingPayments[pendingPaymentId];
+
+                if (pendingPaymentInfo.account_id === clearAccountId) {
+                    delete pendingPayments[pendingPaymentId];
+                }
+            });
 
             return {
                 ...state,
@@ -57,14 +89,11 @@ export default (state = defaultState, action) => {
                 pending_payments: pendingPayments
             };
 
-        case "PENDING_PAYMENTS_CLEAR_ACCOUNT_PAYMENT":
-            const clearPaymentAccountId = action.payload.account_id;
-            const clearPaymentIndex = action.payload.payment_index;
+        case "PENDING_PAYMENTS_REMOVE_PAYMENT":
+            const clearPendingPaymentId = action.payload.pending_payment_id;
 
-            if (pendingPayments[clearPaymentAccountId]) {
-                if (pendingPayments[clearPaymentAccountId][clearPaymentIndex]) {
-                    pendingPayments[clearPaymentAccountId][clearPaymentIndex].splice(clearPaymentIndex, 1);
-                }
+            if (pendingPayments[clearPendingPaymentId]) {
+                delete pendingPayments[clearPendingPaymentId];
             }
 
             return {

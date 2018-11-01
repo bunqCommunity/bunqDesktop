@@ -10,7 +10,7 @@ export function pendingPaymentsAddPayments(accountId, pendingPayments) {
 
 export function pendingPaymentsAddPayment(accountId, pendingPayment) {
     return {
-        type: "PENDING_PAYMENTS_ADD_PAYMENTS",
+        type: "PENDING_PAYMENTS_ADD_PAYMENT",
         payload: {
             account_id: accountId,
             pending_payment: pendingPayment
@@ -27,12 +27,11 @@ export function pendingPaymentsClearAccount(accountId) {
     };
 }
 
-export function pendingPaymentsClearAccountPayment(accountId, paymentIndex) {
+export function pendingPaymentsRemovePayment(pendingPaymentId) {
     return {
-        type: "PENDING_PAYMENTS_CLEAR_ACCOUNT_PAYMENT",
+        type: "PENDING_PAYMENTS_REMOVE_PAYMENT",
         payload: {
-            account_id: accountId,
-            payment_index: paymentIndex
+            pending_payment_id: pendingPaymentId
         }
     };
 }
@@ -41,12 +40,4 @@ export function pendingPaymentsClear() {
     return {
         type: "PENDING_PAYMENTS_CLEAR"
     };
-}
-
-export function pendingPaymentsLoading() {
-    return { type: "PENDING_PAYMENTS_IS_LOADING" };
-}
-
-export function pendingPaymentsNotLoading() {
-    return { type: "PENDING_PAYMENTS_IS_NOT_LOADING" };
 }
