@@ -138,7 +138,6 @@ class OAuthManagement extends React.Component {
 
         const requestClientId = sandboxMode ? sandboxClientId : clientId;
         const requestClientSecret = sandboxMode ? sandboxClientSecret : clientSecret;
-
         const successMessage = this.props.t("Successfully authorized client!");
         const errorMessage = this.props.t("Something went wrong while trying to authorize the client");
 
@@ -147,9 +146,11 @@ class OAuthManagement extends React.Component {
 
         // exchange the token
         Logger.debug(" = Begin exchanging OAuth token");
-        Logger.debug(`clientSecret: ${requestClientId.substring(0, 8)}`);
-        Logger.debug(`clientSecret: ${requestClientSecret.substring(0, 8)}`);
-        Logger.debug(`code: ${code.substring(0, 8)}`);
+        try {
+            Logger.debug(`requestClientId: ${requestClientId.substring(0, 8)}`);
+            Logger.debug(`clientSecret: ${requestClientSecret.substring(0, 8)}`);
+            Logger.debug(`code: ${code.substring(0, 8)}`);
+        } catch (ex) {}
         this.props.BunqJSClient.exchangeOAuthToken(
             requestClientId,
             requestClientSecret,
@@ -159,13 +160,17 @@ class OAuthManagement extends React.Component {
             sandboxMode
         )
             .then(accessToken => {
-                this.isLoading = false;
+                setTimeout(() => {
+                    this.isLoading = false;
+                }, 1000);
 
                 this.props.openSnackbar(successMessage);
                 this.props.setApiKeyState(accessToken);
             })
             .catch(error => {
-                this.isLoading = false;
+                setTimeout(() => {
+                    this.isLoading = false;
+                }, 1000);
 
                 Logger.debug("Failed to authenticate OAuth");
                 Logger.debug(`clientSecret: ${requestClientId ? requestClientId.substring(0, 8) : "no clientId"}`);

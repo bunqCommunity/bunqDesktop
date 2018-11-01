@@ -15,6 +15,7 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import CheckBoxOutlinedIcon from "@material-ui/icons/CheckBoxOutlined";
 
+import LimitedPremiumListItem from "../LimitedPremiumListItem";
 import AccountListItem from "./AccountListItem";
 import AddAccount from "./AddAccount";
 import { formatMoney } from "../../Helpers/Utils";
@@ -173,7 +174,7 @@ class AccountList extends React.Component {
     };
 
     render() {
-        const { t, shareInviteBankResponses, excludedAccountIds = [] } = this.props;
+        const { t, user, shareInviteBankResponses, excludedAccountIds = [] } = this.props;
         const { accountTotalSelectionMode } = this.state;
 
         let accounts = [];
@@ -224,6 +225,11 @@ class AccountList extends React.Component {
 
         const formattedTotalBalance = formatMoney(this.state.totalBalance, true);
 
+        let isBunqPromoUser = false;
+        if (user && user.customer_limit && user.customer_limit.limit_amount_monthly) {
+            isBunqPromoUser = true;
+        }
+
         return (
             <List dense={this.props.denseMode} style={styles.list}>
                 <ListItem dense>
@@ -240,6 +246,13 @@ class AccountList extends React.Component {
                         </IconButton>
                     </ListItemSecondaryAction>
                 </ListItem>
+
+                {isBunqPromoUser && (
+                    <React.Fragment>
+                        <Divider />
+                        <LimitedPremiumListItem t={t} user={user} />
+                    </React.Fragment>
+                )}
 
                 {this.props.accountsLoading ? <LinearProgress /> : <Divider />}
                 {accounts}
