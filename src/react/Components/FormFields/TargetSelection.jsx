@@ -2,18 +2,17 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { translate } from "react-i18next";
-import CopyToClipboard from "react-copy-to-clipboard";
 import Grid from "@material-ui/core/Grid";
 import Radio from "@material-ui/core/Radio";
-import Avatar from "@material-ui/core/Avatar";
-import Chip from "@material-ui/core/Chip";
 import Button from "@material-ui/core/Button";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import CompareArrowsIcon from "@material-ui/icons/CompareArrows";
 import PersonIcon from "@material-ui/icons/Person";
+import ContactsIcon from "@material-ui/icons/Contacts";
 
+import NavLink from "../Routing/NavLink";
 import InputSuggestions from "./InputSuggestions";
 import AccountSelectorDialog from "./AccountSelectorDialog";
 import { openSnackbar } from "../../Actions/snackbar";
@@ -21,11 +20,14 @@ import { formatIban } from "../../Helpers/Utils";
 import TargetChipList from "./TargetChipList";
 
 const styles = {
-    payButton: {
+    button: {
         width: "100%"
     },
     chips: {
         margin: 5
+    },
+    buttonIcons: {
+        marginLeft: 8
     }
 };
 
@@ -132,18 +134,27 @@ class TargetSelection extends React.Component {
                 });
 
                 targetContent = (
-                    <InputSuggestions
-                        autoFocus
-                        fullWidth
-                        id="target"
-                        items={contactList}
-                        label={t("Email or phone number")}
-                        error={this.props.targetError}
-                        value={this.props.target}
-                        onChange={this.props.handleChange("target")}
-                        onSelectItem={this.props.handleChangeDirect("target")}
-                        onKeyPress={this.enterKeySubmit}
-                    />
+                    <Grid container spacing={8}>
+                        <Grid item xs={12} sm={8}>
+                            <InputSuggestions
+                                autoFocus
+                                fullWidth
+                                id="target"
+                                items={contactList}
+                                label={t("Email or phone number")}
+                                error={this.props.targetError}
+                                value={this.props.target}
+                                onChange={this.props.handleChange("target")}
+                                onSelectItem={this.props.handleChangeDirect("target")}
+                                onKeyPress={this.enterKeySubmit}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                            <Button style={styles.button} variant="outlined" to="/contacts" component={NavLink}>
+                                {t("Contacts")} <ContactsIcon />
+                            </Button>
+                        </Grid>
+                    </Grid>
                 );
                 break;
             default:
@@ -260,7 +271,7 @@ class TargetSelection extends React.Component {
                             // already loading
                             this.props.payLoading
                         }
-                        style={styles.payButton}
+                        style={styles.button}
                         onClick={this.props.addTarget}
                     >
                         {t("Add")}

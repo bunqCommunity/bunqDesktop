@@ -10,9 +10,9 @@ import deLocale from "date-fns/locale/de";
 import nlLocale from "date-fns/locale/nl";
 import DateFnsUtils from "material-ui-pickers/utils/date-fns-utils";
 import MuiPickersUtilsProvider from "material-ui-pickers/MuiPickersUtilsProvider";
-
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
 import Switch from "@material-ui/core/Switch";
 import TextField from "@material-ui/core/TextField";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -22,21 +22,25 @@ import ListItemText from "@material-ui/core/ListItemText";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
+import EventIcon from "@material-ui/icons/Event";
+import ListIcon from "@material-ui/icons/List";
+
 import ConfirmationDialog from "./ConfirmationDialog";
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
 import MoneyFormatInput from "../../Components/FormFields/MoneyFormatInput";
 import TargetSelection from "../../Components/FormFields/TargetSelection";
 import SchedulePaymentForm from "../../Components/FormFields/SchedulePaymentForm";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
+import NavLink from "../../Components/Routing/NavLink";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { paySchedule, paySend } from "../../Actions/pay";
 
-import scheduleTexts from "../../Helpers/ScheduleTexts";
 import { getInternationalFormat, isValidPhonenumber } from "../../Helpers/PhoneLib";
 import { formatMoney, getUTCDate } from "../../Helpers/Utils";
 import { filterShareInviteBankResponses } from "../../Helpers/DataFilters";
 import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
+import scheduleTexts from "../../Helpers/ScheduleTexts";
 
 const styles = {
     payButton: {
@@ -55,6 +59,12 @@ const styles = {
     },
     textField: {
         width: "100%"
+    },
+    button: {
+        width: "100%"
+    },
+    buttonIcons: {
+        marginRight: 8
     }
 };
 
@@ -602,121 +612,150 @@ class Pay extends React.Component {
         }
 
         return (
-            <Grid container spacing={24} align={"center"} justify={"center"}>
+            <Grid container spacing={8} justify="center" align="center">
                 <Helmet>
                     <title>{`bunqDesktop - Pay`}</title>
                 </Helmet>
                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={localeData}>
-                    <Grid item xs={12} sm={10} md={8} lg={6} xl={4}>
-                        <Paper style={styles.paper}>
-                            <Typography variant="h5">{t("New Payment")}</Typography>
-
-                            <AccountSelectorDialog
-                                value={this.state.selectedAccount}
-                                onChange={this.handleChangeDirect("selectedAccount")}
-                                accounts={this.props.accounts}
-                                BunqJSClient={this.props.BunqJSClient}
-                                hiddenConnectTypes={["showOnly"]}
-                            />
-                            {this.state.insufficientFundsCondition !== false ? (
-                                <InputLabel error={true}>
-                                    {t("Your source account does not have sufficient funds!")}
-                                </InputLabel>
-                            ) : null}
-
-                            <TargetSelection
-                                selectedTargetAccount={selectedTargetAccount}
-                                targetType={this.state.targetType}
-                                targets={this.state.targets}
-                                target={this.state.target}
-                                ibanNameError={this.state.ibanNameError}
-                                ibanName={this.state.ibanName}
-                                targetError={this.state.targetError}
-                                validForm={this.state.validForm}
-                                accounts={this.props.accounts}
-                                handleChangeDirect={this.handleChangeDirect}
-                                handleChange={this.handleChange}
-                                setTargetType={this.setTargetType}
-                                removeTarget={this.removeTarget}
-                                addTarget={this.addTarget}
-                            />
-
-                            <TextField
-                                fullWidth
-                                error={this.state.descriptionError}
-                                id="description"
-                                label={t("Description")}
-                                value={this.state.description}
-                                onChange={this.handleChange("description")}
-                                margin="normal"
-                            />
-
-                            <Grid container>
-                                <Grid item xs={6}>
-                                    <FormControlLabel
-                                        control={
-                                            <Switch
-                                                color="primary"
-                                                checked={this.state.sendDraftPayment}
-                                                onChange={this.draftChange}
-                                            />
-                                        }
-                                        label={t("Draft this payment")}
-                                    />
-                                </Grid>
-
-                                {limitedPermissions ? null : (
-                                    <Grid item xs={6}>
-                                        <FormControlLabel
-                                            control={
-                                                <Switch
-                                                    color="primary"
-                                                    checked={this.state.schedulePayment}
-                                                    onChange={this.schedulePaymentChange}
-                                                />
-                                            }
-                                            label={t("Schedule payment")}
-                                        />
-                                    </Grid>
-                                )}
-
-                                <SchedulePaymentForm
-                                    t={t}
-                                    schedulePayment={this.state.schedulePayment}
-                                    recurrenceUnit={this.state.recurrenceUnit}
-                                    recurrenceSize={this.state.recurrenceSize}
-                                    scheduleEndDate={scheduleEndDate}
-                                    scheduleStartDate={scheduleStartDate}
-                                    handleChangeDirect={this.handleChangeDirect}
-                                    handleChange={this.handleChange}
-                                />
+                    <Grid item xs={12} sm={10} md={8} lg={6}>
+                        <Grid container spacing={8}>
+                            <Grid item xs={12} sm={6}>
+                                <Button
+                                    variant="outlined"
+                                    color="primary"
+                                    component={NavLink}
+                                    to="/scheduled-payments"
+                                    style={styles.button}
+                                >
+                                    <EventIcon style={styles.buttonIcons} />
+                                    {t("Scheduled payments")}
+                                </Button>
                             </Grid>
 
-                            <FormControl style={styles.formControlAlt} error={this.state.amountError} fullWidth>
-                                <MoneyFormatInput
-                                    id="amount"
-                                    value={this.state.amount}
-                                    onValueChange={this.handleChangeFormatted}
-                                    onKeyPress={ev => {
-                                        if (ev.key === "Enter" && this.state.validForm) {
-                                            this.openModal();
-                                            ev.preventDefault();
-                                        }
-                                    }}
-                                />
-                            </FormControl>
+                            <Grid item xs={12} sm={6}>
+                                <Button
+                                    variant="outlined"
+                                    color="primary"
+                                    component={NavLink}
+                                    to="/pending-payments"
+                                    style={styles.button}
+                                >
+                                    <ListIcon style={styles.buttonIcons} />
+                                    {t("Pending payments")}: {Object.keys(this.props.pendingPayments).length}
+                                </Button>
+                            </Grid>
 
-                            <TranslateButton
-                                variant="contained"
-                                color="primary"
-                                disabled={!this.state.validForm || this.props.payLoading}
-                                style={styles.payButton}
-                                onClick={this.openModal}
-                            >
-                                Pay
-                            </TranslateButton>
-                        </Paper>
+                            <Grid item xs={12}>
+                                <Paper style={styles.paper}>
+                                    <Typography variant="h5">{t("New Payment")}</Typography>
 
+                                    <AccountSelectorDialog
+                                        value={this.state.selectedAccount}
+                                        onChange={this.handleChangeDirect("selectedAccount")}
+                                        accounts={this.props.accounts}
+                                        BunqJSClient={this.props.BunqJSClient}
+                                        hiddenConnectTypes={["showOnly"]}
+                                    />
+                                    {this.state.insufficientFundsCondition !== false ? (
+                                        <InputLabel error={true}>
+                                            {t("Your source account does not have sufficient funds!")}
+                                        </InputLabel>
+                                    ) : null}
+
+                                    <TargetSelection
+                                        selectedTargetAccount={selectedTargetAccount}
+                                        targetType={this.state.targetType}
+                                        targets={this.state.targets}
+                                        target={this.state.target}
+                                        ibanNameError={this.state.ibanNameError}
+                                        ibanName={this.state.ibanName}
+                                        targetError={this.state.targetError}
+                                        validForm={this.state.validForm}
+                                        accounts={this.props.accounts}
+                                        handleChangeDirect={this.handleChangeDirect}
+                                        handleChange={this.handleChange}
+                                        setTargetType={this.setTargetType}
+                                        removeTarget={this.removeTarget}
+                                        addTarget={this.addTarget}
+                                    />
+
+                                    <TextField
+                                        fullWidth
+                                        error={this.state.descriptionError}
+                                        id="description"
+                                        label={t("Description")}
+                                        value={this.state.description}
+                                        onChange={this.handleChange("description")}
+                                        margin="normal"
+                                    />
+
+                                    <Grid container>
+                                        <Grid item xs={6}>
+                                            <FormControlLabel
+                                                control={
+                                                    <Switch
+                                                        color="primary"
+                                                        checked={this.state.sendDraftPayment}
+                                                        onChange={this.draftChange}
+                                                    />
+                                                }
+                                                label={t("Draft this payment")}
+                                            />
+                                        </Grid>
+
+                                        {limitedPermissions ? null : (
+                                            <Grid item xs={6}>
+                                                <FormControlLabel
+                                                    control={
+                                                        <Switch
+                                                            color="primary"
+                                                            checked={this.state.schedulePayment}
+                                                            onChange={this.schedulePaymentChange}
+                                                        />
+                                                    }
+                                                    label={t("Schedule payment")}
+                                                />
+                                            </Grid>
+                                        )}
+
+                                        <SchedulePaymentForm
+                                            t={t}
+                                            schedulePayment={this.state.schedulePayment}
+                                            recurrenceUnit={this.state.recurrenceUnit}
+                                            recurrenceSize={this.state.recurrenceSize}
+                                            scheduleEndDate={scheduleEndDate}
+                                            scheduleStartDate={scheduleStartDate}
+                                            handleChangeDirect={this.handleChangeDirect}
+                                            handleChange={this.handleChange}
+                                        />
+                                    </Grid>
+
+                                    <FormControl style={styles.formControlAlt} error={this.state.amountError} fullWidth>
+                                        <MoneyFormatInput
+                                            id="amount"
+                                            value={this.state.amount}
+                                            onValueChange={this.handleChangeFormatted}
+                                            onKeyPress={ev => {
+                                                if (ev.key === "Enter" && this.state.validForm) {
+                                                    this.openModal();
+                                                    ev.preventDefault();
+                                                }
+                                            }}
+                                        />
+                                    </FormControl>
+
+                                    <TranslateButton
+                                        variant="contained"
+                                        color="primary"
+                                        disabled={!this.state.validForm || this.props.payLoading}
+                                        style={styles.payButton}
+                                        onClick={this.openModal}
+                                    >
+                                        Pay
+                                    </TranslateButton>
+                                </Paper>
+                            </Grid>
+                        </Grid>
                         <ConfirmationDialog
                             closeModal={this.closeModal}
                             sendPayment={this.sendPayment}
@@ -743,6 +782,8 @@ const mapStateToProps = state => {
         selectedAccount: state.accounts.selected_account,
 
         language: state.options.language,
+
+        pendingPayments: state.pending_payments.pending_payments,
 
         shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
 

@@ -12,18 +12,15 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 
-import ContactsIcon from "@material-ui/icons/Contacts";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import HomeIcon from "@material-ui/icons/Home";
+import ListIcon from "@material-ui/icons/List";
 import SettingsIcon from "@material-ui/icons/Settings";
 import ShareIcon from "@material-ui/icons/Share";
 import TimeLineIcon from "@material-ui/icons/Timeline";
 import CardIcon from "@material-ui/icons/CreditCard";
 import Bookmark from "@material-ui/icons/Bookmark";
-import CreateIcon from "@material-ui/icons/Create";
-
-import EventIcon from "@material-ui/icons/Event";
 import FileUploadIcon from "./CustomSVG/FileUpload";
 import TrophyIcon from "./CustomSVG/Trophy";
 
@@ -90,7 +87,19 @@ class Sidebar extends React.Component {
     }
 
     render() {
-        const { t, classes, theme, open, userType, derivedPassword, limitedPermissions, apiKey } = this.props;
+        const {
+            t,
+            classes,
+            theme,
+            open,
+            userType,
+            derivedPassword,
+            limitedPermissions,
+            apiKey,
+            pendingPayments
+        } = this.props;
+
+        const pendingPaymentsCount = Object.keys(pendingPayments).length;
 
         // if true, disable certain items in the menu
         const disableNavigationItems = userType === false || derivedPassword === false || apiKey === false;
@@ -99,6 +108,15 @@ class Sidebar extends React.Component {
             : [
                   <ListItemWrapper exact to="/" icon={HomeIcon} text="Dashboard" location={this.props.location} />,
                   <ListItemWrapper to="/pay" icon={ArrowUpwardIcon} text={"Pay"} location={this.props.location} />,
+                  pendingPaymentsCount === 0 ? null : (
+                      <ListItemWrapper
+                          to="/pending-payments"
+                          icon={ListIcon}
+                          text={`${t("Pending payments")}: ${pendingPaymentsCount}`}
+                          location={this.props.location}
+                          disableTranslation={true}
+                      />
+                  ),
                   limitedPermissions ? null : (
                       <ListItemWrapper
                           to="/request"
@@ -114,42 +132,24 @@ class Sidebar extends React.Component {
                       location={this.props.location}
                   />,
                   <ListItemWrapper to="/card" icon={CardIcon} text={"Cards"} location={this.props.location} />,
-                  <ListItemWrapper
-                      to="/scheduled-payments"
-                      icon={EventIcon}
-                      text={"Scheduled payments"}
-                      location={this.props.location}
-                  />,
-                  <ListItemWrapper
-                      to="/exports"
-                      icon={FileUploadIcon}
-                      text={"Exports"}
-                      location={this.props.location}
-                  />,
                   <Divider />,
                   <ListItemWrapper to="/stats" icon={TimeLineIcon} text={"Stats"} location={this.props.location} />,
                   <ListItemWrapper
-                      to="/contacts"
-                      icon={ContactsIcon}
-                      text={"Contacts"}
-                      location={this.props.location}
-                  />,
-                  <ListItemWrapper
-                      to="/category-dashboard"
-                      icon={Bookmark}
-                      text={"Categories"}
-                      location={this.props.location}
-                  />,
-                  <ListItemWrapper
                       to="/rules-dashboard"
-                      icon={CreateIcon}
-                      text="Category rules"
+                      icon={Bookmark}
+                      text="Category management"
                       location={this.props.location}
                   />,
                   <ListItemWrapper
                       to="/savings-goals"
                       icon={TrophyIcon}
                       text="Savings goals"
+                      location={this.props.location}
+                  />,
+                  <ListItemWrapper
+                      to="/exports"
+                      icon={FileUploadIcon}
+                      text={"Exports"}
                       location={this.props.location}
                   />
               ];
@@ -236,6 +236,8 @@ const mapStateToProps = state => {
     return {
         open: state.sidebar.open,
         stickyMenu: state.options.sticky_menu,
+
+        pendingPayments: state.pending_payments.pending_payments,
 
         // used to determine if we need to disable certain items in the menu
         derivedPassword: state.registration.derivedPassword,

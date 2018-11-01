@@ -11,6 +11,7 @@ import List from "@material-ui/core/List";
 import FileUploadIcon from "../../Components/CustomSVG/FileUpload";
 import FileDownloadIcon from "../../Components/CustomSVG/FileDownload";
 import AddIcon from "@material-ui/icons/Add";
+import BookmarkIcon from "@material-ui/icons/Bookmark";
 
 import RuleCollectionItem from "./RuleCollectionItem";
 import NavLink from "../../Components/Routing/NavLink";
@@ -22,12 +23,13 @@ import RuleCollection from "../../Types/RuleCollection";
 import { setCategoryRule } from "../../Actions/category_rules";
 import { openSnackbar } from "../../Actions/snackbar";
 import { setCategoryConnectionMultiple } from "../../Actions/categories";
+import Bookmark from "@material-ui/icons/Bookmark";
 
 const styles = {
     paper: {
         padding: 16
     },
-    newRuleButton: {
+    button: {
         width: "100%"
     },
     buttonIcons: {
@@ -136,7 +138,7 @@ class RuleDashboard extends React.Component {
                                     color="primary"
                                     component={NavLink}
                                     to={`/rule-page/null`}
-                                    style={styles.newRuleButton}
+                                    style={styles.button}
                                 >
                                     {t("New")}
                                     <AddIcon style={styles.buttonIcons} />
@@ -144,14 +146,27 @@ class RuleDashboard extends React.Component {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Button variant="outlined" style={styles.newRuleButton} onClick={this.openImportDialog}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    component={NavLink}
+                                    to="/category-dashboard"
+                                    style={styles.button}
+                                >
+                                    {t("Manage categories")}
+                                    <BookmarkIcon style={styles.buttonIcons} />
+                                </Button>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <Button variant="outlined" style={styles.button} onClick={this.openImportDialog}>
                                     {t("Import")}
                                     <FileDownloadIcon style={styles.buttonIcons} />
                                 </Button>
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Button variant="outlined" style={styles.newRuleButton} onClick={this.openExportDialog}>
+                                <Button variant="outlined" style={styles.button} onClick={this.openExportDialog}>
                                     {t("Export")}
                                     <FileUploadIcon style={styles.buttonIcons} />
                                 </Button>
