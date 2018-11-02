@@ -56,6 +56,15 @@ import {
     toggleAutomaticUpdatesSendNotification
 } from "../Actions/options";
 import { registrationClearPrivateData, registrationLogOut } from "../Actions/registration";
+import { paymentsClear } from "../Actions/payments";
+import { masterCardActionsClear } from "../Actions/master_card_actions";
+import { bunqMeTabsClear } from "../Actions/bunq_me_tabs";
+import { scheduledPaymentsClear } from "../Actions/scheduled_payments";
+import { requestInquiryBatchesClear } from "../Actions/request_inquiry_batches";
+import { requestResponsesClear } from "../Actions/request_responses";
+import { requestInquiriesClear } from "../Actions/request_inquiries";
+import { shareInviteBankInquiriesClear } from "../Actions/share_invite_bank_inquiries";
+import { shareInviteBankResponsesClear } from "../Actions/share_invite_bank_responses";
 
 const styles = {
     sideButton: {
@@ -76,7 +85,8 @@ const styles = {
         textAlign: "center"
     },
     paper: {
-        padding: 24
+        padding: 24,
+        marginBottom: 16
     }
 };
 
@@ -191,6 +201,23 @@ class Settings extends React.Component {
         this.setState({
             openImportDialog: false
         });
+    };
+
+    resetRequestData = e => {
+        this.props.requestInquiriesClear();
+        this.props.requestResponsesClear();
+        this.props.requestInquiryBatchesClear();
+    };
+    requestConnectData = e => {
+        this.props.shareInviteBankInquiriesClear();
+        this.props.shareInviteBankResponsesClear();
+    };
+    resetAllEventData = e => {
+        this.props.paymentsClear();
+        this.props.masterCardActionsClear();
+        this.props.bunqMeTabsClear();
+        this.props.scheduledPaymentsClear();
+        this.props.paymentsClear();
     };
 
     render() {
@@ -467,6 +494,102 @@ class Settings extends React.Component {
             </Grid>
         );
 
+        const paymentCount = this.props.payments.length;
+        const cardPaymentCount = this.props.masterCardActions.length;
+        const requestCount = this.props.requestInquiries.length + this.props.requestResponses.length;
+        const bunqMeTabsCount = this.props.bunqMeTabs.length;
+        const connectCount = this.props.shareInviteBankInquiries.length + this.props.shareInviteBankResponses.length;
+        const scheduledPaymentsCount = this.props.scheduledPayments.length;
+
+        const dataManagementContainer = (
+            <Grid container spacing={16}>
+                {/*<Grid item xs={12}>*/}
+                {/*<TranslateTypography variant="h5">Data options</TranslateTypography>*/}
+                {/*</Grid>*/}
+                {/*<Grid item xs={12}>*/}
+                {/*<FormControl style={styles.formControl}>*/}
+                {/*<InputLabel>{t("Maximum events per type")}</InputLabel>*/}
+                {/*<Select style={styles.selectField} value={400} onChange={console.log}>*/}
+                {/*<MenuItemTranslate key={200} value={200}>*/}
+                {/*200 events*/}
+                {/*</MenuItemTranslate>*/}
+                {/*<MenuItemTranslate key={400} value={400}>*/}
+                {/*400 events*/}
+                {/*</MenuItemTranslate>*/}
+                {/*<MenuItemTranslate key={600} value={600}>*/}
+                {/*600 events*/}
+                {/*</MenuItemTranslate>*/}
+                {/*<MenuItemTranslate key={1000} value={1000}>*/}
+                {/*1000 events*/}
+                {/*</MenuItemTranslate>*/}
+                {/*<MenuItemTranslate key={1500} value={1500}>*/}
+                {/*1600 events*/}
+                {/*</MenuItemTranslate>*/}
+                {/*<MenuItemTranslate key={2000} value={2000}>*/}
+                {/*2400 events*/}
+                {/*</MenuItemTranslate>*/}
+                {/*<MenuItemTranslate key={99999} value={99999}>*/}
+                {/*Everything*/}
+                {/*</MenuItemTranslate>*/}
+                {/*</Select>*/}
+                {/*</FormControl>*/}
+                {/*<TranslateTypography variant="body2" style={{ marginTop: 8 }}>*/}
+                {/*More events might cause performance issues and take longer to update*/}
+                {/*</TranslateTypography>*/}
+                {/*</Grid>*/}
+
+                <Grid item xs={12} sm={8}>
+                    <TranslateTypography variant="h5">Data management</TranslateTypography>
+                    <TranslateTypography variant="body2">
+                        Click any button to reset the data, the counter only displays the amount of payments currently
+                        loaded into memory but resetting will also remove the data from storage
+                    </TranslateTypography>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                    <Button variant="outlined" color="secondary" style={styles.button} onClick={this.resetAllEventData}>
+                        Reset all event data
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                    <Button variant="outlined" style={styles.button} onClick={this.props.paymentsClear}>
+                        Regular payments {paymentCount}
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                    <Button variant="outlined" style={styles.button} onClick={this.props.masterCardActionsClear}>
+                        Card payments {cardPaymentCount}
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                    <Button variant="outlined" style={styles.button} onClick={this.resetRequestData}>
+                        Requests {requestCount}
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                    <Button variant="outlined" style={styles.button} onClick={this.props.bunqMeTabsClear}>
+                        bunq.me Tabs {bunqMeTabsCount}
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                    <Button variant="outlined" style={styles.button} onClick={this.requestConnectData}>
+                        Connect requests {connectCount}
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                    <Button variant="outlined" style={styles.button} onClick={this.props.scheduledPaymentsClear}>
+                        Scheduled payments {scheduledPaymentsCount}
+                    </Button>
+                </Grid>
+            </Grid>
+        );
+
         return (
             <Grid container spacing={24}>
                 <Helmet>
@@ -509,6 +632,7 @@ class Settings extends React.Component {
 
                 <Grid item xs={12} sm={8}>
                     <Paper style={styles.paper}>{settingsContainer}</Paper>
+                    <Paper style={styles.paper}>{dataManagementContainer}</Paper>
                 </Grid>
             </Grid>
         );
@@ -528,6 +652,16 @@ const mapStateToProps = state => {
         analyticsEnabled: state.options.analytics_enabled,
         settingsLocation: state.options.settings_location,
         automaticThemeChange: state.options.automatic_theme_change,
+
+        payments: state.payments.payments,
+        scheduledPayments: state.scheduled_payments.scheduled_payments,
+        bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
+        masterCardActions: state.master_card_actions.master_card_actions,
+        requestInquiries: state.request_inquiries.request_inquiries,
+        requestInquiryBatches: state.request_inquiry_batches.request_inquiry_batches,
+        requestResponses: state.request_responses.request_responses,
+        shareInviteBankInquiries: state.share_invite_bank_inquiries.share_invite_bank_inquiries,
+        shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
 
         checkInactivity: state.options.check_inactivity,
         inactivityCheckDuration: state.options.inactivity_check_duration,
@@ -566,6 +700,16 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(setAutomaticUpdateDuration(automaticUpdateDuration)),
         overwriteSettingsLocation: location => dispatch(overwriteSettingsLocation(location)),
         loadSettingsLocation: location => dispatch(loadSettingsLocation(location)),
+
+        paymentsClear: () => dispatch(paymentsClear()),
+        masterCardActionsClear: () => dispatch(masterCardActionsClear()),
+        bunqMeTabsClear: () => dispatch(bunqMeTabsClear()),
+        scheduledPaymentsClear: () => dispatch(scheduledPaymentsClear()),
+        requestInquiriesClear: () => dispatch(requestInquiriesClear()),
+        requestResponsesClear: () => dispatch(requestResponsesClear()),
+        requestInquiryBatchesClear: () => dispatch(requestInquiryBatchesClear()),
+        shareInviteBankInquiriesClear: () => dispatch(shareInviteBankInquiriesClear()),
+        shareInviteBankResponsesClear: () => dispatch(shareInviteBankResponsesClear()),
 
         // clear api key from bunqjsclient and bunqdesktop
         clearPrivateData: () => dispatch(registrationClearPrivateData(BunqJSClient)),
