@@ -741,16 +741,17 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         queueFinishedSync: () => dispatch(queueFinishedSync()),
         queueResetSyncState: () => dispatch(queueResetSyncState()),
 
-        paymentsSetInfo: (payments, accountId) => dispatch(paymentsSetInfo(payments, accountId, BunqJSClient)),
-        bunqMeTabsSetInfo: (bunqMeTabs, accountId) => dispatch(bunqMeTabsSetInfo(bunqMeTabs, accountId, BunqJSClient)),
+        paymentsSetInfo: (payments, accountId) => dispatch(paymentsSetInfo(payments, accountId, false, BunqJSClient)),
+        bunqMeTabsSetInfo: (bunqMeTabs, accountId) =>
+            dispatch(bunqMeTabsSetInfo(bunqMeTabs, accountId, false, BunqJSClient)),
         masterCardActionsSetInfo: (masterCardActions, accountId) =>
-            dispatch(masterCardActionsSetInfo(masterCardActions, accountId, BunqJSClient)),
+            dispatch(masterCardActionsSetInfo(masterCardActions, accountId, false, BunqJSClient)),
         requestInquiriesSetInfo: (requestInquiries, accountId) =>
-            dispatch(requestInquiriesSetInfo(requestInquiries, accountId, BunqJSClient)),
+            dispatch(requestInquiriesSetInfo(requestInquiries, accountId, false, BunqJSClient)),
         requestInquiryBatchesSetInfo: (requestInquiryBatches, accountId) =>
-            dispatch(requestInquiryBatchesSetInfo(requestInquiryBatches, accountId, BunqJSClient)),
+            dispatch(requestInquiryBatchesSetInfo(requestInquiryBatches, accountId, false, BunqJSClient)),
         requestResponsesSetInfo: (requestResponses, accountId) =>
-            dispatch(requestResponsesSetInfo(requestResponses, accountId, BunqJSClient)),
+            dispatch(requestResponsesSetInfo(requestResponses, accountId, false, BunqJSClient)),
         shareInviteBankInquiriesSetInfo: (shareInviteBankInquiries, accountId) =>
             dispatch(shareInviteBankInquiriesSetInfo(shareInviteBankInquiries, accountId, BunqJSClient)),
         shareInviteBankResponsesSetInfo: shareInviteBankResponses =>
