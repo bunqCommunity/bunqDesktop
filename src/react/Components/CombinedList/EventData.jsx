@@ -41,14 +41,16 @@ class EventData extends React.Component {
         let incoming = 0;
         if (open) {
             events.map(event => {
-                const delta = event.info.getDelta();
+                if (typeof event.info.getDelta !== "undefined") {
+                    const delta = event.info.getDelta();
 
-                change += delta;
-                if (delta > 0) {
-                    incoming += delta;
-                }
-                if (delta < 0) {
-                    outGoing += delta;
+                    change += delta;
+                    if (delta > 0) {
+                        incoming += delta;
+                    }
+                    if (delta < 0) {
+                        outGoing += delta;
+                    }
                 }
             });
         }
