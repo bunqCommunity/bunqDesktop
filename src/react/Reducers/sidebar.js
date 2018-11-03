@@ -15,6 +15,12 @@ export default function reducer(state = defaultState, action) {
                 ...state,
                 open: false
             };
+
+        case "SIDEBAR_TOGGLE":
+            return {
+                ...state,
+                open: !state.open
+            };
     }
     return state;
 }
