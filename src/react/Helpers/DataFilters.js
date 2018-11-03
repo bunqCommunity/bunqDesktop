@@ -243,14 +243,10 @@ export const masterCardActionFilter = options => masterCardAction => {
                 });
             });
 
-            // if reversed and we got matches, return false
-            if (categories.length === 0) {
-                if (!options.toggleCategoryFilter) return false;
-            }
-
-            // no matches and not reversed so return false
-            if (!categoryMatches) {
-                if (!options.toggleCategoryFilter) return false;
+            if (options.toggleCategoryFilter === true && categoryMatches === true) {
+                return false;
+            } else if (options.toggleCategoryFilter === false && categoryMatches === false) {
+                return false;
             }
         }
     }
