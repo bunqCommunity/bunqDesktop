@@ -32,6 +32,10 @@ export function setStickyMenu(stickyMenu) {
     return setGenericOption("sticky_menu", stickyMenu);
 }
 
+export function setEventCountLimit(eventCountLimit) {
+    return setGenericOption("event_count_limit", eventCountLimit);
+}
+
 export function setAutomaticThemeChange(automaticThemeChange) {
     return setGenericOption("automatic_theme_change", automaticThemeChange);
 }

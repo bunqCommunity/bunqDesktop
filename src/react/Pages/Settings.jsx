@@ -53,7 +53,8 @@ import {
     loadSettingsLocation,
     setAutomaticThemeChange,
     setAnalyticsEnabled,
-    toggleAutomaticUpdatesSendNotification
+    toggleAutomaticUpdatesSendNotification,
+    setEventCountLimit
 } from "../Actions/options";
 import { registrationClearPrivateData, registrationLogOut } from "../Actions/registration";
 import { paymentsClear } from "../Actions/payments";
@@ -163,6 +164,9 @@ class Settings extends React.Component {
     };
     handleHideInactivityDurationChange = event => {
         this.props.setInactivityCheckDuration(event.target.value);
+    };
+    handleEventCountLimitChange = event => {
+        this.props.setEventCountLimit(event.target.value);
     };
     handleAutomaticUpdatesEnabledChane = event => {
         this.props.toggleAutomaticUpdatesEnabled(!this.props.automaticUpdateEnabled);
@@ -296,27 +300,27 @@ class Settings extends React.Component {
                             value={this.props.automaticUpdateDuration}
                             onChange={this.handleAutomaticUpdateDurationChane}
                         >
-                            <MenuItemTranslate key={60} value={60}>
-                                1 Minute
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={120} value={120}>
-                                2 Minutes
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={300} value={300}>
-                                5 Minutes
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={600} value={600}>
-                                10 Minutes
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={1800} value={1800}>
-                                30 Minutes
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={3600} value={3600}>
-                                1 Hour
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={7200} value={7200}>
-                                2 Hours
-                            </MenuItemTranslate>
+                            <MenuItem key={60} value={60}>
+                                1 {t("Minute")}
+                            </MenuItem>
+                            <MenuItem key={120} value={120}>
+                                2 {t("Minutes")}
+                            </MenuItem>
+                            <MenuItem key={300} value={300}>
+                                5 {t("Minutes")}
+                            </MenuItem>
+                            <MenuItem key={600} value={600}>
+                                10 {t("Minutes")}
+                            </MenuItem>
+                            <MenuItem key={1800} value={1800}>
+                                30 {t("Minutes")}
+                            </MenuItem>
+                            <MenuItem key={3600} value={3600}>
+                                1 {t("Hour")}
+                            </MenuItem>
+                            <MenuItem key={7200} value={7200}>
+                                2 {t("Hours")}
+                            </MenuItem>
                         </Select>
                     </Grid>
                 ) : null}
@@ -402,27 +406,27 @@ class Settings extends React.Component {
                             value={this.props.inactivityCheckDuration}
                             onChange={this.handleHideInactivityDurationChange}
                         >
-                            <MenuItemTranslate key={60} value={60}>
-                                1 Minute
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={120} value={120}>
-                                2 Minutes
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={300} value={300}>
-                                5 Minutes
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={600} value={600}>
-                                10 Minutes
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={1800} value={1800}>
-                                30 Minutes
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={3600} value={3600}>
-                                1 Hour
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={7200} value={7200}>
-                                2 Hours
-                            </MenuItemTranslate>
+                            <MenuItem key={60} value={60}>
+                                1 {t("Minute")}
+                            </MenuItem>
+                            <MenuItem key={120} value={120}>
+                                2 {t("Minutes")}
+                            </MenuItem>
+                            <MenuItem key={300} value={300}>
+                                5 {t("Minutes")}
+                            </MenuItem>
+                            <MenuItem key={600} value={600}>
+                                10 {t("Minutes")}
+                            </MenuItem>
+                            <MenuItem key={1800} value={1800}>
+                                30 {t("Minutes")}
+                            </MenuItem>
+                            <MenuItem key={3600} value={3600}>
+                                1 {t("Hour")}
+                            </MenuItem>
+                            <MenuItem key={7200} value={7200}>
+                                2 {t("Hours")}
+                            </MenuItem>
                         </Select>
                     ) : null}
                 </Grid>
@@ -503,43 +507,49 @@ class Settings extends React.Component {
 
         const dataManagementContainer = (
             <Grid container spacing={16}>
-                {/*<Grid item xs={12}>*/}
-                {/*<TranslateTypography variant="h5">Data options</TranslateTypography>*/}
-                {/*</Grid>*/}
-                {/*<Grid item xs={12}>*/}
-                {/*<FormControl style={styles.formControl}>*/}
-                {/*<InputLabel>{t("Maximum events per type")}</InputLabel>*/}
-                {/*<Select style={styles.selectField} value={400} onChange={console.log}>*/}
-                {/*<MenuItemTranslate key={200} value={200}>*/}
-                {/*200 events*/}
-                {/*</MenuItemTranslate>*/}
-                {/*<MenuItemTranslate key={400} value={400}>*/}
-                {/*400 events*/}
-                {/*</MenuItemTranslate>*/}
-                {/*<MenuItemTranslate key={600} value={600}>*/}
-                {/*600 events*/}
-                {/*</MenuItemTranslate>*/}
-                {/*<MenuItemTranslate key={1000} value={1000}>*/}
-                {/*1000 events*/}
-                {/*</MenuItemTranslate>*/}
-                {/*<MenuItemTranslate key={1500} value={1500}>*/}
-                {/*1600 events*/}
-                {/*</MenuItemTranslate>*/}
-                {/*<MenuItemTranslate key={2000} value={2000}>*/}
-                {/*2400 events*/}
-                {/*</MenuItemTranslate>*/}
-                {/*<MenuItemTranslate key={99999} value={99999}>*/}
-                {/*Everything*/}
-                {/*</MenuItemTranslate>*/}
-                {/*</Select>*/}
-                {/*</FormControl>*/}
-                {/*<TranslateTypography variant="body2" style={{ marginTop: 8 }}>*/}
-                {/*More events might cause performance issues and take longer to update*/}
-                {/*</TranslateTypography>*/}
-                {/*</Grid>*/}
+                <Grid item xs={12}>
+                    <TranslateTypography variant="h5">Data options</TranslateTypography>
+                </Grid>
+                <Grid item xs={12}>
+                    <FormControl style={styles.formControl}>
+                        <InputLabel>{t("Events to load per type and account")}</InputLabel>
+                        <Select
+                            style={styles.selectField}
+                            value={this.props.eventCountLimit}
+                            onChange={this.handleEventCountLimitChange}
+                        >
+                            <MenuItem key={50} value={50}>
+                                50 {t("events")}
+                            </MenuItem>
+                            <MenuItem key={100} value={100}>
+                                100 {t("events")}
+                            </MenuItem>
+                            <MenuItem key={200} value={200}>
+                                200 {t("events")}
+                            </MenuItem>
+                            <MenuItem key={400} value={400}>
+                                400 {t("events")}
+                            </MenuItem>
+                            <MenuItem key={600} value={600}>
+                                600 {t("events")}
+                            </MenuItem>
+                            <MenuItem key={1000} value={1000}>
+                                1000 {t("events")}
+                            </MenuItem>
+                            <MenuItem key={99999} value={99999}>
+                                Everything
+                            </MenuItem>
+                        </Select>
+                    </FormControl>
+                    <TranslateTypography variant="body2" style={{ marginTop: 8 }}>
+                        More events might cause performance issues and take longer to update
+                    </TranslateTypography>
+                </Grid>
 
-                <Grid item xs={12} sm={8}>
+                <Grid item xs={12}>
                     <TranslateTypography variant="h5">Data management</TranslateTypography>
+                </Grid>
+                <Grid item xs={12} sm={8}>
                     <TranslateTypography variant="body2">
                         Click any button to reset the data, the counter only displays the amount of payments currently
                         loaded into memory but resetting will also remove the data from storage
@@ -649,6 +659,7 @@ const mapStateToProps = state => {
         displayTrayInfo: state.options.display_tray_info,
         nativeFrame: state.options.native_frame,
         stickyMenu: state.options.sticky_menu,
+        eventCountLimit: state.options.event_count_limit,
         analyticsEnabled: state.options.analytics_enabled,
         settingsLocation: state.options.settings_location,
         automaticThemeChange: state.options.automatic_theme_change,
@@ -685,6 +696,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         setLanguage: language => dispatch(setLanguage(language)),
         setNativeFrame: useFrame => dispatch(setNativeFrame(useFrame)),
         setStickyMenu: userStickyMenu => dispatch(setStickyMenu(userStickyMenu)),
+        setEventCountLimit: eventCountLimit => dispatch(setEventCountLimit(eventCountLimit)),
         setHideBalance: hideBalance => dispatch(setHideBalance(hideBalance)),
         setMinimizeToTray: minimizeToTray => dispatch(setMinimizeToTray(minimizeToTray)),
         setDisplayTrayInfo: displayTrayInfo => dispatch(setDisplayTrayInfo(displayTrayInfo)),
