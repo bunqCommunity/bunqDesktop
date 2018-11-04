@@ -10,7 +10,7 @@ export default function reducer(state = defaultState, action) {
     switch (action.type) {
         case "QUEUE_SET_REQUEST_COUNTER":
             const setCounterValue = action.payload.counter;
-            const setCounterLoading = increasedCounter > 0;
+            const setCounterLoading = setCounterValue > 0;
 
             return {
                 ...state,
@@ -27,8 +27,7 @@ export default function reducer(state = defaultState, action) {
             return {
                 ...state,
                 request_counter: increasedCounter,
-                max_request_counter:
-                    state.max_request_counter > increasedCounter ? state.max_request_counter : increasedCounter,
+                max_request_counter: state.max_request_counter + 1,
                 loading: increasedLoading
             };
 
@@ -51,6 +50,8 @@ export default function reducer(state = defaultState, action) {
             return {
                 ...state,
                 trigger_sync: false,
+                request_counter: 0,
+                max_request_counter: 0,
                 finished_queue: new Date()
             };
         case "QUEUE_START_SYNC":
