@@ -390,7 +390,7 @@ class Pay extends React.Component {
 
     // validates all the possible input combinations
     validateForm = () => {
-        const { description, amount, ibanName, selectedAccount, sendDraftPayment, targets } = this.state;
+        const { description, amount, ibanName, selectedAccount, sendDraftPayment, schedulePayment, targets } = this.state;
 
         const account = this.props.accounts[selectedAccount];
 
@@ -417,7 +417,7 @@ class Pay extends React.Component {
         const insufficientFundsCondition =
             amount !== "" &&
             // enough funds or draft enabled
-            (amount > accountBalance && sendDraftPayment === false);
+            (amount > accountBalance && sendDraftPayment === false && schedulePayment === false);
         const amountErrorCondition = amount < 0.01 || amount > 10000;
         const descriptionErrorCondition = description.length > 140;
         const ibanNameErrorCondition = ibanName.length < 1 || ibanName.length > 64;
