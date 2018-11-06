@@ -16,6 +16,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Typography from "@material-ui/core/Typography";
 
 import DeleteIcon from "@material-ui/icons/Delete";
+import SubdirectoryArrowRightIcon from "@material-ui/icons/SubdirectoryArrowRight";
 
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
@@ -45,6 +46,11 @@ const styles = {
     },
     button: {
         margin: 8
+    },
+    subdirectoryIconGrid: {
+        display: "flex",
+        justifyContent: "center",
+        width: 52
     },
     deleteIconTableCell: {
         width: 48
@@ -201,7 +207,14 @@ class PendingPayments extends React.Component {
                         <TableCell style={styles.amountTableCell}>
                             <Typography>{formatMoney(paymentObject.amount.value)}</Typography>
                         </TableCell>
-                        <TableCell>{targetComponents}</TableCell>
+                        <TableCell>
+                            <Grid container alignItems="center">
+                                <Grid style={styles.subdirectoryIconGrid}>
+                                    <SubdirectoryArrowRightIcon />
+                                </Grid>
+                                <Grid item>{targetComponents}</Grid>
+                            </Grid>
+                        </TableCell>
                         <TableCell style={styles.deleteIconTableCell}>
                             <IconButton onClick={this.removePayment(pendingPayment.id)}>
                                 <DeleteIcon />
@@ -266,27 +279,26 @@ class PendingPayments extends React.Component {
                     )}
                 </Grid>
 
-                {hasSelectedCheckboxes &&
-                    componentList.length > 0 && (
-                        <Grid item xs={12}>
-                            <Button
-                                style={styles.button}
-                                color="primary"
-                                variant="contained"
-                                onClick={this.paySelected}
-                            >
-                                Pay selected
-                            </Button>
-                            <Button
-                                style={styles.button}
-                                color="secondary"
-                                variant="contained"
-                                onClick={this.removeSelected}
-                            >
-                                Remove selected
-                            </Button>
-                        </Grid>
-                    )}
+                <Grid item xs={12}>
+                    <Button
+                        style={styles.button}
+                        color="primary"
+                        variant="contained"
+                        disabled={!hasSelectedCheckboxes || componentList.length === 0}
+                        onClick={this.paySelected}
+                    >
+                        Pay selected
+                    </Button>
+                    <Button
+                        style={styles.button}
+                        color="secondary"
+                        variant="contained"
+                        disabled={!hasSelectedCheckboxes || componentList.length === 0}
+                        onClick={this.removeSelected}
+                    >
+                        Remove selected
+                    </Button>
+                </Grid>
 
                 <Grid item xs={12}>
                     <Table>
@@ -300,7 +312,7 @@ class PendingPayments extends React.Component {
                                     />
                                 </TableCell>
                                 <TableCell>Amount</TableCell>
-                                <TableCell>Account / Targets</TableCell>
+                                <TableCell>Account</TableCell>
                                 <TableCell style={styles.deleteIconTableCell} />
                             </TableRow>
                         </TableHead>

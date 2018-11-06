@@ -29,6 +29,18 @@ export const defaultState = {
                 counterparty_alias: { type: "IBAN", value: "NL55BUNQ9900053427", name: "Angel Monoghan" },
                 description: "Other account description"
             }
+        },
+        "multi-counterparty-payment-id": {
+            account_id: 8366,
+            id: "multi-counterparty-payment-id",
+            payment: {
+                amount: { currency: "EUR", value: "30.00" },
+                counterparty_aliases: [
+                    { type: "IBAN", value: "NL55BUNQ9900023456", name: "Angel Monoghan" },
+                    { type: "EMAIL", value: "mail@example.com" }
+                ],
+                description: "Other account description"
+            }
         }
     }
 };
