@@ -9,3 +9,9 @@ export function closeSidebar() {
         type: "SIDEBAR_CLOSE"
     };
 }
+
+export function toggleSidebar() {
+    return {
+        type: "SIDEBAR_TOGGLE"
+    };
+}

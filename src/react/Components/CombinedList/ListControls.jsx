@@ -66,7 +66,6 @@ export default props => {
                         <MenuItem value={30}>30</MenuItem>
                         <MenuItem value={50}>50</MenuItem>
                         <MenuItem value={100}>100</MenuItem>
-                        <MenuItem value={0}>All</MenuItem>
                     </TextField>
                 </Grid>
 
