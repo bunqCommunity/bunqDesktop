@@ -38,23 +38,29 @@ class BunqMeTabList extends React.Component {
     render() {
         const loadingContent = this.props.bunqMeTabsLoading ? <LinearProgress /> : <Divider />;
 
-        const bunqMeTabs = this.props.bunqMeTabs.map(bunqMeTab => {
-            if (this.state.showInactiveTabs === false && bunqMeTab.BunqMeTab.status !== "WAITING_FOR_PAYMENT") {
-                return null;
-            }
-            return (
-                <BunqMeTabListItem
-                    bunqMeTab={bunqMeTab.BunqMeTab}
-                    copiedValue={this.copiedValue}
-                    limitedPermissions={this.props.limitedPermissions}
-                    bunqMeTabLoading={this.props.bunqMeTabLoading}
-                    bunqMeTabsLoading={this.props.bunqMeTabsLoading}
-                    bunqMeTabPut={this.props.bunqMeTabPut}
-                    BunqJSClient={this.props.BunqJSClient}
-                    user={this.props.user}
-                />
-            );
-        });
+        const bunqMeTabs = this.props.events
+            .filter(event => {
+                return event.type === "BunqMeTab";
+            })
+            .map(event => {
+                const bunqMeTab = event.object;
+
+                if (this.state.showInactiveTabs === false && bunqMeTab.BunqMeTab.status !== "WAITING_FOR_PAYMENT") {
+                    return null;
+                }
+                return (
+                    <BunqMeTabListItem
+                        bunqMeTab={bunqMeTab.BunqMeTab}
+                        copiedValue={this.copiedValue}
+                        limitedPermissions={this.props.limitedPermissions}
+                        bunqMeTabLoading={this.props.bunqMeTabLoading}
+                        bunqMeTabsLoading={this.props.bunqMeTabsLoading}
+                        bunqMeTabPut={this.props.bunqMeTabPut}
+                        BunqJSClient={this.props.BunqJSClient}
+                        user={this.props.user}
+                    />
+                );
+            });
 
         return (
             <List style={styles.left}>
@@ -82,9 +88,9 @@ const mapStateToProps = state => {
         user: state.user.user,
         limitedPermissions: state.user.limited_permissions,
 
-        bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
-        bunqMeTabLoading: state.bunq_me_tab.loading,
-        bunqMeTabsLoading: state.bunq_me_tabs.loading
+        events: state.events.events,
+        eventsLoading: state.events.loading,
+        bunqMeTabLoading: state.bunq_me_tab.loading
     };
 };
 
