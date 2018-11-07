@@ -48,7 +48,7 @@ import CategoryHelper from "../Helpers/CategoryHelper";
 import { openSnackbar } from "../Actions/snackbar";
 import { exportNew } from "../Actions/export_new";
 import { exportInfoUpdate } from "../Actions/exports";
-import { paymentFilter, masterCardActionFilter } from "../Helpers/DataFilters";
+import { paymentFilter, masterCardActionFilter, eventFilter } from "../Helpers/DataFilters";
 
 const styles = {
     selectField: {
@@ -101,69 +101,53 @@ class Exports extends React.Component {
         }
     }
 
-    paymentMapper = () => {
-        return this.props.payments
+    eventMapper = () => {
+        return this.props.events
             .filter(
-                paymentFilter({
+                eventFilter({
                     categories: this.props.categories,
                     categoryConnections: this.props.categoryConnections,
+                    selectedCategories: this.props.selectedCategories,
+
+                    toggleCategoryFilter: this.props.toggleCategoryFilter,
                     selectedCategories: this.props.selectedCategories,
 
                     selectedAccountIds: this.props.selectedAccountIds,
                     toggleAccountIds: this.props.toggleAccountIds,
 
-                    searchTerm: this.props.searchTerm,
-                    paymentVisibility: this.props.paymentVisibility,
                     paymentType: this.props.paymentType,
+                    paymentVisibility: this.props.paymentVisibility,
+                    bunqMeTabType: this.props.bunqMeTabType,
+                    bunqMeTabVisibility: this.props.bunqMeTabVisibility,
+                    requestType: this.props.requestType,
+                    bunqMeTabVisibility: this.props.bunqMeTabVisibility,
+
+                    searchTerm: this.props.searchTerm,
                     dateFromFilter: this.props.dateFromFilter,
-                    dateToFilter: this.props.dateToFilter
+                    dateToFilter: this.props.dateToFilter,
+                    amountFilterAmount: this.props.amountFilterAmount,
+                    amountFilterType: this.props.amountFilterType,
+
+                    hiddenTypes: [
+                        "BunqMeTab",
+                        "RequestResponse",
+                        "RequestInquiry",
+                        "RequestInquiryBatch",
+                        "ShareInviteBankInquiry"
+                    ]
                 })
             )
-            .map(payment => {
+            .map(event => {
                 const categories = CategoryHelper(
                     this.props.categories,
                     this.props.categoryConnections,
-                    "Payment",
-                    payment.id
+                    event.type,
+                    event.object.id
                 );
 
                 return {
-                    date: payment.created,
-                    info: payment,
-                    categories: categories
-                };
-            });
-    };
-
-    masterCardActionMapper = () => {
-        return this.props.masterCardActions
-            .filter(
-                masterCardActionFilter({
-                    categories: this.props.categories,
-                    categoryConnections: this.props.categoryConnections,
-                    selectedCategories: this.props.selectedCategories,
-
-                    selectedAccountIds: this.props.selectedAccountIds,
-                    toggleAccountIds: this.props.toggleAccountIds,
-
-                    searchTerm: this.props.searchTerm,
-                    paymentVisibility: this.props.paymentVisibility,
-                    paymentType: this.props.paymentType,
-                    dateFromFilter: this.props.dateFromFilter,
-                    dateToFilter: this.props.dateToFilter
-                })
-            )
-            .map(masterCardAction => {
-                const categories = CategoryHelper(
-                    this.props.categories,
-                    this.props.categoryConnections,
-                    "MasterCardAction",
-                    masterCardAction.id
-                );
-
-                return {
-                    date: masterCardAction.created,
-                    info: masterCardAction,
+                    date: event.created,
+                    event: event,
                     categories: categories
                 };
             });
@@ -271,10 +255,9 @@ class Exports extends React.Component {
     };
 
     createCustomExport = () => {
-        const payments = this.paymentMapper();
-        const masterCardActions = this.masterCardActionMapper();
+        const events = this.eventMapper();
 
-        const events = [...masterCardActions, ...payments]
+        const sortedEvents = events
             .sort(function(a, b) {
                 return b.date - a.date;
             })
@@ -298,8 +281,8 @@ class Exports extends React.Component {
         ];
 
         const columnRows = [];
-        events.forEach(event => {
-            const info = event.info;
+        sortedEvents.forEach(event => {
+            const info = event.event.object;
             const labels = event.categories.map(category => category.label);
             columnRows.push([
                 format(event.date, "YYYY-MM-dd"),
@@ -312,10 +295,10 @@ class Exports extends React.Component {
                 labels.join(","),
                 info.eventType,
                 info.id,
-                info.type,
-                info.sub_type,
-                info.authorisation_status,
-                info.authorisation_type
+                info.type || "",
+                info.sub_type || "",
+                info.authorisation_status || "",
+                info.authorisation_type || ""
             ]);
         });
 
@@ -578,7 +561,6 @@ class Exports extends React.Component {
                                         "BunqMeTab",
                                         "RequestInquiry",
                                         "RequestInquiryBatch",
-                                        "RequestResponse",
                                         "ShareInviteBankInquiry"
                                     ]}
                                 />
@@ -598,13 +580,28 @@ const mapStateToProps = state => {
 
         accountsAccountId: state.accounts.selected_account,
 
+        paymentType: state.payment_filter.type,
+        paymentVisibility: state.payment_filter.visible,
+
+        bunqMeTabType: state.bunq_me_tab_filter.type,
+        bunqMeTabVisibility: state.bunq_me_tab_filter.visible,
+
+        requestType: state.request_filter.type,
+        requestVisibility: state.request_filter.visible,
+
         exportNewLoading: state.export_new.loading,
         exports: state.exports.exports,
         exportsLoading: state.exports.loading,
 
+        amountFilterAmount: state.amount_filter.amount,
+        amountFilterType: state.amount_filter.type,
+
         searchTerm: state.search_filter.search_term,
         dateFromFilter: state.date_filter.from_date,
         dateToFilter: state.date_filter.to_date,
+
+        toggleCategoryFilter: state.category_filter.toggle,
+        selectedCategories: state.category_filter.selected_categories,
 
         selectedAccountIds: state.account_id_filter.selected_account_ids,
         toggleAccountIds: state.account_id_filter.toggle,
@@ -612,10 +609,8 @@ const mapStateToProps = state => {
         categories: state.categories.categories,
         categoryConnections: state.categories.category_connections,
 
-        masterCardActions: state.master_card_actions.master_card_actions,
-        masterCardActionsLoading: state.master_card_actions.loading,
-        payments: state.payments.payments,
-        paymentsLoading: state.payments.loading
+        events: state.events.events,
+        eventsLoading: state.events.loading
     };
 };
 

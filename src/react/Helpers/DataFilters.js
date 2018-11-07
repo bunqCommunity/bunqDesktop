@@ -25,34 +25,33 @@ const checkDateRange = (fromDate, toDate, date) => {
 };
 
 export const eventFilter = options => event => {
-    if(event.type === "Payment"){
+    if (event.type === "Payment") {
         return paymentFilter(options)(event.object);
     }
-    if(event.type === "BunqMeTab"){
+    if (event.type === "BunqMeTab") {
         return bunqMeTabsFilter(options)(event.object);
     }
-    if(event.type === "MasterCardAction"){
+    if (event.type === "MasterCardAction") {
         return masterCardActionFilter(options)(event.object);
     }
-    if(event.type === "RequestResponse"){
+    if (event.type === "RequestResponse") {
         return requestResponseFilter(options)(event.object);
     }
-    if(event.type === "RequestInquiry"){
+    if (event.type === "RequestInquiry") {
         return requestInquiryFilter(options)(event.object);
     }
-    if(event.type === "RequestInquiryBatch"){
+    if (event.type === "RequestInquiryBatch") {
         return requestInquiryBatchFilter(options)(event.object);
     }
-    if(event.type === "ShareInviteBankResponse"){
+    if (event.type === "ShareInviteBankResponse") {
         return shareInviteBankResponseFilter(options)(event.object);
     }
-    if(event.type === "ShareInviteBankInquiry"){
+    if (event.type === "ShareInviteBankInquiry") {
         return shareInviteBankInquiryFilter(options)(event.object);
     }
 
     return checkDateRange(options.dateFromFilter, options.dateToFilter, event.created);
 };
-
 
 export const paymentFilter = options => payment => {
     if (options.hiddenTypes.includes("Payment")) return false;
@@ -303,18 +302,16 @@ export const masterCardActionFilter = options => masterCardAction => {
 };
 
 export const requestResponseFilter = options => requestResponse => {
-    if (options.hiddenTypes.includes("RequestResponse")) return false;
-
     // check if this is a internal request or a payment E.G. ideal payments
     const requestTypes = ["INTERNAL", "DIRECT_DEBIT", "DIRECT_DEBIT_B2B"];
     const isRequestType = requestTypes.includes(requestResponse.type);
 
     if (isRequestType) {
-        if (options.requestVisibility === false) {
+        if (options.requestVisibility === false || options.hiddenTypes.includes("RequestResponse")) {
             return false;
         }
     } else {
-        if (options.paymentVisibility === false) {
+        if (options.paymentVisibility === false || options.hiddenTypes.includes("Payment")) {
             return false;
         }
     }
@@ -325,13 +322,11 @@ export const requestResponseFilter = options => requestResponse => {
     }
 
     if (isRequestType) {
-        // check payment type since this is a payment
         if (options.requestType !== "sent" && options.requestType !== "default") {
             return false;
         }
     } else {
-        // check the request type since this is an actual request
-        if (options.requestType !== "sent" && options.requestType !== "default") {
+        if (options.paymentType !== "sent" && options.paymentType !== "default") {
             return false;
         }
     }

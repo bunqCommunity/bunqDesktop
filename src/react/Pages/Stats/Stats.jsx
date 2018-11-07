@@ -67,18 +67,8 @@ class Stats extends React.Component {
         // check if category transaction type changed
         if (categoryTransactionType !== this.state.categoryTransactionType) triggerWorker = true;
 
-        const willBeLoading =
-            nextProps.bunqMeTabsLoading ||
-            nextProps.paymentsLoading ||
-            nextProps.requestResponsesLoading ||
-            nextProps.requestInquiriesLoading ||
-            nextProps.masterCardActionsLoading;
-        const isCurrentlyLoading =
-            this.props.bunqMeTabsLoading ||
-            this.props.paymentsLoading ||
-            this.props.requestResponsesLoading ||
-            this.props.requestInquiriesLoading ||
-            this.props.masterCardActionsLoading;
+        const willBeLoading = nextProps.eventsLoading;
+        const isCurrentlyLoading = this.props.eventsLoading;
 
         if (isCurrentlyLoading === true && willBeLoading === false) {
             // items are no longer loading so we can update trhe worker here
@@ -94,14 +84,7 @@ class Stats extends React.Component {
     componentDidUpdate() {}
 
     shouldComponentUpdate(nextProps) {
-        const nextPropsLoading =
-            nextProps.bunqMeTabsLoading ||
-            nextProps.paymentsLoading ||
-            nextProps.requestResponsesLoading ||
-            nextProps.requestInquiriesLoading ||
-            nextProps.masterCardActionsLoading;
-
-        if (nextPropsLoading) {
+        if (nextProps.eventsLoading) {
             return false;
         }
         return true;
@@ -136,11 +119,13 @@ class Stats extends React.Component {
 
         this.worker.postMessage({
             // all endpoints
-            payments: props.payments.map(item => item.toJSON()),
-            masterCardActions: props.masterCardActions.map(item => item.toJSON()),
-            requestInquiries: props.requestInquiries.map(item => item.toJSON()),
-            requestResponses: props.requestResponses.map(item => item.toJSON()),
-            bunqMeTabs: props.bunqMeTabs,
+            payments: props.events.filter(event => event.type === "Payment").map(item => item.toJSON()),
+            masterCardActions: props.events
+                .filter(event => event.type === "MasterCardAction")
+                .map(item => item.toJSON()),
+            requestInquiries: props.events.filter(event => event.type === "RequestInquiry").map(item => item.toJSON()),
+            requestResponses: props.events.filter(event => event.type === "RequestResponse").map(item => item.toJSON()),
+            bunqMeTabs: props.props.events.filter(event => event.type === "BunqMeTab"),
             // the accounts and selectedAccount so a balance can be calculated
             accounts: props.accounts.map(account => account.toJSON()),
             selectedAccount: props.selectedAccount,
@@ -329,11 +314,7 @@ class Stats extends React.Component {
                         t={t}
                         data={data}
                         splitCardTypes={this.state.splitCardTypes}
-                        payments={this.props.payments}
-                        masterCardActions={this.props.masterCardActions}
-                        requestInquiries={this.props.requestInquiries}
-                        requestResponses={this.props.requestResponses}
-                        bunqMeTabs={this.props.bunqMeTabs}
+                        events={this.props.events}
                     />
                 </Grid>
 
@@ -391,11 +372,7 @@ class Stats extends React.Component {
                             splitCardTypes={this.state.splitCardTypes}
                             categoryTransactionType={this.state.categoryTransactionType}
                             categories={this.props.categories}
-                            payments={this.props.payments}
-                            masterCardActions={this.props.masterCardActions}
-                            requestInquiries={this.props.requestInquiries}
-                            requestResponses={this.props.requestResponses}
-                            bunqMeTabs={this.props.bunqMeTabs}
+                            events={this.props.events}
                         />
                     </Grid>
                 </Grid>
@@ -410,17 +387,8 @@ const mapStateToProps = state => {
         accounts: state.accounts.accounts,
         selectedAccount: state.accounts.selected_account,
 
-        payments: state.payments.payments,
-        bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
-        requestInquiries: state.request_inquiries.request_inquiries,
-        requestResponses: state.request_responses.request_responses,
-        masterCardActions: state.master_card_actions.master_card_actions,
-
-        paymentsLoading: state.payments.loading,
-        bunqMeTabsLoading: state.bunq_me_tabs.loading,
-        requestInquiriesLoading: state.request_inquiries.loading,
-        requestResponsesLoading: state.request_responses.loading,
-        masterCardActionsLoading: state.master_card_actions.loading,
+        events: state.events.events,
+        eventsLoading: state.events.loading,
 
         categories: state.categories.categories,
         categoryConnections: state.categories.category_connections,
