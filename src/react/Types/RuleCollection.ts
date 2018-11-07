@@ -199,6 +199,7 @@ export default class RuleCollection {
      */
     private checkValueRule(rule: ValueRule, event: EventObject): boolean {
         let dataToCheck = [];
+
         switch (rule.field) {
             case "DESCRIPTION":
                 if (event.item.description) {

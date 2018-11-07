@@ -89,12 +89,6 @@ class RulesPage extends React.Component {
             }
         }
 
-        const payments = this.props.payments.map(item => item.toJSON());
-        const requestInquiries = this.props.requestInquiries.map(item => item.toJSON());
-        const requestResponses = this.props.requestResponses.map(item => item.toJSON());
-        const masterCardActions = this.props.masterCardActions.map(item => item.toJSON());
-        const bunqMeTabs = this.props.bunqMeTabs.map(item => item.toJSON());
-
         return (
             <Grid container spacing={16}>
                 <Helmet>
@@ -128,11 +122,7 @@ class RulesPage extends React.Component {
                         t={t}
                         ruleCollection={this.state.previewRuleCollection}
                         ruleCollectionUpdated={this.state.previewUpdated}
-                        payments={payments}
-                        requestInquiries={requestInquiries}
-                        masterCardActions={masterCardActions}
-                        bunqMeTabs={bunqMeTabs}
-                        requestResponses={requestResponses}
+                        events={this.props.events}
                         openSnackbar={this.props.openSnackbar}
                     />
                 </Grid>
@@ -148,17 +138,8 @@ const mapStateToProps = state => {
         categories: state.categories.categories,
         categoryRules: state.category_rules.category_rules,
 
-        paymentsLoading: state.payments.loading,
-        bunqMeTabsLoading: state.bunq_me_tabs.loading,
-        masterCardActionsLoading: state.master_card_actions.loading,
-        requestInquiriesLoading: state.request_inquiries.loading,
-        requestResponsesLoading: state.request_responses.loading,
-
-        requestResponses: state.request_responses.request_responses,
-        payments: state.payments.payments,
-        bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
-        masterCardActions: state.master_card_actions.master_card_actions,
-        requestInquiries: state.request_inquiries.request_inquiries
+        eventsLoading: state.events.loading,
+        events: state.events.events,
     };
 };
 

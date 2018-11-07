@@ -61,13 +61,20 @@ class RuleCollectionPreview extends React.Component<any, any> {
     };
     triggerWorkerEvent = props => {
         const ruleCollection: RuleCollection | null = props.ruleCollection;
+
+        const events = [];
+        props.events.map(event => {
+            if (typeof event.object.toJSON !== "undefined") {
+                events.push({
+                    item: event.object.toJSON(),
+                    type: event.type
+                });
+            }
+        });
+
         this.worker.postMessage({
             ruleCollection: ruleCollection,
-            payments: props.payments,
-            masterCardActions: props.masterCardActions,
-            bunqMeTabs: props.bunqMeTabs,
-            requestInquiries: props.requestInquiries,
-            requestResponses: props.requestResponses
+            events: events
         });
     };
 
