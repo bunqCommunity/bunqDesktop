@@ -228,7 +228,24 @@ class QueueManager extends React.Component {
             })
             .then(events => {
                 // turn plain objects into Model objects
-                const eventsNew = events.map(item => new Event(item));
+                const eventsNew = events.map(item => new Event(item)).filter(event => {
+                    switch (event.type) {
+                        case "Payment":
+                        case "BunqMeTab":
+                        case "MasterCardAction":
+                        case "RequestInquiry":
+                        case "RequestInquiryBatch":
+                        case "RequestResponse":
+                            return true;
+                        case "FeatureAnnouncement":
+                        case "ScheduledInstance":
+                        case "ScheduledPayment":
+                        case "ShareInviteBankInquiry":
+                        case "ShareInviteBankResponse":
+                        default:
+                            return false;
+                    }
+                });
 
                 let currentEvents = [...this.state.events];
 

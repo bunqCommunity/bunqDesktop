@@ -40,9 +40,8 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 events: mergedEvents,
-                account_id: action.payload.account_id,
-                newer_ids: mergedInfo.newer_id,
-                older_ids: mergedInfo.older_id
+                newer_id: mergedInfo.newer_id,
+                older_id: mergedInfo.older_id
             };
 
         case "EVENTS_IS_LOADING":
