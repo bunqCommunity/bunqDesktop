@@ -20,16 +20,7 @@ import { bunqMeTabPut } from "../../Actions/bunq_me_tab";
 import { nextPage, previousPage, setPage, setPageSize, firstPage } from "../../Actions/pagination";
 
 import { humanReadableDate } from "../../Helpers/Utils";
-import {
-    paymentMapper,
-    bunqMeTabsMapper,
-    masterCardActionMapper,
-    requestInquiryBatchMapper,
-    requestInquiryMapper,
-    requestResponseMapper,
-    shareInviteBankInquiryMapper,
-    shareInviteBankResponseMapper
-} from "./MapperFunctions";
+import { eventMapper, shareInviteBankInquiryMapper, shareInviteBankResponseMapper } from "./MapperFunctions";
 import FilterDisabledChecker from "../../Helpers/FilterDisabledChecker";
 
 const styles = {
@@ -71,22 +62,8 @@ class CombinedList extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        const isLoading =
-            this.props.queueLoading ||
-            this.props.bunqMeTabsLoading ||
-            this.props.paymentsLoading ||
-            this.props.requestResponsesLoading ||
-            this.props.requestInquiriesLoading ||
-            this.props.requestInquiryBatchLoading ||
-            this.props.masterCardActionsLoading;
-        const wasLoading =
-            prevProps.queueLoading ||
-            prevProps.bunqMeTabsLoading ||
-            prevProps.paymentsLoading ||
-            prevProps.requestResponsesLoading ||
-            prevProps.requestInquiriesLoading ||
-            prevProps.requestInquiryBatchLoading ||
-            prevProps.masterCardActionsLoading;
+        const isLoading = this.props.queueLoading || this.props.eventsLoading;
+        const wasLoading = prevProps.queueLoading || prevProps.eventsLoading;
 
         // no longer loading or filter changed
         if (
@@ -105,33 +82,21 @@ class CombinedList extends React.Component {
     loadEvents = () => {
         const settings = this.getSettings();
 
-        // create arrays of the different endpoint types
-        const { bunqMeTabs, hiddenPaymentIds } = bunqMeTabsMapper(settings);
-        // load regular payments while hiding the ones connected to the bunq me tabs
-        const payments = paymentMapper(settings, hiddenPaymentIds);
-        const masterCardActions = masterCardActionMapper(settings);
-        const requestResponses = requestResponseMapper(settings, false, true);
-        const { requestInquiryBatches, hiddenRequestInquiryIds } = requestInquiryBatchMapper(settings);
-        // load request inquiries while hiding requests connected to the request inquiry batches
-        const requestInquiries = requestInquiryMapper(settings, hiddenRequestInquiryIds);
+        const events = eventMapper(settings);
         const shareInviteBankInquiries = shareInviteBankInquiryMapper(settings);
 
         // combine the list, order by date and group by day
-        const events = [
-            ...bunqMeTabs,
-            ...requestResponses,
-            ...masterCardActions,
-            ...requestInquiries,
-            ...requestInquiryBatches,
-            ...shareInviteBankInquiries,
-            ...payments
-        ].sort(function(a, b) {
-            return new Date(b.filterDate) - new Date(a.filterDate);
-        });
+        const combinedEventsList = [...events, ...shareInviteBankInquiries]
+            .filter(event => {
+                return !!event;
+            })
+            .sort(function(a, b) {
+                return new Date(b.filterDate) - new Date(a.filterDate);
+            });
 
         this.setState({
             totalEvents: this.state.totalEvents < events.length ? events.length : this.state.totalEvents,
-            events: events
+            events: combinedEventsList
         });
     };
 
@@ -205,27 +170,20 @@ class CombinedList extends React.Component {
         const filterEnabledText = filterIsDisabled ? "" : ` of ${this.state.totalEvents}`;
 
         let loadingContent =
-            this.props.queueLoading ||
-            this.props.bunqMeTabsLoading ||
-            this.props.paymentsLoading ||
-            this.props.requestResponsesLoading ||
-            this.props.requestInquiriesLoading ||
-            this.props.requestInquiryBatchLoading ||
-            this.props.shareInviteBankInquiriesLoading ||
-            this.props.masterCardActionsLoading ? (
+            this.props.queueLoading || this.props.eventsLoading || this.props.shareInviteBankInquiriesLoading ? (
                 <LinearProgress />
             ) : (
                 <Divider />
             );
 
         const settings = this.getSettings();
-        const requestResponsesPending = requestResponseMapper(settings, true);
+        // const requestResponsesPending = requestResponseMapper(settings, true);
         const shareInviteBankResponses = shareInviteBankResponseMapper(settings);
 
         // directly create a list for the pending requests
-        const pendingRequestResponseComponents = requestResponsesPending.map(
-            requestResponsesPendingItem => requestResponsesPendingItem.component
-        );
+        // const pendingRequestResponseComponents = requestResponsesPending.map(
+        //     requestResponsesPendingItem => requestResponsesPendingItem.component
+        // );
 
         let groupedItems = {};
 
@@ -276,7 +234,7 @@ class CombinedList extends React.Component {
 
         // add the connect requests and pending request responses to the top
         combinedComponentList.unshift(...shareInviteBankResponses);
-        combinedComponentList.unshift(...pendingRequestResponseComponents);
+        // combinedComponentList.unshift(...pendingRequestResponseComponents);
 
         return (
             <List style={styles.left}>
@@ -351,24 +309,8 @@ const mapStateToProps = state => {
         categories: state.categories.categories,
         categoryConnections: state.categories.category_connections,
 
-        payments: state.payments.payments,
-        paymentsLoading: state.payments.loading,
-
-        bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
-        bunqMeTabsLoading: state.bunq_me_tabs.loading,
-        bunqMeTabLoading: state.bunq_me_tab.loading,
-
-        masterCardActions: state.master_card_actions.master_card_actions,
-        masterCardActionsLoading: state.master_card_actions.loading,
-
-        requestInquiries: state.request_inquiries.request_inquiries,
-        requestInquiriesLoading: state.request_inquiries.loading,
-
-        requestInquiryBatches: state.request_inquiry_batches.request_inquiry_batches,
-        requestInquiryBatchLoading: state.request_inquiry_batches.loading,
-
-        requestResponses: state.request_responses.request_responses,
-        requestResponsesLoading: state.request_responses.loading,
+        events: state.events.events,
+        eventsLoading: state.events.loading,
 
         shareInviteBankInquiries: state.share_invite_bank_inquiries.share_invite_bank_inquiries,
         shareInviteBankInquiriesLoading: state.share_invite_bank_inquiries.loading,

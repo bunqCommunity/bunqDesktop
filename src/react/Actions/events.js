@@ -41,10 +41,12 @@ export function loadStoredEvents(BunqJSClient) {
                             case "RequestResponse":
                                 eventsNew.push(event);
                                 break;
+                            case "FeatureAnnouncement":
                             case "ScheduledInstance":
                             case "ScheduledPayment":
                             case "ShareInviteBankInquiry":
                             case "ShareInviteBankResponse":
+                            default:
                             // don't do anything special for these
                         }
                     });
@@ -54,6 +56,7 @@ export function loadStoredEvents(BunqJSClient) {
                 dispatch(eventsNotLoading());
             })
             .catch(error => {
+                console.log(error);
                 dispatch(eventsNotLoading());
             });
     };
@@ -83,6 +86,7 @@ export function eventInfoUpdate(
                 dispatch(eventsNotLoading());
             })
             .catch(error => {
+                console.log(error);
                 dispatch(eventsNotLoading());
                 BunqErrorHandler(dispatch, error, failedMessage);
             });

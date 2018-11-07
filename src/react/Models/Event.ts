@@ -51,24 +51,26 @@ export default class Event implements Event {
                         this._object = new Payment(this._object);
                         break;
                     case "BunqMeTab":
-                        this._object = new BunqMeTab(eventObject);
+                        this._object = new BunqMeTab(this._object);
                         break;
                     case "MasterCardAction":
-                        this._object = new MasterCardAction(eventObject);
+                        this._object = new MasterCardAction(this._object);
                         break;
                     case "RequestInquiry":
-                        this._object = new RequestInquiry(eventObject);
+                        this._object = new RequestInquiry(this._object);
                         break;
                     case "RequestInquiryBatch":
-                        this._object = new RequestInquiryBatch(eventObject);
+                        this._object = new RequestInquiryBatch(this._object);
                         break;
                     case "RequestResponse":
-                        this._object = new RequestResponse(eventObject);
+                        this._object = new RequestResponse(this._object);
                         break;
+                    case "FeatureAnnouncement":
                     case "ScheduledInstance":
                     case "ScheduledPayment":
                     case "ShareInviteBankInquiry":
                     case "ShareInviteBankResponse":
+                    default:
                     // don't do anything special for these
                 }
             }

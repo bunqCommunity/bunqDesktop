@@ -28,7 +28,6 @@ import {
     accountExcludeFromTotal,
     accountIncludeInTotal
 } from "../../Actions/accounts";
-import { eventInfoUpdate } from "../../Actions/events";
 import { updateStatisticsSavingsGoals } from "../../Actions/savings_goals";
 import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_responses";
 import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiries";

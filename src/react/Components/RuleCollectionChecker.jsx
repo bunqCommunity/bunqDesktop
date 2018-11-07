@@ -58,11 +58,15 @@ class RuleCollectionChecker extends React.Component {
 
     triggerWorkerEvent = () => {
         // use json format
-        const payments = this.props.payments.map(item => item.toJSON());
-        const requestInquiries = this.props.requestInquiries.map(item => item.toJSON());
-        const requestResponses = this.props.requestResponses.map(item => item.toJSON());
-        const masterCardActions = this.props.masterCardActions.map(item => item.toJSON());
-        const bunqMeTabs = this.props.bunqMeTabs.map(item => item.toJSON());
+        const events = [];
+        this.props.events.map(event => {
+            if (typeof event.object.toJSON !== "undefined") {
+                events.push({
+                    item: event.object.toJSON(),
+                    type: event.type
+                });
+            }
+        });
 
         // get results for all our rule collections
         Object.keys(this.props.categoryRules).forEach(categoryRuleId => {
@@ -70,11 +74,7 @@ class RuleCollectionChecker extends React.Component {
             if (ruleCollection && ruleCollection.isEnabled()) {
                 this.worker.postMessage({
                     ruleCollection: ruleCollection,
-                    payments: payments,
-                    masterCardActions: masterCardActions,
-                    bunqMeTabs: bunqMeTabs,
-                    requestInquiries: requestInquiries,
-                    requestResponses: requestResponses
+                    events: events
                 });
             }
         });
@@ -96,11 +96,7 @@ const mapStateToProps = state => {
 
         queueFinishedSync: state.queue.finished_queue,
 
-        requestResponses: state.request_responses.request_responses,
-        payments: state.payments.payments,
-        bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
-        masterCardActions: state.master_card_actions.master_card_actions,
-        requestInquiries: state.request_inquiries.request_inquiries
+        events: state.events.events
     };
 };
 

@@ -114,7 +114,7 @@ class AccountInfo extends React.Component {
                 this.props.shareInviteBankInquiriesInfoUpdate(userId, accountId);
             }
             this.props.shareInviteBankResponsesInfoUpdate(userId);
-            this.props.eventsUpdate(userId);
+            this.props.eventInfoUpdate(userId);
 
             const accountInfo = this.props.accounts.find(account => account.id === accountId);
             if (accountInfo) {
@@ -140,7 +140,7 @@ class AccountInfo extends React.Component {
                 this.props.shareInviteBankInquiriesInfoUpdate(user.id, nextAccountId);
             }
             this.props.shareInviteBankResponsesInfoUpdate(user.id);
-            this.props.eventsUpdate(user.id);
+            this.props.eventInfoUpdate(user.id);
         }
         return null;
     }

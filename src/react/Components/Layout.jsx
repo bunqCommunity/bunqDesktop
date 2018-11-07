@@ -48,6 +48,7 @@ import { setHideBalance, setTheme, setAutomaticThemeChange } from "../Actions/op
 import { loadStoredContacts } from "../Actions/contacts";
 import { loadStoredShareInviteBankResponses } from "../Actions/share_invite_bank_responses";
 import { loadStoredShareInviteBankInquiries } from "../Actions/share_invite_bank_inquiries";
+import { loadStoredEvents } from "../Actions/events";
 import { queueStartSync } from "../Actions/queue";
 
 const styles = theme => ({
@@ -363,7 +364,6 @@ class Layout extends React.Component {
         this.props.loadStoredAccounts();
         this.props.loadStoredContacts();
         this.props.loadStoredEvents();
-        this.props.loadStoredRequestResponses();
         this.props.loadStoredShareInviteBankResponses();
         this.props.loadStoredShareInviteBankInquiries();
 
@@ -416,12 +416,7 @@ class Layout extends React.Component {
             : ThemeList[Object.keys(ThemeList)[0]];
         const strippedLocation = this.props.location.pathname.replace(/\W/g, "");
 
-        const isLoading =
-            this.props.paymentsLoading ||
-            this.props.bunqMeTabsLoading ||
-            this.props.masterCardActionsLoading ||
-            this.props.requestInquiriesLoading ||
-            this.props.requestResponsesLoading;
+        const isLoading = this.props.eventsLoading;
 
         const contentContainerClass = this.props.stickyMenu ? classes.contentContainerSticky : classes.contentContainer;
         const RouteComponent = this.props.routesComponent;
@@ -487,11 +482,7 @@ const mapStateToProps = state => {
         userInitialCheck: state.user.initialCheck,
         userLoading: state.user.loading,
 
-        paymentsLoading: state.payments.loading,
-        bunqMeTabsLoading: state.bunq_me_tabs.loading,
-        masterCardActionsLoading: state.master_card_actions.loading,
-        requestInquiriesLoading: state.request_inquiries.loading,
-        requestResponsesLoading: state.request_responses.loading
+        eventsLoading: state.events.loading
     };
 };
 
@@ -521,14 +512,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
         queueStartSync: () => dispatch(queueStartSync()),
 
-        loadStoredPayments: () => dispatch(loadStoredPayments(BunqJSClient)),
+        loadStoredEvents: () => dispatch(loadStoredEvents(BunqJSClient)),
         loadStoredContacts: () => dispatch(loadStoredContacts(BunqJSClient)),
-        loadStoredBunqMeTabs: () => dispatch(loadStoredBunqMeTabs(BunqJSClient)),
-        loadStoredMasterCardActions: () => dispatch(loadStoredMasterCardActions(BunqJSClient)),
-        loadStoredRequestInquiries: () => dispatch(loadStoredRequestInquiries(BunqJSClient)),
-        loadStoredrequestInquiryBatches: () => dispatch(loadStoredrequestInquiryBatches(BunqJSClient)),
         loadStoredAccounts: () => dispatch(loadStoredAccounts(BunqJSClient)),
-        loadStoredRequestResponses: () => dispatch(loadStoredRequestResponses(BunqJSClient)),
         loadStoredShareInviteBankResponses: () => dispatch(loadStoredShareInviteBankResponses(BunqJSClient)),
         loadStoredShareInviteBankInquiries: () => dispatch(loadStoredShareInviteBankInquiries(BunqJSClient)),
 

@@ -90,7 +90,8 @@ class AccountListItem extends React.Component {
         let secondaryText = formattedBalance;
         let savingsPercentage = 0;
         if (isSavingsAccount) {
-            savingsPercentage = (account.savings_goal_progress * 100).toFixed(2);
+            const savingsGoalProgress = parseFloat(account.savings_goal_progress)
+            savingsPercentage = parseFloat((savingsGoalProgress * 100).toFixed(0));
             secondaryText = `${formattedBalance} - ${savingsPercentage}%`;
         }
 
@@ -186,7 +187,6 @@ const mapStateToProps = state => {
     return {
         user: state.user.user,
         theme: state.options.theme,
-        paymentsLoading: state.payments.loading,
         hideBalance: state.options.hide_balance,
 
         selectedAccountIds: state.account_id_filter.selected_account_ids,

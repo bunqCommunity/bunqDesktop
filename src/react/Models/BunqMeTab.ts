@@ -1,5 +1,5 @@
 import { BunqMeTabEntry, BunqMeTabResultInquiry, BunqMeTabStatus } from "../Types/Types";
-import Event, { EventType } from "../Types/Event";
+import Event, { EventTypeValue } from "../Types/Event";
 import RequestInquiry from "./RequestInquiry";
 
 export default class BunqMeTab implements Event {
@@ -7,7 +7,7 @@ export default class BunqMeTab implements Event {
     private _rawData: any;
 
     public BunqMeTab = this;
-    get eventType(): EventType {
+    get eventType(): EventTypeValue {
         return "BunqMeTab";
     }
 

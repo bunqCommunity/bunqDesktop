@@ -123,8 +123,6 @@ class QueueManager extends React.Component {
         // set initial request count in one go
         this.props.queueSetRequestCounter(bufferedCounter);
 
-        this.eventsUpdate(userId, false, eventCount);
-
         this.shareInviteBankResponsesUpdate(userId);
         this.eventsUpdate(userId, false, eventCount);
         filteredAccounts.forEach(account => {

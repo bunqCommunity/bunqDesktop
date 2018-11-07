@@ -8,14 +8,14 @@ import {
     PaymentType,
     RequestReferenceSplitTheBill
 } from "../Types/Types";
-import Event, { EventType } from "../Types/Event";
+import Event, { EventTypeValue } from "../Types/Event";
 
 export default class Payment implements Event {
     // the original raw object
     private _rawData: any;
 
     public Payment = this;
-    get eventType(): EventType {
+    get eventType(): EventTypeValue {
         return "Payment";
     }
 

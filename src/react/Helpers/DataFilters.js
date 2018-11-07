@@ -24,7 +24,39 @@ const checkDateRange = (fromDate, toDate, date) => {
     return true;
 };
 
+export const eventFilter = options => event => {
+    if(event.type === "Payment"){
+        return paymentFilter(options)(event.object);
+    }
+    if(event.type === "BunqMeTab"){
+        return bunqMeTabsFilter(options)(event.object);
+    }
+    if(event.type === "MasterCardAction"){
+        return masterCardActionFilter(options)(event.object);
+    }
+    if(event.type === "RequestResponse"){
+        return requestResponseFilter(options)(event.object);
+    }
+    if(event.type === "RequestInquiry"){
+        return requestInquiryFilter(options)(event.object);
+    }
+    if(event.type === "RequestInquiryBatch"){
+        return requestInquiryBatchFilter(options)(event.object);
+    }
+    if(event.type === "ShareInviteBankResponse"){
+        return shareInviteBankResponseFilter(options)(event.object);
+    }
+    if(event.type === "ShareInviteBankInquiry"){
+        return shareInviteBankInquiryFilter(options)(event.object);
+    }
+
+    return checkDateRange(options.dateFromFilter, options.dateToFilter, event.created);
+};
+
+
 export const paymentFilter = options => payment => {
+    if (options.hiddenTypes.includes("Payment")) return false;
+
     if (options.paymentVisibility === false) {
         return false;
     }
@@ -119,6 +151,8 @@ export const paymentFilter = options => payment => {
 };
 
 export const bunqMeTabsFilter = options => bunqMeTab => {
+    if (options.hiddenTypes.includes("BunqMeTab")) return false;
+
     if (options.bunqMeTabVisibility === false) {
         return false;
     }
@@ -192,6 +226,8 @@ export const bunqMeTabsFilter = options => bunqMeTab => {
 };
 
 export const masterCardActionFilter = options => masterCardAction => {
+    if (options.hiddenTypes.includes("MasterCardAction")) return false;
+
     if (options.paymentVisibility === false) {
         return false;
     }
@@ -267,6 +303,8 @@ export const masterCardActionFilter = options => masterCardAction => {
 };
 
 export const requestResponseFilter = options => requestResponse => {
+    if (options.hiddenTypes.includes("RequestResponse")) return false;
+
     // check if this is a internal request or a payment E.G. ideal payments
     const requestTypes = ["INTERNAL", "DIRECT_DEBIT", "DIRECT_DEBIT_B2B"];
     const isRequestType = requestTypes.includes(requestResponse.type);
@@ -371,6 +409,8 @@ export const requestResponseFilter = options => requestResponse => {
 };
 
 export const requestInquiryFilter = options => requestInquiry => {
+    if (options.hiddenTypes.includes("RequestInquiry")) return false;
+
     if (options.requestVisibility === false) {
         return false;
     }
@@ -455,6 +495,8 @@ export const requestInquiryFilter = options => requestInquiry => {
 };
 
 export const requestInquiryBatchFilter = options => requestInquiryBatch => {
+    if (options.hiddenTypes.includes("RequestInquiryBatch")) return false;
+
     if (options.requestVisibility === false) {
         return false;
     }
