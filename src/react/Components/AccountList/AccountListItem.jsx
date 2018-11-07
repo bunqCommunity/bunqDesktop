@@ -5,8 +5,8 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
-import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
 import LinkIcon from "@material-ui/icons/Link";
 import PeopleIcon from "@material-ui/icons/People";
@@ -52,14 +52,9 @@ class AccountListItem extends React.Component {
             return null;
         }
 
-        let otherListItemProps = {};
         let isSavingsAccount = false;
         if (account.accountType === "MonetaryAccountSavings") {
             isSavingsAccount = true;
-        } else {
-            otherListItemProps = {
-                divider: true
-            };
         }
 
         let avatarSub = null;
@@ -90,6 +85,7 @@ class AccountListItem extends React.Component {
         let savingsPercentage = 0;
         if (isSavingsAccount) {
             savingsPercentage = (account.savings_goal_progress * 100).toFixed(2);
+            savingsPercentage = 80;
             secondaryText = `${formattedBalance} - ${savingsPercentage}%`;
         }
 
@@ -116,48 +112,70 @@ class AccountListItem extends React.Component {
 
         // allow overwrite by props
         const onClickHandler = this.props.onClick ? e => this.props.onClick(user.id, account.id) : defaultClickHandler;
+        const isDarkTheme = this.props.theme === "DarkTheme";
 
         return (
-            <React.Fragment>
-                <ListItem
-                    key="main-list-item"
-                    button
-                    onClick={onClickHandler}
-                    style={displayStyle}
-                    {...otherListItemProps}
-                >
-                    <Avatar style={styles.bigAvatar}>
-                        <LazyAttachmentImage
-                            height={60}
-                            BunqJSClient={this.props.BunqJSClient}
-                            imageUUID={account.avatar.image[0].attachment_public_uuid}
-                        />
-                    </Avatar>
-                    <div style={styles.avatarSub}>{avatarSub}</div>
-                    <ListItemText primary={account.description} secondary={secondaryText} />
-                    <ListItemSecondaryAction>
-                        {this.props.secondaryAction ? (
-                            this.props.secondaryAction
-                        ) : (
-                            <IconButton to={`/account-info/${account.id}`} component={NavLink}>
-                                <InfoIcon />
-                            </IconButton>
-                        )}
-                    </ListItemSecondaryAction>
-                </ListItem>
+            <ListItem button onClick={onClickHandler} style={displayStyle} divider>
                 {isSavingsAccount && (
-                    <ListItem
-                        key="progress-list-item"
-                        divider
-                        style={{
-                            ...displayStyle,
-                            paddingTop: 0
-                        }}
-                    >
-                        <LinearProgress value={savingsPercentage} />
-                    </ListItem>
+                    <React.Fragment>
+                        <CircularProgress
+                            variant="static"
+                            value={savingsPercentage}
+                            style={{
+                                position: "absolute",
+                                width: 68,
+                                height: 68,
+                                zIndex: 2,
+                                top: 7,
+                                left: 20
+                            }}
+                        />
+                        <div
+                            style={{
+                                position: "absolute",
+                                width: 68,
+                                height: 68,
+                                zIndex: 1,
+                                top: 7,
+                                left: 20
+                            }}
+                        >
+                            <svg viewBox="22 22 44 44">
+                                <circle
+                                    cx="44"
+                                    cy="44"
+                                    r="20.2"
+                                    fill="none"
+                                    strokeWidth="3.6"
+                                    stroke={isDarkTheme ? "#58585d" : "#e8e8e8"}
+                                    style={{
+                                        strokeDasharray: 126.92,
+                                        strokeDashoffset: 0
+                                    }}
+                                />
+                            </svg>
+                        </div>
+                    </React.Fragment>
                 )}
-            </React.Fragment>
+                <Avatar style={styles.bigAvatar}>
+                    <LazyAttachmentImage
+                        height={60}
+                        BunqJSClient={this.props.BunqJSClient}
+                        imageUUID={account.avatar.image[0].attachment_public_uuid}
+                    />
+                </Avatar>
+                <div style={styles.avatarSub}>{avatarSub}</div>
+                <ListItemText primary={account.description} secondary={secondaryText} />
+                <ListItemSecondaryAction>
+                    {this.props.secondaryAction ? (
+                        this.props.secondaryAction
+                    ) : (
+                        <IconButton to={`/account-info/${account.id}`} component={NavLink}>
+                            <InfoIcon />
+                        </IconButton>
+                    )}
+                </ListItemSecondaryAction>
+            </ListItem>
         );
     }
 }
@@ -165,9 +183,8 @@ class AccountListItem extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-
+        theme: state.options.theme,
         paymentsLoading: state.payments.loading,
-
         hideBalance: state.options.hide_balance,
 
         selectedAccountIds: state.account_id_filter.selected_account_ids,
