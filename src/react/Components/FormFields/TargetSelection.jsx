@@ -40,14 +40,17 @@ class TargetSelection extends React.Component {
     componentDidMount() {
         if (!this.props.disabledTypes.includes("IBAN")) {
             let ibanCollection = {};
-            // get first 250 payments and retrieve the iban/name combinations from it
-            this.props.payments.slice(0, 250).map(payment => {
-                if (payment.counterparty_alias && payment.counterparty_alias.iban) {
-                    const iban = payment.counterparty_alias.iban;
+            // get first 250 eventss and retrieve the iban/name combinations from it
+            this.props.events.slice(0, 250).forEach(event => {
+                const eventInfo = event.object;
+                if (event.type !== "Payment") return;
+
+                if (eventInfo.counterparty_alias && eventInfo.counterparty_alias.iban) {
+                    const iban = eventInfo.counterparty_alias.iban;
                     if (!ibanCollection[iban]) {
                         ibanCollection[iban] = {
                             field: formatIban(iban),
-                            name: payment.counterparty_alias.display_name
+                            name: eventInfo.counterparty_alias.display_name
                         };
                     }
                 }
@@ -308,7 +311,7 @@ const mapStateToProps = state => {
         contacts: state.contacts.contacts,
         contactsLoading: state.contacts.loading,
 
-        payments: state.payments.payments
+        events: state.events.events
     };
 };
 
