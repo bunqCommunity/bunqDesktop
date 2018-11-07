@@ -1,4 +1,5 @@
-export type EventType =
+export type EventTypeValue =
+    | "Event"
     | "Payment"
     | "BunqMeTab"
     | "MasterCardAction"
@@ -6,6 +7,6 @@ export type EventType =
     | "RequestInquiryBatch"
     | "RequestResponse";
 
-export default interface Event {
-    eventType: EventType;
+export default interface EventType {
+    eventType: EventTypeValue;
 }

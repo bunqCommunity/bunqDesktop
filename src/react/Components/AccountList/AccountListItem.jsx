@@ -19,6 +19,7 @@ import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
 
 import { accountsSelectAccount } from "../../Actions/accounts.js";
 import { addAccountIdFilter, removeAccountIdFilter, toggleAccountIdFilter } from "../../Actions/filters";
+import LinearProgress from "../LinearProgress";
 
 const styles = {
     bigAvatar: {
@@ -51,6 +52,16 @@ class AccountListItem extends React.Component {
             return null;
         }
 
+        let otherListItemProps = {};
+        let isSavingsAccount = false;
+        if (account.accountType === "MonetaryAccountSavings") {
+            isSavingsAccount = true;
+        } else {
+            otherListItemProps = {
+                divider: true
+            };
+        }
+
         let avatarSub = null;
         if (this.props.isJoint) {
             avatarSub = (
@@ -74,6 +85,13 @@ class AccountListItem extends React.Component {
             }
         }
         formattedBalance = this.props.hideBalance ? "" : formatMoney(formattedBalance, true);
+
+        let secondaryText = formattedBalance;
+        let savingsPercentage = 0;
+        if (isSavingsAccount) {
+            savingsPercentage = (account.savings_goal_progress * 100).toFixed(2);
+            secondaryText = `${formattedBalance} - ${savingsPercentage}%`;
+        }
 
         // check if any of the selected account ids are for this account
         let displayStyle = {};
@@ -100,26 +118,46 @@ class AccountListItem extends React.Component {
         const onClickHandler = this.props.onClick ? e => this.props.onClick(user.id, account.id) : defaultClickHandler;
 
         return (
-            <ListItem divider button onClick={onClickHandler} style={displayStyle}>
-                <Avatar style={styles.bigAvatar}>
-                    <LazyAttachmentImage
-                        height={60}
-                        BunqJSClient={this.props.BunqJSClient}
-                        imageUUID={account.avatar.image[0].attachment_public_uuid}
-                    />
-                </Avatar>
-                <div style={styles.avatarSub}>{avatarSub}</div>
-                <ListItemText primary={account.description} secondary={formattedBalance} />
-                <ListItemSecondaryAction>
-                    {this.props.secondaryAction ? (
-                        this.props.secondaryAction
-                    ) : (
-                        <IconButton to={`/account-info/${account.id}`} component={NavLink}>
-                            <InfoIcon />
-                        </IconButton>
-                    )}
-                </ListItemSecondaryAction>
-            </ListItem>
+            <React.Fragment>
+                <ListItem
+                    key="main-list-item"
+                    button
+                    onClick={onClickHandler}
+                    style={displayStyle}
+                    {...otherListItemProps}
+                >
+                    <Avatar style={styles.bigAvatar}>
+                        <LazyAttachmentImage
+                            height={60}
+                            BunqJSClient={this.props.BunqJSClient}
+                            imageUUID={account.avatar.image[0].attachment_public_uuid}
+                        />
+                    </Avatar>
+                    <div style={styles.avatarSub}>{avatarSub}</div>
+                    <ListItemText primary={account.description} secondary={secondaryText} />
+                    <ListItemSecondaryAction>
+                        {this.props.secondaryAction ? (
+                            this.props.secondaryAction
+                        ) : (
+                            <IconButton to={`/account-info/${account.id}`} component={NavLink}>
+                                <InfoIcon />
+                            </IconButton>
+                        )}
+                    </ListItemSecondaryAction>
+                </ListItem>
+                {isSavingsAccount && (
+                    <ListItem
+                        key="progress-list-item"
+                        divider
+                        style={{
+                            ...displayStyle,
+                            paddingTop: 0
+                        }}
+                    >
+                        <LinearProgress value={savingsPercentage} />
+                    </ListItem>
+                )}
+            </React.Fragment>
         );
     }
 }

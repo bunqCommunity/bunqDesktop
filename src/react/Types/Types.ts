@@ -5,7 +5,11 @@ export type Amount = {
     currency: string | "EUR";
 };
 
-export type AccountType = "MonetaryAccountLight" | "MonetaryAccountBank" | "MonetaryAccountJoint";
+export type AccountType =
+    | "MonetaryAccountLight"
+    | "MonetaryAccountBank"
+    | "MonetaryAccountJoint"
+    | "MonetaryAccountSavings";
 
 export type Avatar = {
     uuid: string;
