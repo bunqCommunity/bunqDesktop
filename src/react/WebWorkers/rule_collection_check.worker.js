@@ -4,8 +4,6 @@ onmessage = e => {
     const ruleCollection = new RuleCollection();
     ruleCollection.fromObject(e.data.ruleCollection);
 
-    console.log(e.data.events);
-
     // filter the results
     const result = ruleCollection.filterItems(
         e.data.events.map(event => {
@@ -15,8 +13,6 @@ onmessage = e => {
             };
         })
     );
-
-    console.log(result.filter(i => i.matches).length);
 
     postMessage({
         result: result,

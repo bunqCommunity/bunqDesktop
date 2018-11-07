@@ -86,7 +86,7 @@ export function eventInfoUpdate(
                 dispatch(eventsNotLoading());
             })
             .catch(error => {
-                console.log(error);
+                console.error(error);
                 dispatch(eventsNotLoading());
                 BunqErrorHandler(dispatch, error, failedMessage);
             });
