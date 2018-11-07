@@ -1,6 +1,6 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { openSnackbar } from "./snackbar";
-import { bunqMeTabsUpdate } from "./bunq_me_tabs";
+import { eventInfoUpdate } from "./events";
 
 export function bunqMeTabSend(BunqJSClient, userId, accountId, description, amount, options = {}) {
     const failedMessage = window.t("We received the following error while creating your bunqme request");
@@ -12,7 +12,7 @@ export function bunqMeTabSend(BunqJSClient, userId, accountId, description, amou
             .post(userId, accountId, description, amount, options)
             .then(result => {
                 dispatch(openSnackbar(successMessage));
-                dispatch(bunqMeTabsUpdate(BunqJSClient, userId, parseInt(accountId)));
+                dispatch(eventInfoUpdate(BunqJSClient, userId));
                 dispatch(bunqMeTabNotLoading());
             })
             .catch(error => {
@@ -32,7 +32,7 @@ export function bunqMeTabPut(BunqJSClient, userId, accountId, tabId, status = "C
             .put(userId, accountId, tabId, status)
             .then(result => {
                 dispatch(openSnackbar(successMessage));
-                dispatch(bunqMeTabsUpdate(BunqJSClient, userId, accountId));
+                dispatch(eventInfoUpdate(BunqJSClient, userId));
                 dispatch(bunqMeTabNotLoading());
             })
             .catch(error => {

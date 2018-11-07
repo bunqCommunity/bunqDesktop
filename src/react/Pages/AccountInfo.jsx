@@ -31,12 +31,7 @@ import { filterShareInviteBankResponses, filterShareInviteBankInquiries } from "
 
 import { openSnackbar } from "../Actions/snackbar";
 import { accountsUpdate, accountsUpdateSettings, accountsDeactivate } from "../Actions/accounts";
-import { paymentInfoUpdate } from "../Actions/payments";
-import { requestResponsesUpdate } from "../Actions/request_responses";
-import { bunqMeTabsUpdate } from "../Actions/bunq_me_tabs";
-import { masterCardActionsUpdate } from "../Actions/master_card_actions";
-import { requestInquiriesUpdate } from "../Actions/request_inquiries";
-import { requestInquiryBatchesUpdate } from "../Actions/request_inquiry_batches";
+import { eventInfoUpdate } from "../Actions/events";
 import { shareInviteBankInquiriesInfoUpdate } from "../Actions/share_invite_bank_inquiries";
 import { shareInviteBankResponsesInfoUpdate } from "../Actions/share_invite_bank_responses";
 
@@ -119,12 +114,7 @@ class AccountInfo extends React.Component {
                 this.props.shareInviteBankInquiriesInfoUpdate(userId, accountId);
             }
             this.props.shareInviteBankResponsesInfoUpdate(userId);
-            this.props.paymentsUpdate(userId, accountId);
-            this.props.bunqMeTabsUpdate(userId, accountId);
-            this.props.requestResponsesUpdate(userId, accountId);
-            this.props.requestInquiriesUpdate(userId, accountId);
-            this.props.requestInquiryBatchesUpdate(userId, accountId);
-            this.props.masterCardActionsUpdate(userId, accountId);
+            this.props.eventsUpdate(userId);
 
             const accountInfo = this.props.accounts.find(account => account.id === accountId);
             if (accountInfo) {
@@ -150,11 +140,7 @@ class AccountInfo extends React.Component {
                 this.props.shareInviteBankInquiriesInfoUpdate(user.id, nextAccountId);
             }
             this.props.shareInviteBankResponsesInfoUpdate(user.id);
-            this.props.paymentsUpdate(user.id, nextAccountId);
-            this.props.bunqMeTabsUpdate(user.id, nextAccountId);
-            this.props.requestResponsesUpdate(user.id, nextAccountId);
-            this.props.requestInquiriesUpdate(user.id, nextAccountId);
-            this.props.masterCardActionsUpdate(user.id, nextAccountId);
+            this.props.eventsUpdate(user.id);
         }
         return null;
     }
@@ -489,16 +475,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId, accountId)),
         shareInviteBankResponsesInfoUpdate: (userId, accountId) =>
             dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId)),
-        paymentsUpdate: (userId, accountId) => dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId)),
-        requestInquiriesUpdate: (userId, accountId) =>
-            dispatch(requestInquiriesUpdate(BunqJSClient, userId, accountId)),
-        requestInquiryBatchesUpdate: (userId, accountId) =>
-            dispatch(requestInquiryBatchesUpdate(BunqJSClient, userId, accountId)),
-        requestResponsesUpdate: (userId, accountId) =>
-            dispatch(requestResponsesUpdate(BunqJSClient, userId, accountId)),
-        masterCardActionsUpdate: (userId, accountId) =>
-            dispatch(masterCardActionsUpdate(BunqJSClient, userId, accountId)),
-        bunqMeTabsUpdate: (userId, accountId) => dispatch(bunqMeTabsUpdate(BunqJSClient, userId, accountId))
+        eventInfoUpdate: (userId) => dispatch(eventInfoUpdate(BunqJSClient, userId)),
     };
 };
 

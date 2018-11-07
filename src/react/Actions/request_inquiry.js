@@ -1,7 +1,7 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { openSnackbar } from "./snackbar";
 import { requestInquiryUpdate } from "./request_inquiry_info";
-import { requestInquiryBatchesUpdate } from "./request_inquiry_batches";
+import { eventInfoUpdate } from "./events";
 
 export function requestInquirySend(BunqJSClient, userId, accountId, requestInquiries) {
     const failedMessage = window.t("We received the following error while sending your request");
@@ -36,7 +36,7 @@ export function requestInquiryCancel(BunqJSClient, userId, accountId, requestInq
 
                 // update the information page
                 dispatch(requestInquiryUpdate(BunqJSClient, userId, accountId, requestInquiryId));
-                dispatch(requestInquiryBatchesUpdate(BunqJSClient, userId, accountId));
+                dispatch(eventInfoUpdate(BunqJSClient, userId));
             })
             .catch(error => {
                 dispatch(requestInquiryNotLoading());

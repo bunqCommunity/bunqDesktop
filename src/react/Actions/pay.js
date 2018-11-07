@@ -1,9 +1,9 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { openSnackbar } from "./snackbar";
-import { paymentInfoUpdate } from "./payments";
 import { accountsUpdate } from "./accounts";
 import { shareInviteBankInquiriesInfoUpdate } from "./share_invite_bank_inquiries";
 import { shareInviteBankResponsesInfoUpdate } from "./share_invite_bank_responses";
+import {eventInfoUpdate} from "./events";
 
 export function paySend(BunqJSClient, userId, accountId, description, amount, targets, draft = false) {
     const failedMessage = window.t("We received the following error while sending your payment");
@@ -34,9 +34,8 @@ export function paySend(BunqJSClient, userId, accountId, description, amount, ta
                 dispatch(openSnackbar(notification));
 
                 // update the payments, accounts and share list
-                dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId));
                 dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId));
-                dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId));
+                dispatch(eventInfoUpdate(BunqJSClient, userId));
                 dispatch(accountsUpdate(BunqJSClient, userId));
 
                 dispatch(payNotLoading());

@@ -1,11 +1,5 @@
 import store from "store";
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import { accountsClear } from "./accounts";
-import { paymentInfoClear } from "./payment_info";
-import { paymentsClear } from "./payments";
-import { requestResponseClear } from "./request_response_info";
-import { requestInquiryClear } from "./request_inquiry_info";
-import { bunqMeTabsClear } from "./bunq_me_tabs";
 import { registrationClearUserInfo, registrationSetOAuthStoredApiKey } from "./registration";
 
 const USER_ID_LOCATION = "BUNQDESKTOP_USER_ID";
@@ -65,12 +59,7 @@ export function userLogout() {
         });
 
         // user was deselected so we clear the info for this user
-        dispatch(accountsClear());
-        dispatch(paymentInfoClear());
-        dispatch(paymentsClear());
-        dispatch(bunqMeTabsClear());
-        dispatch(requestResponseClear());
-        dispatch(requestInquiryClear());
+        dispatch(registrationClearUserInfo());
     };
 }
 

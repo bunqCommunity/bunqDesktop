@@ -28,11 +28,7 @@ import {
     accountExcludeFromTotal,
     accountIncludeInTotal
 } from "../../Actions/accounts";
-import { paymentInfoUpdate } from "../../Actions/payments";
-import { requestResponsesUpdate } from "../../Actions/request_responses";
-import { bunqMeTabsUpdate } from "../../Actions/bunq_me_tabs";
-import { masterCardActionsUpdate } from "../../Actions/master_card_actions";
-import { requestInquiriesUpdate } from "../../Actions/request_inquiries";
+import { eventInfoUpdate } from "../../Actions/events";
 import { updateStatisticsSavingsGoals } from "../../Actions/savings_goals";
 import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_responses";
 import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiries";
@@ -292,26 +288,13 @@ const mapStateToProps = state => {
 
         shareInviteBankInquiriesLoading: state.share_invite_bank_inquiries.loading,
 
-        paymentsLoading: state.payments.loading,
-        bunqMeTabsLoading: state.bunq_me_tabs.loading,
-        requestResponsesLoading: state.request_responses.loading,
-        requestInquiriesLoading: state.request_inquiries.loading,
-        masterCardActionsLoading: state.master_card_actions.loading
+        eventsLoading: state.events.loading
     };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        paymentsUpdate: (userId, accountId) => dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId)),
-        requestInquiriesUpdate: (userId, accountId) =>
-            dispatch(requestInquiriesUpdate(BunqJSClient, userId, accountId)),
-        requestResponsesUpdate: (userId, accountId) =>
-            dispatch(requestResponsesUpdate(BunqJSClient, userId, accountId)),
-        masterCardActionsUpdate: (userId, accountId) =>
-            dispatch(masterCardActionsUpdate(BunqJSClient, userId, accountId)),
-        bunqMeTabsUpdate: (userId, accountId) => dispatch(bunqMeTabsUpdate(BunqJSClient, userId, accountId)),
-
         accountsUpdate: userId => dispatch(accountsUpdate(BunqJSClient, userId)),
 
         accountExcludeFromTotal: accountId => dispatch(accountExcludeFromTotal(accountId)),

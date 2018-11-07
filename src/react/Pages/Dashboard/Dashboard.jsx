@@ -26,6 +26,7 @@ import NavLink from "../../Components/Routing/NavLink";
 import AttachmentImage from "../../Components/AttachmentImage/AttachmentImage";
 import SavingsGoalsList from "../../Components/SavingsGoals/SavingsGoalsList";
 
+import { eventInfoUpdate } from "../../Actions/events";
 import { userLogin, userLogout } from "../../Actions/user";
 import { requestInquirySend } from "../../Actions/request_inquiry";
 import { registrationLogOut } from "../../Actions/registration";
@@ -80,6 +81,10 @@ class Dashboard extends React.Component {
             this.props.user === false
         ) {
             this.props.userLogin(this.props.userType, false);
+
+            setTimeout(() => {
+                this.props.eventInfoUpdate(this.props.user.id);
+            }, 2000);
         }
     }
 
@@ -346,6 +351,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // send a request, used for sandbox button
         requestInquirySend: (userId, accountId, requestInquiries) =>
             dispatch(requestInquirySend(BunqJSClient, userId, accountId, requestInquiries)),
+
+        eventInfoUpdate: userId => dispatch(eventInfoUpdate(BunqJSClient, userId)),
+
         userLogin: (type, updated = false) => dispatch(userLogin(BunqJSClient, type, updated))
     };
 };

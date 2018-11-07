@@ -14,7 +14,7 @@ import AccountList from "../../Components/AccountList/AccountList";
 import BunqMeTabList from "../../Components/BunqMeTabList";
 import BunqMeTabForm from "./BunqMeTabForm";
 
-import { bunqMeTabsUpdate } from "../../Actions/bunq_me_tabs";
+import { eventInfoUpdate } from "../../Actions/events";
 
 const styles = {
     paper: {
@@ -42,7 +42,7 @@ class BunqMeTab extends React.Component {
         });
     }
 
-    updateTabs = (userId, accountId) => this.props.bunqMeTabsUpdate(userId, accountId);
+    updateTabs = userId => this.props.eventInfoUpdate(userId);
 
     toggleForm = () => this.setState({ showForm: !this.state.showForm });
 
@@ -107,7 +107,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, props) => {
     const { BunqJSClient } = props;
     return {
-        bunqMeTabsUpdate: (userId, accountId) => dispatch(bunqMeTabsUpdate(BunqJSClient, userId, accountId))
+        eventInfoUpdate: userId => dispatch(eventInfoUpdate(BunqJSClient, userId))
     };
 };
 

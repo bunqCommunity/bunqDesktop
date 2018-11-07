@@ -36,14 +36,8 @@ import { userLogin } from "../Actions/user.js";
 import { usersUpdate } from "../Actions/users";
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
-import { loadStoredPayments } from "../Actions/payments";
 import { loadStoredAccounts } from "../Actions/accounts";
-import { loadStoredBunqMeTabs } from "../Actions/bunq_me_tabs";
 import { applicationSetStatus } from "../Actions/application.js";
-import { loadStoredMasterCardActions } from "../Actions/master_card_actions";
-import { loadStoredRequestInquiries } from "../Actions/request_inquiries";
-import { loadStoredrequestInquiryBatches } from "../Actions/request_inquiry_batches";
-import { loadStoredRequestResponses } from "../Actions/request_responses";
 import {
     registrationClearUserInfo,
     registrationLoading,
@@ -368,11 +362,7 @@ class Layout extends React.Component {
 
         this.props.loadStoredAccounts();
         this.props.loadStoredContacts();
-        this.props.loadStoredPayments();
-        this.props.loadStoredBunqMeTabs();
-        this.props.loadStoredMasterCardActions();
-        this.props.loadStoredRequestInquiries();
-        this.props.loadStoredrequestInquiryBatches();
+        this.props.loadStoredEvents();
         this.props.loadStoredRequestResponses();
         this.props.loadStoredShareInviteBankResponses();
         this.props.loadStoredShareInviteBankInquiries();
