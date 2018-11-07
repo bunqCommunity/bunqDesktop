@@ -36,6 +36,12 @@ const styles = {
         height: 26,
         color: "#ffffff",
         backgroundColor: "#ffa500"
+    },
+    overlayCircular: {
+        position: "absolute",
+        width: 68,
+        height: 68,
+        top: 7
     }
 };
 
@@ -91,18 +97,21 @@ class AccountListItem extends React.Component {
 
         // check if any of the selected account ids are for this account
         let displayStyle = {};
+        let circularLeftPostion = 20;
         let accountIsSelected = false;
         if (selectedAccountIds.length !== 0) {
             // check if the selected account ids list contains this account
             accountIsSelected = selectedAccountIds.some(id => id === account.id);
             // switch if toggle is true
             const isSelected = toggleAccountIds ? !accountIsSelected : accountIsSelected;
-            displayStyle = isSelected
-                ? {
-                      borderLeft: "4px solid #1da1f2",
-                      paddingLeft: 20
-                  }
-                : {};
+
+            if (isSelected) {
+                circularLeftPostion = 16;
+                displayStyle = {
+                    borderLeft: "4px solid #1da1f2",
+                    paddingLeft: 20
+                };
+            }
         }
 
         // decide which onClick event is used based on
@@ -122,22 +131,16 @@ class AccountListItem extends React.Component {
                             variant="static"
                             value={savingsPercentage}
                             style={{
-                                position: "absolute",
-                                width: 68,
-                                height: 68,
+                                ...styles.overlayCircular,
                                 zIndex: 2,
-                                top: 7,
-                                left: 20
+                                left: circularLeftPostion
                             }}
                         />
                         <div
                             style={{
-                                position: "absolute",
-                                width: 68,
-                                height: 68,
+                                ...styles.overlayCircular,
                                 zIndex: 1,
-                                top: 7,
-                                left: 20
+                                left: circularLeftPostion
                             }}
                         >
                             <svg viewBox="22 22 44 44">
