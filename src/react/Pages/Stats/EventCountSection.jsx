@@ -15,11 +15,18 @@ export default props => {
         t,
         theme,
         data,
+        events,
         categoryTransactionTypeSelector,
         displayTransactionAmount,
         splitCardTypes,
         categoryTransactionType
     } = props;
+
+    const payments = events.filter(event => event.type === "Payment");
+    const masterCardActions = events.filter(event => event.type === "MasterCardAction");
+    const bunqMeTabs = events.filter(event => event.type === "BunqMeTab");
+    const requestResponses = events.filter(event => event.type === "RequestResponse");
+    const requestInquiries = events.filter(event => event.type === "RequestInquiry");
 
     return (
         <Grid item xs={12}>
@@ -48,7 +55,7 @@ export default props => {
                             ) : (
                                 <EventTransactionPieChart
                                     theme={theme}
-                                    payments={props.payments}
+                                    payments={payments}
                                     requestInquiryTransactionHistory={data.requestInquiryTransactionHistory}
                                     requestResponseTransactionHistory={data.requestResponseTransactionHistory}
                                     bunqMeTabTransactionHistory={data.bunqMeTabTransactionHistory}
@@ -59,7 +66,7 @@ export default props => {
                         ) : splitCardTypes ? (
                             <EventSplitCountPieChart
                                 theme={theme}
-                                payments={props.payments}
+                                payments={payments}
                                 requestInquiryHistory={data.requestInquiryHistory}
                                 requestResponseHistory={data.requestResponseHistory}
                                 bunqMeTabHistory={data.bunqMeTabHistory}
@@ -72,11 +79,11 @@ export default props => {
                         ) : (
                             <EventCountPieChart
                                 theme={theme}
-                                payments={props.payments}
-                                masterCardActions={props.masterCardActions}
-                                requestInquiries={props.requestInquiries}
-                                requestResponses={props.requestResponses}
-                                bunqMeTabs={props.bunqMeTabs}
+                                payments={payments}
+                                masterCardActions={masterCardActions}
+                                requestInquiries={requestInquiries}
+                                requestResponses={requestResponses}
+                                bunqMeTabs={bunqMeTabs}
                             />
                         )}
                     </Paper>

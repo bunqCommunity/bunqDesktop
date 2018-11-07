@@ -17,7 +17,10 @@ export default props => {
         <Paper style={styles.sideBarPaper}>
             <List dense component="nav">
                 <ListItem>
-                    <ListItemText primary={t("Payments")} secondary={props.payments.length} />
+                    <ListItemText
+                        primary={t("Payments")}
+                        secondary={props.events.filter(event => event.type === "Payment").length}
+                    />
                 </ListItem>
                 {splitCardTypes ? (
                     <React.Fragment>
@@ -48,17 +51,29 @@ export default props => {
                     </React.Fragment>
                 ) : (
                     <ListItem>
-                        <ListItemText primary={t("Card payments")} secondary={props.masterCardActions.length} />
+                        <ListItemText
+                            primary={t("Card payments")}
+                            secondary={props.events.filter(event => event.type === "MasterCardAction").length}
+                        />
                     </ListItem>
                 )}
                 <ListItem>
-                    <ListItemText primary={t("Requests sent")} secondary={props.requestInquiries.length} />
+                    <ListItemText
+                        primary={t("Requests sent")}
+                        secondary={props.events.filter(event => event.type === "RequestInquiry").length}
+                    />
                 </ListItem>
                 <ListItem>
-                    <ListItemText primary={t("Requests received")} secondary={props.requestResponses.length} />
+                    <ListItemText
+                        primary={t("Requests received")}
+                        secondary={props.events.filter(event => event.type === "RequestResponse").length}
+                    />
                 </ListItem>
                 <ListItem>
-                    <ListItemText primary={t("bunqme Requests")} secondary={props.bunqMeTabs.length} />
+                    <ListItemText
+                        primary={t("bunqme Requests")}
+                        secondary={props.events.filter(event => event.type === "BunqMeTab").length}
+                    />
                 </ListItem>
             </List>
         </Paper>

@@ -119,13 +119,11 @@ class Stats extends React.Component {
 
         this.worker.postMessage({
             // all endpoints
-            payments: props.events.filter(event => event.type === "Payment").map(item => item.toJSON()),
-            masterCardActions: props.events
-                .filter(event => event.type === "MasterCardAction")
-                .map(item => item.toJSON()),
-            requestInquiries: props.events.filter(event => event.type === "RequestInquiry").map(item => item.toJSON()),
-            requestResponses: props.events.filter(event => event.type === "RequestResponse").map(item => item.toJSON()),
-            bunqMeTabs: props.props.events.filter(event => event.type === "BunqMeTab"),
+            payments: props.events.filter(e => e.type === "Payment").map(i => i.object.toJSON()),
+            masterCardActions: props.events.filter(e => e.type === "MasterCardAction").map(i => i.object.toJSON()),
+            requestInquiries: props.events.filter(e => e.type === "RequestInquiry").map(i => i.object.toJSON()),
+            requestResponses: props.events.filter(e => e.type === "RequestResponse").map(i => i.object.toJSON()),
+            bunqMeTabs: props.events.filter(e => e.type === "BunqMeTab").map(i => i.object.toJSON()),
             // the accounts and selectedAccount so a balance can be calculated
             accounts: props.accounts.map(account => account.toJSON()),
             selectedAccount: props.selectedAccount,

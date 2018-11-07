@@ -54,7 +54,7 @@ export const eventFilter = options => event => {
 };
 
 export const paymentFilter = options => payment => {
-    if (options.hiddenTypes.includes("Payment")) return false;
+    if (options.hiddenTypes && options.hiddenTypes.includes("Payment")) return false;
 
     if (options.paymentVisibility === false) {
         return false;
@@ -150,7 +150,7 @@ export const paymentFilter = options => payment => {
 };
 
 export const bunqMeTabsFilter = options => bunqMeTab => {
-    if (options.hiddenTypes.includes("BunqMeTab")) return false;
+    if (options.hiddenTypes && options.hiddenTypes.includes("BunqMeTab")) return false;
 
     if (options.bunqMeTabVisibility === false) {
         return false;
@@ -225,7 +225,7 @@ export const bunqMeTabsFilter = options => bunqMeTab => {
 };
 
 export const masterCardActionFilter = options => masterCardAction => {
-    if (options.hiddenTypes.includes("MasterCardAction")) return false;
+    if (options.hiddenTypes && options.hiddenTypes.includes("MasterCardAction")) return false;
 
     if (options.paymentVisibility === false) {
         return false;
@@ -307,11 +307,14 @@ export const requestResponseFilter = options => requestResponse => {
     const isRequestType = requestTypes.includes(requestResponse.type);
 
     if (isRequestType) {
-        if (options.requestVisibility === false || options.hiddenTypes.includes("RequestResponse")) {
+        if (
+            options.requestVisibility === false ||
+            (options.hiddenTypes && options.hiddenTypes.includes("RequestResponse"))
+        ) {
             return false;
         }
     } else {
-        if (options.paymentVisibility === false || options.hiddenTypes.includes("Payment")) {
+        if (options.paymentVisibility === false || (options.hiddenTypes && options.hiddenTypes.includes("Payment"))) {
             return false;
         }
     }
@@ -404,7 +407,7 @@ export const requestResponseFilter = options => requestResponse => {
 };
 
 export const requestInquiryFilter = options => requestInquiry => {
-    if (options.hiddenTypes.includes("RequestInquiry")) return false;
+    if (options.hiddenTypes && options.hiddenTypes.includes("RequestInquiry")) return false;
 
     if (options.requestVisibility === false) {
         return false;
@@ -490,7 +493,7 @@ export const requestInquiryFilter = options => requestInquiry => {
 };
 
 export const requestInquiryBatchFilter = options => requestInquiryBatch => {
-    if (options.hiddenTypes.includes("RequestInquiryBatch")) return false;
+    if (options.hiddenTypes && options.hiddenTypes.includes("RequestInquiryBatch")) return false;
 
     if (options.requestVisibility === false) {
         return false;

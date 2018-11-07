@@ -21,16 +21,16 @@ export default class BunqMeTab implements Event {
     private _bunqme_tab_entry: BunqMeTabEntry;
     private _result_inquiries: BunqMeTabResultInquiry[];
 
-    constructor(paymentObject: any) {
-        this._rawData = paymentObject;
+    constructor(bunqMeTabObject: any) {
+        this._rawData = bunqMeTabObject;
 
         // get the direct object
-        const paymentInfo: any = paymentObject.BunqMeTab;
+        const bunqMeTabInfo: any = bunqMeTabObject.BunqMeTab;
 
         // go through all keys and set the data
-        Object.keys(paymentInfo).forEach(key => {
+        Object.keys(bunqMeTabInfo).forEach(key => {
             const objectKey = key[0] === "_" ? key : `_${key}`;
-            if (typeof this[objectKey] !== undefined) this[objectKey] = paymentInfo[key];
+            if (typeof this[objectKey] !== undefined) this[objectKey] = bunqMeTabInfo[key];
         });
 
         this._updated = new Date(this._updated);
