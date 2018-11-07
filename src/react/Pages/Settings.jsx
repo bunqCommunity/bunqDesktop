@@ -550,7 +550,7 @@ class Settings extends React.Component {
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
-                    <Button variant="outlined" style={styles.button} onClick={this.props.paymentsClear}>
+                    <Button variant="outlined" style={styles.button} onClick={this.props.eventsClear}>
                         Events {eventCount}
                     </Button>
                 </Grid>
