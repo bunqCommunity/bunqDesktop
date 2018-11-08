@@ -1,5 +1,4 @@
 import settings from "../ImportWrappers/electronSettings";
-import { generateGUID } from "../Helpers/Utils";
 import SavingsGoal from "../Models/SavingsGoal";
 
 export const BUNQDESKTOP_SAVINGS_GOALS = "BUNQDESKTOP_SAVINGS_GOALS";
