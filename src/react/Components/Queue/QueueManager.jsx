@@ -256,7 +256,7 @@ class QueueManager extends React.Component {
 
                 // more events can be loaded for this account
                 if (
-                    eventsNew.length === currentEventCount &&
+                    events.length === currentEventCount &&
                     nextEventCount > 0 &&
                     totalEventCount < EVENT_TOTAL_LIMIT
                 ) {
