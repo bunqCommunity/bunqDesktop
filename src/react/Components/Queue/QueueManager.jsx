@@ -15,11 +15,10 @@ import {
     queueStartSync
 } from "../../Actions/queue";
 import { eventsSetInfo } from "../../Actions/events";
-import { shareInviteBankInquiriesSetInfo } from "../../Actions/share_invite_bank_inquiries";
-import { shareInviteBankResponsesSetInfo } from "../../Actions/share_invite_bank_responses";
 import { openSnackbar } from "../../Actions/snackbar";
+import { shareInviteBankResponsesSetInfo } from "../../Actions/share_invite_bank_responses";
 
-export const DEFAULT_EVENT_COUNT_LIMIT = 50;
+export const DEFAULT_EVENT_COUNT_LIMIT = 200;
 export const EVENT_TOTAL_LIMIT = 1000;
 
 class QueueManager extends React.Component {
