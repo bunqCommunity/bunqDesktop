@@ -114,7 +114,7 @@ class AccountInfo extends React.Component {
                 this.props.shareInviteBankInquiriesInfoUpdate(userId, accountId);
             }
             this.props.shareInviteBankResponsesInfoUpdate(userId);
-            this.props.eventInfoUpdate(userId);
+            this.props.eventInfoUpdate(userId, accountId);
 
             const accountInfo = this.props.accounts.find(account => account.id === accountId);
             if (accountInfo) {
@@ -140,7 +140,7 @@ class AccountInfo extends React.Component {
                 this.props.shareInviteBankInquiriesInfoUpdate(user.id, nextAccountId);
             }
             this.props.shareInviteBankResponsesInfoUpdate(user.id);
-            this.props.eventInfoUpdate(user.id);
+            this.props.eventInfoUpdate(user.id, nextAccountId);
         }
         return null;
     }
@@ -475,7 +475,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId, accountId)),
         shareInviteBankResponsesInfoUpdate: (userId, accountId) =>
             dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId)),
-        eventInfoUpdate: (userId) => dispatch(eventInfoUpdate(BunqJSClient, userId)),
+        eventInfoUpdate: (userId, accountId) =>
+            dispatch(
+                eventInfoUpdate(BunqJSClient, userId, {
+                    monetary_account_id: accountId,
+                    count: 200
+                })
+            )
     };
 };
 

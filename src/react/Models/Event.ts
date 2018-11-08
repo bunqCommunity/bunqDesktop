@@ -23,6 +23,7 @@ export default class Event implements Event {
     private _object: any;
     private _updated_fields: any | null;
     private _user_id: number | null;
+    private _monetary_account_id: number | null;
     private _type:
         | string
         | "Payment"
@@ -111,6 +112,9 @@ export default class Event implements Event {
     }
     get action(): string {
         return this._action;
+    }
+    get monetary_account_id(): number | null {
+        return this._monetary_account_id;
     }
     get updated_fields() {
         return this._updated_fields;
