@@ -5,7 +5,10 @@ export type EventTypeValue =
     | "MasterCardAction"
     | "RequestInquiry"
     | "RequestInquiryBatch"
-    | "RequestResponse";
+    | "RequestResponse"
+    | "Invoice"
+    | "ScheduledPayment"
+    | "ScheduledInstance";
 
 export default interface EventType {
     eventType: EventTypeValue;

@@ -226,47 +226,23 @@ class QueueManager extends React.Component {
                 count: currentEventCount
             })
             .then(events => {
-                // turn plain objects into Model objects
-                const eventsNew = events.map(item => new Event(item)).filter(event => {
-                    switch (event.type) {
-                        case "Payment":
-                        case "BunqMeTab":
-                        case "MasterCardAction":
-                        case "RequestInquiry":
-                        case "RequestInquiryBatch":
-                        case "RequestResponse":
-                            return true;
-                        case "FeatureAnnouncement":
-                        case "ScheduledInstance":
-                        case "ScheduledPayment":
-                        case "ShareInviteBankInquiry":
-                        case "ShareInviteBankResponse":
-                        default:
-                            return false;
-                    }
-                });
-
                 let currentEvents = [...this.state.events];
 
                 // update the list for the account id
-                currentEvents = [...currentEvents, ...eventsNew];
+                currentEvents = [...currentEvents, ...events];
 
                 // count total events between all accounts
                 const totalEventCount = currentEvents.length;
 
                 // more events can be loaded for this account
-                if (
-                    events.length === currentEventCount &&
-                    nextEventCount > 0 &&
-                    totalEventCount < EVENT_TOTAL_LIMIT
-                ) {
-                    const oldestEventIndex = eventsNew.length - 1;
-                    const oldestEvent = eventsNew[oldestEventIndex];
+                if (events.length === currentEventCount && nextEventCount > 0 && totalEventCount < EVENT_TOTAL_LIMIT) {
+                    const oldestEventIndex = events.length - 1;
+                    const oldestEvent = events[oldestEventIndex];
 
                     this.props.queueIncreaseRequestCounter();
 
                     // re-run the events to continue deeper into the acocunt
-                    this.eventsUpdate(user_id, oldestEvent.id, nextEventCount);
+                    this.eventsUpdate(user_id, oldestEvent.Event.id, nextEventCount);
                 }
 
                 // set these events in the state

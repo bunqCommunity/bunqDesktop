@@ -9,9 +9,9 @@ import {
     RequestResponseType,
     RequestResponseSubType
 } from "../Types/Types";
-import Event, { EventTypeValue } from "../Types/Event";
+import EventType, { EventTypeValue } from "../Types/Event";
 
-export default class RequestResponse implements Event {
+export default class RequestResponse implements EventType {
     // the original raw object
     private _rawData: any;
 

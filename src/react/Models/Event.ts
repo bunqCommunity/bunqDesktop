@@ -1,12 +1,15 @@
-import { EventTypeValue } from "../Types/Event";
+import EventType, { EventTypeValue } from "../Types/Event";
 import Payment from "./Payment";
 import RequestInquiry from "./RequestInquiry";
 import MasterCardAction from "./MasterCardAction";
 import RequestResponse from "./RequestResponse";
 import BunqMeTab from "./BunqMeTab";
 import RequestInquiryBatch from "./RequestInquiryBatch";
+import ScheduledInstance from "./ScheduledInstance";
+import ScheduledPayment from "./ScheduledPayment";
+import Invoice from "./Invoice";
 
-export default class Event implements Event {
+export default class Event implements EventType {
     // the original raw object
     private _rawData: any;
 
@@ -66,9 +69,16 @@ export default class Event implements Event {
                     case "RequestResponse":
                         this._object = new RequestResponse(this._object);
                         break;
-                    case "FeatureAnnouncement":
                     case "ScheduledInstance":
+                        this._object = new ScheduledInstance(this._object);
+                        break;
                     case "ScheduledPayment":
+                        this._object = new ScheduledPayment(this._object);
+                        break;
+                    case "Invoice":
+                        this._object = new Invoice(this._object);
+                        break;
+                    case "FeatureAnnouncement":
                     case "ShareInviteBankInquiry":
                     case "ShareInviteBankResponse":
                     default:

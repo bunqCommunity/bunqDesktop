@@ -25,29 +25,33 @@ const checkDateRange = (fromDate, toDate, date) => {
 };
 
 export const eventFilter = options => event => {
-    if (event.type === "Payment") {
-        return paymentFilter(options)(event.object);
-    }
-    if (event.type === "BunqMeTab") {
-        return bunqMeTabsFilter(options)(event.object);
-    }
-    if (event.type === "MasterCardAction") {
-        return masterCardActionFilter(options)(event.object);
-    }
-    if (event.type === "RequestResponse") {
-        return requestResponseFilter(options)(event.object);
-    }
-    if (event.type === "RequestInquiry") {
-        return requestInquiryFilter(options)(event.object);
-    }
-    if (event.type === "RequestInquiryBatch") {
-        return requestInquiryBatchFilter(options)(event.object);
-    }
-    if (event.type === "ShareInviteBankResponse") {
-        return shareInviteBankResponseFilter(options)(event.object);
-    }
-    if (event.type === "ShareInviteBankInquiry") {
-        return shareInviteBankInquiryFilter(options)(event.object);
+    switch (event.type) {
+        case "Payment":
+        case "Invoice":
+        case "ScheduledInstance":
+        case "ScheduledPayment":
+            let paymentObject = event.object;
+            if (event.type === "ScheduledInstance") {
+                paymentObject = event.object.result_object;
+            }
+            if (event.type === "ScheduledPayment") {
+                paymentObject = event.object.payment;
+            }
+            return paymentFilter(options)(paymentObject);
+        case "BunqMeTab":
+            return bunqMeTabsFilter(options)(event.object);
+        case "MasterCardAction":
+            return masterCardActionFilter(options)(event.object);
+        case "RequestResponse":
+            return requestResponseFilter(options)(event.object);
+        case "RequestInquiry":
+            return requestInquiryFilter(options)(event.object);
+        case "RequestInquiryBatch":
+            return requestInquiryBatchFilter(options)(event.object);
+        case "ShareInviteBankResponse":
+            return shareInviteBankResponseFilter(options)(event.object);
+        case "ShareInviteBankInquiry":
+            return shareInviteBankInquiryFilter(options)(event.object);
     }
 
     return checkDateRange(options.dateFromFilter, options.dateToFilter, event.created);
@@ -531,6 +535,10 @@ export const shareInviteBankResponseFilter = options => shareInviteBankResponse 
         return false;
     }
 
+    if (options.requestVisibility === false) {
+        return false;
+    }
+
     // don't show share invites if amount filter is set
     if (options.amountFilterAmount !== "") return false;
 
@@ -559,6 +567,10 @@ export const shareInviteBankInquiryFilter = options => shareInviteBankInquiry =>
         : shareInviteBankInquiry.ShareInviteBankResponse;
 
     if (shareInviteBankInquiryInfo.status !== "PENDING") {
+        return false;
+    }
+
+    if (options.requestVisibility === false) {
         return false;
     }
 

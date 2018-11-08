@@ -10,11 +10,7 @@ import ShareInviteBankInquiryListItem from "../ListItems/ShareInviteBankInquiryL
 import ShareInviteBankResponseListItem from "../ListItems/ShareInviteBankResponseListItem";
 
 import { UTCDateToLocalDate } from "../../Helpers/Utils";
-import {
-    eventFilter,
-    shareInviteBankInquiryFilter,
-    shareInviteBankResponseFilter
-} from "../../Helpers/DataFilters";
+import { eventFilter, shareInviteBankInquiryFilter, shareInviteBankResponseFilter } from "../../Helpers/DataFilters";
 
 export const eventMapper = (settings, onlyPending = false, onlyNonPending = false) => {
     if (settings.hiddenTypes.includes("Payment")) return [];
@@ -45,11 +41,20 @@ export const eventMapper = (settings, onlyPending = false, onlyNonPending = fals
         })
         .map(event => {
             switch (event.type) {
+                case "ScheduledInstance":
+                case "ScheduledPayment":
                 case "Payment":
+                    let paymentObject = event.object;
+                    if (event.type === "ScheduledInstance") {
+                        paymentObject = event.object.result_object;
+                    }
+                    if (event.type === "ScheduledPayment") {
+                        paymentObject = event.object.payment;
+                    }
                     return {
                         component: (
                             <PaymentListItem
-                                payment={event.object}
+                                payment={paymentObject}
                                 accounts={settings.accounts}
                                 BunqJSClient={settings.BunqJSClient}
                             />
@@ -118,6 +123,12 @@ export const eventMapper = (settings, onlyPending = false, onlyNonPending = fals
                                 BunqJSClient={settings.BunqJSClient}
                             />
                         ),
+                        filterDate: UTCDateToLocalDate(event.updated),
+                        info: event.object
+                    };
+                case "Invoice":
+                    return {
+                        component: <div>Invoice</div>,
                         filterDate: UTCDateToLocalDate(event.updated),
                         info: event.object
                     };

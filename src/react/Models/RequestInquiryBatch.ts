@@ -1,8 +1,8 @@
 import { Amount, RequestSplitTheBill } from "../Types/Types";
-import Event, { EventTypeValue } from "../Types/Event";
+import EventType, { EventTypeValue } from "../Types/Event";
 import RequestInquiry from "./RequestInquiry";
 
-export default class RequestInquiryBatch implements Event {
+export default class RequestInquiryBatch implements EventType {
     // the original raw object
     private _rawData: any;
 

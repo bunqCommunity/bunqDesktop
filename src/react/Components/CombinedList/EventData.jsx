@@ -2,7 +2,6 @@ import React from "react";
 import { translate } from "react-i18next";
 import { withTheme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Collapse from "@material-ui/core/Collapse";
 
@@ -57,46 +56,42 @@ class EventData extends React.Component {
 
         return (
             <Collapse in={open}>
-                <Paper style={styles.paper}>
-                    <Grid container spacing={8} justify={"center"}>
-                        <Grid item xs={6} sm={4} style={styles.text}>
-                            <ChangeIcon
-                                style={{
-                                    ...styles.icon,
-                                    color:
-                                        change > 0
-                                            ? theme.palette.common.receivedPayment
-                                            : theme.palette.common.sentPayment
-                                }}
-                            />
-                            <Typography variant="body2">
-                                {t("Total change")}: {formatMoney(change, true)}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={6} sm={4} style={styles.text}>
-                            <IncomingIcon
-                                style={{
-                                    ...styles.icon,
-                                    color: theme.palette.common.receivedPayment
-                                }}
-                            />
-                            <Typography variant="body2">
-                                {t("Received")}: {formatMoney(incoming, true)}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={6} sm={4} style={styles.text}>
-                            <OutgoingIcon
-                                style={{
-                                    ...styles.icon,
-                                    color: theme.palette.common.sentPayment
-                                }}
-                            />
-                            <Typography variant="body2">
-                                {t("Sent")}: {formatMoney(outGoing, true)}
-                            </Typography>
-                        </Grid>
+                <Grid container spacing={8} justify={"center"} style={styles.paper}>
+                    <Grid item xs={6} sm={4} style={styles.text}>
+                        <ChangeIcon
+                            style={{
+                                ...styles.icon,
+                                color:
+                                    change > 0 ? theme.palette.common.receivedPayment : theme.palette.common.sentPayment
+                            }}
+                        />
+                        <Typography variant="body2">
+                            {t("Total change")}: {formatMoney(change, true)}
+                        </Typography>
                     </Grid>
-                </Paper>
+                    <Grid item xs={6} sm={4} style={styles.text}>
+                        <IncomingIcon
+                            style={{
+                                ...styles.icon,
+                                color: theme.palette.common.receivedPayment
+                            }}
+                        />
+                        <Typography variant="body2">
+                            {t("Received")}: {formatMoney(incoming, true)}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={6} sm={4} style={styles.text}>
+                        <OutgoingIcon
+                            style={{
+                                ...styles.icon,
+                                color: theme.palette.common.sentPayment
+                            }}
+                        />
+                        <Typography variant="body2">
+                            {t("Sent")}: {formatMoney(outGoing, true)}
+                        </Typography>
+                    </Grid>
+                </Grid>
             </Collapse>
         );
     }
