@@ -10,6 +10,26 @@ export const API_KEYS_LOCATION = "BUNQDESKTOP_API_KEYS";
 export const API_KEY_IV_LOCATION = "BUNQDESKTOP_API_IV";
 
 /**
+ * Logs out of current account and logs back in to the selected stored key
+ * @param BunqJSClient
+ * @param storedKeyIndex
+ * @param derivedPassword
+ * @param derivedPasswordIdentifier
+ * @returns {Function}
+ */
+export function registrationSwitchKeys(BunqJSClient, storedKeyIndex, derivedPassword, derivedPasswordIdentifier) {
+    return dispatch => {
+        dispatch(registrationLogOut(BunqJSClient, false));
+        setTimeout(() => {
+            dispatch(registrationSetDerivedPassword(derivedPassword, derivedPasswordIdentifier));
+            setTimeout(() => {
+                dispatch(registrationLoadStoredApiKey(BunqJSClient, storedKeyIndex, derivedPassword));
+            }, 500);
+        }, 500);
+    };
+}
+
+/**
  * Only sets the api key without extra actions
  * @param api_key
  * @param encrypted_api_key

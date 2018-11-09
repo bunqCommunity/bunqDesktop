@@ -140,7 +140,6 @@ const mapStateToProps = state => {
         storedApiKeys: state.registration.stored_api_keys,
         apiKey: state.registration.api_key,
 
-        users: state.users.users,
         user: state.user.user,
         userType: state.user.user_type,
         userLoading: state.user.loading

@@ -32,7 +32,7 @@ const ThemeList = {
 };
 
 // redux actions
-import { userLogin } from "../Actions/user.js";
+// import { userLogin } from "../Actions/user.js";
 import { usersUpdate } from "../Actions/users";
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
@@ -123,12 +123,7 @@ class Layout extends React.Component {
 
     componentDidMount() {
         this.checkBunqSetup()
-            .then(_ => {
-                if (this.props.userType !== false) {
-                    // if a usertype is selected, we try to login the user
-                    this.props.userLogin(this.props.userType, false);
-                }
-            })
+            .then(_ => {})
             .catch(Logger.error);
 
         if (process.env.NODE_ENV !== "development") {
@@ -527,7 +522,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // get latest user list from BunqJSClient
         usersUpdate: (updated = false) => dispatch(usersUpdate(BunqJSClient, updated)),
         // login the user with a specific type from the list
-        userLogin: (userType, updated = false) => dispatch(userLogin(BunqJSClient, userType, updated)),
+        // userLogin: (userType, updated = false) => dispatch(userLogin(BunqJSClient, userType, updated)),
 
         queueStartSync: () => dispatch(queueStartSync()),
 

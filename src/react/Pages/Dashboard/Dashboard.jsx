@@ -26,9 +26,9 @@ import NavLink from "../../Components/Routing/NavLink";
 import AttachmentImage from "../../Components/AttachmentImage/AttachmentImage";
 import SavingsGoalsList from "../../Components/SavingsGoals/SavingsGoalsList";
 
-import { userLogin, userLogout } from "../../Actions/user";
+import { userLogout } from "../../Actions/user";
 import { requestInquirySend } from "../../Actions/request_inquiry";
-import { registrationLogOut } from "../../Actions/registration";
+import { registrationLogOut, registrationSwitchKeys } from "../../Actions/registration";
 
 const styles = {
     btn: {
@@ -72,17 +72,6 @@ class Dashboard extends React.Component {
         };
     }
 
-    componentDidUpdate() {
-        if (
-            this.props.userType !== false &&
-            this.props.userLoading === false &&
-            this.props.usersLoading === false &&
-            this.props.user === false
-        ) {
-            this.props.userLogin(this.props.userType, false);
-        }
-    }
-
     addMoney = event => {
         if (!this.props.requestInquiryLoading) {
             const requestInquiry = {
@@ -108,7 +97,6 @@ class Dashboard extends React.Component {
     render() {
         const { t, user, userType, savingsGoals } = this.props;
         const selectedTab = this.state.selectedTab;
-        const userTypes = Object.keys(this.props.users);
 
         const displayName = this.props.user.display_name ? this.props.user.display_name : t("user");
 
@@ -205,15 +193,24 @@ class Dashboard extends React.Component {
                         </Grid>
 
                         <Grid item xs={6} style={styles.headerButtonWrapper}>
-                            {userTypes.length > 1 ? (
-                                <Button style={styles.btn} onClick={this.props.logoutUser}>
-                                    {t("Switch user")}
-                                </Button>
-                            ) : null}
-
                             <Tooltip id="tooltip-fab" title="Switch API keys">
                                 <IconButton style={styles.iconButton} onClick={this.props.registrationLogOut}>
                                     <KeyIcon />
+                                </IconButton>
+                            </Tooltip>
+
+                            <Tooltip id="tooltip-fab" title="Switch test">
+                                <IconButton
+                                    style={styles.iconButton}
+                                    onClick={e =>
+                                        this.props.registrationSwitchKeys(
+                                            3,
+                                            this.props.derivedPassword,
+                                            this.props.derivedPasswordIdentifier
+                                        )
+                                    }
+                                >
+                                    Test
                                 </IconButton>
                             </Tooltip>
 
@@ -317,7 +314,6 @@ class Dashboard extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-        users: state.users.users,
         userType: state.user.user_type,
         userLoading: state.user.loading,
         limitedPermissions: state.user.limited_permissions,
@@ -328,6 +324,8 @@ const mapStateToProps = state => {
 
         savingsGoals: state.savings_goals.savings_goals,
 
+        derivedPassword: state.registration.derivedPassword,
+        derivedPasswordIdentifier: state.registration.identifier,
         useNoPassword: state.registration.use_no_password,
         storedApiKeys: state.registration.stored_api_keys,
         environment: state.registration.environment
@@ -342,11 +340,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
         // hard-logout
         registrationLogOut: () => dispatch(registrationLogOut(BunqJSClient)),
+        registrationSwitchKeys: (storedKeyIndex, derivedPassword, derivedPasswordIdentifier) =>
+            dispatch(registrationSwitchKeys(BunqJSClient, storedKeyIndex, derivedPassword, derivedPasswordIdentifier)),
 
         // send a request, used for sandbox button
         requestInquirySend: (userId, accountId, requestInquiries) =>
-            dispatch(requestInquirySend(BunqJSClient, userId, accountId, requestInquiries)),
-        userLogin: (type, updated = false) => dispatch(userLogin(BunqJSClient, type, updated))
+            dispatch(requestInquirySend(BunqJSClient, userId, accountId, requestInquiries))
     };
 };
 export default connect(

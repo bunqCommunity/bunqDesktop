@@ -25,7 +25,6 @@ import QRSvg from "../../Components/QR/QRSvg";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
 import NavLink from "../../Components/Routing/NavLink";
-import UserItem from "./UserItem";
 import OAuthManagement from "./OAuthManagement";
 import SideOptions from "./SideOptions";
 
@@ -36,7 +35,6 @@ import {
     registrationSetDeviceName,
     registrationSetEnvironment
 } from "../../Actions/registration";
-import { userLogin } from "../../Actions/user";
 import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
 import Logger from "../../Helpers/Logger";
 
@@ -173,9 +171,6 @@ class Login extends React.Component {
             openOptions: isSandboxMode
         });
 
-        // check if only a single user is available
-        this.checkForSingleUser();
-
         // set a timeout to let other stuff load first  before checking if we need to
         // display a qr code
         this.displayQrCodeDelay = setTimeout(() => {
@@ -194,32 +189,10 @@ class Login extends React.Component {
         }, 500);
     }
 
-    componentDidUpdate() {
-        this.checkForSingleUser();
-    }
-
     componentWillUnmount() {
         if (this.checkerInterval) clearInterval(this.checkerInterval);
         if (this.displayQrCodeDelay) clearTimeout(this.displayQrCodeDelay);
     }
-
-    /**
-     * Checks if only 1 user type is set and logs in the user if this is the case
-     */
-    checkForSingleUser = () => {
-        const userTypes = Object.keys(this.props.users);
-        if (userTypes.length === 1) {
-            // only one user we can instantly log in, check requirements again
-            if (
-                this.props.derivedPassword !== false &&
-                this.props.apiKey !== false &&
-                this.props.deviceName !== false &&
-                this.props.userLoading === false
-            ) {
-                this.props.loginUser(userTypes[0], true);
-            }
-        }
-    };
 
     setRegistration = () => {
         const apiKeyLength = this.props.t("The API key you entered does not look valid");
@@ -425,7 +398,7 @@ class Login extends React.Component {
     };
 
     render() {
-        const { t, users, status_message, userLoading, usersLoading, BunqJSClient } = this.props;
+        const { t, status_message, userLoading, usersLoading, BunqJSClient } = this.props;
 
         if (this.props.derivedPassword === false && this.props.registrationLoading === false) {
             return <Redirect to="/password" />;
@@ -438,24 +411,6 @@ class Login extends React.Component {
             // we have the required data and registration is no longer setting up
             return <Redirect to="/" />;
         }
-
-        const userItems =
-            userLoading || usersLoading ? (
-                <Grid item xs={12}>
-                    <CardContent style={{ textAlign: "center" }}>
-                        <TranslateTypography variant="h5" component="h2">
-                            Loading user accounts
-                        </TranslateTypography>
-                        <CircularProgress size={50} />
-                    </CardContent>
-                </Grid>
-            ) : Object.keys(users).length > 0 ? (
-                <Grid item xs={12} md={4} style={{ zIndex: 10 }}>
-                    {Object.keys(users).map(userKey => (
-                        <UserItem BunqJSClient={BunqJSClient} user={users[userKey]} userKey={userKey} />
-                    ))}
-                </Grid>
-            ) : null;
 
         const currentSelectedEnvironmnent = this.state.sandboxMode ? "SANDBOX" : "PRODUCTION";
         // if apikey is unchanged and environment is unchanged we don't allow user to set apikey
@@ -644,7 +599,6 @@ class Login extends React.Component {
                 >
                     {cardContent}
                 </Grid>
-                {userItems}
 
                 {/* only show if not loading and no api key is set*/}
                 {this.props.apiKey === false && this.props.storedApiKeys.length > 0 ? (
@@ -681,12 +635,10 @@ const mapStateToProps = state => {
         apiKey: state.registration.api_key,
         storedApiKeys: state.registration.stored_api_keys,
 
-        users: state.users.users,
-        usersLoading: state.users.loading,
-
         user: state.user.user,
         userType: state.user.user_type,
-        userLoading: state.user.loading
+        userLoading: state.user.loading,
+        usersLoading: state.users.loading
     };
 };
 
@@ -703,9 +655,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
         setEnvironment: environment => dispatch(registrationSetEnvironment(environment)),
         setDeviceName: device_name => dispatch(registrationSetDeviceName(device_name)),
-
-        // login a given usertype
-        loginUser: (type, updated = false) => dispatch(userLogin(BunqJSClient, type, updated)),
 
         handleBunqError: error => BunqErrorHandler(dispatch, error)
     };
