@@ -71,7 +71,7 @@ class RequestInquiryInfo extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.initialBunqConnect) {
+        if (this.props.registrationReady) {
             const { requestInquiryId, accountId } = this.props.match.params;
             this.props.requestInquiryUpdate(this.props.user.id, accountId, requestInquiryId);
             this.setState({ initialUpdate: true });
@@ -82,7 +82,7 @@ class RequestInquiryInfo extends React.Component {
         if (
             this.props.user &&
             this.props.user.id &&
-            this.props.initialBunqConnect &&
+            this.props.registrationReady &&
             this.props.match.params.requestInquiryId !== this.props.match.params.requestInquiryId
         ) {
             const { requestInquiryId, accountId } = this.props.match.params;

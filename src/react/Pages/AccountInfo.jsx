@@ -109,7 +109,7 @@ class AccountInfo extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.initialBunqConnect) {
+        if (this.props.registrationReady) {
             this.props.accountsUpdate(this.props.user.id);
 
             const userId = this.props.user.id;
@@ -139,11 +139,11 @@ class AccountInfo extends React.Component {
     }
 
     getSnapshotBeforeUpdate(nextProps, nextState) {
-        const { initialBunqConnect, accountsLoading, user } = this.props;
+        const { registrationReady, accountsLoading, user } = this.props;
         const nextAccountId = parseFloat(nextProps.match.params.accountId);
         const accountId = parseFloat(this.props.match.params.accountId);
 
-        if (accountsLoading === false && initialBunqConnect && nextAccountId !== accountId) {
+        if (accountsLoading === false && registrationReady && nextAccountId !== accountId) {
             this.props.accountsUpdate(user.id);
 
             if (this.props.limitedPermissions === false) {
@@ -413,7 +413,6 @@ class AccountInfo extends React.Component {
                     <Paper style={styles.paperList}>
                         <CombinedList
                             BunqJSClient={this.props.BunqJSClient}
-                            initialBunqConnect={this.props.initialBunqConnect}
                             hiddenTypes={["ShareInviteBankInquiry"]}
                             accountId={accountId}
                             displayRequestPayments={false}

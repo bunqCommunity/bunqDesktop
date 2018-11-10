@@ -227,7 +227,6 @@ class Dashboard extends React.Component {
                                     <Paper>
                                         <AccountList
                                             BunqJSClient={this.props.BunqJSClient}
-                                            initialBunqConnect={this.props.initialBunqConnect}
                                         />
 
                                         {this.props.environment === "SANDBOX" ? (
@@ -287,7 +286,6 @@ class Dashboard extends React.Component {
                             <Paper>
                                 <CombinedList
                                     BunqJSClient={this.props.BunqJSClient}
-                                    initialBunqConnect={this.props.initialBunqConnect}
                                     displayRequestPayments={false}
                                     displayAcceptedRequests={true}
                                 />

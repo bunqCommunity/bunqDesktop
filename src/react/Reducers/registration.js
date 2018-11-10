@@ -24,6 +24,8 @@ export const defaultState = {
     // list of encrypted api keys
     stored_api_keys: storedApiKeysDefault,
 
+    isRead: false,
+
     // if true, the application will try to load the encryption keys using a default password
     use_no_password: useNoPasswordDefault,
     device_name: deviceNameDefault,
@@ -147,6 +149,7 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 api_key: false,
+                ready: false,
                 encrypted_api_key: false,
                 stored_api_keys: [],
                 has_stored_api_key: false,
@@ -159,6 +162,7 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 api_key: false,
+                ready: false,
                 encrypted_api_key: false,
                 has_stored_api_key: false,
                 derivedPassword: false
@@ -170,6 +174,7 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 api_key: false,
+                ready: false,
                 encrypted_api_key: false,
                 has_stored_api_key: false
             };
@@ -203,6 +208,16 @@ export default (state = defaultState, action) => {
                 use_no_password: false
             };
 
+        case "REGISTRATION_READY":
+            return {
+                ...state,
+                ready: true
+            };
+        case "REGISTRATION_NOT_READY":
+            return {
+                ...state,
+                ready: false
+            };
         case "REGISTRATION_LOADING":
             return {
                 ...state,

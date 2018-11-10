@@ -32,21 +32,11 @@ const ThemeList = {
 };
 
 // redux actions
-// import { userLogin } from "../Actions/user.js";
-import { usersUpdate } from "../Actions/users";
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
-import { applicationSetStatus } from "../Actions/application.js";
-import {
-    registrationLoadStoredData,
-    registrationClearUserInfo,
-    registrationLoading,
-    registrationNotLoading,
-    registrationResetToApiScreenSoft
-} from "../Actions/registration";
+import { registrationClearUserInfo } from "../Actions/registration";
 import { setHideBalance, setTheme, setAutomaticThemeChange } from "../Actions/options";
 import { queueStartSync } from "../Actions/queue";
-import { userSetInfo } from "../Actions/user";
 
 const styles = theme => ({
     contentContainer: {
@@ -74,7 +64,7 @@ class Layout extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            initialBunqConnect: false
+            initialBunqJSClientRun: false
         };
 
         this.activityTimer = null;
@@ -114,9 +104,9 @@ class Layout extends React.Component {
     }
 
     componentDidMount() {
-        this.checkBunqSetup()
+        this.props.BunqJSClient.run(false)
             .then(_ => {})
-            .catch(Logger.error);
+            .catch(error => {});
 
         if (process.env.NODE_ENV !== "development") {
             VersionChecker().then(versionInfo => {
@@ -156,10 +146,6 @@ class Layout extends React.Component {
                 // clear our old data associated with the previous session
                 this.props.registrationClearUserInfo();
             }
-
-            this.checkBunqSetup(nextProps)
-                .then(_ => {})
-                .catch(Logger.error);
         }
 
         return true;
@@ -213,57 +199,6 @@ class Layout extends React.Component {
         }
     };
 
-    /**
-     * Checks if the bunqjsclient needs to setup
-     * @param nextProps
-     * @returns {Promise<void>}
-     */
-    checkBunqSetup = async (nextProps = false) => {
-        const t = this.props.t;
-        const errorTitle = t("Something went wrong");
-        const error1 = t("We failed to setup bunqDesktop properly");
-
-        if (nextProps === false) {
-            nextProps = this.props;
-        }
-
-        if (nextProps.apiKey === false && this.state.initialBunqConnect === true) {
-            // api key not set but bunq connect is true so we reset it
-            this.setState({ initialBunqConnect: false });
-        }
-
-        // run only if apikey is not false or first setup AND the registration isnt already loading
-        if (
-            (this.state.initialBunqConnect === false || nextProps.apiKey !== false) &&
-            nextProps.registrationIsLoading === false
-        ) {
-            // registration is loading now
-            this.props.registrationLoading();
-
-            // if we have a derivedPassword we use it to encrypt the bunqjsclient data
-            const encryptionKey = nextProps.derivedPassword !== false ? nextProps.derivedPassword.key : false;
-
-            try {
-                await this.props.BunqJSClient.run(
-                    nextProps.apiKey,
-                    nextProps.permittedIps,
-                    nextProps.environment,
-                    encryptionKey
-                );
-            } catch (exception) {
-                this.props.openModal(error1, errorTitle);
-                throw exception;
-            }
-
-            if (!this.state.initialBunqConnect) {
-                this.setState({ initialBunqConnect: true });
-            }
-
-            // registration is loading now
-            this.props.registrationNotLoading();
-        }
-    };
-
     onActivityEvent = e => {
         if (this.props.checkInactivity) {
             this.clearActivityTimeout();
@@ -300,8 +235,9 @@ class Layout extends React.Component {
             openModal: this.props.openModal,
             themeList: ThemeList,
             openSnackbar: this.props.openSnackbar,
+
             // helps all child components to prevent calls before the BunqJSClient is finished setting up
-            initialBunqConnect: this.state.initialBunqConnect
+            registrationReady: this.props.registrationReady
         };
         const selectedTheme = ThemeList[this.props.theme]
             ? ThemeList[this.props.theme]
@@ -373,6 +309,7 @@ const mapStateToProps = state => {
         deviceName: state.registration.device_name,
         permittedIps: state.registration.permitted_ips,
         apiKey: state.registration.api_key,
+        registrationReady: state.registration.ready,
 
         user: state.user.user,
         userType: state.user.user_type,
@@ -399,21 +336,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         setHideBalance: hideBalance => dispatch(setHideBalance(hideBalance)),
         setTheme: theme => dispatch(setTheme(theme)),
 
-        // set the current application status
-        applicationSetStatus: status_message => dispatch(applicationSetStatus(status_message)),
-
-        registrationLoading: () => dispatch(registrationLoading()),
-        registrationNotLoading: () => dispatch(registrationNotLoading()),
-        registrationResetToApiScreenSoft: () => dispatch(registrationResetToApiScreenSoft(BunqJSClient)),
-
-        // get latest user list from BunqJSClient
-        usersUpdate: (updated = false) => dispatch(usersUpdate(BunqJSClient, updated)),
-        // login the user with a specific type from the list
-        userSetInfo: (user, userType) => dispatch(userSetInfo(user, userType)),
-
         queueStartSync: () => dispatch(queueStartSync()),
-
-        registrationLoadStoredData: () => dispatch(registrationLoadStoredData(BunqJSClient)),
 
         // functions to clear user data
         registrationClearUserInfo: () => dispatch(registrationClearUserInfo())

@@ -36,8 +36,8 @@ export function registrationSwitchKeys(BunqJSClient, storedKeyIndex, derivedPass
             dispatch(registrationSetDerivedPassword(derivedPassword, derivedPasswordIdentifier));
             setTimeout(() => {
                 dispatch(registrationLoadStoredApiKey(BunqJSClient, storedKeyIndex, derivedPassword));
-            }, 1500);
-        }, 1500);
+            }, 3000);
+        }, 3000);
     };
 }
 
@@ -96,6 +96,7 @@ export function registrationLogin(
                 // clear the password so the user can try again
                 dispatch(registrationResetToApiScreenSoft(BunqJSClient));
                 dispatch(registrationNotLoading());
+                dispatch(registrationSetNotReady());
                 dispatch(openSnackbar(failedLoadingMessage));
                 return;
             }
@@ -103,6 +104,7 @@ export function registrationLogin(
 
         if (!apiKey) {
             dispatch(registrationNotLoading());
+            dispatch(registrationSetNotReady());
             return;
         }
 
@@ -114,6 +116,7 @@ export function registrationLogin(
             dispatch(BunqErrorHandler(dispatch, exception, false, BunqJSClient));
             dispatch(registrationResetToApiScreenSoft(BunqJSClient));
             dispatch(registrationNotLoading());
+            dispatch(registrationSetNotReady());
             return;
         }
 
@@ -129,6 +132,7 @@ export function registrationLogin(
             dispatch(BunqErrorHandler(dispatch, exception, false, BunqJSClient));
             dispatch(registrationResetToApiScreenSoft(BunqJSClient));
             dispatch(registrationNotLoading());
+            dispatch(registrationSetNotReady());
             return;
         }
 
@@ -140,6 +144,7 @@ export function registrationLogin(
             dispatch(BunqErrorHandler(dispatch, exception, false, BunqJSClient));
             dispatch(registrationResetToApiScreenSoft(BunqJSClient));
             dispatch(registrationNotLoading());
+            dispatch(registrationSetNotReady());
             return;
         }
 
@@ -154,6 +159,7 @@ export function registrationLogin(
             dispatch(BunqErrorHandler(dispatch, exception, false, BunqJSClient));
             dispatch(registrationResetToApiScreenSoft(BunqJSClient));
             dispatch(registrationNotLoading());
+            dispatch(registrationSetNotReady());
             return;
         }
 
@@ -162,6 +168,9 @@ export function registrationLogin(
         // setup finished with no errors
         dispatch(applicationSetStatus(""));
         dispatch(registrationNotLoading());
+
+        // we're ready now
+        dispatch(registrationSetReady());
     };
 }
 
@@ -573,7 +582,27 @@ export function registrationSetUsePassword() {
 }
 
 /**
- * Generic registraition loading state
+ * Generic registration ready state
+ * @returns {{type: string}}
+ */
+export function registrationSetReady() {
+    return {
+        type: "REGISTRATION_READY"
+    };
+}
+
+/**
+ * Generic registration not ready state
+ * @returns {{type: string}}
+ */
+export function registrationSetNotReady() {
+    return {
+        type: "REGISTRATION_NOT_READY"
+    };
+}
+
+/**
+ * Generic registration loading state
  * @returns {{type: string}}
  */
 export function registrationLoading() {
@@ -583,7 +612,7 @@ export function registrationLoading() {
 }
 
 /**
- * Generic registraition not loading state
+ * Generic registration not loading state
  * @returns {{type: string}}
  */
 export function registrationNotLoading() {

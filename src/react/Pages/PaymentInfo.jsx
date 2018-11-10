@@ -67,7 +67,7 @@ class PaymentInfo extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.user && this.props.user.id && this.props.initialBunqConnect) {
+        if (this.props.user && this.props.user.id && this.props.registrationReady) {
             const { paymentId, accountId } = this.props.match.params;
             this.props.updatePayment(this.props.user.id, accountId, paymentId);
             this.setState({ initialUpdate: true });
@@ -78,7 +78,7 @@ class PaymentInfo extends React.Component {
         if (
             this.props.user &&
             this.props.user.id &&
-            this.props.initialBunqConnect &&
+            this.props.registrationReady &&
             this.props.match.params.paymentId !== nextProps.match.params.paymentId
         ) {
             const { paymentId, accountId } = this.props.match.params;
