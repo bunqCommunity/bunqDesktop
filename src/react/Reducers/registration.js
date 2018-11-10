@@ -124,6 +124,14 @@ export default (state = defaultState, action) => {
                 stored_api_keys: currentApiKeys2
             };
 
+        case "REGISTRATION_SET_STORED_API_KEYS":
+            const setStoredApiKeys = action.payload.stored_api_keys;
+            store.set(API_KEYS_LOCATION, setStoredApiKeys);
+            return {
+                ...state,
+                stored_api_keys: setStoredApiKeys
+            };
+
         case "REGISTRATION_SET_DEVICE_NAME":
             store.set(DEVICE_NAME_LOCATION, action.payload.device_name);
             return {

@@ -492,6 +492,15 @@ export function registrationSetDeviceName(device_name) {
     };
 }
 
+export function registrationSetStoredApiKeys(storedApiKeys) {
+    return {
+        type: "REGISTRATION_SET_STORED_API_KEYS",
+        payload: {
+            stored_api_keys: storedApiKeys
+        }
+    };
+}
+
 /**
  * Set the environment
  * @param environment
