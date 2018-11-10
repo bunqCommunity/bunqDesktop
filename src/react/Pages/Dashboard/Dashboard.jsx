@@ -17,7 +17,6 @@ import Tab from "@material-ui/core/Tab";
 
 import MoneyIcon from "@material-ui/icons/AttachMoney";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import KeyIcon from "@material-ui/icons/VpnKey";
 
 import TranslateButton from "../../Components/TranslationHelpers/Button";
 import CombinedList from "../../Components/CombinedList/CombinedList";
@@ -25,8 +24,8 @@ import AccountList from "../../Components/AccountList/AccountList";
 import NavLink from "../../Components/Routing/NavLink";
 import AttachmentImage from "../../Components/AttachmentImage/AttachmentImage";
 import SavingsGoalsList from "../../Components/SavingsGoals/SavingsGoalsList";
+import SwitchKeysMenu from "../../Components/SwitchKeysMenu";
 
-import { userLogout } from "../../Actions/user";
 import { requestInquirySend } from "../../Actions/request_inquiry";
 import { registrationLogOut, registrationSwitchKeys } from "../../Actions/registration";
 
@@ -193,26 +192,16 @@ class Dashboard extends React.Component {
                         </Grid>
 
                         <Grid item xs={6} style={styles.headerButtonWrapper}>
-                            <Tooltip id="tooltip-fab" title="Switch API keys">
-                                <IconButton style={styles.iconButton} onClick={this.props.registrationLogOut}>
-                                    <KeyIcon />
-                                </IconButton>
-                            </Tooltip>
+                            {/*<Tooltip id="tooltip-fab" title="Switch API keys">*/}
+                                {/*<IconButton style={styles.iconButton} onClick={this.props.registrationLogOut}>*/}
+                                    {/*<KeyIcon />*/}
+                                {/*</IconButton>*/}
+                            {/*</Tooltip>*/}
 
-                            <Tooltip id="tooltip-fab" title="Switch test">
-                                <IconButton
-                                    style={styles.iconButton}
-                                    onClick={e =>
-                                        this.props.registrationSwitchKeys(
-                                            3,
-                                            this.props.derivedPassword,
-                                            this.props.derivedPasswordIdentifier
-                                        )
-                                    }
-                                >
-                                    Test
-                                </IconButton>
-                            </Tooltip>
+                            <SwitchKeysMenu
+                                history={this.props.history}
+                                BunqJSClient={this.props.BunqJSClient}
+                            />
 
                             <Tooltip id="tooltip-fab" title="Logout of account">
                                 <IconButton
@@ -335,9 +324,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        // only resets user type
-        logoutUser: () => dispatch(userLogout()),
-
         // hard-logout
         registrationLogOut: () => dispatch(registrationLogOut(BunqJSClient)),
         registrationSwitchKeys: (storedKeyIndex, derivedPassword, derivedPasswordIdentifier) =>

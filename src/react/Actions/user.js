@@ -1,10 +1,4 @@
 import store from "store";
-import { accountsClear } from "./accounts";
-import { paymentInfoClear } from "./payment_info";
-import { paymentsClear } from "./payments";
-import { requestResponseClear } from "./request_response_info";
-import { requestInquiryClear } from "./request_inquiry_info";
-import { bunqMeTabsClear } from "./bunq_me_tabs";
 import { registrationClearUserInfo } from "./registration";
 
 const USER_ID_LOCATION = "BUNQDESKTOP_USER_ID";
@@ -28,23 +22,6 @@ export function userSetInfo(user, type) {
                 user_type: type
             }
         });
-    };
-}
-
-export function userLogout() {
-    return dispatch => {
-        // logout the user
-        dispatch({
-            type: "USER_LOGOUT"
-        });
-
-        // user was deselected so we clear the info for this user
-        dispatch(accountsClear());
-        dispatch(paymentInfoClear());
-        dispatch(paymentsClear());
-        dispatch(bunqMeTabsClear());
-        dispatch(requestResponseClear());
-        dispatch(requestInquiryClear());
     };
 }
 

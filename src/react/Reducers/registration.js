@@ -48,6 +48,7 @@ export default (state = defaultState, action) => {
             const currentApiKeys = [...state.stored_api_keys];
             const encryptedKey = action.payload.api_key;
             const encryptedKeyIv = action.payload.api_key_iv;
+            const permittedIps = action.payload.permitted_ips;
 
             const index = currentApiKeys.findIndex(storedApiKey => {
                 // this is the same stored api key
@@ -60,6 +61,7 @@ export default (state = defaultState, action) => {
                 // key and iv for this api key
                 api_key: encryptedKey,
                 api_key_iv: encryptedKeyIv,
+                permitted_ips: permittedIps,
                 // device name so we can easily recognize it
                 device_name: state.device_name,
                 // environment for this api key

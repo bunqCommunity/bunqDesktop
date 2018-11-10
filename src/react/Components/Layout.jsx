@@ -219,6 +219,10 @@ class Layout extends React.Component {
      * @returns {Promise<void>}
      */
     checkBunqSetup = async (nextProps = false) => {
+        const t = this.props.t;
+        const errorTitle = t("Something went wrong");
+        const error1 = t("We failed to setup bunqDesktop properly");
+
         if (nextProps === false) {
             nextProps = this.props;
         }
@@ -234,108 +238,30 @@ class Layout extends React.Component {
             nextProps.registrationIsLoading === false
         ) {
             // registration is loading now
-            nextProps.registrationLoading();
+            this.props.registrationLoading();
 
             // if we have a derivedPassword we use it to encrypt the bunqjsclient data
             const encryptionKey = nextProps.derivedPassword !== false ? nextProps.derivedPassword.key : false;
 
-            // api key was modified
-            return this.setupBunqClient(
-                nextProps.apiKey,
-                nextProps.deviceName,
-                nextProps.environment,
-                nextProps.permittedIps,
-                encryptionKey,
-                true
-            )
-                .then(() => {
-                    nextProps.registrationNotLoading();
-
-                    // initial bunq connect has been done
-                    this.setState({ initialBunqConnect: true });
-                })
-                .catch(setupError => {
-                    Logger.error(setupError);
-                    // installation failed so we reset the api key
-                    nextProps.registrationResetToApiScreenSoft();
-                    nextProps.registrationNotLoading();
-                });
-        }
-    };
-
-    /**
-     * Setup the BunqJSClient
-     * @param apiKey             - the bunq api key
-     * @param deviceName         - device name used in the bunq app
-     * @param environment        - Production/sandbox environment
-     * @param permittedIPs       - Permitted IP addresses for the api key
-     * @param encryptionKey      - Key used to encrypt/decrypt all data
-     * @returns {Promise<void>}
-     */
-    setupBunqClient = async (
-        apiKey,
-        deviceName,
-        environment = "SANDBOX",
-        permittedIps = [],
-        encryptionKey = false
-    ) => {
-        const t = this.props.t;
-        const errorTitle = t("Something went wrong");
-        const error1 = t("We failed to setup bunqDesktop properly");
-
-        const statusMessage1 = t("Registering our encryption keys");
-        const statusMessage2 = t("Installing this device");
-        const statusMessage3 = t("Creating a new session");
-
-        // registration is loading now
-        this.props.registrationLoading();
-
-        try {
-            await this.props.BunqJSClient.run(apiKey, permittedIps, environment, encryptionKey);
-        } catch (exception) {
-            this.props.openModal(error1, errorTitle);
-            throw exception;
-        }
-
-        if (apiKey === false) {
-            // no api key yet so nothing else to do just yet
-            return;
-        }
-
-        this.props.applicationSetStatus(statusMessage1);
-        try {
-            await this.props.BunqJSClient.install();
-        } catch (exception) {
-            this.props.BunqErrorHandler(exception, false, this.props.BunqJSClient);
-            throw exception;
-        }
-
-        this.props.applicationSetStatus(statusMessage2);
-        try {
-            await this.props.BunqJSClient.registerDevice(deviceName);
-        } catch (exception) {
-            this.props.BunqErrorHandler(exception, false, this.props.BunqJSClient);
-            throw exception;
-        }
-
-        this.props.applicationSetStatus(statusMessage3);
-        try {
-            const validSession = await this.props.BunqJSClient.registerSession();
-
-            if (validSession && !this.props.user) {
-                const users = await this.props.BunqJSClient.getUsers(true);
-                const userType = Object.keys(users)[0];
-                this.props.userSetInfo(users[userType], userType);
+            try {
+                await this.props.BunqJSClient.run(
+                    nextProps.apiKey,
+                    nextProps.permittedIps,
+                    nextProps.environment,
+                    encryptionKey
+                );
+            } catch (exception) {
+                this.props.openModal(error1, errorTitle);
+                throw exception;
             }
-        } catch (exception) {
-            this.props.BunqErrorHandler(exception);
-            throw exception;
+
+            if (!this.state.initialBunqConnect) {
+                this.setState({ initialBunqConnect: true });
+            }
+
+            // registration is loading now
+            this.props.registrationNotLoading();
         }
-
-        this.props.registrationLoadStoredData();
-
-        // setup finished with no errors
-        this.props.applicationSetStatus("");
     };
 
     onActivityEvent = e => {
