@@ -36,8 +36,8 @@ export function registrationSwitchKeys(BunqJSClient, storedKeyIndex, derivedPass
             dispatch(registrationSetDerivedPassword(derivedPassword, derivedPasswordIdentifier));
             setTimeout(() => {
                 dispatch(registrationLoadStoredApiKey(BunqJSClient, storedKeyIndex, derivedPassword));
-            }, 3000);
-        }, 3000);
+            }, 750);
+        }, 200);
     };
 }
 
@@ -530,6 +530,7 @@ export function registrationClearUserInfo() {
 /**
  * Store the derived password
  * @param derivedPassword
+ * @param identifier
  * @returns {{type: string, payload: {derivedPassword: *}}}
  */
 export function registrationSetDerivedPassword(derivedPassword, identifier) {
