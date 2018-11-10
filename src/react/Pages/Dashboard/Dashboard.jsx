@@ -192,12 +192,6 @@ class Dashboard extends React.Component {
                         </Grid>
 
                         <Grid item xs={6} style={styles.headerButtonWrapper}>
-                            {/*<Tooltip id="tooltip-fab" title="Switch API keys">*/}
-                                {/*<IconButton style={styles.iconButton} onClick={this.props.registrationLogOut}>*/}
-                                    {/*<KeyIcon />*/}
-                                {/*</IconButton>*/}
-                            {/*</Tooltip>*/}
-
                             <SwitchKeysMenu
                                 history={this.props.history}
                                 BunqJSClient={this.props.BunqJSClient}

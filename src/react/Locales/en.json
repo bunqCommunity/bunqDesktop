@@ -1,5 +1,5 @@
 {
-	"A disabled button means the API key was stored with a different password so it can't be decrypted": "A disabled button means the API key was stored with a different password so it can't be decrypted",
+	"A disabled button means the API key was stored with a different password so it can't be decrypted": "A disabled button means the API key was stored with a different password so it can't be decrypted.",
 	"API key": "API key",
 	"ATM Withdrawal": "ATM Withdrawal",
 	"Accept": "Accept",
@@ -441,6 +441,7 @@
 	"Stats": "Stats",
 	"Status": "Status",
 	"Stolen": "Stolen",
+	"Stored API keys": "Stored API keys",
 	"Stored PDF file at": "Stored PDF file at",
 	"Stored file at ": "Stored file at ",
 	"Street": "Street",

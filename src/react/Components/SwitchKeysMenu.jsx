@@ -12,11 +12,16 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import KeyIcon from "@material-ui/icons/VpnKey";
 import RemoveIcon from "@material-ui/icons/Delete";
 
+import TranslateTypography from "./TranslationHelpers/Typography";
+
 import { registrationRemoveStoredApiKey, registrationSwitchKeys } from "../Actions/registration";
 
 const styles = {
     list: {
         width: 240
+    },
+    textWrapper: {
+        padding: 16
     }
 };
 
@@ -59,6 +64,7 @@ class SwitchKeysMenu extends React.Component {
 
     render() {
         const { t, storedApiKeys, derivedPasswordIdentifier } = this.props;
+        const noKeysText = t("No stored keys found");
 
         const apiKeyItems = storedApiKeys.map((storedApiKey, index) => {
             return (
@@ -97,7 +103,25 @@ class SwitchKeysMenu extends React.Component {
                         style: { top: 50 }
                     }}
                 >
-                    <List style={styles.list}>{apiKeyItems}</List>
+                    <List style={styles.list}>
+                        <div style={styles.textWrapper}>
+                            <TranslateTypography variant="subtitle1">Stored API keys</TranslateTypography>
+                            <TranslateTypography variant="body2">
+                                When you login with an API key it will appear in this list
+                            </TranslateTypography>
+                            <TranslateTypography variant="body2">
+                                A disabled button means the API key was stored with a different password so it can't be
+                                decrypted
+                            </TranslateTypography>
+                        </div>
+                        {sortedApiKeys.length > 0 ? (
+                            apiKeyItems
+                        ) : (
+                            <ListItem>
+                                <ListItemText primary={noKeysText} />
+                            </ListItem>
+                        )}
+                    </List>
                 </Drawer>
             </React.Fragment>
         );
