@@ -36,25 +36,17 @@ const ThemeList = {
 import { usersUpdate } from "../Actions/users";
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
-import { loadStoredPayments } from "../Actions/payments";
-import { loadStoredAccounts } from "../Actions/accounts";
-import { loadStoredBunqMeTabs } from "../Actions/bunq_me_tabs";
 import { applicationSetStatus } from "../Actions/application.js";
-import { loadStoredMasterCardActions } from "../Actions/master_card_actions";
-import { loadStoredRequestInquiries } from "../Actions/request_inquiries";
-import { loadStoredrequestInquiryBatches } from "../Actions/request_inquiry_batches";
-import { loadStoredRequestResponses } from "../Actions/request_responses";
 import {
+    registrationLoadStoredData,
     registrationClearUserInfo,
     registrationLoading,
     registrationNotLoading,
     registrationResetToApiScreenSoft
 } from "../Actions/registration";
 import { setHideBalance, setTheme, setAutomaticThemeChange } from "../Actions/options";
-import { loadStoredContacts } from "../Actions/contacts";
-import { loadStoredShareInviteBankResponses } from "../Actions/share_invite_bank_responses";
-import { loadStoredShareInviteBankInquiries } from "../Actions/share_invite_bank_inquiries";
 import { queueStartSync } from "../Actions/queue";
+import { userSetInfo } from "../Actions/user";
 
 const styles = theme => ({
     contentContainer: {
@@ -233,7 +225,7 @@ class Layout extends React.Component {
 
         if (nextProps.apiKey === false && this.state.initialBunqConnect === true) {
             // api key not set but bunq connect is true so we reset it
-            this.setState({ initialBunqConnect: true });
+            this.setState({ initialBunqConnect: false });
         }
 
         // run only if apikey is not false or first setup AND the registration isnt already loading
@@ -278,7 +270,6 @@ class Layout extends React.Component {
      * @param environment        - Production/sandbox environment
      * @param permittedIPs       - Permitted IP addresses for the api key
      * @param encryptionKey      - Key used to encrypt/decrypt all data
-     * @param allowReRun         - When true the function can call itself to restart in certain situations
      * @returns {Promise<void>}
      */
     setupBunqClient = async (
@@ -286,8 +277,7 @@ class Layout extends React.Component {
         deviceName,
         environment = "SANDBOX",
         permittedIps = [],
-        encryptionKey = false,
-        allowReRun = false
+        encryptionKey = false
     ) => {
         const t = this.props.t;
         const errorTitle = t("Something went wrong");
@@ -296,6 +286,9 @@ class Layout extends React.Component {
         const statusMessage1 = t("Registering our encryption keys");
         const statusMessage2 = t("Installing this device");
         const statusMessage3 = t("Creating a new session");
+
+        // registration is loading now
+        this.props.registrationLoading();
 
         try {
             await this.props.BunqJSClient.run(apiKey, permittedIps, environment, encryptionKey);
@@ -327,54 +320,22 @@ class Layout extends React.Component {
 
         this.props.applicationSetStatus(statusMessage3);
         try {
-            await this.props.BunqJSClient.registerSession();
+            const validSession = await this.props.BunqJSClient.registerSession();
+
+            if (validSession && !this.props.user) {
+                const users = await this.props.BunqJSClient.getUsers(true);
+                const userType = Object.keys(users)[0];
+                this.props.userSetInfo(users[userType], userType);
+            }
         } catch (exception) {
             this.props.BunqErrorHandler(exception);
-
-            // custom error handling to prevent
-            if (exception.errorCode) {
-                switch (exception.errorCode) {
-                    case this.props.BunqJSClient.errorCodes.INSTALLATION_HAS_SESSION:
-                        if (allowReRun) {
-                            // this might be solved by reseting the bunq client
-                            await BunqJSClient.destroyApiSession();
-
-                            // try one re-run but with allowReRun false this time
-                            await this.setupBunqClient(
-                                apiKey,
-                                deviceName,
-                                environment,
-                                permittedIps,
-                                encryptionKey,
-                                false
-                            );
-                            return;
-                        }
-
-                        break;
-                    default:
-                        // just log the error
-                        Logger.error(exception);
-                        break;
-                }
-            }
             throw exception;
         }
 
-        this.props.loadStoredAccounts();
-        this.props.loadStoredContacts();
-        this.props.loadStoredPayments();
-        this.props.loadStoredBunqMeTabs();
-        this.props.loadStoredMasterCardActions();
-        this.props.loadStoredRequestInquiries();
-        this.props.loadStoredrequestInquiryBatches();
-        this.props.loadStoredRequestResponses();
-        this.props.loadStoredShareInviteBankResponses();
-        this.props.loadStoredShareInviteBankInquiries();
+        this.props.registrationLoadStoredData();
 
         // setup finished with no errors
         this.props.applicationSetStatus("");
-        this.props.usersUpdate(true);
     };
 
     onActivityEvent = e => {
@@ -522,20 +483,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // get latest user list from BunqJSClient
         usersUpdate: (updated = false) => dispatch(usersUpdate(BunqJSClient, updated)),
         // login the user with a specific type from the list
-        // userLogin: (userType, updated = false) => dispatch(userLogin(BunqJSClient, userType, updated)),
+        userSetInfo: (user, userType) => dispatch(userSetInfo(user, userType)),
 
         queueStartSync: () => dispatch(queueStartSync()),
 
-        loadStoredPayments: () => dispatch(loadStoredPayments(BunqJSClient)),
-        loadStoredContacts: () => dispatch(loadStoredContacts(BunqJSClient)),
-        loadStoredBunqMeTabs: () => dispatch(loadStoredBunqMeTabs(BunqJSClient)),
-        loadStoredMasterCardActions: () => dispatch(loadStoredMasterCardActions(BunqJSClient)),
-        loadStoredRequestInquiries: () => dispatch(loadStoredRequestInquiries(BunqJSClient)),
-        loadStoredrequestInquiryBatches: () => dispatch(loadStoredrequestInquiryBatches(BunqJSClient)),
-        loadStoredAccounts: () => dispatch(loadStoredAccounts(BunqJSClient)),
-        loadStoredRequestResponses: () => dispatch(loadStoredRequestResponses(BunqJSClient)),
-        loadStoredShareInviteBankResponses: () => dispatch(loadStoredShareInviteBankResponses(BunqJSClient)),
-        loadStoredShareInviteBankInquiries: () => dispatch(loadStoredShareInviteBankInquiries(BunqJSClient)),
+        registrationLoadStoredData: () => dispatch(registrationLoadStoredData(BunqJSClient)),
 
         // functions to clear user data
         registrationClearUserInfo: () => dispatch(registrationClearUserInfo())

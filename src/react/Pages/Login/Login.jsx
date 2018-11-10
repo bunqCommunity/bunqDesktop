@@ -154,7 +154,7 @@ class Login extends React.Component {
     componentDidMount() {
         const isSandboxMode = this.props.environment === "SANDBOX";
         if (this.props.derivedPassword !== false) {
-            this.props.loadApiKey(this.props.derivedPassword);
+            this.props.registrationLoadApiKey(this.props.derivedPassword);
         }
 
         this.setState(
@@ -222,7 +222,7 @@ class Login extends React.Component {
                 permittedIps = [this.state.currentIp, "*"];
             }
 
-            this.props.setApiKey(this.state.apiKey, this.props.derivedPassword, permittedIps);
+            this.props.registrationSetApiKey(this.state.apiKey, this.props.derivedPassword, permittedIps);
         }
     };
 
@@ -648,10 +648,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // clear api key from bunqjsclient and bunqdesktop
         logOut: () => dispatch(registrationLogOut(BunqJSClient, true)),
         // set the api key and stores the encrypted version
-        setApiKey: (api_key, derivedPassword, permittedIps = []) =>
+        registrationSetApiKey: (api_key, derivedPassword, permittedIps = []) =>
             dispatch(registrationSetApiKey(api_key, derivedPassword, permittedIps)),
         // attempt to load the api key with our password if one is stored
-        loadApiKey: derivedPassword => dispatch(registrationLoadApiKey(derivedPassword)),
+        registrationLoadApiKey: derivedPassword => dispatch(registrationLoadApiKey(derivedPassword)),
+
+
+        registrationLogin: derivedPassword => dispatch(registrationLogin(BunqJSClient, derivedPassword, apiKey, deviceName, environment, permittedIps, encryptionAp)),
 
         setEnvironment: environment => dispatch(registrationSetEnvironment(environment)),
         setDeviceName: device_name => dispatch(registrationSetDeviceName(device_name)),
