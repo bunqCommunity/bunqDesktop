@@ -3,7 +3,7 @@
 
 # bunqDesktop 
 [![Github latest version](https://img.shields.io/github/release/bunqcommunity/bunqdesktop.svg) ](https://github.com/bunqCommunity/bunqDesktop/releases/latest)
-[![Download count for one click installers](https://img.shields.io/github/downloads/bunqCommunity/bunqDesktop/total.svg) ](https://github.com/bunqCommunity/bunqDesktop/releases)
+[![Download counter](https://img.shields.io/github/downloads/bunqCommunity/bunqDesktop/total.svg) ](https://github.com/bunqCommunity/bunqDesktop/releases)
 [![build status for master branch](https://api.travis-ci.org/bunqCommunity/bunqDesktop.svg?branch=master) ](https://travis-ci.org/bunqCommunity/bunqDesktop)
 [![MIT License](https://img.shields.io/npm/l/all-contributors-cli.svg?style=flat-square)](https://github.com/bunqCommunity/bunqDesktop/blob/master/LICENSE) 
 
@@ -14,7 +14,9 @@ ___
 ## Download 
 
 #### One click installers 
-Download the latest version of bunqDesktop from the [GitHub releases page.](https://github.com/bunqCommunity/bunqDesktop/releases)
+Download the latest version of bunqDesktop from the [GitHub releases page](https://github.com/bunqCommunity/bunqDesktop/releases/latest).
+
+There is also a [Nightly build](https://github.com/bunqCommunity/bunqDesktop/releases/snapshot) which is built automatically every night and contains the latest experimental changes and features. Only use this if you want to test new features and are okay with potential errors.
 
 #### [Snapcraft](https://snapcraft.io/bunqdesktop)
 You can directly search for 'bunqDesktop' in the Ubuntu store or use  the snap command.
