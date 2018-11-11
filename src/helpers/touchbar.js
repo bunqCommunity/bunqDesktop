@@ -36,7 +36,7 @@ export default (window, i18n) => {
     const cardsButton = new TouchBarButton({
         label: "💳 Cards",
         click: () => {
-            changePage(window, "/card");
+            changePage(window, "/cards");
         }
     });
 

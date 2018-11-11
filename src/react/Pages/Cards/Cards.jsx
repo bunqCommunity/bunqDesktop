@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import { translate } from "react-i18next";
-import Countdown from "react-countdown-now";
 
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
@@ -18,8 +17,8 @@ import CardListItem from "./CardListItem";
 import AccountListItem from "../../Components/AccountList/AccountListItem";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 
-import { cardUpdate } from "../../Actions/card";
-import { cardUpdateCvc2Codes, cardCvc2CodesClear } from "../../Actions/card_cvc2";
+import { cardStatus, cardOrderStatus } from "../../Helpers/StatusTexts";
+import { cardsUpdate, cardsSetCardOrder } from "../../Actions/cards";
 
 const styles = {
     gridContainer: {
@@ -32,10 +31,6 @@ const styles = {
     cardInfoPaper: {
         padding: 12,
         marginTop: 20
-        // height: 370
-    },
-    loadCvcbutton: {
-        width: "100%"
     },
     activityButton: {
         position: "fixed",
@@ -45,7 +40,7 @@ const styles = {
     }
 };
 
-class Card extends React.Component {
+class Cards extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -66,7 +61,7 @@ class Card extends React.Component {
     }
 
     componentDidMount() {
-        this.props.cardUpdate(this.props.user.id);
+        this.props.cardsUpdate(this.props.user.id);
     }
 
     componentWillUnmount() {
@@ -75,12 +70,26 @@ class Card extends React.Component {
         window.removeEventListener("mousewheel", this.handleScroll.bind(this));
     }
 
+    getCardsList = () => {
+        return this.props.cards.filter(this.filterCards).sort(this.sortCards);
+    };
     filterCards = card => {
         // ignore filter if enabled
         if (this.state.displayInactive) return true;
 
         // filter if not active
         return !(card.CardDebit && card.CardDebit.status !== "ACTIVE");
+    };
+    sortCards = (card1, card2) => {
+        const card1OrderIndex = this.findCardOrderIndex(card1);
+        const card2OrderIndex = this.findCardOrderIndex(card2);
+
+        return card1OrderIndex > card2OrderIndex;
+    };
+    findCardOrderIndex = card => {
+        return this.props.cardsOrder.findIndex(cardId => {
+            return cardId === card.CardDebit.id;
+        });
     };
 
     handleScroll = event => {
@@ -99,11 +108,6 @@ class Card extends React.Component {
         }
     };
 
-    cardUpdateCvc2Codes = event => {
-        const cardInfo = this.props.cards[this.state.selectedCardIndex];
-        this.props.cardUpdateCvc2Codes(this.props.user.id, cardInfo.CardDebit.id);
-    };
-
     handleKeyDown = event => {
         const filteredCards = this.props.cards.filter(this.filterCards);
 
@@ -113,6 +117,9 @@ class Card extends React.Component {
         if (event.which === 38) {
             this.goPreviousCard();
         }
+    };
+    handleCardClick = index => {
+        this.setState({ selectedCardIndex: index });
     };
 
     goNextCard = filteredCards => {
@@ -130,10 +137,6 @@ class Card extends React.Component {
         }
     };
 
-    handleCardClick = index => {
-        this.setState({ selectedCardIndex: index });
-    };
-
     toggleInactiveCards = e => {
         this.setState({
             displayInactive: !this.state.displayInactive,
@@ -141,83 +144,66 @@ class Card extends React.Component {
         });
     };
 
-    countDownRenderer = ({ total, days, hours, minutes, seconds }) => {
-        return `Expires in: ${minutes}:${seconds}`;
-    };
+    moveCardUp = e => {
+        const index = this.state.selectedCardIndex;
+        const cardsOrder = [...this.props.cardsOrder];
+        const cards = this.getCardsList();
 
-    getCardStatus = cardInfo => {
-        const t = this.props.t;
+        const cardInfoAbove = cards[index - 1];
+        if (cardInfoAbove) {
+            const cardInfo = cards[index];
 
-        const ACTIVE = t("Active");
-        const DEACTIVATED = t("Deactivated");
-        const LOST = t("Lost");
-        const STOLEN = t("Stolen");
-        const CANCELLED = t("Cancelled");
+            const cardOrderAboveIndex = this.findCardOrderIndex(cardInfoAbove);
+            const cardOrderIndex = this.findCardOrderIndex(cardInfo);
 
-        switch (cardInfo.status) {
-            case "ACTIVE":
-                return ACTIVE;
-            case "DEACTIVATED":
-                return DEACTIVATED;
-            case "LOST":
-                return LOST;
-            case "STOLEN":
-                return STOLEN;
-            case "CANCELLED":
-                return CANCELLED;
+            // switch the indexes
+            cardsOrder.splice(cardOrderAboveIndex, 1, cardInfo.CardDebit.id);
+            cardsOrder.splice(cardOrderIndex, 1, cardInfoAbove.CardDebit.id);
+
+            this.props.cardsSetCardOrder(cardsOrder);
+            this.setState({
+                selectedCardIndex: index - 1
+            });
         }
-
-        return cardInfo.status;
     };
-    getCardOrderStatus = cardInfo => {
-        const t = this.props.t;
+    moveCardDown = e => {
+        const index = this.state.selectedCardIndex;
+        const cardsOrder = [...this.props.cardsOrder];
+        const cards = this.getCardsList();
 
-        const VIRTUAL_DELIVERY = t("Delivered virtually");
-        const NEW_CARD_REQUEST_RECEIVED = t("New card request received");
-        const ACCEPTED_FOR_PRODUCTION = t("Accepted for production");
-        const DELIVERED_TO_CUSTOMER = t("Delivered to customer");
-        const CARD_UPDATE_REQUESTED = t("Card update requested");
-        const CARD_UPDATE_SENT = t("Card update sent");
-        const CARD_UPDATE_ACCEPTED = t("Card update accepted");
+        const cardInfoUnder = cards[index + 1];
+        if (cardInfoUnder) {
+            const cardInfo = cards[index];
 
-        switch (cardInfo.order_status) {
-            case "VIRTUAL_DELIVERY":
-                return `${VIRTUAL_DELIVERY} (VIRTUAL_DELIVERY)`;
-            case "ACCEPTED_FOR_PRODUCTION":
-                return `${ACCEPTED_FOR_PRODUCTION} (ACCEPTED_FOR_PRODUCTION)`;
-            case "NEW_CARD_REQUEST_RECEIVED":
-                return `${NEW_CARD_REQUEST_RECEIVED} (NEW_CARD_REQUEST_RECEIVED)`;
-            case "DELIVERED_TO_CUSTOMER":
-                return `${DELIVERED_TO_CUSTOMER} (DELIVERED_TO_CUSTOMER)`;
-            case "CARD_UPDATE_REQUESTED":
-                return `${CARD_UPDATE_REQUESTED} (CARD_UPDATE_REQUESTED)`;
-            case "CARD_UPDATE_SENT":
-                return `${CARD_UPDATE_SENT} (CARD_UPDATE_SENT)`;
-            case "CARD_UPDATE_ACCEPTED":
-                return `${CARD_UPDATE_ACCEPTED} (CARD_UPDATE_ACCEPTED)`;
+            const cardOrderUnderIndex = this.findCardOrderIndex(cardInfoUnder);
+            const cardOrderIndex = this.findCardOrderIndex(cardInfo);
+
+            // switch the indexes
+            cardsOrder.splice(cardOrderUnderIndex, 1, cardInfo.CardDebit.id);
+            cardsOrder.splice(cardOrderIndex, 1, cardInfoUnder.CardDebit.id);
+
+            this.props.cardsSetCardOrder(cardsOrder);
+            this.setState({
+                selectedCardIndex: index + 1
+            });
         }
-
-        return cardInfo.order_status;
     };
 
     render() {
-        const t = this.props.t;
-        let filteredCards = [];
-        let cards = [];
+        const { t, cards } = this.props;
+        const selectedCardIndex = this.state.selectedCardIndex;
+        let cardItems = [];
+        const filteredCards = this.getCardsList();
 
         if (this.props.cards !== false) {
-            // first filter the cards
-            filteredCards = this.props.cards.filter(this.filterCards);
             // then generate the items seperately
-            cards = filteredCards
-                .filter(this.filterCards)
-                .map((card, index) => (
-                    <CardListItem
-                        BunqJSClient={this.props.BunqJSClient}
-                        card={card.CardDebit}
-                        onClick={this.handleCardClick.bind(this, index)}
-                    />
-                ));
+            cardItems = filteredCards.map((card, index) => (
+                <CardListItem
+                    BunqJSClient={this.props.BunqJSClient}
+                    card={card.CardDebit}
+                    onClick={this.handleCardClick.bind(this, index)}
+                />
+            ));
         }
 
         if (this.props.cardsLoading) {
@@ -233,7 +219,7 @@ class Card extends React.Component {
             );
         }
 
-        if (cards.length === 0) {
+        if (filteredCards.length === 0) {
             return (
                 <Grid container spacing={24} style={styles.gridContainer} justify="center" alignItems="center">
                     <Grid item xs={12}>
@@ -245,8 +231,8 @@ class Card extends React.Component {
             );
         }
 
-        const cardInfo = filteredCards[this.state.selectedCardIndex].CardDebit;
-        const translateOffset = this.state.selectedCardIndex * 410;
+        const cardInfo = filteredCards[selectedCardIndex].CardDebit;
+        const translateOffset = selectedCardIndex * 410;
         const carouselTranslate = "translateY(-" + translateOffset + "px)";
 
         // account connected to the currently selected card
@@ -279,63 +265,6 @@ class Card extends React.Component {
             );
         });
 
-        let displayCvcInfo = null;
-        if (cardInfo.type === "MASTERCARD" && cardInfo.status === "ACTIVE") {
-            // if id is different but not null we don't show the cvc list
-            const idsSet = this.props.cvcCardId === cardInfo.id && this.props.cvcCardId !== null;
-
-            let cvc2CodeList = null;
-            if (idsSet) {
-                cvc2CodeList =
-                    this.props.cvc2Codes.length > 0 ? (
-                        <List>
-                            {this.props.cvc2Codes.map(cvc2_code => {
-                                const timeMs = cvc2_code.expiry_time.getTime() + 3600000;
-                                return (
-                                    <ListItem>
-                                        <ListItemText
-                                            primary={`CVC: ${cvc2_code.cvc2}`}
-                                            secondary={
-                                                <Countdown
-                                                    date={timeMs}
-                                                    onComplete={this.props.cardCvc2CodesClear}
-                                                    renderer={this.countDownRenderer}
-                                                />
-                                            }
-                                        />
-                                    </ListItem>
-                                );
-                            })}
-                        </List>
-                    ) : (
-                        <TranslateTypography variant="body2" style={{ textAlign: "center" }}>
-                            No CVC codes available
-                        </TranslateTypography>
-                    );
-            }
-
-            // displayCvcInfo = (
-            //     <React.Fragment>
-            //         {cvc2CodeList}
-            //         <Button
-            //             style={styles.loadCvcbutton}
-            //             onClick={this.cardUpdateCvc2Codes}
-            //             disabled={this.props.cvcLoading}
-            //         >
-            //             {cvc2CodeList !== null
-            //                 ? t("Update CVC Codes")
-            //                 : t("View CVC Codes")}
-            //         </Button>
-            //         <TranslateTypography
-            //             variant="caption"
-            //             style={{ textAlign: "center" }}
-            //         >
-            //             This does not create new codes yet!
-            //         </TranslateTypography>
-            //     </React.Fragment>
-            // );
-        }
-
         let second_line = cardInfo.second_line;
         if (second_line.length === 0 && cardInfo.type === "MAESTRO_MOBILE_NFC") {
             second_line = "Apple Pay";
@@ -349,7 +278,7 @@ class Card extends React.Component {
 
                 <Grid item xs={6} className="animated fadeInLeft">
                     <ul className="carousel" style={{ transform: carouselTranslate }}>
-                        {cards}
+                        {cardItems}
                     </ul>
                 </Grid>
                 <Grid item xs={6} className="animated fadeInRight">
@@ -375,10 +304,7 @@ class Card extends React.Component {
                                     {connectedAccounts}
 
                                     <ListItem>
-                                        <ListItemText
-                                            primary={t("Card status")}
-                                            secondary={this.getCardStatus(cardInfo)}
-                                        />
+                                        <ListItemText primary={t("Cards status")} secondary={cardStatus(cardInfo, t)} />
                                     </ListItem>
                                     <Divider />
                                     <ListItem>
@@ -388,13 +314,22 @@ class Card extends React.Component {
                                     <ListItem>
                                         <ListItemText
                                             primary={t("Order status")}
-                                            secondary={this.getCardOrderStatus(cardInfo)}
+                                            secondary={cardOrderStatus(cardInfo, t)}
                                         />
                                     </ListItem>
                                 </List>
-
-                                {this.props.limitedPermissions ? null : displayCvcInfo}
                             </Paper>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Button disabled={selectedCardIndex === 0} onClick={this.moveCardUp}>
+                                Move up
+                            </Button>
+                            <Button
+                                disabled={selectedCardIndex === filteredCards.length - 1}
+                                onClick={this.moveCardDown}
+                            >
+                                Move down
+                            </Button>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -410,26 +345,20 @@ const mapStateToProps = state => {
 
         accounts: state.accounts.accounts,
         cards: state.cards.cards,
-        cardsLoading: state.cards.loading,
-
-        cvcLoading: state.card_cvc2.loading,
-        cvcCardId: state.card_cvc2.card_id,
-        cvcUserId: state.card_cvc2.user_id,
-        cvc2Codes: state.card_cvc2.cvc2_codes
+        cardsOrder: state.cards.card_order,
+        cardsLoading: state.cards.loading
     };
 };
 
 const mapDispatchToProps = (dispatch, props) => {
     const { BunqJSClient } = props;
     return {
-        cardUpdate: userId => dispatch(cardUpdate(BunqJSClient, userId)),
-        // list all cvc2 codes
-        cardUpdateCvc2Codes: (userId, cardId) => dispatch(cardUpdateCvc2Codes(BunqJSClient, userId, cardId)),
-        cardCvc2CodesClear: () => dispatch(cardCvc2CodesClear())
+        cardsUpdate: userId => dispatch(cardsUpdate(BunqJSClient, userId)),
+        cardsSetCardOrder: cardOrder => dispatch(cardsSetCardOrder(cardOrder))
     };
 };
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(translate("translations")(Card));
+)(translate("translations")(Cards));

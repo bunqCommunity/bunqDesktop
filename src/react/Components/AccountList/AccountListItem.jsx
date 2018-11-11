@@ -90,7 +90,7 @@ class AccountListItem extends React.Component {
         let secondaryText = formattedBalance;
         let savingsPercentage = 0;
         if (isSavingsAccount) {
-            savingsPercentage = (account.savings_goal_progress * 100).toFixed(2);
+            savingsPercentage = parseFloat(account.savings_goal_progress) * 100;
             secondaryText = `${formattedBalance} - ${savingsPercentage}%`;
         }
 
