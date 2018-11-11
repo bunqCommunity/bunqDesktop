@@ -65,7 +65,7 @@ class MasterCardActionInfo extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.initialBunqConnect && this.props.user && this.props.user.id) {
+        if (this.props.registrationReady && this.props.user && this.props.user.id) {
             const { masterCardActionId, accountId } = this.props.match.params;
             this.props.masterCardActionInfoUpdate(this.props.user.id, accountId, masterCardActionId);
             this.setState({ initialUpdate: true });
@@ -76,7 +76,7 @@ class MasterCardActionInfo extends React.Component {
         if (
             this.props.user &&
             this.props.user.id &&
-            this.props.initialBunqConnect &&
+            this.props.registrationReady &&
             this.props.match.params.masterCardActionId !== this.props.match.params.masterCardActionId
         ) {
             const { masterCardActionId, accountId } = this.props.match.params;

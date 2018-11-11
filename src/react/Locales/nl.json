@@ -3,7 +3,7 @@
     "Hours": "Uren",
     "Minute": "Minuut",
     "Minutes": "Minuten",
-	"A disabled button means the API key was stored with a different password so it can't be decrypted": "Een uitgeschakelde knop betekent dat de API-sleutel is opgeslagen met een ander wachtwoord waardoor deze niet kan worden ontsleuteld",
+	"A disabled button means the API key was stored with a different password so it can't be decrypted": "Een uitgeschakelde knop betekent dat de API-sleutel is opgeslagen met een ander wachtwoord waardoor deze niet kan worden ontsleuteld.",
 	"API key": "API key",
 	"ATM Withdrawal": "Pinautomaat opname",
 	"Accept": "Accepteer",

@@ -320,7 +320,6 @@ class Stats extends React.Component {
                     <Paper style={styles.sideBarPaper}>
                         <AccountList
                             BunqJSClient={this.props.BunqJSClient}
-                            initialBunqConnect={this.props.initialBunqConnect}
                             denseMode={true}
                         />
                     </Paper>

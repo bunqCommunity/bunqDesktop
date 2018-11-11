@@ -170,7 +170,7 @@ class Exports extends React.Component {
     };
 
     updateExports = (userId, accountId) => {
-        if (!this.props.initialBunqConnect) {
+        if (!this.props.registrationReady) {
             return;
         }
         this.props.exportInfoUpdate(userId, accountId);
@@ -389,7 +389,6 @@ class Exports extends React.Component {
                         <AccountList
                             updateExternal={this.updateExports}
                             BunqJSClient={this.props.BunqJSClient}
-                            initialBunqConnect={this.props.initialBunqConnect}
                         />
                     </Paper>
                 </Grid>
@@ -573,7 +572,6 @@ class Exports extends React.Component {
                             <Paper>
                                 <CombinedList
                                     BunqJSClient={this.props.BunqJSClient}
-                                    initialBunqConnect={this.props.initialBunqConnect}
                                     hiddenTypes={[
                                         "BunqMeTab",
                                         "RequestInquiry",

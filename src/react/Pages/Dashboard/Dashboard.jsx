@@ -17,7 +17,6 @@ import Tab from "@material-ui/core/Tab";
 
 import MoneyIcon from "@material-ui/icons/AttachMoney";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import KeyIcon from "@material-ui/icons/VpnKey";
 
 import TranslateButton from "../../Components/TranslationHelpers/Button";
 import CombinedList from "../../Components/CombinedList/CombinedList";
@@ -25,10 +24,10 @@ import AccountList from "../../Components/AccountList/AccountList";
 import NavLink from "../../Components/Routing/NavLink";
 import AttachmentImage from "../../Components/AttachmentImage/AttachmentImage";
 import SavingsGoalsList from "../../Components/SavingsGoals/SavingsGoalsList";
+import SwitchKeysMenu from "../../Components/SwitchKeysMenu";
 
-import { userLogin, userLogout } from "../../Actions/user";
 import { requestInquirySend } from "../../Actions/request_inquiry";
-import { registrationLogOut } from "../../Actions/registration";
+import { registrationLogOut, registrationSwitchKeys } from "../../Actions/registration";
 
 const styles = {
     btn: {
@@ -72,17 +71,6 @@ class Dashboard extends React.Component {
         };
     }
 
-    componentDidUpdate() {
-        if (
-            this.props.userType !== false &&
-            this.props.userLoading === false &&
-            this.props.usersLoading === false &&
-            this.props.user === false
-        ) {
-            this.props.userLogin(this.props.userType, false);
-        }
-    }
-
     addMoney = event => {
         if (!this.props.requestInquiryLoading) {
             const requestInquiry = {
@@ -108,7 +96,6 @@ class Dashboard extends React.Component {
     render() {
         const { t, user, userType, savingsGoals } = this.props;
         const selectedTab = this.state.selectedTab;
-        const userTypes = Object.keys(this.props.users);
 
         const displayName = this.props.user.display_name ? this.props.user.display_name : t("user");
 
@@ -205,17 +192,10 @@ class Dashboard extends React.Component {
                         </Grid>
 
                         <Grid item xs={6} style={styles.headerButtonWrapper}>
-                            {userTypes.length > 1 ? (
-                                <Button style={styles.btn} onClick={this.props.logoutUser}>
-                                    {t("Switch user")}
-                                </Button>
-                            ) : null}
-
-                            <Tooltip id="tooltip-fab" title="Switch API keys">
-                                <IconButton style={styles.iconButton} onClick={this.props.registrationLogOut}>
-                                    <KeyIcon />
-                                </IconButton>
-                            </Tooltip>
+                            <SwitchKeysMenu
+                                history={this.props.history}
+                                BunqJSClient={this.props.BunqJSClient}
+                            />
 
                             <Tooltip id="tooltip-fab" title="Logout of account">
                                 <IconButton
@@ -241,7 +221,6 @@ class Dashboard extends React.Component {
                                     <Paper>
                                         <AccountList
                                             BunqJSClient={this.props.BunqJSClient}
-                                            initialBunqConnect={this.props.initialBunqConnect}
                                         />
 
                                         {this.props.environment === "SANDBOX" ? (
@@ -301,7 +280,6 @@ class Dashboard extends React.Component {
                             <Paper>
                                 <CombinedList
                                     BunqJSClient={this.props.BunqJSClient}
-                                    initialBunqConnect={this.props.initialBunqConnect}
                                     displayRequestPayments={false}
                                     displayAcceptedRequests={true}
                                 />
@@ -317,7 +295,6 @@ class Dashboard extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-        users: state.users.users,
         userType: state.user.user_type,
         userLoading: state.user.loading,
         limitedPermissions: state.user.limited_permissions,
@@ -328,6 +305,8 @@ const mapStateToProps = state => {
 
         savingsGoals: state.savings_goals.savings_goals,
 
+        derivedPassword: state.registration.derivedPassword,
+        derivedPasswordIdentifier: state.registration.identifier,
         useNoPassword: state.registration.use_no_password,
         storedApiKeys: state.registration.stored_api_keys,
         environment: state.registration.environment
@@ -337,16 +316,14 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        // only resets user type
-        logoutUser: () => dispatch(userLogout()),
-
         // hard-logout
         registrationLogOut: () => dispatch(registrationLogOut(BunqJSClient)),
+        registrationSwitchKeys: (storedKeyIndex, derivedPassword, derivedPasswordIdentifier) =>
+            dispatch(registrationSwitchKeys(BunqJSClient, storedKeyIndex, derivedPassword, derivedPasswordIdentifier)),
 
         // send a request, used for sandbox button
         requestInquirySend: (userId, accountId, requestInquiries) =>
-            dispatch(requestInquirySend(BunqJSClient, userId, accountId, requestInquiries)),
-        userLogin: (type, updated = false) => dispatch(userLogin(BunqJSClient, type, updated))
+            dispatch(requestInquirySend(BunqJSClient, userId, accountId, requestInquiries))
     };
 };
 export default connect(

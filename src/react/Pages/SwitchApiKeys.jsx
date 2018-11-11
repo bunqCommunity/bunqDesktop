@@ -63,9 +63,9 @@ class SwitchApiKeys extends React.Component {
     };
 
     render() {
-        const { storedApiKeys, passwordIdentifier, t } = this.props;
+        const { t, storedApiKeys, passwordIdentifier, derivedPassword, registrationLoading } = this.props;
 
-        if (this.props.derivedPassword === false && this.props.registrationLoading === false) {
+        if (derivedPassword === false && registrationLoading === false) {
             // no password set, go to password screen
             return <Redirect to="/password" />;
         }
@@ -140,7 +140,6 @@ const mapStateToProps = state => {
         storedApiKeys: state.registration.stored_api_keys,
         apiKey: state.registration.api_key,
 
-        users: state.users.users,
         user: state.user.user,
         userType: state.user.user_type,
         userLoading: state.user.loading

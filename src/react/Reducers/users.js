@@ -1,23 +1,10 @@
 export const defaultState = {
-    users: [],
     loading: false,
     initialCheck: false
 };
 
 export default (state = defaultState, action) => {
     switch (action.type) {
-        case "USERS_SET_INFO":
-            return {
-                ...state,
-                users: action.payload.users
-            };
-
-        case "USERS_LOGOUT":
-            return {
-                ...state,
-                users: []
-            };
-
         case "USERS_IS_LOADING":
             return {
                 ...state,
@@ -41,9 +28,7 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_CLEAR_PRIVATE_DATA":
         case "REGISTRATION_CLEAR_USER_INFO":
             return {
-                users: [],
-                loading: false,
-                initialCheck: false
+                ...defaultState
             };
     }
     return state;

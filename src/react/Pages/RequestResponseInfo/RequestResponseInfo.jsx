@@ -72,7 +72,7 @@ class RequestResponseInfo extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.initialBunqConnect) {
+        if (this.props.registrationReady) {
             const { requestResponseId, accountId } = this.props.match.params;
             this.props.requestResponseUpdate(this.props.user.id, accountId, requestResponseId);
             this.setState({ initialUpdate: true });
@@ -83,7 +83,7 @@ class RequestResponseInfo extends React.Component {
         if (
             this.props.user &&
             this.props.user.id &&
-            this.props.initialBunqConnect &&
+            this.props.registrationReady &&
             this.props.match.params.requestResponseId !== this.props.match.params.requestResponseId
         ) {
             const { requestResponseId, accountId } = this.props.match.params;

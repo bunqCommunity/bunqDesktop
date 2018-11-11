@@ -63,7 +63,6 @@ class BunqMeTab extends React.Component {
                         <AccountList
                             BunqJSClient={this.props.BunqJSClient}
                             updateExternal={this.updateTabs}
-                            initialBunqConnect={this.props.initialBunqConnect}
                         />
                     </Paper>
                 </Grid>
@@ -77,7 +76,6 @@ class BunqMeTab extends React.Component {
                     <Paper style={styles.paper}>
                         <BunqMeTabList
                             BunqJSClient={this.props.BunqJSClient}
-                            initialBunqConnect={this.props.initialBunqConnect}
                             secondaryActions={
                                 this.props.limitedPermissions ? null : (
                                     <IconButton aria-label="Toggle the form" onClick={this.toggleForm}>

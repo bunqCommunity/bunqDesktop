@@ -51,9 +51,6 @@ const styles = {
     listFiller: {
         flex: "1 1 100%"
     },
-    listBottomItem: {
-        flex: 0
-    },
     avatar: {
         width: 50,
         height: 50
