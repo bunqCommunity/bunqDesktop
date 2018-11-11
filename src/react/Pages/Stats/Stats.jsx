@@ -180,7 +180,6 @@ class Stats extends React.Component {
                 ? this.state.parsedData
                 : {
                       labels: [],
-                      balanceHistoryData: [],
                       categoryCountHistory: {},
                       categoryTransactionHistory: {},
                       eventCountHistory: [],
