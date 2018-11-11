@@ -228,15 +228,18 @@ class AccountInfo extends React.Component {
         const accountInfo = accounts.find(account => account.id === accountId);
 
         let content = null;
+        let isSavingsAccount = false;
+        let isJointAccount = false;
         if (accountInfo !== false) {
+            isSavingsAccount = accountInfo.accountType === "MonetaryAccountSavings";
+            isJointAccount = accountInfo.accountType === "MonetaryAccountJoint";
+
             const filteredInviteResponses = shareInviteBankResponses.filter(
                 filterShareInviteBankResponses(accountInfo.id)
             );
             const filteredShareInquiries = shareInviteBankInquiries.filter(
                 filterShareInviteBankInquiries(accountInfo.id)
             );
-
-            const isJointAccount = accountInfo.accountType === "MonetaryAccountJoint";
 
             let primaryConnectText = sharedWithText;
             let profileIconList = [];
@@ -283,12 +286,31 @@ class AccountInfo extends React.Component {
                 }
             }
 
-            const connectListItemText = (
-                <ListItemText
-                    primary={`${primaryConnectText}: `}
-                    secondary={profileIconList.length === 0 ? noneText : ""}
-                />
-            );
+            let connectComponent = null;
+            if (isSavingsAccount === false) {
+                const connectListItemText = (
+                    <ListItemText
+                        primary={`${primaryConnectText}: `}
+                        secondary={profileIconList.length === 0 ? noneText : ""}
+                    />
+                );
+
+                connectComponent = (
+                    <Paper style={styles.paperIcons}>
+                        <List dense={true}>
+                            {allowConnectSettings ? (
+                                <ListItem to={`/connect/${accountId}`} component={NavLink} button>
+                                    {connectListItemText}
+                                </ListItem>
+                            ) : (
+                                <ListItem>{connectListItemText}</ListItem>
+                            )}
+                        </List>
+
+                        {profileIconList}
+                    </Paper>
+                );
+            }
 
             content = (
                 <React.Fragment>
@@ -389,26 +411,14 @@ class AccountInfo extends React.Component {
                         BunqJSClient={this.props.BunqJSClient}
                         openSnackbar={this.props.openSnackbar}
                         hideBalance={this.props.hideBalance}
-                        toggleSettingsDialog={this.toggleSettingsDialog}
-                        toggleDeactivateDialog={this.toggleDeactivateDialog}
+                        toggleSettingsDialog={isSavingsAccount ? false : this.toggleSettingsDialog}
+                        toggleDeactivateDialog={isSavingsAccount ? false : this.toggleDeactivateDialog}
                         shareInviteBankResponses={filteredInviteResponses}
                         account={accountInfo}
                         isJoint={isJointAccount}
                     />
 
-                    <Paper style={styles.paperIcons}>
-                        <List dense={true}>
-                            {allowConnectSettings ? (
-                                <ListItem to={`/connect/${accountId}`} component={NavLink} button>
-                                    {connectListItemText}
-                                </ListItem>
-                            ) : (
-                                <ListItem>{connectListItemText}</ListItem>
-                            )}
-                        </List>
-
-                        {profileIconList}
-                    </Paper>
+                    {connectComponent}
 
                     <Paper style={styles.paperList}>
                         <CombinedList
