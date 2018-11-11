@@ -112,49 +112,26 @@ export function registrationLogin(
 
         try {
             await BunqJSClient.run(apiKey, permittedIps, environment, derivedPassword.key);
-        } catch (exception) {
-            dispatch(BunqErrorHandler(dispatch, exception, false, BunqJSClient));
-            dispatch(registrationResetToApiScreenSoft(BunqJSClient));
-            dispatch(registrationNotLoading());
-            dispatch(registrationSetNotReady());
-            return;
-        }
 
-        if (apiKey === false) {
-            // no api key yet so nothing else to do just yet
-            return;
-        }
+            if (apiKey === false) {
+                // no api key yet so nothing else to do just yet
+                return;
+            }
 
-        dispatch(applicationSetStatus(statusMessage2));
-        try {
+            dispatch(applicationSetStatus(statusMessage2));
             await BunqJSClient.install();
-        } catch (exception) {
-            dispatch(BunqErrorHandler(dispatch, exception, false, BunqJSClient));
-            dispatch(registrationResetToApiScreenSoft(BunqJSClient));
-            dispatch(registrationNotLoading());
-            dispatch(registrationSetNotReady());
-            return;
-        }
 
-        dispatch(applicationSetStatus(statusMessage3));
-        try {
+            dispatch(applicationSetStatus(statusMessage3));
             await BunqJSClient.registerDevice(deviceName);
-            // throw new Error("Testttt!!");
-        } catch (exception) {
-            dispatch(BunqErrorHandler(dispatch, exception, false, BunqJSClient));
-            dispatch(registrationResetToApiScreenSoft(BunqJSClient));
-            dispatch(registrationNotLoading());
-            dispatch(registrationSetNotReady());
-            return;
-        }
 
-        dispatch(applicationSetStatus(statusMessage4));
-        try {
+            dispatch(applicationSetStatus(statusMessage4));
             await BunqJSClient.registerSession();
 
             const users = await BunqJSClient.getUsers(true);
             const userType = Object.keys(users)[0];
             dispatch(userSetInfo(users[userType], userType));
+
+            dispatch(registrationLoadStoredData(BunqJSClient));
         } catch (exception) {
             dispatch(BunqErrorHandler(dispatch, exception, false, BunqJSClient));
             dispatch(registrationResetToApiScreenSoft(BunqJSClient));
@@ -163,13 +140,9 @@ export function registrationLogin(
             return;
         }
 
-        dispatch(registrationLoadStoredData(BunqJSClient));
-
-        // setup finished with no errors
         dispatch(applicationSetStatus(""));
         dispatch(registrationNotLoading());
-
-        // we're ready now
+        
         dispatch(registrationSetReady());
     };
 }
