@@ -199,7 +199,10 @@ class AccountList extends React.Component {
 
                     // set external if added or default to false
                     let onClickHandler = this.props.updateExternal
-                        ? (userId, accountId) => this.props.updateExternal(userId, accountId)
+                        ? (userId, accountId) => {
+                              this.props.selectAccount(accountId);
+                              this.props.updateExternal(userId, accountId);
+                          }
                         : false;
 
                     let secondaryAction = false;
