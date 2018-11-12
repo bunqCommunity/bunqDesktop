@@ -22,6 +22,7 @@ import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachment
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import TargetChipList from "../../Components/FormFields/TargetChipList";
 import TargetChip from "../../Components/FormFields/TargetChip";
+import ConfirmationDialog from "./ConfirmationDialog";
 
 import { formatMoney } from "../../Helpers/Utils";
 
@@ -78,21 +79,58 @@ class PendingPayments extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            selectedCheckBoxes: {}
+            selectedCheckBoxes: {},
+
+            confirmText: "",
+            confirmCallback: () => {}
         };
     }
 
+    confirmAction = (text, callback) => {
+        this.setState({
+            confirmText: text,
+            confirmCallback: (...params) => {
+                callback(params);
+                this.clearConfirmAction();
+            }
+        });
+    };
+    clearConfirmAction = () => {
+        this.setState({
+            confirmText: "",
+            confirmCallback: () => {}
+        });
+    };
+
     clearAll = () => {
-        this.props.pendingPaymentsClear();
-        this.setState({ selectedCheckBoxes: {} });
+        this.confirmAction("Are you sure you wish to remove all pending payments?", () => {
+            this.props.pendingPaymentsClear();
+            this.setState({ selectedCheckBoxes: {} });
+        });
     };
     clearAccount = accountId => e => {
-        this.props.pendingPaymentsClearAccount(accountId);
-        this.setState({ selectedCheckBoxes: {} });
+        this.confirmAction("Are you sure you wish to remove all pending payments for this account?", () => {
+            this.props.pendingPaymentsClearAccount(accountId);
+            this.setState({ selectedCheckBoxes: {} });
+        });
     };
     removePayment = paymendtId => e => {
-        this.props.pendingPaymentsRemovePayment(paymendtId);
-        this.setState({ selectedCheckBoxes: {} });
+        this.confirmAction("Are you sure you wish to remove this pending payment?", () => {
+            this.props.pendingPaymentsRemovePayment(paymendtId);
+            this.setState({ selectedCheckBoxes: {} });
+        });
+    };
+    removeSelected = () => {
+        this.confirmAction("Are you sure you wish to remove the selected pending payments?", () => {
+            const pendingPayments = this.props.pendingPayments;
+            const selectedCheckBoxes = this.state.selectedCheckBoxes;
+            Object.keys(selectedCheckBoxes).forEach(checkboxId => {
+                if (pendingPayments[checkboxId]) {
+                    this.props.pendingPaymentsRemovePayment(checkboxId);
+                }
+            });
+            this.setState({ selectedCheckBoxes: {} });
+        });
     };
 
     togglePaymentCheckBox = pendingPaymentId => e => {
@@ -151,8 +189,8 @@ class PendingPayments extends React.Component {
     };
 
     paySelected = () => {};
-
-    removeSelected = () => {};
+    draftSelected = () => {};
+    scheduleSelected = () => {};
 
     render() {
         const { t, BunqJSClient, accounts, pendingPayments } = this.props;
@@ -279,7 +317,7 @@ class PendingPayments extends React.Component {
                     )}
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid item style={{ flexGrow: 1 }}>
                     <Button
                         style={styles.button}
                         color="primary"
@@ -289,6 +327,26 @@ class PendingPayments extends React.Component {
                     >
                         Pay selected
                     </Button>
+                    <Button
+                        style={styles.button}
+                        color="primary"
+                        variant="contained"
+                        disabled={!hasSelectedCheckboxes || componentList.length === 0}
+                        onClick={this.draftSelected}
+                    >
+                        Draft selected
+                    </Button>
+                    <Button
+                        style={styles.button}
+                        color="primary"
+                        variant="contained"
+                        disabled={!hasSelectedCheckboxes || componentList.length === 0}
+                        onClick={this.scheduleSelected}
+                    >
+                        Schedule selected
+                    </Button>
+                </Grid>
+                <Grid>
                     <Button
                         style={styles.button}
                         color="secondary"
@@ -327,6 +385,13 @@ class PendingPayments extends React.Component {
                 <Helmet>
                     <title>{`bunqDesktop - ${t("Pending payments")}`}</title>
                 </Helmet>
+
+                <ConfirmationDialog
+                    onClose={this.clearConfirmAction}
+                    onConfirm={this.state.confirmCallback}
+                    open={this.state.confirmText.length > 0}
+                    text={this.state.confirmText}
+                />
 
                 <Grid item xs={12}>
                     <Paper style={styles.paper}>{paperContent}</Paper>
