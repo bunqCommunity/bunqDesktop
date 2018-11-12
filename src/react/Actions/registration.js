@@ -36,7 +36,7 @@ export function registrationSwitchKeys(BunqJSClient, storedKeyIndex, derivedPass
             dispatch(registrationSetDerivedPassword(derivedPassword, derivedPasswordIdentifier));
             setTimeout(() => {
                 dispatch(registrationLoadStoredApiKey(BunqJSClient, storedKeyIndex, derivedPassword));
-            }, 750);
+            }, 1000);
         }, 500);
     };
 }
