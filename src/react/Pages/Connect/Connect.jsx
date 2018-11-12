@@ -98,7 +98,7 @@ class Connect extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.initialBunqConnect) {
+        if (this.props.registrationReady) {
             this.props.accountsUpdate(this.props.user.id);
 
             const userId = this.props.user.id;
@@ -110,11 +110,11 @@ class Connect extends React.Component {
     }
 
     getSnapshotBeforeUpdate(nextProps, nextState) {
-        const { initialBunqConnect, accountsLoading, user } = this.props;
+        const { registrationReady, accountsLoading, user } = this.props;
         const nextAccountId = parseFloat(nextProps.match.params.accountId);
         const accountId = parseFloat(this.props.match.params.accountId);
 
-        if (accountsLoading === false && initialBunqConnect && nextAccountId !== accountId) {
+        if (accountsLoading === false && registrationReady && nextAccountId !== accountId) {
             this.props.accountsUpdate(user.id);
 
             if (this.props.limitedPermissions === false) {

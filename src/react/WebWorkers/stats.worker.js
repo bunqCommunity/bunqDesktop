@@ -277,28 +277,9 @@ const formatLabels = (events, type, timeFrom, timeTo) => {
     return dataCollection;
 };
 
-const getData = (
-    events,
-    accounts,
-    categories,
-    selectedAccount,
-    timeFrom = null,
-    timeTo = new Date(),
-    type = "daily"
-) => {
-    let accountInfo = false;
-    accounts.map(account => {
-        const accountObject = new MonetaryAccount(account);
-        if (accountObject.id === selectedAccount || selectedAccount === false) {
-            accountInfo = accountObject;
-        }
-    });
-    let currentBalance = parseFloat(accountInfo.balance.value);
-
+const getData = (events, categories, timeFrom = null, timeTo = new Date(), type = "daily") => {
     // X axis labels
     let labelData = [];
-    // balance across all days/weeks/months/years
-    let balanceHistoryData = [];
     // total events history
     let eventCountHistory = [];
     // total category history
@@ -475,8 +456,6 @@ const getData = (
                     categoryTransactionHistory[categoryKey].total.push(categoryTransactionInfo[categoryKey].total);
                 });
 
-                // update balance and push it to the list
-                balanceHistoryData.push(roundMoney(currentBalance));
                 // count the events for this timescale
                 eventCountHistory.push(dataItem.data.length);
                 // update the individual counts
@@ -509,9 +488,6 @@ const getData = (
                 labelData.push(label);
             }
         }
-
-        // always update the balance for the next timescale
-        currentBalance = currentBalance + timescaleChange;
     });
 
     // reverse each category separately
@@ -527,8 +503,6 @@ const getData = (
     return {
         // x axis labels
         labels: labelData.reverse(),
-        // account balance
-        balanceHistoryData: balanceHistoryData.reverse(),
         // total event count
         eventCountHistory: eventCountHistory,
         // total category count
@@ -598,12 +572,8 @@ onmessage = e => {
 
     const data = getData(
         events,
-        // account data
-        e.data.accounts,
         // full list of categories
         e.data.categories,
-        // selected account
-        e.data.selectedAccount,
         // date from range
         e.data.timeFrom,
         // date to

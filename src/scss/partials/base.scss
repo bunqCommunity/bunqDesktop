@@ -29,6 +29,7 @@ textarea {
 main {
     display: flex;
     flex: 2;
+    height: calc(100vh - 50px);
 }
 
 .options-drawer > div:first-child {
@@ -51,4 +52,3 @@ main {
 .rainbow-background {
     background-image: $backgroundRainbow;
 }
-

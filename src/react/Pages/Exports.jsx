@@ -86,7 +86,7 @@ class Exports extends React.Component {
 
     componentDidMount() {
         if (!this.props.limitedPermissions) {
-            this.updateExports(this.props.user.id, this.props.accountsAccountId);
+            this.updateExports(this.props.user.id, this.props.selectedAccountId);
         } else {
             this.setState({
                 selectedTab: 1
@@ -97,7 +97,7 @@ class Exports extends React.Component {
     componentDidUpdate(oldProps) {
         // loading state from creating a new export changed to false
         if (this.props.exportNewLoading === false && this.props.exportNewLoading !== oldProps.exportNewLoading) {
-            this.updateExports(this.props.user.id, this.props.accountsAccountId);
+            this.updateExports(this.props.user.id, this.props.selectedAccountId);
         }
     }
 
@@ -170,14 +170,14 @@ class Exports extends React.Component {
     };
 
     updateExports = (userId, accountId) => {
-        if (!this.props.initialBunqConnect) {
+        if (!this.props.registrationReady) {
             return;
         }
         this.props.exportInfoUpdate(userId, accountId);
     };
 
     refreshClick = event => {
-        this.updateExports(this.props.user.id, this.props.accountsAccountId);
+        this.updateExports(this.props.user.id, this.props.selectedAccountId);
     };
 
     handleDateFromChange = date => {
@@ -215,7 +215,7 @@ class Exports extends React.Component {
     createNew = event => {
         this.props.exportNew(
             this.props.user.id,
-            this.props.accountsAccountId,
+            this.props.selectedAccountId,
             this.state.exportType,
             this.state.dateFrom,
             this.state.dateTo,
@@ -248,7 +248,7 @@ class Exports extends React.Component {
             const failedMessage = this.props.t("We failed to load the export content for this monetary account");
 
             this.props.BunqJSClient.api.customerStatementExportContent
-                .list(this.props.user.id, this.props.accountsAccountId, exportInfo.id)
+                .list(this.props.user.id, this.props.selectedAccountId, exportInfo.id)
                 .then(exportContent => {
                     // create a new file reader
                     const fileReader = new FileReader();
@@ -389,7 +389,6 @@ class Exports extends React.Component {
                         <AccountList
                             updateExternal={this.updateExports}
                             BunqJSClient={this.props.BunqJSClient}
-                            initialBunqConnect={this.props.initialBunqConnect}
                         />
                     </Paper>
                 </Grid>
@@ -573,7 +572,6 @@ class Exports extends React.Component {
                             <Paper>
                                 <CombinedList
                                     BunqJSClient={this.props.BunqJSClient}
-                                    initialBunqConnect={this.props.initialBunqConnect}
                                     hiddenTypes={[
                                         "BunqMeTab",
                                         "RequestInquiry",
@@ -595,12 +593,12 @@ const mapStateToProps = state => {
     return {
         user: state.user.user,
         limitedPermissions: state.user.limited_permissions,
-
-        accountsAccountId: state.accounts.selected_account,
-
         exportNewLoading: state.export_new.loading,
+
         exports: state.exports.exports,
         exportsLoading: state.exports.loading,
+
+        selectedAccountId: state.accounts.selected_account,
 
         searchTerm: state.search_filter.search_term,
         dateFromFilter: state.date_filter.from_date,

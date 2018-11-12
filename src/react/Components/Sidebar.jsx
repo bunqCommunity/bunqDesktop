@@ -48,9 +48,6 @@ const styles = {
     listFiller: {
         flex: "1 1 100%"
     },
-    listBottomItem: {
-        flex: 0
-    },
     avatar: {
         width: 50,
         height: 50
@@ -131,7 +128,7 @@ class Sidebar extends React.Component {
                       text={"bunqme Requests"}
                       location={this.props.location}
                   />,
-                  <ListItemWrapper to="/card" icon={CardIcon} text={"Cards"} location={this.props.location} />,
+                  <ListItemWrapper to="/cards" icon={CardIcon} text={"Cards"} location={this.props.location} />,
                   <Divider />,
                   <ListItemWrapper to="/stats" icon={TimeLineIcon} text={"Stats"} location={this.props.location} />,
                   <ListItemWrapper

@@ -32,8 +32,8 @@ const privateRoutes = [
         component: CL(() => import(/* webpackChunkName: "bunqmetab" */ "./Pages/BunqMeTab/BunqMeTab"))
     },
     {
-        path: "/card",
-        component: CL(() => import(/* webpackChunkName: "cards" */ "./Pages/Cards/Card"))
+        path: "/cards",
+        component: CL(() => import(/* webpackChunkName: "cards" */ "./Pages/Cards/Cards"))
     },
     {
         path: "/scheduled-payments",

@@ -29,7 +29,7 @@ export default (window, app) => {
         changePage(window, "/request");
     });
     localShortcuts.register(window, "Alt+C", () => {
-        changePage(window, "/card");
+        changePage(window, "/cards");
     });
     localShortcuts.register(window, "Alt+S", () => {
         changePage(window, "/settings");

@@ -18,7 +18,7 @@ import TranslateTypography from "../../Components/TranslationHelpers/Typography"
 import ProfileDetailsForm from "./ProfileDetailsForm";
 
 import { openSnackbar } from "../../Actions/snackbar";
-import { userLogin } from "../../Actions/user";
+import { usersUpdate } from "../../Actions/users";
 
 import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
 import { formatMoney } from "../../Helpers/Utils";
@@ -147,7 +147,7 @@ class Profile extends React.Component {
             .put(user.id, userInfo)
             .then(response => {
                 this.setState({ loading: false });
-                this.props.userLogin(userType, true);
+                this.props.usersUpdate(true);
             })
             .catch(error => {
                 this.setState({ loading: false });
@@ -303,7 +303,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
-        userLogin: (userType, updated) => dispatch(userLogin(BunqJSClient, userType, updated)),
+        usersUpdate: updated => dispatch(usersUpdate(BunqJSClient, updated)),
 
         BunqErrorHandler: (error, message) => BunqErrorHandler(dispatch, error, message)
     };

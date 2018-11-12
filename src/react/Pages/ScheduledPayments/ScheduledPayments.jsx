@@ -52,7 +52,7 @@ class ScheduledPayments extends React.Component {
     }
 
     updateScheduledPayments = (userId, accountId) => {
-        if (!this.props.initialBunqConnect || this.props.scheduledPaymentsLoading) {
+        if (!this.props.registrationReady || this.props.scheduledPaymentsLoading) {
             return;
         }
         if (!userId) userId = this.props.user.id;
@@ -134,7 +134,6 @@ class ScheduledPayments extends React.Component {
                         <AccountList
                             updateExternal={this.updateScheduledPayments}
                             BunqJSClient={this.props.BunqJSClient}
-                            initialBunqConnect={this.props.initialBunqConnect}
                         />
                     </Paper>
                 </Grid>

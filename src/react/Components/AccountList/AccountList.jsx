@@ -138,8 +138,8 @@ class AccountList extends React.Component {
     };
 
     checkUpdateRequirement = (props = this.props) => {
-        const { accounts, accountsSelectedId, initialBunqConnect } = props;
-        if (!initialBunqConnect) {
+        const { accounts, accountsSelectedId, registrationReady } = props;
+        if (!registrationReady) {
             return;
         }
 
@@ -154,7 +154,13 @@ class AccountList extends React.Component {
         }
 
         // no accounts loaded
-        if (this.state.fetchedAccounts === false && props.user.id && props.accountsLoading === false) {
+        if (
+            this.state.fetchedAccounts === false &&
+            props.user.id &&
+            props.accountsLoading === false &&
+            props.registrationIsLoading === false &&
+            props.registrationReady === true
+        ) {
             this.props.accountsUpdate(props.user.id);
             this.setState({ fetchedAccounts: true });
         }
@@ -193,7 +199,10 @@ class AccountList extends React.Component {
 
                     // set external if added or default to false
                     let onClickHandler = this.props.updateExternal
-                        ? (userId, accountId) => this.props.updateExternal(userId, accountId)
+                        ? (userId, accountId) => {
+                              this.props.selectAccount(accountId);
+                              this.props.updateExternal(userId, accountId);
+                          }
                         : false;
 
                     let secondaryAction = false;
@@ -282,6 +291,9 @@ const mapStateToProps = state => {
 
         hideBalance: state.options.hide_balance,
 
+        registrationIsLoading: state.registration.loading,
+        registrationReady: state.registration.ready,
+
         accounts: state.accounts.accounts,
         accountsSelectedId: state.accounts.selected_account,
         accountsLoading: state.accounts.loading,
@@ -289,7 +301,6 @@ const mapStateToProps = state => {
 
         shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
         shareInviteBankResponsesLoading: state.share_invite_bank_responses.loading,
-
         shareInviteBankInquiriesLoading: state.share_invite_bank_inquiries.loading,
 
         paymentsLoading: state.payments.loading,

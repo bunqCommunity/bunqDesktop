@@ -5,8 +5,8 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
-import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
 import LinkIcon from "@material-ui/icons/Link";
 import PeopleIcon from "@material-ui/icons/People";
@@ -19,6 +19,7 @@ import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
 
 import { accountsSelectAccount } from "../../Actions/accounts.js";
 import { addAccountIdFilter, removeAccountIdFilter, toggleAccountIdFilter } from "../../Actions/filters";
+import LinearProgress from "../LinearProgress";
 
 const styles = {
     bigAvatar: {
@@ -35,6 +36,12 @@ const styles = {
         height: 26,
         color: "#ffffff",
         backgroundColor: "#ffa500"
+    },
+    overlayCircular: {
+        position: "absolute",
+        width: 68,
+        height: 68,
+        top: 7
     }
 };
 
@@ -49,6 +56,11 @@ class AccountListItem extends React.Component {
 
         if (account.status !== "ACTIVE") {
             return null;
+        }
+
+        let isSavingsAccount = false;
+        if (account.accountType === "MonetaryAccountSavings") {
+            isSavingsAccount = true;
         }
 
         let avatarSub = null;
@@ -75,20 +87,30 @@ class AccountListItem extends React.Component {
         }
         formattedBalance = this.props.hideBalance ? "" : formatMoney(formattedBalance, true);
 
+        let secondaryText = formattedBalance;
+        let savingsPercentage = 0;
+        if (isSavingsAccount) {
+            savingsPercentage = parseFloat(account.savings_goal_progress) * 100;
+            secondaryText = `${formattedBalance} - ${savingsPercentage}%`;
+        }
+
         // check if any of the selected account ids are for this account
         let displayStyle = {};
+        let circularLeftPostion = 20;
         let accountIsSelected = false;
         if (selectedAccountIds.length !== 0) {
             // check if the selected account ids list contains this account
             accountIsSelected = selectedAccountIds.some(id => id === account.id);
             // switch if toggle is true
             const isSelected = toggleAccountIds ? !accountIsSelected : accountIsSelected;
-            displayStyle = isSelected
-                ? {
-                      borderLeft: "4px solid #1da1f2",
-                      paddingLeft: 20
-                  }
-                : {};
+
+            if (isSelected) {
+                circularLeftPostion = 16;
+                displayStyle = {
+                    borderLeft: "4px solid #1da1f2",
+                    paddingLeft: 20
+                };
+            }
         }
 
         // decide which onClick event is used based on
@@ -98,9 +120,45 @@ class AccountListItem extends React.Component {
 
         // allow overwrite by props
         const onClickHandler = this.props.onClick ? e => this.props.onClick(user.id, account.id) : defaultClickHandler;
+        const isDarkTheme = this.props.theme === "DarkTheme";
 
         return (
-            <ListItem divider button onClick={onClickHandler} style={displayStyle}>
+            <ListItem button onClick={onClickHandler} style={displayStyle} divider>
+                {isSavingsAccount && (
+                    <React.Fragment>
+                        <CircularProgress
+                            variant="static"
+                            value={savingsPercentage}
+                            style={{
+                                ...styles.overlayCircular,
+                                zIndex: 2,
+                                left: circularLeftPostion
+                            }}
+                        />
+                        <div
+                            style={{
+                                ...styles.overlayCircular,
+                                zIndex: 1,
+                                left: circularLeftPostion
+                            }}
+                        >
+                            <svg viewBox="22 22 44 44">
+                                <circle
+                                    cx="44"
+                                    cy="44"
+                                    r="20.2"
+                                    fill="none"
+                                    strokeWidth="3.6"
+                                    stroke={isDarkTheme ? "#58585d" : "#e8e8e8"}
+                                    style={{
+                                        strokeDasharray: 126.92,
+                                        strokeDashoffset: 0
+                                    }}
+                                />
+                            </svg>
+                        </div>
+                    </React.Fragment>
+                )}
                 <Avatar style={styles.bigAvatar}>
                     <LazyAttachmentImage
                         height={60}
@@ -109,7 +167,7 @@ class AccountListItem extends React.Component {
                     />
                 </Avatar>
                 <div style={styles.avatarSub}>{avatarSub}</div>
-                <ListItemText primary={account.description} secondary={formattedBalance} />
+                <ListItemText primary={account.description} secondary={secondaryText} />
                 <ListItemSecondaryAction>
                     {this.props.secondaryAction ? (
                         this.props.secondaryAction
@@ -127,9 +185,8 @@ class AccountListItem extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-
+        theme: state.options.theme,
         paymentsLoading: state.payments.loading,
-
         hideBalance: state.options.hide_balance,
 
         selectedAccountIds: state.account_id_filter.selected_account_ids,

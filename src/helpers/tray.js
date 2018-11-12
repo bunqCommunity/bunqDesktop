@@ -48,7 +48,7 @@ export default (mainWindow, trayIcon) => {
             },
             {
                 label: "Cards",
-                click: () => changePage(mainWindow, "/card")
+                click: () => changePage(mainWindow, "/cards")
             },
             { type: "separator" },
             {

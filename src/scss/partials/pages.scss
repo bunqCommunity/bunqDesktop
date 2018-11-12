@@ -1,4 +1,4 @@
-#login-background-image{
+#login-background-image {
     position: fixed;
     top: 50px;
     left: 0px;
@@ -7,8 +7,12 @@
     z-index: 0;
 }
 
-.login-wrapper{
+.login-wrapper {
     z-index: 1;
+}
+
+.cards-page {
+    padding: 4px 16px !important;
 }
 
 .login-page,
@@ -34,10 +38,10 @@
         color: #ffffff;
     }
     .bunqdesktop-text-first {
-        font-weight: 700
+        font-weight: 700;
     }
     .bunqdesktop-text-second {
-        font-weight: 200
+        font-weight: 200;
     }
 
     .black-button {
@@ -56,7 +60,7 @@
     .white-button {
         color: #000000 !important;
         background-color: #ffffff !important;
-        fontWeight: 700;
+        fontweight: 700;
         &:hover,
         &:focus {
             background-color: #e3e3e3 !important;
