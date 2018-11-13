@@ -192,10 +192,7 @@ class Dashboard extends React.Component {
                         </Grid>
 
                         <Grid item xs={6} style={styles.headerButtonWrapper}>
-                            <SwitchKeysMenu
-                                history={this.props.history}
-                                BunqJSClient={this.props.BunqJSClient}
-                            />
+                            <SwitchKeysMenu history={this.props.history} BunqJSClient={this.props.BunqJSClient} />
 
                             <Tooltip id="tooltip-fab" title="Logout of account">
                                 <IconButton
@@ -219,9 +216,7 @@ class Dashboard extends React.Component {
 
                                 {(selectedTab === "accounts" || tabsEnabled === false) && (
                                     <Paper>
-                                        <AccountList
-                                            BunqJSClient={this.props.BunqJSClient}
-                                        />
+                                        <AccountList BunqJSClient={this.props.BunqJSClient} />
 
                                         {this.props.environment === "SANDBOX" ? (
                                             !this.props.limitedPermissions ? (

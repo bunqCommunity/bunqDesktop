@@ -60,10 +60,7 @@ class BunqMeTab extends React.Component {
 
                 <Grid item xs={12} md={4} lg={3}>
                     <Paper style={styles.paper}>
-                        <AccountList
-                            BunqJSClient={this.props.BunqJSClient}
-                            updateExternal={this.updateTabs}
-                        />
+                        <AccountList BunqJSClient={this.props.BunqJSClient} updateExternal={this.updateTabs} />
                     </Paper>
                 </Grid>
 

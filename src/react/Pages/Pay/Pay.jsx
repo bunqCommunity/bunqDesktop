@@ -390,7 +390,15 @@ class Pay extends React.Component {
 
     // validates all the possible input combinations
     validateForm = () => {
-        const { description, amount, ibanName, selectedAccount, sendDraftPayment, schedulePayment, targets } = this.state;
+        const {
+            description,
+            amount,
+            ibanName,
+            selectedAccount,
+            sendDraftPayment,
+            schedulePayment,
+            targets
+        } = this.state;
 
         const account = this.props.accounts[selectedAccount];
 

@@ -940,10 +940,10 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@bunq-community/bunq-js-client@^0.28.0":
-  version "0.28.0"
-  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.28.0.tgz#d2fd84b613e8cb0fd288572bd9d58495763edd73"
-  integrity sha512-In93DtGtr7WS8YzNZ/3bYLJAhE0Sj1Tc9NYWJmvxJG568vywXiy1q7yTArmKK9oeK15zofLEgq1+nTkizTas0Q==
+"@bunq-community/bunq-js-client@^0.29.0":
+  version "0.29.0"
+  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.29.0.tgz#78dd037aafc721fddc37822841bf80fb5cf34bca"
+  integrity sha512-N4IUoDnP7m0qhnWvH5sm8/Dsb1j5NYwL7lFFT8qwH+eP5wD+uFgqp97vDftA3TVqSWG/ISNGfNAPYvEtuxNFjw==
   dependencies:
     "@babel/cli" "^7.0.0"
     "@babel/core" "^7.0.0"
@@ -1077,12 +1077,13 @@
   resolved "https://registry.yarnpkg.com/@mapbox/whoots-js/-/whoots-js-3.1.0.tgz#497c67a1cef50d1a2459ba60f315e448d2ad87fe"
   integrity sha512-Es6WcD0nO5l+2BOQS4uLfNPYQaNDfbot3X1XUoloz+x0mPDS3eeORZJl06HXjwBG1fOGwCRnzK88LMdxKRrd6Q==
 
-"@material-ui/core@^3.3.1":
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-3.3.1.tgz#e4ecce8b56065364d2a937e845af63d720b696e8"
-  integrity sha512-uXTL6L8ISAAlXK1cNX4sFpRvZFEoyHTMZPIqt3dlqJe4dZxsLA+dzSRMYGd4x3xJAUjjspMFEPAVATjzi6gp+A==
+"@material-ui/core@^3.5.1":
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-3.5.1.tgz#365d1c392d3df3b37295db0548f4cca501034e69"
+  integrity sha512-yMBwYV5HQ/kZjncSmzHSx4uxJCePdbq9N58Jl0tq9D1gD5fKVJY/lItnQLRlcpCzZUkGxfDhpDutvLDq58ZAkg==
   dependencies:
     "@babel/runtime" "7.1.2"
+    "@material-ui/utils" "^3.0.0-alpha.0"
     "@types/jss" "^9.5.6"
     "@types/react-transition-group" "^2.0.8"
     brcast "^3.0.1"
@@ -1091,7 +1092,7 @@
     debounce "^1.1.0"
     deepmerge "^2.0.1"
     dom-helpers "^3.2.1"
-    hoist-non-react-statics "^2.5.0"
+    hoist-non-react-statics "^3.0.0"
     is-plain-object "^2.0.4"
     jss "^9.3.3"
     jss-camel-case "^6.0.0"
@@ -1125,6 +1126,13 @@
     "@babel/runtime" "7.1.2"
     classnames "^2.2.5"
     keycode "^2.1.9"
+
+"@material-ui/utils@^3.0.0-alpha.0":
+  version "3.0.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@material-ui/utils/-/utils-3.0.0-alpha.0.tgz#506fcaf531a9a8f58a73ff2d3dfaa36c0f238506"
+  integrity sha512-HwC/pBcPG81UP4Jh0BaH2i4wAY9aDOrvL5+B/7J6cyFlG/Wip5Li+qI+GDlk9MR3kpG8v0sxfpWA0IlQYcHK6g==
+  dependencies:
+    "@babel/runtime" "7.1.2"
 
 "@types/axios@^0.14.0":
   version "0.14.0"
@@ -5895,6 +5903,13 @@ hoist-non-react-statics@^2.3.1, hoist-non-react-statics@^2.5.0, hoist-non-react-
   version "2.5.5"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-2.5.5.tgz#c5903cf409c0dfd908f388e619d86b9c1174cb47"
   integrity sha512-rqcy4pJo55FTTLWt+bU8ukscqHeE/e9KWvsOW2b/a3afxQZhwkQdT1rPPCJ0rYXdj4vNcasY8zHTH+jF/qStxw==
+
+hoist-non-react-statics@^3.0.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.1.0.tgz#42414ccdfff019cd2168168be998c7b3bd5245c0"
+  integrity sha512-MYcYuROh7SBM69xHGqXEwQqDux34s9tz+sCnxJmN18kgWh6JFdTw/5YdZtqsOdZJXddE/wUpCzfEdDrJj8p0Iw==
+  dependencies:
+    react-is "^16.3.2"
 
 home-or-tmp@^2.0.0:
   version "2.0.0"

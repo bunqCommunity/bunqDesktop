@@ -49,17 +49,56 @@ export function accountsUpdate(BunqJSClient, userId) {
     };
 }
 
-export function createAccount(BunqJSClient, userId, currency, description, dailyLimit, color) {
+export function createAccount(
+    BunqJSClient,
+    userId,
+    currency,
+    description,
+    dailyLimit,
+    color,
+    savingsGoal = false,
+    accountType = "MonetaryAccountBank"
+) {
     const failedMessage = window.t("We received the following error while creating your account");
     const successMessage = window.t("Account created successfully!");
 
     return dispatch => {
         dispatch(createAccountLoading());
 
-        const monetaryAccountBankApi = BunqJSClient.api.monetaryAccountBank;
+        let apiPromise;
+        switch (accountType) {
+            case "MonetaryAccountSavings":
+                apiPromise = BunqJSClient.api.monetaryAccountSavings.post(
+                    userId,
+                    currency,
+                    description,
+                    dailyLimit,
+                    color,
+                    savingsGoal
+                );
+                break;
+            case "MonetaryAccountJoint":
+                apiPromise = BunqJSClient.api.monetaryAccountJoint.post(
+                    userId,
+                    currency,
+                    description,
+                    dailyLimit,
+                    color
+                );
+                break;
+            case "MonetaryAccountBank":
+            default:
+                apiPromise = BunqJSClient.api.monetaryAccountBank.post(
+                    userId,
+                    currency,
+                    description,
+                    dailyLimit,
+                    color
+                );
+                break;
+        }
 
-        monetaryAccountBankApi
-            .post(userId, currency, description, dailyLimit, color)
+        apiPromise
             .then(result => {
                 dispatch(openSnackbar(successMessage));
                 dispatch(accountsUpdate(BunqJSClient, userId));
@@ -72,14 +111,28 @@ export function createAccount(BunqJSClient, userId, currency, description, daily
     };
 }
 
-export function accountsDeactivate(BunqJSClient, userId, accountId, reason) {
+export function accountsDeactivate(BunqJSClient, userId, accountId, reason, accountType = "MonetaryAccountBank") {
     const failedMessage = window.t("We received the following error while deactivating your account");
     const successMessage = window.t("Account deactivated successfully!");
 
     return dispatch => {
         dispatch(updateAccountStatusLoading());
 
-        BunqJSClient.api.monetaryAccountBank
+        let apiHandler = null;
+        switch (accountType) {
+            case "MonetaryAccountSavings":
+                apiHandler = BunqJSClient.api.monetaryAccountSavings;
+                break;
+            case "MonetaryAccountJoint":
+                apiHandler = BunqJSClient.api.monetaryAccountJoint;
+                break;
+            case "MonetaryAccountBank":
+            default:
+                apiHandler = BunqJSClient.api.monetaryAccountBank;
+                break;
+        }
+
+        apiHandler
             .putCancel(userId, accountId, "CANCELLED", "REDEMPTION_VOLUNTARY", reason)
             .then(result => {
                 dispatch(openSnackbar(successMessage));
@@ -93,14 +146,34 @@ export function accountsDeactivate(BunqJSClient, userId, accountId, reason) {
     };
 }
 
-export function accountsUpdateSettings(BunqJSClient, userId, accountId, monetaryAccountSettings) {
+export function accountsUpdateSettings(
+    BunqJSClient,
+    userId,
+    accountId,
+    monetaryAccountSettings,
+    accountType = "MonetaryAccountBank"
+) {
     const failedMessage = window.t("We received the following error updating the settings for your account");
     const successMessage = window.t("Account settings updated successfully!");
 
     return dispatch => {
         dispatch(updateAccountStatusLoading());
 
-        BunqJSClient.api.monetaryAccountBank
+        let apiHandler = null;
+        switch (accountType) {
+            case "MonetaryAccountSavings":
+                apiHandler = BunqJSClient.api.monetaryAccountSavings;
+                break;
+            case "MonetaryAccountJoint":
+                apiHandler = BunqJSClient.api.monetaryAccountJoint;
+                break;
+            case "MonetaryAccountBank":
+            default:
+                apiHandler = BunqJSClient.api.monetaryAccountBank;
+                break;
+        }
+
+        apiHandler
             .put(userId, accountId, monetaryAccountSettings)
             .then(result => {
                 dispatch(openSnackbar(successMessage));
@@ -112,10 +185,6 @@ export function accountsUpdateSettings(BunqJSClient, userId, accountId, monetary
                 BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
-}
-
-export function accountsLoading() {
-    return { type: "ACCOUNTS_IS_LOADING" };
 }
 
 export function accountsSelectAccount(account_id) {
@@ -144,6 +213,9 @@ export function accountIncludeInTotal(accountId) {
     };
 }
 
+export function accountsLoading() {
+    return { type: "ACCOUNTS_IS_LOADING" };
+}
 export function accountsNotLoading() {
     return { type: "ACCOUNTS_IS_NOT_LOADING" };
 }

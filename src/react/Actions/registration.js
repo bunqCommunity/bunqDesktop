@@ -142,7 +142,7 @@ export function registrationLogin(
 
         dispatch(applicationSetStatus(""));
         dispatch(registrationNotLoading());
-        
+
         dispatch(registrationSetReady());
     };
 }

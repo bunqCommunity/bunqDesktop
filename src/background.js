@@ -164,7 +164,7 @@ app.on("ready", () => {
                 mainWindow.webContents.send("toggle-theme");
             }
         };
-        
+
         setCorrectTheme();
         systemPreferences.subscribeNotification("AppleInterfaceThemeChangedNotification", () => {
             setCorrectTheme();
