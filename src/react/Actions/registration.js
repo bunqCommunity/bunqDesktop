@@ -133,17 +133,18 @@ export function registrationLogin(
 
             dispatch(registrationLoadStoredData(BunqJSClient));
         } catch (exception) {
-            dispatch(BunqErrorHandler(dispatch, exception, false, BunqJSClient));
+            BunqErrorHandler(dispatch, exception, false, BunqJSClient);
             dispatch(registrationResetToApiScreenSoft(BunqJSClient));
             dispatch(registrationNotLoading());
             dispatch(registrationSetNotReady());
             return;
         }
 
-        dispatch(applicationSetStatus(""));
-        dispatch(registrationNotLoading());
-
-        dispatch(registrationSetReady());
+        setTimeout(() => {
+            dispatch(applicationSetStatus(""));
+            dispatch(registrationNotLoading());
+            dispatch(registrationSetReady());
+        }, 500);
     };
 }
 
