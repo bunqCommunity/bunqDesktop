@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { translate } from "react-i18next";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
@@ -46,7 +47,7 @@ class AccountListItem extends React.Component {
     }
 
     render() {
-        const { user, account, shareInviteBankResponses, selectedAccountIds, toggleAccountIds } = this.props;
+        const { t, user, account, shareInviteBankResponses, selectedAccountIds, toggleAccountIds } = this.props;
 
         if (account.status !== "ACTIVE") {
             return null;
@@ -72,20 +73,19 @@ class AccountListItem extends React.Component {
             );
         }
 
-        let formattedBalance = account.balance ? account.balance.value : 0;
+        let accountBalance = account.balance ? account.balance.value : 0;
         if (shareInviteBankResponses.length > 0) {
             const connectBudget = GetShareDetailBudget(shareInviteBankResponses);
             if (connectBudget) {
-                formattedBalance = connectBudget;
+                accountBalance = connectBudget;
             }
         }
-        formattedBalance = this.props.hideBalance ? "" : formatMoney(formattedBalance, true);
+        const formattedBalance = this.props.hideBalance ? "" : formatMoney(accountBalance, true);
 
         let secondaryText = formattedBalance;
-        let savingsPercentage = 0;
         if (isSavingsAccount) {
-            savingsPercentage = parseFloat(account.savings_goal_progress) * 100;
-            secondaryText = `${formattedBalance} - ${savingsPercentage}%`;
+            const targetAmount = formatMoney(account.savings_goal.value);
+            secondaryText = `${formattedBalance} ${t("out of")} ${targetAmount}`;
         }
 
         // check if any of the selected account ids are for this account
@@ -175,4 +175,4 @@ AccountListItem.defaultProps = {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(AccountListItem);
+)(translate("translations")(AccountListItem));
