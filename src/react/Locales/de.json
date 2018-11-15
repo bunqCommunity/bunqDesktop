@@ -1,7 +1,7 @@
 {
     "Hour": "Stunde",
     "Hours": "Stunden",
-    "Minute": "Minuut",
+    "Minute": "Minute",
     "Minutes": "Minuten",
 	"A disabled button means the API key was stored with a different password so it can't be decrypted": "Ein grauer Button bedeutet, dass der API Schlüssel mit einem anderem Passwort gespeichert wurde und daher nicht entschlüsselt werden kann.",
 	"API key": "API-Schlüssel",
