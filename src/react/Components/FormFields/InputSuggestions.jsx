@@ -28,12 +28,22 @@ class InputSuggestions extends React.Component {
             visible: false,
             selectedIndex: 0
         };
+
+        this.timeOut = null;
+    }
+
+    componentWillUnmount() {
+        if (this.timeOut) {
+            clearTimeout(this.timeOut);
+        }
     }
 
     onBlur = event => {
         // delay so click event can react before onBlur
-        setTimeout(() => {
-            this.setState({ visible: false, selectedIndex: 0 });
+        this.timeOut = setTimeout(() => {
+            if (this.state.isMounted) {
+                this.setState({ visible: false, selectedIndex: 0 });
+            }
         }, 150);
     };
     onFocus = event => this.setState({ visible: true });

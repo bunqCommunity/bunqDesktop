@@ -70,7 +70,7 @@ export default props => {
                                     wrapDateChange("scheduleStartDate")(date);
 
                                     // if start date further than the end date, we reset the end date to start date
-                                    if (date > scheduleEndDate) {
+                                    if (date > scheduleEndDate && scheduleEndDate) {
                                         wrapDateChange("scheduleEndDate")(date);
                                     }
                                 } else {

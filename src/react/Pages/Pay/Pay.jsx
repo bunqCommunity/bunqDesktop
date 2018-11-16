@@ -21,6 +21,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import EventIcon from "@material-ui/icons/Event";
 import ListIcon from "@material-ui/icons/List";
@@ -400,7 +401,15 @@ class Pay extends React.Component {
 
     // validates all the possible input combinations
     validateForm = () => {
-        const { description, amount, ibanName, selectedAccount, sendDraftPayment, schedulePayment, targets } = this.state;
+        const {
+            description,
+            amount,
+            ibanName,
+            selectedAccount,
+            sendDraftPayment,
+            schedulePayment,
+            targets
+        } = this.state;
 
         const account = this.props.accounts[selectedAccount];
 
@@ -691,16 +700,22 @@ class Pay extends React.Component {
 
                                     <Grid container>
                                         <Grid item xs={6}>
-                                            <FormControlLabel
-                                                control={
-                                                    <Switch
-                                                        color="primary"
-                                                        checked={this.state.sendDraftPayment}
-                                                        onChange={this.draftChange}
-                                                    />
-                                                }
-                                                label={t("Draft this payment")}
-                                            />
+                                            <Tooltip
+                                                title={t(
+                                                    "Draft payments are NOT sent allowing you to review and confirm them in the official bunq app"
+                                                )}
+                                            >
+                                                <FormControlLabel
+                                                    control={
+                                                        <Switch
+                                                            color="primary"
+                                                            checked={this.state.sendDraftPayment}
+                                                            onChange={this.draftChange}
+                                                        />
+                                                    }
+                                                    label={t("Draft this payment")}
+                                                />
+                                            </Tooltip>
                                         </Grid>
 
                                         {limitedPermissions ? null : (
