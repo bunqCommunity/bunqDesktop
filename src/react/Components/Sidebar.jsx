@@ -96,7 +96,7 @@ class Sidebar extends React.Component {
             pendingPayments
         } = this.props;
 
-        const pendingPaymentsCount = Object.keys(pendingPayments).length;
+        const pendingPaymentsCount = pendingPayments ? Object.keys(pendingPayments).length : 0;
 
         // if true, disable certain items in the menu
         const disableNavigationItems = userType === false || derivedPassword === false || apiKey === false;

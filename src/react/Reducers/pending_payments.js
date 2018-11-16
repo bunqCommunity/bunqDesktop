@@ -1,54 +1,36 @@
+import store from "store";
 import { generateGUID } from "../Helpers/Utils";
+import { storeEncryptString } from "../Helpers/CryptoWorkerWrapper";
+import { PENDING_PAYMENTS_LOCATION } from "../Actions/pending_payments";
 
 export const defaultState = {
     last_updated: new Date(),
-    pending_payments: {
-        "random-payment-id": {
-            account_id: 6301,
-            id: "random-payment-id",
-            payment: {
-                amount: { currency: "EUR", value: "5.00" },
-                counterparty_alias: { type: "IBAN", value: "NL55BUNQ9900053427", name: "Angel Monoghan" },
-                description: "some description"
-            }
-        },
-        "random-payment-id2": {
-            account_id: 6301,
-            id: "random-payment-id2",
-            payment: {
-                amount: { currency: "EUR", value: "10.00" },
-                counterparty_alias: { type: "IBAN", value: "NL55BUNQ9900053427", name: "Angel Monoghan" },
-                description: "Different description hehe"
-            }
-        },
-        "other-account-payment-id": {
-            account_id: 8366,
-            id: "other-account-payment-id",
-            payment: {
-                amount: { currency: "EUR", value: "13.37" },
-                counterparty_alias: { type: "IBAN", value: "NL55BUNQ9900053427", name: "Angel Monoghan" },
-                description: "Other account description"
-            }
-        },
-        "multi-counterparty-payment-id": {
-            account_id: 8366,
-            id: "multi-counterparty-payment-id",
-            payment: {
-                amount: { currency: "EUR", value: "30.00" },
-                counterparty_aliases: [
-                    { type: "IBAN", value: "NL55BUNQ9900023456", name: "Angel Monoghan" },
-                    { type: "EMAIL", value: "mail@example.com" }
-                ],
-                description: "Other account description"
-            }
-        }
-    }
+    pending_payments: {}
 };
 
 export default (state = defaultState, action) => {
     let pendingPayments = { ...state.pending_payments };
 
     switch (action.type) {
+        case "PENDING_PAYMENTS_SET_PAYMENTS":
+            const newSetPendingPayment = action.payload.pending_payments;
+
+            if (action.payload.BunqJSClient) {
+                storeEncryptString(
+                    newSetPendingPayment,
+                    PENDING_PAYMENTS_LOCATION,
+                    action.payload.BunqJSClient.Session.encryptionKey
+                )
+                    .then(() => {})
+                    .catch(() => {});
+            }
+
+            return {
+                ...state,
+                last_updated: new Date(),
+                pending_payments: newSetPendingPayment
+            };
+
         case "PENDING_PAYMENTS_ADD_PAYMENT":
             const newPendingPayment = action.payload.pending_payment;
             const pendingPaymentId = generateGUID();
@@ -58,6 +40,16 @@ export default (state = defaultState, action) => {
                 account_id: action.payload.account_id,
                 payment: newPendingPayment
             };
+
+            if (action.payload.BunqJSClient) {
+                storeEncryptString(
+                    pendingPayments,
+                    PENDING_PAYMENTS_LOCATION,
+                    action.payload.BunqJSClient.Session.encryptionKey
+                )
+                    .then(() => {})
+                    .catch(() => {});
+            }
 
             return {
                 ...state,
@@ -78,6 +70,16 @@ export default (state = defaultState, action) => {
                 };
             });
 
+            if (action.payload.BunqJSClient) {
+                storeEncryptString(
+                    pendingPayments,
+                    PENDING_PAYMENTS_LOCATION,
+                    action.payload.BunqJSClient.Session.encryptionKey
+                )
+                    .then(() => {})
+                    .catch(() => {});
+            }
+
             return {
                 ...state,
                 last_updated: new Date(),
@@ -95,6 +97,16 @@ export default (state = defaultState, action) => {
                 }
             });
 
+            if (action.payload.BunqJSClient) {
+                storeEncryptString(
+                    pendingPayments,
+                    PENDING_PAYMENTS_LOCATION,
+                    action.payload.BunqJSClient.Session.encryptionKey
+                )
+                    .then(() => {})
+                    .catch(() => {});
+            }
+
             return {
                 ...state,
                 last_updated: new Date(),
@@ -108,6 +120,16 @@ export default (state = defaultState, action) => {
                 delete pendingPayments[clearPendingPaymentId];
             }
 
+            if (action.payload.BunqJSClient) {
+                storeEncryptString(
+                    pendingPayments,
+                    PENDING_PAYMENTS_LOCATION,
+                    action.payload.BunqJSClient.Session.encryptionKey
+                )
+                    .then(() => {})
+                    .catch(() => {});
+            }
+
             return {
                 ...state,
                 last_updated: new Date(),
@@ -118,6 +140,7 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_LOG_OUT":
         case "REGISTRATION_CLEAR_PRIVATE_DATA":
         case "REGISTRATION_CLEAR_USER_INFO":
+            store.remove(PENDING_PAYMENTS_LOCATION);
             return { ...defaultState };
     }
     return state;

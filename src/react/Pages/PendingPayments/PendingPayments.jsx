@@ -25,11 +25,10 @@ import PendingPaymentRow from "./PendingPaymentRow";
 import { formatMoney } from "../../Helpers/Utils";
 
 import {
-    // pendingPaymentsAddPayment,
-    // pendingPaymentsAddPayments,
     pendingPaymentsClear,
     pendingPaymentsClearAccount,
-    pendingPaymentsRemovePayment
+    pendingPaymentsRemovePayment,
+    pendingPaymentsSetPayments
 } from "../../Actions/pending_payments";
 
 const styles = {
@@ -65,6 +64,48 @@ const styles = {
         width: 40,
         height: 40,
         marginRight: 12
+    }
+};
+
+const testPendingPayments = {
+    "random-payment-id": {
+        account_id: 6301,
+        id: "random-payment-id",
+        payment: {
+            amount: { currency: "EUR", value: "5.00" },
+            counterparty_alias: { type: "IBAN", value: "NL55BUNQ9900053427", name: "Angel Monoghan" },
+            description: "some description"
+        }
+    },
+    "random-payment-id2": {
+        account_id: 6301,
+        id: "random-payment-id2",
+        payment: {
+            amount: { currency: "EUR", value: "10.00" },
+            counterparty_alias: { type: "IBAN", value: "NL55BUNQ9900053427", name: "Angel Monoghan" },
+            description: "Different description hehe"
+        }
+    },
+    "other-account-payment-id": {
+        account_id: 8366,
+        id: "other-account-payment-id",
+        payment: {
+            amount: { currency: "EUR", value: "13.37" },
+            counterparty_alias: { type: "IBAN", value: "NL55BUNQ9900053427", name: "Angel Monoghan" },
+            description: "Other account description"
+        }
+    },
+    "multi-counterparty-payment-id": {
+        account_id: 8366,
+        id: "multi-counterparty-payment-id",
+        payment: {
+            amount: { currency: "EUR", value: "30.00" },
+            counterparty_aliases: [
+                { type: "IBAN", value: "NL55BUNQ9900023456", name: "Angel Monoghan" },
+                { type: "EMAIL", value: "mail@example.com" }
+            ],
+            description: "Other account description"
+        }
     }
 };
 
@@ -273,6 +314,12 @@ class PendingPayments extends React.Component {
                     <TranslateTypography variant="h5">Pending payments</TranslateTypography>
                 </Grid>
                 <Grid item xs={4} style={styles.titleButtonGrid}>
+                    <Button
+                        variant="outlined"
+                        onClick={e => this.props.pendingPaymentsSetPayments(testPendingPayments)}
+                    >
+                        T
+                    </Button>
                     {componentList.length > 0 && (
                         <Button color="secondary" variant="outlined" onClick={this.clearAll}>
                             Clear all
@@ -373,15 +420,15 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, ownProps) => {
+    const BunqJSClient = ownProps.BunqJSClient;
     return {
-        // pendingPaymentsAddPayment: (accountId, pendingPayment) =>
-        //     dispatch(pendingPaymentsAddPayment(accountId, pendingPayment)),
-        // pendingPaymentsAddPayments: (accountId, pendingPayments) =>
-        //     dispatch(pendingPaymentsAddPayments(accountId, pendingPayments)),
         pendingPaymentsClear: () => dispatch(pendingPaymentsClear()),
-        pendingPaymentsClearAccount: accountId => dispatch(pendingPaymentsClearAccount(accountId)),
-        pendingPaymentsRemovePayment: pendingPaymentId => dispatch(pendingPaymentsRemovePayment(pendingPaymentId))
+        pendingPaymentsClearAccount: accountId => dispatch(pendingPaymentsClearAccount(BunqJSClient, accountId)),
+        pendingPaymentsSetPayments: pendingPayments =>
+            dispatch(pendingPaymentsSetPayments(BunqJSClient, pendingPayments)),
+        pendingPaymentsRemovePayment: pendingPaymentId =>
+            dispatch(pendingPaymentsRemovePayment(BunqJSClient, pendingPaymentId))
     };
 };
 
