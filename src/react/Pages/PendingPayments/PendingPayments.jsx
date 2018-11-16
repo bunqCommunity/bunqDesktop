@@ -16,13 +16,11 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Typography from "@material-ui/core/Typography";
 
 import DeleteIcon from "@material-ui/icons/Delete";
-import SubdirectoryArrowRightIcon from "@material-ui/icons/SubdirectoryArrowRight";
 
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
-import TargetChipList from "../../Components/FormFields/TargetChipList";
-import TargetChip from "../../Components/FormFields/TargetChip";
 import ConfirmationDialog from "./ConfirmationDialog";
+import PendingPaymentRow from "./PendingPaymentRow";
 
 import { formatMoney } from "../../Helpers/Utils";
 
@@ -47,11 +45,6 @@ const styles = {
     },
     button: {
         margin: 8
-    },
-    subdirectoryIconGrid: {
-        display: "flex",
-        justifyContent: "center",
-        width: 52
     },
     deleteIconTableCell: {
         width: 48
@@ -221,44 +214,14 @@ class PendingPayments extends React.Component {
             const paymentItems = groupedPaymentList.map(pendingPayment => {
                 const paymentObject = pendingPayment.payment;
                 accountSpentTotal = accountSpentTotal + parseFloat(paymentObject.amount.value);
-
-                let targetComponents = null;
-                if (paymentObject.counterparty_aliases) {
-                    targetComponents = (
-                        <TargetChipList targets={paymentObject.counterparty_aliases} accounts={this.props.accounts} />
-                    );
-                } else {
-                    targetComponents = (
-                        <TargetChip target={paymentObject.counterparty_alias} accounts={this.props.accounts} />
-                    );
-                }
-
                 return (
-                    <TableRow key={pendingPayment.id}>
-                        <TableCell padding="checkbox" style={styles.checkTableBoxCell}>
-                            <Checkbox
-                                color="primary"
-                                checked={!!this.state.selectedCheckBoxes[pendingPayment.id]}
-                                onChange={this.togglePaymentCheckBox(pendingPayment.id)}
-                            />
-                        </TableCell>
-                        <TableCell style={styles.amountTableCell}>
-                            <Typography>{formatMoney(paymentObject.amount.value)}</Typography>
-                        </TableCell>
-                        <TableCell>
-                            <Grid container alignItems="center">
-                                <Grid style={styles.subdirectoryIconGrid}>
-                                    <SubdirectoryArrowRightIcon />
-                                </Grid>
-                                <Grid item>{targetComponents}</Grid>
-                            </Grid>
-                        </TableCell>
-                        <TableCell style={styles.deleteIconTableCell}>
-                            <IconButton onClick={this.removePayment(pendingPayment.id)}>
-                                <DeleteIcon />
-                            </IconButton>
-                        </TableCell>
-                    </TableRow>
+                    <PendingPaymentRow
+                        pendingPayment={pendingPayment}
+                        accounts={this.props.accounts}
+                        removePayment={this.removePayment}
+                        togglePaymentCheckBox={this.togglePaymentCheckBox}
+                        selectedCheckBoxes={this.state.selectedCheckBoxes}
+                    />
                 );
             });
 
