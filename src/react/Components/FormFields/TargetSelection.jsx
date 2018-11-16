@@ -23,6 +23,10 @@ const styles = {
     button: {
         width: "100%"
     },
+    contactsButton: {
+        width: "100%",
+        marginTop: 4
+    },
     chips: {
         margin: 5
     },
@@ -150,7 +154,7 @@ class TargetSelection extends React.Component {
                             />
                         </Grid>
                         <Grid item xs={12} sm={4}>
-                            <Button style={styles.button} variant="outlined" to="/contacts" component={NavLink}>
+                            <Button style={styles.contactsButton} variant="outlined" to="/contacts" component={NavLink}>
                                 {t("Contacts")} <ContactsIcon />
                             </Button>
                         </Grid>
