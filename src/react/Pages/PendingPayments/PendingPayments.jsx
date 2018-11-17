@@ -101,8 +101,8 @@ const testPendingPayments = {
         payment: {
             amount: { currency: "EUR", value: "30.00" },
             counterparty_aliases: [
-                { type: "IBAN", value: "NL55BUNQ9900023456", name: "Angel Monoghan" },
-                { type: "EMAIL", value: "mail@example.com" }
+                { type: "IBAN", value: "NL55BUNQ9900053427", name: "Angel Monoghan" },
+                { type: "EMAIL", value: "angel.monoghan@bunq.eu" }
             ],
             description: "Other account description"
         }
@@ -159,7 +159,7 @@ class PendingPayments extends React.Component {
             const pendingPayments = this.props.pendingPayments;
             const selectedCheckBoxes = this.state.selectedCheckBoxes;
             Object.keys(selectedCheckBoxes).forEach(checkboxId => {
-                if (pendingPayments[checkboxId]) {
+                if (pendingPayments[checkboxId] && selectedCheckBoxes[checkboxId]) {
                     this.props.pendingPaymentsRemovePayment(checkboxId);
                 }
             });
@@ -181,7 +181,6 @@ class PendingPayments extends React.Component {
             selectedCheckBoxes: selectedCheckBoxes
         });
     };
-
     toggleAccountCheckBox = accountId => e => {
         const pendingPayments = this.props.pendingPayments;
         const selectedCheckBoxes = { ...this.state.selectedCheckBoxes };
@@ -205,7 +204,6 @@ class PendingPayments extends React.Component {
             selectedCheckBoxes: selectedCheckBoxes
         });
     };
-
     toggleAllCheckbox = e => {
         const pendingPayments = this.props.pendingPayments;
         const selectedCheckBoxes = { ...this.state.selectedCheckBoxes };
@@ -222,8 +220,95 @@ class PendingPayments extends React.Component {
         });
     };
 
-    paySelected = () => {};
-    draftSelected = () => {};
+    parsePendingPayments = () => {
+        const pendingPayments = this.props.pendingPayments;
+        const selectedCheckBoxes = this.state.selectedCheckBoxes;
+
+        const groupedPendingPayments = {};
+        Object.keys(selectedCheckBoxes).forEach(checkboxId => {
+            const pendingPayment = pendingPayments[checkboxId];
+            if (pendingPayment && selectedCheckBoxes[checkboxId]) {
+                if (!groupedPendingPayments[pendingPayment.account_id]) {
+                    groupedPendingPayments[pendingPayment.account_id] = [];
+                }
+                groupedPendingPayments[pendingPayment.account_id].push(pendingPayment);
+            }
+        });
+
+        const groupedParsedPayments = {};
+        Object.keys(groupedPendingPayments).map(accountIdString => {
+            groupedParsedPayments[accountIdString] = [];
+
+            groupedPendingPayments[accountIdString].forEach(pendingPayment => {
+                const paymentObject = pendingPayment.payment;
+
+                if (paymentObject.counterparty_aliases) {
+                    const { counterparty_aliases, ...paymentDetails } = paymentObject;
+                    counterparty_aliases.forEach(counterParty => {
+                        // add each counterparty separately as a single payment
+                        groupedParsedPayments[accountIdString].push({
+                            ...paymentDetails,
+                            counterparty_alias: counterParty
+                        });
+                    });
+                } else {
+                    groupedParsedPayments[accountIdString].push(paymentObject);
+                }
+            });
+        });
+
+        // remove the selected payments from the pending payments list
+        this.removeSelected();
+
+        return groupedParsedPayments;
+    };
+
+    paySelected = () => {
+        const { BunqJSClient, user } = this.props;
+
+        this.confirmAction("Are you sure you wish to complete these payments?", () => {
+            const groupedParsedPayments = this.parsePendingPayments();
+
+            Object.keys(groupedParsedPayments).map(accountIdString => {
+                const accountId = parseFloat(accountIdString);
+                console.log("pay", user.id, accountId, groupedParsedPayments[accountIdString]);
+
+                BunqJSClient.api.paymentBatch
+                    .postRaw(user.id, accountId, groupedParsedPayments[accountIdString])
+                    .then(result => {
+                        console.warn("Batch success", result);
+                    })
+                    .catch(error => {
+                        console.error("Batch failed", error);
+                    });
+            });
+
+            this.setState({ selectedCheckBoxes: {} });
+        });
+    };
+    draftSelected = () => {
+        const { BunqJSClient, user } = this.props;
+
+        this.confirmAction("Are you sure you wish to draft these payments?", () => {
+            const groupedParsedPayments = this.parsePendingPayments();
+
+            Object.keys(groupedParsedPayments).map(accountIdString => {
+                const accountId = parseFloat(accountIdString);
+                console.log("draft", user.id, accountId, groupedParsedPayments[accountIdString]);
+
+                BunqJSClient.api.draftPayment
+                    .postRaw(user.id, accountId, groupedParsedPayments[accountIdString])
+                    .then(result => {
+                        console.warn("Draft success", result);
+                    })
+                    .catch(error => {
+                        console.error("draft failed", error);
+                    });
+            });
+
+            this.setState({ selectedCheckBoxes: {} });
+        });
+    };
     scheduleSelected = () => {};
 
     render() {
@@ -413,6 +498,7 @@ class PendingPayments extends React.Component {
 
 const mapStateToProps = state => {
     return {
+        user: state.user.user,
         accounts: state.accounts.accounts,
 
         pendingPaymentsLastUpdated: state.pending_payments.last_updated,
