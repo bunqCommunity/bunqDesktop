@@ -1,11 +1,16 @@
 import React from "react";
+import { connect } from "react-redux";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Avatar from "@material-ui/core/Avatar";
 import Collapse from "@material-ui/core/Collapse";
+import Button from "@material-ui/core/Button";
 
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
+
 import { formatMoney } from "../../Helpers/Utils";
+
+import { shareInviteBankInquiryChangeStatus } from "../../Actions/share_invite_bank_inquiry";
 
 const styles = {
     smallAvatar: {
@@ -14,7 +19,7 @@ const styles = {
     }
 };
 
-export default class ConnectListItem extends React.Component {
+class ConnectListItem extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -24,11 +29,32 @@ export default class ConnectListItem extends React.Component {
 
     toggleOpen = event => this.setState({ open: !this.state.open });
 
+    revokeConnect = e => {
+        const { user, connectInfo } = this.props;
+        this.props.shareInviteBankInquiryChangeStatus(
+            user.id,
+            connectInfo.monetary_account_id,
+            connectInfo.id,
+            "REVOKED"
+        );
+    };
+    cancelConnect = e => {
+        const { user, connectInfo } = this.props;
+        this.props.shareInviteBankInquiryChangeStatus(
+            user.id,
+            connectInfo.monetary_account_id,
+            connectInfo.id,
+            "CANCELLED"
+        );
+    };
+
     render() {
-        const { t, BunqJSClient, connectInfo } = this.props;
+        const { t, BunqJSClient, type, connectInfo } = this.props;
 
         const yesText = t("Yes");
         const noText = t("No");
+        const acceptedText = t("Accepted");
+        const pendingText = t("Pending");
 
         const budgetText = t("Budget");
         const paymentsText = t("Payments");
@@ -42,6 +68,22 @@ export default class ConnectListItem extends React.Component {
         const counterAliasInfo = connectInfo.counter_alias ? connectInfo.counter_alias : connectInfo.counter_user_alias;
 
         const imageUUID = counterAliasInfo.avatar.image[0].attachment_public_uuid;
+
+        let cancelButton = null;
+        if (type === "ShareInviteBankInquiry") {
+            cancelButton = (
+                <div style={{ padding: 8 }}>
+                    <Button
+                        color="secondary"
+                        variant="outlined"
+                        style={{ width: "100%" }}
+                        onClick={connectInfo.status === "ACCEPTED" ? this.cancelConnect : this.revokeConnect}
+                    >
+                        Cancel connect
+                    </Button>
+                </div>
+            );
+        }
 
         let detailItem = null;
         if (connectInfo.share_detail.ShareDetailPayment) {
@@ -75,6 +117,7 @@ export default class ConnectListItem extends React.Component {
                             primary={`${viewOldEventsText}: ${shareDetails.view_old_events ? yesText : noText}`}
                         />
                     </ListItem>
+                    {cancelButton}
                 </Collapse>
             );
         } else if (connectInfo.share_detail.ShareDetailReadOnly) {
@@ -93,6 +136,7 @@ export default class ConnectListItem extends React.Component {
                             primary={`${viewNewEventsText}: ${shareDetails.view_new_events ? yesText : noText}`}
                         />
                     </ListItem>
+                    {cancelButton}
                 </Collapse>
             );
         } else if (connectInfo.share_detail.ShareDetailDraftPayment) {
@@ -115,6 +159,7 @@ export default class ConnectListItem extends React.Component {
                             primary={`${viewOldEventsText}: ${shareDetails.view_old_events ? yesText : noText}`}
                         />
                     </ListItem>
+                    {cancelButton}
                 </Collapse>
             );
         } else {
@@ -127,10 +172,34 @@ export default class ConnectListItem extends React.Component {
                     <Avatar style={styles.smallAvatar}>
                         <LazyAttachmentImage height={50} BunqJSClient={BunqJSClient} imageUUID={imageUUID} />
                     </Avatar>
-                    <ListItemText primary={counterAliasInfo.display_name} />
+                    <ListItemText
+                        primary={counterAliasInfo.display_name}
+                        secondary={connectInfo.status === "ACCEPTED" ? acceptedText : pendingText}
+                    />
                 </ListItem>
                 {detailItem}
             </React.Fragment>
         );
     }
 }
+
+const mapStateToProps = state => {
+    return {
+        user: state.user.user
+    };
+};
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    const { BunqJSClient } = ownProps;
+    return {
+        shareInviteBankInquiryChangeStatus: (userId, accountId, shareInviteBankInquiryId, status) =>
+            dispatch(
+                shareInviteBankInquiryChangeStatus(BunqJSClient, userId, accountId, shareInviteBankInquiryId, status)
+            )
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ConnectListItem);
