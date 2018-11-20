@@ -33,10 +33,7 @@ import { getUTCDate } from "../../Helpers/Utils";
 
 import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_responses";
 import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiries";
-import {
-    shareInviteBankInquirySend,
-    shareInviteBankInquiryChangeStatus
-} from "../../Actions/share_invite_bank_inquiry";
+import { shareInviteBankInquirySend } from "../../Actions/share_invite_bank_inquiry";
 import { accountsUpdate } from "../../Actions/accounts";
 import { openSnackbar } from "../../Actions/snackbar";
 
@@ -639,10 +636,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                     shareOptions,
                     shareStatus
                 )
-            ),
-        shareInviteBankInquiryChangeStatus: (userId, accountId, shareInviteBankInquiryId, status) =>
-            dispatch(
-                shareInviteBankInquiryChangeStatus(BunqJSClient, userId, accountId, shareInviteBankInquiryId, status)
             )
     };
 };

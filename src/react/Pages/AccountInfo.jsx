@@ -43,6 +43,8 @@ import { requestInquiriesUpdate } from "../Actions/request_inquiries";
 import { requestInquiryBatchesUpdate } from "../Actions/request_inquiry_batches";
 import { shareInviteBankInquiriesInfoUpdate } from "../Actions/share_invite_bank_inquiries";
 import { shareInviteBankResponsesInfoUpdate } from "../Actions/share_invite_bank_responses";
+import { shareInviteBankResponseChangeStatus } from "../Actions/share_invite_bank_response";
+import { shareInviteBankInquiryChangeStatus } from "../Actions/share_invite_bank_inquiry";
 
 const styles = {
     paper: {
@@ -84,7 +86,7 @@ const styles = {
     }
 };
 
-const PersonChip = ({ alias, BunqJSClient }) => {
+const PersonChip = ({ alias, BunqJSClient, ...otherProps }) => {
     return (
         <Chip
             style={styles.chip}
@@ -99,6 +101,7 @@ const PersonChip = ({ alias, BunqJSClient }) => {
                 </Avatar>
             }
             label={alias.display_name}
+            {...otherProps}
         />
     );
 };
@@ -331,6 +334,13 @@ class AccountInfo extends React.Component {
                             <PersonChip
                                 BunqJSClient={this.props.BunqJSClient}
                                 alias={filteredInviteResponse.ShareInviteBankResponse.counter_alias}
+                                onDelete={e => {
+                                    this.props.shareInviteBankResponseChangeStatus(
+                                        this.props.user.id,
+                                        filteredInviteResponse.ShareInviteBankResponse.id,
+                                        "CANCELED"
+                                    );
+                                }}
                             />
                         );
                     });
@@ -343,6 +353,14 @@ class AccountInfo extends React.Component {
                             <PersonChip
                                 BunqJSClient={this.props.BunqJSClient}
                                 alias={filteredShareInquiry.ShareInviteBankInquiry.counter_user_alias}
+                                onDelete={e => {
+                                    this.props.shareInviteBankInquiryChangeStatus(
+                                        this.props.user.id,
+                                        filteredShareInquiry.ShareInviteBankInquiry.monetary_account_id,
+                                        filteredShareInquiry.ShareInviteBankInquiry.id,
+                                        "CANCELED"
+                                    );
+                                }}
                             />
                         );
                     });
@@ -567,6 +585,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(accountsDeactivate(BunqJSClient, userId, accountId, reason, accountType)),
         updateSettings: (userId, accountId, settings, accountType) =>
             dispatch(accountsUpdateSettings(BunqJSClient, userId, accountId, settings, accountType)),
+
+        shareInviteBankResponseChangeStatus: (userId, shareInviteBankResponseId, status) =>
+            dispatch(shareInviteBankResponseChangeStatus(BunqJSClient, userId, shareInviteBankResponseId, status)),
+        shareInviteBankInquiryChangeStatus: (userId, accountId, shareInviteBankInquiryId, status) =>
+            dispatch(
+                shareInviteBankInquiryChangeStatus(BunqJSClient, userId, accountId, shareInviteBankInquiryId, status)
+            ),
 
         shareInviteBankInquiriesInfoUpdate: (userId, accountId) =>
             dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId, accountId)),

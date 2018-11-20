@@ -11,6 +11,7 @@ import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachment
 import { formatMoney } from "../../Helpers/Utils";
 
 import { shareInviteBankInquiryChangeStatus } from "../../Actions/share_invite_bank_inquiry";
+import { shareInviteBankResponseChangeStatus } from "../../Actions/share_invite_bank_response";
 
 const styles = {
     smallAvatar: {
@@ -30,26 +31,34 @@ class ConnectListItem extends React.Component {
     toggleOpen = event => this.setState({ open: !this.state.open });
 
     revokeConnect = e => {
-        const { user, connectInfo } = this.props;
-        this.props.shareInviteBankInquiryChangeStatus(
-            user.id,
-            connectInfo.monetary_account_id,
-            connectInfo.id,
-            "REVOKED"
-        );
+        const { user, type, connectInfo } = this.props;
+        if (type === "ShareInviteBankInquiry") {
+            this.props.shareInviteBankInquiryChangeStatus(
+                user.id,
+                connectInfo.monetary_account_id,
+                connectInfo.id,
+                "REVOKED"
+            );
+        } else {
+            this.props.shareInviteBankResponseChangeStatus(user.id, connectInfo.id, "REVOKED");
+        }
     };
     cancelConnect = e => {
-        const { user, connectInfo } = this.props;
-        this.props.shareInviteBankInquiryChangeStatus(
-            user.id,
-            connectInfo.monetary_account_id,
-            connectInfo.id,
-            "CANCELLED"
-        );
+        const { user, type, connectInfo } = this.props;
+        if (type === "ShareInviteBankInquiry") {
+            this.props.shareInviteBankInquiryChangeStatus(
+                user.id,
+                connectInfo.monetary_account_id,
+                connectInfo.id,
+                "CANCELLED"
+            );
+        } else {
+            this.props.shareInviteBankResponseChangeStatus(user.id, connectInfo.id, "CANCELLED");
+        }
     };
 
     render() {
-        const { t, BunqJSClient, type, connectInfo } = this.props;
+        const { t, BunqJSClient, connectInfo } = this.props;
 
         const yesText = t("Yes");
         const noText = t("No");
@@ -69,21 +78,18 @@ class ConnectListItem extends React.Component {
 
         const imageUUID = counterAliasInfo.avatar.image[0].attachment_public_uuid;
 
-        let cancelButton = null;
-        if (type === "ShareInviteBankInquiry") {
-            cancelButton = (
-                <div style={{ padding: 8 }}>
-                    <Button
-                        color="secondary"
-                        variant="outlined"
-                        style={{ width: "100%" }}
-                        onClick={connectInfo.status === "ACCEPTED" ? this.cancelConnect : this.revokeConnect}
-                    >
-                        Cancel connect
-                    </Button>
-                </div>
-            );
-        }
+        let cancelButton = (
+            <div style={{ padding: 8 }}>
+                <Button
+                    color="secondary"
+                    variant="outlined"
+                    style={{ width: "100%" }}
+                    onClick={connectInfo.status === "ACCEPTED" ? this.cancelConnect : this.revokeConnect}
+                >
+                    Cancel connect
+                </Button>
+            </div>
+        );
 
         let detailItem = null;
         if (connectInfo.share_detail.ShareDetailPayment) {
@@ -195,7 +201,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         shareInviteBankInquiryChangeStatus: (userId, accountId, shareInviteBankInquiryId, status) =>
             dispatch(
                 shareInviteBankInquiryChangeStatus(BunqJSClient, userId, accountId, shareInviteBankInquiryId, status)
-            )
+            ),
+        shareInviteBankResponseChangeStatus: (userId, shareInviteBankResponseId, status) =>
+            dispatch(shareInviteBankResponseChangeStatus(BunqJSClient, userId, shareInviteBankResponseId, status))
     };
 };
 
