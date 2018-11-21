@@ -30,6 +30,8 @@ import {
     pendingPaymentsRemovePayment,
     pendingPaymentsSetPayments
 } from "../../Actions/pending_payments";
+import { openSnackbar } from "../../Actions/snackbar";
+import { openModal } from "../../Actions/modal";
 
 const styles = {
     paper: {
@@ -120,6 +122,12 @@ class PendingPayments extends React.Component {
 
             paymentPromiseCount: 0
         };
+    }
+
+    componentDidUpdate(previousProps, previousState) {
+        if (previousState.paymentPromiseCount > 0 && this.state.paymentPromiseCount === 0) {
+            this.props.openSnackbar(this.props.t("Finished handling the selected payments"));
+        }
     }
 
     confirmAction = (text, callback) => {
@@ -275,24 +283,25 @@ class PendingPayments extends React.Component {
     };
 
     paySelected = () => {
-        const { BunqJSClient, user } = this.props;
+        const { t, BunqJSClient, user } = this.props;
+
+        const failedTitle = t("Something went wrong");
+        const failedText = t("Failed to complete some of the selected payments");
 
         this.confirmAction("Are you sure you wish to complete these payments?", () => {
             const groupedParsedPayments = this.parsePendingPayments();
 
             Object.keys(groupedParsedPayments).map(accountIdString => {
                 const accountId = parseFloat(accountIdString);
-                console.log("pay", user.id, accountId, groupedParsedPayments[accountIdString]);
 
                 this.setState({ paymentPromiseCount: this.state.paymentPromiseCount + 1 });
                 BunqJSClient.api.paymentBatch
                     .postRaw(user.id, accountId, groupedParsedPayments[accountIdString])
                     .then(result => {
-                        console.warn("Batch success", result);
                         this.setState({ paymentPromiseCount: this.state.paymentPromiseCount - 1 });
                     })
                     .catch(error => {
-                        console.error("Batch failed", error);
+                        this.props.openSnackbar(failedText, failedTitle);
                         this.setState({ paymentPromiseCount: this.state.paymentPromiseCount - 1 });
                     });
             });
@@ -301,24 +310,25 @@ class PendingPayments extends React.Component {
         });
     };
     draftSelected = () => {
-        const { BunqJSClient, user } = this.props;
+        const { t, BunqJSClient, user } = this.props;
+
+        const failedTitle = t("Something went wrong");
+        const failedText = t("Failed to draft some of the selected payments");
 
         this.confirmAction("Are you sure you wish to draft these payments?", () => {
             const groupedParsedPayments = this.parsePendingPayments();
 
             Object.keys(groupedParsedPayments).map(accountIdString => {
                 const accountId = parseFloat(accountIdString);
-                console.log("draft", user.id, accountId, groupedParsedPayments[accountIdString]);
 
                 this.setState({ paymentPromiseCount: this.state.paymentPromiseCount + 1 });
                 BunqJSClient.api.draftPayment
                     .postRaw(user.id, accountId, groupedParsedPayments[accountIdString])
                     .then(result => {
-                        console.warn("Draft success", result);
                         this.setState({ paymentPromiseCount: this.state.paymentPromiseCount - 1 });
                     })
                     .catch(error => {
-                        console.error("draft failed", error);
+                        this.props.openSnackbar(failedText, failedTitle);
                         this.setState({ paymentPromiseCount: this.state.paymentPromiseCount - 1 });
                     });
             });
@@ -518,6 +528,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const BunqJSClient = ownProps.BunqJSClient;
     return {
+        openSnackbar: message => dispatch(openSnackbar(message)),
+        openModal: (message, title) => dispatch(openModal(message, title)),
+
         pendingPaymentsClear: () => dispatch(pendingPaymentsClear()),
         pendingPaymentsClearAccount: accountId => dispatch(pendingPaymentsClearAccount(BunqJSClient, accountId)),
         pendingPaymentsSetPayments: pendingPayments =>
