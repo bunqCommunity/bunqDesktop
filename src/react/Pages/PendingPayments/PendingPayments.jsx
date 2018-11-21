@@ -492,8 +492,6 @@ class PendingPayments extends React.Component {
             </Grid>
         );
 
-        console.log(this.state.paymentPromiseCount);
-
         return (
             <Grid container spacing={8}>
                 <Helmet>

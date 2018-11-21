@@ -155,7 +155,7 @@ class TargetSelection extends React.Component {
                         </Grid>
                         <Grid item xs={12} sm={4}>
                             <Button style={styles.contactsButton} variant="outlined" to="/contacts" component={NavLink}>
-                                {t("Contacts")} <ContactsIcon />
+                                {t("Contacts")} <ContactsIcon style={{ marginLeft: 8 }} />
                             </Button>
                         </Grid>
                     </Grid>

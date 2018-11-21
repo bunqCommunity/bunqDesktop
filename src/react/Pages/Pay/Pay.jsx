@@ -36,6 +36,7 @@ import NavLink from "../../Components/Routing/NavLink";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { paySchedule, paySend } from "../../Actions/pay";
+import { pendingPaymentsAddPayment } from "../../Actions/pending_payments";
 
 import { getInternationalFormat, isValidPhonenumber } from "../../Helpers/PhoneLib";
 import { formatMoney, getUTCDate } from "../../Helpers/Utils";
@@ -76,6 +77,8 @@ class Pay extends React.Component {
             confirmModalOpen: false,
             // if true, a draft-payment will be sent instead of a default payment
             sendDraftPayment: false,
+            // if true payment will get added to the pending payments list
+            addToPendingPayments: false,
             // if true the schedule payment form is shown
             schedulePayment: false,
             scheduleStartDate: getUTCDate(new Date()),
@@ -199,6 +202,7 @@ class Pay extends React.Component {
 
         this.setState(
             {
+                addToPendingPayments: false,
                 schedulePayment: schedulePayment
             },
             this.validateForm
@@ -215,13 +219,18 @@ class Pay extends React.Component {
 
     checkDraftOnly = () => {
         const { t, accounts, shareInviteBankResponses } = this.props;
-        const { selectedAccount, sendDraftPayment } = this.state;
+        const { selectedAccount, sendDraftPayment, addToPendingPayments } = this.state;
         const outgoingPaymentsConnectMessage = t(
             "It is not possible to send outgoing payments using a draft-only account"
         );
         const outgoingPaymentsMessage = t(
             "It is not possible to send outgoing payments without draft mode when using a OAuth API key"
         );
+
+        // ignore if addToPendingPayments is set
+        if (addToPendingPayments) {
+            return;
+        }
 
         // check if on oauth session
         if (this.props.limitedPermissions) {
@@ -272,7 +281,6 @@ class Pay extends React.Component {
     };
 
     draftChange = () => {
-        const schedulePayment = this.state.schedulePayment;
         const sendDraftPayment = this.state.sendDraftPayment;
 
         // check if a draft only account is selected and force
@@ -280,8 +288,22 @@ class Pay extends React.Component {
 
         this.setState(
             {
+                addToPendingPayments: false,
                 sendDraftPayment: !sendDraftPayment,
-                schedulePayment: sendDraftPayment ? false : schedulePayment
+                schedulePayment: false
+            },
+            this.validateForm
+        );
+    };
+
+    pendingPaymentChange = () => {
+        const addToPendingPayments = this.state.addToPendingPayments;
+
+        this.setState(
+            {
+                addToPendingPayments: !addToPendingPayments,
+                sendDraftPayment: false,
+                schedulePayment: false
             },
             this.validateForm
         );
@@ -469,6 +491,7 @@ class Pay extends React.Component {
             description,
             amount,
             targets,
+            addToPendingPayments,
             schedulePayment,
             scheduleStartDate,
             scheduleEndDate,
@@ -552,6 +575,13 @@ class Pay extends React.Component {
             }
 
             this.props.paySchedule(userId, account.id, description, amountInfo, targetInfoList, schedule);
+        } else if (addToPendingPayments) {
+            this.props.pendingPaymentsAddPayment(account.id, {
+                description: description,
+                amount: amountInfo,
+                counterparty_aliases: targetInfoList
+            });
+            this.props.openSnackbar(this.props.t("The payment was added to the pending payments listed"));
         } else {
             // regular payment/draft
             this.props.paySend(userId, account.id, description, amountInfo, targetInfoList, sendDraftPayment);
@@ -618,6 +648,15 @@ class Pay extends React.Component {
             default:
                 localeData = enLocale;
                 break;
+        }
+
+        let payButtonText = "Pay";
+        if (this.state.addToPendingPayments) {
+            payButtonText = "Add to pending payments";
+        } else if (this.state.sendDraftPayment) {
+            payButtonText = "Draft payment";
+        } else if (this.state.schedulePayment) {
+            payButtonText = "Schedule Payment";
         }
 
         return (
@@ -699,10 +738,10 @@ class Pay extends React.Component {
                                     />
 
                                     <Grid container>
-                                        <Grid item xs={6}>
+                                        <Grid item xs={12} sm={4}>
                                             <Tooltip
                                                 title={t(
-                                                    "Draft payments are NOT sent allowing you to review and confirm them in the official bunq app"
+                                                    "Draft payments are NOT completed right away allowing you to review and confirm them in the official bunq app"
                                                 )}
                                             >
                                                 <FormControlLabel
@@ -717,9 +756,27 @@ class Pay extends React.Component {
                                                 />
                                             </Tooltip>
                                         </Grid>
+                                        <Grid item xs={12} sm={4}>
+                                            <Tooltip
+                                                title={t(
+                                                    "Store this payment in the pending payments list for later, it will NOT be sent to bunq"
+                                                )}
+                                            >
+                                                <FormControlLabel
+                                                    control={
+                                                        <Switch
+                                                            color="primary"
+                                                            checked={this.state.addToPendingPayments}
+                                                            onChange={this.pendingPaymentChange}
+                                                        />
+                                                    }
+                                                    label={t("Save payment for later")}
+                                                />
+                                            </Tooltip>
+                                        </Grid>
 
                                         {limitedPermissions ? null : (
-                                            <Grid item xs={6}>
+                                            <Grid item xs={12} sm={4}>
                                                 <FormControlLabel
                                                     control={
                                                         <Switch
@@ -766,7 +823,7 @@ class Pay extends React.Component {
                                         style={styles.payButton}
                                         onClick={this.openModal}
                                     >
-                                        Pay
+                                        {payButtonText}
                                     </TranslateButton>
                                 </Paper>
                             </Grid>
@@ -814,7 +871,10 @@ const mapDispatchToProps = (dispatch, props) => {
             dispatch(paySend(BunqJSClient, userId, accountId, description, amount, targets, draft, schedule)),
         paySchedule: (userId, accountId, description, amount, targets, schedule) =>
             dispatch(paySchedule(BunqJSClient, userId, accountId, description, amount, targets, schedule)),
-        openSnackbar: message => dispatch(openSnackbar(message))
+        openSnackbar: message => dispatch(openSnackbar(message)),
+
+        pendingPaymentsAddPayment: (accountId, pendingPayment) =>
+            dispatch(pendingPaymentsAddPayment(BunqJSClient, accountId, pendingPayment))
     };
 };
 

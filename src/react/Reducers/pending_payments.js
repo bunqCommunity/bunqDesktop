@@ -34,9 +34,9 @@ export default (state = defaultState, action) => {
         case "PENDING_PAYMENTS_ADD_PAYMENT":
             const newPendingPayment = action.payload.pending_payment;
             const pendingPaymentId = generateGUID();
-            newPendingPayment.id = pendingPaymentId;
 
             pendingPayments[pendingPaymentId] = {
+                id: pendingPaymentId,
                 account_id: action.payload.account_id,
                 payment: newPendingPayment
             };
@@ -62,9 +62,9 @@ export default (state = defaultState, action) => {
 
             newPendingPayments.forEach(newPendingPayment => {
                 const pendingPaymentId2 = generateGUID();
-                newPendingPayment.id = pendingPaymentId2;
 
                 pendingPayments[pendingPaymentId2] = {
+                    id: pendingPaymentId2,
                     account_id: action.payload.account_id,
                     payment: newPendingPayment
                 };
