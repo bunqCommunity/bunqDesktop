@@ -116,7 +116,9 @@ class PendingPayments extends React.Component {
             selectedCheckBoxes: {},
 
             confirmText: "",
-            confirmCallback: () => {}
+            confirmCallback: () => {},
+
+            paymentPromiseCount: 0
         };
     }
 
@@ -242,8 +244,17 @@ class PendingPayments extends React.Component {
             groupedPendingPayments[accountIdString].forEach(pendingPayment => {
                 const paymentObject = pendingPayment.payment;
 
+                if (groupedParsedPayments[accountIdString].length >= 50) {
+                    return;
+                }
+
                 if (paymentObject.counterparty_aliases) {
                     const { counterparty_aliases, ...paymentDetails } = paymentObject;
+                    if (counterparty_aliases.length + groupedParsedPayments[accountIdString].length > 50) {
+                        // ignore if this target list will cause the amount to go over 50
+                        return;
+                    }
+
                     counterparty_aliases.forEach(counterParty => {
                         // add each counterparty separately as a single payment
                         groupedParsedPayments[accountIdString].push({
@@ -254,11 +265,11 @@ class PendingPayments extends React.Component {
                 } else {
                     groupedParsedPayments[accountIdString].push(paymentObject);
                 }
+
+                // remove this payment since it's added to the queue
+                this.props.pendingPaymentsRemovePayment(pendingPayment.id);
             });
         });
-
-        // remove the selected payments from the pending payments list
-        this.removeSelected();
 
         return groupedParsedPayments;
     };
@@ -273,13 +284,16 @@ class PendingPayments extends React.Component {
                 const accountId = parseFloat(accountIdString);
                 console.log("pay", user.id, accountId, groupedParsedPayments[accountIdString]);
 
+                this.setState({ paymentPromiseCount: this.state.paymentPromiseCount + 1 });
                 BunqJSClient.api.paymentBatch
                     .postRaw(user.id, accountId, groupedParsedPayments[accountIdString])
                     .then(result => {
                         console.warn("Batch success", result);
+                        this.setState({ paymentPromiseCount: this.state.paymentPromiseCount - 1 });
                     })
                     .catch(error => {
                         console.error("Batch failed", error);
+                        this.setState({ paymentPromiseCount: this.state.paymentPromiseCount - 1 });
                     });
             });
 
@@ -296,20 +310,22 @@ class PendingPayments extends React.Component {
                 const accountId = parseFloat(accountIdString);
                 console.log("draft", user.id, accountId, groupedParsedPayments[accountIdString]);
 
+                this.setState({ paymentPromiseCount: this.state.paymentPromiseCount + 1 });
                 BunqJSClient.api.draftPayment
                     .postRaw(user.id, accountId, groupedParsedPayments[accountIdString])
                     .then(result => {
                         console.warn("Draft success", result);
+                        this.setState({ paymentPromiseCount: this.state.paymentPromiseCount - 1 });
                     })
                     .catch(error => {
                         console.error("draft failed", error);
+                        this.setState({ paymentPromiseCount: this.state.paymentPromiseCount - 1 });
                     });
             });
 
             this.setState({ selectedCheckBoxes: {} });
         });
     };
-    scheduleSelected = () => {};
 
     render() {
         const { t, BunqJSClient, accounts, pendingPayments } = this.props;
@@ -431,15 +447,6 @@ class PendingPayments extends React.Component {
                     >
                         Draft selected
                     </Button>
-                    <Button
-                        style={styles.button}
-                        color="primary"
-                        variant="contained"
-                        disabled={!hasSelectedCheckboxes || componentList.length === 0}
-                        onClick={this.scheduleSelected}
-                    >
-                        Schedule selected
-                    </Button>
                 </Grid>
                 <Grid>
                     <Button
@@ -474,6 +481,8 @@ class PendingPayments extends React.Component {
                 </Grid>
             </Grid>
         );
+
+        console.log(this.state.paymentPromiseCount);
 
         return (
             <Grid container spacing={8}>
