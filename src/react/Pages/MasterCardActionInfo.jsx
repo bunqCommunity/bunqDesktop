@@ -142,6 +142,10 @@ class MasterCardActionInfo extends React.Component {
             const formattedPaymentAmount = formatMoney(paymentAmount, true);
             const paymentLabel = masterCardActionText(masterCardAction, t);
 
+            const settledText = t("Settled");
+            const openText = t("Open");
+            const settlementStatusText = masterCardAction.settlement_status === "SETTLED" ? settledText : openText;
+
             if (this.props.pdfSaveModeEnabled) {
                 return (
                     <PDFExportHelper
@@ -218,6 +222,10 @@ class MasterCardActionInfo extends React.Component {
                             <Divider />
                             <ListItem>
                                 <ListItemText primary={t("Card")} secondary={masterCardAction.label_card.second_line} />
+                            </ListItem>
+                            <Divider />
+                            <ListItem>
+                                <ListItemText primary={t("Settlement Status")} secondary={settlementStatusText} />
                             </ListItem>
                             <Divider />
                             <ListItem>
