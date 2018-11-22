@@ -23,6 +23,7 @@ import ConfirmationDialog from "./ConfirmationDialog";
 import PendingPaymentRow from "./PendingPaymentRow";
 
 import { formatMoney } from "../../Helpers/Utils";
+import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
 
 import {
     pendingPaymentsClear,
@@ -286,7 +287,6 @@ class PendingPayments extends React.Component {
         const { t, BunqJSClient, user } = this.props;
         const { paymentPromiseCount } = this.state;
 
-        const failedTitle = t("Something went wrong");
         const failedText = t("Failed to complete some of the selected payments");
 
         this.confirmAction("Are you sure you wish to complete these payments?", () => {
@@ -305,7 +305,7 @@ class PendingPayments extends React.Component {
                         this.setState({ paymentPromiseCount: paymentPromiseCount - 1 });
                     })
                     .catch(error => {
-                        this.props.openSnackbar(failedText, failedTitle);
+                        this.props.BunqErrorHandler(error, failedText);
                         this.setState({ paymentPromiseCount: paymentPromiseCount - 1 });
                     });
             });
@@ -317,7 +317,6 @@ class PendingPayments extends React.Component {
         const { t, BunqJSClient, user } = this.props;
         const { paymentPromiseCount } = this.state;
 
-        const failedTitle = t("Something went wrong");
         const failedText = t("Failed to draft some of the selected payments");
 
         this.confirmAction("Are you sure you wish to draft these payments?", () => {
@@ -336,7 +335,7 @@ class PendingPayments extends React.Component {
                         this.setState({ paymentPromiseCount: paymentPromiseCount - 1 });
                     })
                     .catch(error => {
-                        this.props.openSnackbar(failedText, failedTitle);
+                        this.props.BunqErrorHandler(error, failedText);
                         this.setState({ paymentPromiseCount: paymentPromiseCount - 1 });
                     });
             });
@@ -535,7 +534,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const BunqJSClient = ownProps.BunqJSClient;
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
-        openModal: (message, title) => dispatch(openModal(message, title)),
+        BunqErrorHandler: (error, message) => BunqErrorHandler(dispatch, error, message, BunqJSClient),
 
         pendingPaymentsClear: () => dispatch(pendingPaymentsClear()),
         pendingPaymentsClearAccount: accountId => dispatch(pendingPaymentsClearAccount(BunqJSClient, accountId)),
