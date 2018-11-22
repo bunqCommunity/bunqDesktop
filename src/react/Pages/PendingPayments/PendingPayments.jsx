@@ -28,11 +28,9 @@ import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
 import {
     pendingPaymentsClear,
     pendingPaymentsClearAccount,
-    pendingPaymentsRemovePayment,
-    pendingPaymentsSetPayments
+    pendingPaymentsRemovePayment
 } from "../../Actions/pending_payments";
 import { openSnackbar } from "../../Actions/snackbar";
-import { openModal } from "../../Actions/modal";
 
 const styles = {
     paper: {
@@ -432,12 +430,6 @@ class PendingPayments extends React.Component {
                     <TranslateTypography variant="h5">Pending payments</TranslateTypography>
                 </Grid>
                 <Grid item xs={4} style={styles.titleButtonGrid}>
-                    <Button
-                        variant="outlined"
-                        onClick={e => this.props.pendingPaymentsSetPayments(testPendingPayments)}
-                    >
-                        T
-                    </Button>
                     {componentList.length > 0 && (
                         <Button color="secondary" variant="outlined" onClick={this.clearAll}>
                             Clear all
@@ -538,8 +530,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
         pendingPaymentsClear: () => dispatch(pendingPaymentsClear()),
         pendingPaymentsClearAccount: accountId => dispatch(pendingPaymentsClearAccount(BunqJSClient, accountId)),
-        pendingPaymentsSetPayments: pendingPayments =>
-            dispatch(pendingPaymentsSetPayments(BunqJSClient, pendingPayments)),
         pendingPaymentsRemovePayment: pendingPaymentId =>
             dispatch(pendingPaymentsRemovePayment(BunqJSClient, pendingPaymentId))
     };
