@@ -19,8 +19,10 @@ import UrlIcon from "@material-ui/icons/Link";
 import LinkIcon from "@material-ui/icons/Link";
 import PeopleIcon from "@material-ui/icons/People";
 
+import AccountAvatarCircularProgress from "./AccountList/AccountAvatarCircularProgress";
 import LazyAttachmentImage from "./AttachmentImage/LazyAttachmentImage";
 import AccountQRFullscreen from "./QR/AccountQRFullscreen";
+
 import { formatMoney, formatIban } from "../Helpers/Utils";
 import GetShareDetailBudget from "../Helpers/GetShareDetailBudget";
 
@@ -57,7 +59,7 @@ class AccountCard extends React.Component {
         }
 
         let avatarSub = null;
-        if (this.props.isJoint) {
+        if (this.props.isJointAccount) {
             avatarSub = (
                 <Avatar style={styles.secondaryIcon}>
                     <PeopleIcon />
@@ -77,6 +79,7 @@ class AccountCard extends React.Component {
             <Paper>
                 <List>
                     <ListItem>
+                        <AccountAvatarCircularProgress account={account} />
                         <Avatar style={styles.avatar}>
                             <LazyAttachmentImage
                                 BunqJSClient={this.props.BunqJSClient}
@@ -145,7 +148,7 @@ class AccountCard extends React.Component {
 }
 
 AccountCard.defaultProps = {
-    isJoint: false,
+    isJointAccount: false,
     toggleDeactivateDialog: false,
     toggleSettingsDialog: false
 };

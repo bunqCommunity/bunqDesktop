@@ -1,11 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
+import { translate } from "react-i18next";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
-import CircularProgress from "@material-ui/core/CircularProgress";
 
 import InfoIcon from "@material-ui/icons/InfoOutlined";
 import LinkIcon from "@material-ui/icons/Link";
@@ -13,6 +13,7 @@ import PeopleIcon from "@material-ui/icons/People";
 
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 import NavLink from "../../Components/Routing/NavLink";
+import AccountAvatarCircularProgress from "./AccountAvatarCircularProgress";
 
 import { formatMoney } from "../../Helpers/Utils";
 import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
@@ -36,12 +37,6 @@ const styles = {
         height: 26,
         color: "#ffffff",
         backgroundColor: "#ffa500"
-    },
-    overlayCircular: {
-        position: "absolute",
-        width: 68,
-        height: 68,
-        top: 7
     }
 };
 
@@ -52,7 +47,7 @@ class AccountListItem extends React.Component {
     }
 
     render() {
-        const { user, account, shareInviteBankResponses, selectedAccountIds, toggleAccountIds } = this.props;
+        const { t, user, account, shareInviteBankResponses, selectedAccountIds, toggleAccountIds } = this.props;
 
         if (account.status !== "ACTIVE") {
             return null;
@@ -78,20 +73,20 @@ class AccountListItem extends React.Component {
             );
         }
 
-        let formattedBalance = account.balance ? account.balance.value : 0;
+        let accountBalance = account.balance ? account.balance.value : 0;
         if (shareInviteBankResponses.length > 0) {
             const connectBudget = GetShareDetailBudget(shareInviteBankResponses);
             if (connectBudget) {
-                formattedBalance = connectBudget;
+                accountBalance = connectBudget;
             }
         }
-        formattedBalance = this.props.hideBalance ? "" : formatMoney(formattedBalance, true);
+        const formattedBalance = this.props.hideBalance ? "" : formatMoney(accountBalance, true);
 
         let secondaryText = formattedBalance;
-        let savingsPercentage = 0;
         if (isSavingsAccount) {
-            savingsPercentage = parseFloat(account.savings_goal_progress) * 100;
-            secondaryText = `${formattedBalance} - ${savingsPercentage}%`;
+            const targetAmount = formatMoney(account.savings_goal.value);
+            const savingsPercentage = parseFloat(account.savings_goal_progress) * 100;
+            secondaryText = `${formattedBalance} ${t("out of")} ${targetAmount} - (${savingsPercentage.toFixed(2)}%)`;
         }
 
         // check if any of the selected account ids are for this account
@@ -120,45 +115,10 @@ class AccountListItem extends React.Component {
 
         // allow overwrite by props
         const onClickHandler = this.props.onClick ? e => this.props.onClick(user.id, account.id) : defaultClickHandler;
-        const isDarkTheme = this.props.theme === "DarkTheme";
 
         return (
             <ListItem button onClick={onClickHandler} style={displayStyle} divider>
-                {isSavingsAccount && (
-                    <React.Fragment>
-                        <CircularProgress
-                            variant="static"
-                            value={savingsPercentage}
-                            style={{
-                                ...styles.overlayCircular,
-                                zIndex: 2,
-                                left: circularLeftPostion
-                            }}
-                        />
-                        <div
-                            style={{
-                                ...styles.overlayCircular,
-                                zIndex: 1,
-                                left: circularLeftPostion
-                            }}
-                        >
-                            <svg viewBox="22 22 44 44">
-                                <circle
-                                    cx="44"
-                                    cy="44"
-                                    r="20.2"
-                                    fill="none"
-                                    strokeWidth="3.6"
-                                    stroke={isDarkTheme ? "#58585d" : "#e8e8e8"}
-                                    style={{
-                                        strokeDasharray: 126.92,
-                                        strokeDashoffset: 0
-                                    }}
-                                />
-                            </svg>
-                        </div>
-                    </React.Fragment>
-                )}
+                <AccountAvatarCircularProgress account={account} style={{ left: circularLeftPostion }} />
                 <Avatar style={styles.bigAvatar}>
                     <LazyAttachmentImage
                         height={60}
@@ -216,4 +176,4 @@ AccountListItem.defaultProps = {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(AccountListItem);
+)(translate("translations")(AccountListItem));

@@ -54,8 +54,12 @@ class ApplicationInfo extends React.Component {
         this.setState({ loading: true });
         allReleases()
             .then(releases => {
+                const filteredReleases = releases.filter(release => {
+                    if (release.tag_name === "snapshot") return false;
+                    return true;
+                });
                 this.setState({
-                    releases: releases,
+                    releases: filteredReleases,
                     loading: false
                 });
             })

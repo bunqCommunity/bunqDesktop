@@ -36,6 +36,29 @@ export function shareInviteBankInquirySend(
     };
 }
 
+export function shareInviteBankInquiryChangeStatus(BunqJSClient, userId, accountId, shareInviteBankInquiryId, status) {
+    const failedMessage = window.t("We received the following error while updating your connect request");
+    const successMessage = window.t("Connect request was updated successfully!");
+
+    return dispatch => {
+        dispatch(shareInviteBankInquiryLoading());
+
+        BunqJSClient.api.shareInviteBankInquiry
+            .putStatus(userId, accountId, shareInviteBankInquiryId, status)
+            .then(result => {
+                dispatch(openSnackbar(successMessage));
+
+                // update the payments, accounts and share list
+                dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId, accountId));
+                dispatch(shareInviteBankInquiryNotLoading());
+            })
+            .catch(error => {
+                dispatch(shareInviteBankInquiryNotLoading());
+                BunqErrorHandler(dispatch, error, failedMessage);
+            });
+    };
+}
+
 export function shareInviteBankInquiryLoading() {
     return { type: "SHARE_INVITE_BANK_INQUIRY_IS_LOADING" };
 }
