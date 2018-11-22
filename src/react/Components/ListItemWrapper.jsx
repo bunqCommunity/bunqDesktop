@@ -1,6 +1,7 @@
 import React from "react";
 import { matchPath } from "react-router";
 import ListItem from "@material-ui/core/ListItem";
+import Typography from "@material-ui/core/Typography";
 
 import TranslateTypography from "./TranslationHelpers/Typography";
 import NavLink from "./Routing/NavLink";
@@ -17,7 +18,7 @@ const styles = {
     }
 };
 
-export default ({ icon: PropIcon, to: targetUrl, text, exact = false, ...rest }) => {
+export default ({ icon: PropIcon, to: targetUrl, text, exact = false, disableTranslation = false, ...rest }) => {
     // check if this item is considered active
     const isActive =
         null !==
@@ -33,11 +34,16 @@ export default ({ icon: PropIcon, to: targetUrl, text, exact = false, ...rest })
     }
 
     const iconColor = isActive ? "primary" : "action";
+    const textComponent = disableTranslation ? (
+        <Typography variant="subtitle1">{text}</Typography>
+    ) : (
+        <TranslateTypography variant="subtitle1">{text}</TranslateTypography>
+    );
 
     return (
         <ListItem style={styles.listBottomItem} {...rest}>
             <PropIcon color={iconColor} style={styles.propIcon} />
-            <TranslateTypography variant="subtitle1">{text}</TranslateTypography>
+            {textComponent}
         </ListItem>
     );
 };

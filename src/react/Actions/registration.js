@@ -15,6 +15,7 @@ import { loadStoredRequestResponses } from "./request_responses";
 import { loadStoredContacts } from "./contacts";
 import { loadStoredShareInviteBankResponses } from "./share_invite_bank_responses";
 import { loadStoredShareInviteBankInquiries } from "./share_invite_bank_inquiries";
+import { loadPendingPayments } from "./pending_payments";
 
 export const SALT_LOCATION = "BUNQDESKTOP_PASSWORD_SALT";
 export const API_KEY_LOCATION = "BUNQDESKTOP_API_KEY";
@@ -45,6 +46,7 @@ export function registrationLoadStoredData(BunqJSClient) {
     return dispatch => {
         dispatch(loadStoredAccounts(BunqJSClient));
         dispatch(loadStoredContacts(BunqJSClient));
+        dispatch(loadPendingPayments(BunqJSClient));
         dispatch(loadStoredPayments(BunqJSClient));
         dispatch(loadStoredBunqMeTabs(BunqJSClient));
         dispatch(loadStoredMasterCardActions(BunqJSClient));

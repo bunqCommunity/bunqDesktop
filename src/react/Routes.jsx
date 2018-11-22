@@ -49,6 +49,10 @@ const privateRoutes = [
         component: CL(() => import(/* webpackChunkName: "exports" */ "./Pages/Exports"))
     },
     {
+        path: "/pending-payments",
+        component: CL(() => import(/* webpackChunkName: "pendingPayments" */ "./Pages/PendingPayments/PendingPayments"))
+    },
+    {
         path: "/stats",
         component: CL(() => import(/* webpackChunkName: "stats" */ "./Pages/Stats/Stats"))
     },
