@@ -284,6 +284,7 @@ class PendingPayments extends React.Component {
 
     paySelected = () => {
         const { t, BunqJSClient, user } = this.props;
+        const { paymentPromiseCount } = this.state;
 
         const failedTitle = t("Something went wrong");
         const failedText = t("Failed to complete some of the selected payments");
@@ -291,18 +292,21 @@ class PendingPayments extends React.Component {
         this.confirmAction("Are you sure you wish to complete these payments?", () => {
             const groupedParsedPayments = this.parsePendingPayments();
 
+            this.setState({
+                paymentPromiseCount: paymentPromiseCount + Object.keys(groupedParsedPayments).length
+            });
+
             Object.keys(groupedParsedPayments).map(accountIdString => {
                 const accountId = parseFloat(accountIdString);
 
-                this.setState({ paymentPromiseCount: this.state.paymentPromiseCount + 1 });
                 BunqJSClient.api.paymentBatch
                     .postRaw(user.id, accountId, groupedParsedPayments[accountIdString])
                     .then(result => {
-                        this.setState({ paymentPromiseCount: this.state.paymentPromiseCount - 1 });
+                        this.setState({ paymentPromiseCount: paymentPromiseCount - 1 });
                     })
                     .catch(error => {
                         this.props.openSnackbar(failedText, failedTitle);
-                        this.setState({ paymentPromiseCount: this.state.paymentPromiseCount - 1 });
+                        this.setState({ paymentPromiseCount: paymentPromiseCount - 1 });
                     });
             });
 
@@ -311,6 +315,7 @@ class PendingPayments extends React.Component {
     };
     draftSelected = () => {
         const { t, BunqJSClient, user } = this.props;
+        const { paymentPromiseCount } = this.state;
 
         const failedTitle = t("Something went wrong");
         const failedText = t("Failed to draft some of the selected payments");
@@ -318,18 +323,21 @@ class PendingPayments extends React.Component {
         this.confirmAction("Are you sure you wish to draft these payments?", () => {
             const groupedParsedPayments = this.parsePendingPayments();
 
+            this.setState({
+                paymentPromiseCount: paymentPromiseCount + Object.keys(groupedParsedPayments).length
+            });
+
             Object.keys(groupedParsedPayments).map(accountIdString => {
                 const accountId = parseFloat(accountIdString);
 
-                this.setState({ paymentPromiseCount: this.state.paymentPromiseCount + 1 });
                 BunqJSClient.api.draftPayment
                     .postRaw(user.id, accountId, groupedParsedPayments[accountIdString])
                     .then(result => {
-                        this.setState({ paymentPromiseCount: this.state.paymentPromiseCount - 1 });
+                        this.setState({ paymentPromiseCount: paymentPromiseCount - 1 });
                     })
                     .catch(error => {
                         this.props.openSnackbar(failedText, failedTitle);
-                        this.setState({ paymentPromiseCount: this.state.paymentPromiseCount - 1 });
+                        this.setState({ paymentPromiseCount: paymentPromiseCount - 1 });
                     });
             });
 
