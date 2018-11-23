@@ -68,48 +68,6 @@ const styles = {
     }
 };
 
-const testPendingPayments = {
-    "random-payment-id": {
-        account_id: 6301,
-        id: "random-payment-id",
-        payment: {
-            amount: { currency: "EUR", value: "5.00" },
-            counterparty_alias: { type: "IBAN", value: "NL55BUNQ9900053427", name: "Angel Monoghan" },
-            description: "some description"
-        }
-    },
-    "random-payment-id2": {
-        account_id: 6301,
-        id: "random-payment-id2",
-        payment: {
-            amount: { currency: "EUR", value: "10.00" },
-            counterparty_alias: { type: "IBAN", value: "NL55BUNQ9900053427", name: "Angel Monoghan" },
-            description: "Different description hehe"
-        }
-    },
-    "other-account-payment-id": {
-        account_id: 8366,
-        id: "other-account-payment-id",
-        payment: {
-            amount: { currency: "EUR", value: "13.37" },
-            counterparty_alias: { type: "IBAN", value: "NL55BUNQ9900053427", name: "Angel Monoghan" },
-            description: "Other account description"
-        }
-    },
-    "multi-counterparty-payment-id": {
-        account_id: 8366,
-        id: "multi-counterparty-payment-id",
-        payment: {
-            amount: { currency: "EUR", value: "30.00" },
-            counterparty_aliases: [
-                { type: "IBAN", value: "NL55BUNQ9900053427", name: "Angel Monoghan" },
-                { type: "EMAIL", value: "angel.monoghan@bunq.eu" }
-            ],
-            description: "Other account description"
-        }
-    }
-};
-
 class PendingPayments extends React.Component {
     constructor(props, context) {
         super(props, context);
