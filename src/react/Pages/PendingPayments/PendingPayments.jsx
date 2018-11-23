@@ -82,8 +82,12 @@ class PendingPayments extends React.Component {
     }
 
     componentDidUpdate(previousProps, previousState) {
-        if (previousState.paymentPromiseCount > 0 && this.state.paymentPromiseCount === 0) {
+        if (previousState.paymentPromiseCount > 0 && this.state.paymentPromiseCount <= 0) {
             this.props.openSnackbar(this.props.t("Finished handling the selected payments"));
+            
+            this.setState({
+                paymentPromiseCount: 0
+            });
         }
     }
 
@@ -239,30 +243,28 @@ class PendingPayments extends React.Component {
         return groupedParsedPayments;
     };
 
+    incrementPromiseCounter = () => this.setState({ paymentPromiseCount: this.state.paymentPromiseCount + 1 });
+    decrementPromiseCounter = () => this.setState({ paymentPromiseCount: this.state.paymentPromiseCount - 1 });
+
     paySelected = () => {
         const { t, BunqJSClient, user } = this.props;
-        const { paymentPromiseCount } = this.state;
-
         const failedText = t("Failed to complete some of the selected payments");
 
         this.confirmAction("Are you sure you wish to complete these payments?", () => {
             const groupedParsedPayments = this.parsePendingPayments();
 
-            this.setState({
-                paymentPromiseCount: paymentPromiseCount + Object.keys(groupedParsedPayments).length
-            });
-
             Object.keys(groupedParsedPayments).map(accountIdString => {
                 const accountId = parseFloat(accountIdString);
 
+                this.incrementPromiseCounter();
                 BunqJSClient.api.paymentBatch
                     .postRaw(user.id, accountId, groupedParsedPayments[accountIdString])
                     .then(result => {
-                        this.setState({ paymentPromiseCount: paymentPromiseCount - 1 });
+                        this.decrementPromiseCounter();
                     })
                     .catch(error => {
                         this.props.BunqErrorHandler(error, failedText);
-                        this.setState({ paymentPromiseCount: paymentPromiseCount - 1 });
+                        this.decrementPromiseCounter();
                     });
             });
 
@@ -271,28 +273,23 @@ class PendingPayments extends React.Component {
     };
     draftSelected = () => {
         const { t, BunqJSClient, user } = this.props;
-        const { paymentPromiseCount } = this.state;
-
         const failedText = t("Failed to draft some of the selected payments");
 
         this.confirmAction("Are you sure you wish to draft these payments?", () => {
             const groupedParsedPayments = this.parsePendingPayments();
 
-            this.setState({
-                paymentPromiseCount: paymentPromiseCount + Object.keys(groupedParsedPayments).length
-            });
-
             Object.keys(groupedParsedPayments).map(accountIdString => {
                 const accountId = parseFloat(accountIdString);
 
+                this.incrementPromiseCounter();
                 BunqJSClient.api.draftPayment
                     .postRaw(user.id, accountId, groupedParsedPayments[accountIdString])
                     .then(result => {
-                        this.setState({ paymentPromiseCount: paymentPromiseCount - 1 });
+                        this.decrementPromiseCounter();
                     })
                     .catch(error => {
                         this.props.BunqErrorHandler(error, failedText);
-                        this.setState({ paymentPromiseCount: paymentPromiseCount - 1 });
+                        this.decrementPromiseCounter();
                     });
             });
 
