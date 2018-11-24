@@ -586,6 +586,20 @@ class Pay extends React.Component {
             // regular payment/draft
             this.props.paySend(userId, account.id, description, amountInfo, targetInfoList, sendDraftPayment);
         }
+
+        this.setState({
+            validForm: false,
+            selectedAccount: 0,
+            amountError: false,
+            amount: "",
+            descriptionError: false,
+            description: "",
+            targetError: false,
+            target: "",
+            targets: [],
+            ibanNameError: false,
+            ibanName: ""
+        });
     };
 
     render() {
