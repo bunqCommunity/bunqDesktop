@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
     <id>bunqdesktop</id>
-    <version>0.9.1</version>
+    <version>0.9.2</version>
     <!-- <packageSourceUrl>Where is this Chocolatey package located (think GitHub)? packageSourceUrl is highly recommended for the community feed</packageSourceUrl>-->
     <!-- owners is a poor name for maintainers of the package. It sticks around by this name for compatibility reasons. It basically means you. -->
     <owners>bunqCommunity</owners>
@@ -25,7 +25,7 @@
     <summary>The unofficial, free and open source desktop application for the bunq API</summary>
     <description>A desktop implementation for bunq's API. This app does everything within the application so you don't  have to worry about sharing your API key with anyone else!</description>
 
-    <releaseNotes>https://github.com/bunqCommunity/bunqDesktop/releases/tag/0.9.1</releaseNotes>
+    <releaseNotes>https://github.com/bunqCommunity/bunqDesktop/releases/tag/0.9.2</releaseNotes>
   </metadata>
   <files>
     <!-- this section controls what actually gets packaged into the Chocolatey package -->

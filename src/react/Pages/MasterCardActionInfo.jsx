@@ -112,7 +112,7 @@ class MasterCardActionInfo extends React.Component {
 
     onRequest = e => {
         const { masterCardActionInfo } = this.props;
-        this.props.history.push(`/request-inquiry?amount=${masterCardActionInfo.getAmount()}`);
+        this.props.history.push(`/request?amount=${masterCardActionInfo.getAmount()}`);
     };
 
     render() {
