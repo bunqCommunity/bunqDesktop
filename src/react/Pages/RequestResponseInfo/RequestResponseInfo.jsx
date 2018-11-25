@@ -149,7 +149,7 @@ class RequestResponseInfo extends React.Component {
 
     onRequest = e => {
         const { requestResponseInfo } = this.props;
-        this.props.history.push(`/request-inquiry?amount=${requestResponseInfo.getAmount()}`);
+        this.props.history.push(`/request?amount=${requestResponseInfo.getAmount()}`);
     };
 
     render() {
