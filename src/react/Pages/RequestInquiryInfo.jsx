@@ -3,7 +3,6 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { ipcRenderer } from "electron";
 import Helmet from "react-helmet";
-import Redirect from "react-router-dom/Redirect";
 import CopyToClipboard from "react-copy-to-clipboard";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
@@ -98,14 +97,6 @@ class RequestInquiryInfo extends React.Component {
         this.props.requestInquiryCancel(this.props.user.id, accountId, requestInquiryId);
     };
 
-    startPayment = event => {
-        const requestInquiryInfo = this.props.requestInquiryInfo;
-        this.props.history.push(`/pay?amount=${requestInquiryInfo.getAmount()}`);
-    };
-    startRequest = event => {
-        const requestInquiryInfo = this.props.requestInquiryInfo;
-        this.props.history.push(`/request?amount=${requestInquiryInfo.getAmount()}`);
-    };
     createPdfExport = () => {
         const { requestInquiryInfo } = this.props;
 
@@ -125,6 +116,13 @@ class RequestInquiryInfo extends React.Component {
         this.setState({
             viewFilterCreationDialog: !this.state.viewFilterCreationDialog
         });
+    };
+
+    onRepeat = e => {
+        this.props.history.push(`/request?amount=${this.props.requestInquiryInfo.getAmount()}`);
+    };
+    onForward = e => {
+        this.props.history.push(`/pay?amount=${this.props.requestInquiryInfo.getAmount()}`);
     };
 
     render() {
@@ -172,14 +170,30 @@ class RequestInquiryInfo extends React.Component {
 
             noteTextsForm = <NoteTextForm BunqJSClient={this.props.BunqJSClient} event={requestInquiry} />;
 
+            const transactionHeaderProps = {
+                BunqJSClient: this.props.BunqJSClient,
+                to: requestInquiry.counterparty_alias,
+                from: requestInquiry.user_alias_created,
+                onForwardColor: "secondary",
+                user: this.props.user,
+                transferAmountComponent: (
+                    <MoneyAmountLabel
+                        component={"h1"}
+                        style={{ textAlign: "center" }}
+                        info={requestInquiry}
+                        type="requestInquiry"
+                    >
+                        {formattedPaymentAmount}
+                    </MoneyAmountLabel>
+                )
+            };
+            if (requestInquiryInfo.getDelta() > 0) {
+                transactionHeaderProps.onRepeat = this.onRepeat;
+                transactionHeaderProps.onForward = this.onForward;
+            }
             content = (
                 <Grid container spacing={24} align={"center"} justify={"center"}>
-                    <TransactionHeader
-                        BunqJSClient={this.props.BunqJSClient}
-                        to={requestInquiry.counterparty_alias}
-                        from={requestInquiry.user_alias_created}
-                        user={this.props.user}
-                    />
+                    <TransactionHeader {...transactionHeaderProps} />
 
                     <FilterCreationDialog
                         t={t}
@@ -189,20 +203,12 @@ class RequestInquiryInfo extends React.Component {
                     />
 
                     <Grid item xs={12}>
-                        <MoneyAmountLabel
-                            component={"h1"}
-                            style={{ textAlign: "center" }}
-                            info={requestInquiry}
-                            type="requestInquiry"
-                        >
-                            {formattedPaymentAmount}
-                        </MoneyAmountLabel>
-
-                        <Typography style={{ textAlign: "center" }} variant="body2">
-                            {requestInquiryLabel}
-                        </Typography>
-
                         <List style={styles.list}>
+                            <Divider />
+                            <ListItem>
+                                <ListItemText primary={requestInquiryLabel} />
+                            </ListItem>
+
                             {requestInquiry.description.length > 0
                                 ? [
                                       <Divider />,
@@ -305,18 +311,6 @@ class RequestInquiryInfo extends React.Component {
 
                 <SpeedDial
                     actions={[
-                        {
-                            name: t("Send payment"),
-                            icon: ArrowUpIcon,
-                            color: "action",
-                            onClick: this.startPayment
-                        },
-                        {
-                            name: t("Send request"),
-                            icon: ArrowDownIcon,
-                            color: "action",
-                            onClick: this.startRequest
-                        },
                         {
                             name: t("Create filter"),
                             icon: FilterIcon,

@@ -88,14 +88,6 @@ class MasterCardActionInfo extends React.Component {
     componentDidUpdate() {}
 
     toggleCategoryDialog = event => this.setState({ displayCategories: !this.state.displayCategories });
-    startPayment = event => {
-        const paymentInfo = this.props.masterCardActionInfo;
-        this.props.history.push(`/pay?amount=${paymentInfo.getAmount()}`);
-    };
-    startRequest = event => {
-        const paymentInfo = this.props.masterCardActionInfo;
-        this.props.history.push(`/request?amount=${paymentInfo.getAmount()}`);
-    };
     toggleCreateFilterDialog = e => {
         this.setState({
             viewFilterCreationDialog: !this.state.viewFilterCreationDialog
@@ -116,6 +108,11 @@ class MasterCardActionInfo extends React.Component {
         setTimeout(() => {
             ipcRenderer.send("print-to-pdf", fileName);
         }, 250);
+    };
+
+    onRequest = e => {
+        const { masterCardActionInfo } = this.props;
+        this.props.history.push(`/request-inquiry?amount=${masterCardActionInfo.getAmount()}`);
     };
 
     render() {
@@ -168,10 +165,21 @@ class MasterCardActionInfo extends React.Component {
                         BunqJSClient={this.props.BunqJSClient}
                         to={masterCardAction.counterparty_alias}
                         from={masterCardAction.alias}
-                        accounts={this.props.accounts}
                         user={this.props.user}
+                        accounts={this.props.accounts}
                         type="masterCardAction"
                         event={masterCardAction}
+                        onRequest={this.onRequest}
+                        transferAmountComponent={
+                            <MoneyAmountLabel
+                                component={"h1"}
+                                style={{ textAlign: "center" }}
+                                info={masterCardAction}
+                                type="masterCardAction"
+                            >
+                                {formattedPaymentAmount}
+                            </MoneyAmountLabel>
+                        }
                     />
 
                     <FilterCreationDialog
@@ -182,20 +190,12 @@ class MasterCardActionInfo extends React.Component {
                     />
 
                     <Grid item xs={12}>
-                        <MoneyAmountLabel
-                            component={"h1"}
-                            style={{ textAlign: "center" }}
-                            info={masterCardAction}
-                            type="masterCardAction"
-                        >
-                            {formattedPaymentAmount}
-                        </MoneyAmountLabel>
-
-                        <Typography style={{ textAlign: "center" }} variant="body2">
-                            {paymentLabel}
-                        </Typography>
-
                         <List style={styles.list}>
+                            <Divider />
+                            <ListItem>
+                                <ListItemText primary={paymentLabel} />
+                            </ListItem>
+
                             {masterCardAction.description.length > 0
                                 ? [
                                       <Divider />,
@@ -212,6 +212,7 @@ class MasterCardActionInfo extends React.Component {
                             <ListItem>
                                 <ListItemText primary={t("Date")} secondary={paymentDate} />
                             </ListItem>
+
                             <Divider />
                             <ListItem>
                                 <ListItemText
@@ -219,14 +220,17 @@ class MasterCardActionInfo extends React.Component {
                                     secondary={masterCardActionParser(masterCardAction, t)}
                                 />
                             </ListItem>
+
                             <Divider />
                             <ListItem>
                                 <ListItemText primary={t("Card")} secondary={masterCardAction.label_card.second_line} />
                             </ListItem>
+
                             <Divider />
                             <ListItem>
                                 <ListItemText primary={t("Settlement Status")} secondary={settlementStatusText} />
                             </ListItem>
+
                             <Divider />
                             <ListItem>
                                 <ListItemText
@@ -234,6 +238,7 @@ class MasterCardActionInfo extends React.Component {
                                     secondary={masterCardAction.authorisation_type}
                                 />
                             </ListItem>
+
                             <Divider />
                             <ListItem>
                                 <ListItemText
@@ -255,18 +260,6 @@ class MasterCardActionInfo extends React.Component {
 
                         <SpeedDial
                             actions={[
-                                {
-                                    name: t("Send payment"),
-                                    icon: ArrowUpIcon,
-                                    color: "action",
-                                    onClick: this.startPayment
-                                },
-                                {
-                                    name: t("Send request"),
-                                    icon: ArrowDownIcon,
-                                    color: "action",
-                                    onClick: this.startRequest
-                                },
                                 {
                                     name: t("Create filter"),
                                     icon: FilterIcon,

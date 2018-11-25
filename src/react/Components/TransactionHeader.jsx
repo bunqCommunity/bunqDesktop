@@ -6,6 +6,7 @@ import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 import Typography from "@material-ui/core/Typography";
 import Avatar from "@material-ui/core/Avatar";
+import Chip from "@material-ui/core/Chip";
 
 import LazyAttachmentImage from "./AttachmentImage/LazyAttachmentImage";
 
@@ -102,18 +103,13 @@ const TransactionHeader = props => {
     }
 
     const components = [
-        <Grid item xs={12} md={5} style={styles.targetWrapper}>
+        <Grid item xs={12} md={4} style={styles.targetWrapper}>
             <Avatar style={styles.avatar}>
                 <LazyAttachmentImage
                     height={90}
                     defaultImage={defaultImage}
                     BunqJSClient={props.BunqJSClient}
                     imageUUID={fromAvatar}
-                    onClick={() => {
-                        if (fromIsCounterparty && props.startPaymentIban) {
-                            props.startPaymentIban(fromAlias);
-                        }
-                    }}
                     style={{
                         cursor: fromIsCounterparty ? "pointer" : "default"
                     }}
@@ -124,29 +120,42 @@ const TransactionHeader = props => {
         </Grid>,
 
         <Hidden smDown>
-            <Grid item md={2} style={styles.arrow}>
-                <ArrowForwardIcon style={{ color: arrowColor }} color="inherit" />
+            <Grid item md={4} style={{ ...styles.arrow, marginTop: 32 }}>
+                <Grid container>
+                    <Grid item xs={12} style={{ ...styles.arrow }}>
+                        <ArrowForwardIcon style={{ color: arrowColor }} color="inherit" />
+                    </Grid>
+                    {props.transferAmountComponent && (
+                        <Grid item xs={12}>
+                            {props.transferAmountComponent}
+                        </Grid>
+                    )}
+                </Grid>
             </Grid>
         </Hidden>,
 
         <Hidden mdUp>
             <Grid item xs={12} style={styles.arrow}>
-                <ArrowDownIcon style={{ color: arrowColor }} color="inherit" />
+                <Grid container>
+                    {props.transferAmountComponent && (
+                        <Grid item xs={12}>
+                            {props.transferAmountComponent}
+                        </Grid>
+                    )}
+                    <Grid item xs={12}>
+                        <ArrowDownIcon style={{ color: arrowColor }} color="inherit" />
+                    </Grid>
+                </Grid>
             </Grid>
         </Hidden>,
 
-        <Grid item xs={12} md={5} style={styles.targetWrapper}>
+        <Grid item xs={12} md={4} style={styles.targetWrapper}>
             <Avatar style={styles.avatar}>
                 <LazyAttachmentImage
                     height={90}
                     defaultImage={defaultImage}
                     BunqJSClient={props.BunqJSClient}
                     imageUUID={toAvatar}
-                    onClick={() => {
-                        if (toIsCounterparty && props.startPaymentIban) {
-                            props.startPaymentIban(toAlias);
-                        }
-                    }}
                     style={{
                         cursor: toIsCounterparty ? "pointer" : "default"
                     }}
@@ -159,6 +168,37 @@ const TransactionHeader = props => {
     ];
 
     if (swap) components.reverse();
+
+    components.push(
+        <Grid item xs={12}>
+            {props.onRequest ? (
+                <Chip
+                    onClick={props.onRequest}
+                    label="Request"
+                    color={props.onRequestColor ? props.onRequestColor : "primary"}
+                    variant="outlined"
+                    style={{ marginRight: 16 }}
+                />
+            ) : null}
+            {props.onRepeat ? (
+                <Chip
+                    onClick={props.onRepeat}
+                    label="Repeat"
+                    color={props.onRepeatColor ? props.onRepeatColor : "primary"}
+                    variant="outlined"
+                    style={{ marginRight: 16 }}
+                />
+            ) : null}
+            {props.onForward ? (
+                <Chip
+                    onClick={props.onForward}
+                    label="Forward"
+                    color={props.onForwardColor ? props.onForwardColor : "primary"}
+                    variant="outlined"
+                />
+            ) : null}
+        </Grid>
+    );
 
     return components;
 };
