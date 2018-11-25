@@ -78,6 +78,8 @@ export const paymentTypeParser = (paymentType, t) => {
             return "bunq.me";
         case "IDEAL":
             return "iDEAL";
+        case "SAVINGS":
+            return "savings";
         case "EBA_SCT":
             return "SEPA credit transfer";
         case "EBA_SDD":
