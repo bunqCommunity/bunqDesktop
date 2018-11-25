@@ -32,7 +32,6 @@
         "dist": "build",
         "update-icons": "node tasks/generate_icons.js",
         "update-translations": "node tasks/update_translations.js",
-        "crowdin-export": "node tasks/crowdin-export.js",
         "update-release-files": "node tasks/update_release_files.js"
     },
     "build": {
