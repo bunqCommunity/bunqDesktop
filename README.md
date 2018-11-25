@@ -55,7 +55,7 @@ You can directly search for 'bunqDesktop' in the Ubuntu store or use  the snap c
 
 ## Translations
 The app is developed in English but translations in Dutch and German are available. 
-If you spot errors or want to help us translate the desktop app to a different language let us know!
+If you spot errors, possible improvements or want to help us translate the desktop app to a different language let us know or suggest a change on [Crowdin](https://crowdin.com/project/bunqdesktop)!
 
 ## Security
 All sensitive data is encrypted with the password that is entered on startup. You can choose to skip this step which will encrypt the data with a default password so that you will be logged in without asking you for a password. 

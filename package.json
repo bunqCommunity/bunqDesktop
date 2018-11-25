@@ -12,8 +12,8 @@
     "main": "app/background.js",
     "supported_languages": [
         "en",
-        "nl",
-        "de"
+        "de",
+        "nl"
     ],
     "scripts": {
         "webpack": "cross-env NODE_ENV=production RELEASE_MODE=true webpack --progress --colors",
@@ -32,6 +32,7 @@
         "dist": "build",
         "update-icons": "node tasks/generate_icons.js",
         "update-translations": "node tasks/update_translations.js",
+        "crowdin-export": "node tasks/crowdin-export.js",
         "update-release-files": "node tasks/update_release_files.js"
     },
     "build": {
@@ -163,7 +164,6 @@
         "@bunq-community/bunq-js-client": "^0.31.0",
         "@bunq-community/bunqdesktop-templates": "^1.2.0",
         "@fortawesome/fontawesome-free": "^5.2.0",
-        "@google-cloud/translate": "^1.1.0",
         "@material-ui/core": "^3.5.1",
         "@material-ui/icons": "^3.0.1",
         "@material-ui/lab": "^3.0.0-alpha.20",
@@ -184,7 +184,9 @@
         "clean-webpack-plugin": "^0.1.19",
         "cross-env": "^5.2.0",
         "css-loader": "^0.28.11",
+        "csv-parse": "^4.0.1",
         "date-fns": "^2.0.0-alpha.16",
+        "dotenv": "^6.1.0",
         "electron": "^3.0.8",
         "electron-builder": "^20.34.0",
         "electron-reload": "^1.2.5",
