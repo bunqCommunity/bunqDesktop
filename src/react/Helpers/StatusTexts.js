@@ -93,7 +93,10 @@ export const masterCardActionText = (masterCardAction, t) => {
         case "BLOCKED":
             return `${t("The payment was blocked due to ")}${masterCardAction.decision_description}`;
         case "CLEARING_REFUND":
-            return `${t("Payment was refunded due to ")}${masterCardAction.decision_description}`;
+            if (masterCardAction.decision_description) {
+                return `${t("Payment was refunded due to ")}${masterCardAction.decision_description}`;
+            }
+            return t("Payment was refunded");
         case "REVERSED":
             return t("The payment was reversed");
         default:
