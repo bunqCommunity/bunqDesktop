@@ -53,9 +53,19 @@ import {
     loadSettingsLocation,
     setAutomaticThemeChange,
     setAnalyticsEnabled,
-    toggleAutomaticUpdatesSendNotification
+    toggleAutomaticUpdatesSendNotification,
+    setEventCountLimit
 } from "../Actions/options";
 import { registrationClearPrivateData, registrationLogOut } from "../Actions/registration";
+import { paymentsClear } from "../Actions/payments";
+import { masterCardActionsClear } from "../Actions/master_card_actions";
+import { bunqMeTabsClear } from "../Actions/bunq_me_tabs";
+import { scheduledPaymentsClear } from "../Actions/scheduled_payments";
+import { requestInquiryBatchesClear } from "../Actions/request_inquiry_batches";
+import { requestResponsesClear } from "../Actions/request_responses";
+import { requestInquiriesClear } from "../Actions/request_inquiries";
+import { shareInviteBankInquiriesClear } from "../Actions/share_invite_bank_inquiries";
+import { shareInviteBankResponsesClear } from "../Actions/share_invite_bank_responses";
 
 const styles = {
     sideButton: {
@@ -76,7 +86,8 @@ const styles = {
         textAlign: "center"
     },
     paper: {
-        padding: 24
+        padding: 24,
+        marginBottom: 16
     }
 };
 
@@ -154,6 +165,9 @@ class Settings extends React.Component {
     handleHideInactivityDurationChange = event => {
         this.props.setInactivityCheckDuration(event.target.value);
     };
+    handleEventCountLimitChange = event => {
+        this.props.setEventCountLimit(event.target.value);
+    };
     handleAutomaticUpdatesEnabledChane = event => {
         this.props.toggleAutomaticUpdatesEnabled(!this.props.automaticUpdateEnabled);
     };
@@ -191,6 +205,23 @@ class Settings extends React.Component {
         this.setState({
             openImportDialog: false
         });
+    };
+
+    resetRequestData = e => {
+        this.props.requestInquiriesClear();
+        this.props.requestResponsesClear();
+        this.props.requestInquiryBatchesClear();
+    };
+    requestConnectData = e => {
+        this.props.shareInviteBankInquiriesClear();
+        this.props.shareInviteBankResponsesClear();
+    };
+    resetAllEventData = e => {
+        this.props.paymentsClear();
+        this.props.masterCardActionsClear();
+        this.props.bunqMeTabsClear();
+        this.props.scheduledPaymentsClear();
+        this.props.paymentsClear();
     };
 
     render() {
@@ -269,27 +300,27 @@ class Settings extends React.Component {
                             value={this.props.automaticUpdateDuration}
                             onChange={this.handleAutomaticUpdateDurationChane}
                         >
-                            <MenuItemTranslate key={60} value={60}>
-                                1 Minute
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={120} value={120}>
-                                2 Minutes
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={300} value={300}>
-                                5 Minutes
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={600} value={600}>
-                                10 Minutes
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={1800} value={1800}>
-                                30 Minutes
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={3600} value={3600}>
-                                1 Hour
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={7200} value={7200}>
-                                2 Hours
-                            </MenuItemTranslate>
+                            <MenuItem key={60} value={60}>
+                                1 {t("Minute")}
+                            </MenuItem>
+                            <MenuItem key={120} value={120}>
+                                2 {t("Minutes")}
+                            </MenuItem>
+                            <MenuItem key={300} value={300}>
+                                5 {t("Minutes")}
+                            </MenuItem>
+                            <MenuItem key={600} value={600}>
+                                10 {t("Minutes")}
+                            </MenuItem>
+                            <MenuItem key={1800} value={1800}>
+                                30 {t("Minutes")}
+                            </MenuItem>
+                            <MenuItem key={3600} value={3600}>
+                                1 {t("Hour")}
+                            </MenuItem>
+                            <MenuItem key={7200} value={7200}>
+                                2 {t("Hours")}
+                            </MenuItem>
                         </Select>
                     </Grid>
                 ) : null}
@@ -375,27 +406,27 @@ class Settings extends React.Component {
                             value={this.props.inactivityCheckDuration}
                             onChange={this.handleHideInactivityDurationChange}
                         >
-                            <MenuItemTranslate key={60} value={60}>
-                                1 Minute
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={120} value={120}>
-                                2 Minutes
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={300} value={300}>
-                                5 Minutes
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={600} value={600}>
-                                10 Minutes
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={1800} value={1800}>
-                                30 Minutes
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={3600} value={3600}>
-                                1 Hour
-                            </MenuItemTranslate>
-                            <MenuItemTranslate key={7200} value={7200}>
-                                2 Hours
-                            </MenuItemTranslate>
+                            <MenuItem key={60} value={60}>
+                                1 {t("Minute")}
+                            </MenuItem>
+                            <MenuItem key={120} value={120}>
+                                2 {t("Minutes")}
+                            </MenuItem>
+                            <MenuItem key={300} value={300}>
+                                5 {t("Minutes")}
+                            </MenuItem>
+                            <MenuItem key={600} value={600}>
+                                10 {t("Minutes")}
+                            </MenuItem>
+                            <MenuItem key={1800} value={1800}>
+                                30 {t("Minutes")}
+                            </MenuItem>
+                            <MenuItem key={3600} value={3600}>
+                                1 {t("Hour")}
+                            </MenuItem>
+                            <MenuItem key={7200} value={7200}>
+                                2 {t("Hours")}
+                            </MenuItem>
                         </Select>
                     ) : null}
                 </Grid>
@@ -467,6 +498,108 @@ class Settings extends React.Component {
             </Grid>
         );
 
+        const paymentCount = this.props.payments.length;
+        const cardPaymentCount = this.props.masterCardActions.length;
+        const requestCount = this.props.requestInquiries.length + this.props.requestResponses.length;
+        const bunqMeTabsCount = this.props.bunqMeTabs.length;
+        const connectCount = this.props.shareInviteBankInquiries.length + this.props.shareInviteBankResponses.length;
+        const scheduledPaymentsCount = this.props.scheduledPayments.length;
+
+        const dataManagementContainer = (
+            <Grid container spacing={16}>
+                <Grid item xs={12}>
+                    <TranslateTypography variant="h5">Data options</TranslateTypography>
+                </Grid>
+                <Grid item xs={12}>
+                    <FormControl style={styles.formControl}>
+                        <InputLabel>{t("Events to load per type and account")}</InputLabel>
+                        <Select
+                            style={styles.selectField}
+                            value={this.props.eventCountLimit}
+                            onChange={this.handleEventCountLimitChange}
+                        >
+                            <MenuItem key={50} value={50}>
+                                50 {t("events")}
+                            </MenuItem>
+                            <MenuItem key={100} value={100}>
+                                100 {t("events")}
+                            </MenuItem>
+                            <MenuItem key={200} value={200}>
+                                200 {t("events")}
+                            </MenuItem>
+                            <MenuItem key={400} value={400}>
+                                400 {t("events")}
+                            </MenuItem>
+                            <MenuItem key={600} value={600}>
+                                600 {t("events")}
+                            </MenuItem>
+                            <MenuItem key={1000} value={1000}>
+                                1000 {t("events")}
+                            </MenuItem>
+                            <MenuItem key={99999} value={99999}>
+                                Everything
+                            </MenuItem>
+                        </Select>
+                    </FormControl>
+                    <TranslateTypography variant="body2" style={{ marginTop: 8 }}>
+                        More events might cause performance issues and take longer to update
+                    </TranslateTypography>
+                </Grid>
+
+                <Grid item xs={12}>
+                    <TranslateTypography variant="h5">Data management</TranslateTypography>
+                </Grid>
+                <Grid item xs={12} sm={8}>
+                    <TranslateTypography variant="body2">
+                        Click any button to reset the data, the counter only displays the amount of payments currently
+                        loaded into memory but resetting will also remove the data from storage
+                    </TranslateTypography>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                    <Button variant="outlined" color="secondary" style={styles.button} onClick={this.resetAllEventData}>
+                        Reset all event data
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                    <Button variant="outlined" style={styles.button} onClick={this.props.paymentsClear}>
+                        Regular payments {paymentCount}
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                    <Button variant="outlined" style={styles.button} onClick={this.props.masterCardActionsClear}>
+                        Card payments {cardPaymentCount}
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                    <Button variant="outlined" style={styles.button} onClick={this.resetRequestData}>
+                        Requests {requestCount}
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                    <Button variant="outlined" style={styles.button} onClick={this.props.bunqMeTabsClear}>
+                        bunq.me Tabs {bunqMeTabsCount}
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                    <Button variant="outlined" style={styles.button} onClick={this.requestConnectData}>
+                        Connect requests {connectCount}
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                    <Button variant="outlined" style={styles.button} onClick={this.props.scheduledPaymentsClear}>
+                        Scheduled payments {scheduledPaymentsCount}
+                    </Button>
+                </Grid>
+            </Grid>
+        );
+
         return (
             <Grid container spacing={24}>
                 <Helmet>
@@ -509,6 +642,7 @@ class Settings extends React.Component {
 
                 <Grid item xs={12} sm={8}>
                     <Paper style={styles.paper}>{settingsContainer}</Paper>
+                    <Paper style={styles.paper}>{dataManagementContainer}</Paper>
                 </Grid>
             </Grid>
         );
@@ -525,9 +659,20 @@ const mapStateToProps = state => {
         displayTrayInfo: state.options.display_tray_info,
         nativeFrame: state.options.native_frame,
         stickyMenu: state.options.sticky_menu,
+        eventCountLimit: state.options.event_count_limit,
         analyticsEnabled: state.options.analytics_enabled,
         settingsLocation: state.options.settings_location,
         automaticThemeChange: state.options.automatic_theme_change,
+
+        payments: state.payments.payments,
+        scheduledPayments: state.scheduled_payments.scheduled_payments,
+        bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
+        masterCardActions: state.master_card_actions.master_card_actions,
+        requestInquiries: state.request_inquiries.request_inquiries,
+        requestInquiryBatches: state.request_inquiry_batches.request_inquiry_batches,
+        requestResponses: state.request_responses.request_responses,
+        shareInviteBankInquiries: state.share_invite_bank_inquiries.share_invite_bank_inquiries,
+        shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
 
         checkInactivity: state.options.check_inactivity,
         inactivityCheckDuration: state.options.inactivity_check_duration,
@@ -551,6 +696,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         setLanguage: language => dispatch(setLanguage(language)),
         setNativeFrame: useFrame => dispatch(setNativeFrame(useFrame)),
         setStickyMenu: userStickyMenu => dispatch(setStickyMenu(userStickyMenu)),
+        setEventCountLimit: eventCountLimit => dispatch(setEventCountLimit(eventCountLimit)),
         setHideBalance: hideBalance => dispatch(setHideBalance(hideBalance)),
         setMinimizeToTray: minimizeToTray => dispatch(setMinimizeToTray(minimizeToTray)),
         setDisplayTrayInfo: displayTrayInfo => dispatch(setDisplayTrayInfo(displayTrayInfo)),
@@ -566,6 +712,16 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(setAutomaticUpdateDuration(automaticUpdateDuration)),
         overwriteSettingsLocation: location => dispatch(overwriteSettingsLocation(location)),
         loadSettingsLocation: location => dispatch(loadSettingsLocation(location)),
+
+        paymentsClear: () => dispatch(paymentsClear()),
+        masterCardActionsClear: () => dispatch(masterCardActionsClear()),
+        bunqMeTabsClear: () => dispatch(bunqMeTabsClear()),
+        scheduledPaymentsClear: () => dispatch(scheduledPaymentsClear()),
+        requestInquiriesClear: () => dispatch(requestInquiriesClear()),
+        requestResponsesClear: () => dispatch(requestResponsesClear()),
+        requestInquiryBatchesClear: () => dispatch(requestInquiryBatchesClear()),
+        shareInviteBankInquiriesClear: () => dispatch(shareInviteBankInquiriesClear()),
+        shareInviteBankResponsesClear: () => dispatch(shareInviteBankResponsesClear()),
 
         // clear api key from bunqjsclient and bunqdesktop
         clearPrivateData: () => dispatch(registrationClearPrivateData(BunqJSClient)),

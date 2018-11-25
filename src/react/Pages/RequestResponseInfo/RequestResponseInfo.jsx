@@ -72,7 +72,7 @@ class RequestResponseInfo extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.initialBunqConnect) {
+        if (this.props.registrationReady) {
             const { requestResponseId, accountId } = this.props.match.params;
             this.props.requestResponseUpdate(this.props.user.id, accountId, requestResponseId);
             this.setState({ initialUpdate: true });
@@ -83,7 +83,7 @@ class RequestResponseInfo extends React.Component {
         if (
             this.props.user &&
             this.props.user.id &&
-            this.props.initialBunqConnect &&
+            this.props.registrationReady &&
             this.props.match.params.requestResponseId !== this.props.match.params.requestResponseId
         ) {
             const { requestResponseId, accountId } = this.props.match.params;
@@ -94,14 +94,6 @@ class RequestResponseInfo extends React.Component {
     }
     componentDidUpdate() {}
 
-    startPayment = event => {
-        const requestResponseInfo = this.props.requestResponseInfo;
-        this.props.history.push(`/pay?amount=${requestResponseInfo.getAmount()}`);
-    };
-    startRequest = event => {
-        const requestResponseInfo = this.props.requestResponseInfo;
-        this.props.history.push(`/request?amount=${requestResponseInfo.getAmount()}`);
-    };
     toggleCreateFilterDialog = e => {
         this.setState({
             viewFilterCreationDialog: !this.state.viewFilterCreationDialog
@@ -153,6 +145,11 @@ class RequestResponseInfo extends React.Component {
         this.setState({
             [name]: value
         });
+    };
+
+    onRequest = e => {
+        const { requestResponseInfo } = this.props;
+        this.props.history.push(`/request-inquiry?amount=${requestResponseInfo.getAmount()}`);
     };
 
     render() {
@@ -223,6 +220,17 @@ class RequestResponseInfo extends React.Component {
                                 swap={requestResponse.status === "ACCEPTED"}
                                 type="requestResponse"
                                 event={requestResponse}
+                                onRequest={this.onRequest}
+                                transferAmountComponent={
+                                    <MoneyAmountLabel
+                                        component={"h1"}
+                                        style={{ textAlign: "center" }}
+                                        info={requestResponse}
+                                        type="requestResponse"
+                                    >
+                                        {formattedPaymentAmount}
+                                    </MoneyAmountLabel>
+                                }
                             />
 
                             <FilterCreationDialog
@@ -233,20 +241,12 @@ class RequestResponseInfo extends React.Component {
                             />
 
                             <Grid item xs={12}>
-                                <MoneyAmountLabel
-                                    component={"h1"}
-                                    style={{ textAlign: "center" }}
-                                    info={requestResponse}
-                                    type="requestResponse"
-                                >
-                                    {formattedPaymentAmount}
-                                </MoneyAmountLabel>
-
-                                <Typography style={{ textAlign: "center" }} variant="body2">
-                                    {requestResponseLabel}
-                                </Typography>
-
                                 <List style={styles.list}>
+                                    <Divider />
+                                    <ListItem>
+                                        <ListItemText primary={requestResponseLabel} />
+                                    </ListItem>
+
                                     {requestResponse.description.length > 0
                                         ? [
                                               <Divider />,
@@ -409,18 +409,6 @@ class RequestResponseInfo extends React.Component {
 
                 <SpeedDial
                     actions={[
-                        {
-                            name: t("Send payment"),
-                            icon: ArrowUpIcon,
-                            color: "action",
-                            onClick: this.startPayment
-                        },
-                        {
-                            name: t("Send request"),
-                            icon: ArrowDownIcon,
-                            color: "action",
-                            onClick: this.startRequest
-                        },
                         {
                             name: t("Create filter"),
                             icon: FilterIcon,

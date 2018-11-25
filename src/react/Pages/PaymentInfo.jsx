@@ -67,7 +67,7 @@ class PaymentInfo extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.user && this.props.user.id && this.props.initialBunqConnect) {
+        if (this.props.user && this.props.user.id && this.props.registrationReady) {
             const { paymentId, accountId } = this.props.match.params;
             this.props.updatePayment(this.props.user.id, accountId, paymentId);
             this.setState({ initialUpdate: true });
@@ -78,7 +78,7 @@ class PaymentInfo extends React.Component {
         if (
             this.props.user &&
             this.props.user.id &&
-            this.props.initialBunqConnect &&
+            this.props.registrationReady &&
             this.props.match.params.paymentId !== nextProps.match.params.paymentId
         ) {
             const { paymentId, accountId } = this.props.match.params;
@@ -90,24 +90,11 @@ class PaymentInfo extends React.Component {
     componentDidUpdate() {}
 
     toggleCategoryDialog = event => this.setState({ displayCategories: !this.state.displayCategories });
-
-    startPaymentIban = alias => {
-        this.props.history.push(`/pay?iban=${alias.iban}&iban-name=${alias.display_name}`);
-    };
-    startPayment = event => {
-        const paymentInfo = this.props.paymentInfo;
-        this.props.history.push(`/pay?amount=${paymentInfo.getAmount()}`);
-    };
-    startRequest = event => {
-        const paymentInfo = this.props.paymentInfo;
-        this.props.history.push(`/request?amount=${paymentInfo.getAmount()}`);
-    };
     toggleCreateFilterDialog = e => {
         this.setState({
             viewFilterCreationDialog: !this.state.viewFilterCreationDialog
         });
     };
-
     createPdfExport = () => {
         const { paymentInfo } = this.props;
 
@@ -122,6 +109,13 @@ class PaymentInfo extends React.Component {
         setTimeout(() => {
             ipcRenderer.send("print-to-pdf", fileName);
         }, 100);
+    };
+
+    onRequest = e => {
+        this.props.history.push(`/request?amount=${this.props.paymentInfo.getAmount()}`);
+    };
+    onForward = e => {
+        this.props.history.push(`/pay?amount=${this.props.paymentInfo.getAmount()}`);
     };
 
     render() {
@@ -165,19 +159,31 @@ class PaymentInfo extends React.Component {
 
             noteTextsForm = <NoteTextForm BunqJSClient={this.props.BunqJSClient} event={payment} />;
 
+            const transactionHeaderProps = {
+                BunqJSClient: this.props.BunqJSClient,
+                to: payment.counterparty_alias,
+                from: payment.alias,
+                user: this.props.user,
+                accounts: this.props.accounts,
+                swap: paymentAmount > 0,
+                type: "payment",
+                onForwardColor: "secondary",
+                event: payment,
+                transferAmountComponent: (
+                    <MoneyAmountLabel component={"h1"} style={{ textAlign: "center" }} info={payment} type="payment">
+                        {formattedPaymentAmount}
+                    </MoneyAmountLabel>
+                )
+            };
+            if (paymentInfo.getDelta() < 0) {
+                transactionHeaderProps.onRequest = this.onRequest;
+            } else {
+                transactionHeaderProps.onForward = this.onForward;
+            }
+
             content = (
                 <Grid container spacing={24} align={"center"} justify={"center"}>
-                    <TransactionHeader
-                        BunqJSClient={this.props.BunqJSClient}
-                        to={payment.counterparty_alias}
-                        from={payment.alias}
-                        user={this.props.user}
-                        accounts={this.props.accounts}
-                        startPaymentIban={this.startPaymentIban}
-                        swap={paymentAmount > 0}
-                        type="payment"
-                        event={payment}
-                    />
+                    <TransactionHeader {...transactionHeaderProps} />
 
                     <FilterCreationDialog
                         t={t}
@@ -187,20 +193,12 @@ class PaymentInfo extends React.Component {
                     />
 
                     <Grid item xs={12}>
-                        <MoneyAmountLabel
-                            component={"h1"}
-                            style={{ textAlign: "center" }}
-                            info={payment}
-                            type="payment"
-                        >
-                            {formattedPaymentAmount}
-                        </MoneyAmountLabel>
-
-                        <Typography style={{ textAlign: "center" }} variant="body2">
-                            {paymentLabel}
-                        </Typography>
-
                         <List style={styles.list}>
+                            <Divider />
+                            <ListItem>
+                                <ListItemText primary={paymentLabel} />
+                            </ListItem>
+
                             {paymentDescription.length > 0 ? (
                                 <React.Fragment>
                                     <Divider />
@@ -243,18 +241,6 @@ class PaymentInfo extends React.Component {
 
                         <SpeedDial
                             actions={[
-                                {
-                                    name: t("Send payment"),
-                                    icon: ArrowUpIcon,
-                                    color: "action",
-                                    onClick: this.startPayment
-                                },
-                                {
-                                    name: t("Send request"),
-                                    icon: ArrowDownIcon,
-                                    color: "action",
-                                    onClick: this.startRequest
-                                },
                                 {
                                     name: t("Create PDF"),
                                     icon: SaveIcon,

@@ -230,7 +230,7 @@ class CombinedList extends React.Component {
         let groupedItems = {};
 
         // check if all pages is set (pageSize = 0)
-        const usedPageSize = pageSize === 0 ? events.length : pageSize;
+        const usedPageSize = pageSize === 0 ? 50 : pageSize;
 
         // calculate last page
         const unRoundedPageCount = events.length / usedPageSize;
@@ -316,6 +316,8 @@ class CombinedList extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+
+        registrationReady: state.registration.ready,
 
         queueLoading: state.queue.loading,
         queueFinishedQueue: state.queue.finished_queue,

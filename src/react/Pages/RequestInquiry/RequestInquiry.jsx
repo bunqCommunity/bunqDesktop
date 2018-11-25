@@ -431,6 +431,18 @@ class RequestInquiry extends React.Component {
         });
 
         this.props.requestInquirySend(userId, account.id, requestInquiries);
+
+        this.setState({
+            validForm: false,
+            amount: "",
+            description: "",
+            redirectUrl: "",
+            targetError: false,
+            target: "",
+            targets: [],
+            splitAmounts: {},
+            splitRequest: true
+        });
     };
 
     render() {

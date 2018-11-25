@@ -2,18 +2,11 @@ const webpack = require("webpack");
 const HardSourceWebpackPlugin = require("hard-source-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
-    .BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
 const packageInfo = require("../../package.json");
 
-module.exports = ({
-    BUILD_DIR,
-    OUTPUT_DIR,
-    PRODUCTION,
-    DEVELOPMENT,
-    RELEASE_MODE
-}) => {
+module.exports = ({ BUILD_DIR, OUTPUT_DIR, PRODUCTION, DEVELOPMENT, RELEASE_MODE }) => {
     const plugins = [
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.DefinePlugin({
@@ -24,25 +17,11 @@ module.exports = ({
             "process.env.WEBPACK_MODE": JSON.stringify(true)
         }),
         // ignore all except en/fr/de
-        new webpack.ContextReplacementPlugin(
-            /moment[\/\\]locale$/,
-            /(en|de|fr)$/
-        ),
+        new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /(en|de|fr)$/),
         // extract css to file
         new MiniCssExtractPlugin({
             filename: "[name].css",
             chunkFilename: "[id].css"
-        }),
-        // analyze bundle
-        new BundleAnalyzerPlugin({
-            // don't open the file automatically
-            openAnalyzer: false,
-            // default type to open (`stat`, `parsed` or `gzip`)
-            defaultSizes: "parse",
-            // create a server for the watcher or a static file for production enviroments
-            analyzerMode: "static",
-            // output outside of the public folder
-            reportFilename: "../../webpack.report.html"
         }),
 
         // fix annoying warning
@@ -55,8 +34,7 @@ module.exports = ({
         plugins.push(
             new HardSourceWebpackPlugin({
                 // Either an absolute path or relative to webpack's options.context.
-                cacheDirectory:
-                    "../../node_modules/.cache/hard-source/[confighash]",
+                cacheDirectory: "../../node_modules/.cache/hard-source/[confighash]",
                 cachePrune: {
                     sizeThreshold: 100 * 1024 * 1024
                 }
@@ -72,6 +50,19 @@ module.exports = ({
                 exclude: [],
                 verbose: false,
                 dry: false
+            })
+        );
+        // analyze bundle
+        plugins.push(
+            new BundleAnalyzerPlugin({
+                // don't open the file automatically
+                openAnalyzer: false,
+                // default type to open (`stat`, `parsed` or `gzip`)
+                defaultSizes: "parse",
+                // create a server for the watcher or a static file for production enviroments
+                analyzerMode: "static",
+                // output outside of the public folder
+                reportFilename: "../../webpack.report.html"
             })
         );
     } else {

@@ -243,14 +243,10 @@ export const masterCardActionFilter = options => masterCardAction => {
                 });
             });
 
-            // if reversed and we got matches, return false
-            if (categories.length === 0) {
-                if (!options.toggleCategoryFilter) return false;
-            }
-
-            // no matches and not reversed so return false
-            if (!categoryMatches) {
-                if (!options.toggleCategoryFilter) return false;
+            if (options.toggleCategoryFilter === true && categoryMatches === true) {
+                return false;
+            } else if (options.toggleCategoryFilter === false && categoryMatches === false) {
+                return false;
             }
         }
     }
@@ -549,24 +545,24 @@ export const shareInviteBankInquiryFilter = options => shareInviteBankInquiry =>
     return checkDateRange(options.dateFromFilter, options.dateToFilter, shareInviteBankInquiryInfo.updated);
 };
 
-export const filterShareInviteBankResponses = accountId => shareInviteBankResponse => {
+export const filterShareInviteBankResponses = (accountId, statusList = ["ACCEPTED"]) => shareInviteBankResponse => {
     if (!shareInviteBankResponse.ShareInviteBankResponse) return false;
 
     return (
-        shareInviteBankResponse.ShareInviteBankResponse.status === "ACCEPTED" &&
+        statusList.includes(shareInviteBankResponse.ShareInviteBankResponse.status) &&
         shareInviteBankResponse.ShareInviteBankResponse.monetary_account_id === accountId
     );
 };
 
-export const filterShareInviteBankInquiries = accountId => shareInviteBankInquiry => {
+export const filterShareInviteBankInquiries = (accountId, statusList = ["ACCEPTED"]) => shareInviteBankInquiry => {
     if (shareInviteBankInquiry.ShareInviteBankInquiry) {
         return (
-            shareInviteBankInquiry.ShareInviteBankInquiry.status === "ACCEPTED" &&
+            statusList.includes(shareInviteBankInquiry.ShareInviteBankInquiry.status) &&
             shareInviteBankInquiry.ShareInviteBankInquiry.monetary_account_id === accountId
         );
     } else if (shareInviteBankInquiry.ShareInviteBankResponse) {
         return (
-            shareInviteBankInquiry.ShareInviteBankResponse.status === "ACCEPTED" &&
+            statusList.includes(shareInviteBankInquiry.ShareInviteBankResponse.status) &&
             shareInviteBankInquiry.ShareInviteBankResponse.monetary_account_id === accountId
         );
     }

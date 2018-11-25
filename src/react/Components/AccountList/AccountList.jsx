@@ -15,6 +15,7 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import CheckBoxOutlinedIcon from "@material-ui/icons/CheckBoxOutlined";
 
+import LimitedPremiumListItem from "../LimitedPremiumListItem";
 import AccountListItem from "./AccountListItem";
 import AddAccount from "./AddAccount";
 import { formatMoney } from "../../Helpers/Utils";
@@ -137,8 +138,8 @@ class AccountList extends React.Component {
     };
 
     checkUpdateRequirement = (props = this.props) => {
-        const { accounts, accountsSelectedId, initialBunqConnect } = props;
-        if (!initialBunqConnect) {
+        const { accounts, accountsSelectedId, registrationReady } = props;
+        if (!registrationReady) {
             return;
         }
 
@@ -153,7 +154,13 @@ class AccountList extends React.Component {
         }
 
         // no accounts loaded
-        if (this.state.fetchedAccounts === false && props.user.id && props.accountsLoading === false) {
+        if (
+            this.state.fetchedAccounts === false &&
+            props.user.id &&
+            props.accountsLoading === false &&
+            props.registrationIsLoading === false &&
+            props.registrationReady === true
+        ) {
             this.props.accountsUpdate(props.user.id);
             this.setState({ fetchedAccounts: true });
         }
@@ -173,7 +180,7 @@ class AccountList extends React.Component {
     };
 
     render() {
-        const { t, shareInviteBankResponses, excludedAccountIds = [] } = this.props;
+        const { t, user, shareInviteBankResponses, excludedAccountIds = [] } = this.props;
         const { accountTotalSelectionMode } = this.state;
 
         let accounts = [];
@@ -192,7 +199,10 @@ class AccountList extends React.Component {
 
                     // set external if added or default to false
                     let onClickHandler = this.props.updateExternal
-                        ? (userId, accountId) => this.props.updateExternal(userId, accountId)
+                        ? (userId, accountId) => {
+                              this.props.selectAccount(accountId);
+                              this.props.updateExternal(userId, accountId);
+                          }
                         : false;
 
                     let secondaryAction = false;
@@ -224,6 +234,11 @@ class AccountList extends React.Component {
 
         const formattedTotalBalance = formatMoney(this.state.totalBalance, true);
 
+        let isBunqPromoUser = false;
+        if (user && user.customer_limit && user.customer_limit.limit_amount_monthly) {
+            isBunqPromoUser = true;
+        }
+
         return (
             <List dense={this.props.denseMode} style={styles.list}>
                 <ListItem dense>
@@ -240,6 +255,13 @@ class AccountList extends React.Component {
                         </IconButton>
                     </ListItemSecondaryAction>
                 </ListItem>
+
+                {isBunqPromoUser && (
+                    <React.Fragment>
+                        <Divider />
+                        <LimitedPremiumListItem t={t} user={user} />
+                    </React.Fragment>
+                )}
 
                 {this.props.accountsLoading ? <LinearProgress /> : <Divider />}
                 {accounts}
@@ -269,6 +291,9 @@ const mapStateToProps = state => {
 
         hideBalance: state.options.hide_balance,
 
+        registrationIsLoading: state.registration.loading,
+        registrationReady: state.registration.ready,
+
         accounts: state.accounts.accounts,
         accountsSelectedId: state.accounts.selected_account,
         accountsLoading: state.accounts.loading,
@@ -276,7 +301,6 @@ const mapStateToProps = state => {
 
         shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
         shareInviteBankResponsesLoading: state.share_invite_bank_responses.loading,
-
         shareInviteBankInquiriesLoading: state.share_invite_bank_inquiries.loading,
 
         paymentsLoading: state.payments.loading,

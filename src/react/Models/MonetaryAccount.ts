@@ -29,6 +29,9 @@ export default class MonetaryAccount {
     private _notification_filters: NotificationFilter[];
     private _setting: MonetaryAccountSetting;
 
+    private _savings_goal: Amount;
+    private _savings_goal_progress: string;
+
     // only available on MonetaryAccountJoint objects
     private _all_co_owner: AllCoOwner | undefined;
 
@@ -162,5 +165,11 @@ export default class MonetaryAccount {
 
     get all_co_owner(): AllCoOwner | undefined {
         return this._all_co_owner;
+    }
+    get savings_goal(): Amount {
+        return this._savings_goal;
+    }
+    get savings_goal_progress(): string {
+        return this._savings_goal_progress;
     }
 }

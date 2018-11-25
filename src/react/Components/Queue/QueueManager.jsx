@@ -29,7 +29,8 @@ import { shareInviteBankInquiriesSetInfo } from "../../Actions/share_invite_bank
 import { shareInviteBankResponsesSetInfo } from "../../Actions/share_invite_bank_responses";
 import { openSnackbar } from "../../Actions/snackbar";
 
-export const REQUEST_DEPTH_LIMIT = 1;
+export const DEFAULT_EVENT_COUNT_LIMIT = 50;
+export const EVENT_TOTAL_LIMIT = 1000;
 
 class QueueManager extends React.Component {
     constructor(props, context) {
@@ -79,15 +80,15 @@ class QueueManager extends React.Component {
         }
 
         // no initial sync completed or manual sync was triggered
-        if (!this.state.initialSync || queueTriggerSync) {
-            if (user && !queueLoading && !userLoading && accounts && !accountsLoading && accounts.length > 0) {
+        if (this.state.initialSync === false || queueTriggerSync) {
+            if (user && !userLoading && accounts && !accountsLoading && accounts.length > 0 && !queueLoading) {
                 // if we continue, limit deep search to 5
-                const continueCount = queueTriggerSync !== false ? REQUEST_DEPTH_LIMIT : false;
+                const eventCount = queueTriggerSync ? this.props.eventCountLimit : DEFAULT_EVENT_COUNT_LIMIT;
 
                 // clear existing timeout if it exists
                 if (this.delayedQueue) clearTimeout(this.delayedQueue);
                 // delay the queue update
-                this.delayedQueue = setTimeout(() => this.triggerQueueUpdate(continueCount), 100);
+                this.delayedQueue = setTimeout(() => this.triggerQueueUpdate(eventCount), 100);
             }
         } else {
             if (!queueLoading && prevProps.queueLoading === true && queueRequestCounter === 0) {
@@ -109,7 +110,7 @@ class QueueManager extends React.Component {
      * Triggers the actual background sync for all monetary accounts
      * @param continueLoading
      */
-    triggerQueueUpdate = (continueLoading = false) => {
+    triggerQueueUpdate = (eventCount = 200) => {
         const { queueTriggerSync, accounts, user, limitedPermissions } = this.props;
 
         if (queueTriggerSync) this.props.queueResetSyncState();
@@ -120,17 +121,19 @@ class QueueManager extends React.Component {
 
         // ensure initial sync is true to avoid endless syncs
         const userId = user.id;
-        this.setState({
-            initialSync: true
-        });
+        if (!this.state.initialSync)
+            this.setState({
+                initialSync: true
+            });
 
         // only include active accounts
         const filteredAccounts = accounts.filter(account => {
             return account.status === "ACTIVE";
         });
 
+        // 6 / 7 requests per account + 1 for the user
         const requestsPerAccount = limitedPermissions ? 6 : 7;
-        const bufferedCounter = filteredAccounts.length * requestsPerAccount;
+        const bufferedCounter = filteredAccounts.length * requestsPerAccount + 1;
 
         // set initial request count in one go
         this.props.queueSetRequestCounter(bufferedCounter);
@@ -139,15 +142,15 @@ class QueueManager extends React.Component {
         filteredAccounts.forEach(account => {
             const accountId = account.id;
 
-            this.paymentsUpdate(userId, accountId, false, continueLoading);
-            this.bunqMeTabsUpdate(userId, accountId, false, continueLoading);
-            this.requestResponsesUpdate(userId, accountId, false, continueLoading);
-            this.requestInquiriesUpdate(userId, accountId, false, continueLoading);
-            this.requestInquiryBatchesUpdate(userId, accountId, false, continueLoading);
-            this.masterCardActionsUpdate(userId, accountId, false, continueLoading);
+            this.paymentsUpdate(userId, accountId, false, eventCount);
+            this.bunqMeTabsUpdate(userId, accountId, false, eventCount);
+            this.requestResponsesUpdate(userId, accountId, false, eventCount);
+            this.requestInquiriesUpdate(userId, accountId, false, eventCount);
+            this.requestInquiryBatchesUpdate(userId, accountId, false, eventCount);
+            this.masterCardActionsUpdate(userId, accountId, false, eventCount);
 
             if (!limitedPermissions) {
-                this.shareInviteBankInquiriesUpdate(userId, accountId, false, continueLoading);
+                this.shareInviteBankInquiriesUpdate(userId, accountId, false, eventCount);
             }
         });
     };
@@ -358,34 +361,45 @@ class QueueManager extends React.Component {
         }
     };
 
-    paymentsUpdate = (user_id, account_id, olderId = false, continueLoading = false) => {
+    paymentsUpdate = (user_id, account_id, olderId = false, eventCount = 200) => {
         const { BunqJSClient } = this.props;
 
-        if (olderId !== false) this.props.queueIncreaseRequestCounter();
-
+        const currentEventCount = eventCount > 200 ? 200 : eventCount;
+        const nextEventCount = eventCount > 200 ? eventCount - 200 : 0;
         BunqJSClient.api.payment
             .list(user_id, account_id, {
                 older_id: olderId,
-                count: 200
+                count: currentEventCount
             })
             .then(payments => {
                 // turn plain objects into Model objects
                 const paymentsNew = payments.map(item => new Payment(item));
-
-                // more payments can be loaded for this account
-                if (paymentsNew.length === 200 && (continueLoading !== false && continueLoading > 0)) {
-                    const oldestPaymentIndex = paymentsNew.length - 1;
-                    const oldestPayment = paymentsNew[oldestPaymentIndex];
-
-                    // re-run the payments to continue deeper into the acocunt
-                    this.paymentsUpdate(user_id, account_id, oldestPayment.id, continueLoading - 1);
-                }
 
                 const currentPayments = { ...this.state.payments };
                 const accountPayments = currentPayments[account_id] || [];
 
                 // update the list for the account id
                 currentPayments[account_id] = [...accountPayments, ...paymentsNew];
+
+                // count total events between all accounts
+                const totalEventCount = Object.keys(currentPayments).reduce((accumulator, accountId) => {
+                    return accumulator + currentPayments[accountId].length;
+                }, 0);
+
+                // more payments can be loaded for this account
+                if (
+                    paymentsNew.length === currentEventCount &&
+                    nextEventCount > 0 &&
+                    totalEventCount < EVENT_TOTAL_LIMIT
+                ) {
+                    const oldestPaymentIndex = paymentsNew.length - 1;
+                    const oldestPayment = paymentsNew[oldestPaymentIndex];
+
+                    this.props.queueIncreaseRequestCounter();
+
+                    // re-run the payments to continue deeper into the acocunt
+                    this.paymentsUpdate(user_id, account_id, oldestPayment.id, nextEventCount);
+                }
 
                 // set these payments in the state
                 this.setState({
@@ -401,34 +415,45 @@ class QueueManager extends React.Component {
             });
     };
 
-    bunqMeTabsUpdate = (user_id, account_id, olderId = false, continueLoading = false) => {
+    bunqMeTabsUpdate = (user_id, account_id, olderId = false, eventCount = 200) => {
         const { BunqJSClient } = this.props;
 
-        if (olderId !== false) this.props.queueIncreaseRequestCounter();
-
+        const currentEventCount = eventCount > 200 ? 200 : eventCount;
+        const nextEventCount = eventCount > 200 ? eventCount - 200 : 0;
         BunqJSClient.api.bunqMeTabs
             .list(user_id, account_id, {
                 older_id: olderId,
-                count: 200
+                count: currentEventCount
             })
             .then(bunqMeTabs => {
                 // turn plain objects into Model objects
                 const bunqMeTabsNew = bunqMeTabs.map(item => new BunqMeTab(item));
-
-                // more bunqMeTabs can be loaded for this account
-                if (bunqMeTabsNew.length === 200 && (continueLoading !== false && continueLoading > 0)) {
-                    const oldestBunqMeTabIndex = bunqMeTabsNew.length - 1;
-                    const oldestBunqMeTab = bunqMeTabsNew[oldestBunqMeTabIndex];
-
-                    // re-run the bunqMeTabs to continue deeper into the acocunt
-                    this.bunqMeTabsUpdate(user_id, account_id, oldestBunqMeTab.id, continueLoading - 1);
-                }
 
                 const currentBunqMeTabs = { ...this.state.bunqMeTabs };
                 const accountBunqMeTabs = currentBunqMeTabs[account_id] || [];
 
                 // update the list for the account id
                 currentBunqMeTabs[account_id] = [...accountBunqMeTabs, ...bunqMeTabsNew];
+
+                // count total events between all accounts
+                const totalEventCount = Object.keys(currentBunqMeTabs).reduce((accumulator, accountId) => {
+                    return accumulator + currentBunqMeTabs[accountId].length;
+                }, 0);
+
+                // more bunqMeTabs can be loaded for this account
+                if (
+                    bunqMeTabsNew.length === currentEventCount &&
+                    nextEventCount > 0 &&
+                    totalEventCount < EVENT_TOTAL_LIMIT
+                ) {
+                    const oldestBunqMeTabIndex = bunqMeTabsNew.length - 1;
+                    const oldestBunqMeTab = bunqMeTabsNew[oldestBunqMeTabIndex];
+
+                    this.props.queueIncreaseRequestCounter();
+
+                    // re-run the bunqMeTabs to continue deeper into the acocunt
+                    this.bunqMeTabsUpdate(user_id, account_id, oldestBunqMeTab.id, nextEventCount);
+                }
 
                 // set these bunqMeTabs in the state
                 this.setState({
@@ -444,28 +469,19 @@ class QueueManager extends React.Component {
             });
     };
 
-    requestResponsesUpdate = (user_id, account_id, olderId = false, continueLoading = false) => {
+    requestResponsesUpdate = (user_id, account_id, olderId = false, eventCount = 200) => {
         const { BunqJSClient } = this.props;
 
-        if (olderId !== false) this.props.queueIncreaseRequestCounter();
-
+        const currentEventCount = eventCount > 200 ? 200 : eventCount;
+        const nextEventCount = eventCount > 200 ? eventCount - 200 : 0;
         BunqJSClient.api.requestResponse
             .list(user_id, account_id, {
                 older_id: olderId,
-                count: 200
+                count: currentEventCount
             })
             .then(requestResponses => {
                 // turn plain objects into Model objects
                 const requestResponsesNew = requestResponses.map(item => new RequestResponse(item));
-
-                // more requestResponses can be loaded for this account
-                if (requestResponsesNew.length === 200 && (continueLoading !== false && continueLoading > 0)) {
-                    const oldestRequestResponseIndex = requestResponsesNew.length - 1;
-                    const oldestRequestResponse = requestResponsesNew[oldestRequestResponseIndex];
-
-                    // re-run the requestResponses to continue deeper into the acocunt
-                    this.requestResponsesUpdate(user_id, account_id, oldestRequestResponse.id, continueLoading - 1);
-                }
 
                 const currentRequestResponses = {
                     ...this.state.requestResponses
@@ -474,6 +490,26 @@ class QueueManager extends React.Component {
 
                 // update the list for the account id
                 currentRequestResponses[account_id] = [...accountRequestResponses, ...requestResponsesNew];
+
+                // count total events between all accounts
+                const totalEventCount = Object.keys(currentRequestResponses).reduce((accumulator, accountId) => {
+                    return accumulator + currentRequestResponses[accountId].length;
+                }, 0);
+
+                // more requestResponses can be loaded for this account
+                if (
+                    requestResponsesNew.length === currentEventCount &&
+                    nextEventCount > 0 &&
+                    totalEventCount < EVENT_TOTAL_LIMIT
+                ) {
+                    const oldestRequestResponseIndex = requestResponsesNew.length - 1;
+                    const oldestRequestResponse = requestResponsesNew[oldestRequestResponseIndex];
+
+                    this.props.queueIncreaseRequestCounter();
+
+                    // re-run the requestResponses to continue deeper into the acocunt
+                    this.requestResponsesUpdate(user_id, account_id, oldestRequestResponse.id, nextEventCount);
+                }
 
                 // set these requestResponses in the state
                 this.setState({
@@ -489,28 +525,19 @@ class QueueManager extends React.Component {
             });
     };
 
-    requestInquiriesUpdate = (user_id, account_id, olderId = false, continueLoading = false) => {
+    requestInquiriesUpdate = (user_id, account_id, olderId = false, eventCount = 200) => {
         const { BunqJSClient } = this.props;
 
-        if (olderId !== false) this.props.queueIncreaseRequestCounter();
-
+        const currentEventCount = eventCount > 200 ? 200 : eventCount;
+        const nextEventCount = eventCount > 200 ? eventCount - 200 : 0;
         BunqJSClient.api.requestInquiry
             .list(user_id, account_id, {
                 older_id: olderId,
-                count: 200
+                count: currentEventCount
             })
             .then(requestInquiries => {
                 // turn plain objects into Model objects
                 const requestInquiriesNew = requestInquiries.map(item => new RequestInquiry(item));
-
-                // more requestInquiries can be loaded for this account
-                if (requestInquiriesNew.length === 200 && (continueLoading !== false && continueLoading > 0)) {
-                    const oldestRequestInquiryIndex = requestInquiriesNew.length - 1;
-                    const oldestRequestInquiry = requestInquiriesNew[oldestRequestInquiryIndex];
-
-                    // re-run the requestInquiries to continue deeper into the acocunt
-                    this.requestInquiriesUpdate(user_id, account_id, oldestRequestInquiry.id, continueLoading - 1);
-                }
 
                 const currentRequestInquiries = {
                     ...this.state.requestInquiries
@@ -519,6 +546,26 @@ class QueueManager extends React.Component {
 
                 // update the list for the account id
                 currentRequestInquiries[account_id] = [...accountRequestInquiries, ...requestInquiriesNew];
+
+                // count total events between all accounts
+                const totalEventCount = Object.keys(currentRequestInquiries).reduce((accumulator, accountId) => {
+                    return accumulator + currentRequestInquiries[accountId].length;
+                }, 0);
+
+                // more requestInquiries can be loaded for this account
+                if (
+                    requestInquiriesNew.length === currentEventCount &&
+                    nextEventCount > 0 &&
+                    totalEventCount < EVENT_TOTAL_LIMIT
+                ) {
+                    const oldestRequestInquiryIndex = requestInquiriesNew.length - 1;
+                    const oldestRequestInquiry = requestInquiriesNew[oldestRequestInquiryIndex];
+
+                    this.props.queueIncreaseRequestCounter();
+
+                    // re-run the requestInquiries to continue deeper into the acocunt
+                    this.requestInquiriesUpdate(user_id, account_id, oldestRequestInquiry.id, nextEventCount);
+                }
 
                 // set these requestInquiries in the state
                 this.setState({
@@ -534,28 +581,19 @@ class QueueManager extends React.Component {
             });
     };
 
-    requestInquiryBatchesUpdate = (user_id, account_id, olderId = false, continueLoading = false) => {
+    requestInquiryBatchesUpdate = (user_id, account_id, olderId = false, eventCount = 200) => {
         const { BunqJSClient } = this.props;
 
-        if (olderId !== false) this.props.queueIncreaseRequestCounter();
-
+        const currentEventCount = eventCount > 200 ? 200 : eventCount;
+        const nextEventCount = eventCount > 200 ? eventCount - 200 : 0;
         BunqJSClient.api.requestInquiryBatch
             .list(user_id, account_id, {
                 older_id: olderId,
-                count: 200
+                count: currentEventCount
             })
             .then(requestInquiryBatches => {
                 // turn plain objects into Model objects
                 const requestInquiryBatchesNew = requestInquiryBatches.map(item => new RequestInquiryBatch(item));
-
-                // more requestInquiryBatches can be loaded for this account
-                if (requestInquiryBatchesNew.length === 200 && (continueLoading !== false && continueLoading > 0)) {
-                    const oldestRequestInquiryIndex = requestInquiryBatchesNew.length - 1;
-                    const oldestRequestInquiry = requestInquiryBatchesNew[oldestRequestInquiryIndex];
-
-                    // re-run the requestInquiryBatches to continue deeper into the acocunt
-                    this.requestInquiryBatchesUpdate(user_id, account_id, oldestRequestInquiry.id, continueLoading - 1);
-                }
 
                 const currentRequestInquiryBatches = {
                     ...this.state.requestInquiryBatches
@@ -567,6 +605,26 @@ class QueueManager extends React.Component {
                     ...accountRequestInquiryBatches,
                     ...requestInquiryBatchesNew
                 ];
+
+                // count total events between all accounts
+                const totalEventCount = Object.keys(currentRequestInquiryBatches).reduce((accumulator, accountId) => {
+                    return accumulator + currentRequestInquiryBatches[accountId].length;
+                }, 0);
+
+                // more requestInquiryBatches can be loaded for this account
+                if (
+                    requestInquiryBatchesNew.length === currentEventCount &&
+                    nextEventCount > 0 &&
+                    totalEventCount < EVENT_TOTAL_LIMIT
+                ) {
+                    const oldestRequestInquiryIndex = requestInquiryBatchesNew.length - 1;
+                    const oldestRequestInquiry = requestInquiryBatchesNew[oldestRequestInquiryIndex];
+
+                    this.props.queueIncreaseRequestCounter();
+
+                    // re-run the requestInquiryBatches to continue deeper into the acocunt
+                    this.requestInquiryBatchesUpdate(user_id, account_id, oldestRequestInquiry.id, nextEventCount);
+                }
 
                 // set these requestInquiryBatches in the state
                 this.setState({
@@ -582,28 +640,19 @@ class QueueManager extends React.Component {
             });
     };
 
-    masterCardActionsUpdate = (user_id, account_id, olderId = false, continueLoading = false) => {
+    masterCardActionsUpdate = (user_id, account_id, olderId = false, eventCount = 200) => {
         const { BunqJSClient } = this.props;
 
-        if (olderId !== false) this.props.queueIncreaseRequestCounter();
-
+        const currentEventCount = eventCount > 200 ? 200 : eventCount;
+        const nextEventCount = eventCount > 200 ? eventCount - 200 : 0;
         BunqJSClient.api.masterCardAction
             .list(user_id, account_id, {
                 older_id: olderId,
-                count: 200
+                count: currentEventCount
             })
             .then(masterCardActions => {
                 // turn plain objects into Model objects
                 const masterCardActionsNew = masterCardActions.map(item => new MasterCardAction(item));
-
-                // more masterCardActions can be loaded for this account
-                if (masterCardActionsNew.length === 200 && (continueLoading !== false && continueLoading > 0)) {
-                    const oldestMasterCardActionIndex = masterCardActionsNew.length - 1;
-                    const oldestMasterCardAction = masterCardActionsNew[oldestMasterCardActionIndex];
-
-                    // re-run the masterCardActions to continue deeper into the acocunt
-                    this.masterCardActionsUpdate(user_id, account_id, oldestMasterCardAction.id, continueLoading - 1);
-                }
 
                 const currentMasterCardActions = {
                     ...this.state.masterCardActions
@@ -612,6 +661,26 @@ class QueueManager extends React.Component {
 
                 // update the list for the account id
                 currentMasterCardActions[account_id] = [...accountMasterCardActions, ...masterCardActionsNew];
+
+                // count total events between all accounts
+                const totalEventCount = Object.keys(currentMasterCardActions).reduce((accumulator, accountId) => {
+                    return accumulator + currentMasterCardActions[accountId].length;
+                }, 0);
+
+                // more masterCardActions can be loaded for this account
+                if (
+                    masterCardActionsNew.length === currentEventCount &&
+                    nextEventCount > 0 &&
+                    totalEventCount < EVENT_TOTAL_LIMIT
+                ) {
+                    const oldestMasterCardActionIndex = masterCardActionsNew.length - 1;
+                    const oldestMasterCardAction = masterCardActionsNew[oldestMasterCardActionIndex];
+
+                    this.props.queueIncreaseRequestCounter();
+
+                    // re-run the masterCardActions to continue deeper into the acocunt
+                    this.masterCardActionsUpdate(user_id, account_id, oldestMasterCardAction.id, nextEventCount);
+                }
 
                 // set these masterCardActions in the state
                 this.setState({
@@ -627,24 +696,26 @@ class QueueManager extends React.Component {
             });
     };
 
-    shareInviteBankInquiriesUpdate = (user_id, account_id, olderId = false, continueLoading = false) => {
+    shareInviteBankInquiriesUpdate = (user_id, account_id, olderId = false, eventCount = 200) => {
         const { BunqJSClient } = this.props;
 
         if (olderId !== false) this.props.queueIncreaseRequestCounter();
 
+        const currentEventCount = eventCount > 200 ? 200 : eventCount;
+        const nextEventCount = eventCount > 200 ? eventCount - 200 : 0;
         BunqJSClient.api.shareInviteBankInquiry
             .list(user_id, account_id, {
                 older_id: olderId,
-                count: 200
+                count: currentEventCount
             })
             .then(shareInviteBankInquiries => {
                 // more shareInviteBankInquiries can be loaded for this account
-                if (shareInviteBankInquiries.length === 200 && (continueLoading !== false && continueLoading > 0)) {
+                if (shareInviteBankInquiries.length === currentEventCount && nextEventCount > 0) {
                     const oldestShareInviteBankInquiryIndex = shareInviteBankInquiries.length - 1;
                     const oldestShareInviteBankInquiry = shareInviteBankInquiries[oldestShareInviteBankInquiryIndex];
 
                     // re-run the shareInviteBankInquiries to continue deeper into the acocunt
-                    this.shareInviteBankInquiriesUpdate(user_id, oldestShareInviteBankInquiry.id, continueLoading - 1);
+                    this.shareInviteBankInquiriesUpdate(user_id, oldestShareInviteBankInquiry.id, nextEventCount);
                 }
 
                 const currentShareInviteBankInquiries = {
@@ -672,12 +743,12 @@ class QueueManager extends React.Component {
             });
     };
 
-    shareInviteBankResponsesUpdate = user_id => {
+    shareInviteBankResponsesUpdate = (user_id, eventCount = 200) => {
         const { BunqJSClient } = this.props;
 
         BunqJSClient.api.shareInviteBankResponse
             .list(user_id, {
-                count: 200
+                count: eventCount
             })
             .then(shareInviteBankResponses => {
                 // set these shareInviteBankResponses in the state
@@ -709,6 +780,7 @@ const mapStateToProps = state => {
         accountsLoading: state.accounts.loading,
 
         syncOnStartup: state.options.sync_on_startup,
+        eventCountLimit: state.options.event_count_limit,
 
         automaticUpdateEnabled: state.options.automatic_update_enabled,
         automaticUpdateSendNotification: state.options.automatic_update_send_notification,
@@ -741,16 +813,17 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         queueFinishedSync: () => dispatch(queueFinishedSync()),
         queueResetSyncState: () => dispatch(queueResetSyncState()),
 
-        paymentsSetInfo: (payments, accountId) => dispatch(paymentsSetInfo(payments, accountId, BunqJSClient)),
-        bunqMeTabsSetInfo: (bunqMeTabs, accountId) => dispatch(bunqMeTabsSetInfo(bunqMeTabs, accountId, BunqJSClient)),
+        paymentsSetInfo: (payments, accountId) => dispatch(paymentsSetInfo(payments, accountId, false, BunqJSClient)),
+        bunqMeTabsSetInfo: (bunqMeTabs, accountId) =>
+            dispatch(bunqMeTabsSetInfo(bunqMeTabs, accountId, false, BunqJSClient)),
         masterCardActionsSetInfo: (masterCardActions, accountId) =>
-            dispatch(masterCardActionsSetInfo(masterCardActions, accountId, BunqJSClient)),
+            dispatch(masterCardActionsSetInfo(masterCardActions, accountId, false, BunqJSClient)),
         requestInquiriesSetInfo: (requestInquiries, accountId) =>
-            dispatch(requestInquiriesSetInfo(requestInquiries, accountId, BunqJSClient)),
+            dispatch(requestInquiriesSetInfo(requestInquiries, accountId, false, BunqJSClient)),
         requestInquiryBatchesSetInfo: (requestInquiryBatches, accountId) =>
-            dispatch(requestInquiryBatchesSetInfo(requestInquiryBatches, accountId, BunqJSClient)),
+            dispatch(requestInquiryBatchesSetInfo(requestInquiryBatches, accountId, false, BunqJSClient)),
         requestResponsesSetInfo: (requestResponses, accountId) =>
-            dispatch(requestResponsesSetInfo(requestResponses, accountId, BunqJSClient)),
+            dispatch(requestResponsesSetInfo(requestResponses, accountId, false, BunqJSClient)),
         shareInviteBankInquiriesSetInfo: (shareInviteBankInquiries, accountId) =>
             dispatch(shareInviteBankInquiriesSetInfo(shareInviteBankInquiries, accountId, BunqJSClient)),
         shareInviteBankResponsesSetInfo: shareInviteBankResponses =>

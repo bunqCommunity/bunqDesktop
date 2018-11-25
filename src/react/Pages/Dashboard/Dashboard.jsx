@@ -17,19 +17,17 @@ import Tab from "@material-ui/core/Tab";
 
 import MoneyIcon from "@material-ui/icons/AttachMoney";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import KeyIcon from "@material-ui/icons/VpnKey";
 
-import LimitedPremium from "./LimitedPremium";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
 import CombinedList from "../../Components/CombinedList/CombinedList";
 import AccountList from "../../Components/AccountList/AccountList";
 import NavLink from "../../Components/Routing/NavLink";
 import AttachmentImage from "../../Components/AttachmentImage/AttachmentImage";
 import SavingsGoalsList from "../../Components/SavingsGoals/SavingsGoalsList";
+import SwitchKeysMenu from "../../Components/SwitchKeysMenu";
 
-import { userLogin, userLogout } from "../../Actions/user";
 import { requestInquirySend } from "../../Actions/request_inquiry";
-import { registrationLogOut } from "../../Actions/registration";
+import { registrationLogOut, registrationSwitchKeys } from "../../Actions/registration";
 
 const styles = {
     btn: {
@@ -73,17 +71,6 @@ class Dashboard extends React.Component {
         };
     }
 
-    componentDidUpdate() {
-        if (
-            this.props.userType !== false &&
-            this.props.userLoading === false &&
-            this.props.usersLoading === false &&
-            this.props.user === false
-        ) {
-            this.props.userLogin(this.props.userType, false);
-        }
-    }
-
     addMoney = event => {
         if (!this.props.requestInquiryLoading) {
             const requestInquiry = {
@@ -107,9 +94,8 @@ class Dashboard extends React.Component {
     };
 
     render() {
-        const { t, user, savingsGoals } = this.props;
+        const { t, user, userType, savingsGoals } = this.props;
         const selectedTab = this.state.selectedTab;
-        const userTypes = Object.keys(this.props.users);
 
         const displayName = this.props.user.display_name ? this.props.user.display_name : t("user");
 
@@ -123,14 +109,57 @@ class Dashboard extends React.Component {
             </Avatar>
         ) : null;
 
-        const tabsEnabled = Object.keys(savingsGoals).some(savingsGoalId => {
+        const displaySavingsGoals = Object.keys(savingsGoals).some(savingsGoalId => {
             const savingsGoal = savingsGoals[savingsGoalId];
             return !savingsGoal.isEnded && savingsGoal.isStarted;
         });
+        let isBunqPromoUser = false;
+        if (user && user.customer_limit && user.customer_limit.limit_amount_monthly) {
+            isBunqPromoUser = true;
+        }
+        const tabsEnabled = displaySavingsGoals;
 
-        let displayLimitedPremium = false;
-        if (user && user.customer_limit && user.customer_limit.limit_invite_user_premium_limited) {
-            displayLimitedPremium = true;
+        let tabsComponent = null;
+        if (tabsEnabled) {
+            tabsComponent = (
+                <AppBar position="static" color="default">
+                    <Tabs
+                        value={this.state.selectedTab}
+                        onChange={this.handleChange}
+                        color="primary"
+                        indicatorColor="primary"
+                        textColor="primary"
+                        fullWidth
+                    >
+                        <Tab style={styles.tabItems} value="accounts" label={t("Accounts")} />
+                        {displaySavingsGoals && (
+                            <Tab style={styles.tabItems} value="savingsGoals" label={t("Savings goals")} />
+                        )}
+                    </Tabs>
+                </AppBar>
+            );
+        }
+
+        let userTypeLabel = "";
+        const OAuthLabel = t("OAuth");
+        const businessLabel = t("Business");
+        const personalLabel = t("Personal");
+        const bunqPromoLabel = t("bunq promo");
+        switch (userType) {
+            case "UserCompany":
+                userTypeLabel = `${businessLabel} ${t("account")}`;
+                break;
+            case "UserApiKey":
+                userTypeLabel = `${OAuthLabel} ${t("account")}`;
+                break;
+            default:
+            case "UserPerson":
+                if (isBunqPromoUser) {
+                    userTypeLabel = `${bunqPromoLabel} ${t("account")}`;
+                } else {
+                    userTypeLabel = `${personalLabel} ${t("account")}`;
+                }
+                break;
         }
 
         return (
@@ -152,23 +181,18 @@ class Dashboard extends React.Component {
                                 <NavLink to={"/profile"}>{profileAvatar}</NavLink>
                             )}
 
-                            <Typography variant="h6" gutterBottom style={styles.title}>
-                                {`${t("Welcome")} ${displayName}`}
-                            </Typography>
+                            <div>
+                                <Typography variant="h5" gutterBottom style={styles.title}>
+                                    {displayName}
+                                </Typography>
+                                <Typography variant="body1" gutterBottom style={styles.title}>
+                                    {userTypeLabel}
+                                </Typography>
+                            </div>
                         </Grid>
 
                         <Grid item xs={6} style={styles.headerButtonWrapper}>
-                            {userTypes.length > 1 ? (
-                                <Button style={styles.btn} onClick={this.props.logoutUser}>
-                                    {t("Switch user")}
-                                </Button>
-                            ) : null}
-
-                            <Tooltip id="tooltip-fab" title="Switch API keys">
-                                <IconButton style={styles.iconButton} onClick={this.props.registrationLogOut}>
-                                    <KeyIcon />
-                                </IconButton>
-                            </Tooltip>
+                            <SwitchKeysMenu history={this.props.history} BunqJSClient={this.props.BunqJSClient} />
 
                             <Tooltip id="tooltip-fab" title="Logout of account">
                                 <IconButton
@@ -188,39 +212,11 @@ class Dashboard extends React.Component {
 
                         <Grid item xs={12} sm={5} md={4}>
                             <StickyBox className={"sticky-container"}>
-                                {tabsEnabled && (
-                                    <AppBar position="static" color="default">
-                                        <Tabs
-                                            value={this.state.selectedTab}
-                                            onChange={this.handleChange}
-                                            color="primary"
-                                            indicatorColor="primary"
-                                            textColor="primary"
-                                            fullWidth
-                                        >
-                                            <Tab style={styles.tabItems} value="accounts" label={t("Accounts")} />
-                                            <Tab
-                                                style={styles.tabItems}
-                                                value="savingsGoals"
-                                                label={t("Savings goals")}
-                                            />
-                                            {displayLimitedPremium && (
-                                                <Tab
-                                                    style={styles.tabItems}
-                                                    value="limitedPremium"
-                                                    label={t("bunq promo")}
-                                                />
-                                            )}
-                                        </Tabs>
-                                    </AppBar>
-                                )}
+                                {tabsComponent}
 
                                 {(selectedTab === "accounts" || tabsEnabled === false) && (
                                     <Paper>
-                                        <AccountList
-                                            BunqJSClient={this.props.BunqJSClient}
-                                            initialBunqConnect={this.props.initialBunqConnect}
-                                        />
+                                        <AccountList BunqJSClient={this.props.BunqJSClient} />
 
                                         {this.props.environment === "SANDBOX" ? (
                                             !this.props.limitedPermissions ? (
@@ -248,7 +244,7 @@ class Dashboard extends React.Component {
                                 )}
 
                                 {selectedTab === "savingsGoals" &&
-                                    tabsEnabled && (
+                                    displaySavingsGoals && (
                                         <Paper style={styles.savingsGoalsPaper}>
                                             <SavingsGoalsList hiddenTypes={["ended", "expired"]} type="small" />
 
@@ -272,14 +268,6 @@ class Dashboard extends React.Component {
                                             </TranslateButton>
                                         </Paper>
                                     )}
-
-                                {selectedTab === "limitedPremium" &&
-                                    tabsEnabled && (
-                                        <LimitedPremium
-                                            t={t}
-                                            user={user}
-                                        />
-                                    )}
                             </StickyBox>
                         </Grid>
 
@@ -287,7 +275,6 @@ class Dashboard extends React.Component {
                             <Paper>
                                 <CombinedList
                                     BunqJSClient={this.props.BunqJSClient}
-                                    initialBunqConnect={this.props.initialBunqConnect}
                                     displayRequestPayments={false}
                                     displayAcceptedRequests={true}
                                 />
@@ -303,7 +290,6 @@ class Dashboard extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-        users: state.users.users,
         userType: state.user.user_type,
         userLoading: state.user.loading,
         limitedPermissions: state.user.limited_permissions,
@@ -314,6 +300,8 @@ const mapStateToProps = state => {
 
         savingsGoals: state.savings_goals.savings_goals,
 
+        derivedPassword: state.registration.derivedPassword,
+        derivedPasswordIdentifier: state.registration.identifier,
         useNoPassword: state.registration.use_no_password,
         storedApiKeys: state.registration.stored_api_keys,
         environment: state.registration.environment
@@ -323,16 +311,14 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        // only resets user type
-        logoutUser: () => dispatch(userLogout()),
-
         // hard-logout
         registrationLogOut: () => dispatch(registrationLogOut(BunqJSClient)),
+        registrationSwitchKeys: (storedKeyIndex, derivedPassword, derivedPasswordIdentifier) =>
+            dispatch(registrationSwitchKeys(BunqJSClient, storedKeyIndex, derivedPassword, derivedPasswordIdentifier)),
 
         // send a request, used for sandbox button
         requestInquirySend: (userId, accountId, requestInquiries) =>
-            dispatch(requestInquirySend(BunqJSClient, userId, accountId, requestInquiries)),
-        userLogin: (type, updated = false) => dispatch(userLogin(BunqJSClient, type, updated))
+            dispatch(requestInquirySend(BunqJSClient, userId, accountId, requestInquiries))
     };
 };
 export default connect(

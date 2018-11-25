@@ -399,7 +399,6 @@ const mapStateToProps = state => {
         derivedPassword: state.registration.derivedPassword,
         registrationLoading: state.registration.loading,
 
-        users: state.users.users,
         user: state.user.user,
         userLoading: state.user.loading
     };

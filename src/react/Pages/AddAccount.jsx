@@ -2,12 +2,16 @@ import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
-import Grid from "@material-ui/core/Grid";
 import CirclePicker from "react-color/lib/Circle";
+import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
@@ -47,11 +51,18 @@ class AddAccount extends React.Component {
         super(props, context);
         this.state = {
             color: "#2196f3",
+
             description: "",
             descriptionError: false,
+
             limit: 1000,
             limitError: false,
-            validForm: false
+
+            savingsGoal: 0,
+            savingsGoalError: false,
+
+            validForm: false,
+            accountType: "MonetaryAccountBank"
         };
     }
 
@@ -61,7 +72,15 @@ class AddAccount extends React.Component {
         }
         const { user } = this.props;
 
-        this.props.createAccount(user.id, "EUR", this.state.description, this.state.limit + "", this.state.color);
+        this.props.createAccount(
+            user.id,
+            "EUR",
+            this.state.description,
+            this.state.limit + "",
+            this.state.color,
+            this.state.savingsGoal + "",
+            this.state.accountType
+        );
     };
 
     handleChange = name => event => {
@@ -75,10 +94,10 @@ class AddAccount extends React.Component {
         );
     };
 
-    handleChangeFormatted = valueObject => {
+    handleChangeFormatted = name => valueObject => {
         this.setState(
             {
-                limit: valueObject.formattedValue.length > 0 ? valueObject.floatValue : ""
+                [name]: valueObject.formattedValue.length > 0 ? valueObject.floatValue : ""
             },
             () => {
                 this.validateForm();
@@ -91,15 +110,22 @@ class AddAccount extends React.Component {
     };
 
     validateForm = () => {
-        const { description, limit } = this.state;
+        const { description, limit, accountType, savingsGoal } = this.state;
 
+        let savingsGoalError = false;
+        if (accountType === "MonetaryAccountSavings") {
+            if (!savingsGoal) {
+                savingsGoalError = savingsGoal < 0.01 || savingsGoal > 10000;
+            }
+        }
         const limitErrorCondition = limit < 0.01 || limit > 10000;
         const descriptionErrorCondition = description.length < 1 || description.length > 140;
 
         this.setState({
             limitError: limitErrorCondition,
             descriptionError: descriptionErrorCondition,
-            validForm: !limitErrorCondition && !descriptionErrorCondition
+            validForm: !limitErrorCondition && !descriptionErrorCondition && !savingsGoalError,
+            savingsGoalError: savingsGoalError
         });
     };
 
@@ -153,10 +179,41 @@ class AddAccount extends React.Component {
                             <TranslateTypography type="body2">Daily limit</TranslateTypography>
                             <MoneyFormatInput
                                 id="limit"
-                                onValueChange={this.handleChangeFormatted}
+                                onValueChange={this.handleChangeFormatted("limit")}
                                 value={this.state.limit}
                             />
                         </FormControl>
+
+                        <FormControl component="fieldset">
+                            <FormLabel component="legend">Account type</FormLabel>
+                            <RadioGroup
+                                id="accountType"
+                                value={this.state.accountType}
+                                onChange={this.handleChange("accountType")}
+                            >
+                                <FormControlLabel
+                                    value="MonetaryAccountBank"
+                                    control={<Radio />}
+                                    label="Regular account"
+                                />
+                                <FormControlLabel
+                                    value="MonetaryAccountSavings"
+                                    control={<Radio />}
+                                    label="Savings account"
+                                />
+                            </RadioGroup>
+                        </FormControl>
+
+                        {this.state.accountType === "MonetaryAccountSavings" && (
+                            <FormControl error={this.state.savingsGoalError}>
+                                <TranslateTypography type="body2">Savings goal</TranslateTypography>
+                                <MoneyFormatInput
+                                    id="savings-goal"
+                                    onValueChange={this.handleChangeFormatted("savingsGoal")}
+                                    value={this.state.savingsGoal}
+                                />
+                            </FormControl>
+                        )}
 
                         <TranslateButton
                             variant="contained"
@@ -199,8 +256,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        createAccount: (userId, currency, description, dailyLimit, color) =>
-            dispatch(createAccount(BunqJSClient, userId, currency, description, dailyLimit, color)),
+        createAccount: (userId, currency, description, dailyLimit, color, savingsGoal, accountType) =>
+            dispatch(
+                createAccount(BunqJSClient, userId, currency, description, dailyLimit, color, savingsGoal, accountType)
+            ),
         openSnackbar: message => dispatch(openSnackbar(message))
     };
 };

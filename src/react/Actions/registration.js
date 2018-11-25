@@ -1,8 +1,21 @@
 import store from "store";
 import Logger from "../Helpers/Logger";
+import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { decryptString, derivePasswordKey, encryptString } from "../Helpers/Crypto";
 import { applicationSetStatus } from "./application";
 import { openSnackbar } from "./snackbar";
+import { userSetInfo } from "./user";
+import { loadStoredPayments } from "./payments";
+import { loadStoredAccounts } from "./accounts";
+import { loadStoredBunqMeTabs } from "./bunq_me_tabs";
+import { loadStoredMasterCardActions } from "./master_card_actions";
+import { loadStoredRequestInquiries } from "./request_inquiries";
+import { loadStoredrequestInquiryBatches } from "./request_inquiry_batches";
+import { loadStoredRequestResponses } from "./request_responses";
+import { loadStoredContacts } from "./contacts";
+import { loadStoredShareInviteBankResponses } from "./share_invite_bank_responses";
+import { loadStoredShareInviteBankInquiries } from "./share_invite_bank_inquiries";
+import { loadPendingPayments } from "./pending_payments";
 
 export const SALT_LOCATION = "BUNQDESKTOP_PASSWORD_SALT";
 export const API_KEY_LOCATION = "BUNQDESKTOP_API_KEY";
@@ -10,12 +23,140 @@ export const API_KEYS_LOCATION = "BUNQDESKTOP_API_KEYS";
 export const API_KEY_IV_LOCATION = "BUNQDESKTOP_API_IV";
 
 /**
+ * Logs out of current account and logs back in to the selected stored key
+ * @param BunqJSClient
+ * @param storedKeyIndex
+ * @param derivedPassword
+ * @param derivedPasswordIdentifier
+ * @returns {Function}
+ */
+export function registrationSwitchKeys(BunqJSClient, storedKeyIndex, derivedPassword, derivedPasswordIdentifier) {
+    return dispatch => {
+        dispatch(registrationLogOut(BunqJSClient, false));
+        setTimeout(() => {
+            dispatch(registrationSetDerivedPassword(derivedPassword, derivedPasswordIdentifier));
+            setTimeout(() => {
+                dispatch(registrationLoadStoredApiKey(BunqJSClient, storedKeyIndex, derivedPassword));
+            }, 1000);
+        }, 500);
+    };
+}
+
+export function registrationLoadStoredData(BunqJSClient) {
+    return dispatch => {
+        dispatch(loadStoredAccounts(BunqJSClient));
+        dispatch(loadStoredContacts(BunqJSClient));
+        dispatch(loadPendingPayments(BunqJSClient));
+        dispatch(loadStoredPayments(BunqJSClient));
+        dispatch(loadStoredBunqMeTabs(BunqJSClient));
+        dispatch(loadStoredMasterCardActions(BunqJSClient));
+        dispatch(loadStoredRequestInquiries(BunqJSClient));
+        dispatch(loadStoredrequestInquiryBatches(BunqJSClient));
+        dispatch(loadStoredRequestResponses(BunqJSClient));
+        dispatch(loadStoredShareInviteBankResponses(BunqJSClient));
+        dispatch(loadStoredShareInviteBankInquiries(BunqJSClient));
+    };
+}
+
+export function registrationLogin(
+    BunqJSClient,
+    derivedPassword,
+    apiKey = false,
+    deviceName,
+    environment,
+    permittedIps = []
+) {
+    return async dispatch => {
+        const t = window.t;
+        const statusMessage1 = t("Attempting to load your API key");
+        const statusMessage2 = t("Registering our encryption keys");
+        const statusMessage3 = t("Installing this device");
+        const statusMessage4 = t("Creating a new session");
+        const failedLoadingMessage = t("We failed to load the stored API key Try again or re-enter the key");
+
+        dispatch(registrationLoading());
+
+        let encryptedApiKey = false;
+        if (!apiKey && store.get(API_KEY_LOCATION) && store.get(API_KEY_IV_LOCATION)) {
+            encryptedApiKey = store.get(API_KEY_LOCATION);
+            const encryptedApiKeyIV = store.get(API_KEY_IV_LOCATION);
+
+            dispatch(applicationSetStatus(statusMessage1));
+            try {
+                const decryptedString = await decryptString(encryptedApiKey, derivedPassword.key, encryptedApiKeyIV);
+                // validate decrypted result
+                if (!decryptedString || decryptedString.length !== 64) {
+                    // clear the password so the user can try again
+                    dispatch(registrationClearPassword());
+                    dispatch(openSnackbar(failedLoadingMessage));
+                    Logger.error(`Failed to load API key: with length: ${decryptedString.length}`);
+
+                    return;
+                }
+                apiKey = decryptedString;
+            } catch (exception) {
+                // clear the password so the user can try again
+                dispatch(registrationResetToApiScreenSoft(BunqJSClient));
+                dispatch(registrationNotLoading());
+                dispatch(registrationSetNotReady());
+                dispatch(openSnackbar(failedLoadingMessage));
+                return;
+            }
+        }
+
+        if (!apiKey) {
+            dispatch(registrationNotLoading());
+            dispatch(registrationSetNotReady());
+            return;
+        }
+
+        dispatch(registrationSetApiKeyDirect(apiKey, encryptedApiKey, permittedIps));
+
+        try {
+            await BunqJSClient.run(apiKey, permittedIps, environment, derivedPassword.key);
+
+            if (apiKey === false) {
+                // no api key yet so nothing else to do just yet
+                return;
+            }
+
+            dispatch(applicationSetStatus(statusMessage2));
+            await BunqJSClient.install();
+
+            dispatch(applicationSetStatus(statusMessage3));
+            await BunqJSClient.registerDevice(deviceName);
+
+            dispatch(applicationSetStatus(statusMessage4));
+            await BunqJSClient.registerSession();
+
+            const users = await BunqJSClient.getUsers(true);
+            const userType = Object.keys(users)[0];
+            dispatch(userSetInfo(users[userType], userType));
+
+            dispatch(registrationLoadStoredData(BunqJSClient));
+        } catch (exception) {
+            BunqErrorHandler(dispatch, exception, false, BunqJSClient);
+            dispatch(registrationResetToApiScreenSoft(BunqJSClient));
+            dispatch(registrationNotLoading());
+            dispatch(registrationSetNotReady());
+            return;
+        }
+
+        setTimeout(() => {
+            dispatch(applicationSetStatus(""));
+            dispatch(registrationNotLoading());
+            dispatch(registrationSetReady());
+        }, 500);
+    };
+}
+
+/**
  * Only sets the api key without extra actions
  * @param api_key
  * @param encrypted_api_key
  * @returns {{type: string, payload: {api_key: *}}}
  */
-export function registrationSetApiKeyBasic(api_key, encrypted_api_key = false, permitted_ips = []) {
+export function registrationSetApiKeyDirect(api_key, encrypted_api_key = false, permitted_ips = []) {
     return {
         type: "REGISTRATION_SET_API_KEY",
         payload: {
@@ -42,8 +183,8 @@ export function registrationSetApiKey(api_key, derivedPassword, permitted_ips = 
                 // now store the salt for the currently used password
                 store.set(SALT_LOCATION, derivedPassword.salt);
 
-                dispatch(registrationSetApiKeyBasic(api_key, encrypedData.encryptedString, permitted_ips));
-                dispatch(registrationEnsureStoredApiKey(encrypedData.encryptedString, encrypedData.iv));
+                dispatch(registrationSetApiKeyDirect(api_key, encrypedData.encryptedString, permitted_ips));
+                dispatch(registrationEnsureStoredApiKey(encrypedData.encryptedString, encrypedData.iv, permitted_ips));
             })
             .catch(Logger.error);
     };
@@ -53,14 +194,16 @@ export function registrationSetApiKey(api_key, derivedPassword, permitted_ips = 
  * Ensures the stored api_keys contain an encrypted key and iv set
  * @param apiKey
  * @param apiKeyIv
+ * @param permittedIps
  * @returns {{type: string, payload: {api_key: *, api_key_iv: *}}}
  */
-export function registrationEnsureStoredApiKey(apiKey, apiKeyIv) {
+export function registrationEnsureStoredApiKey(apiKey, apiKeyIv, permittedIps) {
     return {
         type: "REGISTRATION_ENSURE_STORED_API_KEY",
         payload: {
             api_key: apiKey,
-            api_key_iv: apiKeyIv
+            api_key_iv: apiKeyIv,
+            permitted_ips: permittedIps
         }
     };
 }
@@ -125,7 +268,7 @@ export function registrationLoadApiKey(derivedPassword) {
                     return;
                 }
 
-                dispatch(registrationSetApiKeyBasic(decryptedString, encryptedApiKey));
+                dispatch(registrationSetApiKeyDirect(decryptedString, encryptedApiKey));
             })
             .catch(_ => {
                 // clear the password so the user can try again
@@ -170,6 +313,8 @@ export function registrationLoadStoredApiKey(BunqJSClient, storedKeyIndex, deriv
         const encryptedApiKey = encryptedApiKeyInfo.api_key;
         const encryptedApiKeyIV = encryptedApiKeyInfo.api_key_iv;
         const encryptedEnvironment = encryptedApiKeyInfo.environment;
+        const encryptedDeviceName = encryptedApiKeyInfo.device_name;
+        const encryptedPermittedIps = encryptedApiKeyInfo.permitted_ips;
 
         decryptString(encryptedApiKey, derivedPassword.key, encryptedApiKeyIV)
             .then(decryptedString => {
@@ -195,15 +340,20 @@ export function registrationLoadStoredApiKey(BunqJSClient, storedKeyIndex, deriv
                 if (BunqJSClient.apiKey && BunqJSClient.apiKey !== decryptedString) {
                     // remove the old api key
                     dispatch(applicationSetStatus(statusMessage2));
-
-                    // destroy the session associated with the previous
-                    dispatch(registrationSetApiKeyBasic(decryptedString, encryptedApiKey));
-                    dispatch(registrationNotLoading());
-                } else {
-                    // nothing changes, just set the api key but do nothing else
-                    dispatch(registrationNotLoading());
-                    dispatch(registrationSetApiKeyBasic(decryptedString, encryptedApiKey));
                 }
+
+                // nothing changes, just set the api key but do nothing else
+                dispatch(registrationNotLoading());
+                dispatch(
+                    registrationLogin(
+                        BunqJSClient,
+                        derivedPassword,
+                        decryptedString,
+                        encryptedDeviceName,
+                        encryptedEnvironment,
+                        encryptedPermittedIps || []
+                    )
+                );
             })
             .catch(_ => {
                 dispatch(registrationClearPassword());
@@ -250,21 +400,6 @@ export function registrationDerivePassword(password) {
                 Logger.error(error);
                 dispatch(registrationNotLoading());
             });
-    };
-}
-
-/**
- * Log out without removing the stored apikey and password
- * @param BunqJSClient
- * @returns {function(*)}
- */
-export function registrationResetToApiScreen(BunqJSClient) {
-    return dispatch => {
-        BunqJSClient.destroySession().then(_ => {
-            dispatch({
-                type: "REGISTRATION_RESET_TO_API_SCREEN"
-            });
-        });
     };
 }
 
@@ -333,6 +468,15 @@ export function registrationSetDeviceName(device_name) {
     };
 }
 
+export function registrationSetStoredApiKeys(storedApiKeys) {
+    return {
+        type: "REGISTRATION_SET_STORED_API_KEYS",
+        payload: {
+            stored_api_keys: storedApiKeys
+        }
+    };
+}
+
 /**
  * Set the environment
  * @param environment
@@ -371,6 +515,7 @@ export function registrationClearUserInfo() {
 /**
  * Store the derived password
  * @param derivedPassword
+ * @param identifier
  * @returns {{type: string, payload: {derivedPassword: *}}}
  */
 export function registrationSetDerivedPassword(derivedPassword, identifier) {
@@ -423,7 +568,27 @@ export function registrationSetUsePassword() {
 }
 
 /**
- * Generic registraition loading state
+ * Generic registration ready state
+ * @returns {{type: string}}
+ */
+export function registrationSetReady() {
+    return {
+        type: "REGISTRATION_READY"
+    };
+}
+
+/**
+ * Generic registration not ready state
+ * @returns {{type: string}}
+ */
+export function registrationSetNotReady() {
+    return {
+        type: "REGISTRATION_NOT_READY"
+    };
+}
+
+/**
+ * Generic registration loading state
  * @returns {{type: string}}
  */
 export function registrationLoading() {
@@ -433,7 +598,7 @@ export function registrationLoading() {
 }
 
 /**
- * Generic registraition not loading state
+ * Generic registration not loading state
  * @returns {{type: string}}
  */
 export function registrationNotLoading() {

@@ -20,6 +20,7 @@ export const USE_NATIVE_FRAME_LOCATION = "USE_NATIVE_FRAME";
 export const MINIMIZE_TO_TRAY_LOCATION = "MINIMIZE_TO_TRAY";
 export const DISPLAY_TRAY_INFO_LOCATION = "DISPLAY_TRAY_INFO";
 export const USE_STICKY_MENU_LOCATION = "USE_STICKY_MENU";
+export const EVENT_COUNT_LIMIT_LOCATION = "EVENT_COUNT_LIMIT";
 export const CHECK_INACTIVITY_ENABLED_LOCATION = "CHECK_INACTIVITY_ENABLED";
 export const CHECK_INACTIVITY_DURATION_LOCATION = "CHECK_INACTIVITY_DURATION";
 export const AUTOMATIC_UPDATE_ENABLED_LOCATION = "AUTOMATIC_UPDATE_ENABLED";
@@ -41,6 +42,10 @@ const settingsStoredMap = {
     minimize_to_tray: { location: MINIMIZE_TO_TRAY_LOCATION, default: false },
     display_tray_info: { location: DISPLAY_TRAY_INFO_LOCATION, default: true },
     sticky_menu: { location: USE_STICKY_MENU_LOCATION, default: false },
+    event_count_limit: {
+        location: EVENT_COUNT_LIMIT_LOCATION,
+        default: 100
+    },
     check_inactivity: {
         location: CHECK_INACTIVITY_ENABLED_LOCATION,
         default: false

@@ -1,24 +1,26 @@
 import React from "react";
 import { connect } from "react-redux";
+import { translate } from "react-i18next";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
 
-import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
 import LinkIcon from "@material-ui/icons/Link";
 import PeopleIcon from "@material-ui/icons/People";
 
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 import NavLink from "../../Components/Routing/NavLink";
+import AccountAvatarCircularProgress from "./AccountAvatarCircularProgress";
 
 import { formatMoney } from "../../Helpers/Utils";
 import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
 
 import { accountsSelectAccount } from "../../Actions/accounts.js";
 import { addAccountIdFilter, removeAccountIdFilter, toggleAccountIdFilter } from "../../Actions/filters";
+import LinearProgress from "../LinearProgress";
 
 const styles = {
     bigAvatar: {
@@ -45,10 +47,15 @@ class AccountListItem extends React.Component {
     }
 
     render() {
-        const { user, account, shareInviteBankResponses, selectedAccountIds, toggleAccountIds } = this.props;
+        const { t, user, account, shareInviteBankResponses, selectedAccountIds, toggleAccountIds } = this.props;
 
         if (account.status !== "ACTIVE") {
             return null;
+        }
+
+        let isSavingsAccount = false;
+        if (account.accountType === "MonetaryAccountSavings") {
+            isSavingsAccount = true;
         }
 
         let avatarSub = null;
@@ -66,29 +73,39 @@ class AccountListItem extends React.Component {
             );
         }
 
-        let formattedBalance = account.balance ? account.balance.value : 0;
+        let accountBalance = account.balance ? account.balance.value : 0;
         if (shareInviteBankResponses.length > 0) {
             const connectBudget = GetShareDetailBudget(shareInviteBankResponses);
             if (connectBudget) {
-                formattedBalance = connectBudget;
+                accountBalance = connectBudget;
             }
         }
-        formattedBalance = this.props.hideBalance ? "" : formatMoney(formattedBalance, true);
+        const formattedBalance = this.props.hideBalance ? "" : formatMoney(accountBalance, true);
+
+        let secondaryText = formattedBalance;
+        if (isSavingsAccount) {
+            const targetAmount = formatMoney(account.savings_goal.value);
+            const savingsPercentage = parseFloat(account.savings_goal_progress) * 100;
+            secondaryText = `${formattedBalance} ${t("out of")} ${targetAmount} - (${savingsPercentage.toFixed(2)}%)`;
+        }
 
         // check if any of the selected account ids are for this account
         let displayStyle = {};
+        let circularLeftPostion = 20;
         let accountIsSelected = false;
         if (selectedAccountIds.length !== 0) {
             // check if the selected account ids list contains this account
             accountIsSelected = selectedAccountIds.some(id => id === account.id);
             // switch if toggle is true
             const isSelected = toggleAccountIds ? !accountIsSelected : accountIsSelected;
-            displayStyle = isSelected
-                ? {
-                      borderLeft: "4px solid #1da1f2",
-                      paddingLeft: 20
-                  }
-                : {};
+
+            if (isSelected) {
+                circularLeftPostion = 16;
+                displayStyle = {
+                    borderLeft: "4px solid #1da1f2",
+                    paddingLeft: 20
+                };
+            }
         }
 
         // decide which onClick event is used based on
@@ -100,7 +117,8 @@ class AccountListItem extends React.Component {
         const onClickHandler = this.props.onClick ? e => this.props.onClick(user.id, account.id) : defaultClickHandler;
 
         return (
-            <ListItem divider button onClick={onClickHandler} style={displayStyle}>
+            <ListItem button onClick={onClickHandler} style={displayStyle} divider>
+                <AccountAvatarCircularProgress account={account} style={{ left: circularLeftPostion }} />
                 <Avatar style={styles.bigAvatar}>
                     <LazyAttachmentImage
                         height={60}
@@ -109,7 +127,7 @@ class AccountListItem extends React.Component {
                     />
                 </Avatar>
                 <div style={styles.avatarSub}>{avatarSub}</div>
-                <ListItemText primary={account.description} secondary={formattedBalance} />
+                <ListItemText primary={account.description} secondary={secondaryText} />
                 <ListItemSecondaryAction>
                     {this.props.secondaryAction ? (
                         this.props.secondaryAction
@@ -127,9 +145,8 @@ class AccountListItem extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-
+        theme: state.options.theme,
         paymentsLoading: state.payments.loading,
-
         hideBalance: state.options.hide_balance,
 
         selectedAccountIds: state.account_id_filter.selected_account_ids,
@@ -159,4 +176,4 @@ AccountListItem.defaultProps = {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(AccountListItem);
+)(translate("translations")(AccountListItem));

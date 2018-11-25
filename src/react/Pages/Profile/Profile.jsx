@@ -18,7 +18,7 @@ import TranslateTypography from "../../Components/TranslationHelpers/Typography"
 import ProfileDetailsForm from "./ProfileDetailsForm";
 
 import { openSnackbar } from "../../Actions/snackbar";
-import { userLogin } from "../../Actions/user";
+import { usersUpdate } from "../../Actions/users";
 
 import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
 import { formatMoney } from "../../Helpers/Utils";
@@ -147,7 +147,7 @@ class Profile extends React.Component {
             .put(user.id, userInfo)
             .then(response => {
                 this.setState({ loading: false });
-                this.props.userLogin(userType, true);
+                this.props.usersUpdate(true);
             })
             .catch(error => {
                 this.setState({ loading: false });
@@ -163,7 +163,8 @@ class Profile extends React.Component {
         if (userLoading === false && this.state.loading === false) {
             let businessInfo = null;
             if (userType === "UserCompany") {
-                const hasSafeKeepingFee = totalBalance > 100000;
+                const safeKeepingValue = totalBalance - 100000;
+                const hasSafeKeepingFee = safeKeepingValue > 0;
 
                 let costsTable = null;
                 if (hasSafeKeepingFee) {
@@ -179,7 +180,7 @@ class Profile extends React.Component {
                             <TableBody>
                                 {[1, 7, 30, 90, 365].map(days => {
                                     // to keep track of the amount across the dates
-                                    let accountBalance = totalBalance;
+                                    let accountBalance = safeKeepingValue;
                                     let totalPayment = 0;
 
                                     // go through the days to calculate historic change
@@ -302,7 +303,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
-        userLogin: (userType, updated) => dispatch(userLogin(BunqJSClient, userType, updated)),
+        usersUpdate: updated => dispatch(usersUpdate(BunqJSClient, updated)),
 
         BunqErrorHandler: (error, message) => BunqErrorHandler(dispatch, error, message)
     };

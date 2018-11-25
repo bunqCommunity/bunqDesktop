@@ -98,7 +98,7 @@ class Connect extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.initialBunqConnect) {
+        if (this.props.registrationReady) {
             this.props.accountsUpdate(this.props.user.id);
 
             const userId = this.props.user.id;
@@ -110,11 +110,11 @@ class Connect extends React.Component {
     }
 
     getSnapshotBeforeUpdate(nextProps, nextState) {
-        const { initialBunqConnect, accountsLoading, user } = this.props;
+        const { registrationReady, accountsLoading, user } = this.props;
         const nextAccountId = parseFloat(nextProps.match.params.accountId);
         const accountId = parseFloat(this.props.match.params.accountId);
 
-        if (accountsLoading === false && initialBunqConnect && nextAccountId !== accountId) {
+        if (accountsLoading === false && registrationReady && nextAccountId !== accountId) {
             this.props.accountsUpdate(user.id);
 
             if (this.props.limitedPermissions === false) {
@@ -372,8 +372,13 @@ class Connect extends React.Component {
         const accountInfo = accounts.find(account => account.id === accountId);
         if (!accountInfo) return <Redirect to="/" />;
 
-        const filteredInviteResponses = shareInviteBankResponses.filter(filterShareInviteBankResponses(accountInfo.id));
-        const filteredInviteInquiries = shareInviteBankInquiries.filter(filterShareInviteBankInquiries(accountInfo.id));
+        const validStatusList = ["ACCEPTED", "PENDING"];
+        const filteredInviteResponses = shareInviteBankResponses.filter(
+            filterShareInviteBankResponses(accountInfo.id, validStatusList)
+        );
+        const filteredInviteInquiries = shareInviteBankInquiries.filter(
+            filterShareInviteBankInquiries(accountInfo.id, validStatusList)
+        );
 
         const accessLevelForm = (
             <List>
@@ -552,6 +557,7 @@ class Connect extends React.Component {
                                             {filteredInviteInquiries.map(filteredInviteInquiry => (
                                                 <ConnectListItem
                                                     t={t}
+                                                    type="ShareInviteBankInquiry"
                                                     connectInfo={filteredInviteInquiry.ShareInviteBankInquiry}
                                                     BunqJSClient={this.props.BunqJSClient}
                                                 />
@@ -569,6 +575,7 @@ class Connect extends React.Component {
                                             {filteredInviteResponses.map(filteredInviteResponse => (
                                                 <ConnectListItem
                                                     t={t}
+                                                    type="ShareInviteBankResponse"
                                                     connectInfo={filteredInviteResponse.ShareInviteBankResponse}
                                                     BunqJSClient={this.props.BunqJSClient}
                                                 />
