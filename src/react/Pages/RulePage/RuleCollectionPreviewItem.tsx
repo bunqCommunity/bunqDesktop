@@ -15,10 +15,7 @@ import CheckIcon from "@material-ui/icons/Check";
 import CrossIcon from "@material-ui/icons/Cancel";
 import CopyIcon from "@material-ui/icons/FileCopy";
 
-import {
-    EventObjectMatchingRule,
-    EventObjectResult
-} from "../../Types/RuleCollection";
+import { EventObjectMatchingRule, EventObjectResult } from "../../Types/RuleCollection";
 import TypeRule from "../../Types/Rules/TypeRule";
 import ValueRule from "../../Types/Rules/ValueRule";
 import TransactionAmountRule from "../../Types/Rules/TransactionAmountRule";
@@ -36,9 +33,7 @@ class RuleCollectionPreviewItem extends React.Component<any, any> {
     };
 
     copiedValue = e => {
-        this.props.openSnackbar(
-            this.props.t(`Copied the value to your clipboard`)
-        );
+        this.props.openSnackbar(this.props.t(`Copied the value to your clipboard`));
     };
 
     render() {
@@ -48,62 +43,43 @@ class RuleCollectionPreviewItem extends React.Component<any, any> {
 
         let ruleItems = null;
         if (this.state.tabIndex === 0) {
-            ruleItems = matchingRules.map(
-                (matchingRule: EventObjectMatchingRule, key) => {
-                    let negativeText = matchingRule.matched ? "" : "not";
+            ruleItems = matchingRules.map((matchingRule: EventObjectMatchingRule, key) => {
+                let negativeText = matchingRule.matched ? "" : "not";
 
-                    let primaryText = "";
-                    switch (matchingRule.rule.ruleType) {
-                        case "ITEM_TYPE":
-                            let ruleItemType: TypeRule = matchingRule.rule;
+                let primaryText = "";
+                switch (matchingRule.rule.ruleType) {
+                    case "ITEM_TYPE":
+                        let ruleItemType: TypeRule = matchingRule.rule;
 
-                            primaryText = `Event is ${negativeText} a ${
-                                ruleItemType.matchType
-                            }`;
+                        primaryText = `Event is ${negativeText} a ${ruleItemType.matchType}`;
 
-                            break;
-                        case "VALUE":
-                            let ruleValue: ValueRule = matchingRule.rule;
-                            let fieldChecked =
-                                ruleValue.field !== "CUSTOM"
-                                    ? ruleValue.field
-                                    : ruleValue.customField;
+                        break;
+                    case "VALUE":
+                        let ruleValue: ValueRule = matchingRule.rule;
+                        let fieldChecked = ruleValue.field !== "CUSTOM" ? ruleValue.field : ruleValue.customField;
 
-                            primaryText = `Field ${fieldChecked} does ${negativeText} ${
-                                ruleValue.matchType
-                            } '${matchingRule.rule.value}'`;
+                        primaryText = `Field ${fieldChecked} does ${negativeText} ${ruleValue.matchType} '${
+                            matchingRule.rule.value
+                        }'`;
 
-                            break;
-                        case "TRANSACTION_AMOUNT":
-                            let ruleTransactionAMount: TransactionAmountRule =
-                                matchingRule.rule;
+                        break;
+                    case "TRANSACTION_AMOUNT":
+                        let ruleTransactionAMount: TransactionAmountRule = matchingRule.rule;
 
-                            primaryText = `Transaction amount is ${negativeText} ${
-                                ruleTransactionAMount.matchType
-                            } than ${ruleTransactionAMount.amount}`;
+                        primaryText = `Transaction amount is ${negativeText} ${ruleTransactionAMount.matchType} than ${
+                            ruleTransactionAMount.amount
+                        }`;
 
-                            break;
-                    }
-
-                    return (
-                        <ListItem dense key={key}>
-                            <ListItemText
-                                primary={primaryText}
-                                secondary={`Rule type: ${
-                                    matchingRule.rule.ruleType
-                                }`}
-                            />
-                            <ListItemIcon>
-                                {matchingRule.matched ? (
-                                    <CheckIcon />
-                                ) : (
-                                    <CrossIcon />
-                                )}
-                            </ListItemIcon>
-                        </ListItem>
-                    );
+                        break;
                 }
-            );
+
+                return (
+                    <ListItem dense key={key}>
+                        <ListItemText primary={primaryText} secondary={`Rule type: ${matchingRule.rule.ruleType}`} />
+                        <ListItemIcon>{matchingRule.matched ? <CheckIcon /> : <CrossIcon />}</ListItemIcon>
+                    </ListItem>
+                );
+            });
         }
 
         let valueItems = null;
@@ -141,16 +117,9 @@ class RuleCollectionPreviewItem extends React.Component<any, any> {
 
                 if (foundValue) {
                     valueItems.push(
-                        <CopyToClipboard
-                            key={key}
-                            text={foundValue}
-                            onCopy={this.copiedValue}
-                        >
+                        <CopyToClipboard key={key} text={foundValue} onCopy={this.copiedValue}>
                             <ListItem dense button>
-                                <ListItemText
-                                    primary={valueKey.text}
-                                    secondary={foundValue}
-                                />
+                                <ListItemText primary={valueKey.text} secondary={foundValue} />
                             </ListItem>
                         </CopyToClipboard>
                     );
@@ -160,26 +129,14 @@ class RuleCollectionPreviewItem extends React.Component<any, any> {
 
         return (
             <React.Fragment>
-                <ListItem
-                    dense
-                    button
-                    onClick={() => this.setState({ open: !this.state.open })}
-                >
-                    <Avatar>
-                        {event.matches ? <CheckIcon /> : <CrossIcon />}
-                    </Avatar>
-                    <ListItemText
-                        primary={`${event.item.description}`}
-                        secondary={`Type: ${event.type}`}
-                    />
+                <ListItem dense button onClick={() => this.setState({ open: !this.state.open })}>
+                    <Avatar>{event.matches ? <CheckIcon /> : <CrossIcon />}</Avatar>
+                    <ListItemText primary={`${event.item.description}`} secondary={`Type: ${event.type}`} />
                 </ListItem>
 
                 <Collapse in={this.state.open} unmountOnExit>
                     <AppBar position="static">
-                        <Tabs
-                            value={this.state.tabIndex}
-                            onChange={this.handleChange}
-                        >
+                        <Tabs value={this.state.tabIndex} onChange={this.handleChange}>
                             <Tab label="Rules" />
                             <Tab label="Values" />
                         </Tabs>

@@ -65,10 +65,7 @@ class NoteTextItem extends React.Component {
 
         return (
             <ListItem>
-                <ListItemText
-                    primary={noteTextInfo.content}
-                    secondary={humanReadableDate(noteTextInfo.updated)}
-                />
+                <ListItemText primary={noteTextInfo.content} secondary={humanReadableDate(noteTextInfo.updated)} />
                 <ListItemSecondaryAction>
                     {/*<IconButton onClick={console.log}>*/}
                     {/*<EditIcon />*/}

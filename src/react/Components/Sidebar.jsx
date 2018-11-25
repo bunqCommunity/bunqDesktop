@@ -12,19 +12,17 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 
-import ContactsIcon from "@material-ui/icons/Contacts";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import HomeIcon from "@material-ui/icons/Home";
+import ListIcon from "@material-ui/icons/List";
 import SettingsIcon from "@material-ui/icons/Settings";
 import ShareIcon from "@material-ui/icons/Share";
 import TimeLineIcon from "@material-ui/icons/Timeline";
 import CardIcon from "@material-ui/icons/CreditCard";
 import Bookmark from "@material-ui/icons/Bookmark";
-import CreateIcon from "@material-ui/icons/Create";
-
-import EventIcon from "@material-ui/icons/Event";
 import FileUploadIcon from "./CustomSVG/FileUpload";
+import TrophyIcon from "./CustomSVG/Trophy";
 
 import QueueSidebarListItem from "./Queue/QueueSidebarListItem";
 import NavLink from "./Routing/NavLink";
@@ -49,9 +47,6 @@ const styles = {
     },
     listFiller: {
         flex: "1 1 100%"
-    },
-    listBottomItem: {
-        flex: 0
     },
     avatar: {
         width: 50,
@@ -97,28 +92,28 @@ class Sidebar extends React.Component {
             userType,
             derivedPassword,
             limitedPermissions,
-            apiKey
+            apiKey,
+            pendingPayments
         } = this.props;
 
+        const pendingPaymentsCount = pendingPayments ? Object.keys(pendingPayments).length : 0;
+
         // if true, disable certain items in the menu
-        const disableNavigationItems =
-            userType === false || derivedPassword === false || apiKey === false;
+        const disableNavigationItems = userType === false || derivedPassword === false || apiKey === false;
         const navigationItems = disableNavigationItems
             ? null
             : [
-                  <ListItemWrapper
-                      exact
-                      to="/"
-                      icon={HomeIcon}
-                      text="Dashboard"
-                      location={this.props.location}
-                  />,
-                  <ListItemWrapper
-                      to="/pay"
-                      icon={ArrowUpwardIcon}
-                      text={"Pay"}
-                      location={this.props.location}
-                  />,
+                  <ListItemWrapper exact to="/" icon={HomeIcon} text="Dashboard" location={this.props.location} />,
+                  <ListItemWrapper to="/pay" icon={ArrowUpwardIcon} text={"Pay"} location={this.props.location} />,
+                  pendingPaymentsCount === 0 ? null : (
+                      <ListItemWrapper
+                          to="/pending-payments"
+                          icon={ListIcon}
+                          text={`${t("Pending payments")}: ${pendingPaymentsCount}`}
+                          location={this.props.location}
+                          disableTranslation={true}
+                      />
+                  ),
                   limitedPermissions ? null : (
                       <ListItemWrapper
                           to="/request"
@@ -133,47 +128,25 @@ class Sidebar extends React.Component {
                       text={"bunqme Requests"}
                       location={this.props.location}
                   />,
+                  <ListItemWrapper to="/cards" icon={CardIcon} text={"Cards"} location={this.props.location} />,
+                  <Divider />,
+                  <ListItemWrapper to="/stats" icon={TimeLineIcon} text={"Stats"} location={this.props.location} />,
                   <ListItemWrapper
-                      to="/card"
-                      icon={CardIcon}
-                      text={"Cards"}
+                      to="/rules-dashboard"
+                      icon={Bookmark}
+                      text="Category management"
                       location={this.props.location}
                   />,
                   <ListItemWrapper
-                      to="/scheduled-payments"
-                      icon={EventIcon}
-                      text={"Scheduled payments"}
+                      to="/savings-goals"
+                      icon={TrophyIcon}
+                      text="Savings goals"
                       location={this.props.location}
                   />,
                   <ListItemWrapper
                       to="/exports"
                       icon={FileUploadIcon}
                       text={"Exports"}
-                      location={this.props.location}
-                  />,
-                  <Divider />,
-                  <ListItemWrapper
-                      to="/stats"
-                      icon={TimeLineIcon}
-                      text={"Stats"}
-                      location={this.props.location}
-                  />,
-                  <ListItemWrapper
-                      to="/contacts"
-                      icon={ContactsIcon}
-                      text={"Contacts"}
-                      location={this.props.location}
-                  />,
-                  <ListItemWrapper
-                      to="/category-dashboard"
-                      icon={Bookmark}
-                      text={"Categories"}
-                      location={this.props.location}
-                  />,
-                  <ListItemWrapper
-                      to="/rules-dashboard"
-                      icon={CreateIcon}
-                      text="Category rules"
                       location={this.props.location}
                   />
               ];
@@ -183,16 +156,11 @@ class Sidebar extends React.Component {
                 <NavLink to="/application-info" style={styles.bunqLink}>
                     <ListItem button>
                         <ListItemIcon>
-                            <Avatar
-                                style={styles.avatar}
-                                src="./images/512x512.png"
-                            />
+                            <Avatar style={styles.avatar} src="./images/512x512.png" />
                         </ListItemIcon>
                         <ListItemText
                             primary="bunqDesktop"
-                            secondary={`${t("Version")} ${
-                                process.env.CURRENT_VERSION
-                            }`}
+                            secondary={`${t("Version")} ${process.env.CURRENT_VERSION}`}
                         />
                     </ListItem>
                 </NavLink>
@@ -203,12 +171,7 @@ class Sidebar extends React.Component {
 
                 <QueueSidebarListItem t={t} />
 
-                <ListItemWrapper
-                    to="/settings"
-                    icon={SettingsIcon}
-                    text={"Settings"}
-                    location={this.props.location}
-                />
+                <ListItemWrapper to="/settings" icon={SettingsIcon} text={"Settings"} location={this.props.location} />
             </List>
         );
 
@@ -222,9 +185,7 @@ class Sidebar extends React.Component {
                             open={open}
                             onClose={this.props.closeDrawer}
                             className="options-drawer"
-                            anchor={
-                                theme.direction === "rtl" ? "right" : "left"
-                            }
+                            anchor={theme.direction === "rtl" ? "right" : "left"}
                             SlideProps={{
                                 style: { top: 50 }
                             }}
@@ -272,6 +233,8 @@ const mapStateToProps = state => {
     return {
         open: state.sidebar.open,
         stickyMenu: state.options.sticky_menu,
+
+        pendingPayments: state.pending_payments.pending_payments,
 
         // used to determine if we need to disable certain items in the menu
         derivedPassword: state.registration.derivedPassword,

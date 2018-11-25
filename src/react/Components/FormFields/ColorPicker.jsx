@@ -39,7 +39,7 @@ class ColorPicker extends React.Component {
         return (
             <div style={this.props.style}>
                 <Button
-                    variant="raised"
+                    variant="contained"
                     key={"randomkey1"}
                     color="default"
                     onClick={this.handleOpen}
@@ -48,11 +48,7 @@ class ColorPicker extends React.Component {
                 >
                     {this.props.t("Pick a color")}
                 </Button>
-                <Dialog
-                    key={"randomkey2"}
-                    open={this.state.open}
-                    onClose={this.handleClose}
-                >
+                <Dialog key={"randomkey2"} open={this.state.open} onClose={this.handleClose}>
                     <ChromePicker {...this.props.pickerProps} />
                 </Dialog>
             </div>

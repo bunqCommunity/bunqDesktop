@@ -1,8 +1,4 @@
-import {
-    BunqMeTabEntry,
-    BunqMeTabResultInquiry,
-    BunqMeTabStatus
-} from "../Types/Types";
+import { BunqMeTabEntry, BunqMeTabResultInquiry, BunqMeTabStatus } from "../Types/Types";
 import Event, { EventType } from "../Types/Event";
 import RequestInquiry from "./RequestInquiry";
 
@@ -34,8 +30,7 @@ export default class BunqMeTab implements Event {
         // go through all keys and set the data
         Object.keys(paymentInfo).forEach(key => {
             const objectKey = key[0] === "_" ? key : `_${key}`;
-            if (typeof this[objectKey] !== undefined)
-                this[objectKey] = paymentInfo[key];
+            if (typeof this[objectKey] !== undefined) this[objectKey] = paymentInfo[key];
         });
 
         this._updated = new Date(this._updated);
@@ -62,15 +57,10 @@ export default class BunqMeTab implements Event {
      * @returns {number}
      */
     public getTotalResultInquiryAmount(): number {
-        return this.result_inquiries.reduce(
-            (accumulator: number, requestInquiry: any) => {
-                const paymentAmount = parseFloat(
-                    requestInquiry.payment.Payment.amount.value
-                );
-                return accumulator + paymentAmount;
-            },
-            0
-        );
+        return this.result_inquiries.reduce((accumulator: number, requestInquiry: any) => {
+            const paymentAmount = parseFloat(requestInquiry.payment.Payment.amount.value);
+            return accumulator + paymentAmount;
+        }, 0);
     }
 
     /**

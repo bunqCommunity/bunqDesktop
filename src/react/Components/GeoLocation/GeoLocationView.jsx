@@ -30,22 +30,13 @@ class GeoLocationView extends React.PureComponent {
         const { t, geoLocation, visible } = this.props;
 
         return (
-            <Dialog
-                fullScreen
-                style={styles.dialog}
-                open={visible}
-                TransitionComponent={Transition}
-            >
+            <Dialog fullScreen style={styles.dialog} open={visible} TransitionComponent={Transition}>
                 <div style={styles.content} ref={this.containerRef}>
-                    <GeoLocationMap
-                        t={t}
-                        geoLocation={geoLocation}
-                        containerRef={this.containerRef}
-                    />
+                    <GeoLocationMap t={t} geoLocation={geoLocation} containerRef={this.containerRef} />
                 </div>
                 <Button
                     onClick={this.props.onClose}
-                    variant="raised"
+                    variant="outlined"
                     style={{
                         position: "fixed",
                         top: 12,

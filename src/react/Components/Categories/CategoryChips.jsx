@@ -19,9 +19,7 @@ class CategoryChips extends React.PureComponent {
 
     render() {
         const categories = CategoryHelper(
-            this.props.customCategories
-                ? this.props.customCategories
-                : this.props.categories,
+            this.props.customCategories ? this.props.customCategories : this.props.categories,
             this.props.category_connections,
             this.props.type,
             this.props.id,

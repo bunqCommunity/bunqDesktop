@@ -22,6 +22,12 @@ class MainSnackbar extends React.PureComponent {
     render() {
         return (
             <Snackbar
+                ContentProps={{
+                    headlineMapping: {
+                        body1: "div",
+                        body2: "div"
+                    }
+                }}
                 style={styles.snackbar}
                 open={this.props.snackbarOpen}
                 message={this.props.snackbarMessage}

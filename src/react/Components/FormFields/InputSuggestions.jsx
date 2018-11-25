@@ -28,12 +28,22 @@ class InputSuggestions extends React.Component {
             visible: false,
             selectedIndex: 0
         };
+
+        this.timeOut = null;
+    }
+
+    componentWillUnmount() {
+        if (this.timeOut) {
+            clearTimeout(this.timeOut);
+        }
     }
 
     onBlur = event => {
         // delay so click event can react before onBlur
-        setTimeout(() => {
-            this.setState({ visible: false, selectedIndex: 0 });
+        this.timeOut = setTimeout(() => {
+            if (this.state.isMounted) {
+                this.setState({ visible: false, selectedIndex: 0 });
+            }
         }, 150);
     };
     onFocus = event => this.setState({ visible: true });
@@ -73,39 +83,39 @@ class InputSuggestions extends React.Component {
 
         let count = 0;
 
-        const filteredItems = items.filter(item => {
-            // already over limit
-            if (count >= 5) return false;
+        const inputValue = this.props.value.toLowerCase().trim();
 
-            // don't both if visible is false
-            if (!this.state.visible) return false;
+        // no input so no search
+        let filteredItems = [];
+        if (inputValue && inputValue.length > 0) {
+            filteredItems = items.filter(item => {
+                // already over limit
+                if (count >= 5) return false;
 
-            // check if a valid value is set
-            if (!this.props.value) return false;
+                // don't both if visible is false
+                if (!this.state.visible) return false;
 
-            // input data to lowercase
-            const inputValue = this.props.value.toLowerCase().trim();
-            const inputName = item.name.toLowerCase().trim();
-            const inputField = item.field.toLowerCase().trim();
+                // check if a valid value is set
+                if (!this.props.value) return false;
 
-            // no input so no search
-            if (!inputValue || inputValue.length === 0) return false;
+                // input data to lowercase
+                const inputName = item.name.toLowerCase().trim();
+                const inputField = item.field.toLowerCase().trim();
 
-            // ignore item if it is already a direct match
-            if (inputValue === inputField) return false;
+                // ignore item if it is already a direct match
+                if (inputValue === inputField) return false;
 
-            const nameMatches =
-                inputName.length > 0 && inputName.includes(inputValue);
-            const fieldMatches =
-                inputField.length > 0 && inputField.includes(inputValue);
+                const nameMatches = inputName.length > 0 && inputName.includes(inputValue);
+                const fieldMatches = inputField.length > 0 && inputField.includes(inputValue);
 
-            // check if either name or field matches the search query
-            if (!nameMatches && !fieldMatches) return false;
+                // check if either name or field matches the search query
+                if (!nameMatches && !fieldMatches) return false;
 
-            count++;
+                count++;
 
-            return true;
-        });
+                return true;
+            });
+        }
 
         // allow component to be overwritten by custom
         const InputFieldComponent = InputComponent ? InputComponent : TextField;
@@ -121,18 +131,14 @@ class InputSuggestions extends React.Component {
                         if (this.props.onKeyDown) this.props.onKeyDown(event);
 
                         // prevent default for arrow keys and change selected item in list
-                        if (
-                            event.key === "ArrowUp" ||
-                            event.key === "ArrowDown"
-                        ) {
+                        if (event.key === "ArrowUp" || event.key === "ArrowDown") {
                             this.changeIndex(event.key === "ArrowDown", count);
                             event.preventDefault();
                         }
 
                         // select the current item
                         if (event.key === "Enter") {
-                            const info =
-                                filteredItems[this.state.selectedIndex];
+                            const info = filteredItems[this.state.selectedIndex];
                             // only call event if info is set/visible
                             if (this.state.visible === true && info) {
                                 this.onSelectItem(info)(event);
@@ -142,8 +148,7 @@ class InputSuggestions extends React.Component {
 
                         // select the current item
                         if (event.key === "Tab") {
-                            const info =
-                                filteredItems[this.state.selectedIndex];
+                            const info = filteredItems[this.state.selectedIndex];
                             // only call event if info is set/visible
                             if (this.state.visible === true && info) {
                                 this.onSelectItem(info)(event);
@@ -161,17 +166,9 @@ class InputSuggestions extends React.Component {
                     {...otherProps}
                 />
                 {this.state.visible ? (
-                    <Paper
-                        key="paper-wrapper"
-                        style={styles.suggestionsWrapper}
-                        square
-                    >
+                    <Paper key="paper-wrapper" style={styles.suggestionsWrapper} square>
                         {filteredItems.map((filteredItem, index) => (
-                            <ListItem
-                                button
-                                key={index}
-                                onClick={this.onSelectItem(filteredItem)}
-                            >
+                            <ListItem button key={index} onClick={this.onSelectItem(filteredItem)}>
                                 {index === this.state.selectedIndex ? (
                                     <ListItemIcon>
                                         <ArrowRightIcon />

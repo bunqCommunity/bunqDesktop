@@ -11,6 +11,7 @@ import List from "@material-ui/core/List";
 import FileUploadIcon from "../../Components/CustomSVG/FileUpload";
 import FileDownloadIcon from "../../Components/CustomSVG/FileDownload";
 import AddIcon from "@material-ui/icons/Add";
+import BookmarkIcon from "@material-ui/icons/Bookmark";
 
 import RuleCollectionItem from "./RuleCollectionItem";
 import NavLink from "../../Components/Routing/NavLink";
@@ -22,12 +23,13 @@ import RuleCollection from "../../Types/RuleCollection";
 import { setCategoryRule } from "../../Actions/category_rules";
 import { openSnackbar } from "../../Actions/snackbar";
 import { setCategoryConnectionMultiple } from "../../Actions/categories";
+import Bookmark from "@material-ui/icons/Bookmark";
 
 const styles = {
     paper: {
         padding: 16
     },
-    newRuleButton: {
+    button: {
         width: "100%"
     },
     buttonIcons: {
@@ -65,21 +67,17 @@ class RuleDashboard extends React.Component {
             });
         } else if (ruleCollectionsReceived["category-rules"]) {
             // parse array inside category-rules key and loop through them
-            ruleCollectionsReceived["category-rules"].forEach(
-                ruleCollectionObject => {
-                    // parse a single category rule
-                    this.importSingleRuleCollection(ruleCollectionObject);
-                }
-            );
+            ruleCollectionsReceived["category-rules"].forEach(ruleCollectionObject => {
+                // parse a single category rule
+                this.importSingleRuleCollection(ruleCollectionObject);
+            });
         } else {
             // parse a single category rule
             this.importSingleRuleCollection(ruleCollectionsReceived);
         }
     };
     importSingleRuleCollection = ruleCollectionObject => {
-        const isValid = RuleCollection.validateRuleCollection(
-            ruleCollectionObject
-        );
+        const isValid = RuleCollection.validateRuleCollection(ruleCollectionObject);
 
         if (isValid !== true) {
             // display error
@@ -105,19 +103,10 @@ class RuleDashboard extends React.Component {
     render() {
         const { categoryRules, categories, t } = this.props;
 
-        const categoryRulesList = Object.keys(categoryRules).map(
-            categoryRuleId => (
-                <RuleCollectionItem
-                    ruleCollection={categoryRules[categoryRuleId]}
-                    categories={categories}
-                    t={t}
-                />
-            )
-        );
-
-        const categoryRulesArray = Object.keys(categoryRules).map(
-            id => categoryRules[id]
-        );
+        const categoryRulesList = Object.keys(categoryRules).map(categoryRuleId => (
+            <RuleCollectionItem ruleCollection={categoryRules[categoryRuleId]} categories={categories} t={t} />
+        ));
+        const categoryRulesArray = Object.values(categoryRules);
 
         return (
             <Grid container spacing={16}>
@@ -145,11 +134,11 @@ class RuleDashboard extends React.Component {
                         <Grid container spacing={16}>
                             <Grid item xs={12}>
                                 <Button
-                                    variant="raised"
+                                    variant="contained"
                                     color="primary"
                                     component={NavLink}
                                     to={`/rule-page/null`}
-                                    style={styles.newRuleButton}
+                                    style={styles.button}
                                 >
                                     {t("New")}
                                     <AddIcon style={styles.buttonIcons} />
@@ -158,27 +147,28 @@ class RuleDashboard extends React.Component {
 
                             <Grid item xs={12}>
                                 <Button
-                                    variant="raised"
-                                    style={styles.newRuleButton}
-                                    onClick={this.openImportDialog}
+                                    variant="contained"
+                                    color="primary"
+                                    component={NavLink}
+                                    to="/category-dashboard"
+                                    style={styles.button}
                                 >
-                                    {t("Import")}
-                                    <FileDownloadIcon
-                                        style={styles.buttonIcons}
-                                    />
+                                    {t("Manage categories")}
+                                    <BookmarkIcon style={styles.buttonIcons} />
                                 </Button>
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Button
-                                    variant="raised"
-                                    style={styles.newRuleButton}
-                                    onClick={this.openExportDialog}
-                                >
+                                <Button variant="outlined" style={styles.button} onClick={this.openImportDialog}>
+                                    {t("Import")}
+                                    <FileDownloadIcon style={styles.buttonIcons} />
+                                </Button>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <Button variant="outlined" style={styles.button} onClick={this.openExportDialog}>
                                     {t("Export")}
-                                    <FileUploadIcon
-                                        style={styles.buttonIcons}
-                                    />
+                                    <FileUploadIcon style={styles.buttonIcons} />
                                 </Button>
                             </Grid>
                         </Grid>
@@ -189,9 +179,7 @@ class RuleDashboard extends React.Component {
                     <Paper style={styles.paper}>
                         <Grid container spacing={16}>
                             <Grid item xs={12} sm={3} md={6}>
-                                <TranslateTypography variant={"headline"}>
-                                    Rules
-                                </TranslateTypography>
+                                <TranslateTypography variant="h5">Rules</TranslateTypography>
                             </Grid>
 
                             <Grid item xs={12}>
@@ -218,10 +206,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
-        setCategoryConnectionMultiple: (...params) =>
-            dispatch(setCategoryConnectionMultiple(...params)),
-        setCategoryRule: rule_collection =>
-            dispatch(setCategoryRule(rule_collection))
+        setCategoryConnectionMultiple: (...params) => dispatch(setCategoryConnectionMultiple(...params)),
+        setCategoryRule: rule_collection => dispatch(setCategoryRule(rule_collection))
     };
 };
 

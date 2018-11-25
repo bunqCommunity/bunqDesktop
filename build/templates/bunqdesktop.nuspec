@@ -16,13 +16,16 @@
     <projectUrl>https://github.com/bunqCommunity/bunqDesktop</projectUrl>
     <iconUrl>https://rawgit.com/bunqCommunity/bunqDesktop/master/app/images/256x256.png</iconUrl>
 
-    <projectSourceUrl>https://github.com/bunqCommunity/bunqDesktop</projectSourceUrl>
+    <packageSourceUrl>https://github.com/bunqCommunity/bunqDesktop</packageSourceUrl>
     <docsUrl>https://github.com/bunqCommunity/bunqDesktop</docsUrl>
     <bugTrackerUrl>https://github.com/bunqCommunity/bunqDesktop/issues</bugTrackerUrl>
+    <licenseUrl>https://github.com/bunqCommunity/bunqDesktop/blob/master/LICENSE</licenseUrl>
 
     <tags>bunqdesktop finance desktop bunq api</tags>
     <summary>The unofficial, free and open source desktop application for the bunq API</summary>
     <description>A desktop implementation for bunq's API. This app does everything within the application so you don't  have to worry about sharing your API key with anyone else!</description>
+
+    <releaseNotes>https://github.com/bunqCommunity/bunqDesktop/releases/tag/${VERSION}</releaseNotes>
   </metadata>
   <files>
     <!-- this section controls what actually gets packaged into the Chocolatey package -->

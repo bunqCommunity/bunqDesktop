@@ -2,30 +2,36 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { translate } from "react-i18next";
-import CopyToClipboard from "react-copy-to-clipboard";
 import Grid from "@material-ui/core/Grid";
 import Radio from "@material-ui/core/Radio";
-import Avatar from "@material-ui/core/Avatar";
-import Chip from "@material-ui/core/Chip";
-import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import CompareArrowsIcon from "@material-ui/icons/CompareArrows";
 import PersonIcon from "@material-ui/icons/Person";
+import ContactsIcon from "@material-ui/icons/Contacts";
 
+import NavLink from "../Routing/NavLink";
 import InputSuggestions from "./InputSuggestions";
 import AccountSelectorDialog from "./AccountSelectorDialog";
 import { openSnackbar } from "../../Actions/snackbar";
 import { formatIban } from "../../Helpers/Utils";
+import TargetChipList from "./TargetChipList";
 
 const styles = {
-    payButton: {
+    button: {
         width: "100%"
+    },
+    contactsButton: {
+        width: "100%",
+        marginTop: 4
     },
     chips: {
         margin: 5
+    },
+    buttonIcons: {
+        marginLeft: 8
     }
 };
 
@@ -42,10 +48,7 @@ class TargetSelection extends React.Component {
             let ibanCollection = {};
             // get first 250 payments and retrieve the iban/name combinations from it
             this.props.payments.slice(0, 250).map(payment => {
-                if (
-                    payment.counterparty_alias &&
-                    payment.counterparty_alias.iban
-                ) {
+                if (payment.counterparty_alias && payment.counterparty_alias.iban) {
                     const iban = payment.counterparty_alias.iban;
                     if (!ibanCollection[iban]) {
                         ibanCollection[iban] = {
@@ -57,9 +60,7 @@ class TargetSelection extends React.Component {
             });
 
             // turn ref object into an array
-            const ibanList = Object.keys(ibanCollection).map(
-                key => ibanCollection[key]
-            );
+            const ibanList = Object.keys(ibanCollection).map(key => ibanCollection[key]);
 
             // sort by name
             const sortedIbanList = ibanList.sort((a, b) => {
@@ -85,6 +86,16 @@ class TargetSelection extends React.Component {
         this.props.openSnackbar(this.props.t(`Copied to your clipboard`));
     };
 
+    onIbanChange = e => {
+        const iban = e.target.value;
+        const upperCaseIban = iban.toUpperCase();
+        this.props.handleChangeDirect("target")(upperCaseIban);
+    };
+    onIbanChangeDirect = iban => {
+        const upperCaseIban = iban.toUpperCase();
+        this.props.handleChangeDirect("target")(upperCaseIban);
+    };
+
     render() {
         const t = this.props.t;
         let targetContent = null;
@@ -94,9 +105,7 @@ class TargetSelection extends React.Component {
                     <AccountSelectorDialog
                         id="target"
                         value={this.props.selectedTargetAccount}
-                        onChange={this.props.handleChangeDirect(
-                            "selectedTargetAccount"
-                        )}
+                        onChange={this.props.handleChangeDirect("selectedTargetAccount")}
                         accounts={this.props.accounts}
                         BunqJSClient={this.props.BunqJSClient}
                     />
@@ -129,18 +138,27 @@ class TargetSelection extends React.Component {
                 });
 
                 targetContent = (
-                    <InputSuggestions
-                        autoFocus
-                        fullWidth
-                        id="target"
-                        items={contactList}
-                        label={t("Email or phone number")}
-                        error={this.props.targetError}
-                        value={this.props.target}
-                        onChange={this.props.handleChange("target")}
-                        onSelectItem={this.props.handleChangeDirect("target")}
-                        onKeyPress={this.enterKeySubmit}
-                    />
+                    <Grid container spacing={8}>
+                        <Grid item xs={12} sm={8}>
+                            <InputSuggestions
+                                autoFocus
+                                fullWidth
+                                id="target"
+                                items={contactList}
+                                label={t("Email or phone number")}
+                                error={this.props.targetError}
+                                value={this.props.target}
+                                onChange={this.props.handleChange("target")}
+                                onSelectItem={this.props.handleChangeDirect("target")}
+                                onKeyPress={this.enterKeySubmit}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                            <Button style={styles.contactsButton} variant="outlined" to="/contacts" component={NavLink}>
+                                {t("Contacts")} <ContactsIcon style={{ marginLeft: 8 }} />
+                            </Button>
+                        </Grid>
+                    </Grid>
                 );
                 break;
             default:
@@ -150,73 +168,38 @@ class TargetSelection extends React.Component {
                         autoFocus
                         fullWidth
                         id="target"
-                        items={this.state.ibanList}
                         label={t("IBAN number")}
+                        items={this.state.ibanList}
                         error={this.props.targetError}
                         value={this.props.target}
-                        onChange={this.props.handleChange("target")}
+                        onChange={this.onIbanChange}
                         onChangeName={this.props.handleChangeDirect("ibanName")}
-                        onSelectItem={this.props.handleChangeDirect("target")}
+                        onSelectItem={this.onIbanChangeDirect}
                         onKeyPress={this.enterKeySubmit}
                     />,
-                    <TextField
+                    <InputSuggestions
                         fullWidth
-                        required
-                        error={this.props.ibanNameError}
+                        items={this.state.ibanList}
                         id="ibanName"
                         label={t("IBAN name")}
+                        error={this.props.ibanNameError}
                         value={this.props.ibanName}
                         onChange={this.props.handleChange("ibanName")}
-                        margin="normal"
+                        onChangeName={this.props.handleChangeDirect("ibanName")}
+                        onSelectItem={this.props.handleChangeDirect("target")}
                         onKeyPress={this.enterKeySubmit}
                     />
                 ];
                 break;
         }
 
-        const chipList = this.props.targets.map((target, targetKey) => {
-            let Icon = null;
-            let targetValue = target.value;
-            switch (target.type) {
-                case "EMAIL":
-                case "PHONE":
-                case "CONTACT":
-                    Icon = PersonIcon;
-                    break;
-                case "TRANSFER":
-                    // for transfers we can try to display a description
-                    if (this.props.accounts[target.value]) {
-                        targetValue = this.props.accounts[target.value]
-                            .description;
-                    }
-                    Icon = CompareArrowsIcon;
-                    break;
-                default:
-                case "IBAN":
-                    Icon = AccountBalanceIcon;
-                    break;
-            }
-
-            return (
-                <Chip
-                    style={styles.chips}
-                    avatar={
-                        <Avatar>
-                            <Icon color="primary" />
-                        </Avatar>
-                    }
-                    label={
-                        <CopyToClipboard
-                            text={targetValue}
-                            onCopy={this.copiedValue}
-                        >
-                            <p>{targetValue}</p>
-                        </CopyToClipboard>
-                    }
-                    onDelete={event => this.props.removeTarget(targetKey)}
-                />
-            );
-        });
+        const chipList = (
+            <TargetChipList
+                targets={this.props.targets}
+                accounts={this.props.accounts}
+                onDelete={targetKey => this.props.removeTarget(targetKey)}
+            />
+        );
 
         return (
             <Grid container spacing={24}>
@@ -230,13 +213,9 @@ class TargetSelection extends React.Component {
                                 <Radio
                                     icon={<PersonIcon />}
                                     checkedIcon={<PersonIcon />}
-                                    color={"secondary"}
-                                    checked={
-                                        this.props.targetType === "CONTACT"
-                                    }
-                                    onChange={this.props.setTargetType(
-                                        "CONTACT"
-                                    )}
+                                    color="secondary"
+                                    checked={this.props.targetType === "CONTACT"}
+                                    onChange={this.props.setTargetType("CONTACT")}
                                     value="CONTACT"
                                     name="target-type-phone"
                                 />
@@ -269,13 +248,9 @@ class TargetSelection extends React.Component {
                                 <Radio
                                     icon={<CompareArrowsIcon />}
                                     checkedIcon={<CompareArrowsIcon />}
-                                    color={"secondary"}
-                                    checked={
-                                        this.props.targetType === "TRANSFER"
-                                    }
-                                    onChange={this.props.setTargetType(
-                                        "TRANSFER"
-                                    )}
+                                    color="secondary"
+                                    checked={this.props.targetType === "TRANSFER"}
+                                    onChange={this.props.setTargetType("TRANSFER")}
                                     value="TRANSFER"
                                     name="target-type-transfer"
                                 />
@@ -290,18 +265,17 @@ class TargetSelection extends React.Component {
                 </Grid>
                 <Grid item xs={12}>
                     <Button
-                        variant="raised"
+                        variant="contained"
                         color="primary"
                         disabled={
                             // target input error
                             this.props.targetError ||
                             // no target input value yet
-                            (this.props.target.length <= 0 &&
-                                this.props.targetType !== "TRANSFER") ||
+                            (this.props.target.length <= 0 && this.props.targetType !== "TRANSFER") ||
                             // already loading
                             this.props.payLoading
                         }
-                        style={styles.payButton}
+                        style={styles.button}
                         onClick={this.props.addTarget}
                     >
                         {t("Add")}

@@ -25,18 +25,17 @@ import QRSvg from "../../Components/QR/QRSvg";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
 import NavLink from "../../Components/Routing/NavLink";
-import UserItem from "./UserItem";
 import OAuthManagement from "./OAuthManagement";
 import SideOptions from "./SideOptions";
 
 import {
     registrationLogOut,
+    registrationLogin,
     registrationSetApiKey,
     registrationLoadApiKey,
     registrationSetDeviceName,
     registrationSetEnvironment
 } from "../../Actions/registration";
-import { userLogin } from "../../Actions/user";
 import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
 import Logger from "../../Helpers/Logger";
 
@@ -51,7 +50,8 @@ const styles = {
     cardWrapper: {
         display: "flex",
         textAlign: "center",
-        alignItems: "flex-start"
+        alignItems: "flex-start",
+        position: "relative"
     },
     cardWrapperInner: {
         textAlign: "center"
@@ -155,16 +155,13 @@ class Login extends React.Component {
     componentDidMount() {
         const isSandboxMode = this.props.environment === "SANDBOX";
         if (this.props.derivedPassword !== false) {
-            this.props.loadApiKey(this.props.derivedPassword);
+            this.registrationLogin();
         }
 
         this.setState(
             {
                 apiKey: this.props.apiKey !== false ? this.props.apiKey : "",
-                deviceName:
-                    this.props.deviceName !== false
-                        ? this.props.deviceName
-                        : "My Device"
+                deviceName: this.props.deviceName !== false ? this.props.deviceName : "My Device"
             },
             this.validateInputs
         );
@@ -174,9 +171,6 @@ class Login extends React.Component {
             sandboxMode: isSandboxMode,
             openOptions: isSandboxMode
         });
-
-        // check if only a single user is available
-        this.checkForSingleUser();
 
         // set a timeout to let other stuff load first  before checking if we need to
         // display a qr code
@@ -196,43 +190,25 @@ class Login extends React.Component {
         }, 500);
     }
 
-    componentDidUpdate() {
-        this.checkForSingleUser();
-    }
-
     componentWillUnmount() {
         if (this.checkerInterval) clearInterval(this.checkerInterval);
         if (this.displayQrCodeDelay) clearTimeout(this.displayQrCodeDelay);
     }
 
-    /**
-     * Checks if only 1 user type is set and logs in the user if this is the case
-     */
-    checkForSingleUser = () => {
-        const userTypes = Object.keys(this.props.users);
-        if (userTypes.length === 1) {
-            // only one user we can instantly log in, check requirements again
-            if (
-                this.props.derivedPassword !== false &&
-                this.props.apiKey !== false &&
-                this.props.deviceName !== false &&
-                this.props.userLoading === false
-            ) {
-                this.props.loginUser(userTypes[0], true);
-            }
-        }
+    registrationLogin = (apiKey = false, derivedPassword = false, permittedIps = false) => {
+        this.props.registrationLogin(
+            derivedPassword || this.props.derivedPassword,
+            apiKey || this.props.apiKey,
+            this.props.deviceName,
+            this.props.environment,
+            permittedIps || this.props.permittedIps
+        );
     };
 
     setRegistration = () => {
-        const apiKeyLength = this.props.t(
-            "The API key you entered does not look valid"
-        );
-        const deviceNameLengthMin = this.props.t(
-            "The device name has to be atleast 1 character"
-        );
-        const deviceNameLengthMax = this.props.t(
-            "The device name can't be longer than 32 characters"
-        );
+        const apiKeyLength = this.props.t("The API key you entered does not look valid");
+        const deviceNameLengthMin = this.props.t("The device name has to be atleast 1 character");
+        const deviceNameLengthMax = this.props.t("The device name can't be longer than 32 characters");
 
         if (this.state.apiKey.length !== 64) {
             this.props.openSnackbar(apiKeyLength);
@@ -249,9 +225,7 @@ class Login extends React.Component {
 
         if (this.state.deviceNameValid && this.state.apiKeyValid) {
             this.props.setDeviceName(this.state.deviceName);
-            this.props.setEnvironment(
-                this.state.sandboxMode ? "SANDBOX" : "PRODUCTION"
-            );
+            this.props.setEnvironment(this.state.sandboxMode ? "SANDBOX" : "PRODUCTION");
 
             // check if we use default ips or current ip + wildcard mode
             let permittedIps = [];
@@ -259,11 +233,7 @@ class Login extends React.Component {
                 permittedIps = [this.state.currentIp, "*"];
             }
 
-            this.props.setApiKey(
-                this.state.apiKey,
-                this.props.derivedPassword,
-                permittedIps
-            );
+            this.registrationLogin(this.state.apiKey, this.props.derivedPassword, permittedIps);
         }
     };
 
@@ -324,9 +294,7 @@ class Login extends React.Component {
         this.checkerInterval = setInterval(() => {
             // only continue if requestUuid isn't set yet and the qr code is open
             if (this.state.requestUuid !== false && this.state.tabIndex === 0) {
-                this.props.BunqJSClient.checkCredentialStatus(
-                    this.state.requestUuid
-                )
+                this.props.BunqJSClient.checkCredentialStatus(this.state.requestUuid)
                     .then(result => {
                         if (result.status === "ACCEPTED") {
                             this.setState(
@@ -341,11 +309,7 @@ class Login extends React.Component {
                                         // trigger callback and check we can auto-login
                                         () => {
                                             // if options are open or sandbox mode is set we don't auto-login
-                                            if (
-                                                this.state.sandboxMode ===
-                                                    false &&
-                                                this.state.openOptions === false
-                                            ) {
+                                            if (this.state.sandboxMode === false && this.state.openOptions === false) {
                                                 this.setRegistration();
                                             }
                                         }
@@ -396,11 +360,7 @@ class Login extends React.Component {
         this.setState({ wildcardMode: checked });
 
         // if checked and no ips set, get the user's current IP address
-        if (
-            checked &&
-            !this.state.currentIp &&
-            !this.state.gettingCurrentIpLoading
-        ) {
+        if (checked && !this.state.currentIp && !this.state.gettingCurrentIpLoading) {
             this.setState({
                 gettingCurrentIpLoading: true
             });
@@ -434,13 +394,9 @@ class Login extends React.Component {
 
         const apiKeyValid = apiKey !== false && apiKey.length === 64;
 
-        const deviceNameValid =
-            deviceName !== false &&
-            deviceName.length >= 1 &&
-            deviceName.length <= 32;
+        const deviceNameValid = deviceName !== false && deviceName.length >= 1 && deviceName.length <= 32;
 
-        const currentIpValid =
-            currentIp === false || currentIp.split(".").length === 4;
+        const currentIpValid = currentIp === false || currentIp.split(".").length === 4;
 
         this.setState(
             {
@@ -453,19 +409,9 @@ class Login extends React.Component {
     };
 
     render() {
-        const {
-            t,
-            users,
-            status_message,
-            userLoading,
-            usersLoading,
-            BunqJSClient
-        } = this.props;
+        const { t, status_message, userLoading, usersLoading, BunqJSClient } = this.props;
 
-        if (
-            this.props.derivedPassword === false &&
-            this.props.registrationLoading === false
-        ) {
+        if (this.props.derivedPassword === false && this.props.registrationLoading === false) {
             return <Redirect to="/password" />;
         } else if (
             this.props.derivedPassword !== false &&
@@ -477,35 +423,10 @@ class Login extends React.Component {
             return <Redirect to="/" />;
         }
 
-        const userItems =
-            userLoading || usersLoading ? (
-                <Grid item xs={12}>
-                    <CardContent style={{ textAlign: "center" }}>
-                        <TranslateTypography variant="headline" component="h2">
-                            Loading user accounts
-                        </TranslateTypography>
-                        <CircularProgress size={50} />
-                    </CardContent>
-                </Grid>
-            ) : Object.keys(users).length > 0 ? (
-                <Grid item xs={12} md={4} style={{ zIndex: 10 }}>
-                    {Object.keys(users).map(userKey => (
-                        <UserItem
-                            BunqJSClient={BunqJSClient}
-                            user={users[userKey]}
-                            userKey={userKey}
-                        />
-                    ))}
-                </Grid>
-            ) : null;
-
-        const currentSelectedEnvironmnent = this.state.sandboxMode
-            ? "SANDBOX"
-            : "PRODUCTION";
+        const currentSelectedEnvironmnent = this.state.sandboxMode ? "SANDBOX" : "PRODUCTION";
         // if apikey is unchanged and environment is unchanged we don't allow user to set apikey
         const unchangedApiKeyEnvironment =
-            this.state.apiKey === this.props.apiKey &&
-            currentSelectedEnvironmnent === this.props.environment;
+            this.state.apiKey === this.props.apiKey && currentSelectedEnvironmnent === this.props.environment;
 
         const hasNoApiKey = this.props.apiKey === false;
 
@@ -521,9 +442,7 @@ class Login extends React.Component {
             // registration is loading
             this.props.registrationLoading === true;
 
-        const setApiKeyClassname = `black-button ${
-            buttonDisabled ? "disabled" : ""
-        }`;
+        const setApiKeyClassname = `black-button ${buttonDisabled ? "disabled" : ""}`;
 
         const sandboxButtonDisabled =
             // user info is already being loaded
@@ -537,11 +456,7 @@ class Login extends React.Component {
             <div style={styles.cardWrapper}>
                 <div style={styles.cardWrapperInner}>
                     <AppBar position="static" color="default">
-                        <Tabs
-                            fullWidth
-                            value={this.state.tabIndex}
-                            onChange={this.handleTabChange}
-                        >
+                        <Tabs fullWidth value={this.state.tabIndex} onChange={this.handleTabChange}>
                             <Tab style={styles.tab} label="API key" />
                             <Tab style={styles.tab} label="OAuth" />
                         </Tabs>
@@ -560,56 +475,39 @@ class Login extends React.Component {
                         <Card style={styles.card}>
                             <CardContent style={styles.cardContent}>
                                 <div style={{ textAlign: "center" }}>
-                                    {this.state.requestQrCodeBase64 ===
-                                    false ? (
+                                    {this.state.requestQrCodeBase64 === false ? (
                                         <div style={styles.qrCode}>
-                                            <IconButton
-                                                onClick={this.displayQrCode}
-                                            >
+                                            <IconButton onClick={this.displayQrCode}>
                                                 <QRSvg />
                                             </IconButton>
                                         </div>
                                     ) : (
                                         <img
                                             className="animated fadeIn"
-                                            src={`data:image/png;base64, ${
-                                                this.state.requestQrCodeBase64
-                                            }`}
+                                            src={`data:image/png;base64, ${this.state.requestQrCodeBase64}`}
                                             style={styles.qrCode}
                                         />
                                     )}
-                                    <TranslateTypography
-                                        variant="body2"
-                                        style={{ ...styles.text, margin: 0 }}
-                                    >
-                                        Scan the QR code with the bunq app to
-                                        begin!
+                                    <TranslateTypography variant="body2" style={{ ...styles.text, margin: 0 }}>
+                                        Scan the QR code with the bunq app to begin!
                                     </TranslateTypography>
                                 </div>
 
                                 <FormControl style={styles.formControl}>
-                                    <InputLabel style={styles.inputLabel}>
-                                        Device Name
-                                    </InputLabel>
+                                    <InputLabel style={styles.inputLabel}>Device Name</InputLabel>
                                     <Input
                                         autoFocus
                                         className={"text-input"}
                                         style={styles.apiInput}
                                         error={!this.state.deviceNameValid}
-                                        onChange={this.handleChange(
-                                            "deviceName"
-                                        )}
+                                        onChange={this.handleChange("deviceName")}
                                         value={this.state.deviceName}
                                         disabled={
                                             // unchanged api key
-                                            this.state.apiKey ===
-                                            this.props.apiKey
+                                            this.state.apiKey === this.props.apiKey
                                         }
                                         onKeyPress={ev => {
-                                            if (
-                                                ev.key === "Enter" &&
-                                                buttonDisabled === false
-                                            ) {
+                                            if (ev.key === "Enter" && buttonDisabled === false) {
                                                 this.setRegistration();
                                                 ev.preventDefault();
                                             }
@@ -653,16 +551,12 @@ class Login extends React.Component {
         ) : (
             <Card style={styles.card}>
                 <CardContent style={styles.cardContent}>
-                    <TranslateTypography
-                        variant="headline"
-                        component="h2"
-                        style={styles.text}
-                    >
+                    <TranslateTypography variant="h5" component="h2" style={styles.text}>
                         You're logged in!
                     </TranslateTypography>
                     <TranslateButton
-                        variant="raised"
-                        color={"secondary"}
+                        variant="contained"
+                        color="secondary"
                         className={"black-button"}
                         style={styles.button}
                         onClick={this.props.logOut}
@@ -677,15 +571,11 @@ class Login extends React.Component {
         const cardContent = this.props.registrationLoading ? (
             <Card style={styles.card}>
                 <CardContent style={styles.cardContent}>
-                    <TranslateTypography
-                        variant="headline"
-                        component="h2"
-                        style={styles.text}
-                    >
+                    <TranslateTypography variant="h5" component="h2" style={styles.text}>
                         Loading
                     </TranslateTypography>
                     <CircularProgress size={50} />
-                    <Typography variant="subheading" style={styles.text}>
+                    <Typography variant="subtitle1" style={styles.text}>
                         {status_message}
                     </Typography>
                 </CardContent>
@@ -720,26 +610,21 @@ class Login extends React.Component {
                 >
                     {cardContent}
                 </Grid>
-                {userItems}
 
                 {/* only show if not loading and no api key is set*/}
-                {this.props.apiKey === false &&
-                this.props.storedApiKeys.length > 0 ? (
+                {this.props.apiKey === false && this.props.storedApiKeys.length > 0 ? (
                     <Button
                         to={"/switch-api-keys"}
                         component={NavLink}
                         style={styles.switchKeyButton}
                         className={"white-button"}
-                        variant={"raised"}
+                        variant="contained"
                     >
                         Switch keys <KeyIcon style={styles.switchKeyIcon} />
                     </Button>
                 ) : null}
 
-                <img
-                    src="./images/svg/login-bg2.svg"
-                    id="login-background-image"
-                />
+                <img src="./images/svg/login-bg2.svg" id="login-background-image" />
 
                 <span className="bunqdesktop-text-wrapper">
                     <span className="bunqdesktop-text-first">bunq</span>
@@ -761,12 +646,10 @@ const mapStateToProps = state => {
         apiKey: state.registration.api_key,
         storedApiKeys: state.registration.stored_api_keys,
 
-        users: state.users.users,
-        usersLoading: state.users.loading,
-
         user: state.user.user,
         userType: state.user.user_type,
-        userLoading: state.user.loading
+        userLoading: state.user.loading,
+        usersLoading: state.users.loading
     };
 };
 
@@ -776,22 +659,16 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // clear api key from bunqjsclient and bunqdesktop
         logOut: () => dispatch(registrationLogOut(BunqJSClient, true)),
         // set the api key and stores the encrypted version
-        setApiKey: (api_key, derivedPassword, permittedIps = []) =>
-            dispatch(
-                registrationSetApiKey(api_key, derivedPassword, permittedIps)
-            ),
+        registrationSetApiKey: (api_key, derivedPassword, permittedIps = []) =>
+            dispatch(registrationSetApiKey(api_key, derivedPassword, permittedIps)),
         // attempt to load the api key with our password if one is stored
-        loadApiKey: derivedPassword =>
-            dispatch(registrationLoadApiKey(derivedPassword)),
+        registrationLoadApiKey: derivedPassword => dispatch(registrationLoadApiKey(derivedPassword)),
 
-        setEnvironment: environment =>
-            dispatch(registrationSetEnvironment(environment)),
-        setDeviceName: device_name =>
-            dispatch(registrationSetDeviceName(device_name)),
+        registrationLogin: (derivedPassword, apiKey, deviceName, environment, permittedIps) =>
+            dispatch(registrationLogin(BunqJSClient, derivedPassword, apiKey, deviceName, environment, permittedIps)),
 
-        // login a given usertype
-        loginUser: (type, updated = false) =>
-            dispatch(userLogin(BunqJSClient, type, updated)),
+        setEnvironment: environment => dispatch(registrationSetEnvironment(environment)),
+        setDeviceName: device_name => dispatch(registrationSetDeviceName(device_name)),
 
         handleBunqError: error => BunqErrorHandler(dispatch, error)
     };

@@ -1,31 +1,16 @@
 import store from "store";
-import {
-    SALT_LOCATION,
-    API_KEY_IV_LOCATION,
-    API_KEY_LOCATION,
-    API_KEYS_LOCATION
-} from "../Actions/registration";
+import { SALT_LOCATION, API_KEY_IV_LOCATION, API_KEY_LOCATION, API_KEYS_LOCATION } from "../Actions/registration";
 
 export const USE_NO_PASSWORD_LOCATION = "USE_NO_PASSWORD_LOCATION";
 export const DEVICE_NAME_LOCATION = "BUNQDESKTOP_DEVICE_NAME";
 export const ENVIRONMENT_LOCATION = "BUNQDESKTOP_ENVIRONMENT";
 
-const deviceNameDefault =
-    store.get(DEVICE_NAME_LOCATION) !== undefined
-        ? store.get(DEVICE_NAME_LOCATION)
-        : "My Device";
+const deviceNameDefault = store.get(DEVICE_NAME_LOCATION) !== undefined ? store.get(DEVICE_NAME_LOCATION) : "My Device";
 const useNoPasswordDefault =
-    store.get(USE_NO_PASSWORD_LOCATION) !== undefined
-        ? store.get(USE_NO_PASSWORD_LOCATION)
-        : false;
+    store.get(USE_NO_PASSWORD_LOCATION) !== undefined ? store.get(USE_NO_PASSWORD_LOCATION) : false;
 const environmentDefault =
-    store.get(ENVIRONMENT_LOCATION) !== undefined
-        ? store.get(ENVIRONMENT_LOCATION)
-        : "PRODUCTION";
-const storedApiKeysDefault =
-    store.get(API_KEYS_LOCATION) !== undefined
-        ? store.get(API_KEYS_LOCATION)
-        : [];
+    store.get(ENVIRONMENT_LOCATION) !== undefined ? store.get(ENVIRONMENT_LOCATION) : "PRODUCTION";
+const storedApiKeysDefault = store.get(API_KEYS_LOCATION) !== undefined ? store.get(API_KEYS_LOCATION) : [];
 
 export const defaultState = {
     // unencrypted api key, this should NEVER be stored elsewhere
@@ -38,6 +23,8 @@ export const defaultState = {
 
     // list of encrypted api keys
     stored_api_keys: storedApiKeysDefault,
+
+    isRead: false,
 
     // if true, the application will try to load the encryption keys using a default password
     use_no_password: useNoPasswordDefault,
@@ -63,6 +50,7 @@ export default (state = defaultState, action) => {
             const currentApiKeys = [...state.stored_api_keys];
             const encryptedKey = action.payload.api_key;
             const encryptedKeyIv = action.payload.api_key_iv;
+            const permittedIps = action.payload.permitted_ips;
 
             const index = currentApiKeys.findIndex(storedApiKey => {
                 // this is the same stored api key
@@ -75,6 +63,7 @@ export default (state = defaultState, action) => {
                 // key and iv for this api key
                 api_key: encryptedKey,
                 api_key_iv: encryptedKeyIv,
+                permitted_ips: permittedIps,
                 // device name so we can easily recognize it
                 device_name: state.device_name,
                 // environment for this api key
@@ -135,6 +124,14 @@ export default (state = defaultState, action) => {
                 stored_api_keys: currentApiKeys2
             };
 
+        case "REGISTRATION_SET_STORED_API_KEYS":
+            const setStoredApiKeys = action.payload.stored_api_keys;
+            store.set(API_KEYS_LOCATION, setStoredApiKeys);
+            return {
+                ...state,
+                stored_api_keys: setStoredApiKeys
+            };
+
         case "REGISTRATION_SET_DEVICE_NAME":
             store.set(DEVICE_NAME_LOCATION, action.payload.device_name);
             return {
@@ -160,6 +157,7 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 api_key: false,
+                ready: false,
                 encrypted_api_key: false,
                 stored_api_keys: [],
                 has_stored_api_key: false,
@@ -172,6 +170,7 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 api_key: false,
+                ready: false,
                 encrypted_api_key: false,
                 has_stored_api_key: false,
                 derivedPassword: false
@@ -183,6 +182,7 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 api_key: false,
+                ready: false,
                 encrypted_api_key: false,
                 has_stored_api_key: false
             };
@@ -216,6 +216,16 @@ export default (state = defaultState, action) => {
                 use_no_password: false
             };
 
+        case "REGISTRATION_READY":
+            return {
+                ...state,
+                ready: true
+            };
+        case "REGISTRATION_NOT_READY":
+            return {
+                ...state,
+                ready: false
+            };
         case "REGISTRATION_LOADING":
             return {
                 ...state,

@@ -60,9 +60,7 @@ export default class RequestInquiry implements Event {
 
         this._updated = new Date(this._updated);
         this._created = new Date(this._created);
-        this._time_responded = this._time_responded
-            ? new Date(this._time_responded)
-            : this._time_responded;
+        this._time_responded = this._time_responded ? new Date(this._time_responded) : this._time_responded;
     }
 
     /**

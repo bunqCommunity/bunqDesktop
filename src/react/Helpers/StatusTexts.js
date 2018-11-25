@@ -65,8 +65,7 @@ export const requestInquiryText = (requestInquiry, t) => {
 export const paymentText = (payment, t) => {
     const sentPaymentLabel = t("Sent payment with ");
     const receivedPaymentLabel = t("Received payment with ");
-    const label =
-        payment.amount.value < 0 ? sentPaymentLabel : receivedPaymentLabel;
+    const label = payment.amount.value < 0 ? sentPaymentLabel : receivedPaymentLabel;
 
     return `${label}${paymentTypeParser(payment.type, t)}`;
 };
@@ -79,6 +78,8 @@ export const paymentTypeParser = (paymentType, t) => {
             return "bunq.me";
         case "IDEAL":
             return "iDEAL";
+        case "SAVINGS":
+            return "savings";
         case "EBA_SCT":
             return "SEPA credit transfer";
         case "EBA_SDD":
@@ -90,24 +91,20 @@ export const paymentTypeParser = (paymentType, t) => {
 export const masterCardActionText = (masterCardAction, t) => {
     switch (masterCardAction.authorisation_status) {
         case "AUTHORISED":
-            return `${t("Sent payment with ")}${masterCardActionParser(
-                masterCardAction,
-                t
-            )}`;
+            return `${t("Sent payment with ")}${masterCardActionParser(masterCardAction, t)}`;
         case "BLOCKED":
-            return `${t("The payment was blocked due to ")}${
-                masterCardAction.decision_description
-            }`;
+            return `${t("The payment was blocked due to ")}${masterCardAction.decision_description}`;
         case "CLEARING_REFUND":
-            return `${t("Payment was refunded due to ")}${
-                masterCardAction.decision_description
-            }`;
+            if (masterCardAction.decision_description) {
+                return `${t("Payment was refunded due to ")}${masterCardAction.decision_description}`;
+            }
+            return t("Payment was refunded");
         case "REVERSED":
             return t("The payment was reversed");
         default:
-            return `${t("The payment currently has the status ")}${
-                masterCardAction.authorisation_status
-            } - ${masterCardAction.authorisation_type}`;
+            return `${t("The payment currently has the status ")}${masterCardAction.authorisation_status} - ${
+                masterCardAction.authorisation_type
+            }`;
     }
 };
 
@@ -144,4 +141,56 @@ export const masterCardActionParser = (masterCardAction, t) => {
         }
     }
     return defaultMessage;
+};
+
+export const cardStatus = (cardInfo, t) => {
+    const ACTIVE = t("Active");
+    const DEACTIVATED = t("Deactivated");
+    const LOST = t("Lost");
+    const STOLEN = t("Stolen");
+    const CANCELLED = t("Cancelled");
+
+    switch (cardInfo.status) {
+        case "ACTIVE":
+            return ACTIVE;
+        case "DEACTIVATED":
+            return DEACTIVATED;
+        case "LOST":
+            return LOST;
+        case "STOLEN":
+            return STOLEN;
+        case "CANCELLED":
+            return CANCELLED;
+    }
+
+    return cardInfo.status;
+};
+
+export const cardOrderStatus = (cardInfo, t) => {
+    const VIRTUAL_DELIVERY = t("Delivered virtually");
+    const NEW_CARD_REQUEST_RECEIVED = t("New card request received");
+    const ACCEPTED_FOR_PRODUCTION = t("Accepted for production");
+    const DELIVERED_TO_CUSTOMER = t("Delivered to customer");
+    const CARD_UPDATE_REQUESTED = t("Cards update requested");
+    const CARD_UPDATE_SENT = t("Cards update sent");
+    const CARD_UPDATE_ACCEPTED = t("Cards update accepted");
+
+    switch (cardInfo.order_status) {
+        case "VIRTUAL_DELIVERY":
+            return `${VIRTUAL_DELIVERY} (VIRTUAL_DELIVERY)`;
+        case "ACCEPTED_FOR_PRODUCTION":
+            return `${ACCEPTED_FOR_PRODUCTION} (ACCEPTED_FOR_PRODUCTION)`;
+        case "NEW_CARD_REQUEST_RECEIVED":
+            return `${NEW_CARD_REQUEST_RECEIVED} (NEW_CARD_REQUEST_RECEIVED)`;
+        case "DELIVERED_TO_CUSTOMER":
+            return `${DELIVERED_TO_CUSTOMER} (DELIVERED_TO_CUSTOMER)`;
+        case "CARD_UPDATE_REQUESTED":
+            return `${CARD_UPDATE_REQUESTED} (CARD_UPDATE_REQUESTED)`;
+        case "CARD_UPDATE_SENT":
+            return `${CARD_UPDATE_SENT} (CARD_UPDATE_SENT)`;
+        case "CARD_UPDATE_ACCEPTED":
+            return `${CARD_UPDATE_ACCEPTED} (CARD_UPDATE_ACCEPTED)`;
+    }
+
+    return cardInfo.order_status;
 };

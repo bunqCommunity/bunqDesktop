@@ -64,22 +64,12 @@ class Disclaimer extends React.Component {
         const { t, analyticsEnabled } = this.props;
         const { hasReadWarning, clicked } = this.state;
 
-        if (
-            clicked === true &&
-            hasReadWarning === true &&
-            typeof analyticsEnabled !== "undefined"
-        ) {
+        if (clicked === true && hasReadWarning === true && typeof analyticsEnabled !== "undefined") {
             return <Redirect to="/login" />;
         }
 
         return (
-            <Grid
-                container
-                spacing={16}
-                justify={"center"}
-                alignItems={"center"}
-                style={styles.wrapperContainer}
-            >
+            <Grid container spacing={16} justify={"center"} alignItems={"center"} style={styles.wrapperContainer}>
                 <Helmet>
                     <title>{`bunqDesktop - ${t("Disclaimer")}`}</title>
                 </Helmet>
@@ -87,48 +77,35 @@ class Disclaimer extends React.Component {
                 <Grid item xs={12} sm={8} md={6} lg={4}>
                     <Card style={styles.warningCard}>
                         <CardContent>
-                            <Typography variant="headline">
+                            <Typography variant="h5">
                                 <DesktopIcon /> bunqDesktop
                             </Typography>
-                            <Typography variant="body2">
-                                {t("DisclaimerBunqDesktopExplanation")}
-                            </Typography>
+                            <Typography variant="body2">{t("DisclaimerBunqDesktopExplanation")}</Typography>
                             <br />
 
-                            <Typography variant="headline">
+                            <Typography variant="h5">
                                 <BuildIcon /> Development
                             </Typography>
-                            <Typography variant="body2">
-                                {t("DisclaimerActiveDevelopmentWarning")}
-                            </Typography>
+                            <Typography variant="body2">{t("DisclaimerActiveDevelopmentWarning")}</Typography>
                             <br />
 
-                            <Typography variant="headline">
+                            <Typography variant="h5">
                                 <LockIcon /> Password
                             </Typography>
-                            <Typography variant="body2">
-                                {t("DisclaimerPasswordWarningPart1")}
-                            </Typography>
-                            <Typography variant="body2">
-                                {t("DisclaimerPasswordWarningPart2")}
-                            </Typography>
+                            <Typography variant="body2">{t("DisclaimerPasswordWarningPart1")}</Typography>
+                            <Typography variant="body2">{t("DisclaimerPasswordWarningPart2")}</Typography>
 
                             <FormControlLabel
                                 control={
-                                    <Checkbox
-                                        checked={analyticsEnabled !== false}
-                                        onChange={this.toggleAnalytics}
-                                    />
+                                    <Checkbox checked={analyticsEnabled !== false} onChange={this.toggleAnalytics} />
                                 }
-                                label={t(
-                                    "Allow basic and anonymous Google Analytics tracking"
-                                )}
+                                label={t("Allow basic and anonymous Google Analytics tracking")}
                             />
 
                             <div style={{ textAlign: "center" }}>
                                 <TranslateButton
-                                    variant={"raised"}
-                                    color={"primary"}
+                                    variant="contained"
+                                    color="primary"
                                     style={styles.buttons}
                                     onClick={this.ignoreWarning}
                                 >

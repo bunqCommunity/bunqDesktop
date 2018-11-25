@@ -12,9 +12,11 @@ import TranslateButton from "../../Components/TranslationHelpers/Button";
 
 const styles = {
     card: {
+        position: "absolute",
         width: 250,
         marginLeft: 8,
-        marginTop: 48
+        marginTop: 48,
+        left: 250
     },
     cardContent: {
         backgroundColor: "#ffffff",
@@ -76,9 +78,7 @@ export default props => {
             <Card style={styles.card} className="animated fadeIn">
                 <CardContent style={styles.cardContent}>
                     <FormControl style={styles.formControl}>
-                        <InputLabel style={styles.inputLabel}>
-                            API Key
-                        </InputLabel>
+                        <InputLabel style={styles.inputLabel}>API Key</InputLabel>
                         <Input
                             style={styles.apiInput}
                             className={"text-input"}
@@ -86,10 +86,7 @@ export default props => {
                             value={apiKey}
                             error={!apiKeyValid}
                             onKeyPress={ev => {
-                                if (
-                                    ev.key === "Enter" &&
-                                    buttonDisabled === false
-                                ) {
+                                if (ev.key === "Enter" && buttonDisabled === false) {
                                     setRegistration();
                                     ev.preventDefault();
                                 }
@@ -100,10 +97,7 @@ export default props => {
                     <FormControlLabel
                         style={styles.toggle}
                         label={
-                            <TranslateTypography
-                                variant="body1"
-                                style={styles.text}
-                            >
+                            <TranslateTypography variant="body1" style={styles.text}>
                                 Enable sandbox mode?
                             </TranslateTypography>
                         }
@@ -119,10 +113,7 @@ export default props => {
                     <FormControlLabel
                         style={styles.toggle}
                         label={
-                            <TranslateTypography
-                                variant="body1"
-                                style={styles.text}
-                            >
+                            <TranslateTypography variant="body1" style={styles.text}>
                                 Enable wildcard mode?
                             </TranslateTypography>
                         }
@@ -137,9 +128,7 @@ export default props => {
 
                     {wildcardMode && (
                         <FormControl style={styles.formControl}>
-                            <InputLabel style={styles.inputLabel}>
-                                Current IP Address
-                            </InputLabel>
+                            <InputLabel style={styles.inputLabel}>Current IP Address</InputLabel>
                             <Input
                                 style={styles.apiInput}
                                 className={"text-input"}
@@ -153,7 +142,7 @@ export default props => {
 
                     {sandboxMode ? (
                         <TranslateButton
-                            variant="raised"
+                            variant="contained"
                             color="secondary"
                             disabled={sandboxButtonDisabled}
                             style={styles.button}
@@ -164,7 +153,7 @@ export default props => {
                     ) : null}
 
                     <TranslateButton
-                        variant="raised"
+                        variant="contained"
                         color="primary"
                         className={setApiKeyClassname}
                         disabled={buttonDisabled}

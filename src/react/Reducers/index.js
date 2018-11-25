@@ -1,4 +1,5 @@
 import { combineReducers } from "redux";
+import { reducer as formReducer } from "redux-form";
 
 import amount_filter from "./amount_filter";
 import account_id_filter from "./account_id_filter";
@@ -28,6 +29,7 @@ import pay from "./pay";
 import payments from "./payments";
 import payment_info from "./payment_info";
 import payment_filter from "./payment_filter";
+import pending_payments from "./pending_payments";
 import queue from "./queue";
 import registration from "./registration";
 import request_filter from "./request_filter";
@@ -39,11 +41,12 @@ import request_responses from "./request_responses";
 import request_response from "./request_response";
 import request_response_info from "./request_response_info";
 import scheduled_payments from "./scheduled_payments";
+import savings_goals from "./savings_goals";
+import search_filter from "./search_filter";
 import share_invite_bank_inquiries from "./share_invite_bank_inquiries";
 import share_invite_bank_inquiry from "./share_invite_bank_inquiry";
 import share_invite_bank_responses from "./share_invite_bank_responses";
 import snackbar from "./snackbar";
-import search_filter from "./search_filter";
 import sidebar from "./sidebar";
 import user from "./user";
 import users from "./users";
@@ -65,6 +68,7 @@ export default combineReducers({
     date_filter,
     export_new,
     exports,
+    form: formReducer,
     general_filter,
     modal,
     master_card_actions,
@@ -76,6 +80,7 @@ export default combineReducers({
     pay,
     payment_info,
     payment_filter,
+    pending_payments,
     payments,
     queue,
     registration,
@@ -88,6 +93,7 @@ export default combineReducers({
     request_response,
     request_response_info,
     scheduled_payments,
+    savings_goals,
     search_filter,
     share_invite_bank_inquiries,
     share_invite_bank_inquiry,

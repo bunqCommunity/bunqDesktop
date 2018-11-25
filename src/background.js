@@ -1,12 +1,4 @@
-import {
-    app,
-    shell,
-    Menu,
-    Tray,
-    ipcMain,
-    nativeImage,
-    BrowserWindow
-} from "electron";
+import { app, shell, Menu, Tray, ipcMain, nativeImage, systemPreferences, BrowserWindow } from "electron";
 import os from "os";
 import fs from "fs";
 import url from "url";
@@ -22,7 +14,7 @@ import darwinMenuTemplates from "./menu/darwin_menu_templates";
 import createWindow from "./helpers/window";
 import registerShortcuts from "./helpers/shortcuts";
 import registerTouchBar from "./helpers/touchbar";
-import changePage from "./helpers/react_navigate";
+import setupTrayIcon from "./helpers/tray";
 import settingsHelper from "./helpers/settings";
 import oauth from "./helpers/oauth";
 import env from "./env";
@@ -31,12 +23,9 @@ import env from "./env";
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 1;
 
 const platform = os.platform();
-const userDataPath = app.getPath("userData");
+let userDataPath = app.getPath("userData");
 
-const imagesDir = path.join(
-    __dirname,
-    `..${path.sep}app${path.sep}images${path.sep}`
-);
+const imagesDir = path.join(__dirname, `..${path.sep}app${path.sep}images${path.sep}`);
 let trayIcon = "";
 if (platform === "darwin") {
     trayIcon = nativeImage.createFromPath(`${imagesDir}logoTemplate@1x.png`);
@@ -63,12 +52,7 @@ const notificationIcon = nativeImage.createFromPath(`${imagesDir}256x256.png`);
 
 // hide/show different native menus based on env
 const setApplicationMenu = () => {
-    let menus = [
-        editMenuTemplate,
-        viewMenuTemplate,
-        windowMenuTemplate,
-        helpMenuTemplate
-    ];
+    let menus = [editMenuTemplate, viewMenuTemplate, windowMenuTemplate, helpMenuTemplate];
 
     // modify templates if on darwin
     menus = darwinMenuTemplates(menus);
@@ -92,22 +76,19 @@ const getWindowUrl = fileName => {
 // Save userData in separate folders for each environment
 if (env.name !== "production") {
     app.setPath("userData", `${userDataPath} (${env.name})`);
+    userDataPath = app.getPath("userData");
 }
 
 // setup the logger
-log.transports.file.appName = "BunqDesktop";
+log.transports.file.appName = "bunqDesktop";
 log.transports.file.level = "debug";
 log.transports.file.maxSize = 512 * 1024;
 log.transports.file.format = "{h}:{i}:{s}:{ms} {text}";
-log.transports.file.file = `${userDataPath}${path.sep}BunqDesktop.${
-    env.name
-}.log.txt`;
+log.transports.file.file = `${userDataPath}${path.sep}bunqDesktop.${env.name}.log.txt`;
 
 // hot reloading
 if (process.env.NODE_ENV === "development") {
-    require("electron-reload")(
-        path.join(__dirname, `..${path.sep}app${path.sep}**`)
-    );
+    require("electron-reload")(path.join(__dirname, `..${path.sep}app${path.sep}**`));
 }
 
 // set the correct path before the app loads
@@ -117,9 +98,7 @@ app.on("ready", () => {
     setApplicationMenu();
 
     const USE_NATIVE_FRAME_STORED = settings.get("USE_NATIVE_FRAME");
-    const USE_NATIVE_FRAME =
-        USE_NATIVE_FRAME_STORED !== undefined &&
-        USE_NATIVE_FRAME_STORED === true;
+    const USE_NATIVE_FRAME = USE_NATIVE_FRAME_STORED !== undefined && USE_NATIVE_FRAME_STORED === true;
 
     // setup the main window
     const mainWindow = createWindow("main", {
@@ -137,42 +116,7 @@ app.on("ready", () => {
     registerTouchBar(mainWindow, null);
 
     // setup the tray handler
-    const tray = new Tray(trayIcon);
-    const contextMenu = Menu.buildFromTemplate([
-        {
-            label: "Dashboard",
-            click: () => changePage(mainWindow, "/")
-        },
-        {
-            label: "Update",
-            click: () => mainWindow.webContents.send("trigger-queue-sync")
-        },
-        {
-            label: "Pay",
-            click: () => changePage(mainWindow, "/pay")
-        },
-        {
-            label: "Request",
-            click: () => changePage(mainWindow, "/request")
-        },
-        {
-            label: "Cards",
-            click: () => changePage(mainWindow, "/card")
-        },
-        { type: "separator" },
-        {
-            label: "Quit",
-            click: () => app.quit()
-        }
-    ]);
-    tray.setContextMenu(contextMenu);
-    tray.setToolTip("bunqDesktop");
-
-    // Event handlers
-    tray.on("click", () => {
-        // show app on single click
-        mainWindow.show();
-    });
+    const tray = setupTrayIcon(mainWindow, trayIcon);
 
     // on ready, show the main window
     mainWindow.on("ready-to-show", function() {
@@ -209,6 +153,23 @@ app.on("ready", () => {
     mainWindow.on("close", function(event) {
         app.quit();
     });
+
+    // system preferences listen for mojave events
+    if (platform === "darwin") {
+        const setCorrectTheme = () => {
+            // toggle back to regular theme or dark theme if apple them changed
+            if (systemPreferences.isDarkMode() && settings.get("BUNQDESKTOP_THEME") !== "DarkTheme") {
+                mainWindow.webContents.send("toggle-theme");
+            } else if (!systemPreferences.isDarkMode() && settings.get("BUNQDESKTOP_THEME") === "DarkTheme") {
+                mainWindow.webContents.send("toggle-theme");
+            }
+        };
+
+        setCorrectTheme();
+        systemPreferences.subscribeNotification("AppleInterfaceThemeChangedNotification", () => {
+            setCorrectTheme();
+        });
+    }
 
     // register oauth handlers
     oauth(mainWindow, log);

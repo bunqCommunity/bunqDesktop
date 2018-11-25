@@ -25,22 +25,9 @@ export function paymentsUpdate(BunqJSClient, user_id, account_id, payment_id) {
                 const paymentInfo = new Payment(payment);
 
                 // update this item in the list and the stored data
-                dispatch(
-                    paymentsSetInfo(
-                        [paymentInfo],
-                        parseInt(account_id),
-                        false,
-                        BunqJSClient
-                    )
-                );
+                dispatch(paymentsSetInfo([paymentInfo], parseInt(account_id), false, BunqJSClient));
 
-                dispatch(
-                    paymentInfoSetInfo(
-                        paymentInfo,
-                        parseInt(account_id),
-                        parseInt(payment_id)
-                    )
-                );
+                dispatch(paymentInfoSetInfo(paymentInfo, parseInt(account_id), parseInt(payment_id)));
                 dispatch(paymentInfoNotLoading());
             })
             .catch(error => {

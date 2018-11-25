@@ -1,40 +1,49 @@
 const store = require("store");
 
-export const SELECTED_CARD_LOCATION = "BUNQDESKTOP_SELECTED_CARD";
+export const CARD_ORDER_LOCATION = "BUNQDESKTOP_CARD_ORDER";
 
-const selectedCardDefault =
-    store.get(SELECTED_CARD_LOCATION) !== undefined
-        ? store.get(SELECTED_CARD_LOCATION)
-        : false;
+const cardOrderDefault = store.get(CARD_ORDER_LOCATION) !== undefined ? store.get(CARD_ORDER_LOCATION) : [];
 
 export const defaultState = {
     cards: [],
-    selectedcard: selectedCardDefault,
+    card_order: cardOrderDefault,
     loading: false
 };
 
 export default (state = defaultState, action) => {
     switch (action.type) {
-        case "CARD_SET_INFO":
+        case "CARDS_SET_INFO":
+            const cardOrder = [...state.card_order];
+            const cards = action.payload.cards;
+
+            cards.forEach(card => {
+                const cardId = card.CardDebit.id;
+                if (!cardOrder.includes(cardId)) {
+                    cardOrder.push(cardId);
+                }
+            });
+
+            store.set(CARD_ORDER_LOCATION, cardOrder);
             return {
                 ...state,
-                cards: action.payload.cards
+                cards: cards,
+                card_order: cardOrder
             };
 
-        case "CARD_SELECT_CARD":
-            store.set(SELECTED_CARD_LOCATION, action.payload.selectedCard);
+        case "CARDS_SET_CARD_ORDER":
+            store.set(CARD_ORDER_LOCATION, action.payload.card_order);
             return {
                 ...state,
-                selectedCard: action.payload.selectedCard
+                card_order: action.payload.card_order
             };
 
-        case "CARD_IS_LOADING":
+        case "CARDS_IS_LOADING":
             return {
                 ...state,
                 loading: true
             };
 
-        case "CARD_IS_NOT_LOADING":
+        case "CARDS_IS_NOT_LOADING":
             return {
                 ...state,
                 loading: false
@@ -44,7 +53,7 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_CLEAR_PRIVATE_DATA":
         case "REGISTRATION_LOG_OUT":
         case "REGISTRATION_CLEAR_USER_INFO":
-            store.remove(SELECTED_CARD_LOCATION);
+            store.remove(CARD_ORDER_LOCATION);
             return {
                 cards: [],
                 selectedCard: false,

@@ -86,10 +86,7 @@ class Exports extends React.Component {
 
     componentDidMount() {
         if (!this.props.limitedPermissions) {
-            this.updateExports(
-                this.props.user.id,
-                this.props.accountsAccountId
-            );
+            this.updateExports(this.props.user.id, this.props.selectedAccountId);
         } else {
             this.setState({
                 selectedTab: 1
@@ -99,14 +96,8 @@ class Exports extends React.Component {
 
     componentDidUpdate(oldProps) {
         // loading state from creating a new export changed to false
-        if (
-            this.props.exportNewLoading === false &&
-            this.props.exportNewLoading !== oldProps.exportNewLoading
-        ) {
-            this.updateExports(
-                this.props.user.id,
-                this.props.accountsAccountId
-            );
+        if (this.props.exportNewLoading === false && this.props.exportNewLoading !== oldProps.exportNewLoading) {
+            this.updateExports(this.props.user.id, this.props.selectedAccountId);
         }
     }
 
@@ -179,14 +170,14 @@ class Exports extends React.Component {
     };
 
     updateExports = (userId, accountId) => {
-        if (!this.props.initialBunqConnect) {
+        if (!this.props.registrationReady) {
             return;
         }
         this.props.exportInfoUpdate(userId, accountId);
     };
 
     refreshClick = event => {
-        this.updateExports(this.props.user.id, this.props.accountsAccountId);
+        this.updateExports(this.props.user.id, this.props.selectedAccountId);
     };
 
     handleDateFromChange = date => {
@@ -224,7 +215,7 @@ class Exports extends React.Component {
     createNew = event => {
         this.props.exportNew(
             this.props.user.id,
-            this.props.accountsAccountId,
+            this.props.selectedAccountId,
             this.state.exportType,
             this.state.dateFrom,
             this.state.dateTo,
@@ -250,20 +241,14 @@ class Exports extends React.Component {
                     fileExtension = ".pdf";
                     break;
             }
-            const fileName = `bunq-export.${exportInfo.date_start}_${
-                exportInfo.date_end
-            }_${exportInfo.id}${fileExtension}`;
+            const fileName = `bunq-export.${exportInfo.date_start}_${exportInfo.date_end}_${
+                exportInfo.id
+            }${fileExtension}`;
 
-            const failedMessage = this.props.t(
-                "We failed to load the export content for this monetary account"
-            );
+            const failedMessage = this.props.t("We failed to load the export content for this monetary account");
 
             this.props.BunqJSClient.api.customerStatementExportContent
-                .list(
-                    this.props.user.id,
-                    this.props.accountsAccountId,
-                    exportInfo.id
-                )
+                .list(this.props.user.id, this.props.selectedAccountId, exportInfo.id)
                 .then(exportContent => {
                     // create a new file reader
                     const fileReader = new FileReader();
@@ -271,10 +256,7 @@ class Exports extends React.Component {
                     // set event handler
                     fileReader.onload = result => {
                         // store the resulting arraybuffer in the downloads folder
-                        this.storeFile(
-                            Buffer.from(new Uint8Array(result.target.result)),
-                            fileName
-                        );
+                        this.storeFile(Buffer.from(new Uint8Array(result.target.result)), fileName);
                         this.setState({ exportContentLoading: false });
                     };
 
@@ -324,9 +306,7 @@ class Exports extends React.Component {
                 format(event.date, "HH:mm:ss"),
                 info.getDelta(),
                 info.alias.iban ? formatIban(info.alias.iban) : null,
-                info.counterparty_alias.iban
-                    ? formatIban(info.counterparty_alias.iban)
-                    : null,
+                info.counterparty_alias.iban ? formatIban(info.counterparty_alias.iban) : null,
                 info.counterparty_alias.display_name,
                 info.description.replace("\n", " "),
                 labels.join(","),
@@ -345,13 +325,9 @@ class Exports extends React.Component {
         });
 
         // if no from date is set, the export targets the oldest event
-        const dateFromFilter = this.props.dateFromFilter
-            ? this.props.dateFromFilter
-            : events[0].date;
+        const dateFromFilter = this.props.dateFromFilter ? this.props.dateFromFilter : events[0].date;
         // if no date is set the bunqdesktop app creates a date range which defaults to today
-        const dateToFilter = this.props.dateToFilter
-            ? this.props.dateToFilter
-            : new Date();
+        const dateToFilter = this.props.dateToFilter ? this.props.dateToFilter : new Date();
 
         // format a file name
         const startDateLabel = format(dateFromFilter, "YYYY-MM-dd");
@@ -372,9 +348,7 @@ class Exports extends React.Component {
         const targetFile = `${downloadDir}${path.sep}${fileName}`;
 
         const successMessage = this.props.t("Stored file at ");
-        const failedMessage = this.props.t(
-            "Failed to store the export file at "
-        );
+        const failedMessage = this.props.t("Failed to store the export file at ");
 
         try {
             fs.writeFileSync(targetFile, content);
@@ -391,24 +365,13 @@ class Exports extends React.Component {
 
         const exportItems = this.props.exports.map((exportItem, key) => {
             const exportInfo = exportItem.CustomerStatement;
-            const primary = `Start ${exportInfo.date_start} - End ${
-                exportInfo.date_end
-            }`;
-            const secondary = `Created: ${humanReadableDate(
-                exportInfo.created
-            )}`;
+            const primary = `Start ${exportInfo.date_start} - End ${exportInfo.date_end}`;
+            const secondary = `Created: ${humanReadableDate(exportInfo.created)}`;
 
-            const statementFormat =
-                exportInfo.statement_format === "MT940"
-                    ? "MT"
-                    : exportInfo.statement_format;
+            const statementFormat = exportInfo.statement_format === "MT940" ? "MT" : exportInfo.statement_format;
 
             return (
-                <ListItem
-                    button
-                    key={key}
-                    onClick={this.loadExportContent(exportInfo)}
-                >
+                <ListItem button key={key} onClick={this.loadExportContent(exportInfo)}>
                     <Avatar style={{ margin: 10 }}>{statementFormat}</Avatar>
                     <ListItemText primary={primary} secondary={secondary} />
                 </ListItem>
@@ -423,11 +386,7 @@ class Exports extends React.Component {
 
                 <Grid item xs={12} md={4}>
                     <Paper>
-                        <AccountList
-                            updateExternal={this.updateExports}
-                            BunqJSClient={this.props.BunqJSClient}
-                            initialBunqConnect={this.props.initialBunqConnect}
-                        />
+                        <AccountList updateExternal={this.updateExports} BunqJSClient={this.props.BunqJSClient} />
                     </Paper>
                 </Grid>
 
@@ -435,13 +394,9 @@ class Exports extends React.Component {
                     <AppBar position="static">
                         <Tabs
                             value={this.state.selectedTab}
-                            onChange={(event, value) =>
-                                this.setState({ selectedTab: value })
-                            }
+                            onChange={(event, value) => this.setState({ selectedTab: value })}
                         >
-                            {limitedPermissions ? null : (
-                                <Tab value={0} label="bunq Exports" />
-                            )}
+                            {limitedPermissions ? null : <Tab value={0} label="bunq Exports" />}
                             <Tab value={1} label="Custom Exports" />
                         </Tabs>
                     </AppBar>
@@ -451,37 +406,21 @@ class Exports extends React.Component {
                             <Paper style={styles.paper}>
                                 <Grid container spacing={16}>
                                     <Grid item xs={12}>
-                                        <TranslateTypography
-                                            variant={"headline"}
-                                        >
-                                            New export
-                                        </TranslateTypography>
+                                        <TranslateTypography variant="h5">New export</TranslateTypography>
                                     </Grid>
 
                                     <Grid item xs={12} md={6}>
                                         <FormControl style={styles.formControl}>
-                                            <InputLabel htmlFor="export-type-selection">
-                                                {t("Export type")}
-                                            </InputLabel>
+                                            <InputLabel htmlFor="export-type-selection">{t("Export type")}</InputLabel>
                                             <Select
                                                 value={this.state.exportType}
-                                                onChange={
-                                                    this.handleExportTypeChange
-                                                }
-                                                input={
-                                                    <Input id="export-type-selection" />
-                                                }
+                                                onChange={this.handleExportTypeChange}
+                                                input={<Input id="export-type-selection" />}
                                                 style={styles.selectField}
                                             >
-                                                <MenuItem value={"CSV"}>
-                                                    CSV
-                                                </MenuItem>
-                                                <MenuItem value={"MT940"}>
-                                                    MT940
-                                                </MenuItem>
-                                                <MenuItem value={"PDF"}>
-                                                    PDF
-                                                </MenuItem>
+                                                <MenuItem value={"CSV"}>CSV</MenuItem>
+                                                <MenuItem value={"MT940"}>MT940</MenuItem>
+                                                <MenuItem value={"PDF"}>PDF</MenuItem>
                                             </Select>
                                         </FormControl>
                                     </Grid>
@@ -492,25 +431,13 @@ class Exports extends React.Component {
                                                 {t("Regional format")}
                                             </InputLabel>
                                             <Select
-                                                value={
-                                                    this.state.regionalFormat
-                                                }
-                                                onChange={
-                                                    this
-                                                        .handleRegionalFormatChange
-                                                }
-                                                input={
-                                                    <Input id="regional-format-selection" />
-                                                }
+                                                value={this.state.regionalFormat}
+                                                onChange={this.handleRegionalFormatChange}
+                                                input={<Input id="regional-format-selection" />}
                                                 style={styles.selectField}
                                             >
-                                                <MenuItem value={"UK_US"}>
-                                                    UK_US (comma-separated)
-                                                </MenuItem>
-                                                <MenuItem value={"EUROPEAN"}>
-                                                    EUROPEAN
-                                                    (semicolon-separated)
-                                                </MenuItem>
+                                                <MenuItem value={"UK_US"}>UK_US (comma-separated)</MenuItem>
+                                                <MenuItem value={"EUROPEAN"}>EUROPEAN (semicolon-separated)</MenuItem>
                                             </Select>
                                         </FormControl>
                                     </Grid>
@@ -518,7 +445,7 @@ class Exports extends React.Component {
                                     <Grid item xs={12} md={6}>
                                         <DatePicker
                                             id="from-date"
-                                            helperText={t("From date")}
+                                            label={t("From date")}
                                             emptyLabel="No filter"
                                             format="MMMM dd, YYYY"
                                             disableFuture
@@ -529,13 +456,8 @@ class Exports extends React.Component {
                                             clearable={true}
                                             InputProps={{
                                                 endAdornment: (
-                                                    <InputAdornment position="end">
-                                                        <IconButton
-                                                            onClick={
-                                                                this
-                                                                    .clearDateFrom
-                                                            }
-                                                        >
+                                                    <InputAdornment style={{ height: 29 }} position="end">
+                                                        <IconButton onClick={this.clearDateFrom}>
                                                             <Icon>clear</Icon>
                                                         </IconButton>
                                                     </InputAdornment>
@@ -547,7 +469,7 @@ class Exports extends React.Component {
                                     <Grid item xs={12} md={6}>
                                         <DatePicker
                                             id="to-date"
-                                            helperText={t("To date")}
+                                            label={t("To date")}
                                             emptyLabel="No filter"
                                             format="MMMM dd, YYYY"
                                             disableFuture
@@ -558,12 +480,8 @@ class Exports extends React.Component {
                                             clearable={true}
                                             InputProps={{
                                                 endAdornment: (
-                                                    <InputAdornment position="end">
-                                                        <IconButton
-                                                            onClick={
-                                                                this.clearDateTo
-                                                            }
-                                                        >
+                                                    <InputAdornment style={{ height: 29 }} position="end">
+                                                        <IconButton onClick={this.clearDateTo}>
                                                             <Icon>clear</Icon>
                                                         </IconButton>
                                                     </InputAdornment>
@@ -574,7 +492,7 @@ class Exports extends React.Component {
 
                                     <Grid item xs={12} md={6}>
                                         <TranslateButton
-                                            variant="raised"
+                                            variant="contained"
                                             color="primary"
                                             onClick={this.createNew}
                                             disabled={
@@ -593,41 +511,27 @@ class Exports extends React.Component {
                             <Paper style={styles.paper}>
                                 <Grid container spacing={16}>
                                     <Grid item xs={8} md={10}>
-                                        <TranslateTypography
-                                            variant={"headline"}
-                                        >
-                                            Existing Exports
-                                        </TranslateTypography>
+                                        <TranslateTypography variant="h5">Existing Exports</TranslateTypography>
                                     </Grid>
 
                                     <Grid item xs={2} md={1}>
                                         {this.props.exportsLoading ? (
                                             <CircularProgress />
                                         ) : (
-                                            <IconButton
-                                                onClick={this.refreshClick}
-                                            >
+                                            <IconButton onClick={this.refreshClick}>
                                                 <RefreshIcon />
                                             </IconButton>
                                         )}
                                     </Grid>
                                     <Grid item xs={2} md={1}>
-                                        <IconButton
-                                            onClick={() =>
-                                                shell.openItem(
-                                                    app.getPath("downloads")
-                                                )
-                                            }
-                                        >
+                                        <IconButton onClick={() => shell.openItem(app.getPath("downloads"))}>
                                             <FolderIcon />
                                         </IconButton>
                                     </Grid>
 
                                     <Grid item xs={12}>
                                         <List>
-                                            {this.props.exportsLoading ? (
-                                                <LinearProgress />
-                                            ) : null}
+                                            {this.props.exportsLoading ? <LinearProgress /> : null}
                                             {exportItems}
                                         </List>
                                     </Grid>
@@ -641,23 +545,18 @@ class Exports extends React.Component {
                             <Paper style={styles.paper}>
                                 <Grid container spacing={16}>
                                     <Grid item xs={12}>
-                                        <TranslateTypography
-                                            variant={"headline"}
-                                        >
-                                            New custom export
-                                        </TranslateTypography>
+                                        <TranslateTypography variant="h5">New custom export</TranslateTypography>
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <Typography variant={"body1"}>
-                                            The export will include all the
-                                            events shown in the list below
+                                        <Typography variant="body2">
+                                            The export will include all the events shown in the list below
                                         </Typography>
                                     </Grid>
 
                                     <Grid item xs={12} md={6}>
                                         <TranslateButton
-                                            variant="raised"
+                                            variant="contained"
                                             color="primary"
                                             onClick={this.createCustomExport}
                                         >
@@ -670,9 +569,6 @@ class Exports extends React.Component {
                             <Paper>
                                 <CombinedList
                                     BunqJSClient={this.props.BunqJSClient}
-                                    initialBunqConnect={
-                                        this.props.initialBunqConnect
-                                    }
                                     hiddenTypes={[
                                         "BunqMeTab",
                                         "RequestInquiry",
@@ -694,12 +590,12 @@ const mapStateToProps = state => {
     return {
         user: state.user.user,
         limitedPermissions: state.user.limited_permissions,
-
-        accountsAccountId: state.accounts.selected_account,
-
         exportNewLoading: state.export_new.loading,
+
         exports: state.exports.exports,
         exportsLoading: state.exports.loading,
+
+        selectedAccountId: state.accounts.selected_account,
 
         searchTerm: state.search_filter.search_term,
         dateFromFilter: state.date_filter.from_date,
@@ -722,8 +618,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
-        exportInfoUpdate: (userId, accountId) =>
-            dispatch(exportInfoUpdate(BunqJSClient, userId, accountId)),
+        exportInfoUpdate: (userId, accountId) => dispatch(exportInfoUpdate(BunqJSClient, userId, accountId)),
         exportNew: (...params) => dispatch(exportNew(BunqJSClient, ...params))
     };
 };

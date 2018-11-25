@@ -27,8 +27,7 @@ export default (state = defaultState, action) => {
 
             return {
                 ...state,
-                share_invite_bank_inquiries:
-                    action.payload.share_invite_bank_inquiries,
+                share_invite_bank_inquiries: action.payload.share_invite_bank_inquiries,
                 account_id: action.payload.account_id
             };
 

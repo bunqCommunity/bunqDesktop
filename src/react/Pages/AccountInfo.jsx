@@ -10,6 +10,7 @@ import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import Avatar from "@material-ui/core/Avatar";
 import TextField from "@material-ui/core/TextField";
+import FormControl from "@material-ui/core/FormControl";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -22,22 +23,18 @@ import ListItemText from "@material-ui/core/ListItemText";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
+import TranslateTypography from "../Components/TranslationHelpers/Typography";
 import LazyAttachmentImage from "../Components/AttachmentImage/LazyAttachmentImage";
 import NavLink from "../Components/Routing/NavLink";
 import CombinedList from "../Components/CombinedList/CombinedList";
 import AccountCard from "../Components/AccountCard";
-import ButtonTranslate from "../Components/TranslationHelpers/Button";
-import {
-    filterShareInviteBankResponses,
-    filterShareInviteBankInquiries
-} from "../Helpers/DataFilters";
+import TranslateButton from "../Components/TranslationHelpers/Button";
+import MoneyFormatInput from "../Components/FormFields/MoneyFormatInput";
+
+import { filterShareInviteBankResponses, filterShareInviteBankInquiries } from "../Helpers/DataFilters";
 
 import { openSnackbar } from "../Actions/snackbar";
-import {
-    accountsUpdate,
-    accountsUpdateSettings,
-    accountsDeactivate
-} from "../Actions/accounts";
+import { accountsUpdate, accountsUpdateSettings, accountsDeactivate } from "../Actions/accounts";
 import { paymentInfoUpdate } from "../Actions/payments";
 import { requestResponsesUpdate } from "../Actions/request_responses";
 import { bunqMeTabsUpdate } from "../Actions/bunq_me_tabs";
@@ -46,8 +43,17 @@ import { requestInquiriesUpdate } from "../Actions/request_inquiries";
 import { requestInquiryBatchesUpdate } from "../Actions/request_inquiry_batches";
 import { shareInviteBankInquiriesInfoUpdate } from "../Actions/share_invite_bank_inquiries";
 import { shareInviteBankResponsesInfoUpdate } from "../Actions/share_invite_bank_responses";
+import { shareInviteBankResponseChangeStatus } from "../Actions/share_invite_bank_response";
+import { shareInviteBankInquiryChangeStatus } from "../Actions/share_invite_bank_inquiry";
 
 const styles = {
+    paper: {
+        padding: 24,
+        marginBottom: 16
+    },
+    dialogContent: {
+        width: 300
+    },
     chip: {
         margin: 8
     },
@@ -55,13 +61,12 @@ const styles = {
         width: 32,
         height: 32
     },
+    formControl: {
+        marginTop: 16
+    },
     textField: {
         width: "100%",
         marginTop: 16
-    },
-    paper: {
-        padding: 24,
-        marginBottom: 16
     },
     paperIcons: {
         marginTop: 16,
@@ -81,7 +86,7 @@ const styles = {
     }
 };
 
-const PersonChip = ({ alias, BunqJSClient }) => {
+const PersonChip = ({ alias, BunqJSClient, ...otherProps }) => {
     return (
         <Chip
             style={styles.chip}
@@ -96,6 +101,7 @@ const PersonChip = ({ alias, BunqJSClient }) => {
                 </Avatar>
             }
             label={alias.display_name}
+            {...otherProps}
         />
     );
 };
@@ -110,23 +116,26 @@ class AccountInfo extends React.Component {
 
             openSettingsDialog: false,
             settingsColor: "#ffffff",
+            settingsDailyLimit: 1000,
             settingsDescription: "",
-            settingsDailyLimit: 1000
+            settingsSavingsGoal: 1000,
+
+            settingsValidForm: false,
+            settingsDailyLimitError: false,
+            settingsDescriptionError: false,
+            settingsSavingsGoalError: false
         };
     }
 
     componentDidMount() {
-        if (this.props.initialBunqConnect) {
+        if (this.props.registrationReady) {
             this.props.accountsUpdate(this.props.user.id);
 
             const userId = this.props.user.id;
             const accountId = parseFloat(this.props.match.params.accountId);
 
             if (this.props.limitedPermissions === false) {
-                this.props.shareInviteBankInquiriesInfoUpdate(
-                    userId,
-                    accountId
-                );
+                this.props.shareInviteBankInquiriesInfoUpdate(userId, accountId);
             }
             this.props.shareInviteBankResponsesInfoUpdate(userId);
             this.props.paymentsUpdate(userId, accountId);
@@ -136,39 +145,34 @@ class AccountInfo extends React.Component {
             this.props.requestInquiryBatchesUpdate(userId, accountId);
             this.props.masterCardActionsUpdate(userId, accountId);
 
-            const accountInfo = this.props.accounts.find(
-                account => account.id === accountId
-            );
+            const accountInfo = this.props.accounts.find(account => account.id === accountId);
             if (accountInfo) {
                 // found account info, set settings
                 this.setState({
                     settingsColor: accountInfo.color,
                     settingsDescription: accountInfo.description,
-                    settingsDailyLimit: parseFloat(
-                        accountInfo.daily_limit.value
-                    )
+                    settingsDailyLimit: parseFloat(accountInfo.daily_limit.value)
                 });
+
+                if (accountInfo.accountType === "MonetaryAccountSavings") {
+                    this.setState({
+                        settingsSavingsGoal: parseFloat(accountInfo.savings_goal.value)
+                    });
+                }
             }
         }
     }
 
     getSnapshotBeforeUpdate(nextProps, nextState) {
-        const { initialBunqConnect, accountsLoading, user } = this.props;
+        const { registrationReady, accountsLoading, user } = this.props;
         const nextAccountId = parseFloat(nextProps.match.params.accountId);
         const accountId = parseFloat(this.props.match.params.accountId);
 
-        if (
-            accountsLoading === false &&
-            initialBunqConnect &&
-            nextAccountId !== accountId
-        ) {
+        if (accountsLoading === false && registrationReady && nextAccountId !== accountId) {
             this.props.accountsUpdate(user.id);
 
             if (this.props.limitedPermissions === false) {
-                this.props.shareInviteBankInquiriesInfoUpdate(
-                    user.id,
-                    nextAccountId
-                );
+                this.props.shareInviteBankInquiriesInfoUpdate(user.id, nextAccountId);
             }
             this.props.shareInviteBankResponsesInfoUpdate(user.id);
             this.props.paymentsUpdate(user.id, nextAccountId);
@@ -181,38 +185,65 @@ class AccountInfo extends React.Component {
     }
     componentDidUpdate() {}
 
-    toggleDeactivateDialog = () =>
-        this.setState({ openDialog: !this.state.openDialog });
+    toggleDeactivateDialog = () => this.setState({ openDialog: !this.state.openDialog });
     handleReasonChange = event => {
         this.setState({ deactivateReason: event.target.value });
     };
     deactivateAccount = event => {
         // hide dialog
         this.toggleDeactivateDialog();
+
         // get the account id
         const accountId = parseFloat(this.props.match.params.accountId);
+        const accountInfo = this.props.accounts.find(account => account.id === accountId);
+
+        if (!accountInfo) return;
+
         // send a deactivation request
         this.props.deactivateAccount(
             this.props.user.id,
             accountId,
-            this.state.deactivateReason
+            this.state.deactivateReason,
+            accountInfo.accountType
         );
         // trigger redirect back home
         this.setState({ deactivateActivated: true });
     };
 
     toggleSettingsDialog = () =>
-        this.setState({ openSettingsDialog: !this.state.openSettingsDialog });
-    handleColorChange = (color, event) =>
-        this.setState({ settingsColor: color.hex });
-    handleDescriptionChange = event =>
-        this.setState({ settingsDescription: event.target.value });
-    handleDailyLimitChange = event => {
-        let inputLimit = event.target.value;
-        if (inputLimit > 50000) inputLimit = 50000;
-        if (inputLimit < 0) inputLimit = 0;
+        this.setState({ openSettingsDialog: !this.state.openSettingsDialog }, this.validateForm);
+    handleColorChange = color => this.setState({ settingsColor: color.hex }, this.validateForm);
+    handleDescriptionChange = event => this.setState({ settingsDescription: event.target.value }, this.validateForm);
+    handleChangeFormatted = name => valueObject => {
+        this.setState(
+            {
+                [name]: valueObject.formattedValue.length > 0 ? valueObject.floatValue : ""
+            },
+            this.validateForm
+        );
+    };
 
-        this.setState({ settingsDailyLimit: parseFloat(inputLimit) });
+    validateForm = () => {
+        const { accounts } = this.props;
+        const { settingsDescription, settingsDailyLimit, settingsSavingsGoal } = this.state;
+        const accountId = parseFloat(this.props.match.params.accountId);
+        const accountInfo = accounts.find(account => account.id === accountId);
+
+        let savingsGoalError = false;
+        if (accountInfo.accountType === "MonetaryAccountSavings") {
+            if (!settingsSavingsGoal) {
+                savingsGoalError = settingsSavingsGoal < 0.01 || settingsSavingsGoal > 10000;
+            }
+        }
+        const limitErrorCondition = settingsDailyLimit < 0.01 || settingsDailyLimit > 10000;
+        const descriptionErrorCondition = settingsDescription.length < 1 || settingsDescription.length > 140;
+
+        this.setState({
+            settingsDailyLimitError: limitErrorCondition,
+            settingsDescriptionError: descriptionErrorCondition,
+            settingsValidForm: !limitErrorCondition && !descriptionErrorCondition && !savingsGoalError,
+            settingsSavingsGoalError: savingsGoalError
+        });
     };
 
     editAccount = event => {
@@ -220,39 +251,37 @@ class AccountInfo extends React.Component {
 
         // hide dialog
         this.toggleSettingsDialog();
+
         // get the account id
         const accountId = parseFloat(this.props.match.params.accountId);
-        // get the current account settings
-        const accountInfo = this.props.accounts.find(
-            account => account.id === accountId
-        );
+        const accountInfo = this.props.accounts.find(account => account.id === accountId);
 
-        // fix daily limit if required
-        let settingsDailyLimit = this.state.settingsDailyLimit;
-        if (settingsDailyLimit > 50000) settingsDailyLimit = 50000;
-        if (settingsDailyLimit <= 0) settingsDailyLimit = 0;
+        if (!accountInfo) return;
 
-        // update settings
-        this.props.updateSettings(this.props.user.id, accountInfo.id, {
+        const requestBody = {
             description: this.state.settingsDescription,
             daily_limit: {
-                value: "" + settingsDailyLimit.toFixed(2),
+                value: this.state.settingsDailyLimit + "",
                 currency: "EUR"
             },
             setting: {
                 color: this.state.settingsColor
             }
-        });
+        };
+
+        if (accountInfo.accountType === "MonetaryAccountSavings") {
+            requestBody.savings_goal = {
+                currency: "EUR",
+                value: this.state.settingsSavingsGoal + ""
+            };
+        }
+
+        // update settings
+        this.props.updateSettings(this.props.user.id, accountInfo.id, requestBody, accountInfo.accountType);
     };
 
     render() {
-        const {
-            accounts,
-            user,
-            shareInviteBankResponses,
-            shareInviteBankInquiries,
-            t
-        } = this.props;
+        const { accounts, user, shareInviteBankResponses, shareInviteBankInquiries, t } = this.props;
         const accountId = parseFloat(this.props.match.params.accountId);
 
         const noneText = t("None");
@@ -265,16 +294,18 @@ class AccountInfo extends React.Component {
         const accountInfo = accounts.find(account => account.id === accountId);
 
         let content = null;
+        let isSavingsAccount = false;
+        let isJointAccount = false;
         if (accountInfo !== false) {
+            isSavingsAccount = accountInfo.accountType === "MonetaryAccountSavings";
+            isJointAccount = accountInfo.accountType === "MonetaryAccountJoint";
+
             const filteredInviteResponses = shareInviteBankResponses.filter(
                 filterShareInviteBankResponses(accountInfo.id)
             );
             const filteredShareInquiries = shareInviteBankInquiries.filter(
                 filterShareInviteBankInquiries(accountInfo.id)
             );
-
-            const isJointAccount =
-                accountInfo.accountType === "MonetaryAccountJoint";
 
             let primaryConnectText = sharedWithText;
             let profileIconList = [];
@@ -290,12 +321,7 @@ class AccountInfo extends React.Component {
                         return coOwner.alias.uuid !== user.avatar.anchor_uuid;
                     })
                     .map(coOwner => {
-                        return (
-                            <PersonChip
-                                BunqJSClient={this.props.BunqJSClient}
-                                alias={coOwner.alias}
-                            />
-                        );
+                        return <PersonChip BunqJSClient={this.props.BunqJSClient} alias={coOwner.alias} />;
                     });
             } else {
                 if (filteredInviteResponses.length > 0) {
@@ -303,65 +329,80 @@ class AccountInfo extends React.Component {
                     primaryConnectText = sharedByText;
                     allowConnectSettings = false;
 
-                    profileIconList = filteredInviteResponses.map(
-                        filteredInviteResponse => {
-                            return (
-                                <PersonChip
-                                    BunqJSClient={this.props.BunqJSClient}
-                                    alias={
-                                        filteredInviteResponse
-                                            .ShareInviteBankResponse
-                                            .counter_alias
-                                    }
-                                />
-                            );
-                        }
-                    );
+                    profileIconList = filteredInviteResponses.map(filteredInviteResponse => {
+                        return (
+                            <PersonChip
+                                BunqJSClient={this.props.BunqJSClient}
+                                alias={filteredInviteResponse.ShareInviteBankResponse.counter_alias}
+                                onDelete={e => {
+                                    this.props.shareInviteBankResponseChangeStatus(
+                                        this.props.user.id,
+                                        filteredInviteResponse.ShareInviteBankResponse.id,
+                                        "CANCELED"
+                                    );
+                                }}
+                            />
+                        );
+                    });
                 } else if (filteredShareInquiries.length > 0) {
                     // this account was shared with someone
                     primaryConnectText = sharedWithText;
 
-                    profileIconList = filteredShareInquiries.map(
-                        filteredShareInquiry => {
-                            return (
-                                <PersonChip
-                                    BunqJSClient={this.props.BunqJSClient}
-                                    alias={
-                                        filteredShareInquiry
-                                            .ShareInviteBankInquiry
-                                            .counter_user_alias
-                                    }
-                                />
-                            );
-                        }
-                    );
+                    profileIconList = filteredShareInquiries.map(filteredShareInquiry => {
+                        return (
+                            <PersonChip
+                                BunqJSClient={this.props.BunqJSClient}
+                                alias={filteredShareInquiry.ShareInviteBankInquiry.counter_user_alias}
+                                onDelete={e => {
+                                    this.props.shareInviteBankInquiryChangeStatus(
+                                        this.props.user.id,
+                                        filteredShareInquiry.ShareInviteBankInquiry.monetary_account_id,
+                                        filteredShareInquiry.ShareInviteBankInquiry.id,
+                                        "CANCELED"
+                                    );
+                                }}
+                            />
+                        );
+                    });
                 }
             }
 
-            const connectListItemText = (
-                <ListItemText
-                    primary={`${primaryConnectText}: `}
-                    secondary={profileIconList.length === 0 ? noneText : ""}
-                />
-            );
+            let connectComponent = null;
+            if (isSavingsAccount === false) {
+                const connectListItemText = (
+                    <ListItemText
+                        primary={`${primaryConnectText}: `}
+                        secondary={profileIconList.length === 0 ? noneText : ""}
+                    />
+                );
+
+                connectComponent = (
+                    <Paper style={styles.paperIcons}>
+                        <List dense={true}>
+                            {allowConnectSettings ? (
+                                <ListItem to={`/connect/${accountId}`} component={NavLink} button>
+                                    {connectListItemText}
+                                </ListItem>
+                            ) : (
+                                <ListItem>{connectListItemText}</ListItem>
+                            )}
+                        </List>
+
+                        {profileIconList}
+                    </Paper>
+                );
+            }
 
             content = (
                 <React.Fragment>
-                    <Dialog
-                        open={this.state.openDialog}
-                        onClose={this.toggleDeactivateDialog}
-                    >
+                    <Dialog open={this.state.openDialog} onClose={this.toggleDeactivateDialog}>
                         <DialogTitle>{t("Cancel account")}</DialogTitle>
 
                         <DialogContent>
                             <DialogContentText>
                                 {isJointAccount
-                                    ? t(
-                                          "It is not possible to delete a Joint or Connect account using bunqDesktop"
-                                      )
-                                    : t(
-                                          "Are you sure you wish to cancel this account?"
-                                      )}
+                                    ? t("It is not possible to delete a Joint or Connect account using bunqDesktop")
+                                    : t("Are you sure you wish to cancel this account?")}
                             </DialogContentText>
                             <TextField
                                 style={styles.textField}
@@ -369,24 +410,22 @@ class AccountInfo extends React.Component {
                                 onChange={this.handleReasonChange}
                                 error={this.state.deactivateReason.length === 0}
                                 disabled={isJointAccount}
-                                helperText={t(
-                                    "Why are you closing the account?"
-                                )}
+                                helperText={t("Why are you closing the account?")}
                                 placeholder={t("Reason")}
                             />
                         </DialogContent>
 
                         <DialogActions>
-                            <ButtonTranslate
-                                variant="raised"
+                            <TranslateButton
+                                variant="contained"
                                 onClick={this.toggleDeactivateDialog}
                                 color="primary"
                                 autoFocus
                             >
                                 Cancel
-                            </ButtonTranslate>
-                            <ButtonTranslate
-                                variant="raised"
+                            </TranslateButton>
+                            <TranslateButton
+                                variant="contained"
                                 onClick={this.deactivateAccount}
                                 color="secondary"
                                 disabled={
@@ -396,64 +435,66 @@ class AccountInfo extends React.Component {
                                 }
                             >
                                 Agree
-                            </ButtonTranslate>
+                            </TranslateButton>
                         </DialogActions>
                     </Dialog>
 
-                    <Dialog
-                        open={this.state.openSettingsDialog}
-                        onClose={this.toggleSettingsDialog}
-                    >
+                    <Dialog open={this.state.openSettingsDialog} onClose={this.toggleSettingsDialog}>
                         <DialogTitle>{t("Edit account settings")}</DialogTitle>
 
-                        <DialogContent>
+                        <DialogContent style={styles.dialogContent}>
                             <CirclePicker
                                 onChange={this.handleColorChange}
                                 color={this.state.settingsColor}
                                 style={styles.circlePicker}
                             />
+
                             <TextField
+                                label={t("Account description")}
                                 style={styles.textField}
                                 value={this.state.settingsDescription}
                                 onChange={this.handleDescriptionChange}
-                                error={
-                                    this.state.settingsDescription.length === 0
-                                }
-                                placeholder={t("Account description")}
+                                error={this.state.settingsDescriptionError}
                             />
-                            <TextField
-                                style={styles.textField}
-                                value={this.state.settingsDailyLimit}
-                                onChange={this.handleDailyLimitChange}
-                                type={"number"}
-                                label={t("Daily limit")}
-                                inputProps={{
-                                    min: 0,
-                                    max: 50000
-                                }}
-                            />
+
+                            <FormControl error={this.state.settingsDailyLimitError} style={styles.formControl}>
+                                <TranslateTypography type="body2">Daily limit</TranslateTypography>
+                                <MoneyFormatInput
+                                    id="savings-goal"
+                                    onValueChange={this.handleChangeFormatted("settingsDailyLimit")}
+                                    value={this.state.settingsDailyLimit}
+                                />
+                            </FormControl>
+
+                            {accountInfo.accountType === "MonetaryAccountSavings" && (
+                                <FormControl error={this.state.settingsSavingsGoalError} style={styles.formControl}>
+                                    <TranslateTypography type="body2">Savings goal</TranslateTypography>
+                                    <MoneyFormatInput
+                                        id="savings-goal"
+                                        onValueChange={this.handleChangeFormatted("settingsSavingsGoal")}
+                                        value={this.state.settingsSavingsGoal}
+                                    />
+                                </FormControl>
+                            )}
                         </DialogContent>
 
                         <DialogActions>
-                            <ButtonTranslate
-                                variant="raised"
+                            <TranslateButton
+                                variant="contained"
                                 onClick={this.toggleSettingsDialog}
                                 color="secondary"
                                 autoFocus
                             >
                                 Cancel
-                            </ButtonTranslate>
-                            <ButtonTranslate
-                                variant="raised"
+                            </TranslateButton>
+                            <TranslateButton
+                                variant="contained"
                                 onClick={this.editAccount}
-                                disabled={
-                                    this.props.accountsLoading ||
-                                    this.state.settingsDescription.length === 0
-                                }
+                                disabled={this.props.accountsLoading || this.state.settingsValidForm === false}
                                 color="primary"
                             >
                                 Update
-                            </ButtonTranslate>
+                            </TranslateButton>
                         </DialogActions>
                     </Dialog>
 
@@ -465,31 +506,15 @@ class AccountInfo extends React.Component {
                         toggleDeactivateDialog={this.toggleDeactivateDialog}
                         shareInviteBankResponses={filteredInviteResponses}
                         account={accountInfo}
-                        isJoint={isJointAccount}
+                        isJointAccount={isJointAccount}
+                        isSavingsAccount={isSavingsAccount}
                     />
 
-                    <Paper style={styles.paperIcons}>
-                        <List dense={true}>
-                            {allowConnectSettings ? (
-                                <ListItem
-                                    to={`/connect/${accountId}`}
-                                    component={NavLink}
-                                    button
-                                >
-                                    {connectListItemText}
-                                </ListItem>
-                            ) : (
-                                <ListItem>{connectListItemText}</ListItem>
-                            )}
-                        </List>
-
-                        {profileIconList}
-                    </Paper>
+                    {connectComponent}
 
                     <Paper style={styles.paperList}>
                         <CombinedList
                             BunqJSClient={this.props.BunqJSClient}
-                            initialBunqConnect={this.props.initialBunqConnect}
                             hiddenTypes={["ShareInviteBankInquiry"]}
                             accountId={accountId}
                             displayRequestPayments={false}
@@ -536,15 +561,11 @@ const mapStateToProps = state => {
     return {
         hideBalance: state.options.hide_balance,
 
-        shareInviteBankResponses:
-            state.share_invite_bank_responses.share_invite_bank_responses,
-        shareInviteBankResponsesLoading:
-            state.share_invite_bank_responses.loading,
+        shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
+        shareInviteBankResponsesLoading: state.share_invite_bank_responses.loading,
 
-        shareInviteBankInquiries:
-            state.share_invite_bank_inquiries.share_invite_bank_inquiries,
-        shareInviteBankInquiriesLoading:
-            state.share_invite_bank_inquiries.loading,
+        shareInviteBankInquiries: state.share_invite_bank_inquiries.share_invite_bank_inquiries,
+        shareInviteBankInquiriesLoading: state.share_invite_bank_inquiries.loading,
 
         user: state.user.user,
         limitedPermissions: state.user.limited_permissions,
@@ -559,46 +580,33 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
 
-        accountsUpdate: userId =>
-            dispatch(accountsUpdate(BunqJSClient, userId)),
-        deactivateAccount: (userId, accountId, reason) =>
+        accountsUpdate: userId => dispatch(accountsUpdate(BunqJSClient, userId)),
+        deactivateAccount: (userId, accountId, reason, accountType) =>
+            dispatch(accountsDeactivate(BunqJSClient, userId, accountId, reason, accountType)),
+        updateSettings: (userId, accountId, settings, accountType) =>
+            dispatch(accountsUpdateSettings(BunqJSClient, userId, accountId, settings, accountType)),
+
+        shareInviteBankResponseChangeStatus: (userId, shareInviteBankResponseId, status) =>
+            dispatch(shareInviteBankResponseChangeStatus(BunqJSClient, userId, shareInviteBankResponseId, status)),
+        shareInviteBankInquiryChangeStatus: (userId, accountId, shareInviteBankInquiryId, status) =>
             dispatch(
-                accountsDeactivate(BunqJSClient, userId, accountId, reason)
-            ),
-        updateSettings: (userId, accountId, settings) =>
-            dispatch(
-                accountsUpdateSettings(
-                    BunqJSClient,
-                    userId,
-                    accountId,
-                    settings
-                )
+                shareInviteBankInquiryChangeStatus(BunqJSClient, userId, accountId, shareInviteBankInquiryId, status)
             ),
 
         shareInviteBankInquiriesInfoUpdate: (userId, accountId) =>
-            dispatch(
-                shareInviteBankInquiriesInfoUpdate(
-                    BunqJSClient,
-                    userId,
-                    accountId
-                )
-            ),
+            dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId, accountId)),
         shareInviteBankResponsesInfoUpdate: (userId, accountId) =>
             dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId)),
-        paymentsUpdate: (userId, accountId) =>
-            dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId)),
+        paymentsUpdate: (userId, accountId) => dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId)),
         requestInquiriesUpdate: (userId, accountId) =>
             dispatch(requestInquiriesUpdate(BunqJSClient, userId, accountId)),
         requestInquiryBatchesUpdate: (userId, accountId) =>
-            dispatch(
-                requestInquiryBatchesUpdate(BunqJSClient, userId, accountId)
-            ),
+            dispatch(requestInquiryBatchesUpdate(BunqJSClient, userId, accountId)),
         requestResponsesUpdate: (userId, accountId) =>
             dispatch(requestResponsesUpdate(BunqJSClient, userId, accountId)),
         masterCardActionsUpdate: (userId, accountId) =>
             dispatch(masterCardActionsUpdate(BunqJSClient, userId, accountId)),
-        bunqMeTabsUpdate: (userId, accountId) =>
-            dispatch(bunqMeTabsUpdate(BunqJSClient, userId, accountId))
+        bunqMeTabsUpdate: (userId, accountId) => dispatch(bunqMeTabsUpdate(BunqJSClient, userId, accountId))
     };
 };
 

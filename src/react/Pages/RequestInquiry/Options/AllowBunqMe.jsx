@@ -12,16 +12,8 @@ class AllowBunqMe extends React.Component {
 
         return (
             <FormControlLabel
-                control={
-                    <Switch
-                        color="primary"
-                        checked={allowBunqMe}
-                        onChange={handleToggle}
-                    />
-                }
-                label={t(
-                    "Allow bunqme? If the user doesn't own a bunq account a bunqme request will be sent instead"
-                )}
+                control={<Switch color="primary" checked={allowBunqMe} onChange={handleToggle} />}
+                label={t("Allow bunqme? If the user doesn't own a bunq account a bunqme request will be sent instead")}
             />
         );
     }

@@ -41,14 +41,16 @@ class EventData extends React.Component {
         let incoming = 0;
         if (open) {
             events.map(event => {
-                const delta = event.info.getDelta();
+                if (typeof event.info.getDelta !== "undefined") {
+                    const delta = event.info.getDelta();
 
-                change += delta;
-                if (delta > 0) {
-                    incoming += delta;
-                }
-                if (delta < 0) {
-                    outGoing += delta;
+                    change += delta;
+                    if (delta > 0) {
+                        incoming += delta;
+                    }
+                    if (delta < 0) {
+                        outGoing += delta;
+                    }
                 }
             });
         }
@@ -63,12 +65,11 @@ class EventData extends React.Component {
                                     ...styles.icon,
                                     color:
                                         change > 0
-                                            ? theme.palette.common
-                                                  .receivedPayment
+                                            ? theme.palette.common.receivedPayment
                                             : theme.palette.common.sentPayment
                                 }}
                             />
-                            <Typography variant={"body1"}>
+                            <Typography variant="body2">
                                 {t("Total change")}: {formatMoney(change, true)}
                             </Typography>
                         </Grid>
@@ -79,7 +80,7 @@ class EventData extends React.Component {
                                     color: theme.palette.common.receivedPayment
                                 }}
                             />
-                            <Typography variant={"body1"}>
+                            <Typography variant="body2">
                                 {t("Received")}: {formatMoney(incoming, true)}
                             </Typography>
                         </Grid>
@@ -90,7 +91,7 @@ class EventData extends React.Component {
                                     color: theme.palette.common.sentPayment
                                 }}
                             />
-                            <Typography variant={"body1"}>
+                            <Typography variant="body2">
                                 {t("Sent")}: {formatMoney(outGoing, true)}
                             </Typography>
                         </Grid>

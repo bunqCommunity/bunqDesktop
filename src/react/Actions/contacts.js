@@ -43,9 +43,7 @@ export function loadStoredContacts(BunqJSClient) {
 }
 
 export function contactInfoUpdateGoogle(BunqJSClient, accessToken) {
-    const failedMessage = window.t(
-        "We failed to load the contacts from your Google account"
-    );
+    const failedMessage = window.t("We failed to load the contacts from your Google account");
 
     return dispatch => {
         dispatch(contactsLoading());
@@ -90,25 +88,16 @@ export function contactInfoUpdateGoogle(BunqJSClient, accessToken) {
                         }
 
                         // has numbers, loop through them
-                        if (
-                            entry["gd$phoneNumber"] &&
-                            entry["gd$phoneNumber"].length > 0
-                        ) {
+                        if (entry["gd$phoneNumber"] && entry["gd$phoneNumber"].length > 0) {
                             entry["gd$phoneNumber"].map(phoneNumber => {
                                 const inputNumber = phoneNumber["uri"];
 
                                 if (inputNumber) {
                                     // remove the 'uri:' part from string
-                                    const removedFrontNumber = inputNumber.slice(
-                                        4,
-                                        inputNumber.length
-                                    );
+                                    const removedFrontNumber = inputNumber.slice(4, inputNumber.length);
 
                                     // replace - and spaces from string
-                                    const removedCharsNumber = removedFrontNumber.replace(
-                                        /[\- ]/g,
-                                        ""
-                                    );
+                                    const removedCharsNumber = removedFrontNumber.replace(/[\- ]/g, "");
 
                                     // add number to the list
                                     phoneNumbers.push(removedCharsNumber);
@@ -117,10 +106,7 @@ export function contactInfoUpdateGoogle(BunqJSClient, accessToken) {
                         }
 
                         // has fullname, add it
-                        if (
-                            entry["gd$name"] &&
-                            entry["gd$name"]["gd$fullName"]
-                        ) {
+                        if (entry["gd$name"] && entry["gd$name"]["gd$fullName"]) {
                             displayName = entry["gd$name"]["gd$fullName"]["$t"];
                         }
 
@@ -135,13 +121,7 @@ export function contactInfoUpdateGoogle(BunqJSClient, accessToken) {
                 }
 
                 // set the contacts
-                dispatch(
-                    contactsSetInfoType(
-                        collectedEntries,
-                        "GoogleContacts",
-                        BunqJSClient
-                    )
-                );
+                dispatch(contactsSetInfoType(collectedEntries, "GoogleContacts", BunqJSClient));
                 dispatch(contactsNotLoading());
             })
             .catch(error => {
@@ -152,9 +132,7 @@ export function contactInfoUpdateGoogle(BunqJSClient, accessToken) {
 }
 
 export function contactInfoUpdateOffice365(BunqJSClient, accessToken) {
-    const failedMessage = window.t(
-        "We failed to load the contacts from your Google account"
-    );
+    const failedMessage = window.t("We failed to load the contacts from your Google account");
 
     return dispatch => {
         dispatch(contactsLoading());
@@ -187,10 +165,7 @@ export function contactInfoUpdateOffice365(BunqJSClient, accessToken) {
                         const phoneNumbers = [];
 
                         // has emails, loop through them
-                        if (
-                            entry["EmailAddresses"] &&
-                            entry["EmailAddresses"].length > 0
-                        ) {
+                        if (entry["EmailAddresses"] && entry["EmailAddresses"].length > 0) {
                             entry["EmailAddresses"].map(email => {
                                 emails.push(email.Address);
                             });
@@ -198,30 +173,16 @@ export function contactInfoUpdateOffice365(BunqJSClient, accessToken) {
 
                         // combine phone numbers received into a single list
                         let receivedPhoneNumbers = [];
-                        if (
-                            entry["BusinessPhones"] &&
-                            entry["BusinessPhones"].length > 0
-                        ) {
-                            receivedPhoneNumbers = [
-                                ...receivedPhoneNumbers,
-                                ...entry["BusinessPhones"]
-                            ];
+                        if (entry["BusinessPhones"] && entry["BusinessPhones"].length > 0) {
+                            receivedPhoneNumbers = [...receivedPhoneNumbers, ...entry["BusinessPhones"]];
                         }
-                        if (
-                            entry["HomePhones"] &&
-                            entry["HomePhones"].length > 0
-                        ) {
-                            receivedPhoneNumbers = [
-                                ...receivedPhoneNumbers,
-                                ...entry["HomePhones"]
-                            ];
+                        if (entry["HomePhones"] && entry["HomePhones"].length > 0) {
+                            receivedPhoneNumbers = [...receivedPhoneNumbers, ...entry["HomePhones"]];
                         }
 
                         receivedPhoneNumbers.map(phoneNumber => {
                             // format as international
-                            const phoneNumberFormatted = getInternationalFormat(
-                                phoneNumber
-                            );
+                            const phoneNumberFormatted = getInternationalFormat(phoneNumber);
 
                             if (phoneNumberFormatted) {
                                 // add number to the list
@@ -240,13 +201,7 @@ export function contactInfoUpdateOffice365(BunqJSClient, accessToken) {
                 }
 
                 // set the contacts
-                dispatch(
-                    contactsSetInfoType(
-                        collectedEntries,
-                        "Office365",
-                        BunqJSClient
-                    )
-                );
+                dispatch(contactsSetInfoType(collectedEntries, "Office365", BunqJSClient));
                 dispatch(contactsNotLoading());
             })
             .catch(error => {
@@ -257,9 +212,7 @@ export function contactInfoUpdateOffice365(BunqJSClient, accessToken) {
 }
 
 export function contactInfoUpdateApple(BunqJSClient, files) {
-    const failedMessage = window.t(
-        "We failed to load the contacts from the vCard file"
-    );
+    const failedMessage = window.t("We failed to load the contacts from the vCard file");
 
     return dispatch => {
         dispatch(contactsLoading());
@@ -291,12 +244,7 @@ export function contactInfoUpdateApple(BunqJSClient, files) {
             if (vcardInstance.get("n")) {
                 const nameData = vcardInstance.get("n");
                 const nameParts = nameData.valueOf().split(";");
-                const [
-                    familyName,
-                    givenName,
-                    additionalName,
-                    prefix
-                ] = nameParts;
+                const [familyName, givenName, additionalName, prefix] = nameParts;
 
                 // combine the parts into a single display name
                 displayName = `${prefix} ${givenName} ${additionalName} ${familyName}`.trim();
@@ -308,9 +256,7 @@ export function contactInfoUpdateApple(BunqJSClient, files) {
 
                 phoneData.map(phoneNumber => {
                     // format as international
-                    const phoneNumberFormatted = getInternationalFormat(
-                        phoneNumber.valueOf()
-                    );
+                    const phoneNumberFormatted = getInternationalFormat(phoneNumber.valueOf());
                     if (phoneNumberFormatted) {
                         // add number to the list
                         phoneNumbers.push(phoneNumberFormatted);
@@ -337,9 +283,7 @@ export function contactInfoUpdateApple(BunqJSClient, files) {
         });
 
         // set the contacts
-        dispatch(
-            contactsSetInfoType(collectedEntries, "AppleContacts", BunqJSClient)
-        );
+        dispatch(contactsSetInfoType(collectedEntries, "AppleContacts", BunqJSClient));
         dispatch(contactsNotLoading());
     };
 }

@@ -8,10 +8,7 @@ import Slide from "@material-ui/core/Slide";
 
 import RefreshIcon from "@material-ui/icons/Refresh";
 
-import {
-    applicationSetOffline,
-    applicationSetOnline
-} from "../Actions/application";
+import { applicationSetOffline, applicationSetOnline } from "../Actions/application";
 
 const Transition = props => <Slide direction={"down"} {...props} />;
 
@@ -75,7 +72,7 @@ class NetworkStatusChecker extends React.PureComponent {
                     <IconButton
                         key="close"
                         aria-label="Check again"
-                        color={"secondary"}
+                        color="secondary"
                         onClick={this.checkNetWorkStatus}
                         disabled={this.state.loading}
                     >

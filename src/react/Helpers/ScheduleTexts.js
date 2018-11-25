@@ -1,19 +1,9 @@
 import { humanReadableDate } from "./Utils";
 
-export default (
-    t,
-    scheduleStartDate,
-    scheduleEndDate,
-    recurrenceSize,
-    recurrenceUnit
-) => {
+export default (t, scheduleStartDate, scheduleEndDate, recurrenceSize, recurrenceUnit) => {
     let scheduledPaymentPrimary;
-    const scheduledPaymentSecondary = `${t("From")}: ${humanReadableDate(
-        scheduleStartDate
-    )} ${
-        scheduleEndDate
-            ? ` - ${t("Until")}: ${humanReadableDate(scheduleEndDate)}`
-            : ""
+    const scheduledPaymentSecondary = `${t("From")}: ${humanReadableDate(scheduleStartDate)} ${
+        scheduleEndDate ? ` - ${t("Until")}: ${humanReadableDate(scheduleEndDate)}` : ""
     }`;
 
     const onceText = t("once");

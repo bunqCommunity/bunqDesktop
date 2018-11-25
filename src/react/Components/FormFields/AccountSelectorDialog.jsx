@@ -29,19 +29,11 @@ const styles = {
     }
 };
 
-const AccountItem = ({
-    account,
-    onClick,
-    BunqJSClient,
-    hideBalance,
-    shareInviteBankResponses
-}) => {
+const AccountItem = ({ account, onClick, BunqJSClient, hideBalance, shareInviteBankResponses }) => {
     // format default balance
     let formattedBalance = account.balance ? account.balance.value : 0;
 
-    const filteredInviteResponses = shareInviteBankResponses.filter(
-        filterShareInviteBankResponses(account.id)
-    );
+    const filteredInviteResponses = shareInviteBankResponses.filter(filterShareInviteBankResponses(account.id));
 
     // attempt to get connect budget if possible
     if (filteredInviteResponses.length > 0) {
@@ -63,10 +55,7 @@ const AccountItem = ({
                     imageUUID={account.avatar.image[0].attachment_public_uuid}
                 />
             </Avatar>
-            <ListItemText
-                primary={account.description}
-                secondary={hideBalance ? "" : formattedBalance}
-            />
+            <ListItemText primary={account.description} secondary={hideBalance ? "" : formattedBalance} />
         </ListItem>
     );
 };
@@ -123,24 +112,15 @@ class AccountSelectorDialog extends React.Component {
                 if (filteredInviteResponses.length == 0) return true;
 
                 const firstInviteResponse = filteredInviteResponses.pop();
-                const inviteResponse =
-                    firstInviteResponse.ShareInviteBankResponse;
+                const inviteResponse = firstInviteResponse.ShareInviteBankResponse;
 
                 // get the key values for this list
-                const shareDetailKeys = Object.keys(
-                    inviteResponse.share_detail
-                );
+                const shareDetailKeys = Object.keys(inviteResponse.share_detail);
 
-                if (
-                    hideDraftOnly &&
-                    shareDetailKeys.includes("ShareDetailDraftPayment")
-                ) {
+                if (hideDraftOnly && shareDetailKeys.includes("ShareDetailDraftPayment")) {
                     return false;
                 }
-                if (
-                    hideShowOnly &&
-                    shareDetailKeys.includes("ShareDetailReadOnly")
-                ) {
+                if (hideShowOnly && shareDetailKeys.includes("ShareDetailReadOnly")) {
                     return false;
                 }
 
@@ -179,10 +159,7 @@ class AccountSelectorDialog extends React.Component {
 
         return (
             <FormControl style={{ ...styles.formControl, ...style }}>
-                <Dialog
-                    open={this.state.open}
-                    onClose={this.handleRequestClose}
-                >
+                <Dialog open={this.state.open} onClose={this.handleRequestClose}>
                     <DialogTitle>{t("Select an account")}</DialogTitle>
                     <DialogContent>
                         <List>{accountItems}</List>
@@ -207,13 +184,10 @@ AccountSelectorDialog.defaultProps = {
 
 const mapStateToProps = state => {
     return {
-        shareInviteBankResponses:
-            state.share_invite_bank_responses.share_invite_bank_responses,
+        shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
 
         hideBalance: state.options.hide_balance
     };
 };
 
-export default connect(mapStateToProps)(
-    translate("translations")(AccountSelectorDialog)
-);
+export default connect(mapStateToProps)(translate("translations")(AccountSelectorDialog));

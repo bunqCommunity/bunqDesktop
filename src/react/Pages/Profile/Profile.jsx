@@ -6,7 +6,6 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -16,10 +15,10 @@ import TableRow from "@material-ui/core/TableRow";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
-import Address from "./Address";
+import ProfileDetailsForm from "./ProfileDetailsForm";
 
 import { openSnackbar } from "../../Actions/snackbar";
-import { userLogin } from "../../Actions/user";
+import { usersUpdate } from "../../Actions/users";
 
 import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
 import { formatMoney } from "../../Helpers/Utils";
@@ -51,27 +50,8 @@ class Profile extends React.Component {
         super(props, context);
         this.state = {
             loading: false,
-
-            public_nick_name: "",
-
-            address_main: {
-                city: "",
-                country: "",
-                house_number: "",
-                postal_code: "",
-                po_box: "",
-                street: ""
-            },
-            address_postal: {
-                city: "",
-                country: "",
-                house_number: "",
-                postal_code: "",
-                po_box: "",
-                street: ""
-            },
-
-            totalBalance: 0
+            totalBalance: 0,
+            normalizedUserInfo: false
         };
     }
 
@@ -85,14 +65,17 @@ class Profile extends React.Component {
     }
 
     componentDidUpdate(oldProps) {
+        if (oldProps.userLoading === false && this.props.userLoading === true) {
+            // if user data is loading, reset the initial user state
+            this.setState({
+                normalizedUserInfo: false
+            });
+        }
         if (oldProps.userLoading === true && this.props.userLoading === false) {
             this.userToState();
         }
 
-        if (
-            oldProps.accountsLoading === true &&
-            this.props.accountsLoading === false
-        ) {
+        if (oldProps.accountsLoading === true && this.props.accountsLoading === false) {
             const totalBalance = this.calculateTotalBalance();
             this.setState({
                 totalBalance: totalBalance
@@ -109,39 +92,31 @@ class Profile extends React.Component {
     userToState = () => {
         const user = this.props.user;
         this.setState({
-            public_nick_name: user.public_nick_name,
-            address_main: this.normalizeAddress(user.address_main),
-            address_postal: this.normalizeAddress(user.address_postal)
+            normalizedUserInfo: {
+                public_nick_name: user.public_nick_name,
+                address_main: this.normalizeAddress(user.address_main),
+                address_postal: this.normalizeAddress(user.address_postal)
+            }
         });
     };
 
     normalizeAddress = address => {
         const formattedAddress = {};
         Object.keys(address).forEach(key => {
-            formattedAddress[key] =
-                address[key] !== null && typeof address[key] !== "undefined"
-                    ? address[key]
-                    : "";
+            formattedAddress[key] = address[key] !== null && typeof address[key] !== "undefined" ? address[key] : "";
         });
         return formattedAddress;
     };
 
-    onChangeAddress = addressType => type => event => {
-        // set the value for this address and type
-        this.state[addressType][type] = event.target.value;
-        // update the actual state
-        this.setState({
-            [addressType]: this.state[addressType]
-        });
-    };
     onChange = key => event => {
         this.setState({
             [key]: event.target.value
         });
     };
 
-    updateSettings = () => {
-        const { address_postal, address_main, public_nick_name } = this.state;
+    updateSettings = data => {
+        const { address_postal, address_main, public_nick_name } = data;
+
         const { t, user, userType, BunqJSClient } = this.props;
         const errorMessage = t("We failed to update your user information");
         this.setState({ loading: true });
@@ -166,16 +141,13 @@ class Profile extends React.Component {
             public_nick_name: public_nick_name
         };
 
-        const apiHandler =
-            userType === "UserPerson"
-                ? BunqJSClient.api.userPerson
-                : BunqJSClient.api.userCompany;
+        const apiHandler = userType === "UserPerson" ? BunqJSClient.api.userPerson : BunqJSClient.api.userCompany;
 
         apiHandler
             .put(user.id, userInfo)
             .then(response => {
                 this.setState({ loading: false });
-                this.props.userLogin(userType, true);
+                this.props.usersUpdate(true);
             })
             .catch(error => {
                 this.setState({ loading: false });
@@ -191,7 +163,8 @@ class Profile extends React.Component {
         if (userLoading === false && this.state.loading === false) {
             let businessInfo = null;
             if (userType === "UserCompany") {
-                const hasSafeKeepingFee = totalBalance > 100000;
+                const safeKeepingValue = totalBalance - 100000;
+                const hasSafeKeepingFee = safeKeepingValue > 0;
 
                 let costsTable = null;
                 if (hasSafeKeepingFee) {
@@ -200,47 +173,33 @@ class Profile extends React.Component {
                             <TableHead>
                                 <TableRow>
                                     <TableCell>{t("Days")}</TableCell>
-                                    <TableCell numeric>
-                                        {t("Estimated total cost")}
-                                    </TableCell>
-                                    <TableCell numeric>
-                                        {t("Balance after payments")}
-                                    </TableCell>
+                                    <TableCell numeric>{t("Estimated total cost")}</TableCell>
+                                    <TableCell numeric>{t("Balance after payments")}</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {[1, 7, 30, 90, 365].map(days => {
                                     // to keep track of the amount across the dates
-                                    let accountBalance = totalBalance;
+                                    let accountBalance = safeKeepingValue;
                                     let totalPayment = 0;
 
                                     // go through the days to calculate historic change
                                     for (let day = 0; day < days; day++) {
                                         const thousands = accountBalance / 1000;
-                                        let nextPayment =
-                                            (thousands * 2.4) / 100;
+                                        let nextPayment = (thousands * 2.4) / 100;
 
                                         // update balance
-                                        accountBalance =
-                                            accountBalance - nextPayment;
-                                        totalPayment =
-                                            totalPayment + nextPayment;
+                                        accountBalance = accountBalance - nextPayment;
+                                        totalPayment = totalPayment + nextPayment;
                                     }
 
                                     return (
                                         <TableRow key={`days${days}`}>
-                                            <TableCell
-                                                component="th"
-                                                scope="row"
-                                            >
+                                            <TableCell component="th" scope="row">
                                                 {days}
                                             </TableCell>
-                                            <TableCell numeric>
-                                                {formatMoney(totalPayment)}
-                                            </TableCell>
-                                            <TableCell numeric>
-                                                {formatMoney(accountBalance)}
-                                            </TableCell>
+                                            <TableCell numeric>{formatMoney(totalPayment)}</TableCell>
+                                            <TableCell numeric>{formatMoney(accountBalance)}</TableCell>
                                         </TableRow>
                                     );
                                 })}
@@ -253,7 +212,7 @@ class Profile extends React.Component {
                     <Paper style={styles.paper}>
                         <Grid container spacing={16} justify="center">
                             <Grid item xs={12}>
-                                <TranslateTypography variant="subheading">
+                                <TranslateTypography variant="subtitle1">
                                     Safekeeping fee calculator
                                 </TranslateTypography>
                             </Grid>
@@ -264,9 +223,7 @@ class Profile extends React.Component {
                                     step={0.01}
                                     type="number"
                                     label="Total account balance"
-                                    value={parseFloat(
-                                        totalBalance ? totalBalance : 0
-                                    ).toFixed(2)}
+                                    value={parseFloat(totalBalance ? totalBalance : 0).toFixed(2)}
                                     onChange={this.onChange("totalBalance")}
                                 />
                             </Grid>
@@ -275,9 +232,7 @@ class Profile extends React.Component {
                                 {hasSafeKeepingFee ? (
                                     costsTable
                                 ) : (
-                                    <TranslateTypography variant="subheading">
-                                        No safekeeping fee
-                                    </TranslateTypography>
+                                    <TranslateTypography variant="subtitle1">No safekeeping fee</TranslateTypography>
                                 )}
                             </Grid>
                         </Grid>
@@ -288,59 +243,12 @@ class Profile extends React.Component {
             content = (
                 <React.Fragment>
                     <Paper style={styles.paper}>
-                        <Grid container spacing={16}>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label={t("Public nick name")}
-                                    style={styles.textField}
-                                    value={this.state.public_nick_name}
-                                    onChange={this.onChange("public_nick_name")}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} sm={6}>
-                                <TranslateTypography
-                                    variant={"title"}
-                                    style={styles.title}
-                                >
-                                    Main address
-                                </TranslateTypography>
-                                <Address
-                                    t={t}
-                                    address={this.state.address_main}
-                                    onChange={this.onChangeAddress(
-                                        "address_main"
-                                    )}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} sm={6}>
-                                <TranslateTypography
-                                    variant={"title"}
-                                    style={styles.title}
-                                >
-                                    Postal address
-                                </TranslateTypography>
-                                <Address
-                                    t={t}
-                                    address={this.state.address_postal}
-                                    onChange={this.onChangeAddress(
-                                        "address_postal"
-                                    )}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} sm={6}>
-                                <Button
-                                    disabled={this.state.loading}
-                                    onClick={this.updateSettings}
-                                    variant={"raised"}
-                                    color={"primary"}
-                                >
-                                    Update
-                                </Button>
-                            </Grid>
-                        </Grid>
+                        {this.state.normalizedUserInfo && (
+                            <ProfileDetailsForm
+                                initialValues={this.state.normalizedUserInfo}
+                                onSubmit={this.updateSettings}
+                            />
+                        )}
                     </Paper>
 
                     {businessInfo}
@@ -395,11 +303,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
-        userLogin: (userType, updated) =>
-            dispatch(userLogin(BunqJSClient, userType, updated)),
+        usersUpdate: updated => dispatch(usersUpdate(BunqJSClient, updated)),
 
-        BunqErrorHandler: (error, message) =>
-            BunqErrorHandler(dispatch, error, message)
+        BunqErrorHandler: (error, message) => BunqErrorHandler(dispatch, error, message)
     };
 };
 

@@ -8,11 +8,7 @@ const CryptoWorker = require("worker-loader!../WebWorkers/crypto.worker.js");
  * @param iv
  * @returns {Promise<*>}
  */
-export const storeDecryptString = async (
-    location,
-    encryptionKey,
-    iv = false
-) => {
+export const storeDecryptString = async (location, encryptionKey, iv = false) => {
     const storedData = store.get(location);
 
     let storedIv = iv;

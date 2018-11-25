@@ -19,21 +19,15 @@ export default props => {
     const colors = [];
     const labels = [];
     Object.keys(props.categoryTransactionHistory).forEach(categoryKey => {
-        const categoryAmount =
-            props.categoryTransactionHistory[categoryKey][
-                props.categoryTransactionType
-            ];
+        const categoryAmount = props.categoryTransactionHistory[categoryKey][props.categoryTransactionType];
         const category = props.categories[categoryKey];
 
         // reduce history to a single value
-        const categoryValue = categoryAmount.reduce(
-            (accumulator, currentValue) => {
-                if (props.categoryTransactionType !== "total") {
-                }
-                return accumulator + ensurePositive(currentValue);
-            },
-            0
-        );
+        const categoryValue = categoryAmount.reduce((accumulator, currentValue) => {
+            if (props.categoryTransactionType !== "total") {
+            }
+            return accumulator + ensurePositive(currentValue);
+        }, 0);
 
         // add the total count of this category to the data set
         data.push(categoryValue);
@@ -70,9 +64,7 @@ export default props => {
                     const datasetLabel = chart.labels[tooltipItem.index] || "";
 
                     // get the actual value and format a label
-                    return `${datasetLabel}: ${moneyTemplate(
-                        chart.datasets[0].data[tooltipItem.index]
-                    )}`;
+                    return `${datasetLabel}: ${moneyTemplate(chart.datasets[0].data[tooltipItem.index])}`;
                 }
             }
         }

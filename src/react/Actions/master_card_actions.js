@@ -2,18 +2,10 @@ import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { storeDecryptString } from "../Helpers/CryptoWorkerWrapper";
 import MasterCardAction from "../Models/MasterCardAction";
 
-export const STORED_MASTER_CARD_ACTIONS =
-    "BUNQDESKTOP_STORED_MASTER_CARD_ACTIONS";
+export const STORED_MASTER_CARD_ACTIONS = "BUNQDESKTOP_STORED_MASTER_CARD_ACTIONS";
 
-export function masterCardActionsSetInfo(
-    masterCardActions,
-    account_id,
-    resetOldItems = false,
-    BunqJSClient = false
-) {
-    const type = resetOldItems
-        ? "MASTER_CARD_ACTIONS_SET_INFO"
-        : "MASTER_CARD_ACTIONS_UPDATE_INFO";
+export function masterCardActionsSetInfo(masterCardActions, account_id, resetOldItems = false, BunqJSClient = false) {
+    const type = resetOldItems ? "MASTER_CARD_ACTIONS_SET_INFO" : "MASTER_CARD_ACTIONS_UPDATE_INFO";
 
     return {
         type: type,
@@ -28,22 +20,12 @@ export function masterCardActionsSetInfo(
 export function loadStoredMasterCardActions(BunqJSClient) {
     return dispatch => {
         dispatch(masterCardActionsLoading());
-        storeDecryptString(
-            STORED_MASTER_CARD_ACTIONS,
-            BunqJSClient.Session.encryptionKey
-        )
+        storeDecryptString(STORED_MASTER_CARD_ACTIONS, BunqJSClient.Session.encryptionKey)
             .then(data => {
                 if (data && data.items) {
                     // turn plain objects into Model objects
-                    const masterCardActionsNew = data.items.map(
-                        item => new MasterCardAction(item)
-                    );
-                    dispatch(
-                        masterCardActionsSetInfo(
-                            masterCardActionsNew,
-                            data.account_id
-                        )
-                    );
+                    const masterCardActionsNew = data.items.map(item => new MasterCardAction(item));
+                    dispatch(masterCardActionsSetInfo(masterCardActionsNew, data.account_id));
                 }
                 dispatch(masterCardActionsNotLoading());
             })
@@ -63,9 +45,7 @@ export function masterCardActionsUpdate(
         older_id: false
     }
 ) {
-    const failedMessage = window.t(
-        "We received the following error while loading your mastercard payments"
-    );
+    const failedMessage = window.t("We received the following error while loading your mastercard payments");
 
     return dispatch => {
         dispatch(masterCardActionsLoading());
@@ -73,18 +53,9 @@ export function masterCardActionsUpdate(
             .list(userId, accountId, options)
             .then(masterCardActions => {
                 // turn plain objects into Model objects
-                const masterCardActionsNew = masterCardActions.map(
-                    item => new MasterCardAction(item)
-                );
+                const masterCardActionsNew = masterCardActions.map(item => new MasterCardAction(item));
 
-                dispatch(
-                    masterCardActionsSetInfo(
-                        masterCardActionsNew,
-                        accountId,
-                        false,
-                        BunqJSClient
-                    )
-                );
+                dispatch(masterCardActionsSetInfo(masterCardActionsNew, accountId, false, BunqJSClient));
                 dispatch(masterCardActionsNotLoading());
             })
             .catch(error => {

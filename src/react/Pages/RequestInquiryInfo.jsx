@@ -3,7 +3,6 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { ipcRenderer } from "electron";
 import Helmet from "react-helmet";
-import Redirect from "react-router-dom/Redirect";
 import CopyToClipboard from "react-copy-to-clipboard";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
@@ -71,15 +70,9 @@ class RequestInquiryInfo extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.initialBunqConnect) {
+        if (this.props.registrationReady) {
             const { requestInquiryId, accountId } = this.props.match.params;
-            this.props.requestInquiryUpdate(
-                this.props.user.id,
-                accountId === undefined
-                    ? this.props.accountsSelectedAccount
-                    : accountId,
-                requestInquiryId
-            );
+            this.props.requestInquiryUpdate(this.props.user.id, accountId, requestInquiryId);
             this.setState({ initialUpdate: true });
         }
     }
@@ -88,18 +81,11 @@ class RequestInquiryInfo extends React.Component {
         if (
             this.props.user &&
             this.props.user.id &&
-            this.props.initialBunqConnect &&
-            this.props.match.params.requestInquiryId !==
-                this.props.match.params.requestInquiryId
+            this.props.registrationReady &&
+            this.props.match.params.requestInquiryId !== this.props.match.params.requestInquiryId
         ) {
             const { requestInquiryId, accountId } = this.props.match.params;
-            this.props.requestInquiryUpdate(
-                this.props.user.id,
-                accountId === undefined
-                    ? this.props.accountsSelectedAccount
-                    : accountId,
-                requestInquiryId
-            );
+            this.props.requestInquiryUpdate(this.props.user.id, accountId, requestInquiryId);
             this.setState({ initialUpdate: true });
         }
         return null;
@@ -108,27 +94,9 @@ class RequestInquiryInfo extends React.Component {
 
     cancelInquiry = () => {
         const { requestInquiryId, accountId } = this.props.match.params;
-        this.props.requestInquiryCancel(
-            this.props.user.id,
-            accountId === undefined
-                ? this.props.accountsSelectedAccount
-                : accountId,
-            requestInquiryId
-        );
+        this.props.requestInquiryCancel(this.props.user.id, accountId, requestInquiryId);
     };
 
-    startPayment = event => {
-        const requestInquiryInfo = this.props.requestInquiryInfo;
-        this.props.history.push(
-            `/pay?amount=${requestInquiryInfo.getAmount()}`
-        );
-    };
-    startRequest = event => {
-        const requestInquiryInfo = this.props.requestInquiryInfo;
-        this.props.history.push(
-            `/request?amount=${requestInquiryInfo.getAmount()}`
-        );
-    };
     createPdfExport = () => {
         const { requestInquiryInfo } = this.props;
 
@@ -150,29 +118,25 @@ class RequestInquiryInfo extends React.Component {
         });
     };
 
+    onRepeat = e => {
+        this.props.history.push(`/request?amount=${this.props.requestInquiryInfo.getAmount()}`);
+    };
+    onForward = e => {
+        this.props.history.push(`/pay?amount=${this.props.requestInquiryInfo.getAmount()}`);
+    };
+
     render() {
         const {
-            accountsSelectedAccount,
+            limitedPermissions,
             requestInquiryInfo,
             requestInquiryLoading,
             requestInquiryInfoLoading,
             t
         } = this.props;
-        const paramAccountId = this.props.match.params.accountId;
-
-        // we require a selected account before we can display payment information
-        if (accountsSelectedAccount === false && paramAccountId !== undefined) {
-            // no account_id set
-            return <Redirect to={"/"} />;
-        }
 
         let content;
         let noteTextsForm = null;
-        if (
-            requestInquiryInfo === false ||
-            requestInquiryInfoLoading === true ||
-            this.state.initialUpdate === false
-        ) {
+        if (requestInquiryInfo === false || requestInquiryInfoLoading === true || this.state.initialUpdate === false) {
             content = (
                 <Grid container spacing={24} justify={"center"}>
                     <Grid item xs={12}>
@@ -184,9 +148,7 @@ class RequestInquiryInfo extends React.Component {
             );
         } else {
             const requestInquiry = requestInquiryInfo.RequestInquiry;
-            const paymentDateCreated = humanReadableDate(
-                requestInquiry.created
-            );
+            const paymentDateCreated = humanReadableDate(requestInquiry.created);
             const paymentDate = humanReadableDate(requestInquiry.updated);
             const paymentAmount = requestInquiry.amount_inquired.value;
             const formattedPaymentAmount = formatMoney(paymentAmount);
@@ -206,26 +168,32 @@ class RequestInquiryInfo extends React.Component {
                 );
             }
 
-            noteTextsForm = (
-                <NoteTextForm
-                    BunqJSClient={this.props.BunqJSClient}
-                    event={requestInquiry}
-                />
-            );
+            noteTextsForm = <NoteTextForm BunqJSClient={this.props.BunqJSClient} event={requestInquiry} />;
 
+            const transactionHeaderProps = {
+                BunqJSClient: this.props.BunqJSClient,
+                to: requestInquiry.counterparty_alias,
+                from: requestInquiry.user_alias_created,
+                onForwardColor: "secondary",
+                user: this.props.user,
+                transferAmountComponent: (
+                    <MoneyAmountLabel
+                        component={"h1"}
+                        style={{ textAlign: "center" }}
+                        info={requestInquiry}
+                        type="requestInquiry"
+                    >
+                        {formattedPaymentAmount}
+                    </MoneyAmountLabel>
+                )
+            };
+            if (requestInquiryInfo.getDelta() > 0) {
+                transactionHeaderProps.onRepeat = this.onRepeat;
+                transactionHeaderProps.onForward = this.onForward;
+            }
             content = (
-                <Grid
-                    container
-                    spacing={24}
-                    align={"center"}
-                    justify={"center"}
-                >
-                    <TransactionHeader
-                        BunqJSClient={this.props.BunqJSClient}
-                        to={requestInquiry.counterparty_alias}
-                        from={requestInquiry.user_alias_created}
-                        user={this.props.user}
-                    />
+                <Grid container spacing={24} align={"center"} justify={"center"}>
+                    <TransactionHeader {...transactionHeaderProps} />
 
                     <FilterCreationDialog
                         t={t}
@@ -235,32 +203,19 @@ class RequestInquiryInfo extends React.Component {
                     />
 
                     <Grid item xs={12}>
-                        <MoneyAmountLabel
-                            component={"h1"}
-                            style={{ textAlign: "center" }}
-                            info={requestInquiry}
-                            type="requestInquiry"
-                        >
-                            {formattedPaymentAmount}
-                        </MoneyAmountLabel>
-
-                        <Typography
-                            style={{ textAlign: "center" }}
-                            variant={"body1"}
-                        >
-                            {requestInquiryLabel}
-                        </Typography>
-
                         <List style={styles.list}>
+                            <Divider />
+                            <ListItem>
+                                <ListItemText primary={requestInquiryLabel} />
+                            </ListItem>
+
                             {requestInquiry.description.length > 0
                                 ? [
                                       <Divider />,
                                       <ListItem>
                                           <ListItemText
                                               primary={"Description"}
-                                              secondary={
-                                                  requestInquiry.description
-                                              }
+                                              secondary={requestInquiry.description}
                                           />
                                       </ListItem>
                                   ]
@@ -268,10 +223,7 @@ class RequestInquiryInfo extends React.Component {
 
                             <Divider />
                             <ListItem>
-                                <ListItemText
-                                    primary={t("Date")}
-                                    secondary={paymentDate}
-                                />
+                                <ListItemText primary={t("Date")} secondary={paymentDate} />
                             </ListItem>
                             {requestInquiry.bunqme_share_url ? (
                                 <React.Fragment>
@@ -279,16 +231,10 @@ class RequestInquiryInfo extends React.Component {
                                     <ListItem>
                                         <ListItemText
                                             primary={"bunq.me Url"}
-                                            secondary={
-                                                requestInquiry.bunqme_share_url
-                                            }
+                                            secondary={requestInquiry.bunqme_share_url}
                                         />
                                         <ListItemSecondaryAction>
-                                            <CopyToClipboard
-                                                text={
-                                                    requestInquiry.bunqme_share_url
-                                                }
-                                            >
+                                            <CopyToClipboard text={requestInquiry.bunqme_share_url}>
                                                 <IconButton>
                                                     <CopyIcon />
                                                 </IconButton>
@@ -303,10 +249,7 @@ class RequestInquiryInfo extends React.Component {
                                     <ListItem>
                                         <ListItemText
                                             primary={"IBAN"}
-                                            secondary={
-                                                requestInquiry
-                                                    .counterparty_alias.iban
-                                            }
+                                            secondary={requestInquiry.counterparty_alias.iban}
                                         />
                                     </ListItem>
                                 </React.Fragment>
@@ -314,15 +257,12 @@ class RequestInquiryInfo extends React.Component {
                             <Divider />
                         </List>
 
-                        {requestInquiry.status === "PENDING" ? (
+                        {!limitedPermissions && requestInquiry.status === "PENDING" ? (
                             <Grid container spacing={16} justify="center">
                                 <Grid item xs={12} sm={6}>
                                     <TranslateButton
-                                        variant="raised"
-                                        disabled={
-                                            requestInquiryLoading ||
-                                            requestInquiryInfoLoading
-                                        }
+                                        variant="contained"
+                                        disabled={requestInquiryLoading || requestInquiryInfoLoading}
                                         onClick={this.cancelInquiry}
                                         color="secondary"
                                         style={styles.button}
@@ -333,18 +273,14 @@ class RequestInquiryInfo extends React.Component {
                             </Grid>
                         ) : null}
 
-                        <CategorySelector
-                            type={"RequestInquiry"}
-                            item={requestInquiryInfo}
-                        />
+                        <CategorySelector type={"RequestInquiry"} item={requestInquiryInfo} />
                     </Grid>
                 </Grid>
             );
         }
 
         const exportData =
-            this.props.requestInquiryInfo &&
-            this.props.requestInquiryInfo._rawData
+            this.props.requestInquiryInfo && this.props.requestInquiryInfo._rawData
                 ? this.props.requestInquiryInfo._rawData.RequestInquiry
                 : {};
 
@@ -355,19 +291,14 @@ class RequestInquiryInfo extends React.Component {
                 </Helmet>
 
                 <ExportDialog
-                    closeModal={event =>
-                        this.setState({ displayExport: false })
-                    }
+                    closeModal={event => this.setState({ displayExport: false })}
                     title={t("Export info")}
                     open={this.state.displayExport}
                     object={exportData}
                 />
 
                 <Grid item xs={12} sm={2} lg={3}>
-                    <Button
-                        onClick={this.props.history.goBack}
-                        style={styles.btn}
-                    >
+                    <Button onClick={this.props.history.goBack} style={styles.btn}>
                         <ArrowBackIcon />
                     </Button>
                 </Grid>
@@ -379,20 +310,7 @@ class RequestInquiryInfo extends React.Component {
                 </Grid>
 
                 <SpeedDial
-                    hidden={false}
                     actions={[
-                        {
-                            name: t("Send payment"),
-                            icon: ArrowUpIcon,
-                            color: "action",
-                            onClick: this.startPayment
-                        },
-                        {
-                            name: t("Send request"),
-                            icon: ArrowDownIcon,
-                            color: "action",
-                            onClick: this.startRequest
-                        },
                         {
                             name: t("Create filter"),
                             icon: FilterIcon,
@@ -408,8 +326,7 @@ class RequestInquiryInfo extends React.Component {
                         {
                             name: t("View debug information"),
                             icon: HelpIcon,
-                            onClick: event =>
-                                this.setState({ displayExport: true })
+                            onClick: event => this.setState({ displayExport: true })
                         }
                     ]}
                 />
@@ -421,41 +338,26 @@ class RequestInquiryInfo extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+        limitedPermissions: state.user.limited_permissions,
+
         requestInquiryInfo: state.request_inquiry_info.request_inquiry_info,
         requestInquiryInfoLoading: state.request_inquiry_info.loading,
 
         requestInquiryLoading: state.request_inquiry.loading,
 
-        pdfSaveModeEnabled: state.application.pdf_save_mode_enabled,
-
-        accountsSelectedAccount: state.accounts.selected_account
+        pdfSaveModeEnabled: state.application.pdf_save_mode_enabled
     };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        applicationSetPDFMode: enabled =>
-            dispatch(applicationSetPDFMode(enabled)),
+        applicationSetPDFMode: enabled => dispatch(applicationSetPDFMode(enabled)),
 
         requestInquiryUpdate: (user_id, account_id, request_inquiry_id) =>
-            dispatch(
-                requestInquiryUpdate(
-                    BunqJSClient,
-                    user_id,
-                    account_id,
-                    request_inquiry_id
-                )
-            ),
+            dispatch(requestInquiryUpdate(BunqJSClient, user_id, account_id, request_inquiry_id)),
         requestInquiryCancel: (user_id, account_id, request_inquiry_id) =>
-            dispatch(
-                requestInquiryCancel(
-                    BunqJSClient,
-                    user_id,
-                    account_id,
-                    request_inquiry_id
-                )
-            )
+            dispatch(requestInquiryCancel(BunqJSClient, user_id, account_id, request_inquiry_id))
     };
 };
 

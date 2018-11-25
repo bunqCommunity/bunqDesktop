@@ -25,8 +25,7 @@ export default (state = defaultState, action) => {
 
             return {
                 ...state,
-                share_invite_bank_responses:
-                    action.payload.share_invite_bank_responses
+                share_invite_bank_responses: action.payload.share_invite_bank_responses
             };
 
         case "SHARE_INVITE_RESPONSES_IS_LOADING":

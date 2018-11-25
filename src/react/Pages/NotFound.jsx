@@ -3,7 +3,7 @@ import Helmet from "react-helmet";
 import { translate } from "react-i18next";
 import Typography from "@material-ui/core/Typography";
 
-import TypographyTranslate from "../Components/TranslationHelpers/Typography";
+import TranslateTypography from "../Components/TranslationHelpers/Typography";
 
 class NotFound extends React.Component {
     constructor(props, context) {
@@ -15,13 +15,9 @@ class NotFound extends React.Component {
         return (
             <div style={{ textAlign: "center", marginTop: 40 }}>
                 <Helmet>
-                    <title>{`bunqDesktop - 404 ${this.props.t(
-                        "Not Found"
-                    )}`}</title>
+                    <title>{`bunqDesktop - 404 ${this.props.t("Not Found")}`}</title>
                 </Helmet>
-                <TypographyTranslate variant="title">
-                    Page Not Found
-                </TypographyTranslate>
+                <TranslateTypography variant="h6">Page Not Found</TranslateTypography>
             </div>
         );
     }

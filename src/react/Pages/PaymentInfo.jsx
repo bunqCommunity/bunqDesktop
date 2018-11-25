@@ -3,7 +3,6 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { ipcRenderer } from "electron";
 import Helmet from "react-helmet";
-import Redirect from "react-router-dom/Redirect";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
@@ -68,19 +67,9 @@ class PaymentInfo extends React.Component {
     }
 
     componentDidMount() {
-        if (
-            this.props.user &&
-            this.props.user.id &&
-            this.props.initialBunqConnect
-        ) {
+        if (this.props.user && this.props.user.id && this.props.registrationReady) {
             const { paymentId, accountId } = this.props.match.params;
-            this.props.updatePayment(
-                this.props.user.id,
-                accountId === undefined
-                    ? this.props.accountsSelectedAccount
-                    : accountId,
-                paymentId
-            );
+            this.props.updatePayment(this.props.user.id, accountId, paymentId);
             this.setState({ initialUpdate: true });
         }
     }
@@ -89,46 +78,23 @@ class PaymentInfo extends React.Component {
         if (
             this.props.user &&
             this.props.user.id &&
-            this.props.initialBunqConnect &&
-            this.props.match.params.paymentId !==
-                nextProps.match.params.paymentId
+            this.props.registrationReady &&
+            this.props.match.params.paymentId !== nextProps.match.params.paymentId
         ) {
             const { paymentId, accountId } = this.props.match.params;
-            this.props.updatePayment(
-                this.props.user.id,
-                accountId === undefined
-                    ? this.props.accountsSelectedAccount
-                    : accountId,
-                paymentId
-            );
+            this.props.updatePayment(this.props.user.id, accountId, paymentId);
             this.setState({ initialUpdate: true });
         }
         return null;
     }
     componentDidUpdate() {}
 
-    toggleCategoryDialog = event =>
-        this.setState({ displayCategories: !this.state.displayCategories });
-
-    startPaymentIban = alias => {
-        this.props.history.push(
-            `/pay?iban=${alias.iban}&iban-name=${alias.display_name}`
-        );
-    };
-    startPayment = event => {
-        const paymentInfo = this.props.paymentInfo;
-        this.props.history.push(`/pay?amount=${paymentInfo.getAmount()}`);
-    };
-    startRequest = event => {
-        const paymentInfo = this.props.paymentInfo;
-        this.props.history.push(`/request?amount=${paymentInfo.getAmount()}`);
-    };
+    toggleCategoryDialog = event => this.setState({ displayCategories: !this.state.displayCategories });
     toggleCreateFilterDialog = e => {
         this.setState({
             viewFilterCreationDialog: !this.state.viewFilterCreationDialog
         });
     };
-
     createPdfExport = () => {
         const { paymentInfo } = this.props;
 
@@ -145,29 +111,19 @@ class PaymentInfo extends React.Component {
         }, 100);
     };
 
-    render() {
-        const {
-            accountsSelectedAccount,
-            paymentInfo,
-            paymentLoading,
-            pdfSaveModeEnabled,
-            t
-        } = this.props;
-        const paramAccountId = this.props.match.params.accountId;
+    onRequest = e => {
+        this.props.history.push(`/request?amount=${this.props.paymentInfo.getAmount()}`);
+    };
+    onForward = e => {
+        this.props.history.push(`/pay?amount=${this.props.paymentInfo.getAmount()}`);
+    };
 
-        // we require a selected account before we can display payment information
-        if (accountsSelectedAccount === false && paramAccountId !== undefined) {
-            // no account_id set
-            return <Redirect to={"/"} />;
-        }
+    render() {
+        const { paymentInfo, paymentLoading, pdfSaveModeEnabled, t } = this.props;
 
         let content;
         let noteTextsForm = null;
-        if (
-            paymentInfo === false ||
-            paymentLoading === true ||
-            this.state.initialUpdate === false
-        ) {
+        if (paymentInfo === false || paymentLoading === true || this.state.initialUpdate === false) {
             content = (
                 <Grid container spacing={24} justify={"center"}>
                     <Grid item xs={12}>
@@ -201,31 +157,33 @@ class PaymentInfo extends React.Component {
                 );
             }
 
-            noteTextsForm = (
-                <NoteTextForm
-                    BunqJSClient={this.props.BunqJSClient}
-                    event={payment}
-                />
-            );
+            noteTextsForm = <NoteTextForm BunqJSClient={this.props.BunqJSClient} event={payment} />;
+
+            const transactionHeaderProps = {
+                BunqJSClient: this.props.BunqJSClient,
+                to: payment.counterparty_alias,
+                from: payment.alias,
+                user: this.props.user,
+                accounts: this.props.accounts,
+                swap: paymentAmount > 0,
+                type: "payment",
+                onForwardColor: "secondary",
+                event: payment,
+                transferAmountComponent: (
+                    <MoneyAmountLabel component={"h1"} style={{ textAlign: "center" }} info={payment} type="payment">
+                        {formattedPaymentAmount}
+                    </MoneyAmountLabel>
+                )
+            };
+            if (paymentInfo.getDelta() < 0) {
+                transactionHeaderProps.onRequest = this.onRequest;
+            } else {
+                transactionHeaderProps.onForward = this.onForward;
+            }
 
             content = (
-                <Grid
-                    container
-                    spacing={24}
-                    align={"center"}
-                    justify={"center"}
-                >
-                    <TransactionHeader
-                        BunqJSClient={this.props.BunqJSClient}
-                        to={payment.counterparty_alias}
-                        from={payment.alias}
-                        user={this.props.user}
-                        accounts={this.props.accounts}
-                        startPaymentIban={this.startPaymentIban}
-                        swap={paymentAmount > 0}
-                        type="payment"
-                        event={payment}
-                    />
+                <Grid container spacing={24} align={"center"} justify={"center"}>
+                    <TransactionHeader {...transactionHeaderProps} />
 
                     <FilterCreationDialog
                         t={t}
@@ -235,67 +193,41 @@ class PaymentInfo extends React.Component {
                     />
 
                     <Grid item xs={12}>
-                        <MoneyAmountLabel
-                            component={"h1"}
-                            style={{ textAlign: "center" }}
-                            info={payment}
-                            type="payment"
-                        >
-                            {formattedPaymentAmount}
-                        </MoneyAmountLabel>
-
-                        <Typography
-                            style={{ textAlign: "center" }}
-                            variant={"body1"}
-                        >
-                            {paymentLabel}
-                        </Typography>
-
                         <List style={styles.list}>
+                            <Divider />
+                            <ListItem>
+                                <ListItemText primary={paymentLabel} />
+                            </ListItem>
+
                             {paymentDescription.length > 0 ? (
                                 <React.Fragment>
                                     <Divider />
                                     <ListItem>
-                                        <ListItemText
-                                            primary={t("Description")}
-                                            secondary={paymentDescription}
-                                        />
+                                        <ListItemText primary={t("Description")} secondary={paymentDescription} />
                                     </ListItem>
                                 </React.Fragment>
                             ) : null}
 
                             <Divider />
                             <ListItem>
-                                <ListItemText
-                                    primary={t("Date")}
-                                    secondary={paymentDate}
-                                />
+                                <ListItemText primary={t("Date")} secondary={paymentDate} />
                             </ListItem>
 
                             <Divider />
                             <ListItem>
                                 <ListItemText
                                     primary={t("Payment Type")}
-                                    secondary={paymentTypeParser(
-                                        payment.type,
-                                        t
-                                    )}
+                                    secondary={paymentTypeParser(payment.type, t)}
                                 />
                             </ListItem>
 
                             <Divider />
                             <ListItem>
-                                <ListItemText
-                                    primary={"IBAN"}
-                                    secondary={formatIban(counterPartyIban)}
-                                />
+                                <ListItemText primary={"IBAN"} secondary={formatIban(counterPartyIban)} />
                             </ListItem>
 
                             <Divider />
-                            <GeoLocationListItem
-                                t={t}
-                                geoLocation={paymentInfo.geolocation}
-                            />
+                            <GeoLocationListItem t={t} geoLocation={paymentInfo.geolocation} />
                         </List>
 
                         <CategoryChips type={"Payment"} id={payment.id} />
@@ -308,20 +240,7 @@ class PaymentInfo extends React.Component {
                         />
 
                         <SpeedDial
-                            hidden={false}
                             actions={[
-                                {
-                                    name: t("Send payment"),
-                                    icon: ArrowUpIcon,
-                                    color: "action",
-                                    onClick: this.startPayment
-                                },
-                                {
-                                    name: t("Send request"),
-                                    icon: ArrowDownIcon,
-                                    color: "action",
-                                    onClick: this.startRequest
-                                },
                                 {
                                     name: t("Create PDF"),
                                     icon: SaveIcon,
@@ -357,9 +276,7 @@ class PaymentInfo extends React.Component {
         }
 
         const exportData =
-            this.props.paymentInfo && this.props.paymentInfo._rawData
-                ? this.props.paymentInfo._rawData.Payment
-                : {};
+            this.props.paymentInfo && this.props.paymentInfo._rawData ? this.props.paymentInfo._rawData.Payment : {};
 
         return (
             <Grid container spacing={24}>
@@ -368,19 +285,14 @@ class PaymentInfo extends React.Component {
                 </Helmet>
 
                 <ExportDialog
-                    closeModal={event =>
-                        this.setState({ displayExport: false })
-                    }
+                    closeModal={event => this.setState({ displayExport: false })}
                     title={t("Export info")}
                     open={this.state.displayExport}
                     object={exportData}
                 />
 
                 <Grid item xs={12} sm={2} lg={3}>
-                    <Button
-                        onClick={this.props.history.goBack}
-                        style={styles.btn}
-                    >
+                    <Button onClick={this.props.history.goBack} style={styles.btn}>
                         <ArrowBackIcon />
                     </Button>
                 </Grid>
@@ -404,7 +316,6 @@ const mapStateToProps = state => {
         paymentInfo: state.payment_info.payment,
         paymentLoading: state.payment_info.loading,
 
-        accountsSelectedAccount: state.accounts.selected_account,
         accounts: state.accounts.accounts
     };
 };
@@ -412,13 +323,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        applicationSetPDFMode: enabled =>
-            dispatch(applicationSetPDFMode(enabled)),
+        applicationSetPDFMode: enabled => dispatch(applicationSetPDFMode(enabled)),
 
         updatePayment: (user_id, account_id, payment_id) =>
-            dispatch(
-                paymentsUpdate(BunqJSClient, user_id, account_id, payment_id)
-            ),
+            dispatch(paymentsUpdate(BunqJSClient, user_id, account_id, payment_id)),
 
         setTheme: theme => dispatch(setTheme(theme))
     };

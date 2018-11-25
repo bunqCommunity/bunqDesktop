@@ -13,7 +13,7 @@ import QueueHeaderIcon from "./Queue/QueueHeaderIcon";
 import TranslateTypography from "./TranslationHelpers/Typography";
 
 import IsDarwin from "../Helpers/IsDarwin";
-import { openSidebar } from "../Actions/sidebar";
+import { toggleSidebar } from "../Actions/sidebar";
 
 const remote = require("electron").remote;
 
@@ -103,39 +103,21 @@ class Header extends React.Component {
 
         // if not on macOS or native frame is used we display the icons on the left
         const menuIconButtonStyle =
-            !IsDarwin() || this.props.nativeFrame === true
-                ? styles.headerMenuBtn
-                : styles.headerMenuBtnDarwin;
+            !IsDarwin() || this.props.nativeFrame === true ? styles.headerMenuBtn : styles.headerMenuBtnDarwin;
         const queueIconButtonStyle =
-            !IsDarwin() || this.props.nativeFrame === true
-                ? styles.headerQueueBtn
-                : styles.headerQueueBtnDarwin;
+            !IsDarwin() || this.props.nativeFrame === true ? styles.headerQueueBtn : styles.headerQueueBtnDarwin;
 
         // the top header buttons
         const menuButton = (
-            <IconButton
-                aria-label="view main drawer"
-                onClick={this.props.openDrawer}
-                style={menuIconButtonStyle}
-            >
+            <IconButton aria-label="view main drawer" onClick={this.props.toggleSidebar} style={menuIconButtonStyle}>
                 <MenuIcon />
             </IconButton>
         );
-        const queueIconButton = (
-            <QueueHeaderIcon style={queueIconButtonStyle} />
-        );
+        const queueIconButton = <QueueHeaderIcon style={queueIconButtonStyle} />;
 
         // wrap in a hidden wrapper in case of sticky menu mode
-        const wrappedButton = this.props.stickyMenu ? (
-            <Hidden mdUp>{menuButton}</Hidden>
-        ) : (
-            menuButton
-        );
-        const wrappedQueueIcon = this.props.stickyMenu ? (
-            <Hidden mdUp>{queueIconButton}</Hidden>
-        ) : (
-            queueIconButton
-        );
+        const wrappedButton = this.props.stickyMenu ? <Hidden mdUp>{menuButton}</Hidden> : menuButton;
+        const wrappedQueueIcon = this.props.stickyMenu ? <Hidden mdUp>{queueIconButton}</Hidden> : queueIconButton;
 
         // wrap it in a hidden wrapper in case of sticky menu mode
 
@@ -147,11 +129,7 @@ class Header extends React.Component {
         }
         const windowControls = displayButtons ? (
             <React.Fragment>
-                <IconButton
-                    aria-label="Minimize application"
-                    onClick={this.minimizeApp}
-                    style={styles.headerRightBtn3}
-                >
+                <IconButton aria-label="Minimize application" onClick={this.minimizeApp} style={styles.headerRightBtn3}>
                     <MinimizeIcon />
                 </IconButton>
                 <IconButton
@@ -161,11 +139,7 @@ class Header extends React.Component {
                 >
                     {middleIcon}
                 </IconButton>
-                <IconButton
-                    aria-label="Exit application"
-                    onClick={this.closeApp}
-                    style={styles.headerRightBtn}
-                >
+                <IconButton aria-label="Exit application" onClick={this.closeApp} style={styles.headerRightBtn}>
                     <CloseIcon />
                 </IconButton>
             </React.Fragment>
@@ -174,6 +148,7 @@ class Header extends React.Component {
         const developmentEnvWarning =
             this.props.environment === "SANDBOX" ? (
                 <TranslateTypography
+                    variant="body2"
                     style={{
                         marginLeft: 53,
                         lineHeight: `${styles.header.height}px`,
@@ -217,7 +192,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         // opens the options drawer on the left
-        openDrawer: () => dispatch(openSidebar())
+        toggleSidebar: () => dispatch(toggleSidebar())
     };
 };
 

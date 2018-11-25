@@ -21,9 +21,7 @@ export default function reducer(state = defaultState, action) {
         case "ACCOUNT_ID_FILTER_REMOVE":
             const currentAccountIds2 = [...state.selected_account_ids];
 
-            const removeIndex = currentAccountIds2.findIndex(
-                accountId => accountId === action.payload.account_id
-            );
+            const removeIndex = currentAccountIds2.findIndex(accountId => accountId === action.payload.account_id);
             if (removeIndex === -1) return state;
 
             currentAccountIds2.splice(removeIndex, 1);

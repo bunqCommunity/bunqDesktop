@@ -21,14 +21,9 @@ const ShowOnly = props => {
                 <RemoveRedEyeIcon style={{ color: "#fbc02d" }} />
             </Avatar>
 
-            <ListItemText
-                primary={props.t("Show only")}
-                secondary={props.t("Others can view new transactions")}
-            />
+            <ListItemText primary={props.t("Show only")} secondary={props.t("Others can view new transactions")} />
 
-            <ListItemSecondaryAction>
-                {props.secondaryActions}
-            </ListItemSecondaryAction>
+            <ListItemSecondaryAction>{props.secondaryActions}</ListItemSecondaryAction>
         </ListItem>
     );
 };

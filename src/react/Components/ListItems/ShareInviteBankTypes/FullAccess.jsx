@@ -26,9 +26,7 @@ const FullAccess = props => {
                 secondary={props.t("Others can make and view new transactions")}
             />
 
-            <ListItemSecondaryAction>
-                {props.secondaryActions}
-            </ListItemSecondaryAction>
+            <ListItemSecondaryAction>{props.secondaryActions}</ListItemSecondaryAction>
         </ListItem>
     );
 };

@@ -19,8 +19,10 @@ import UrlIcon from "@material-ui/icons/Link";
 import LinkIcon from "@material-ui/icons/Link";
 import PeopleIcon from "@material-ui/icons/People";
 
+import AccountAvatarCircularProgress from "./AccountList/AccountAvatarCircularProgress";
 import LazyAttachmentImage from "./AttachmentImage/LazyAttachmentImage";
 import AccountQRFullscreen from "./QR/AccountQRFullscreen";
+
 import { formatMoney, formatIban } from "../Helpers/Utils";
 import GetShareDetailBudget from "../Helpers/GetShareDetailBudget";
 
@@ -52,14 +54,12 @@ class AccountCard extends React.Component {
         let formattedBalance = account.balance ? account.balance.value : 0;
 
         if (this.props.shareInviteBankResponses.length > 0) {
-            const connectBudget = GetShareDetailBudget(
-                this.props.shareInviteBankResponses
-            );
+            const connectBudget = GetShareDetailBudget(this.props.shareInviteBankResponses);
             if (connectBudget) formattedBalance = connectBudget;
         }
 
         let avatarSub = null;
-        if (this.props.isJoint) {
+        if (this.props.isJointAccount) {
             avatarSub = (
                 <Avatar style={styles.secondaryIcon}>
                     <PeopleIcon />
@@ -73,22 +73,18 @@ class AccountCard extends React.Component {
             );
         }
 
-        const accountBalanceText = hideBalance
-            ? "HIDDEN"
-            : formatMoney(formattedBalance, true);
+        const accountBalanceText = hideBalance ? "HIDDEN" : formatMoney(formattedBalance, true);
 
         return (
             <Paper>
                 <List>
                     <ListItem>
+                        <AccountAvatarCircularProgress account={account} />
                         <Avatar style={styles.avatar}>
                             <LazyAttachmentImage
                                 BunqJSClient={this.props.BunqJSClient}
                                 height={60}
-                                imageUUID={
-                                    account.avatar.image[0]
-                                        .attachment_public_uuid
-                                }
+                                imageUUID={account.avatar.image[0].attachment_public_uuid}
                             />
                         </Avatar>
                         <div
@@ -100,25 +96,18 @@ class AccountCard extends React.Component {
                         >
                             {avatarSub}
                         </div>
-                        <ListItemText
-                            primary={account.description}
-                            secondary={accountBalanceText}
-                        />
+                        <ListItemText primary={account.description} secondary={accountBalanceText} />
                         <ListItemSecondaryAction>
                             <AccountQRFullscreen accountId={account.id} />
 
                             {this.props.toggleSettingsDialog ? (
-                                <IconButton
-                                    onClick={this.props.toggleSettingsDialog}
-                                >
+                                <IconButton onClick={this.props.toggleSettingsDialog}>
                                     <EditIcon />
                                 </IconButton>
                             ) : null}
 
                             {this.props.toggleDeactivateDialog ? (
-                                <IconButton
-                                    onClick={this.props.toggleDeactivateDialog}
-                                >
+                                <IconButton onClick={this.props.toggleDeactivateDialog}>
                                     <DeleteIcon />
                                 </IconButton>
                             ) : null}
@@ -146,10 +135,7 @@ class AccountCard extends React.Component {
                         return (
                             <ListItem button dense={true}>
                                 <ListItemIcon>{icon}</ListItemIcon>
-                                <CopyToClipboard
-                                    text={alias.value}
-                                    onCopy={this.copiedValue(alias.type)}
-                                >
+                                <CopyToClipboard text={alias.value} onCopy={this.copiedValue(alias.type)}>
                                     <ListItemText primary={value} />
                                 </CopyToClipboard>
                             </ListItem>
@@ -162,7 +148,7 @@ class AccountCard extends React.Component {
 }
 
 AccountCard.defaultProps = {
-    isJoint: false,
+    isJointAccount: false,
     toggleDeactivateDialog: false,
     toggleSettingsDialog: false
 };

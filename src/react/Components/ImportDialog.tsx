@@ -21,10 +21,7 @@ class ImportDialog extends React.Component<any, any> {
     }
 
     importContentChange = event => {
-        this.setState(
-            { importContent: event.target.value },
-            this.validateImportData
-        );
+        this.setState({ importContent: event.target.value }, this.validateImportData);
     };
 
     importData = (asNew: boolean = false) => {
@@ -60,12 +57,7 @@ class ImportDialog extends React.Component<any, any> {
         if (!showAsNewButton) showAsNewButton = false;
 
         return (
-            <Dialog
-                TransitionComponent={Transition}
-                keepMounted
-                open={open}
-                onClose={closeModal}
-            >
+            <Dialog TransitionComponent={Transition} keepMounted open={open} onClose={closeModal}>
                 <DialogTitle>{title}</DialogTitle>
                 <DialogContent>
                     <TextField
@@ -80,25 +72,18 @@ class ImportDialog extends React.Component<any, any> {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <TranslateButton
-                        variant="raised"
-                        onClick={closeModal}
-                        color="secondary"
-                    >
+                    <TranslateButton variant="outlined" onClick={closeModal} color="secondary">
                         Cancel
                     </TranslateButton>
 
                     {showAsNewButton ? (
-                        <TranslateButton
-                            variant="raised"
-                            onClick={this.importDataNew}
-                        >
+                        <TranslateButton variant="outlined" onClick={this.importDataNew}>
                             Import as new
                         </TranslateButton>
                     ) : null}
 
                     <TranslateButton
-                        variant="raised"
+                        variant="contained"
                         onClick={this.importDataOverwrite}
                         disabled={this.state.importContentError}
                         color="primary"

@@ -84,9 +84,7 @@ class AttachmentImage extends React.PureComponent {
 
             try {
                 // get raw image contents
-                const base64Url = await this.props.BunqJSClient.api.attachmentContent.get(
-                    this.props.imageUUID
-                );
+                const base64Url = await this.props.BunqJSClient.api.attachmentContent.get(this.props.imageUUID);
 
                 // set the url first
                 if (this._isMounted) {
@@ -125,12 +123,7 @@ class AttachmentImage extends React.PureComponent {
         return this.imageUrl === false ? (
             <div {...defaultSizes} {...props} />
         ) : (
-            <img
-                {...defaultSizes}
-                src={this.state.imageUrl}
-                style={{ backgroundColor: "white" }}
-                {...props}
-            />
+            <img {...defaultSizes} src={this.state.imageUrl} style={{ backgroundColor: "white" }} {...props} />
         );
     }
 }

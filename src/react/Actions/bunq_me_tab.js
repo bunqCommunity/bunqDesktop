@@ -2,17 +2,8 @@ import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { openSnackbar } from "./snackbar";
 import { bunqMeTabsUpdate } from "./bunq_me_tabs";
 
-export function bunqMeTabSend(
-    BunqJSClient,
-    userId,
-    accountId,
-    description,
-    amount,
-    options = {}
-) {
-    const failedMessage = window.t(
-        "We received the following error while creating your bunqme request"
-    );
+export function bunqMeTabSend(BunqJSClient, userId, accountId, description, amount, options = {}) {
+    const failedMessage = window.t("We received the following error while creating your bunqme request");
     const successMessage = window.t("bunqme request created successfully!");
 
     return dispatch => {
@@ -21,9 +12,7 @@ export function bunqMeTabSend(
             .post(userId, accountId, description, amount, options)
             .then(result => {
                 dispatch(openSnackbar(successMessage));
-                dispatch(
-                    bunqMeTabsUpdate(BunqJSClient, userId, parseInt(accountId))
-                );
+                dispatch(bunqMeTabsUpdate(BunqJSClient, userId, parseInt(accountId)));
                 dispatch(bunqMeTabNotLoading());
             })
             .catch(error => {
@@ -33,19 +22,9 @@ export function bunqMeTabSend(
     };
 }
 
-export function bunqMeTabPut(
-    BunqJSClient,
-    userId,
-    accountId,
-    tabId,
-    status = "CANCELLED"
-) {
-    const failedMessage = window.t(
-        "We received the following error while updating your bunqme request"
-    );
-    const successMessage = window.t(
-        "bunqme request status has been updated successfully!"
-    );
+export function bunqMeTabPut(BunqJSClient, userId, accountId, tabId, status = "CANCELLED") {
+    const failedMessage = window.t("We received the following error while updating your bunqme request");
+    const successMessage = window.t("bunqme request status has been updated successfully!");
 
     return dispatch => {
         dispatch(bunqMeTabLoading());

@@ -32,6 +32,10 @@ export function setStickyMenu(stickyMenu) {
     return setGenericOption("sticky_menu", stickyMenu);
 }
 
+export function setEventCountLimit(eventCountLimit) {
+    return setGenericOption("event_count_limit", eventCountLimit);
+}
+
 export function setAutomaticThemeChange(automaticThemeChange) {
     return setGenericOption("automatic_theme_change", automaticThemeChange);
 }
@@ -44,15 +48,16 @@ export function setMinimizeToTray(minimizeToTray) {
     return setGenericOption("minimize_to_tray", minimizeToTray);
 }
 
+export function setDisplayTrayInfo(displayTrayInfo) {
+    return setGenericOption("display_tray_info", displayTrayInfo);
+}
+
 export function toggleInactivityCheck(checkInactivity) {
     return setGenericOption("check_inactivity", checkInactivity);
 }
 
 export function setInactivityCheckDuration(inactivityCheckDuration) {
-    return setGenericOption(
-        "inactivity_check_duration",
-        inactivityCheckDuration
-    );
+    return setGenericOption("inactivity_check_duration", inactivityCheckDuration);
 }
 
 export function toggleAutomaticUpdatesEnabled(updateAutomatically) {
@@ -60,17 +65,11 @@ export function toggleAutomaticUpdatesEnabled(updateAutomatically) {
 }
 
 export function toggleAutomaticUpdatesSendNotification(sendNotification) {
-    return setGenericOption(
-        "automatic_update_send_notification",
-        sendNotification
-    );
+    return setGenericOption("automatic_update_send_notification", sendNotification);
 }
 
 export function setAutomaticUpdateDuration(automaticUpdateDuration) {
-    return setGenericOption(
-        "automatic_update_duration",
-        automaticUpdateDuration
-    );
+    return setGenericOption("automatic_update_duration", automaticUpdateDuration);
 }
 
 export function overwriteSettingsLocation(location) {

@@ -42,8 +42,7 @@ class BunqMeTab extends React.Component {
         });
     }
 
-    updateTabs = (userId, accountId) =>
-        this.props.bunqMeTabsUpdate(userId, accountId);
+    updateTabs = (userId, accountId) => this.props.bunqMeTabsUpdate(userId, accountId);
 
     toggleForm = () => this.setState({ showForm: !this.state.showForm });
 
@@ -61,37 +60,23 @@ class BunqMeTab extends React.Component {
 
                 <Grid item xs={12} md={4} lg={3}>
                     <Paper style={styles.paper}>
-                        <AccountList
-                            BunqJSClient={this.props.BunqJSClient}
-                            updateExternal={this.updateTabs}
-                            initialBunqConnect={this.props.initialBunqConnect}
-                        />
+                        <AccountList BunqJSClient={this.props.BunqJSClient} updateExternal={this.updateTabs} />
                     </Paper>
                 </Grid>
 
                 <Grid item xs={12} md={8} lg={6}>
                     <Collapse in={this.state.showForm} unmountOnExit>
                         <Paper style={styles.paper}>
-                            <BunqMeTabForm
-                                BunqJSClient={this.props.BunqJSClient}
-                            />
+                            <BunqMeTabForm BunqJSClient={this.props.BunqJSClient} />
                         </Paper>
                     </Collapse>
                     <Paper style={styles.paper}>
                         <BunqMeTabList
                             BunqJSClient={this.props.BunqJSClient}
-                            initialBunqConnect={this.props.initialBunqConnect}
                             secondaryActions={
                                 this.props.limitedPermissions ? null : (
-                                    <IconButton
-                                        aria-label="Toggle the form"
-                                        onClick={this.toggleForm}
-                                    >
-                                        {this.state.showForm ? (
-                                            <CloseIcon />
-                                        ) : (
-                                            <AddIcon />
-                                        )}
+                                    <IconButton aria-label="Toggle the form" onClick={this.toggleForm}>
+                                        {this.state.showForm ? <CloseIcon /> : <AddIcon />}
                                     </IconButton>
                                 )
                             }
@@ -117,8 +102,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, props) => {
     const { BunqJSClient } = props;
     return {
-        bunqMeTabsUpdate: (userId, accountId) =>
-            dispatch(bunqMeTabsUpdate(BunqJSClient, userId, accountId))
+        bunqMeTabsUpdate: (userId, accountId) => dispatch(bunqMeTabsUpdate(BunqJSClient, userId, accountId))
     };
 };
 

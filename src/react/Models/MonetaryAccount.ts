@@ -1,12 +1,4 @@
-import {
-    AccountType,
-    MonetaryAccountSetting,
-    AllCoOwner,
-    Alias,
-    Avatar,
-    Balance,
-    Amount
-} from "../Types/Types";
+import { AccountType, MonetaryAccountSetting, AllCoOwner, Alias, Avatar, Balance, Amount } from "../Types/Types";
 
 import NotificationFilter from "@bunq-community/bunq-js-client/src/Types/NotificationFilter";
 
@@ -36,6 +28,9 @@ export default class MonetaryAccount {
     private _monetary_account_profile: any;
     private _notification_filters: NotificationFilter[];
     private _setting: MonetaryAccountSetting;
+
+    private _savings_goal: Amount;
+    private _savings_goal_progress: string;
 
     // only available on MonetaryAccountJoint objects
     private _all_co_owner: AllCoOwner | undefined;
@@ -170,5 +165,11 @@ export default class MonetaryAccount {
 
     get all_co_owner(): AllCoOwner | undefined {
         return this._all_co_owner;
+    }
+    get savings_goal(): Amount {
+        return this._savings_goal;
+    }
+    get savings_goal_progress(): string {
+        return this._savings_goal_progress;
     }
 }

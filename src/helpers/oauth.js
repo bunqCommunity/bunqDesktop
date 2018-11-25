@@ -2,8 +2,7 @@ import url from "url";
 import { BrowserWindow, ipcMain } from "electron";
 
 // google oauth settings
-const clientId =
-    "735593750948-9ktjprrnvb8l827d6216grhrctrismp4.apps.googleusercontent.com";
+const clientId = "735593750948-9ktjprrnvb8l827d6216grhrctrismp4.apps.googleusercontent.com";
 const state = 123412341;
 const responseType = "token";
 const redirectUrl = "http://localhost:1234/oauth2/callback";
@@ -92,15 +91,10 @@ export default (window, log) => {
 
             // check if we received an access token
             if (params.code) {
-                log.debug(
-                    "Received OAuth code: " + params.code.substring(0, 8)
-                );
+                log.debug("Received OAuth code: " + params.code.substring(0, 8));
 
                 // send data to renderer view
-                window.webContents.send(
-                    "received-oauth-bunq-code",
-                    params.code
-                );
+                window.webContents.send("received-oauth-bunq-code", params.code);
             } else {
                 window.webContents.send("received-oauth-failed");
             }
@@ -108,18 +102,11 @@ export default (window, log) => {
         };
 
         // check if the page changed and we received a valid url
-        consentWindow.webContents.on("will-navigate", function(
-            event,
-            receivedUrl
-        ) {
+        consentWindow.webContents.on("will-navigate", function(event, receivedUrl) {
             handleUrl(receivedUrl);
         });
 
-        consentWindow.webContents.on("did-get-redirect-request", function(
-            event,
-            oldUrl,
-            newUrl
-        ) {
+        consentWindow.webContents.on("did-get-redirect-request", function(event, oldUrl, newUrl) {
             handleUrl(newUrl);
         });
     });
@@ -149,10 +136,7 @@ export default (window, log) => {
             // check if we received an access token
             if (params.access_token) {
                 // send data to renderer view
-                window.webContents.send(
-                    "received-oauth-google-access-token",
-                    params.access_token
-                );
+                window.webContents.send("received-oauth-google-access-token", params.access_token);
             } else {
                 window.webContents.send("received-oauth-failed");
             }
@@ -160,18 +144,11 @@ export default (window, log) => {
         };
 
         // check if the page changed and we received a valid url
-        consentWindow.webContents.on("will-navigate", function(
-            event,
-            receivedUrl
-        ) {
+        consentWindow.webContents.on("will-navigate", function(event, receivedUrl) {
             handleUrl(receivedUrl);
         });
 
-        consentWindow.webContents.on("did-get-redirect-request", function(
-            event,
-            oldUrl,
-            newUrl
-        ) {
+        consentWindow.webContents.on("did-get-redirect-request", function(event, oldUrl, newUrl) {
             handleUrl(newUrl);
         });
     });
@@ -205,10 +182,7 @@ export default (window, log) => {
             // check if we received an access token
             if (params.access_token) {
                 // send data to renderer view
-                window.webContents.send(
-                    "received-oauth-office-365-access-token",
-                    params.access_token
-                );
+                window.webContents.send("received-oauth-office-365-access-token", params.access_token);
             } else {
                 window.webContents.send("received-oauth-failed");
             }
@@ -216,18 +190,11 @@ export default (window, log) => {
         };
 
         // check if the page changed and we received a valid url
-        consentWindow.webContents.on("will-navigate", function(
-            event,
-            receivedUrl
-        ) {
+        consentWindow.webContents.on("will-navigate", function(event, receivedUrl) {
             handleUrl(receivedUrl);
         });
 
-        consentWindow.webContents.on("did-get-redirect-request", function(
-            event,
-            oldUrl,
-            newUrl
-        ) {
+        consentWindow.webContents.on("did-get-redirect-request", function(event, oldUrl, newUrl) {
             handleUrl(newUrl);
         });
     });

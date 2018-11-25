@@ -48,12 +48,7 @@ class RuleItemMenu extends React.Component<any, any> {
                 >
                     <MoreVertIcon />
                 </IconButton>
-                <Menu
-                    id="long-menu"
-                    anchorEl={this.state.anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={this.handleClose}
-                >
+                <Menu id="long-menu" anchorEl={this.state.anchorEl} open={Boolean(anchorEl)} onClose={this.handleClose}>
                     <MenuItem onClick={this.openExportDialog}>
                         <ListItemIcon>
                             <FileUploadIcon />

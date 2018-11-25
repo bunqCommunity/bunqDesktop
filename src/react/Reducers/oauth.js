@@ -10,13 +10,10 @@ import {
 const storedClientId = store.get(OAUTH_CLIENT_DETAILS_ID);
 const storedClientSecret = store.get(OAUTH_CLIENT_DETAILS_SECRET);
 const storedSandboxClientId = store.get(OAUTH_SANDBOX_CLIENT_DETAILS_ID);
-const storedSandboxClientSecret = store.get(
-    OAUTH_SANDBOX_CLIENT_DETAILS_SECRET
-);
+const storedSandboxClientSecret = store.get(OAUTH_SANDBOX_CLIENT_DETAILS_SECRET);
 
 const defaultClientId = storedClientId !== undefined ? storedClientId : false;
-const defaultClientSecret =
-    storedClientSecret !== undefined ? storedClientSecret : false;
+const defaultClientSecret = storedClientSecret !== undefined ? storedClientSecret : false;
 const defaultSandboxClientId =
     storedSandboxClientId !== undefined
         ? storedSandboxClientId
@@ -37,18 +34,9 @@ export default (state = defaultState, action) => {
     switch (action.type) {
         case "OAUTH_SET_DETAILS":
             store.set(OAUTH_CLIENT_DETAILS_ID, action.payload.client_id);
-            store.set(
-                OAUTH_CLIENT_DETAILS_SECRET,
-                action.payload.client_secret
-            );
-            store.set(
-                OAUTH_SANDBOX_CLIENT_DETAILS_ID,
-                action.payload.sandbox_client_id
-            );
-            store.set(
-                OAUTH_SANDBOX_CLIENT_DETAILS_SECRET,
-                action.payload.sandbox_client_secret
-            );
+            store.set(OAUTH_CLIENT_DETAILS_SECRET, action.payload.client_secret);
+            store.set(OAUTH_SANDBOX_CLIENT_DETAILS_ID, action.payload.sandbox_client_id);
+            store.set(OAUTH_SANDBOX_CLIENT_DETAILS_SECRET, action.payload.sandbox_client_secret);
 
             return {
                 ...state,

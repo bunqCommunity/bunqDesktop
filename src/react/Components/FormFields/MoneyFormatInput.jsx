@@ -1,31 +1,30 @@
 import React from "react";
 import NumberFormat from "react-number-format";
-import {
-    preferedThousandSeparator,
-    preferedDecimalSeparator
-} from "../../Helpers/Utils";
+import { preferedThousandSeparator, preferedDecimalSeparator } from "../../Helpers/Utils";
 
 import { withTheme } from "@material-ui/core/styles";
 
 class MoneyFormatInput extends React.Component {
     render() {
+        const { style, ...otherProps } = this.props;
+
         return (
             <NumberFormat
-                required
-                margin="normal"
-                placeholder="€ 0.00"
                 min={0}
+                prefix="€ "
+                margin="normal"
+                decimalScale={2}
+                placeholder="€ 0.00"
+                className="money-input"
+                fixedDecimalScale={true}
                 style={{
                     fontSize: 30,
-                    ...this.props.theme.styles.moneyInput
+                    ...this.props.theme.styles.moneyInput,
+                    ...style
                 }}
-                className="money-input"
-                decimalScale={2}
-                fixedDecimalScale={true}
                 decimalSeparator={preferedDecimalSeparator}
                 thousandSeparator={preferedThousandSeparator}
-                prefix={"€ "}
-                {...this.props}
+                {...otherProps}
             />
         );
     }

@@ -7,7 +7,7 @@ import CloseIcon from "@material-ui/icons/Close";
 
 const styles = {
     speedDial: {
-        position: "absolute",
+        position: "fixed",
         bottom: 12,
         right: 12,
         width: 60
@@ -18,12 +18,20 @@ class SpeedDialCustom extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            open: false
+            open: false,
+            forceOpen: false
         };
     }
 
+    handleClick = () => {
+        this.setState(state => ({
+            open: !state.open,
+            forceOpen: !state.forceOpen
+        }));
+    };
+
     handleOpen = () => {
-        if (!this.state.hidden) {
+        if (!this.props.hidden) {
             this.setState({
                 open: true
             });
@@ -31,29 +39,32 @@ class SpeedDialCustom extends React.Component {
     };
 
     handleClose = () => {
-        this.setState({ open: false });
+        this.setState({
+            open: false
+        });
     };
 
     render() {
-        const { open } = this.state;
-        const { hidden, actions, ariaLabel, buttonColor } = this.props;
+        const { forceOpen, open } = this.state;
+        const { actions, buttonColor, hidden = false, style = {}, ...restProps } = this.props;
 
         return (
             <SpeedDial
-                style={{ ...styles.speedDial, ...this.props.style }}
-                ariaLabel={ariaLabel}
-                hidden={hidden}
+                style={{ ...styles.speedDial, ...style }}
                 icon={<SpeedDialIcon openIcon={<CloseIcon />} />}
                 onBlur={this.handleClose}
+                onClick={this.handleClick}
                 onClose={this.handleClose}
                 onFocus={this.handleOpen}
                 onMouseEnter={this.handleOpen}
                 onMouseLeave={this.handleClose}
-                open={open}
+                open={forceOpen || open}
+                hidden={hidden}
+                {...restProps}
             >
                 {actions.map(action => {
                     const Icon = action.icon;
-                    let iconColor = action.color ? action.color : "action";
+                    const iconColor = action.color ? action.color : "action";
 
                     return (
                         <SpeedDialAction
@@ -75,7 +86,7 @@ SpeedDialCustom.defaultProps = {
     style: {},
     actions: [],
     ariaLabel: "More options",
-    hidden: true,
+    hidden: false,
     buttonColor: "primary"
 };
 

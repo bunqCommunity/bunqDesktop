@@ -2,9 +2,9 @@
 
 
 # bunqDesktop 
-![Github latest version](https://img.shields.io/github/release/bunqcommunity/bunqdesktop.svg) 
-![Download count for one click installers](https://img.shields.io/github/downloads/bunqCommunity/bunqDesktop/total.svg) 
-![build status for master branch](https://api.travis-ci.org/bunqCommunity/bunqDesktop.svg?branch=master) 
+[![Github latest version](https://img.shields.io/github/release/bunqcommunity/bunqdesktop.svg) ](https://github.com/bunqCommunity/bunqDesktop/releases/latest)
+[![Download counter](https://img.shields.io/github/downloads/bunqCommunity/bunqDesktop/total.svg) ](https://github.com/bunqCommunity/bunqDesktop/releases)
+[![build status for master branch](https://api.travis-ci.org/bunqCommunity/bunqDesktop.svg?branch=master) ](https://travis-ci.org/bunqCommunity/bunqDesktop)
 [![MIT License](https://img.shields.io/npm/l/all-contributors-cli.svg?style=flat-square)](https://github.com/bunqCommunity/bunqDesktop/blob/master/LICENSE) 
 
 #### The unofficial, free and open source desktop application for the bunq API. 
@@ -14,7 +14,9 @@ ___
 ## Download 
 
 #### One click installers 
-Download the latest version of bunqDesktop from the [GitHub releases page.](https://github.com/bunqCommunity/bunqDesktop/releases)
+Download the latest version of bunqDesktop from the [GitHub releases page](https://github.com/bunqCommunity/bunqDesktop/releases/latest).
+
+There is also a [Nightly build](https://github.com/bunqCommunity/bunqDesktop/releases/snapshot) which is built automatically every night and contains the latest experimental changes and features. Only use this if you want to test new features and are okay with potential errors.
 
 #### [Snapcraft](https://snapcraft.io/bunqdesktop)
 You can directly search for 'bunqDesktop' in the Ubuntu store or use  the snap command.
@@ -53,7 +55,7 @@ You can directly search for 'bunqDesktop' in the Ubuntu store or use  the snap c
 
 ## Translations
 The app is developed in English but translations in Dutch and German are available. 
-If you spot errors or want to help us translate the desktop app to a different language let us know!
+If you spot errors, possible improvements or want to help us translate the desktop app to a different language let us know or suggest a change on [Crowdin](https://crowdin.com/project/bunqdesktop)!
 
 ## Security
 All sensitive data is encrypted with the password that is entered on startup. You can choose to skip this step which will encrypt the data with a default password so that you will be logged in without asking you for a password. 
@@ -80,7 +82,7 @@ Clone this project and install its dependencies.
 $ git clone git@github.com:bunqCommunity/bunqDesktop.git && cd bunqDesktop
 $ yarn 
 ```
-Run these commands in 2 seperate consoles. One compiles the react app and the second takes care of 
+Run these commands in 2 separate consoles. One compiles the react app and the second takes care of 
 running an electron instance with hot reloading.
 ```bash
 $ yarn webpack:dev

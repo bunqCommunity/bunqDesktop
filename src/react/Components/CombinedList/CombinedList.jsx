@@ -1,55 +1,35 @@
 import React from "react";
-import { translate } from "react-i18next";
 import { connect } from "react-redux";
-import Grid from "@material-ui/core/Grid";
+import { translate } from "react-i18next";
+import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import TextField from "@material-ui/core/TextField";
-import MenuItem from "@material-ui/core/MenuItem";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 
-import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
-import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
-import SkipNextIcon from "@material-ui/icons/SkipNext";
-import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
 import InfoIcon from "@material-ui/icons/Info";
 
-import BunqMeTabListItem from "../ListItems/BunqMeTabListItem";
-import PaymentListItem from "../ListItems/PaymentListItem";
-import MasterCardActionListItem from "../ListItems/MasterCardActionListItem";
-import RequestResponseListItem from "../ListItems/RequestResponseListItem";
-import RequestInquiryListItem from "../ListItems/RequestInquiryListItem";
-import RequestInquiryBatchListItem from "../ListItems/RequestInquiryBatchListItem";
-import ShareInviteBankInquiryListItem from "../ListItems/ShareInviteBankInquiryListItem";
-import ShareInviteBankResponseListItem from "../ListItems/ShareInviteBankResponseListItem";
 import ClearBtn from "../FilterComponents/ClearFilter";
 import FilterDrawer from "../FilterComponents/FilterDrawer";
+import ListControls from "./ListControls";
 import EventData from "./EventData";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { bunqMeTabPut } from "../../Actions/bunq_me_tab";
-import {
-    nextPage,
-    previousPage,
-    setPage,
-    setPageSize,
-    firstPage
-} from "../../Actions/pagination";
+import { nextPage, previousPage, setPage, setPageSize, firstPage } from "../../Actions/pagination";
 
-import { humanReadableDate, UTCDateToLocalDate } from "../../Helpers/Utils";
+import { humanReadableDate } from "../../Helpers/Utils";
 import {
-    paymentFilter,
-    bunqMeTabsFilter,
-    masterCardActionFilter,
-    requestInquiryFilter,
-    requestInquiryBatchFilter,
-    requestResponseFilter,
-    shareInviteBankInquiryFilter,
-    shareInviteBankResponseFilter
-} from "../../Helpers/DataFilters";
+    paymentMapper,
+    bunqMeTabsMapper,
+    masterCardActionMapper,
+    requestInquiryBatchMapper,
+    requestInquiryMapper,
+    requestResponseMapper,
+    shareInviteBankInquiryMapper,
+    shareInviteBankResponseMapper
+} from "./MapperFunctions";
 import FilterDisabledChecker from "../../Helpers/FilterDisabledChecker";
 
 const styles = {
@@ -123,23 +103,18 @@ class CombinedList extends React.Component {
     }
 
     loadEvents = () => {
+        const settings = this.getSettings();
+
         // create arrays of the different endpoint types
-        const { bunqMeTabs, hiddenPaymentIds } = this.bunqMeTabsMapper();
-
+        const { bunqMeTabs, hiddenPaymentIds } = bunqMeTabsMapper(settings);
         // load regular payments while hiding the ones connected to the bunq me tabs
-        const payments = this.paymentMapper(hiddenPaymentIds);
-        const masterCardActions = this.masterCardActionMapper();
-        const requestResponses = this.requestResponseMapper(false, true);
-        const {
-            requestInquiryBatches,
-            hiddenRequestInquiryIds
-        } = this.requestInquiryBatchMapper();
-
+        const payments = paymentMapper(settings, hiddenPaymentIds);
+        const masterCardActions = masterCardActionMapper(settings);
+        const requestResponses = requestResponseMapper(settings, false, true);
+        const { requestInquiryBatches, hiddenRequestInquiryIds } = requestInquiryBatchMapper(settings);
         // load request inquiries while hiding requests connected to the request inquiry batches
-        const requestInquiries = this.requestInquiryMapper(
-            hiddenRequestInquiryIds
-        );
-        const shareInviteBankInquiries = this.shareInviteBankInquiryMapper();
+        const requestInquiries = requestInquiryMapper(settings, hiddenRequestInquiryIds);
+        const shareInviteBankInquiries = shareInviteBankInquiryMapper(settings);
 
         // combine the list, order by date and group by day
         const events = [
@@ -155,10 +130,7 @@ class CombinedList extends React.Component {
         });
 
         this.setState({
-            totalEvents:
-                this.state.totalEvents < events.length
-                    ? events.length
-                    : this.state.totalEvents,
+            totalEvents: this.state.totalEvents < events.length ? events.length : this.state.totalEvents,
             events: events
         });
     };
@@ -167,374 +139,17 @@ class CombinedList extends React.Component {
         this.props.openSnackbar(`Copied ${type} to your clipboard`);
     };
 
-    toggleEventData = event =>
-        this.setState({ displayEventData: !this.state.displayEventData });
+    toggleEventData = event => this.setState({ displayEventData: !this.state.displayEventData });
 
-    getCommonFilters = () => {
+    getSettings = () => {
         return {
-            dateFromFilter: this.props.dateFromFilter,
-            dateToFilter: this.props.dateToFilter,
-
-            searchTerm: this.props.searchTerm,
-
-            categories: this.props.categories,
-            categoryConnections: this.props.categoryConnections,
-
-            selectedCategories: this.props.selectedCategories,
-            toggleCategoryFilter: this.props.toggleCategoryFilter,
+            ...this.props,
 
             displayAcceptedRequests: !!this.props.displayAcceptedRequests,
             displayRequestPayments: !!this.props.displayRequestPayments,
 
-            selectedAccountIds: this.props.selectedAccountIds,
-            toggleAccountIds: this.props.toggleAccountIds,
-
-            amountFilterAmount: this.props.amountFilterAmount,
-            amountFilterType: this.props.amountFilterType
+            copiedValue: this.copiedValue
         };
-    };
-
-    paymentMapper = (hiddenPaymentIds = []) => {
-        if (this.props.hiddenTypes.includes("Payment")) return [];
-
-        return this.props.payments
-            .filter(
-                paymentFilter({
-                    paymentVisibility: this.props.paymentVisibility,
-                    paymentType: this.props.paymentType,
-                    ...this.getCommonFilters()
-                })
-            )
-            .filter(event => {
-                if (this.props.accountId) {
-                    if (event.monetary_account_id !== this.props.accountId) {
-                        return false;
-                    }
-                }
-
-                // if hidden ids are set, check if this event is included
-                if (hiddenPaymentIds.length > 0) {
-                    if (hiddenPaymentIds.includes(event.id)) {
-                        return false;
-                    }
-                }
-
-                return true;
-            })
-            .map(payment => {
-                return {
-                    component: (
-                        <PaymentListItem
-                            payment={payment}
-                            accounts={this.props.accounts}
-                            BunqJSClient={this.props.BunqJSClient}
-                        />
-                    ),
-                    filterDate: UTCDateToLocalDate(payment.created),
-                    info: payment
-                };
-            });
-    };
-
-    bunqMeTabsMapper = () => {
-        if (this.props.hiddenTypes.includes("BunqMeTab")) {
-            return {
-                hiddenPaymentIds: [],
-                bunqMeTabs: []
-            };
-        }
-
-        let hiddenPaymentIds = [];
-        const bunqMeTabs = this.props.bunqMeTabs
-            .filter(
-                bunqMeTabsFilter({
-                    bunqMeTabVisibility: this.props.bunqMeTabVisibility,
-                    bunqMeTabType: this.props.bunqMeTabType,
-                    ...this.getCommonFilters()
-                })
-            )
-            .filter(event => {
-                if (this.props.accountId) {
-                    if (event.monetary_account_id !== this.props.accountId) {
-                        return false;
-                    }
-                }
-                return true;
-            })
-            .map(bunqMeTab => {
-                bunqMeTab.result_inquiries.forEach(resultInquiry => {
-                    const payment = resultInquiry.payment.Payment;
-                    const paymentId = payment.id;
-
-                    // add to the list if not already set
-                    if (!hiddenPaymentIds.includes(paymentId)) {
-                        hiddenPaymentIds.push(paymentId);
-                    }
-                });
-
-                return {
-                    component: (
-                        <BunqMeTabListItem
-                            bunqMeTab={bunqMeTab}
-                            BunqJSClient={this.props.BunqJSClient}
-                            copiedValue={this.copiedValue}
-                            bunqMeTabLoading={this.props.bunqMeTabLoading}
-                            bunqMeTabsLoading={this.props.bunqMeTabsLoading}
-                            bunqMeTabPut={this.props.bunqMeTabPut}
-                            accounts={this.props.accounts}
-                            user={this.props.user}
-                        />
-                    ),
-                    filterDate: UTCDateToLocalDate(bunqMeTab.updated),
-                    info: bunqMeTab
-                };
-            });
-
-        return {
-            bunqMeTabs,
-            hiddenPaymentIds
-        };
-    };
-
-    masterCardActionMapper = () => {
-        if (this.props.hiddenTypes.includes("MasterCardAction")) return [];
-
-        return this.props.masterCardActions
-            .filter(
-                masterCardActionFilter({
-                    paymentVisibility: this.props.paymentVisibility,
-                    paymentType: this.props.paymentType,
-                    ...this.getCommonFilters()
-                })
-            )
-            .filter(event => {
-                if (this.props.accountId) {
-                    if (event.monetary_account_id !== this.props.accountId) {
-                        return false;
-                    }
-                }
-                return true;
-            })
-            .map(masterCardAction => {
-                return {
-                    component: (
-                        <MasterCardActionListItem
-                            masterCardAction={masterCardAction}
-                            BunqJSClient={this.props.BunqJSClient}
-                        />
-                    ),
-                    filterDate: UTCDateToLocalDate(masterCardAction.created),
-                    info: masterCardAction
-                };
-            });
-    };
-
-    requestInquiryMapper = (hiddenRequestInquiryIds = []) => {
-        if (this.props.hiddenTypes.includes("RequestInquiry")) return [];
-
-        return this.props.requestInquiries
-            .filter(
-                requestInquiryFilter({
-                    requestVisibility: this.props.requestVisibility,
-                    requestType: this.props.requestType,
-                    ...this.getCommonFilters()
-                })
-            )
-            .filter(event => {
-                if (this.props.accountId) {
-                    if (event.monetary_account_id !== this.props.accountId) {
-                        return false;
-                    }
-                }
-
-                // if hidden ids are set, check if this event is included
-                if (hiddenRequestInquiryIds.length > 0 && event.batch_id) {
-                    if (hiddenRequestInquiryIds.includes(event.batch_id)) {
-                        return false;
-                    }
-                }
-
-                return true;
-            })
-            .map(requestInquiry => {
-                return {
-                    component: (
-                        <RequestInquiryListItem
-                            requestInquiry={requestInquiry}
-                            BunqJSClient={this.props.BunqJSClient}
-                        />
-                    ),
-                    filterDate: UTCDateToLocalDate(requestInquiry.created),
-                    info: requestInquiry
-                };
-            });
-    };
-
-    requestResponseMapper = (onlyPending = false, onlyNonPending = false) => {
-        if (this.props.hiddenTypes.includes("RequestResponse")) return [];
-
-        return this.props.requestResponses
-            .filter(requestResponse => {
-                if (onlyPending === true) {
-                    return requestResponse.RequestResponse.status === "PENDING";
-                }
-
-                if (onlyNonPending === true) {
-                    return requestResponse.RequestResponse.status !== "PENDING";
-                }
-
-                return true;
-            })
-            .filter(
-                requestResponseFilter({
-                    requestVisibility: this.props.requestVisibility,
-                    paymentVisibility: this.props.paymentVisibility,
-                    requestType: this.props.requestType,
-                    paymentType: this.props.paymentType,
-                    ...this.getCommonFilters()
-                })
-            )
-            .filter(event => {
-                if (this.props.accountId) {
-                    if (event.monetary_account_id !== this.props.accountId) {
-                        return false;
-                    }
-                }
-                return true;
-            })
-            .map(requestResponse => {
-                return {
-                    component: (
-                        <RequestResponseListItem
-                            requestResponse={requestResponse}
-                            BunqJSClient={this.props.BunqJSClient}
-                        />
-                    ),
-                    filterDate: UTCDateToLocalDate(
-                        requestResponse.status === "ACCEPTED"
-                            ? requestResponse.time_responded
-                            : requestResponse.created
-                    ),
-                    info: requestResponse
-                };
-            });
-    };
-
-    requestInquiryBatchMapper = () => {
-        if (this.props.hiddenTypes.includes("RequestInquiryBatch")) {
-            return {
-                hiddenRequestInquiryIds: [],
-                requestInquiryBatches: []
-            };
-        }
-
-        let hiddenRequestInquiryIds = [];
-        const requestInquiryBatches = this.props.requestInquiryBatches
-            .filter(
-                requestInquiryBatchFilter({
-                    requestVisibility: this.props.requestVisibility,
-                    requestType: this.props.requestType,
-                    ...this.getCommonFilters()
-                })
-            )
-            .filter(requestInquiryBatch => {
-                // TODO loop through inquiries and check if account id matches
-
-                const requestInquiry = requestInquiryBatch.request_inquiries[0];
-                if (requestInquiry && this.props.accountId) {
-                    if (
-                        requestInquiry.monetary_account_id !==
-                        this.props.accountId
-                    ) {
-                        return false;
-                    }
-                }
-
-                return true;
-            })
-            .map(requestInquiryBatch => {
-                // hide requests with the following batch id
-                hiddenRequestInquiryIds.push(requestInquiryBatch.id);
-
-                return {
-                    component: (
-                        <RequestInquiryBatchListItem
-                            accounts={this.props.accounts}
-                            requestInquiryBatch={requestInquiryBatch}
-                            BunqJSClient={this.props.BunqJSClient}
-                        />
-                    ),
-                    filterDate: UTCDateToLocalDate(requestInquiryBatch.updated),
-                    info: requestInquiryBatch
-                };
-            });
-
-        return {
-            requestInquiryBatches: requestInquiryBatches,
-            hiddenRequestInquiryIds: hiddenRequestInquiryIds
-        };
-    };
-
-    shareInviteBankInquiryMapper = () => {
-        if (this.props.hiddenTypes.includes("ShareInviteBankInquiry"))
-            return [];
-
-        return this.props.shareInviteBankInquiries
-            .filter(
-                shareInviteBankInquiryFilter({
-                    bunqMeTabType: this.props.bunqMeTabType,
-                    paymentType: this.props.paymentType,
-                    requestType: this.props.requestType,
-                    ...this.getCommonFilters()
-                })
-            )
-            .map(shareInviteBankInquiry => {
-                const shareInviteBankInquiryInfo = shareInviteBankInquiry.ShareInviteBankInquiry
-                    ? shareInviteBankInquiry.ShareInviteBankInquiry
-                    : shareInviteBankInquiry.ShareInviteBankResponse;
-
-                return {
-                    component: (
-                        <ShareInviteBankInquiryListItem
-                            BunqJSClient={this.props.BunqJSClient}
-                            shareInviteBankInquiry={shareInviteBankInquiryInfo}
-                            openSnackbar={this.props.openSnackbar}
-                            user={this.props.user}
-                        />
-                    ),
-                    filterDate: UTCDateToLocalDate(
-                        shareInviteBankInquiryInfo.created
-                    ),
-                    info: shareInviteBankInquiry
-                };
-            });
-    };
-
-    shareInviteBankResponseMapper = () => {
-        if (this.props.hiddenTypes.includes("ShareInviteBankResponse"))
-            return [];
-
-        return this.props.shareInviteBankResponses
-            .filter(
-                shareInviteBankResponseFilter({
-                    bunqMeTabType: this.props.bunqMeTabType,
-                    paymentType: this.props.paymentType,
-                    requestType: this.props.requestType,
-                    ...this.getCommonFilters()
-                })
-            )
-            .map(shareInviteBankResponse => {
-                return (
-                    <ShareInviteBankResponseListItem
-                        BunqJSClient={this.props.BunqJSClient}
-                        shareInviteBankResponse={
-                            shareInviteBankResponse.ShareInviteBankResponse
-                        }
-                        openSnackbar={this.props.openSnackbar}
-                        user={this.props.user}
-                    />
-                );
-            });
     };
 
     lastPage = page => () => {
@@ -587,9 +202,7 @@ class CombinedList extends React.Component {
         });
 
         // set a total amount
-        const filterEnabledText = filterIsDisabled
-            ? ""
-            : ` of ${this.state.totalEvents}`;
+        const filterEnabledText = filterIsDisabled ? "" : ` of ${this.state.totalEvents}`;
 
         let loadingContent =
             this.props.queueLoading ||
@@ -605,8 +218,9 @@ class CombinedList extends React.Component {
                 <Divider />
             );
 
-        const requestResponsesPending = this.requestResponseMapper(true);
-        const shareInviteBankResponses = this.shareInviteBankResponseMapper();
+        const settings = this.getSettings();
+        const requestResponsesPending = requestResponseMapper(settings, true);
+        const shareInviteBankResponses = shareInviteBankResponseMapper(settings);
 
         // directly create a list for the pending requests
         const pendingRequestResponseComponents = requestResponsesPending.map(
@@ -616,31 +230,19 @@ class CombinedList extends React.Component {
         let groupedItems = {};
 
         // check if all pages is set (pageSize = 0)
-        const usedPageSize = pageSize === 0 ? events.length : pageSize;
+        const usedPageSize = pageSize === 0 ? 50 : pageSize;
 
         // calculate last page
         const unRoundedPageCount = events.length / usedPageSize;
-        const pageCount = unRoundedPageCount
-            ? Math.ceil(unRoundedPageCount)
-            : 1;
+        const pageCount = unRoundedPageCount ? Math.ceil(unRoundedPageCount) : 1;
 
         // create a smaller list based on the page and pageSize
-        const slicedEvents = events.slice(
-            page * usedPageSize,
-            (page + 1) * usedPageSize
-        );
+        const slicedEvents = events.slice(page * usedPageSize, (page + 1) * usedPageSize);
 
         // group by date
         slicedEvents.map(item => {
             const dateFull = new Date(item.filterDate);
-            const date = new Date(
-                dateFull.getFullYear(),
-                dateFull.getMonth(),
-                dateFull.getDate(),
-                0,
-                0,
-                0
-            );
+            const date = new Date(dateFull.getFullYear(), dateFull.getMonth(), dateFull.getDate(), 0, 0, 0);
             if (!groupedItems[date.getTime()]) {
                 groupedItems[date.getTime()] = {
                     date: dateFull,
@@ -663,21 +265,13 @@ class CombinedList extends React.Component {
             }
 
             // get the human readable text for this date group
-            const groupTitleText = humanReadableDate(
-                parseFloat(dateLabel),
-                false
-            );
+            const groupTitleText = humanReadableDate(parseFloat(dateLabel), false);
 
             // add a header component for this date
-            combinedComponentList.push([
-                <ListSubheader>{groupTitleText}</ListSubheader>,
-                <Divider />
-            ]);
+            combinedComponentList.push([<ListSubheader>{groupTitleText}</ListSubheader>, <Divider />]);
 
             // add the components to the list
-            groupedItem.components.map(component =>
-                combinedComponentList.push(component)
-            );
+            groupedItem.components.map(component => combinedComponentList.push(component));
         });
 
         // add the connect requests and pending request responses to the top
@@ -698,86 +292,19 @@ class CombinedList extends React.Component {
                     </ListItemSecondaryAction>
                 </ListSubheader>
 
-                <ListSubheader>
-                    <Grid container>
-                        <Grid item xs={1}>
-                            <IconButton
-                                style={styles.button}
-                                onClick={this.props.firstPage}
-                                disabled={page === 0}
-                            >
-                                <SkipPreviousIcon />
-                            </IconButton>
-                        </Grid>
-
-                        <Grid item xs={1}>
-                            <IconButton
-                                style={styles.button}
-                                onClick={this.props.previousPage}
-                                disabled={page === 0}
-                            >
-                                <KeyboardArrowLeftIcon />
-                            </IconButton>
-                        </Grid>
-
-                        <Grid item xs={4} style={styles.centerPaginationDiv}>
-                            <TextField
-                                style={styles.pageField}
-                                value={page + 1}
-                                type={"number"}
-                                inputProps={{
-                                    min: 1,
-                                    max: pageCount,
-                                    step: 1
-                                }}
-                                onChange={this.setPage(pageCount)}
-                            />
-                        </Grid>
-
-                        <Grid item xs={4} style={styles.centerPaginationDiv}>
-                            <TextField
-                                select
-                                style={styles.pageField}
-                                value={pageSize}
-                                onChange={this.setPageSize}
-                            >
-                                <MenuItem value={5}>5</MenuItem>
-                                <MenuItem value={10}>10</MenuItem>
-                                <MenuItem value={20}>20</MenuItem>
-                                <MenuItem value={30}>30</MenuItem>
-                                <MenuItem value={50}>50</MenuItem>
-                                <MenuItem value={100}>100</MenuItem>
-                                <MenuItem value={0}>All</MenuItem>
-                            </TextField>
-                        </Grid>
-
-                        <Grid item xs={1}>
-                            <IconButton
-                                style={styles.button}
-                                onClick={this.props.nextPage}
-                                disabled={page + 1 >= pageCount}
-                            >
-                                <KeyboardArrowRightIcon />
-                            </IconButton>
-                        </Grid>
-
-                        <Grid item xs={1}>
-                            <IconButton
-                                style={styles.button}
-                                onClick={this.lastPage(pageCount - 1)}
-                                disabled={page + 1 >= pageCount}
-                            >
-                                <SkipNextIcon />
-                            </IconButton>
-                        </Grid>
-                    </Grid>
-                </ListSubheader>
-
-                <EventData
-                    t={t}
-                    events={events}
-                    open={this.state.displayEventData}
+                <ListControls
+                    page={page}
+                    pageCount={pageCount}
+                    pageSize={pageSize}
+                    lastPage={this.lastPage}
+                    setPage={this.setPage}
+                    setPageSize={this.setPageSize}
+                    nextPage={this.props.nextPage}
+                    firstPage={this.props.firstPage}
+                    previousPage={this.props.previousPage}
                 />
+
+                <EventData t={t} events={events} open={this.state.displayEventData} />
 
                 {loadingContent}
                 {combinedComponentList}
@@ -789,6 +316,8 @@ class CombinedList extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+
+        registrationReady: state.registration.ready,
 
         queueLoading: state.queue.loading,
         queueFinishedQueue: state.queue.finished_queue,
@@ -837,22 +366,17 @@ const mapStateToProps = state => {
         requestInquiries: state.request_inquiries.request_inquiries,
         requestInquiriesLoading: state.request_inquiries.loading,
 
-        requestInquiryBatches:
-            state.request_inquiry_batches.request_inquiry_batches,
+        requestInquiryBatches: state.request_inquiry_batches.request_inquiry_batches,
         requestInquiryBatchLoading: state.request_inquiry_batches.loading,
 
         requestResponses: state.request_responses.request_responses,
         requestResponsesLoading: state.request_responses.loading,
 
-        shareInviteBankInquiries:
-            state.share_invite_bank_inquiries.share_invite_bank_inquiries,
-        shareInviteBankInquiriesLoading:
-            state.share_invite_bank_inquiries.loading,
+        shareInviteBankInquiries: state.share_invite_bank_inquiries.share_invite_bank_inquiries,
+        shareInviteBankInquiriesLoading: state.share_invite_bank_inquiries.loading,
 
-        shareInviteBankResponses:
-            state.share_invite_bank_responses.share_invite_bank_responses,
-        shareInviteBankResponsesLoading:
-            state.share_invite_bank_responses.loading
+        shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
+        shareInviteBankResponsesLoading: state.share_invite_bank_responses.loading
     };
 };
 
@@ -861,9 +385,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
         bunqMeTabPut: (userId, accountId, tabId, status) =>
-            dispatch(
-                bunqMeTabPut(BunqJSClient, userId, accountId, tabId, status)
-            ),
+            dispatch(bunqMeTabPut(BunqJSClient, userId, accountId, tabId, status)),
         firstPage: () => dispatch(firstPage()),
         nextPage: () => dispatch(nextPage()),
         previousPage: () => dispatch(previousPage()),

@@ -1,7 +1,9 @@
 import store from "store";
+import { ipcRenderer } from "electron";
 import settings from "../ImportWrappers/electronSettings";
 
 import { STORED_ACCOUNTS } from "../Actions/accounts";
+import { formatMoney } from "../Helpers/Utils";
 
 export const SELECTED_ACCOUNT_LOCAION = "BUNQDESKTOP_SELECTED_ACCOUNT";
 export const EXCLUDED_ACCOUNT_IDS = "BUNQDESKTOP_EXCLUDED_ACCOUNT_IDS";
@@ -9,10 +11,8 @@ export const EXCLUDED_ACCOUNT_IDS = "BUNQDESKTOP_EXCLUDED_ACCOUNT_IDS";
 const excludedAccountIdsStored = settings.get(EXCLUDED_ACCOUNT_IDS);
 const selectedAccountStored = store.get(SELECTED_ACCOUNT_LOCAION);
 
-const selectedAccountDefault =
-    selectedAccountStored !== undefined ? selectedAccountStored : false;
-const excludedAccountIdsDefault =
-    excludedAccountIdsStored !== undefined ? excludedAccountIdsStored : [];
+const selectedAccountDefault = selectedAccountStored !== undefined ? selectedAccountStored : false;
+const excludedAccountIdsDefault = excludedAccountIdsStored !== undefined ? excludedAccountIdsStored : [];
 
 export const defaultState = {
     accounts: [],
@@ -36,6 +36,20 @@ export default (state = defaultState, action) => {
                     .catch(() => {});
             }
 
+            ipcRenderer.send(
+                "set-tray-accounts",
+                action.payload.accounts
+                    .filter(account => {
+                        return account && account.status === "ACTIVE";
+                    })
+                    .map(account => {
+                        return {
+                            description: account.description,
+                            balance: formatMoney(account.getBalance())
+                        };
+                    })
+            );
+
             return {
                 ...state,
                 accounts: action.payload.accounts
@@ -50,9 +64,7 @@ export default (state = defaultState, action) => {
 
         case "ACCOUNTS_EXCLUDE_FROM_TOTAL":
             const currentAccountIds = [...state.excluded_account_ids];
-            const existingIndex = currentAccountIds.indexOf(
-                action.payload.account_id
-            );
+            const existingIndex = currentAccountIds.indexOf(action.payload.account_id);
 
             if (existingIndex === -1) {
                 // doesn't exist, add account id to excluded list
@@ -68,9 +80,7 @@ export default (state = defaultState, action) => {
             };
         case "ACCOUNTS_INCLUDE_IN_TOTAL":
             const currentAccountIds2 = [...state.excluded_account_ids];
-            const existingIndex2 = currentAccountIds2.indexOf(
-                action.payload.account_id
-            );
+            const existingIndex2 = currentAccountIds2.indexOf(action.payload.account_id);
 
             if (existingIndex2 > -1) {
                 // exists, remove the id from the excluded list
@@ -107,6 +117,9 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_CLEAR_USER_INFO":
             store.remove(SELECTED_ACCOUNT_LOCAION);
             store.remove(STORED_ACCOUNTS);
+
+            ipcRenderer.send("set-tray-accounts", false);
+            ipcRenderer.send("set-tray-balance", false);
             return {
                 ...state,
                 accounts: [],

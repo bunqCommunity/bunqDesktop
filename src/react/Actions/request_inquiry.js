@@ -3,15 +3,8 @@ import { openSnackbar } from "./snackbar";
 import { requestInquiryUpdate } from "./request_inquiry_info";
 import { requestInquiryBatchesUpdate } from "./request_inquiry_batches";
 
-export function requestInquirySend(
-    BunqJSClient,
-    userId,
-    accountId,
-    requestInquiries
-) {
-    const failedMessage = window.t(
-        "We received the following error while sending your request"
-    );
+export function requestInquirySend(BunqJSClient, userId, accountId, requestInquiries) {
+    const failedMessage = window.t("We received the following error while sending your request");
     const successMessage = window.t("Request was sent successfully!");
 
     return dispatch => {
@@ -29,15 +22,8 @@ export function requestInquirySend(
     };
 }
 
-export function requestInquiryCancel(
-    BunqJSClient,
-    userId,
-    accountId,
-    requestInquiryId
-) {
-    const failedMessage = window.t(
-        "We received the following error while trying to cancel your request inquiry"
-    );
+export function requestInquiryCancel(BunqJSClient, userId, accountId, requestInquiryId) {
+    const failedMessage = window.t("We received the following error while trying to cancel your request inquiry");
     const successMessage = window.t("Request was cancelled successfully!");
 
     return dispatch => {
@@ -49,17 +35,8 @@ export function requestInquiryCancel(
                 dispatch(requestInquiryNotLoading());
 
                 // update the information page
-                dispatch(
-                    requestInquiryUpdate(
-                        BunqJSClient,
-                        userId,
-                        accountId,
-                        requestInquiryId
-                    )
-                );
-                dispatch(
-                    requestInquiryBatchesUpdate(BunqJSClient, userId, accountId)
-                );
+                dispatch(requestInquiryUpdate(BunqJSClient, userId, accountId, requestInquiryId));
+                dispatch(requestInquiryBatchesUpdate(BunqJSClient, userId, accountId));
             })
             .catch(error => {
                 dispatch(requestInquiryNotLoading());

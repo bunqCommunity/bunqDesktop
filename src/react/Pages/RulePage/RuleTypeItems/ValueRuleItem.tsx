@@ -103,18 +103,10 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
                             onChange={this.handleFieldChange}
                             input={<Input name="field" id="field-helper" />}
                         >
-                            <TranslateMenuItem value={"IBAN"}>
-                                IBAN number
-                            </TranslateMenuItem>
-                            <TranslateMenuItem value={"DESCRIPTION"}>
-                                Description
-                            </TranslateMenuItem>
-                            <TranslateMenuItem value={"COUNTERPARTY_NAME"}>
-                                Display name
-                            </TranslateMenuItem>
-                            <TranslateMenuItem value={"CUSTOM"}>
-                                Other
-                            </TranslateMenuItem>
+                            <TranslateMenuItem value={"IBAN"}>IBAN number</TranslateMenuItem>
+                            <TranslateMenuItem value={"DESCRIPTION"}>Description</TranslateMenuItem>
+                            <TranslateMenuItem value={"COUNTERPARTY_NAME"}>Display name</TranslateMenuItem>
+                            <TranslateMenuItem value={"CUSTOM"}>Other</TranslateMenuItem>
                         </Select>
                     </FormControl>
 
@@ -136,21 +128,11 @@ class ValueRuleItem extends React.Component<IPropTypes, any> {
                             onChange={this.handleMatchTypeChange}
                             input={<Input name="age" id="match-type-helper" />}
                         >
-                            <TranslateMenuItem value={"CONTAINS"}>
-                                Contains text
-                            </TranslateMenuItem>
-                            <TranslateMenuItem value={"EXACT"}>
-                                Matches exactly
-                            </TranslateMenuItem>
-                            <TranslateMenuItem value={"STARTS_WITH"}>
-                                Starts with
-                            </TranslateMenuItem>
-                            <TranslateMenuItem value={"ENDS_WITH"}>
-                                Ends with
-                            </TranslateMenuItem>
-                            <TranslateMenuItem value={"REGEX"}>
-                                Regex
-                            </TranslateMenuItem>
+                            <TranslateMenuItem value={"CONTAINS"}>Contains text</TranslateMenuItem>
+                            <TranslateMenuItem value={"EXACT"}>Matches exactly</TranslateMenuItem>
+                            <TranslateMenuItem value={"STARTS_WITH"}>Starts with</TranslateMenuItem>
+                            <TranslateMenuItem value={"ENDS_WITH"}>Ends with</TranslateMenuItem>
+                            <TranslateMenuItem value={"REGEX"}>Regex</TranslateMenuItem>
                         </Select>
                         {/*<FormHelperText>*/}
                         {/*How to check the field*/}

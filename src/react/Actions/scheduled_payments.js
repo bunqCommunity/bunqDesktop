@@ -20,9 +20,7 @@ export function scheduledPaymentsInfoUpdate(
         older_id: false
     }
 ) {
-    const failedMessage = window.t(
-        "We failed to load the scheduled payments for this monetary account"
-    );
+    const failedMessage = window.t("We failed to load the scheduled payments for this monetary account");
 
     return dispatch => {
         dispatch(scheduledPaymentsLoading());
@@ -30,9 +28,7 @@ export function scheduledPaymentsInfoUpdate(
         BunqJSClient.api.schedulePayment
             .list(user_id, account_id, options)
             .then(scheduledPayments => {
-                dispatch(
-                    scheduledPaymentsSetInfo(scheduledPayments, account_id)
-                );
+                dispatch(scheduledPaymentsSetInfo(scheduledPayments, account_id));
                 dispatch(scheduledPaymentsNotLoading());
             })
             .catch(error => {
@@ -50,29 +46,15 @@ export function scheduledPaymentUpdate(
     payment_info,
     schedule_info
 ) {
-    const failedMessage = window.t(
-        "We failed to update the scheduled payment for this monetary account"
-    );
+    const failedMessage = window.t("We failed to update the scheduled payment for this monetary account");
 
     return dispatch => {
         dispatch(scheduledPaymentsLoading());
 
         BunqJSClient.api.schedulePayment
-            .put(
-                user_id,
-                account_id,
-                scheduled_payment_id,
-                payment_info,
-                schedule_info
-            )
+            .put(user_id, account_id, scheduled_payment_id, payment_info, schedule_info)
             .then(result => {
-                dispatch(
-                    scheduledPaymentsInfoUpdate(
-                        BunqJSClient,
-                        user_id,
-                        account_id
-                    )
-                );
+                dispatch(scheduledPaymentsInfoUpdate(BunqJSClient, user_id, account_id));
                 dispatch(scheduledPaymentsNotLoading());
             })
             .catch(error => {

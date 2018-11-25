@@ -23,9 +23,7 @@ defaultCategoryRules["category-rules"].forEach(defaultCategoryRule => {
 
 const categoryRulesStored = settings.get(STORED_CATEGORY_RULES);
 const categoryRulesDefault: RuleCollectionList =
-    categoryRulesStored !== undefined
-        ? categoryRulesStored
-        : formattedDefaultCategoryRules;
+    categoryRulesStored !== undefined ? categoryRulesStored : formattedDefaultCategoryRules;
 
 // store the default category rules
 if (categoryRulesStored === undefined) {
@@ -56,8 +54,7 @@ export default (state = defaultState, action) => {
 
     switch (action.type) {
         case "CATEGORY_RULE_SET_CATEGORY_RULES":
-            const category_rules_new: RuleCollectionList =
-                action.payload.category_rules;
+            const category_rules_new: RuleCollectionList = action.payload.category_rules;
 
             // store the category rules
             settings.set(STORED_CATEGORY_RULES, category_rules_new);
@@ -69,8 +66,7 @@ export default (state = defaultState, action) => {
             };
 
         case "CATEGORY_RULE_SET_CATEGORY_RULE":
-            const rule_collection: RuleCollection =
-                action.payload.rule_collection;
+            const rule_collection: RuleCollection = action.payload.rule_collection;
             const categoryRuleId: string = rule_collection.getId();
 
             // store this collection in the list or overwrite existing
@@ -86,7 +82,7 @@ export default (state = defaultState, action) => {
             };
 
         case "CATEGORY_RULE_REMOVE_CATEGORY_RULE":
-            const removeCategoryId = action.payload.category_rule_id;
+            const removeCategoryId: string = action.payload.category_rule_id;
 
             // delete this category from the list
             if (category_rules[removeCategoryId]) {
@@ -110,12 +106,21 @@ export default (state = defaultState, action) => {
         // load categories from new settings location
         case "OPTIONS_LOAD_SETTINGS_LOCATION":
             const storedCategoryRules = settings.get(STORED_CATEGORY_RULES);
+            const parsedStoredList: RuleCollectionList = {};
+
+            if (storedCategoryRules) {
+                Object.keys(storedCategoryRules).forEach(id => {
+                    parsedStoredList[id] = new RuleCollection(storedCategoryRules[id]);
+                });
+            }
+
             return {
                 ...state,
                 last_update: new Date().getTime(),
-                category_rules: storedCategoryRules
-                    ? storedCategoryRules
-                    : state.category_rules
+                category_rules: {
+                    ...state.category_rules,
+                    ...parsedStoredList
+                }
             };
     }
     return state;
