@@ -197,26 +197,6 @@ class Pay extends React.Component {
         );
     };
 
-    schedulePaymentChange = () => {
-        const schedulePayment = !this.state.schedulePayment;
-
-        this.setState(
-            {
-                addToPendingPayments: false,
-                schedulePayment: schedulePayment
-            },
-            this.validateForm
-        );
-        if (schedulePayment) {
-            this.setState(
-                {
-                    sendDraftPayment: false
-                },
-                this.validateForm
-            );
-        }
-    };
-
     checkDraftOnly = () => {
         const { t, accounts, shareInviteBankResponses } = this.props;
         const { selectedAccount, sendDraftPayment, addToPendingPayments } = this.state;
@@ -280,6 +260,18 @@ class Pay extends React.Component {
         }
     };
 
+    schedulePaymentChange = () => {
+        const schedulePayment = !this.state.schedulePayment;
+
+        this.setState(
+            {
+                addToPendingPayments: false,
+                schedulePayment: schedulePayment,
+                sendDraftPayment: false
+            },
+            this.validateForm
+        );
+    };
     draftChange = () => {
         const sendDraftPayment = this.state.sendDraftPayment;
 
