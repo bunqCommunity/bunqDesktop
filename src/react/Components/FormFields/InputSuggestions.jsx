@@ -66,6 +66,10 @@ class InputSuggestions extends React.Component {
         if (this.props.onChangeName) {
             // on name change is set, update the name field aswell
             this.props.onChangeName(item.name);
+            this.setState({
+                visible: false,
+                selectedIndex: 0
+            });
         }
     };
 
