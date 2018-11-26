@@ -64,7 +64,8 @@ export function registrationLogin(
     apiKey = false,
     deviceName,
     environment,
-    permittedIps = []
+    permittedIps = [],
+    checkApiKeyList = true
 ) {
     return async dispatch => {
         const t = window.t;
@@ -102,6 +103,10 @@ export function registrationLogin(
                 dispatch(openSnackbar(failedLoadingMessage));
                 return;
             }
+
+            dispatch(registrationSetApiKeyDirect(apiKey, encryptedApiKey, permittedIps));
+        } else {
+            dispatch(registrationSetApiKey(apiKey, derivedPassword, permittedIps, checkApiKeyList));
         }
 
         if (!apiKey) {
@@ -109,8 +114,6 @@ export function registrationLogin(
             dispatch(registrationSetNotReady());
             return;
         }
-
-        dispatch(registrationSetApiKey(apiKey, derivedPassword, permittedIps));
 
         try {
             await BunqJSClient.run(apiKey, permittedIps, environment, derivedPassword.key);
@@ -152,39 +155,44 @@ export function registrationLogin(
 
 /**
  * Only sets the api key without extra actions
- * @param api_key
- * @param encrypted_api_key
+ * @param apiKey
+ * @param encryptedApiKey
  * @returns {{type: string, payload: {api_key: *}}}
  */
-export function registrationSetApiKeyDirect(api_key, encrypted_api_key = false, permitted_ips = []) {
+export function registrationSetApiKeyDirect(apiKey, encryptedApiKey = false, permittedIps = []) {
     return {
         type: "REGISTRATION_SET_API_KEY",
         payload: {
-            api_key: api_key,
-            encrypted_api_key: encrypted_api_key,
-            permitted_ips: permitted_ips
+            api_key: apiKey,
+            encrypted_api_key: encryptedApiKey,
+            permitted_ips: permittedIps
         }
     };
 }
 
 /**
  * Stores the api key encrypted in storage
- * @param api_key
- * @param encryptionKey
+ * @param apiKey
+ * @param derivedPassword
+ * @param permittedIps
+ * @param ensureStorage
  * @returns {function(*)}
  */
-export function registrationSetApiKey(api_key, derivedPassword, permitted_ips = []) {
+export function registrationSetApiKey(apiKey, derivedPassword, permittedIps = [], ensureStorage = true) {
     return dispatch => {
-        encryptString(api_key, derivedPassword.key)
+        encryptString(apiKey, derivedPassword.key)
             .then(encrypedData => {
-                store.set(API_KEY_LOCATION, encrypedData.encryptedString);
-                store.set(API_KEY_IV_LOCATION, encrypedData.iv);
+                const encryptedApiKey = encrypedData.encryptedString;
+                const encryptedApiKeyIV = encrypedData.iv;
 
-                // now store the salt for the currently used password
-                store.set(SALT_LOCATION, derivedPassword.salt);
+                if (ensureStorage === true) {
+                    store.set(API_KEY_LOCATION, encryptedApiKey);
+                    store.set(API_KEY_IV_LOCATION, encrypedData.iv);
+                    store.set(SALT_LOCATION, derivedPassword.salt);
+                    dispatch(registrationEnsureStoredApiKey(encryptedApiKey, encryptedApiKeyIV, permittedIps));
+                }
 
-                dispatch(registrationSetApiKeyDirect(api_key, encrypedData.encryptedString, permitted_ips));
-                dispatch(registrationEnsureStoredApiKey(encrypedData.encryptedString, encrypedData.iv, permitted_ips));
+                dispatch(registrationSetApiKeyDirect(apiKey, encryptedApiKey, permittedIps));
             })
             .catch(Logger.error);
     };
@@ -336,14 +344,7 @@ export function registrationLoadStoredApiKey(BunqJSClient, storedKeyIndex, deriv
                 // set the correct environment
                 dispatch(registrationSetEnvironment(encryptedEnvironment));
 
-                // check if api key is different
-                if (BunqJSClient.apiKey && BunqJSClient.apiKey !== decryptedString) {
-                    // remove the old api key
-                    dispatch(applicationSetStatus(statusMessage2));
-                }
-
                 // nothing changes, just set the api key but do nothing else
-                dispatch(registrationNotLoading());
                 dispatch(
                     registrationLogin(
                         BunqJSClient,
@@ -351,7 +352,8 @@ export function registrationLoadStoredApiKey(BunqJSClient, storedKeyIndex, deriv
                         decryptedString,
                         encryptedDeviceName,
                         encryptedEnvironment,
-                        encryptedPermittedIps || []
+                        encryptedPermittedIps || [],
+                        false
                     )
                 );
             })
