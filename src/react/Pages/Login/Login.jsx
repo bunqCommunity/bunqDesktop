@@ -155,7 +155,7 @@ class Login extends React.Component {
     componentDidMount() {
         const isSandboxMode = this.props.environment === "SANDBOX";
         if (this.props.derivedPassword !== false) {
-            this.registrationLogin();
+            this.registrationLogin(false, false, false, false);
         }
 
         this.setState(
@@ -195,13 +195,14 @@ class Login extends React.Component {
         if (this.displayQrCodeDelay) clearTimeout(this.displayQrCodeDelay);
     }
 
-    registrationLogin = (apiKey = false, derivedPassword = false, permittedIps = false) => {
+    registrationLogin = (apiKey = false, derivedPassword = false, permittedIps = false, checkApiKeyList = true) => {
         this.props.registrationLogin(
             derivedPassword || this.props.derivedPassword,
             apiKey || this.props.apiKey,
             this.props.deviceName,
             this.props.environment,
-            permittedIps || this.props.permittedIps
+            permittedIps || this.props.permittedIps,
+            checkApiKeyList
         );
     };
 
@@ -233,7 +234,7 @@ class Login extends React.Component {
                 permittedIps = [this.state.currentIp, "*"];
             }
 
-            this.registrationLogin(this.state.apiKey, this.props.derivedPassword, permittedIps);
+            this.registrationLogin(this.state.apiKey, this.props.derivedPassword, permittedIps, true);
         }
     };
 
@@ -664,8 +665,18 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // attempt to load the api key with our password if one is stored
         registrationLoadApiKey: derivedPassword => dispatch(registrationLoadApiKey(derivedPassword)),
 
-        registrationLogin: (derivedPassword, apiKey, deviceName, environment, permittedIps) =>
-            dispatch(registrationLogin(BunqJSClient, derivedPassword, apiKey, deviceName, environment, permittedIps)),
+        registrationLogin: (derivedPassword, apiKey, deviceName, environment, permittedIps, checkApiKeyList) =>
+            dispatch(
+                registrationLogin(
+                    BunqJSClient,
+                    derivedPassword,
+                    apiKey,
+                    deviceName,
+                    environment,
+                    permittedIps,
+                    checkApiKeyList
+                )
+            ),
 
         setEnvironment: environment => dispatch(registrationSetEnvironment(environment)),
         setDeviceName: device_name => dispatch(registrationSetDeviceName(device_name)),

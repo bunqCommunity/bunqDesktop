@@ -78,7 +78,8 @@ export function registrationLogin(
         dispatch(registrationLoading());
 
         let encryptedApiKey = false;
-        if (!apiKey && store.get(API_KEY_LOCATION) && store.get(API_KEY_IV_LOCATION)) {
+        if (!apiKey && !!store.get(API_KEY_LOCATION) && !!store.get(API_KEY_IV_LOCATION)) {
+            console.log("Use stored key");
             encryptedApiKey = store.get(API_KEY_LOCATION);
             const encryptedApiKeyIV = store.get(API_KEY_IV_LOCATION);
 
@@ -295,11 +296,10 @@ export function registrationLoadApiKey(derivedPassword) {
  * @returns {function(*)}
  */
 export function registrationLoadStoredApiKey(BunqJSClient, storedKeyIndex, derivedPassword) {
-    const failedMessage = window.t("We failed to load the stored API key Try again or re-enter the key");
-    const statusMessage = window.t("Attempting to load your API key");
-    const statusMessage2 = window.t("Removing data from previous session");
-
     return dispatch => {
+        const failedMessage = window.t("We failed to load the stored API key Try again or re-enter the key");
+        const statusMessage = window.t("Attempting to load your API key");
+
         dispatch(registrationLoading());
         dispatch(applicationSetStatus(statusMessage));
 
