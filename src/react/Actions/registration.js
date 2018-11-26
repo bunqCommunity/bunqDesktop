@@ -110,7 +110,7 @@ export function registrationLogin(
             return;
         }
 
-        dispatch(registrationSetApiKeyDirect(apiKey, encryptedApiKey, permittedIps));
+        dispatch(registrationSetApiKey(apiKey, derivedPassword, permittedIps));
 
         try {
             await BunqJSClient.run(apiKey, permittedIps, environment, derivedPassword.key);
