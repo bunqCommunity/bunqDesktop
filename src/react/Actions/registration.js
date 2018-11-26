@@ -79,7 +79,6 @@ export function registrationLogin(
 
         let encryptedApiKey = false;
         if (!apiKey && !!store.get(API_KEY_LOCATION) && !!store.get(API_KEY_IV_LOCATION)) {
-            console.log("Use stored key");
             encryptedApiKey = store.get(API_KEY_LOCATION);
             const encryptedApiKeyIV = store.get(API_KEY_IV_LOCATION);
 
