@@ -150,7 +150,9 @@ class ConnectListItem extends React.Component {
             detailItem = (
                 <Collapse in={this.state.open}>
                     <ListItem>
-                        <ListItemText primary={`${makeDraftText}: ${shareDetails.make_payments ? yesText : noText}`} />
+                        <ListItemText
+                            primary={`${makeDraftText}: ${shareDetails.make_draft_payments ? yesText : noText}`}
+                        />
                     </ListItem>
                     <ListItem>
                         <ListItemText primary={`${viewBalanceText}: ${shareDetails.view_balance ? yesText : noText}`} />
