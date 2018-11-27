@@ -9,15 +9,6 @@ export const API_KEY_LOCATION = "BUNQDESKTOP_API_KEY";
 export const API_KEYS_LOCATION = "BUNQDESKTOP_API_KEYS";
 export const API_KEY_IV_LOCATION = "BUNQDESKTOP_API_IV";
 
-const deviceNameDefault = store.get(DEVICE_NAME_LOCATION) !== undefined ? store.get(DEVICE_NAME_LOCATION) : "My Device";
-const useNoPasswordDefault =
-    store.get(USE_NO_PASSWORD_LOCATION) !== undefined ? store.get(USE_NO_PASSWORD_LOCATION) : false;
-const environmentDefault =
-    store.get(ENVIRONMENT_LOCATION) !== undefined ? store.get(ENVIRONMENT_LOCATION) : "PRODUCTION";
-const storedApiKeysDefault = store.get(API_KEYS_LOCATION) !== undefined ? store.get(API_KEYS_LOCATION) : [];
-
-const BunqDesktopClient = window.BunqDesktopClient;
-
 export const defaultState = {
     // unencrypted api key, this should NEVER be stored elsewhere
     api_key: false,
@@ -25,16 +16,16 @@ export const defaultState = {
     encrypted_api_key: false,
 
     // if true there is a stored api key
-    has_stored_api_key: BunqDesktopClient.hasStoredApiKey,
+    has_stored_api_key: false,
 
     // list of encrypted api keys
-    stored_api_keys: storedApiKeysDefault,
+    stored_api_keys: [],
 
     // if true, the application will try to load the encryption keys using a default password
-    use_no_password: BunqDesktopClient.hasSkippedPassword,
-    device_name: deviceNameDefault,
-    environment: environmentDefault,
-    derivedPassword: false,
+    use_no_password: false,
+    device_name: "My device",
+    environment: "PRODUCTION",
+    derived_password: false,
     identifier: false,
     loading: false,
     status_message: ""
@@ -165,7 +156,7 @@ export default (state = defaultState, action) => {
                 encrypted_api_key: false,
                 stored_api_keys: [],
                 has_stored_api_key: false,
-                derivedPassword: false
+                derived_password: false
             };
 
         case "REGISTRATION_LOG_OUT":
@@ -177,7 +168,7 @@ export default (state = defaultState, action) => {
                 ready: false,
                 encrypted_api_key: false,
                 has_stored_api_key: false,
-                derivedPassword: false
+                derived_password: false
             };
 
         case "REGISTRATION_RESET_TO_API_SCREEN":
@@ -194,7 +185,7 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_SET_PASSWORD":
             return {
                 ...state,
-                derivedPassword: action.payload.derivedPassword,
+                derived_password: action.payload.derived_password,
                 identifier: action.payload.identifier
             };
 
@@ -216,8 +207,37 @@ export default (state = defaultState, action) => {
             store.set(USE_NO_PASSWORD_LOCATION, false);
             return {
                 ...state,
-                derivedPassword: false,
+                derived_password: false,
                 use_no_password: false
+            };
+
+        case "REGISTRATION_SET_BUNQ_DESKTOP_CLIENT_DATA":
+            return {
+                ...state,
+                device_name: action.payload.device_name,
+                encrypted_api_key: action.payload.encrypted_api_key,
+                encrypted_api_key_iv: action.payload.encrypted_api_key_iv,
+                environment: action.payload.environment,
+                has_stored_api_key: action.payload.has_stored_api_key,
+                use_no_password: action.payload.use_no_password
+            };
+
+        case "REGISTRATION_SET_PASSWORD_DATA":
+            return {
+                ...state,
+                derived_password: action.payload.derived_password,
+                derived_password_salt: action.payload.derived_password_salt,
+                identifier: action.payload.password_identifier
+            };
+
+        case "REGISTRATION_SET_API_KEY_DATA":
+            return {
+                ...state,
+                api_key: action.payload.api_key,
+                device_name: action.payload.device_name,
+                environment: action.payload.environment,
+                encrypted_api_key: action.payload.encrypted_api_key,
+                encrypted_api_key_iv: action.payload.encrypted_api_key_iv,
             };
 
         case "REGISTRATION_READY":

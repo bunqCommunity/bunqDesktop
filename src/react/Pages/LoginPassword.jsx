@@ -20,13 +20,7 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
 import TranslateButton from "../Components/TranslationHelpers/Button";
 
-import {
-    registrationLogOut,
-    registrationSetDeviceName,
-    registrationSetEnvironment,
-    registrationUseNoPassword,
-    registrationUsePassword
-} from "../Actions/registration";
+import { registrationLogOut, registrationNEWSetPassword, registrationNEWSkipPassword } from "../Actions/registration";
 
 const styles = {
     wrapperContainer: {
@@ -119,7 +113,12 @@ class LoginPassword extends React.Component {
             // there are stored keys or second password is valid
             if (isExistingInstallation || passwordRepeatValid) {
                 this.props.usePasswordLogin(password);
-                this.setState({ password: "", passwordValid: false });
+                this.setState({
+                    password: "",
+                    passwordValid: false,
+                    passwordRepeat: "",
+                    passwordRepeatValid: false
+                });
             }
         }
     };
@@ -274,7 +273,7 @@ class LoginPassword extends React.Component {
 
                 {isExistingInstallation ? null : (
                     <FormControl style={styles.formControl}>
-                        <InputLabel>Password repeat</InputLabel>
+                        <InputLabel style={styles.text}>Password repeat</InputLabel>
                         <Input
                             className={"text-input"}
                             inputRef={ref => (this.passwordRepeatInput = ref)}
@@ -396,7 +395,7 @@ const mapStateToProps = state => {
         storedApiKeys: state.registration.stored_api_keys,
         hasStoredApiKey: state.registration.has_stored_api_key,
         useNoPassword: state.registration.use_no_password,
-        derivedPassword: state.registration.derivedPassword,
+        derivedPassword: state.registration.derived_password,
         registrationLoading: state.registration.loading,
 
         user: state.user.user,
@@ -404,19 +403,16 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = dispatch => {
     return {
         // use no password
-        useNoPasswordLogin: () => dispatch(registrationUseNoPassword()),
+        useNoPasswordLogin: () => dispatch(registrationNEWSkipPassword()),
+
         // use password
-        usePasswordLogin: password => dispatch(registrationUsePassword(password)),
+        usePasswordLogin: password => dispatch(registrationNEWSetPassword(password)),
 
         // clear api key from bunqjsclient and bunqdesktop
-        logOut: () => dispatch(registrationLogOut(BunqJSClient)),
-
-        setEnvironment: environment => dispatch(registrationSetEnvironment(environment)),
-        setDeviceName: device_name => dispatch(registrationSetDeviceName(device_name))
+        logOut: () => dispatch(registrationLogOut())
     };
 };
 

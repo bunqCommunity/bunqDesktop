@@ -34,7 +34,7 @@ const ThemeList = {
 // redux actions
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
-import { registrationClearUserInfo } from "../Actions/registration";
+import { registrationClearUserInfo, registrationLoadBunqDesktopClient } from "../Actions/registration";
 import { setHideBalance, setTheme, setAutomaticThemeChange } from "../Actions/options";
 import { queueStartSync } from "../Actions/queue";
 
@@ -101,6 +101,8 @@ class Layout extends React.Component {
         // register mouse and network events
         window.onmousemove = this.onActivityEvent.bind(this);
         window.onkeypress = this.onActivityEvent.bind(this);
+
+        this.props.registrationLoadBunqDesktopClient();
     }
 
     componentDidMount() {
@@ -303,7 +305,7 @@ const mapStateToProps = state => {
         automaticThemeChange: state.options.automatic_theme_change,
         inactivityCheckDuration: state.options.inactivity_check_duration,
 
-        derivedPassword: state.registration.derivedPassword,
+        derivedPassword: state.registration.derived_password,
         registrationIsLoading: state.registration.loading,
         environment: state.registration.environment,
         deviceName: state.registration.device_name,
@@ -339,7 +341,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         queueStartSync: () => dispatch(queueStartSync()),
 
         // functions to clear user data
-        registrationClearUserInfo: () => dispatch(registrationClearUserInfo())
+        registrationClearUserInfo: () => dispatch(registrationClearUserInfo()),
+
+        registrationLoadBunqDesktopClient: () => dispatch(registrationLoadBunqDesktopClient()),
     };
 };
 

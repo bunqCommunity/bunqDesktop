@@ -22,6 +22,6 @@ const BunqJSClientInstance = new BunqJSClient(store, Logger);
 BunqJSClientInstance.setKeepAlive(false);
 
 // global bunqdesktop client object
-window.BunqDesktopClient = new BunqDesktopClient();
+window.BunqDesktopClient = new BunqDesktopClient(BunqJSClientInstance, Logger, store);
 
 ReactDOM.render(<App BunqJSClient={BunqJSClientInstance} />, document.getElementById("app"));

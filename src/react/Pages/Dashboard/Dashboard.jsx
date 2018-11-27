@@ -300,7 +300,7 @@ const mapStateToProps = state => {
 
         savingsGoals: state.savings_goals.savings_goals,
 
-        derivedPassword: state.registration.derivedPassword,
+        derivedPassword: state.registration.derived_password,
         derivedPasswordIdentifier: state.registration.identifier,
         useNoPassword: state.registration.use_no_password,
         storedApiKeys: state.registration.stored_api_keys,
@@ -312,7 +312,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         // hard-logout
-        registrationLogOut: () => dispatch(registrationLogOut(BunqJSClient)),
+        registrationLogOut: () => dispatch(registrationLogOut()),
         registrationSwitchKeys: (storedKeyIndex, derivedPassword, derivedPasswordIdentifier) =>
             dispatch(registrationSwitchKeys(BunqJSClient, storedKeyIndex, derivedPassword, derivedPasswordIdentifier)),
 

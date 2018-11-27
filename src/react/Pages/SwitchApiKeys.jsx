@@ -20,8 +20,7 @@ import TranslateTypography from "../Components/TranslationHelpers/Typography";
 
 import {
     registrationRemoveStoredApiKey,
-    registrationLoadStoredApiKey,
-    registrationLogOut
+    registrationLoadStoredApiKey
 } from "../Actions/registration";
 
 const styles = {
@@ -134,7 +133,7 @@ const mapStateToProps = state => {
     return {
         status_message: state.application.status_message,
 
-        derivedPassword: state.registration.derivedPassword,
+        derivedPassword: state.registration.derived_password,
         passwordIdentifier: state.registration.identifier,
         registrationLoading: state.registration.loading,
         storedApiKeys: state.registration.stored_api_keys,
@@ -152,8 +151,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // attempt to load the api key with our password if one is stored
         loadStoredApiKeys: (index, derivedPassword) =>
             dispatch(registrationLoadStoredApiKey(BunqJSClient, index, derivedPassword)),
-
-        logOut: () => dispatch(registrationLogOut(BunqJSClient)),
 
         removeStoredApiKey: index => dispatch(registrationRemoveStoredApiKey(index))
     };

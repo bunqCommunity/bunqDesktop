@@ -208,7 +208,7 @@ class SwitchKeysMenu extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        derivedPassword: state.registration.derivedPassword,
+        derivedPassword: state.registration.derived_password,
         derivedPasswordIdentifier: state.registration.identifier,
         registrationLoading: state.registration.loading,
         environment: state.registration.environment,
