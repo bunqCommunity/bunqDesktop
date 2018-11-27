@@ -1,14 +1,17 @@
 import store from "store";
 import BunqJSClient from "@bunq-community/bunq-js-client/src/BunqJSClient";
 import Logger from "./Helpers/Logger";
-import { derivePasswordKey } from "./Helpers/Crypto";
-import { USE_NO_PASSWORD_LOCATION } from "./Reducers/registration";
+import { decryptString, derivePasswordKey } from "./Helpers/Crypto";
 
+export const SKIP_PASSWORD_LOCATION = "USE_NO_PASSWORD_LOCATION";
+
+// The currently stored API keys containing plain text device names/environments and a encrypted api key and its IV value
+export const API_KEYS_LOCATION = "BUNQDESKTOP_API_KEYS";
+
+// info for current session
 export const SALT_LOCATION = "BUNQDESKTOP_PASSWORD_SALT";
 export const API_KEY_LOCATION = "BUNQDESKTOP_API_KEY";
-export const API_KEYS_LOCATION = "BUNQDESKTOP_API_KEYS";
 export const API_KEY_IV_LOCATION = "BUNQDESKTOP_API_IV";
-export const SKIP_PASSWORD_LOCATION = "USE_NO_PASSWORD_LOCATION";
 export const DEVICE_NAME_LOCATION = "BUNQDESKTOP_DEVICE_NAME";
 export const ENVIRONMENT_LOCATION = "BUNQDESKTOP_ENVIRONMENT";
 
@@ -20,6 +23,7 @@ export default class BunqDesktopClient {
 
     private api_key: string | false = false;
     private encrypted_api_key: string | false = false;
+    private encrypted_api_key_iv: string | false = false;
 
     private stored_api_keys: string[] = [];
 
@@ -31,9 +35,9 @@ export default class BunqDesktopClient {
     private derived_password_salt: string | false = false;
     private password_identifier: string | false = false;
 
-    public constructor(BunqJSClient, Logger) {
+    public constructor(BunqJSClient, CustomLogger = Logger) {
         this.BunqJSClient = BunqJSClient;
-        this.Logger = Logger;
+        this.Logger = CustomLogger;
 
         this.device_name = this.getStoredValue(DEVICE_NAME_LOCATION, "My device");
         this.stored_api_keys = this.getStoredValue(API_KEYS_LOCATION, []);
@@ -60,14 +64,58 @@ export default class BunqDesktopClient {
 
     public async skipPassword() {
         // mark the password as "skipped" where the default password is used
-        this.setStoredValue(USE_NO_PASSWORD_LOCATION, true);
+        this.setStoredValue(SKIP_PASSWORD_LOCATION, true);
 
         // go through the standard flow
         return this.setupPassword(DEFAULT_PASSWORD);
     }
 
-    public async tester(){
+    public async login() {}
 
+    public async loadStoredApiKey(keyIndex: number) {
+        if (!store.get(API_KEYS_LOCATION)) {
+            // no api key stored
+            return false;
+        }
+
+        // get currently stored api key
+        const encryptedApiKeys = store.get(API_KEYS_LOCATION);
+        if (!encryptedApiKeys || !encryptedApiKeys[keyIndex]) {
+            // no api key stored on this index
+            return false;
+        }
+
+        const storedApiKeyInfo = encryptedApiKeys[keyIndex];
+        const encryptedApiKey = storedApiKeyInfo.api_key;
+        const storedApiKeyIV = storedApiKeyInfo.api_key_iv;
+        const storedEnvironment = storedApiKeyInfo.environment;
+        const storedDeviceName = storedApiKeyInfo.device_name;
+        const storedPermittedIps = storedApiKeyInfo.permitted_ips;
+
+        const decryptedString = await decryptString(encryptedApiKey, this.derived_password, storedApiKeyIV);
+
+        // validate decrypted result
+        if (decryptedString.length !== 64) {
+            // clear the password so the user can try again
+            // TODO handle failure
+            this.Logger.error(`Failed to load API key: with length: ${decryptedString.length}`);
+
+            return;
+        }
+
+        // overwrite currently stored encrypted API key/iv, device name and environment
+        this.setStoredValue(API_KEY_LOCATION, encryptedApiKey);
+        this.setStoredValue(API_KEY_IV_LOCATION, storedApiKeyIV);
+        this.setStoredValue(ENVIRONMENT_LOCATION, storedEnvironment);
+        this.setStoredValue(DEVICE_NAME_LOCATION, storedDeviceName);
+
+        // set the loaded data in the object
+        this.api_key = decryptedString;
+        this.encrypted_api_key = storedApiKeyInfo.api_key;
+        this.encrypted_api_key_iv = storedApiKeyInfo.api_key_iv;
+        this.environment = storedApiKeyInfo.environment;
+        this.device_name = storedApiKeyInfo.device_name;
+        this.permitted_ips = storedApiKeyInfo.permitted_ips;
     }
 
     /** Getter help functions **/
