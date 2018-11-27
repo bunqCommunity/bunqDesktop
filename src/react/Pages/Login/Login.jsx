@@ -28,11 +28,7 @@ import NavLink from "../../Components/Routing/NavLink";
 import OAuthManagement from "./OAuthManagement";
 import SideOptions from "./SideOptions";
 
-import {
-    registrationLogOut,
-    registrationLogin,
-    registrationLoadApiKey
-} from "../../Actions/registration";
+import { registrationLogOut, registrationLogin } from "../../Actions/registration";
 import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
 import Logger from "../../Helpers/Logger";
 
@@ -152,6 +148,8 @@ class Login extends React.Component {
     componentDidMount() {
         const isSandboxMode = this.props.environment === "SANDBOX";
 
+        this.registrationLogin();
+
         this.setState(
             {
                 apiKey: this.props.apiKey !== false ? this.props.apiKey : "",
@@ -189,14 +187,12 @@ class Login extends React.Component {
         if (this.displayQrCodeDelay) clearTimeout(this.displayQrCodeDelay);
     }
 
-    registrationLogin = (apiKey = false, derivedPassword = false, permittedIps = false, checkApiKeyList = true) => {
+    registrationLogin = (apiKey = false, permittedIps = false) => {
         this.props.registrationLogin(
-            derivedPassword || this.props.derivedPassword,
-            apiKey || this.props.apiKey,
-            this.props.deviceName,
-            this.props.environment,
-            permittedIps || this.props.permittedIps,
-            checkApiKeyList
+            apiKey || false,
+            this.state.deviceName,
+            this.state.sandboxMode ? "SANDBOX" : "PRODUCTION",
+            permittedIps || []
         );
     };
 
@@ -225,7 +221,7 @@ class Login extends React.Component {
                 permittedIps = [this.state.currentIp, "*"];
             }
 
-            this.registrationLogin(this.state.apiKey, this.props.derivedPassword, permittedIps, true);
+            this.registrationLogin(this.state.apiKey, permittedIps);
         }
     };
 
@@ -650,23 +646,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         // clear api key from bunqjsclient and bunqdesktop
         logOut: () => dispatch(registrationLogOut(true)),
-        // set the api key and stores the encrypted version
-        // registrationSetApiKey: (api_key, derivedPassword, permittedIps = []) =>
-        //     dispatch(registrationSetApiKey(api_key, derivedPassword, permittedIps)),
-        // attempt to load the api key with our password if one is stored
-        registrationLoadApiKey: derivedPassword => dispatch(registrationLoadApiKey(derivedPassword)),
 
-        registrationLogin: (derivedPassword, apiKey, deviceName, environment, permittedIps) =>
-            dispatch(
-                registrationLogin(
-                    BunqJSClient,
-                    derivedPassword,
-                    apiKey,
-                    deviceName,
-                    environment,
-                    permittedIps
-                )
-            ),
+        registrationLogin: (apiKey, deviceName, environment, permittedIps) =>
+            dispatch(registrationLogin(BunqJSClient, apiKey, deviceName, environment, permittedIps)),
 
         handleBunqError: error => BunqErrorHandler(dispatch, error)
     };

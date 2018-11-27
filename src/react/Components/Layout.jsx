@@ -34,7 +34,7 @@ const ThemeList = {
 // redux actions
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
-import { registrationClearUserInfo, registrationLoadBunqDesktopClient } from "../Actions/registration";
+import { registrationClearUserInfo, registrationSetBunqDesktopClientData } from "../Actions/registration";
 import { setHideBalance, setTheme, setAutomaticThemeChange } from "../Actions/options";
 import { queueStartSync } from "../Actions/queue";
 
@@ -343,7 +343,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // functions to clear user data
         registrationClearUserInfo: () => dispatch(registrationClearUserInfo()),
 
-        registrationLoadBunqDesktopClient: () => dispatch(registrationLoadBunqDesktopClient()),
+        registrationLoadBunqDesktopClient: () => dispatch(registrationSetBunqDesktopClientData()),
     };
 };
 

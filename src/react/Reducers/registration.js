@@ -214,30 +214,20 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_SET_BUNQ_DESKTOP_CLIENT_DATA":
             return {
                 ...state,
-                device_name: action.payload.device_name,
-                encrypted_api_key: action.payload.encrypted_api_key,
-                encrypted_api_key_iv: action.payload.encrypted_api_key_iv,
-                environment: action.payload.environment,
-                has_stored_api_key: action.payload.has_stored_api_key,
-                use_no_password: action.payload.use_no_password
-            };
-
-        case "REGISTRATION_SET_PASSWORD_DATA":
-            return {
-                ...state,
                 derived_password: action.payload.derived_password,
                 derived_password_salt: action.payload.derived_password_salt,
-                identifier: action.payload.password_identifier
-            };
+                identifier: action.payload.identifier,
 
-        case "REGISTRATION_SET_API_KEY_DATA":
-            return {
-                ...state,
                 api_key: action.payload.api_key,
-                device_name: action.payload.device_name,
-                environment: action.payload.environment,
                 encrypted_api_key: action.payload.encrypted_api_key,
                 encrypted_api_key_iv: action.payload.encrypted_api_key_iv,
+                device_name: action.payload.device_name,
+                environment: action.payload.environment,
+                permitted_ips: action.payload.permitted_ips,
+
+                has_stored_api_key: action.payload.has_stored_api_key,
+                stored_api_keys: action.payload.stored_api_keys,
+                use_no_password: action.payload.use_no_password
             };
 
         case "REGISTRATION_READY":
