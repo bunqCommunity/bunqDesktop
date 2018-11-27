@@ -17,11 +17,6 @@ import { loadStoredShareInviteBankResponses } from "./share_invite_bank_response
 import { loadStoredShareInviteBankInquiries } from "./share_invite_bank_inquiries";
 import { loadPendingPayments } from "./pending_payments";
 
-export const SALT_LOCATION = "BUNQDESKTOP_PASSWORD_SALT";
-export const API_KEY_LOCATION = "BUNQDESKTOP_API_KEY";
-export const API_KEYS_LOCATION = "BUNQDESKTOP_API_KEYS";
-export const API_KEY_IV_LOCATION = "BUNQDESKTOP_API_IV";
-
 /**
  * Logs out of current account and logs back in to the selected stored key
  * @param BunqJSClient

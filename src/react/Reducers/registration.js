@@ -1,9 +1,13 @@
 import store from "store";
-import { SALT_LOCATION, API_KEY_IV_LOCATION, API_KEY_LOCATION, API_KEYS_LOCATION } from "../Actions/registration";
 
 export const USE_NO_PASSWORD_LOCATION = "USE_NO_PASSWORD_LOCATION";
 export const DEVICE_NAME_LOCATION = "BUNQDESKTOP_DEVICE_NAME";
 export const ENVIRONMENT_LOCATION = "BUNQDESKTOP_ENVIRONMENT";
+
+export const SALT_LOCATION = "BUNQDESKTOP_PASSWORD_SALT";
+export const API_KEY_LOCATION = "BUNQDESKTOP_API_KEY";
+export const API_KEYS_LOCATION = "BUNQDESKTOP_API_KEYS";
+export const API_KEY_IV_LOCATION = "BUNQDESKTOP_API_IV";
 
 const deviceNameDefault = store.get(DEVICE_NAME_LOCATION) !== undefined ? store.get(DEVICE_NAME_LOCATION) : "My Device";
 const useNoPasswordDefault =
@@ -12,6 +16,8 @@ const environmentDefault =
     store.get(ENVIRONMENT_LOCATION) !== undefined ? store.get(ENVIRONMENT_LOCATION) : "PRODUCTION";
 const storedApiKeysDefault = store.get(API_KEYS_LOCATION) !== undefined ? store.get(API_KEYS_LOCATION) : [];
 
+const BunqDesktopClient = window.BunqDesktopClient;
+
 export const defaultState = {
     // unencrypted api key, this should NEVER be stored elsewhere
     api_key: false,
@@ -19,15 +25,13 @@ export const defaultState = {
     encrypted_api_key: false,
 
     // if true there is a stored api key
-    has_stored_api_key: store.get(API_KEY_LOCATION) !== undefined,
+    has_stored_api_key: BunqDesktopClient.hasStoredApiKey,
 
     // list of encrypted api keys
     stored_api_keys: storedApiKeysDefault,
 
-    isRead: false,
-
     // if true, the application will try to load the encryption keys using a default password
-    use_no_password: useNoPasswordDefault,
+    use_no_password: BunqDesktopClient.hasSkippedPassword,
     device_name: deviceNameDefault,
     environment: environmentDefault,
     derivedPassword: false,
