@@ -3,7 +3,7 @@ import Logger from "./Logger";
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
 import { applicationSetOffline } from "../Actions/application";
-import { registrationResetToApiScreenSoft } from "../Actions/registration";
+import { registrationResetToLogin } from "../Actions/registration";
 
 import ErrorCodes from "@bunq-community/bunq-js-client/dist/Helpers/ErrorCodes";
 
@@ -85,7 +85,7 @@ export default (dispatch, error, customError = false, BunqJSClient = false) => {
                     errorMessage = invalidAuthenticationError;
 
                     // reset to api screen if possible
-                    if (BunqJSClient) dispatch(registrationResetToApiScreenSoft(BunqJSClient));
+                    if (BunqJSClient) dispatch(registrationResetToLogin(BunqJSClient));
                     break;
             }
 

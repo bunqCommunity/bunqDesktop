@@ -1,7 +1,5 @@
-import store from "store";
 import Logger from "../Helpers/Logger";
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import { decryptString, derivePasswordKey, encryptString } from "../Helpers/Crypto";
 import { applicationSetStatus } from "./application";
 import { openSnackbar } from "./snackbar";
 import { userSetInfo } from "./user";
@@ -29,9 +27,9 @@ export function registrationSwitchKeys(BunqJSClient, storedKeyIndex, derivedPass
     return dispatch => {
         dispatch(registrationLogOut(false));
         setTimeout(() => {
-            dispatch(registrationSetDerivedPassword(derivedPassword, derivedPasswordIdentifier));
+            // TODO set the password into bunqdesktop client
             setTimeout(() => {
-                dispatch(registrationLoadStoredApiKey(BunqJSClient, storedKeyIndex, derivedPassword));
+                // TODO switch the api key
             }, 1000);
         }, 500);
     };
@@ -86,17 +84,13 @@ export function registrationLogin(
                         console.log(5);
                         // no given key and no stored key
                         dispatch(registrationNotLoading());
-
-                        // TODO this requires logic when a key is st
-
-                        // dispatch(registrationResetToApiScreenSoft());
                         dispatch(registrationSetNotReady());
                         return;
                     }
                     apiKey = hasStoredApiKey;
                 } catch (exception) {
                     console.error(5, "ex", exception);
-                    dispatch(registrationResetToApiScreenSoft());
+                    dispatch(registrationResetToLoginPassword());
                     dispatch(registrationNotLoading());
                     dispatch(registrationSetNotReady());
                     return;
@@ -136,9 +130,9 @@ export function registrationLogin(
             // load bunq api data and other data like contacts from storage
             dispatch(registrationLoadStoredData(BunqJSClient));
         } catch (exception) {
-            console.error(exception);
+            console.error(9, "ex", exception);
             BunqErrorHandler(dispatch, exception, false, BunqJSClient);
-            dispatch(registrationResetToApiScreenSoft(BunqJSClient));
+            dispatch(registrationResetToLogin());
             dispatch(registrationNotLoading());
             dispatch(registrationSetNotReady());
             return;
@@ -154,181 +148,32 @@ export function registrationLogin(
 }
 
 /**
- * Only sets the api key without extra actions
- * @param apiKey
- * @param encryptedApiKey
- * @returns {{type: string, payload: {api_key: *}}}
- */
-export function registrationSetApiKeyDirect(apiKey, encryptedApiKey = false, permittedIps = []) {
-    return {
-        type: "REGISTRATION_SET_API_KEY",
-        payload: {
-            api_key: apiKey,
-            encrypted_api_key: encryptedApiKey,
-            permitted_ips: permittedIps
-        }
-    };
-}
-
-/**
- * Stores the api key encrypted in storage
- * @param apiKey
- * @param derivedPassword
- * @param permittedIps
- * @param ensureStorage
- * @returns {function(*)}
- */
-export function registrationSetApiKey(apiKey, derivedPassword, permittedIps = [], ensureStorage = true) {
-    return dispatch => {
-        encryptString(apiKey, derivedPassword.key)
-            .then(encrypedData => {
-                const encryptedApiKey = encrypedData.encryptedString;
-                const encryptedApiKeyIV = encrypedData.iv;
-
-                if (ensureStorage === true) {
-                    store.set(API_KEY_LOCATION, encryptedApiKey);
-                    store.set(API_KEY_IV_LOCATION, encrypedData.iv);
-                    store.set(SALT_LOCATION, derivedPassword.salt);
-                    dispatch(registrationEnsureStoredApiKey(encryptedApiKey, encryptedApiKeyIV, permittedIps));
-                }
-
-                dispatch(registrationSetApiKeyDirect(apiKey, encryptedApiKey, permittedIps));
-            })
-            .catch(Logger.error);
-    };
-}
-
-/**
- * Ensures the stored api_keys contain an encrypted key and iv set
- * @param apiKey
- * @param apiKeyIv
- * @param permittedIps
- * @returns {{type: string, payload: {api_key: *, api_key_iv: *}}}
- */
-export function registrationEnsureStoredApiKey(apiKey, apiKeyIv, permittedIps) {
-    return {
-        type: "REGISTRATION_ENSURE_STORED_API_KEY",
-        payload: {
-            api_key: apiKey,
-            api_key_iv: apiKeyIv,
-            permitted_ips: permittedIps
-        }
-    };
-}
-
-/**
- *  Marks the currently used API key as OAuth type in the stored keys if possible
- * @returns {{type: string}}
- */
-export function registrationSetOAuthStoredApiKey() {
-    return {
-        type: "REGISTRATION_SET_OAUTH_STORED_API_KEY"
-    };
-}
-
-/**
  * Removes a stored api key
  * @param index
  * @returns {{type: string, payload: {index: *}}}
  */
 export function registrationRemoveStoredApiKey(index) {
+    const BunqDesktopClient = window.BunqDesktopClient;
+
+    BunqDesktopClient.removeStoredApiKey(index);
     return {
         type: "REGISTRATION_REMOVE_STORED_API_KEY",
         payload: {
-            index: index
+            stored_api_keys: BunqDesktopClient.storedApiKeys
         }
     };
 }
 
 /**
- * Loads an api key from stored api key list and decrypts it
- * @param BunqJSClient
- * @param storedKeyIndex
- * @param derivedPassword
+ * Only resets api key in memory, returns the client back to Login page
  * @returns {function(*)}
  */
-export function registrationLoadStoredApiKey(BunqJSClient, storedKeyIndex, derivedPassword) {
-    return dispatch => {
-        const failedMessage = window.t("We failed to load the stored API key Try again or re-enter the key");
-        const statusMessage = window.t("Attempting to load your API key");
-
-        dispatch(registrationLoading());
-        dispatch(applicationSetStatus(statusMessage));
-
-        if (!store.get(API_KEYS_LOCATION)) {
-            dispatch(registrationNotLoading());
-            // no api key stored
-            return false;
-        }
-
-        // get currently stored api key
-        const encryptedApiKeys = store.get(API_KEYS_LOCATION);
-        if (!encryptedApiKeys || !encryptedApiKeys[storedKeyIndex]) {
-            dispatch(registrationNotLoading());
-            // no api key stored on this index
-            return false;
-        }
-
-        const encryptedApiKeyInfo = encryptedApiKeys[storedKeyIndex];
-        const encryptedApiKey = encryptedApiKeyInfo.api_key;
-        const encryptedApiKeyIV = encryptedApiKeyInfo.api_key_iv;
-        const encryptedEnvironment = encryptedApiKeyInfo.environment;
-        const encryptedDeviceName = encryptedApiKeyInfo.device_name;
-        const encryptedPermittedIps = encryptedApiKeyInfo.permitted_ips;
-
-        decryptString(encryptedApiKey, derivedPassword.key, encryptedApiKeyIV)
-            .then(decryptedString => {
-                // validate decrypted result
-                if (decryptedString.length !== 64) {
-                    // clear the password so the user can try again
-                    dispatch(registrationClearPassword());
-                    dispatch(registrationNotLoading());
-                    dispatch(openSnackbar(failedMessage));
-                    Logger.error(`Failed to load API key: with length: ${decryptedString.length}`);
-
-                    return;
-                }
-
-                // overwrite currently stored api key with this one
-                store.set(API_KEY_LOCATION, encryptedApiKey);
-                store.set(API_KEY_IV_LOCATION, encryptedApiKeyIV);
-
-                // set the correct environment
-                dispatch(registrationSetEnvironment(encryptedEnvironment));
-
-                // nothing changes, just set the api key but do nothing else
-                dispatch(
-                    registrationLogin(
-                        BunqJSClient,
-                        derivedPassword,
-                        decryptedString,
-                        encryptedDeviceName,
-                        encryptedEnvironment,
-                        encryptedPermittedIps || [],
-                        false
-                    )
-                );
-            })
-            .catch(_ => {
-                dispatch(registrationClearPassword());
-                dispatch(registrationNotLoading());
-                // clear the password so the user can try again
-                dispatch(openSnackbar(failedMessage));
-            });
-    };
-}
-
-/**
- * Log out without removing the stored apikey and password
- * and keep the api Installation and Device installation
- * @returns {function(*)}
- */
-export function registrationResetToApiScreenSoft() {
+export function registrationResetToLogin() {
     const BunqDesktopClient = window.BunqDesktopClient;
     return dispatch => {
         BunqDesktopClient.destroyApiSession(true).then(_ => {
             dispatch({
-                type: "REGISTRATION_RESET_TO_API_SCREEN"
+                type: "REGISTRATION_RESET_TO_LOGIN"
             });
         });
     };
@@ -342,7 +187,7 @@ export function registrationResetToApiScreenSoft() {
 export function registrationLogOut(resetPassword = false) {
     const BunqDesktopClient = window.BunqDesktopClient;
     return dispatch => {
-        BunqDesktopClient.destroyApiSession().then(_ => {
+        BunqDesktopClient.destroyApiSession(true).then(_ => {
             dispatch({
                 type: "REGISTRATION_LOG_OUT",
                 payload: {
@@ -369,37 +214,20 @@ export function registrationClearPrivateData() {
     };
 }
 
+/**
+ * Sets the stored api keys list
+ * @param storedApiKeys
+ * @returns {{type: string, payload: {stored_api_keys: StoredApiKey[]}}}
+ */
 export function registrationSetStoredApiKeys(storedApiKeys) {
+    const BunqDesktopClient = window.BunqDesktopClient;
+
+    BunqDesktopClient.setStoredApiKeys(storedApiKeys);
     return {
         type: "REGISTRATION_SET_STORED_API_KEYS",
         payload: {
-            stored_api_keys: storedApiKeys
+            stored_api_keys: BunqDesktopClient.storedApiKeys
         }
-    };
-}
-
-/**
- * Set the environment
- * @param environment
- * @returns {{type: string, payload: {environment: *}}}
- */
-export function registrationSetEnvironment(environment) {
-    if (environment !== "PRODUCTION" && environment !== "SANDBOX") environment = "SANDBOX";
-    return {
-        type: "REGISTRATION_SET_ENVIRONMENT",
-        payload: {
-            environment: environment
-        }
-    };
-}
-
-/**
- * Clear the password
- * @returns {{type: string}}
- */
-export function registrationClearPassword() {
-    return {
-        type: "REGISTRATION_CLEAR_PASSWORD"
     };
 }
 
@@ -410,22 +238,6 @@ export function registrationClearPassword() {
 export function registrationClearUserInfo() {
     return {
         type: "REGISTRATION_CLEAR_USER_INFO"
-    };
-}
-
-/**
- * Store the derived password
- * @param derivedPassword
- * @param identifier
- * @returns {{type: string, payload: {derivedPassword: *}}}
- */
-export function registrationSetDerivedPassword(derivedPassword, identifier) {
-    return {
-        type: "REGISTRATION_SET_PASSWORD",
-        payload: {
-            derivedPassword: derivedPassword,
-            identifier: identifier
-        }
     };
 }
 
@@ -487,7 +299,7 @@ export const registrationNEWLoadApiKey = () => {
                 console.error("Error loadApiKey", error);
 
                 dispatch(registrationNotLoading());
-                dispatch(registrationResetToApiScreenSoft());
+                dispatch(registrationResetToLogin());
                 dispatch(registrationSetNotReady());
                 dispatch(openSnackbar(failedLoadingMessage));
             });
@@ -513,7 +325,7 @@ export const registrationNEWLoadApiKey = () => {
 //                 console.error("Error switchStoredApiKey", error);
 //
 //                 dispatch(registrationNotLoading());
-//                 dispatch(registrationResetToApiScreenSoft());
+//                 dispatch(registrationResetToLogin());
 //                 dispatch(registrationSetNotReady());
 //                 dispatch(openSnackbar(failedLoadingMessage));
 //             });
@@ -538,9 +350,9 @@ export const registrationNEWSetPassword = password => {
                 console.error("Error setupPassword", error);
 
                 dispatch(registrationNotLoading());
-                dispatch(registrationResetToApiScreenSoft());
+                dispatch(registrationResetToLogin());
                 dispatch(registrationSetNotReady());
-                // dispatch(openSnackbar(failedLoadingMessage));
+                BunqErrorHandler(dispatch, error, false, BunqDesktopClient.BunqJSClient);
             });
     };
 };
@@ -558,6 +370,7 @@ export const registrationSkipPassword = () => {
             .catch(error => {
                 dispatch(registrationNotLoading());
                 console.error("Error skipPassword", error);
+                BunqErrorHandler(dispatch, error, false, BunqDesktopClient.BunqJSClient);
             });
     };
 };
