@@ -4,6 +4,7 @@
         "sourceMap": true,
         "noImplicitAny": false,
         "target": "es2017",
+        "moduleResolution": "node",
         "jsx": "react",
         "allowJs": true,
         "lib": [

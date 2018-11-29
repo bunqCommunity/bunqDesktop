@@ -17,15 +17,15 @@ import { loadPendingPayments } from "./pending_payments";
 
 /**
  * Logs out of current account and logs back in to the selected stored key
- * @param BunqJSClient
  * @param storedKeyIndex
  * @param derivedPassword
  * @param derivedPasswordIdentifier
  * @returns {Function}
  */
-export function registrationSwitchKeys(BunqJSClient, storedKeyIndex, derivedPassword, derivedPasswordIdentifier) {
-    return dispatch => {
-        dispatch(registrationLogOut(false));
+export function registrationSwitchKeys(storedKeyIndex, derivedPassword, derivedPasswordIdentifier) {
+    const BunqDesktopClient = window.BunqDesktopClient;
+    return async dispatch => {
+        dispatch(registrationResetToLogin());
         setTimeout(() => {
             // TODO set the password into bunqdesktop client
             setTimeout(() => {
@@ -280,31 +280,6 @@ export function registrationNotLoading() {
         type: "REGISTRATION_NOT_LOADING"
     };
 }
-
-export const registrationNEWLoadApiKey = () => {
-    const BunqDesktopClient = window.BunqDesktopClient;
-    const t = window.t;
-    const statusMessage1 = t("Attempting to load your API key");
-    const failedLoadingMessage = t("We failed to load the stored API key Try again or re-enter the key");
-
-    return dispatch => {
-        dispatch(registrationLoading());
-        dispatch(applicationSetStatus(statusMessage1));
-        BunqDesktopClient.loadApiKey()
-            .then(done => {
-                dispatch(registrationNotLoading());
-                console.log("Done loadApiKey", done);
-            })
-            .catch(error => {
-                console.error("Error loadApiKey", error);
-
-                dispatch(registrationNotLoading());
-                dispatch(registrationResetToLogin());
-                dispatch(registrationSetNotReady());
-                dispatch(openSnackbar(failedLoadingMessage));
-            });
-    };
-};
 
 // export const registrationNEWSwitchStoredApiKey = keyIndex => {
 //     const BunqDesktopClient = window.BunqDesktopClient;

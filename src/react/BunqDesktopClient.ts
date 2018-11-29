@@ -188,43 +188,35 @@ class BunqDesktopClient {
      * @param {number} keyIndex
      * @returns {Promise<boolean>}
      */
-    // public async switchStoredApiKey(keyIndex: number): Promise<boolean> {
-    //     const storedApiKeys = this.getStoredValue(API_KEYS_LOCATION);
-    //     if (!storedApiKeys) {
-    //         // no api key stored
-    //         return false;
-    //     }
-    //     this.stored_api_keys = storedApiKeys;
-    //
-    //     // get currently stored api key
-    //     if (this.stored_api_keys.length === 0 || !this.stored_api_keys[keyIndex]) {
-    //         // no api key stored on this index
-    //         this.Logger.error(
-    //             `No stored API keys or index not found (index: ${keyIndex}) in storedKeys ${
-    //                 this.stored_api_keys.length
-    //             }`
-    //         );
-    //         return false;
-    //     }
-    //
-    //     const storedApiKeyInfo = this.stored_api_keys[keyIndex];
-    //     this.encrypted_api_key = storedApiKeyInfo.api_key;
-    //     this.encrypted_api_key_iv = storedApiKeyInfo.api_key_iv;
-    //     this.environment = storedApiKeyInfo.environment;
-    //     this.device_name = storedApiKeyInfo.device_name;
-    //     this.permitted_ips = storedApiKeyInfo.permitted_ips;
-    //
-    //     // overwrite currently stored encrypted API key/iv, device name and environment
-    //     this.setStoredValue(API_KEY_LOCATION, this.encrypted_api_key);
-    //     this.setStoredValue(API_KEY_IV_LOCATION, this.encrypted_api_key_iv);
-    //     this.setStoredValue(ENVIRONMENT_LOCATION, this.environment);
-    //     this.setStoredValue(DEVICE_NAME_LOCATION, this.device_name);
-    //
-    //     // attempt to decrypt the stored API key
-    //     const decryptionSuccess = await this.decryptApiKey();
-    //
-    //     return !!decryptionSuccess;
-    // }
+    public async switchStoredApiKey(keyIndex: number): Promise<boolean> {
+        this.stored_api_keys = this.storedApiKeys;
+
+        // get currently stored api key
+        if (this.stored_api_keys.length === 0 || !this.stored_api_keys[keyIndex]) {
+            // no api key stored on this index
+            this.Logger.error(
+                `No stored API keys or index not found (index: ${keyIndex}) in storedKeys ${
+                    this.stored_api_keys.length
+                }`
+            );
+            return false;
+        }
+
+        const storedApiKeyInfo = this.stored_api_keys[keyIndex];
+        this.encrypted_api_key = storedApiKeyInfo.api_key;
+        this.encrypted_api_key_iv = storedApiKeyInfo.api_key_iv;
+        this.environment = storedApiKeyInfo.environment;
+        this.device_name = storedApiKeyInfo.device_name;
+        this.permitted_ips = storedApiKeyInfo.permitted_ips;
+
+        // overwrite currently stored encrypted API key/iv, device name and environment
+        this.setStoredValue(API_KEY_LOCATION, this.encrypted_api_key);
+        this.setStoredValue(API_KEY_IV_LOCATION, this.encrypted_api_key_iv);
+        this.setStoredValue(ENVIRONMENT_LOCATION, this.environment);
+        this.setStoredValue(DEVICE_NAME_LOCATION, this.device_name);
+
+        return true;
+    }
 
     /**
      * Decrypts the currently stored encrypted api key
@@ -255,7 +247,6 @@ class BunqDesktopClient {
         this.api_key = false;
         this.encrypted_api_key = false;
         this.encrypted_api_key_iv = false;
-        this.derived_password = false;
         return this.BunqJSClient.destroyApiSession(save);
     }
 
@@ -267,7 +258,6 @@ class BunqDesktopClient {
         this.api_key = false;
         this.encrypted_api_key = false;
         this.encrypted_api_key_iv = false;
-        this.derived_password = false;
         this.derived_password = false;
         return this.BunqJSClient.destroySession();
     }
