@@ -1,5 +1,6 @@
 import BunqJSClient from "@bunq-community/bunq-js-client";
 import { decryptString, derivePasswordKey, encryptString } from "./Helpers/Crypto";
+import { Environment, StoredApiKey } from "./Types/Types";
 
 export const SALT_LOCATION = "BUNQDESKTOP_PASSWORD_SALT";
 export const API_KEYS_LOCATION = "BUNQDESKTOP_API_KEYS";
@@ -11,19 +12,6 @@ export const DEVICE_NAME_LOCATION = "BUNQDESKTOP_DEVICE_NAME";
 export const ENVIRONMENT_LOCATION = "BUNQDESKTOP_ENVIRONMENT";
 
 const DEFAULT_PASSWORD = "SOME_DEFAULT_PASSWORD";
-
-export type Environment = "PRODUCTION" | "SANDBOX";
-
-export type StoredApiKey = {
-    identifier: string | false;
-    api_key: string;
-    api_key_iv: string;
-    permitted_ips: string[];
-    device_name: string;
-    environment: Environment;
-    // helps mark keys as OAuth for UI purposes
-    isOAuth: boolean;
-};
 
 class BunqDesktopClient {
     private BunqJSClient: BunqJSClient;

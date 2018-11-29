@@ -88,6 +88,8 @@ export type EventObject = {
     item: any;
 };
 
+export type Environment = "PRODUCTION" | "SANDBOX";
+
 export type Geolocation = {
     latitude: number;
     longitude: number;
@@ -160,3 +162,14 @@ export type RuleCollectionList = {
 
 // all valid rule types
 export type RuleTypes = "VALUE" | "TRANSACTION_AMOUNT" | "ITEM_TYPE" | "ACCOUNT_TYPE";
+
+export type StoredApiKey = {
+    identifier: string | false;
+    api_key: string;
+    api_key_iv: string;
+    permitted_ips: string[];
+    device_name: string;
+    environment: Environment;
+    // helps mark keys as OAuth for UI purposes
+    isOAuth: boolean;
+};
