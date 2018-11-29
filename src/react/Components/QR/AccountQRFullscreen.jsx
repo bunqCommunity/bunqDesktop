@@ -39,6 +39,12 @@ const styles = theme => ({
         display: "flex",
         alignItems: "center",
         justifyContent: "center"
+    },
+    dialogContentWrapper: {
+        width: 250,
+        display: "flex",
+        alignItems: "center",
+        flexDirection: "column"
     }
 });
 
@@ -78,7 +84,7 @@ class AccountQRFullscreen extends React.PureComponent {
 
                 dialogContent = (
                     <React.Fragment>
-                        <AccountQRCode accountId={this.props.accountId} />
+                        <AccountQRCode accountId={this.props.accountId} size={250} />
                         <ListItem className={classes.listItem}>
                             <Avatar className={classes.bigAvatar}>
                                 <LazyAttachmentImage
@@ -95,7 +101,7 @@ class AccountQRFullscreen extends React.PureComponent {
             case "TEXT":
                 dialogContent = (
                     <React.Fragment>
-                        <QRCode value={this.props.text} size={195} />
+                        <QRCode value={this.props.text} size={250} />
                         <ListItem className={classes.listItem} dense>
                             <ListItemText primary={this.props.text} />
                         </ListItem>
@@ -105,7 +111,7 @@ class AccountQRFullscreen extends React.PureComponent {
             case "HIDDEN":
                 dialogContent = (
                     <React.Fragment>
-                        <QRCode value={this.props.text} size={195} />
+                        <QRCode value={this.props.text} size={250} />
                     </React.Fragment>
                 );
                 break;
@@ -125,7 +131,7 @@ class AccountQRFullscreen extends React.PureComponent {
                     TransitionComponent={Transition}
                 >
                     <div className={classes.content}>
-                        <div style={{ width: 195 }}>{dialogContent}</div>
+                        <div className={classes.dialogContentWrapper}>{dialogContent}</div>
                     </div>
                 </Dialog>
             </React.Fragment>

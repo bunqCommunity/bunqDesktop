@@ -382,7 +382,7 @@ class AccountInfo extends React.Component {
                 );
 
                 connectComponent = (
-                    <Paper style={styles.paperIcons}>
+                    <Paper key="connect-paper" style={styles.paperIcons}>
                         <List dense={true}>
                             {allowConnectSettings ? (
                                 <ListItem to={`/connect/${accountId}`} component={NavLink} button>
@@ -398,9 +398,18 @@ class AccountInfo extends React.Component {
                 );
             }
 
+            const accountCardProps = {
+                account: accountInfo,
+                isJointAccount: isJointAccount,
+                isSavingsAccount: isSavingsAccount,
+                shareInviteBankResponses: filteredInviteResponses,
+                toggleSettingsDialog: filteredInviteResponses.length > 0 ? false : this.toggleSettingsDialog,
+                toggleDeactivateDialog: filteredInviteResponses.length > 0 ? false : this.toggleDeactivateDialog
+            };
+
             content = (
                 <React.Fragment>
-                    <Dialog open={this.state.openDialog} onClose={this.toggleDeactivateDialog}>
+                    <Dialog key="deactivate-dialog" open={this.state.openDialog} onClose={this.toggleDeactivateDialog}>
                         <DialogTitle>{t("Cancel account")}</DialogTitle>
 
                         <DialogContent>
@@ -444,7 +453,11 @@ class AccountInfo extends React.Component {
                         </DialogActions>
                     </Dialog>
 
-                    <Dialog open={this.state.openSettingsDialog} onClose={this.toggleSettingsDialog}>
+                    <Dialog
+                        key="settings-dialog"
+                        open={this.state.openSettingsDialog}
+                        onClose={this.toggleSettingsDialog}
+                    >
                         <DialogTitle>{t("Edit account settings")}</DialogTitle>
 
                         <DialogContent style={styles.dialogContent}>
@@ -504,20 +517,16 @@ class AccountInfo extends React.Component {
                     </Dialog>
 
                     <AccountCard
+                        key="account-card"
                         BunqJSClient={this.props.BunqJSClient}
                         openSnackbar={this.props.openSnackbar}
                         hideBalance={this.props.hideBalance}
-                        toggleSettingsDialog={this.toggleSettingsDialog}
-                        toggleDeactivateDialog={this.toggleDeactivateDialog}
-                        shareInviteBankResponses={filteredInviteResponses}
-                        account={accountInfo}
-                        isJointAccount={isJointAccount}
-                        isSavingsAccount={isSavingsAccount}
+                        {...accountCardProps}
                     />
 
                     {connectComponent}
 
-                    <Paper style={styles.paperList}>
+                    <Paper key="combinedlist-paper" style={styles.paperList}>
                         <CombinedList
                             BunqJSClient={this.props.BunqJSClient}
                             hiddenTypes={["ShareInviteBankInquiry"]}
