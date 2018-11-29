@@ -125,23 +125,30 @@ class AccountList extends React.Component {
         }
     }
 
-    updateAccounts = (props = this.props) => {
-        const userId = props.user.id;
-        const selectedAccountId = props.accountsSelectedId;
+    updateAccounts = () => {
+        const userId = this.props.user.id;
+        const selectedAccountId = this.props.accountsSelectedId;
 
-        if (!props.accountsLoading) {
+        if (!this.props.accountsLoading) {
             this.props.accountsUpdate(userId);
         }
-        if (!props.shareInviteBankInquiriesLoading && props.limitedPermissions === false) {
+        if (!this.props.shareInviteBankInquiriesLoading && this.props.limitedPermissions === false) {
             this.props.shareInviteBankInquiriesInfoUpdate(userId, selectedAccountId);
         }
-        if (!props.shareInviteBankResponsesLoading) {
+        if (!this.props.shareInviteBankResponsesLoading) {
             this.props.shareInviteBankResponsesInfoUpdate(userId);
         }
     };
 
-    checkUpdateRequirement = (props = this.props) => {
-        const { accounts, accountsSelectedId, registrationReady } = props;
+    checkUpdateRequirement = () => {
+        const {
+            user,
+            accounts,
+            accountsSelectedId,
+            registrationReady,
+            accountsLoading,
+            registrationIsLoading
+        } = this.props;
         if (!registrationReady) {
             return;
         }
@@ -159,12 +166,11 @@ class AccountList extends React.Component {
         // no accounts loaded
         if (
             this.state.fetchedAccounts === false &&
-            props.user.id &&
-            props.accountsLoading === false &&
-            props.registrationIsLoading === false &&
-            props.registrationReady === true
+            user.id &&
+            accountsLoading === false &&
+            registrationIsLoading === false
         ) {
-            this.updateAccounts(props);
+            this.updateAccounts();
             this.setState({ fetchedAccounts: true });
         }
     };

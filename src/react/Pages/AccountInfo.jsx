@@ -45,6 +45,7 @@ import { shareInviteBankInquiriesInfoUpdate } from "../Actions/share_invite_bank
 import { shareInviteBankResponsesInfoUpdate } from "../Actions/share_invite_bank_responses";
 import { shareInviteBankResponseChangeStatus } from "../Actions/share_invite_bank_response";
 import { shareInviteBankInquiryChangeStatus } from "../Actions/share_invite_bank_inquiry";
+import { getConnectPermissions } from "../Helpers/GetConnectPermissions";
 
 const styles = {
     paper: {
@@ -138,12 +139,15 @@ class AccountInfo extends React.Component {
                 this.props.shareInviteBankInquiriesInfoUpdate(userId, accountId);
             }
             this.props.shareInviteBankResponsesInfoUpdate(userId);
-            this.props.paymentsUpdate(userId, accountId);
-            this.props.bunqMeTabsUpdate(userId, accountId);
-            this.props.requestResponsesUpdate(userId, accountId);
-            this.props.requestInquiriesUpdate(userId, accountId);
-            this.props.requestInquiryBatchesUpdate(userId, accountId);
-            this.props.masterCardActionsUpdate(userId, accountId);
+            const connectPermissions = getConnectPermissions(this.props.shareInviteBankResponses, accountId);
+            if (connectPermissions && connectPermissions.view_new_events) {
+                this.props.paymentsUpdate(userId, accountId);
+                this.props.bunqMeTabsUpdate(userId, accountId);
+                this.props.requestResponsesUpdate(userId, accountId);
+                this.props.requestInquiriesUpdate(userId, accountId);
+                this.props.requestInquiryBatchesUpdate(userId, accountId);
+                this.props.masterCardActionsUpdate(userId, accountId);
+            }
 
             const accountInfo = this.props.accounts.find(account => account.id === accountId);
             if (accountInfo) {

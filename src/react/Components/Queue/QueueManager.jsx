@@ -10,6 +10,7 @@ import RequestInquiryBatch from "../../Models/RequestInquiryBatch";
 import MasterCardAction from "../../Models/MasterCardAction";
 
 import NotificationHelper from "../../Helpers/NotificationHelper";
+import { getConnectPermissions } from "../../Helpers/GetConnectPermissions";
 
 import {
     queueDecreaseRequestCounter,
@@ -132,27 +133,31 @@ class QueueManager extends React.Component {
         });
 
         // 6 / 7 requests per account + 1 for the user
-        const requestsPerAccount = limitedPermissions ? 6 : 7;
-        const bufferedCounter = filteredAccounts.length * requestsPerAccount + 1;
-
-        // set initial request count in one go
-        this.props.queueSetRequestCounter(bufferedCounter);
+        let bufferedCounter = 1;
 
         this.shareInviteBankResponsesUpdate(userId);
         filteredAccounts.forEach(account => {
             const accountId = account.id;
 
-            this.paymentsUpdate(userId, accountId, false, eventCount);
-            this.bunqMeTabsUpdate(userId, accountId, false, eventCount);
-            this.requestResponsesUpdate(userId, accountId, false, eventCount);
-            this.requestInquiriesUpdate(userId, accountId, false, eventCount);
-            this.requestInquiryBatchesUpdate(userId, accountId, false, eventCount);
-            this.masterCardActionsUpdate(userId, accountId, false, eventCount);
+            const connectPermissions = getConnectPermissions(this.props.shareInviteBankResponses, account.id);
+            if (connectPermissions === true || connectPermissions.view_new_events) {
+                bufferedCounter += 6;
+                this.paymentsUpdate(userId, accountId, false, eventCount);
+                this.bunqMeTabsUpdate(userId, accountId, false, eventCount);
+                this.requestResponsesUpdate(userId, accountId, false, eventCount);
+                this.requestInquiriesUpdate(userId, accountId, false, eventCount);
+                this.requestInquiryBatchesUpdate(userId, accountId, false, eventCount);
+                this.masterCardActionsUpdate(userId, accountId, false, eventCount);
+            }
 
             if (!limitedPermissions) {
+                bufferedCounter++;
                 this.shareInviteBankInquiriesUpdate(userId, accountId, false, eventCount);
             }
         });
+
+        // set initial request count in one go
+        this.props.queueSetRequestCounter(bufferedCounter);
     };
 
     /**

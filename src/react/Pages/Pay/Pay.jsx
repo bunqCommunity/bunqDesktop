@@ -36,6 +36,7 @@ import NavLink from "../../Components/Routing/NavLink";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { paySchedule, paySend } from "../../Actions/pay";
+import { paymentInfoUpdate } from "../../Actions/payments";
 import { pendingPaymentsAddPayment } from "../../Actions/pending_payments";
 
 import { getInternationalFormat, isValidPhonenumber } from "../../Helpers/PhoneLib";
@@ -43,7 +44,7 @@ import { formatMoney, getUTCDate } from "../../Helpers/Utils";
 import { filterShareInviteBankResponses } from "../../Helpers/DataFilters";
 import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
 import scheduleTexts from "../../Helpers/ScheduleTexts";
-import { paymentInfoUpdate } from "../../Actions/payments";
+import { getConnectType, getConnectPermissions } from "../../Helpers/GetConnectPermissions";
 
 const styles = {
     payButton: {
@@ -238,28 +239,16 @@ class Pay extends React.Component {
 
         // get current account
         const account = accounts[selectedAccount];
-        // check if the selected account item has connect details
-        const filteredInviteResponses = shareInviteBankResponses.filter(filterShareInviteBankResponses(account.id));
 
         // no results means no checks required
-        if (filteredInviteResponses.length > 0) {
-            // get first item from the list
-            const firstInviteResponse = filteredInviteResponses.pop();
-            const inviteResponse = firstInviteResponse.ShareInviteBankResponse;
+        const connectType = getConnectType(shareInviteBankResponses, account.id);
+        if (connectType === "ShareDetailDraftPayment" && !sendDraftPayment) {
+            this.setState({
+                sendDraftPayment: true
+            });
 
-            // get the key values for this list
-            const shareDetailKeys = Object.keys(inviteResponse.share_detail);
-            if (shareDetailKeys.includes("ShareDetailDraftPayment")) {
-                // draft payment is enforced when doing outgoing payments on a oauth session
-                if (!sendDraftPayment) {
-                    this.setState({
-                        sendDraftPayment: true
-                    });
-
-                    // notify the user
-                    this.props.openSnackbar(outgoingPaymentsConnectMessage);
-                }
-            }
+            // notify the user
+            this.props.openSnackbar(outgoingPaymentsConnectMessage);
         }
     };
 
@@ -583,7 +572,10 @@ class Pay extends React.Component {
         }
 
         setTimeout(() => {
-            this.props.paymentInfoUpdate(userId, account.id);
+            const connectPermissions = getConnectPermissions(this.props.shareInviteBankResponses, account.id);
+            if (connectPermissions && connectPermissions.view_new_events) {
+                this.props.paymentInfoUpdate(userId, account.id);
+            }
         }, 1000);
 
         this.setState({
