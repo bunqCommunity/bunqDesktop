@@ -44,22 +44,21 @@ class BunqDesktopClient {
         this.stored_api_keys = this.getStoredValue(API_KEYS_LOCATION, []);
     }
 
+    /**
+     * Wrappers around the bunqJSClient functions
+     */
     public async BunqJSClientRun() {
         await this.BunqJSClient.run(this.api_key, this.permitted_ips, this.environment, this.derived_password);
     }
-
     public async BunqJSClientInstall() {
         await this.BunqJSClient.install();
     }
-
     public async BunqJSClientRegisterDevice() {
         await this.BunqJSClient.registerDevice(this.device_name);
     }
-
     public async BunqJSClientRegisterSession() {
         await this.BunqJSClient.registerSession();
     }
-
     public async BunqJSClientGetUsers() {
         const users = await this.BunqJSClient.getUsers(true);
         if (!users) return users;

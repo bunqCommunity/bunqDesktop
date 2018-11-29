@@ -12,6 +12,7 @@ import { loadStoredContacts } from "./contacts";
 import { loadStoredShareInviteBankResponses } from "./share_invite_bank_responses";
 import { loadStoredShareInviteBankInquiries } from "./share_invite_bank_inquiries";
 import { loadPendingPayments } from "./pending_payments";
+import { openSnackbar } from "./snackbar";
 
 /**
  * Logs out of current account and logs back in to the selected stored key
@@ -53,6 +54,8 @@ export function registrationLogin(apiKey = false, deviceName = false, environmen
         const statusMessage4 = t("Creating a new session");
         const statusMessage = t("Attempting to load your API key");
 
+        const failedToDecryptDataMessage = t("Failed to decrypt the stored data using the given password");
+
         dispatch(registrationLoading());
 
         if (!apiKey) {
@@ -72,10 +75,10 @@ export function registrationLogin(apiKey = false, deviceName = false, environmen
                     }
                     apiKey = hasStoredApiKey;
                 } catch (exception) {
-                    console.error(5, "ex", exception);
-                    // TODO password likely incorrect?
-                    BunqErrorHandler(dispatch, exception, false, BunqJSClient);
-                    dispatch(registrationLogOut());
+                    console.log(5, "failed", exception);
+                    BunqDesktopClient.Logger.error(exception);
+                    dispatch(openSnackbar(failedToDecryptDataMessage));
+                    dispatch(registrationLogOut(false));
                     dispatch(registrationNotLoading());
                     dispatch(registrationSetNotReady());
                     return;
@@ -86,8 +89,6 @@ export function registrationLogin(apiKey = false, deviceName = false, environmen
                 dispatch(registrationSetNotReady());
                 return;
             }
-
-            console.log(7);
 
             // set the loaded data in registration storage
         } else {
@@ -116,7 +117,6 @@ export function registrationLogin(apiKey = false, deviceName = false, environmen
             dispatch(registrationLoadStoredData());
         } catch (exception) {
             console.error(9, "ex", exception);
-            // TODO api key/env/ip incorrect?
             BunqErrorHandler(dispatch, exception, false, BunqJSClient);
             dispatch(registrationResetToApiScreen());
             dispatch(registrationNotLoading());
@@ -162,6 +162,8 @@ export const registrationSwitchStoredApiKey = keyIndex => {
  */
 export const registrationSetPassword = password => {
     const BunqDesktopClient = window.BunqDesktopClient;
+    const failureMessage = window.t("Something went wrong while trying to setup your password");
+
     return dispatch => {
         dispatch(registrationLoading());
         BunqDesktopClient.setupPassword(password)
@@ -172,8 +174,9 @@ export const registrationSetPassword = password => {
             })
             .catch(error => {
                 console.error("Error setupPassword", error);
+                BunqDesktopClient.Logger.error(error);
                 dispatch(registrationNotLoading());
-                BunqErrorHandler(dispatch, error, false, BunqDesktopClient.BunqJSClient);
+                dispatch(openSnackbar(failureMessage));
             });
     };
 };
@@ -184,6 +187,8 @@ export const registrationSetPassword = password => {
  */
 export const registrationSkipPassword = () => {
     const BunqDesktopClient = window.BunqDesktopClient;
+    const failureMessage = window.t("Something went wrong while trying to set the default password");
+
     return dispatch => {
         dispatch(registrationLoading());
         BunqDesktopClient.skipPassword()
@@ -194,8 +199,9 @@ export const registrationSkipPassword = () => {
             })
             .catch(error => {
                 console.error("Error skipPassword", error);
+                BunqDesktopClient.Logger.error(error);
                 dispatch(registrationNotLoading());
-                BunqErrorHandler(dispatch, error, false, BunqDesktopClient.BunqJSClient);
+                dispatch(openSnackbar(failureMessage));
             });
     };
 };
@@ -255,10 +261,10 @@ export function registrationResetToApiScreen(resetStoredApiKey = false) {
  * @param resetPassword
  * @returns {function(*)}
  */
-export function registrationLogOut() {
+export function registrationLogOut(resetStoredApiKey = true) {
     const BunqDesktopClient = window.BunqDesktopClient;
     return dispatch => {
-        BunqDesktopClient.destroyApiSession(true).then(_ => {
+        BunqDesktopClient.destroyApiSession(resetStoredApiKey).then(_ => {
             dispatch({
                 type: "REGISTRATION_LOG_OUT"
             });

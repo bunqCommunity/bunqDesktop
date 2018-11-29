@@ -647,7 +647,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         // clear api key from bunqjsclient and bunqdesktop
-        logOut: () => dispatch(registrationLogOut(true)),
+        logOut: () => dispatch(registrationLogOut()),
 
         registrationLogin: (apiKey, deviceName, environment, permittedIps) =>
             dispatch(registrationLogin(apiKey, deviceName, environment, permittedIps)),
