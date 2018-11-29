@@ -1,7 +1,5 @@
-import Logger from "../Helpers/Logger";
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { applicationSetStatus } from "./application";
-import { openSnackbar } from "./snackbar";
 import { userSetInfo } from "./user";
 import { loadStoredPayments } from "./payments";
 import { loadStoredAccounts } from "./accounts";
@@ -18,57 +16,38 @@ import { loadPendingPayments } from "./pending_payments";
 /**
  * Logs out of current account and logs back in to the selected stored key
  * @param storedKeyIndex
- * @param derivedPassword
- * @param derivedPasswordIdentifier
  * @returns {Function}
  */
-export function registrationSwitchKeys(storedKeyIndex, derivedPassword, derivedPasswordIdentifier) {
-    const BunqDesktopClient = window.BunqDesktopClient;
-    return async dispatch => {
-        dispatch(registrationResetToLogin());
-        setTimeout(() => {
-            // TODO set the password into bunqdesktop client
-            setTimeout(() => {
-                // TODO switch the api key
-            }, 1000);
-        }, 500);
-    };
-}
-
-export function registrationLoadStoredData(BunqJSClient) {
+export function registrationSwitchKeys(storedKeyIndex) {
     return dispatch => {
-        dispatch(loadStoredAccounts(BunqJSClient));
-        dispatch(loadStoredContacts(BunqJSClient));
-        dispatch(loadPendingPayments(BunqJSClient));
-        dispatch(loadStoredPayments(BunqJSClient));
-        dispatch(loadStoredBunqMeTabs(BunqJSClient));
-        dispatch(loadStoredMasterCardActions(BunqJSClient));
-        dispatch(loadStoredRequestInquiries(BunqJSClient));
-        dispatch(loadStoredrequestInquiryBatches(BunqJSClient));
-        dispatch(loadStoredRequestResponses(BunqJSClient));
-        dispatch(loadStoredShareInviteBankResponses(BunqJSClient));
-        dispatch(loadStoredShareInviteBankInquiries(BunqJSClient));
+        console.info(" -> registrationSetNotReady");
+        dispatch(registrationSetNotReady());
+
+        setTimeout(() => {
+            console.info(" -> registrationResetToApiScreen");
+            dispatch(registrationResetToApiScreen(true));
+
+            setTimeout(() => {
+                console.info(" -> registrationSwitchStoredApiKey", storedKeyIndex);
+                dispatch(registrationSwitchStoredApiKey(storedKeyIndex));
+            }, 1000);
+        }, 100);
     };
 }
 
-export function registrationLogin(
-    BunqJSClient,
-    apiKey = false,
-    deviceName = false,
-    environment = false,
-    permittedIps = []
-) {
-    console.log(apiKey, deviceName, environment, permittedIps);
+export function registrationLogin(apiKey = false, deviceName = false, environment = false, permittedIps = []) {
+    console.count("registrationLogin");
+    console.warn(apiKey, deviceName, environment, permittedIps, location.hash);
 
     const BunqDesktopClient = window.BunqDesktopClient;
+    const BunqJSClient = BunqDesktopClient.BunqJSClient;
     const t = window.t;
+
     return async dispatch => {
         const statusMessage2 = t("Registering our encryption keys");
         const statusMessage3 = t("Installing this device");
         const statusMessage4 = t("Creating a new session");
         const statusMessage = t("Attempting to load your API key");
-
-        console.count("registrationLogin");
 
         dispatch(registrationLoading());
 
@@ -90,7 +69,9 @@ export function registrationLogin(
                     apiKey = hasStoredApiKey;
                 } catch (exception) {
                     console.error(5, "ex", exception);
-                    dispatch(registrationResetToLoginPassword());
+                    // TODO password likely incorrect?
+                    BunqErrorHandler(dispatch, exception, false, BunqJSClient);
+                    dispatch(registrationLogOut());
                     dispatch(registrationNotLoading());
                     dispatch(registrationSetNotReady());
                     return;
@@ -123,7 +104,7 @@ export function registrationLogin(
             dispatch(applicationSetStatus(statusMessage4));
             await BunqDesktopClient.BunqJSClientRegisterSession();
 
-            const users = await BunqDesktopClient.BunqJSClientRegisterGetUsers();
+            const users = await BunqDesktopClient.BunqJSClientGetUsers();
             const userType = Object.keys(users)[0];
             dispatch(userSetInfo(users[userType], userType));
 
@@ -131,8 +112,9 @@ export function registrationLogin(
             dispatch(registrationLoadStoredData(BunqJSClient));
         } catch (exception) {
             console.error(9, "ex", exception);
+            // TODO api key/env/ip incorrect?
             BunqErrorHandler(dispatch, exception, false, BunqJSClient);
-            dispatch(registrationResetToLogin());
+            dispatch(registrationResetToApiScreen());
             dispatch(registrationNotLoading());
             dispatch(registrationSetNotReady());
             return;
@@ -146,6 +128,73 @@ export function registrationLogin(
         }, 500);
     };
 }
+
+/**
+ * Logs out the current data and start the login process when done
+ * @param keyIndex
+ * @returns {Function}
+ */
+export const registrationSwitchStoredApiKey = keyIndex => {
+    const BunqDesktopClient = window.BunqDesktopClient;
+
+    return dispatch => {
+        dispatch(registrationLoading());
+        BunqDesktopClient.switchStoredApiKey(keyIndex)
+            .then(done => {
+                console.log("Done switchStoredApiKey", done);
+                dispatch(registrationLogin());
+            })
+            .catch(error => {
+                console.error("Error switchStoredApiKey", error);
+                dispatch(registrationNotLoading());
+            });
+    };
+};
+
+/**
+ * Attempts to login using a given password
+ * @param password
+ * @returns {Function}
+ */
+export const registrationSetPassword = password => {
+    const BunqDesktopClient = window.BunqDesktopClient;
+    return dispatch => {
+        dispatch(registrationLoading());
+        BunqDesktopClient.setupPassword(password)
+            .then(done => {
+                console.log("Done setupPassword", done);
+                dispatch(registrationNotLoading());
+                dispatch(registrationSetBunqDesktopClientData());
+            })
+            .catch(error => {
+                console.error("Error setupPassword", error);
+                dispatch(registrationNotLoading());
+                BunqErrorHandler(dispatch, error, false, BunqDesktopClient.BunqJSClient);
+            });
+    };
+};
+
+/**
+ * Logs in with the default password while using the standard login steps
+ * @returns {Function}
+ */
+export const registrationSkipPassword = () => {
+    const BunqDesktopClient = window.BunqDesktopClient;
+    return dispatch => {
+        dispatch(registrationLoading());
+        BunqDesktopClient.skipPassword()
+            .then(done => {
+                console.log("Done skipPassword", done);
+                dispatch(registrationNotLoading());
+                dispatch(registrationSetBunqDesktopClientData());
+            })
+            .catch(error => {
+                console.error("Error skipPassword", error);
+                dispatch(registrationNotLoading());
+                BunqErrorHandler(dispatch, error, false, BunqDesktopClient.BunqJSClient);
+            });
+    };
+};
 
 /**
  * Removes a stored api key
@@ -165,56 +214,6 @@ export function registrationRemoveStoredApiKey(index) {
 }
 
 /**
- * Only resets api key in memory, returns the client back to Login page
- * @returns {function(*)}
- */
-export function registrationResetToLogin() {
-    const BunqDesktopClient = window.BunqDesktopClient;
-    return dispatch => {
-        BunqDesktopClient.destroyApiSession(true).then(_ => {
-            dispatch({
-                type: "REGISTRATION_RESET_TO_LOGIN"
-            });
-        });
-    };
-}
-
-/**
- * Log out without removing the stored apikey
- * @param resetPassword
- * @returns {function(*)}
- */
-export function registrationLogOut(resetPassword = false) {
-    const BunqDesktopClient = window.BunqDesktopClient;
-    return dispatch => {
-        BunqDesktopClient.destroyApiSession(true).then(_ => {
-            dispatch({
-                type: "REGISTRATION_LOG_OUT",
-                payload: {
-                    resetPassword: resetPassword
-                }
-            });
-        });
-    };
-}
-
-/**
- * Remove all api keys, passwords and other private data
- * @param resetPassword
- * @returns {function(*)}
- */
-export function registrationClearPrivateData() {
-    const BunqDesktopClient = window.BunqDesktopClient;
-    return dispatch => {
-        BunqDesktopClient.destroySession().then(_ => {
-            dispatch({
-                type: "REGISTRATION_CLEAR_PRIVATE_DATA"
-            });
-        });
-    };
-}
-
-/**
  * Sets the stored api keys list
  * @param storedApiKeys
  * @returns {{type: string, payload: {stored_api_keys: StoredApiKey[]}}}
@@ -228,6 +227,55 @@ export function registrationSetStoredApiKeys(storedApiKeys) {
         payload: {
             stored_api_keys: BunqDesktopClient.storedApiKeys
         }
+    };
+}
+
+/**
+ * Returns the client back to Login page
+ * @param {boolean} resetStoredApiKey
+ * @returns {function(*)}
+ */
+export function registrationResetToApiScreen(resetStoredApiKey = false) {
+    const BunqDesktopClient = window.BunqDesktopClient;
+    return dispatch => {
+        BunqDesktopClient.destroyApiSession(resetStoredApiKey).then(_ => {
+            dispatch({
+                type: "REGISTRATION_RESET_TO_API_SCREEN"
+            });
+        });
+    };
+}
+
+/**
+ * Log out without removing the stored apikey and go back to password screen
+ * @param resetPassword
+ * @returns {function(*)}
+ */
+export function registrationLogOut() {
+    const BunqDesktopClient = window.BunqDesktopClient;
+    return dispatch => {
+        BunqDesktopClient.destroyApiSession(true).then(_ => {
+            dispatch({
+                type: "REGISTRATION_LOG_OUT"
+            });
+        });
+    };
+}
+
+/**
+ * Remove all api keys, passwords and other private data
+ * @returns {function(*)}
+ */
+export function registrationClearPrivateData() {
+    const BunqDesktopClient = window.BunqDesktopClient;
+    return dispatch => {
+        BunqDesktopClient.clearPassword(true);
+        BunqDesktopClient.clearStoredApiKeys();
+        BunqDesktopClient.destroySession().then(_ => {
+            dispatch({
+                type: "REGISTRATION_CLEAR_PRIVATE_DATA"
+            });
+        });
     };
 }
 
@@ -281,75 +329,33 @@ export function registrationNotLoading() {
     };
 }
 
-// export const registrationNEWSwitchStoredApiKey = keyIndex => {
-//     const BunqDesktopClient = window.BunqDesktopClient;
-//     const t = window.t;
-//     const statusMessage = t("Attempting to load your API key");
-//     const failedLoadingMessage = t("We failed to load the stored API key Try again or re-enter the key");
-//
-//     return dispatch => {
-//         dispatch(registrationLoading());
-//         dispatch(applicationSetStatus(statusMessage));
-//         BunqDesktopClient.switchStoredApiKey(keyIndex)
-//             .then(done => {
-//                 dispatch(registrationNotLoading());
-//                 console.log("Done switchStoredApiKey", done);
-//             })
-//             .catch(error => {
-//                 dispatch(registrationNotLoading());
-//                 console.error("Error switchStoredApiKey", error);
-//
-//                 dispatch(registrationNotLoading());
-//                 dispatch(registrationResetToLogin());
-//                 dispatch(registrationSetNotReady());
-//                 dispatch(openSnackbar(failedLoadingMessage));
-//             });
-//     };
-// };
-
-export const registrationNEWSetPassword = password => {
+export function registrationLoadStoredData() {
+    console.count("registrationLoadStoredData");
     const BunqDesktopClient = window.BunqDesktopClient;
-    const t = window.t;
-    // TODO password error message
-    // const failedLoadingMessage = t("Failed to set hte password");
-
+    const BunqJSClient = BunqDesktopClient.BunqJSClient;
     return dispatch => {
-        dispatch(registrationLoading());
-        BunqDesktopClient.setupPassword(password)
-            .then(done => {
-                dispatch(registrationNotLoading());
-                dispatch(registrationSetBunqDesktopClientData());
-                console.log("Done setupPassword", done);
-            })
-            .catch(error => {
-                console.error("Error setupPassword", error);
+        // skip if no apiKey is set
+        if (!BunqDesktopClient.apiKey) return;
 
-                dispatch(registrationNotLoading());
-                dispatch(registrationResetToLogin());
-                dispatch(registrationSetNotReady());
-                BunqErrorHandler(dispatch, error, false, BunqDesktopClient.BunqJSClient);
-            });
+        console.warn("loaded data");
+
+        dispatch(loadStoredAccounts(BunqJSClient));
+        dispatch(loadStoredContacts(BunqJSClient));
+        dispatch(loadPendingPayments(BunqJSClient));
+        dispatch(loadStoredPayments(BunqJSClient));
+        dispatch(loadStoredBunqMeTabs(BunqJSClient));
+        dispatch(loadStoredMasterCardActions(BunqJSClient));
+        dispatch(loadStoredRequestInquiries(BunqJSClient));
+        dispatch(loadStoredrequestInquiryBatches(BunqJSClient));
+        dispatch(loadStoredRequestResponses(BunqJSClient));
+        dispatch(loadStoredShareInviteBankResponses(BunqJSClient));
+        dispatch(loadStoredShareInviteBankInquiries(BunqJSClient));
     };
-};
+}
 
-export const registrationSkipPassword = () => {
-    const BunqDesktopClient = window.BunqDesktopClient;
-    return dispatch => {
-        dispatch(registrationLoading());
-        BunqDesktopClient.skipPassword()
-            .then(done => {
-                dispatch(registrationNotLoading());
-                dispatch(registrationSetBunqDesktopClientData());
-                console.log("Done skipPassword", done);
-            })
-            .catch(error => {
-                dispatch(registrationNotLoading());
-                console.error("Error skipPassword", error);
-                BunqErrorHandler(dispatch, error, false, BunqDesktopClient.BunqJSClient);
-            });
-    };
-};
-
+/**
+ * syncs bunqdesktopclient data to the registration reducer
+ */
 export const registrationSetBunqDesktopClientData = () => {
     const BunqDesktopClient = window.BunqDesktopClient;
     return {

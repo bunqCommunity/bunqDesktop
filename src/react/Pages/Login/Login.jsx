@@ -648,7 +648,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         logOut: () => dispatch(registrationLogOut(true)),
 
         registrationLogin: (apiKey, deviceName, environment, permittedIps) =>
-            dispatch(registrationLogin(BunqJSClient, apiKey, deviceName, environment, permittedIps)),
+            dispatch(registrationLogin(apiKey, deviceName, environment, permittedIps)),
 
         handleBunqError: error => BunqErrorHandler(dispatch, error)
     };

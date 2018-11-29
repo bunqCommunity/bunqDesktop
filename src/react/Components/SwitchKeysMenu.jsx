@@ -4,8 +4,6 @@ import { connect } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
-import Chip from "@material-ui/core/Chip";
-import Avatar from "@material-ui/core/Avatar";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -90,7 +88,7 @@ class SwitchKeysMenu extends React.Component {
     };
 
     selectApiKey = index => event => {
-        this.props.registrationSwitchKeys(index, this.props.derivedPassword, this.props.derivedPasswordIdentifier);
+        this.props.registrationSwitchKeys(index);
         this.props.history.push("/login");
     };
 
@@ -218,11 +216,9 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = dispatch => {
     return {
-        registrationSwitchKeys: (storedKeyIndex, derivedPassword, derivedPasswordIdentifier) =>
-            dispatch(registrationSwitchKeys(BunqJSClient, storedKeyIndex, derivedPassword, derivedPasswordIdentifier)),
+        registrationSwitchKeys: storedKeyIndex => dispatch(registrationSwitchKeys(storedKeyIndex)),
 
         registrationSetStoredApiKeys: storedApiKeys => dispatch(registrationSetStoredApiKeys(storedApiKeys)),
         removeStoredApiKey: index => dispatch(registrationRemoveStoredApiKey(index))

@@ -35,78 +35,29 @@ export const defaultState = {
 export default (state = defaultState, action) => {
     switch (action.type) {
         case "REGISTRATION_REMOVE_STORED_API_KEY":
-            const currentApiKeys2 = [...state.stored_api_keys];
-
-            // remove this key
-            currentApiKeys2.splice(action.payload.index, 1);
-
-            // update stored api keys aswell
-            store.set(API_KEYS_LOCATION, currentApiKeys2);
-            return {
-                ...state,
-                stored_api_keys: currentApiKeys2
-            };
-
         case "REGISTRATION_SET_STORED_API_KEYS":
             return {
                 ...state,
                 stored_api_keys: action.payload.stored_api_keys
             };
 
-        case "REGISTRATION_SET_DEVICE_NAME":
-            store.set(DEVICE_NAME_LOCATION, action.payload.device_name);
+        case "REGISTRATION_RESET_TO_API_SCREEN":
             return {
                 ...state,
-                device_name: action.payload.device_name
-            };
-
-        case "REGISTRATION_SET_ENVIRONMENT":
-            store.set(ENVIRONMENT_LOCATION, action.payload.environment);
-            return {
-                ...state,
-                environment: action.payload.environment
+                ready: false,
+                api_key: false,
+                encrypted_api_key: false,
+                has_stored_api_key: false
             };
 
         case "REGISTRATION_LOG_OUT":
-            store.remove(API_KEY_LOCATION);
-            store.remove(API_KEY_IV_LOCATION);
             return {
                 ...state,
-                api_key: false,
                 ready: false,
+                api_key: false,
                 encrypted_api_key: false,
                 has_stored_api_key: false,
                 derived_password: false
-            };
-
-        case "REGISTRATION_RESET_TO_LOGIN":
-            store.remove(API_KEY_LOCATION);
-            store.remove(API_KEY_IV_LOCATION);
-            return {
-                ...state,
-                api_key: false,
-                ready: false,
-                encrypted_api_key: false,
-                has_stored_api_key: false
-            };
-
-        case "REGISTRATION_RESET_TO_LOGIN_PASSWORD":
-            store.remove(API_KEY_LOCATION);
-            store.remove(API_KEY_IV_LOCATION);
-            return {
-                ...state,
-                api_key: false,
-                ready: false,
-                encrypted_api_key: false,
-                has_stored_api_key: false
-            };
-
-        case "REGISTRATION_CLEAR_PASSWORD":
-            store.set(USE_NO_PASSWORD_LOCATION, false);
-            return {
-                ...state,
-                derived_password: false,
-                use_no_password: false
             };
 
         case "REGISTRATION_SET_BUNQ_DESKTOP_CLIENT_DATA":
@@ -150,13 +101,6 @@ export default (state = defaultState, action) => {
             };
 
         case "REGISTRATION_CLEAR_PRIVATE_DATA":
-            // remove the stored key data
-            store.remove(SALT_LOCATION);
-            store.remove(API_KEY_LOCATION);
-            store.remove(API_KEYS_LOCATION);
-            store.remove(API_KEY_IV_LOCATION);
-            // reset use-no-password setting back to default
-            store.set(USE_NO_PASSWORD_LOCATION, false);
             return {
                 ...state,
                 api_key: false,

@@ -14,9 +14,9 @@ export const ENVIRONMENT_LOCATION = "BUNQDESKTOP_ENVIRONMENT";
 const DEFAULT_PASSWORD = "SOME_DEFAULT_PASSWORD";
 
 class BunqDesktopClient {
-    private BunqJSClient: BunqJSClient;
-    private Logger: any;
-    private Store: any;
+    public BunqJSClient: BunqJSClient;
+    public Logger: any;
+    public Store: any;
 
     private derived_password: string | false = false;
     private derived_password_salt: string | false = false;
@@ -60,7 +60,7 @@ class BunqDesktopClient {
         await this.BunqJSClient.registerSession();
     }
 
-    public async BunqJSClientRegisterGetUsers() {
+    public async BunqJSClientGetUsers() {
         const users = await this.BunqJSClient.getUsers(true);
         if (!users) return users;
 
@@ -219,6 +219,87 @@ class BunqDesktopClient {
     }
 
     /**
+     * Remove the API data but keeps the password
+     * @param {boolean} resetStoredApiKey - removes currently selected api keys from storage aswell
+     * @returns {Promise<void>}
+     */
+    public async destroyApiSession(resetStoredApiKey = false) {
+        this.api_key = false;
+        this.encrypted_api_key = false;
+        this.encrypted_api_key_iv = false;
+
+        console.log(resetStoredApiKey);
+        if (resetStoredApiKey) {
+            this.removeStoredValue(API_KEY_LOCATION);
+            this.removeStoredValue(API_KEY_IV_LOCATION);
+        }
+
+        return this.BunqJSClient.destroyApiSession(resetStoredApiKey);
+    }
+
+    /**
+     * Remove the API data and password from memory
+     * @returns {Promise<void>}
+     */
+    public async destroySession() {
+        this.api_key = false;
+        this.encrypted_api_key = false;
+        this.encrypted_api_key_iv = false;
+        this.derived_password = false;
+
+        this.removeStoredValue(API_KEY_LOCATION);
+        this.removeStoredValue(API_KEY_IV_LOCATION);
+        this.setStoredValue(USE_NO_PASSWORD_LOCATION, false);
+
+        return this.BunqJSClient.destroySession();
+    }
+
+    /**
+     * Overwrites the stored keys with a new list
+     * @param storedApiKeys
+     */
+    public setStoredApiKeys(storedApiKeys) {
+        this.stored_api_keys = storedApiKeys;
+        this.setStoredValue(API_KEYS_LOCATION, this.stored_api_keys);
+    }
+
+    /**
+     * Removes a single stored key by index
+     * @param keyIndex
+     */
+    public removeStoredApiKey(keyIndex) {
+        const storedApiKeys = this.storedApiKeys;
+        storedApiKeys.splice(keyIndex, 1);
+
+        this.setStoredValue(API_KEYS_LOCATION, storedApiKeys);
+        this.stored_api_keys = storedApiKeys;
+    }
+
+    /**
+     * Removes all stored api keys
+     */
+    public clearStoredApiKeys() {
+        this.stored_api_keys = [];
+        this.removeStoredValue(API_KEYS_LOCATION);
+    }
+
+    /**
+     * Removes the password and optionally the salt value
+     * @param {boolean} clearStorage - removes salt which will cause bunqDesktop to
+     *                                  no longer be able to decrypt any of the
+     *                                  currently encrypted data
+     */
+    public clearPassword(clearStorage = false) {
+        if (clearStorage) {
+            this.removeStoredValue(SALT_LOCATION);
+            this.derived_password_salt = false;
+        }
+
+        this.derived_password = false;
+        this.setStoredValue(USE_NO_PASSWORD_LOCATION, false);
+    }
+
+    /**
      * Decrypts the currently stored encrypted api key
      * @returns {Promise<string | false>}
      */
@@ -236,42 +317,6 @@ class BunqDesktopClient {
 
         this.api_key = decryptedApiKey;
         return decryptedApiKey;
-    }
-
-    /**
-     * Remove the API data but keeps the password
-     * @param {boolean} save
-     * @returns {Promise<void>}
-     */
-    public async destroyApiSession(save = false) {
-        this.api_key = false;
-        this.encrypted_api_key = false;
-        this.encrypted_api_key_iv = false;
-        return this.BunqJSClient.destroyApiSession(save);
-    }
-
-    /**
-     * Remove the API data and password from memory
-     * @returns {Promise<void>}
-     */
-    public async destroySession() {
-        this.api_key = false;
-        this.encrypted_api_key = false;
-        this.encrypted_api_key_iv = false;
-        this.derived_password = false;
-        return this.BunqJSClient.destroySession();
-    }
-
-    public setStoredApiKeys(storedApiKeys) {
-        this.stored_api_keys = storedApiKeys;
-        this.setStoredValue(API_KEYS_LOCATION, this.stored_api_keys);
-    }
-    public removeStoredApiKey(keyIndex) {
-        const storedApiKeys = this.storedApiKeys;
-        storedApiKeys.splice(keyIndex, 1);
-
-        this.setStoredValue(API_KEYS_LOCATION, storedApiKeys);
-        this.stored_api_keys = storedApiKeys;
     }
 
     /** Getter functions **/

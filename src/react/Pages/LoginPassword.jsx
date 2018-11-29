@@ -20,7 +20,7 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
 import TranslateButton from "../Components/TranslationHelpers/Button";
 
-import { registrationLogOut, registrationNEWSetPassword, registrationSkipPassword } from "../Actions/registration";
+import { registrationLogOut, registrationSetPassword, registrationSkipPassword } from "../Actions/registration";
 
 const styles = {
     wrapperContainer: {
@@ -89,12 +89,9 @@ class LoginPassword extends React.Component {
     }
 
     componentDidMount() {
-        console.log("mounted");
         if (this.props.hasStoredApiKey) {
-            console.log("mounted",1);
             // we have a stored api key
             if (this.props.useNoPassword) {
-                console.log("mounted",2);
                 // login with default password
                 this.props.useNoPasswordLogin();
             }
@@ -412,7 +409,7 @@ const mapDispatchToProps = dispatch => {
         useNoPasswordLogin: () => dispatch(registrationSkipPassword()),
 
         // use password
-        usePasswordLogin: password => dispatch(registrationNEWSetPassword(password)),
+        usePasswordLogin: password => dispatch(registrationSetPassword(password)),
 
         // clear api key from bunqjsclient and bunqdesktop
         logOut: () => dispatch(registrationLogOut())
