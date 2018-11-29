@@ -34,9 +34,7 @@ export function paySend(BunqJSClient, userId, accountId, description, amount, ta
                 dispatch(openSnackbar(notification));
 
                 // update the payments, accounts and share list
-                dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId));
                 dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId));
-                dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId));
                 dispatch(accountsUpdate(BunqJSClient, userId));
 
                 dispatch(payNotLoading());

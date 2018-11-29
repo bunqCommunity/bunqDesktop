@@ -43,6 +43,7 @@ import { formatMoney, getUTCDate } from "../../Helpers/Utils";
 import { filterShareInviteBankResponses } from "../../Helpers/DataFilters";
 import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
 import scheduleTexts from "../../Helpers/ScheduleTexts";
+import { paymentInfoUpdate } from "../../Actions/payments";
 
 const styles = {
     payButton: {
@@ -135,6 +136,8 @@ class Pay extends React.Component {
                 this.setState({ selectedAccount: accountKey });
             }
         });
+
+        this.checkDraftOnly();
     }
 
     closeModal = () => {
@@ -579,9 +582,12 @@ class Pay extends React.Component {
             this.props.paySend(userId, account.id, description, amountInfo, targetInfoList, sendDraftPayment);
         }
 
+        setTimeout(() => {
+            this.props.paymentInfoUpdate(userId, account.id);
+        }, 1000);
+
         this.setState({
             validForm: false,
-            selectedAccount: 0,
             amountError: false,
             amount: "",
             descriptionError: false,
@@ -873,11 +879,13 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, props) => {
     const { BunqJSClient } = props;
     return {
-        paySend: (userId, accountId, description, amount, targets, draft = false, schedule = false) =>
-            dispatch(paySend(BunqJSClient, userId, accountId, description, amount, targets, draft, schedule)),
+        paySend: (userId, accountId, description, amount, targets, draft = false) =>
+            dispatch(paySend(BunqJSClient, userId, accountId, description, amount, targets, draft)),
         paySchedule: (userId, accountId, description, amount, targets, schedule) =>
             dispatch(paySchedule(BunqJSClient, userId, accountId, description, amount, targets, schedule)),
         openSnackbar: message => dispatch(openSnackbar(message)),
+
+        paymentInfoUpdate: (userId, accountId) => dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId)),
 
         pendingPaymentsAddPayment: (accountId, pendingPayment) =>
             dispatch(pendingPaymentsAddPayment(BunqJSClient, accountId, pendingPayment))

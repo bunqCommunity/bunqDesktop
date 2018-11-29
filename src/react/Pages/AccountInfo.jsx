@@ -330,6 +330,7 @@ class AccountInfo extends React.Component {
                     allowConnectSettings = false;
 
                     profileIconList = filteredInviteResponses.map(filteredInviteResponse => {
+                        if (!filteredInviteResponse || !filteredInviteResponse.ShareInviteBankResponse) return null;
                         return (
                             <PersonChip
                                 BunqJSClient={this.props.BunqJSClient}

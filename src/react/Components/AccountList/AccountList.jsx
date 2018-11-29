@@ -125,16 +125,19 @@ class AccountList extends React.Component {
         }
     }
 
-    updateAccounts = () => {
-        const userId = this.props.user.id;
-        const selectedAccountId = this.props.accountsSelectedId;
+    updateAccounts = (props = this.props) => {
+        const userId = props.user.id;
+        const selectedAccountId = props.accountsSelectedId;
 
-        if (!this.props.accountsLoading) this.props.accountsUpdate(userId);
-
-        if (!this.props.shareInviteBankInquiriesLoading && this.props.limitedPermissions === false)
+        if (!props.accountsLoading) {
+            this.props.accountsUpdate(userId);
+        }
+        if (!props.shareInviteBankInquiriesLoading && props.limitedPermissions === false) {
             this.props.shareInviteBankInquiriesInfoUpdate(userId, selectedAccountId);
-
-        if (!this.props.shareInviteBankResponsesLoading) this.props.shareInviteBankResponsesInfoUpdate(userId);
+        }
+        if (!props.shareInviteBankResponsesLoading) {
+            this.props.shareInviteBankResponsesInfoUpdate(userId);
+        }
     };
 
     checkUpdateRequirement = (props = this.props) => {
@@ -161,7 +164,7 @@ class AccountList extends React.Component {
             props.registrationIsLoading === false &&
             props.registrationReady === true
         ) {
-            this.props.accountsUpdate(props.user.id);
+            this.updateAccounts(props);
             this.setState({ fetchedAccounts: true });
         }
     };
