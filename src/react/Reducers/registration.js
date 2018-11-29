@@ -1,15 +1,3 @@
-import store from "store";
-
-import {
-    SALT_LOCATION,
-    API_KEY_LOCATION,
-    API_KEYS_LOCATION,
-    API_KEY_IV_LOCATION,
-    USE_NO_PASSWORD_LOCATION,
-    DEVICE_NAME_LOCATION,
-    ENVIRONMENT_LOCATION
-} from "../BunqDesktopClient";
-
 export const defaultState = {
     // unencrypted api key, this should NEVER be stored elsewhere
     api_key: false,
@@ -28,8 +16,7 @@ export const defaultState = {
     environment: "PRODUCTION",
     derived_password: false,
     identifier: false,
-    loading: false,
-    status_message: ""
+    loading: false
 };
 
 export default (state = defaultState, action) => {
@@ -110,7 +97,6 @@ export default (state = defaultState, action) => {
                 has_stored_api_key: false,
                 derived_password: false
             };
-
     }
     return state;
 };

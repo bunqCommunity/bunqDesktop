@@ -228,7 +228,6 @@ class BunqDesktopClient {
         this.encrypted_api_key = false;
         this.encrypted_api_key_iv = false;
 
-        console.log(resetStoredApiKey);
         if (resetStoredApiKey) {
             this.removeStoredValue(API_KEY_LOCATION);
             this.removeStoredValue(API_KEY_IV_LOCATION);

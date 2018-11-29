@@ -20,8 +20,12 @@ import { loadPendingPayments } from "./pending_payments";
  */
 export function registrationSwitchKeys(storedKeyIndex) {
     return dispatch => {
+        console.info(" -> registrationLoading");
+        dispatch(registrationLoading());
         console.info(" -> registrationSetNotReady");
         dispatch(registrationSetNotReady());
+        console.info(" -> registrationClearUserInfo");
+        dispatch(registrationClearUserInfo());
 
         setTimeout(() => {
             console.info(" -> registrationResetToApiScreen");
@@ -109,7 +113,7 @@ export function registrationLogin(apiKey = false, deviceName = false, environmen
             dispatch(userSetInfo(users[userType], userType));
 
             // load bunq api data and other data like contacts from storage
-            dispatch(registrationLoadStoredData(BunqJSClient));
+            dispatch(registrationLoadStoredData());
         } catch (exception) {
             console.error(9, "ex", exception);
             // TODO api key/env/ip incorrect?

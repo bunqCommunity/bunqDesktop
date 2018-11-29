@@ -148,7 +148,9 @@ class Login extends React.Component {
     componentDidMount() {
         const isSandboxMode = this.props.environment === "SANDBOX";
 
-        this.registrationLogin();
+        if (!this.props.registrationLoading) {
+            this.registrationLogin();
+        }
 
         this.setState(
             {
