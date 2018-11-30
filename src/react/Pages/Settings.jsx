@@ -124,7 +124,7 @@ class Settings extends React.Component {
     };
 
     logout = event => {
-        this.props.logOut();
+        this.props.registrationLogOut();
 
         // minor delay to ensure it happens after the state updates
         setTimeout(() => {
@@ -724,9 +724,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         shareInviteBankResponsesClear: () => dispatch(shareInviteBankResponsesClear()),
 
         // clear api key from bunqjsclient and bunqdesktop
-        clearPrivateData: () => dispatch(registrationClearPrivateData(BunqJSClient)),
+        clearPrivateData: () => dispatch(registrationClearPrivateData()),
         // logout of current session without destroying stored keys
-        logOut: () => dispatch(registrationLogOut(BunqJSClient)),
+        registrationLogOut: () => dispatch(registrationLogOut()),
         // full hard reset off all storage
         resetApplication: () => dispatch(resetApplication())
     };

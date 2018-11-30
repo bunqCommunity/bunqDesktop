@@ -3,8 +3,8 @@
         "outDir": "./dist/",
         "sourceMap": true,
         "noImplicitAny": false,
-        "module": "commonjs",
         "target": "es2017",
+        "moduleResolution": "node",
         "jsx": "react",
         "allowJs": true,
         "lib": [

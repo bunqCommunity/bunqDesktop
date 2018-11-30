@@ -72,8 +72,8 @@ class QueueManager extends React.Component {
         this.setupTimer();
 
         // if sync on startup setting is false, we disable the initial sync event
-        if (syncOnStartup === false && this.state.initialSync === false) {
-            this.setState({ initialSync: true });
+        if (syncOnStartup === false && this.state.initialSync !== user.id) {
+            this.setState({ initialSync: user.id });
         }
 
         if (queueLoading && queueTriggerSync) {
@@ -81,7 +81,7 @@ class QueueManager extends React.Component {
         }
 
         // no initial sync completed or manual sync was triggered
-        if (this.state.initialSync === false || queueTriggerSync) {
+        if (this.state.initialSync !== user.id || queueTriggerSync) {
             if (user && !userLoading && accounts && !accountsLoading && accounts.length > 0 && !queueLoading) {
                 // if we continue, limit deep search to 5
                 const eventCount = queueTriggerSync ? this.props.eventCountLimit : DEFAULT_EVENT_COUNT_LIMIT;
@@ -122,10 +122,11 @@ class QueueManager extends React.Component {
 
         // ensure initial sync is true to avoid endless syncs
         const userId = user.id;
-        if (!this.state.initialSync)
+        if (this.state.initialSync !== userId) {
             this.setState({
-                initialSync: true
+                initialSync: userId
             });
+        }
 
         // only include active accounts
         const filteredAccounts = accounts.filter(account => {

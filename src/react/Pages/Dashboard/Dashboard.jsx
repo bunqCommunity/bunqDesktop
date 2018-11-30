@@ -27,7 +27,7 @@ import SavingsGoalsList from "../../Components/SavingsGoals/SavingsGoalsList";
 import SwitchKeysMenu from "../../Components/SwitchKeysMenu";
 
 import { requestInquirySend } from "../../Actions/request_inquiry";
-import { registrationLogOut, registrationSwitchKeys } from "../../Actions/registration";
+import { registrationLogOut } from "../../Actions/registration";
 
 const styles = {
     btn: {
@@ -300,7 +300,7 @@ const mapStateToProps = state => {
 
         savingsGoals: state.savings_goals.savings_goals,
 
-        derivedPassword: state.registration.derivedPassword,
+        derivedPassword: state.registration.derived_password,
         derivedPasswordIdentifier: state.registration.identifier,
         useNoPassword: state.registration.use_no_password,
         storedApiKeys: state.registration.stored_api_keys,
@@ -312,9 +312,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         // hard-logout
-        registrationLogOut: () => dispatch(registrationLogOut(BunqJSClient)),
-        registrationSwitchKeys: (storedKeyIndex, derivedPassword, derivedPasswordIdentifier) =>
-            dispatch(registrationSwitchKeys(BunqJSClient, storedKeyIndex, derivedPassword, derivedPasswordIdentifier)),
+        registrationLogOut: () => dispatch(registrationLogOut()),
 
         // send a request, used for sandbox button
         requestInquirySend: (userId, accountId, requestInquiries) =>

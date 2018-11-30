@@ -53,7 +53,7 @@ const styles = {
         marginBottom: 16
     },
     dialogContent: {
-        width: 300
+        width: 240
     },
     chip: {
         margin: 8
@@ -412,7 +412,7 @@ class AccountInfo extends React.Component {
                     <Dialog key="deactivate-dialog" open={this.state.openDialog} onClose={this.toggleDeactivateDialog}>
                         <DialogTitle>{t("Cancel account")}</DialogTitle>
 
-                        <DialogContent>
+                        <DialogContent style={styles.dialogContent}>
                             <DialogContentText>
                                 {isJointAccount
                                     ? t("It is not possible to delete a Joint or Connect account using bunqDesktop")

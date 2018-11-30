@@ -1,6 +1,5 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { userSetInfo } from "./user";
-import { registrationSetOAuthStoredApiKey } from "./registration";
 
 export function usersUpdate(BunqJSClient, updated = false) {
     const failedMessage = window.t("We failed to load your users");
@@ -11,10 +10,6 @@ export function usersUpdate(BunqJSClient, updated = false) {
             .then(users => {
                 const userType = Object.keys(users)[0];
                 dispatch(userSetInfo(users[userType], userType));
-
-                if (userType === "UserApiKey") {
-                    dispatch(registrationSetOAuthStoredApiKey());
-                }
 
                 dispatch(usersNotLoading());
                 dispatch(usersInitialCheck());
