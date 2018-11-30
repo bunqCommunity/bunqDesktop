@@ -8,6 +8,7 @@ export type EventTypeValue =
     | "RequestResponse"
     | "Invoice"
     | "ScheduledPayment"
+    | "IdealMerchantTransaction"
     | "ScheduledInstance";
 
 export default interface EventType {

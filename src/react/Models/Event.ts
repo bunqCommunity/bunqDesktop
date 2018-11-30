@@ -8,6 +8,7 @@ import RequestInquiryBatch from "./RequestInquiryBatch";
 import ScheduledInstance from "./ScheduledInstance";
 import ScheduledPayment from "./ScheduledPayment";
 import Invoice from "./Invoice";
+import IdealMerchantTransaction from "./IdealMerchantTransaction";
 
 export default class Event implements EventType {
     // the original raw object
@@ -77,6 +78,9 @@ export default class Event implements EventType {
                         break;
                     case "Invoice":
                         this._object = new Invoice(this._object);
+                        break;
+                    case "IdealMerchantTransaction":
+                        this._object = new IdealMerchantTransaction(this._object);
                         break;
                     case "FeatureAnnouncement":
                     case "ShareInviteBankInquiry":

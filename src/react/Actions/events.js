@@ -30,6 +30,7 @@ export function eventsSetInfo(events, resetOldItems = false, BunqJSClient = fals
                 case "ScheduledInstance":
                 case "ScheduledPayment":
                 case "Invoice":
+                case "IdealMerchantTransaction":
                     eventsNew.push(eventObject);
                     break;
                 case "ShareInviteBankInquiry":
