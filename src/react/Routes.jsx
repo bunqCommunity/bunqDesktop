@@ -32,8 +32,8 @@ const privateRoutes = [
         component: CL(() => import(/* webpackChunkName: "bunqmetab" */ "./Pages/BunqMeTab/BunqMeTab"))
     },
     {
-        path: "/card",
-        component: CL(() => import(/* webpackChunkName: "cards" */ "./Pages/Cards/Card"))
+        path: "/cards",
+        component: CL(() => import(/* webpackChunkName: "cards" */ "./Pages/Cards/Cards"))
     },
     {
         path: "/scheduled-payments",
@@ -47,6 +47,10 @@ const privateRoutes = [
     {
         path: "/exports",
         component: CL(() => import(/* webpackChunkName: "exports" */ "./Pages/Exports"))
+    },
+    {
+        path: "/pending-payments",
+        component: CL(() => import(/* webpackChunkName: "pendingPayments" */ "./Pages/PendingPayments/PendingPayments"))
     },
     {
         path: "/stats",

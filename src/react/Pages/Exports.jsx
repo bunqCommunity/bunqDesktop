@@ -86,7 +86,7 @@ class Exports extends React.Component {
 
     componentDidMount() {
         if (!this.props.limitedPermissions) {
-            this.updateExports(this.props.user.id, this.props.accountsAccountId);
+            this.updateExports(this.props.user.id, this.props.selectedAccountId);
         } else {
             this.setState({
                 selectedTab: 1
@@ -97,7 +97,7 @@ class Exports extends React.Component {
     componentDidUpdate(oldProps) {
         // loading state from creating a new export changed to false
         if (this.props.exportNewLoading === false && this.props.exportNewLoading !== oldProps.exportNewLoading) {
-            this.updateExports(this.props.user.id, this.props.accountsAccountId);
+            this.updateExports(this.props.user.id, this.props.selectedAccountId);
         }
     }
 
@@ -154,14 +154,14 @@ class Exports extends React.Component {
     };
 
     updateExports = (userId, accountId) => {
-        if (!this.props.initialBunqConnect) {
+        if (!this.props.registrationReady) {
             return;
         }
         this.props.exportInfoUpdate(userId, accountId);
     };
 
     refreshClick = event => {
-        this.updateExports(this.props.user.id, this.props.accountsAccountId);
+        this.updateExports(this.props.user.id, this.props.selectedAccountId);
     };
 
     handleDateFromChange = date => {
@@ -199,7 +199,7 @@ class Exports extends React.Component {
     createNew = event => {
         this.props.exportNew(
             this.props.user.id,
-            this.props.accountsAccountId,
+            this.props.selectedAccountId,
             this.state.exportType,
             this.state.dateFrom,
             this.state.dateTo,
@@ -232,7 +232,7 @@ class Exports extends React.Component {
             const failedMessage = this.props.t("We failed to load the export content for this monetary account");
 
             this.props.BunqJSClient.api.customerStatementExportContent
-                .list(this.props.user.id, this.props.accountsAccountId, exportInfo.id)
+                .list(this.props.user.id, this.props.selectedAccountId, exportInfo.id)
                 .then(exportContent => {
                     // create a new file reader
                     const fileReader = new FileReader();
@@ -369,11 +369,7 @@ class Exports extends React.Component {
 
                 <Grid item xs={12} md={4}>
                     <Paper>
-                        <AccountList
-                            updateExternal={this.updateExports}
-                            BunqJSClient={this.props.BunqJSClient}
-                            initialBunqConnect={this.props.initialBunqConnect}
-                        />
+                        <AccountList updateExternal={this.updateExports} BunqJSClient={this.props.BunqJSClient} />
                     </Paper>
                 </Grid>
 
@@ -556,7 +552,6 @@ class Exports extends React.Component {
                             <Paper>
                                 <CombinedList
                                     BunqJSClient={this.props.BunqJSClient}
-                                    initialBunqConnect={this.props.initialBunqConnect}
                                     hiddenTypes={[
                                         "BunqMeTab",
                                         "RequestInquiry",
@@ -580,21 +575,12 @@ const mapStateToProps = state => {
 
         accountsAccountId: state.accounts.selected_account,
 
-        paymentType: state.payment_filter.type,
-        paymentVisibility: state.payment_filter.visible,
-
-        bunqMeTabType: state.bunq_me_tab_filter.type,
-        bunqMeTabVisibility: state.bunq_me_tab_filter.visible,
-
-        requestType: state.request_filter.type,
-        requestVisibility: state.request_filter.visible,
-
         exportNewLoading: state.export_new.loading,
+
         exports: state.exports.exports,
         exportsLoading: state.exports.loading,
 
-        amountFilterAmount: state.amount_filter.amount,
-        amountFilterType: state.amount_filter.type,
+        selectedAccountId: state.accounts.selected_account,
 
         searchTerm: state.search_filter.search_term,
         dateFromFilter: state.date_filter.from_date,

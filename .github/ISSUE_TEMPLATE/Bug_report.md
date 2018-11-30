@@ -1,9 +1,11 @@
 ---
 name: Bug report
-about: Report a bug or missing translation
+about: Report a bug
 
 ---
-## Bug report
+
+### Bug report
+
 To help us out please add as much information as possible to help us reproduce and hopefully solve the issue.
 For example:
 - Were you doing anything specific when the error occured?

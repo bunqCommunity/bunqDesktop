@@ -2,7 +2,6 @@ import React from "react";
 import { ipcRenderer } from "electron";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
-import Event from "../../Models/Event";
 
 import NotificationHelper from "../../Helpers/NotificationHelper";
 
@@ -104,16 +103,16 @@ class QueueManager extends React.Component {
 
         // ensure initial sync is true to avoid endless syncs
         const userId = user.id;
-        if (!this.state.initialSync)
+        if (!this.state.initialSync) {
             this.setState({
                 initialSync: true
             });
-
-        // set initial request count in one go
-        this.props.queueSetRequestCounter(2);
+        }
 
         this.shareInviteBankResponsesUpdate(userId);
         this.eventsUpdate(userId, false, eventCount);
+
+        this.props.queueSetRequestCounter(2);
     };
 
     /**

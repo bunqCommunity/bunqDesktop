@@ -12,7 +12,7 @@ import ChangeIcon from "@material-ui/icons/CompareArrows";
 import { formatMoney } from "../../Helpers/Utils";
 
 const styles = {
-    paper: {
+    gridContainer: {
         padding: 16
     },
     text: {
@@ -56,7 +56,7 @@ class EventData extends React.Component {
 
         return (
             <Collapse in={open}>
-                <Grid container spacing={8} justify={"center"} style={styles.paper}>
+                <Grid container spacing={8} justify={"center"} style={styles.gridContainer}>
                     <Grid item xs={6} sm={4} style={styles.text}>
                         <ChangeIcon
                             style={{

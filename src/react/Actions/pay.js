@@ -35,7 +35,6 @@ export function paySend(BunqJSClient, userId, accountId, description, amount, ta
 
                 // update the payments, accounts and share list
                 dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId));
-                dispatch(eventInfoUpdate(BunqJSClient, userId));
                 dispatch(accountsUpdate(BunqJSClient, userId));
 
                 dispatch(payNotLoading());
@@ -79,7 +78,6 @@ export function paySchedule(BunqJSClient, userId, accountId, description, amount
                 dispatch(openSnackbar(notification));
 
                 // update the payments, accounts and share list
-                dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId));
                 dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId, accountId));
                 dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId));
                 dispatch(accountsUpdate(BunqJSClient, userId));

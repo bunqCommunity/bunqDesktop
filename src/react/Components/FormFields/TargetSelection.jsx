@@ -2,30 +2,36 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { translate } from "react-i18next";
-import CopyToClipboard from "react-copy-to-clipboard";
 import Grid from "@material-ui/core/Grid";
 import Radio from "@material-ui/core/Radio";
-import Avatar from "@material-ui/core/Avatar";
-import Chip from "@material-ui/core/Chip";
-import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import CompareArrowsIcon from "@material-ui/icons/CompareArrows";
 import PersonIcon from "@material-ui/icons/Person";
+import ContactsIcon from "@material-ui/icons/Contacts";
 
+import NavLink from "../Routing/NavLink";
 import InputSuggestions from "./InputSuggestions";
 import AccountSelectorDialog from "./AccountSelectorDialog";
 import { openSnackbar } from "../../Actions/snackbar";
 import { formatIban } from "../../Helpers/Utils";
+import TargetChipList from "./TargetChipList";
 
 const styles = {
-    payButton: {
+    button: {
         width: "100%"
+    },
+    contactsButton: {
+        width: "100%",
+        marginTop: 4
     },
     chips: {
         margin: 5
+    },
+    buttonIcons: {
+        marginLeft: 8
     }
 };
 
@@ -135,18 +141,27 @@ class TargetSelection extends React.Component {
                 });
 
                 targetContent = (
-                    <InputSuggestions
-                        autoFocus
-                        fullWidth
-                        id="target"
-                        items={contactList}
-                        label={t("Email or phone number")}
-                        error={this.props.targetError}
-                        value={this.props.target}
-                        onChange={this.props.handleChange("target")}
-                        onSelectItem={this.props.handleChangeDirect("target")}
-                        onKeyPress={this.enterKeySubmit}
-                    />
+                    <Grid container spacing={8}>
+                        <Grid item xs={12} sm={8}>
+                            <InputSuggestions
+                                autoFocus
+                                fullWidth
+                                id="target"
+                                items={contactList}
+                                label={t("Email or phone number")}
+                                error={this.props.targetError}
+                                value={this.props.target}
+                                onChange={this.props.handleChange("target")}
+                                onSelectItem={this.props.handleChangeDirect("target")}
+                                onKeyPress={this.enterKeySubmit}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                            <Button style={styles.contactsButton} variant="outlined" to="/contacts" component={NavLink}>
+                                {t("Contacts")} <ContactsIcon style={{ marginLeft: 8 }} />
+                            </Button>
+                        </Grid>
+                    </Grid>
                 );
                 break;
             default:
@@ -181,45 +196,13 @@ class TargetSelection extends React.Component {
                 break;
         }
 
-        const chipList = this.props.targets.map((target, targetKey) => {
-            let Icon = null;
-            let targetValue = target.value;
-            switch (target.type) {
-                case "EMAIL":
-                case "PHONE":
-                case "CONTACT":
-                    Icon = PersonIcon;
-                    break;
-                case "TRANSFER":
-                    // for transfers we can try to display a description
-                    if (this.props.accounts[target.value]) {
-                        targetValue = this.props.accounts[target.value].description;
-                    }
-                    Icon = CompareArrowsIcon;
-                    break;
-                default:
-                case "IBAN":
-                    Icon = AccountBalanceIcon;
-                    break;
-            }
-
-            return (
-                <Chip
-                    style={styles.chips}
-                    avatar={
-                        <Avatar>
-                            <Icon color="primary" />
-                        </Avatar>
-                    }
-                    label={
-                        <CopyToClipboard text={targetValue} onCopy={this.copiedValue}>
-                            <p>{targetValue}</p>
-                        </CopyToClipboard>
-                    }
-                    onDelete={event => this.props.removeTarget(targetKey)}
-                />
-            );
-        });
+        const chipList = (
+            <TargetChipList
+                targets={this.props.targets}
+                accounts={this.props.accounts}
+                onDelete={targetKey => this.props.removeTarget(targetKey)}
+            />
+        );
 
         return (
             <Grid container spacing={24}>
@@ -295,7 +278,7 @@ class TargetSelection extends React.Component {
                             // already loading
                             this.props.payLoading
                         }
-                        style={styles.payButton}
+                        style={styles.button}
                         onClick={this.props.addTarget}
                     >
                         {t("Add")}

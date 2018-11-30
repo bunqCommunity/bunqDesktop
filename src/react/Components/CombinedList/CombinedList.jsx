@@ -275,6 +275,8 @@ const mapStateToProps = state => {
     return {
         user: state.user.user,
 
+        registrationReady: state.registration.ready,
+
         queueLoading: state.queue.loading,
         queueFinishedQueue: state.queue.finished_queue,
 

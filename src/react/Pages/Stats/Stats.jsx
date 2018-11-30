@@ -124,9 +124,6 @@ class Stats extends React.Component {
             requestInquiries: props.events.filter(e => e.type === "RequestInquiry").map(i => i.object.toJSON()),
             requestResponses: props.events.filter(e => e.type === "RequestResponse").map(i => i.object.toJSON()),
             bunqMeTabs: props.events.filter(e => e.type === "BunqMeTab").map(i => i.object.toJSON()),
-            // the accounts and selectedAccount so a balance can be calculated
-            accounts: props.accounts.map(account => account.toJSON()),
-            selectedAccount: props.selectedAccount,
             // different filter objects used in filtering the endpoints
             paymentFilterSettings: {
                 paymentVisibility: props.paymentVisibility,
@@ -166,7 +163,6 @@ class Stats extends React.Component {
                 ? this.state.parsedData
                 : {
                       labels: [],
-                      balanceHistoryData: [],
                       categoryCountHistory: {},
                       categoryTransactionHistory: {},
                       eventCountHistory: [],
@@ -301,11 +297,7 @@ class Stats extends React.Component {
                     </Paper>
 
                     <Paper style={styles.sideBarPaper}>
-                        <AccountList
-                            BunqJSClient={this.props.BunqJSClient}
-                            initialBunqConnect={this.props.initialBunqConnect}
-                            denseMode={true}
-                        />
+                        <AccountList BunqJSClient={this.props.BunqJSClient} denseMode={true} />
                     </Paper>
 
                     <EventCountSidebarSection
@@ -382,8 +374,6 @@ class Stats extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-        accounts: state.accounts.accounts,
-        selectedAccount: state.accounts.selected_account,
 
         events: state.events.events,
         eventsLoading: state.events.loading,
