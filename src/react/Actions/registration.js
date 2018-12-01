@@ -189,6 +189,32 @@ export const registrationSkipPassword = () => {
 };
 
 /**
+ * Changes the password and encrypts all data using the new password
+ * @returns {Function}
+ */
+export const registrationChangePassword = newPassword => {
+    const BunqDesktopClient = window.BunqDesktopClient;
+    const failureMessage = window.t("Something went wrong while trying update your password");
+    const successMessage = window.t("Your password has been updated");
+
+    return dispatch => {
+        dispatch(registrationLoading());
+        BunqDesktopClient.changePassword(newPassword)
+            .then(done => {
+                dispatch(registrationNotLoading());
+                dispatch(registrationSetBunqDesktopClientData());
+                dispatch(openSnackbar(successMessage));
+            })
+            .catch(error => {
+                BunqDesktopClient.Logger.error("changePassword");
+                BunqDesktopClient.Logger.error(error);
+                dispatch(registrationNotLoading());
+                dispatch(openSnackbar(failureMessage));
+            });
+    };
+};
+
+/**
  * Removes a stored api key
  * @param index
  * @returns {{type: string, payload: {index: *}}}

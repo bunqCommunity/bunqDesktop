@@ -1,4 +1,5 @@
 import BunqJSClient from "@bunq-community/bunq-js-client";
+import awaiting from "awaiting";
 import { decryptString, derivePasswordKey, encryptString } from "./Helpers/Crypto";
 import { Environment, StoredApiKey } from "./Types/Types";
 
@@ -183,6 +184,103 @@ class BunqDesktopClient {
     }
 
     /**
+     * Updates all encrypted data using a new password
+     * @param newPassword
+     * @returns {Promise<void>}
+     */
+    public async changePassword(newPassword) {
+        // get the stored salt or fallback to false
+        this.derived_password_salt = this.getStoredValue(SALT_LOCATION, false);
+
+        // derive a key from the new password
+        const derivedPassword = await derivePasswordKey(newPassword, this.derived_password_salt, 250000);
+        const derivedIdentifier = await derivePasswordKey(
+            derivedPassword.key + "identifier",
+            this.derived_password_salt,
+            100000
+        );
+
+        // attempt to change the value in the bunqJSClient
+        const success = await this.BunqJSClient.changeEncryptionKey(derivedPassword.key);
+        if (success) {
+            const storedApiKeys = this.storedApiKeys;
+
+            // go through all stored keys and update them
+            const updatedStoredApiKeys = await awaiting.map(storedApiKeys, 10, async (storedApiKey: StoredApiKey) => {
+                // skip stored keys where
+                if (storedApiKey.identifier !== this.password_identifier) {
+                    return storedApiKey;
+                }
+
+                // update the key data with the new password
+                const { api_key, api_key_iv } = await this.updateApiKeyEncryption(
+                    derivedPassword.key,
+                    storedApiKey.api_key,
+                    storedApiKey.api_key_iv
+                );
+
+                // return the stored key object with the encrypted keys
+                return {
+                    ...storedApiKey,
+                    identifier: derivedIdentifier.key,
+                    api_key: api_key,
+                    api_key_iv: api_key_iv
+                };
+            });
+
+            // if we have a key in memory, update that to
+            if (this.encrypted_api_key !== false && this.encrypted_api_key_iv !== false) {
+                // update the key data with the new password
+                const { api_key, api_key_iv } = await this.updateApiKeyEncryption(
+                    derivedPassword.key,
+                    this.encrypted_api_key,
+                    this.encrypted_api_key_iv
+                );
+
+                // store the new values in storage
+                this.encrypted_api_key = api_key;
+                this.encrypted_api_key_iv = api_key_iv;
+                this.setStoredValue(API_KEY_LOCATION, api_key);
+                this.setStoredValue(API_KEY_IV_LOCATION, api_key_iv);
+            }
+
+            // after successfully changing the stored api keys update the password in memory
+            this.derived_password = derivedPassword.key;
+            this.password_identifier = derivedIdentifier.key;
+
+            // disable use no password settings since a password is set now
+            this.setStoredValue(USE_NO_PASSWORD_LOCATION, false);
+            // store new stored api key list
+            this.setStoredApiKeys(updatedStoredApiKeys);
+        }
+    }
+
+    /**
+     * Decrypts with the current password, and returns the encrypted version with a new password
+     * @param {string} newEncryptionKey
+     * @param {StoredApiKey} storedApiKey
+     * @returns {Promise}
+     */
+    private async updateApiKeyEncryption(newEncryptionKey: string, apiKey: string, apiKeyIv: string) {
+        // decrypt the stored api key with the current password
+        const decryptedApiKey = await decryptString(apiKey, this.derived_password, apiKeyIv);
+
+        // basic key validation
+        if (!decryptedApiKey || decryptedApiKey.length !== 64) {
+            throw new Error(`Failed to load API key: with length: ${decryptedApiKey.length}`);
+        }
+
+        // encrypt the api key with the new encryption key
+        const { iv, encryptedString } = await encryptString(decryptedApiKey, newEncryptionKey);
+
+        // return an updated object with the newly encrypted key
+        return {
+            api_key: encryptedString,
+            api_key_iv: iv
+        };
+    }
+
+    /**
      * Loads an API key from the stored api key list based on its index
      * @param {number} keyIndex
      * @returns {Promise<boolean>}
@@ -308,7 +406,7 @@ class BunqDesktopClient {
             this.encrypted_api_key_iv
         );
 
-        if (decryptedApiKey.length !== 64) {
+        if (!decryptedApiKey || decryptedApiKey.length !== 64) {
             this.Logger.error(`Failed to load API key: with length: ${decryptedApiKey.length}`);
             return false;
         }

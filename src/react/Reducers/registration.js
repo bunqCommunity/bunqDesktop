@@ -16,6 +16,8 @@ export const defaultState = {
     environment: "PRODUCTION",
     derived_password: false,
     identifier: false,
+
+    ready: false,
     loading: false
 };
 
