@@ -38,7 +38,6 @@ export default class ExportDialog extends React.Component {
     render() {
         const { open, closeModal, title, object } = this.props;
         const { anonymize } = this.state;
-        const jsonPretty = JSON.stringify(object, null, "\t");
 
         let anonymizedObject = object;
         if (anonymize) {
@@ -50,6 +49,8 @@ export default class ExportDialog extends React.Component {
                 anonymizedObject = object;
             }
         }
+
+        const jsonPretty = JSON.stringify(anonymizedObject, null, "\t");
 
         return (
             <Dialog TransitionComponent={Transition} keepMounted open={open} onClose={closeModal}>
