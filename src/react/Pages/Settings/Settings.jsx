@@ -24,18 +24,19 @@ import LogoutIcon from "@material-ui/icons/ExitToApp";
 import RemoveIcon from "@material-ui/icons/Delete";
 import HomeIcon from "@material-ui/icons/Home";
 
-import path from "../ImportWrappers/path";
-import { getPrettyLanguage } from "../Helpers/Utils";
+import path from "../../ImportWrappers/path";
+import { getPrettyLanguage } from "../../Helpers/Utils";
 
-const packageInfo = require("../../../package.json");
+const packageInfo = require("../../../../package.json");
 const SUPPORTED_LANGUAGES = packageInfo.supported_languages;
 
-import NavLink from "../Components/Routing/NavLink";
-import FilePicker from "../Components/FormFields/FilePicker";
-import TranslateButton from "../Components/TranslationHelpers/Button";
-import TranslateTypography from "../Components/TranslationHelpers/Typography";
+import EditPasswordForm from "./EditPasswordForm";
+import NavLink from "../../Components/Routing/NavLink";
+import FilePicker from "../../Components/FormFields/FilePicker";
+import TranslateButton from "../../Components/TranslationHelpers/Button";
+import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 
-import { openSnackbar } from "../Actions/snackbar";
+import { openSnackbar } from "../../Actions/snackbar";
 import {
     resetApplication,
     setSyncOnStartup,
@@ -56,17 +57,17 @@ import {
     setAnalyticsEnabled,
     toggleAutomaticUpdatesSendNotification,
     setEventCountLimit
-} from "../Actions/options";
-import { registrationClearPrivateData, registrationChangePassword, registrationLogOut } from "../Actions/registration";
-import { paymentsClear } from "../Actions/payments";
-import { masterCardActionsClear } from "../Actions/master_card_actions";
-import { bunqMeTabsClear } from "../Actions/bunq_me_tabs";
-import { scheduledPaymentsClear } from "../Actions/scheduled_payments";
-import { requestInquiryBatchesClear } from "../Actions/request_inquiry_batches";
-import { requestResponsesClear } from "../Actions/request_responses";
-import { requestInquiriesClear } from "../Actions/request_inquiries";
-import { shareInviteBankInquiriesClear } from "../Actions/share_invite_bank_inquiries";
-import { shareInviteBankResponsesClear } from "../Actions/share_invite_bank_responses";
+} from "../../Actions/options";
+import { registrationClearPrivateData, registrationLogOut } from "../../Actions/registration";
+import { paymentsClear } from "../../Actions/payments";
+import { masterCardActionsClear } from "../../Actions/master_card_actions";
+import { bunqMeTabsClear } from "../../Actions/bunq_me_tabs";
+import { scheduledPaymentsClear } from "../../Actions/scheduled_payments";
+import { requestInquiryBatchesClear } from "../../Actions/request_inquiry_batches";
+import { requestResponsesClear } from "../../Actions/request_responses";
+import { requestInquiriesClear } from "../../Actions/request_inquiries";
+import { shareInviteBankInquiriesClear } from "../../Actions/share_invite_bank_inquiries";
+import { shareInviteBankResponsesClear } from "../../Actions/share_invite_bank_responses";
 
 const styles = {
     sideButton: {
@@ -608,53 +609,6 @@ class Settings extends React.Component {
             </Grid>
         );
 
-        const passwordManagementContainer = this.props.registrationReady ? (
-            <Grid container spacing={16}>
-                <Grid item xs={12}>
-                    <TranslateTypography variant="h5">Password options</TranslateTypography>
-                </Grid>
-                <Grid item xs={12}>
-                    <TranslateTypography variant="body2">
-                        Your password will be changed and the current API key along with all other stored API keys with this password will be changed
-                    </TranslateTypography>
-                </Grid>
-                <Grid item xs={12} sm={6} md={8}>
-                    <TextField
-                        style={styles.textField}
-                        value={this.state.newPassword}
-                        type="password"
-                        onChange={e => {
-                            const newPassword = e.target.value;
-                            this.setState({
-                                newPassword: newPassword,
-                                newPasswordValid: newPassword && newPassword.length >= 7,
-                                newPasswordTouched: true
-                            });
-                        }}
-                        error={!this.state.newPasswordValid && this.props.newPasswordTouched}
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6} md={4}>
-                    <Button
-                        variant="outlined"
-                        color="primary"
-                        style={styles.button}
-                        disabled={!this.state.newPasswordValid}
-                        onClick={() => {
-                            this.props.registrationChangePassword(this.state.newPassword);
-                            this.setState({
-                                newPassword: "",
-                                newPasswordValid: false,
-                                newPasswordTouched: false
-                            });
-                        }}
-                    >
-                        Set a new password
-                    </Button>
-                </Grid>
-            </Grid>
-        ) : null;
-
         return (
             <Grid container spacing={24}>
                 <Helmet>
@@ -697,7 +651,9 @@ class Settings extends React.Component {
 
                 <Grid item xs={12} sm={8}>
                     <Paper style={styles.paper}>{settingsContainer}</Paper>
-                    {this.props.registrationReady && <Paper style={styles.paper}>{passwordManagementContainer}</Paper>}
+                    {this.props.registrationReady && <Paper style={styles.paper}>
+                        <EditPasswordForm />
+                    </Paper>}
                     <Paper style={styles.paper}>{dataManagementContainer}</Paper>
                 </Grid>
             </Grid>
@@ -729,8 +685,6 @@ const mapStateToProps = state => {
         requestResponses: state.request_responses.request_responses,
         shareInviteBankInquiries: state.share_invite_bank_inquiries.share_invite_bank_inquiries,
         shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
-
-        registrationReady: state.registration.ready,
 
         checkInactivity: state.options.check_inactivity,
         inactivityCheckDuration: state.options.inactivity_check_duration,
@@ -785,8 +739,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         clearPrivateData: () => dispatch(registrationClearPrivateData()),
         // logout of current session without destroying stored keys
         registrationLogOut: () => dispatch(registrationLogOut()),
-        // update the stored data with the new password
-        registrationChangePassword: newPassword => dispatch(registrationChangePassword(newPassword)),
         // full hard reset off all storage
         resetApplication: () => dispatch(resetApplication())
     };
