@@ -11,6 +11,7 @@ import MasterCardAction from "../../Models/MasterCardAction";
 
 import NotificationHelper from "../../Helpers/NotificationHelper";
 import { getConnectPermissions } from "../../Helpers/GetConnectPermissions";
+import { paymentApiFilter } from "../../Helpers/DataFilters";
 
 import {
     queueDecreaseRequestCounter,
@@ -379,7 +380,7 @@ class QueueManager extends React.Component {
             })
             .then(payments => {
                 // turn plain objects into Model objects
-                const paymentsNew = payments.map(item => new Payment(item));
+                const paymentsNew = payments.map(item => new Payment(item)).filter(paymentApiFilter);
 
                 const currentPayments = { ...this.state.payments };
                 const accountPayments = currentPayments[account_id] || [];

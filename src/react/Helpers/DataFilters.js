@@ -24,6 +24,17 @@ const checkDateRange = (fromDate, toDate, date) => {
     return true;
 };
 
+/**
+ * Filters out payments we don't need. E.G. Payment objects with a MASTERCARD type
+ * @param payment
+ */
+export const paymentApiFilter = payment => {
+    if (payment.type && payment.type === "MASTERCARD") {
+        return false;
+    }
+    return true;
+};
+
 export const paymentFilter = options => payment => {
     if (options.paymentVisibility === false) {
         return false;

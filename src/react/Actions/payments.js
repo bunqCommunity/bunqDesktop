@@ -1,5 +1,7 @@
 import BunqErrorHandler from "../Helpers/BunqErrorHandler";
 import { storeDecryptString } from "../Helpers/CryptoWorkerWrapper";
+import { paymentApiFilter } from "../Helpers/DataFilters";
+
 import Payment from "../Models/Payment";
 
 export const STORED_PAYMENTS = "BUNQDESKTOP_STORED_PAYMENTS";
@@ -24,7 +26,7 @@ export function loadStoredPayments(BunqJSClient) {
             .then(data => {
                 if (data && data.items) {
                     // turn plain objects into Model objects
-                    const paymentsNew = data.items.map(item => new Payment(item));
+                    const paymentsNew = data.items.map(item => new Payment(item)).filter(paymentApiFilter);
 
                     dispatch(paymentsSetInfo(paymentsNew, data.account_id));
                 }
@@ -55,7 +57,7 @@ export function paymentInfoUpdate(
             .list(user_id, account_id, options)
             .then(payments => {
                 // turn plain objects into Model objects
-                const paymentsNew = payments.map(item => new Payment(item));
+                const paymentsNew = payments.map(item => new Payment(item)).filter(paymentApiFilter);
 
                 dispatch(paymentsSetInfo(paymentsNew, account_id, false, BunqJSClient));
                 dispatch(paymentsNotLoading());
