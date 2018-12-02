@@ -351,15 +351,13 @@ class Connect extends React.Component {
             }
 
             // no correct target, do nothing
-            if (!targetInfo) return null;
+            if (!targetInfo) return;
 
-            this.props.shareInviteBankInquirySend(
-                this.props.user.id,
-                this.props.selectedAccountId,
-                targetInfo,
-                shareDetail,
-                shareOptions
-            );
+            // get the correct ID
+            const accountId = parseFloat(this.props.match.params.accountId);
+            if (!accountId) return;
+
+            this.props.shareInviteBankInquirySend(this.props.user.id, accountId, targetInfo, shareDetail, shareOptions);
         }
     };
 

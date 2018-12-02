@@ -129,16 +129,30 @@ class AccountList extends React.Component {
         const userId = this.props.user.id;
         const selectedAccountId = this.props.accountsSelectedId;
 
-        if (!this.props.accountsLoading) this.props.accountsUpdate(userId);
-
-        if (!this.props.shareInviteBankInquiriesLoading && this.props.limitedPermissions === false)
+        if (!this.props.accountsLoading) {
+            this.props.accountsUpdate(userId);
+        }
+        if (
+            !this.props.shareInviteBankInquiriesLoading &&
+            this.props.limitedPermissions === false &&
+            selectedAccountId
+        ) {
             this.props.shareInviteBankInquiriesInfoUpdate(userId, selectedAccountId);
-
-        if (!this.props.shareInviteBankResponsesLoading) this.props.shareInviteBankResponsesInfoUpdate(userId);
+        }
+        if (!this.props.shareInviteBankResponsesLoading) {
+            this.props.shareInviteBankResponsesInfoUpdate(userId);
+        }
     };
 
-    checkUpdateRequirement = (props = this.props) => {
-        const { accounts, accountsSelectedId, registrationReady } = props;
+    checkUpdateRequirement = () => {
+        const {
+            user,
+            accounts,
+            accountsSelectedId,
+            registrationReady,
+            accountsLoading,
+            registrationIsLoading
+        } = this.props;
         if (!registrationReady) {
             return;
         }
@@ -156,12 +170,11 @@ class AccountList extends React.Component {
         // no accounts loaded
         if (
             this.state.fetchedAccounts === false &&
-            props.user.id &&
-            props.accountsLoading === false &&
-            props.registrationIsLoading === false &&
-            props.registrationReady === true
+            user.id &&
+            accountsLoading === false &&
+            registrationIsLoading === false
         ) {
-            this.props.accountsUpdate(props.user.id);
+            this.updateAccounts();
             this.setState({ fetchedAccounts: true });
         }
     };

@@ -36,6 +36,7 @@ import NavLink from "../../Components/Routing/NavLink";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { paySchedule, paySend } from "../../Actions/pay";
+import { paymentInfoUpdate } from "../../Actions/payments";
 import { pendingPaymentsAddPayment } from "../../Actions/pending_payments";
 
 import { getInternationalFormat, isValidPhonenumber } from "../../Helpers/PhoneLib";
@@ -43,6 +44,7 @@ import { formatMoney, getUTCDate } from "../../Helpers/Utils";
 import { filterShareInviteBankResponses } from "../../Helpers/DataFilters";
 import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
 import scheduleTexts from "../../Helpers/ScheduleTexts";
+import { getConnectType, getConnectPermissions } from "../../Helpers/GetConnectPermissions";
 
 const styles = {
     payButton: {
@@ -135,6 +137,8 @@ class Pay extends React.Component {
                 this.setState({ selectedAccount: accountKey });
             }
         });
+
+        this.checkDraftOnly();
     }
 
     closeModal = () => {
@@ -197,26 +201,6 @@ class Pay extends React.Component {
         );
     };
 
-    schedulePaymentChange = () => {
-        const schedulePayment = !this.state.schedulePayment;
-
-        this.setState(
-            {
-                addToPendingPayments: false,
-                schedulePayment: schedulePayment
-            },
-            this.validateForm
-        );
-        if (schedulePayment) {
-            this.setState(
-                {
-                    sendDraftPayment: false
-                },
-                this.validateForm
-            );
-        }
-    };
-
     checkDraftOnly = () => {
         const { t, accounts, shareInviteBankResponses } = this.props;
         const { selectedAccount, sendDraftPayment, addToPendingPayments } = this.state;
@@ -255,31 +239,31 @@ class Pay extends React.Component {
 
         // get current account
         const account = accounts[selectedAccount];
-        // check if the selected account item has connect details
-        const filteredInviteResponses = shareInviteBankResponses.filter(filterShareInviteBankResponses(account.id));
 
         // no results means no checks required
-        if (filteredInviteResponses.length > 0) {
-            // get first item from the list
-            const firstInviteResponse = filteredInviteResponses.pop();
-            const inviteResponse = firstInviteResponse.ShareInviteBankResponse;
+        const connectType = getConnectType(shareInviteBankResponses, account.id);
+        if (connectType === "ShareDetailDraftPayment" && !sendDraftPayment) {
+            this.setState({
+                sendDraftPayment: true
+            });
 
-            // get the key values for this list
-            const shareDetailKeys = Object.keys(inviteResponse.share_detail);
-            if (shareDetailKeys.includes("ShareDetailDraftPayment")) {
-                // draft payment is enforced when doing outgoing payments on a oauth session
-                if (!sendDraftPayment) {
-                    this.setState({
-                        sendDraftPayment: true
-                    });
-
-                    // notify the user
-                    this.props.openSnackbar(outgoingPaymentsConnectMessage);
-                }
-            }
+            // notify the user
+            this.props.openSnackbar(outgoingPaymentsConnectMessage);
         }
     };
 
+    schedulePaymentChange = () => {
+        const schedulePayment = !this.state.schedulePayment;
+
+        this.setState(
+            {
+                addToPendingPayments: false,
+                schedulePayment: schedulePayment,
+                sendDraftPayment: false
+            },
+            this.validateForm
+        );
+    };
     draftChange = () => {
         const sendDraftPayment = this.state.sendDraftPayment;
 
@@ -587,9 +571,15 @@ class Pay extends React.Component {
             this.props.paySend(userId, account.id, description, amountInfo, targetInfoList, sendDraftPayment);
         }
 
+        setTimeout(() => {
+            const connectPermissions = getConnectPermissions(this.props.shareInviteBankResponses, account.id);
+            if (connectPermissions && connectPermissions.view_new_events) {
+                this.props.paymentInfoUpdate(userId, account.id);
+            }
+        }, 1000);
+
         this.setState({
             validForm: false,
-            selectedAccount: 0,
             amountError: false,
             amount: "",
             descriptionError: false,
@@ -881,11 +871,13 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, props) => {
     const { BunqJSClient } = props;
     return {
-        paySend: (userId, accountId, description, amount, targets, draft = false, schedule = false) =>
-            dispatch(paySend(BunqJSClient, userId, accountId, description, amount, targets, draft, schedule)),
+        paySend: (userId, accountId, description, amount, targets, draft = false) =>
+            dispatch(paySend(BunqJSClient, userId, accountId, description, amount, targets, draft)),
         paySchedule: (userId, accountId, description, amount, targets, schedule) =>
             dispatch(paySchedule(BunqJSClient, userId, accountId, description, amount, targets, schedule)),
         openSnackbar: message => dispatch(openSnackbar(message)),
+
+        paymentInfoUpdate: (userId, accountId) => dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId)),
 
         pendingPaymentsAddPayment: (accountId, pendingPayment) =>
             dispatch(pendingPaymentsAddPayment(BunqJSClient, accountId, pendingPayment))

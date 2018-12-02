@@ -141,7 +141,7 @@ class MasterCardActionInfo extends React.Component {
 
             const settledText = t("Settled");
             const openText = t("Open");
-            const settlementStatusText = masterCardAction.settlement_status === "SETTLED" ? settledText : openText;
+            const settlementStatusText = masterCardAction._settlement_status === "SETTLED" ? settledText : openText;
 
             if (this.props.pdfSaveModeEnabled) {
                 return (

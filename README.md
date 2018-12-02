@@ -90,7 +90,7 @@ $ yarn start:dev
 ```
 
 ## Contact
-We have a public [Telegram chat group ](https://t.me/bunqcommunity) and a topic on [bunq together](https://together.bunq.com/topic/bunqdesktop-client).
+We have a public [Telegram chat group ](https://t.me/bunqcommunity) and a topic on [bunq together](https://together.bunq.com/d/5763-bunqdesktop-the-unofficial-free-and-open-source-desktop-application-for-bunq/).
 
 If you just want a notification when a new version is released you can also join the [Telegram updates channel](https://t.me/bunqdesktop).
 

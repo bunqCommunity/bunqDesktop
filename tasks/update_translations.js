@@ -153,7 +153,7 @@ const start = async () => {
         Object.keys(csvExportObject).forEach(key => {
             const csvExportArray = csvExportObject[key];
             const escapedArray = csvExportArray.map(item => escapeCsv(item));
-            output += `${escape(key)},${escapedArray.join(",")}\n`;
+            output += `${escapeCsv(key)},${escapedArray.join(",")}\n`;
         });
         return output;
     };

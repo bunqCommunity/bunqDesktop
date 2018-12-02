@@ -18,11 +18,7 @@ import RemoveIcon from "@material-ui/icons/Delete";
 
 import TranslateTypography from "../Components/TranslationHelpers/Typography";
 
-import {
-    registrationRemoveStoredApiKey,
-    registrationLoadStoredApiKey,
-    registrationLogOut
-} from "../Actions/registration";
+import { registrationRemoveStoredApiKey, registrationSwitchStoredApiKey } from "../Actions/registration";
 
 const styles = {
     wrapperContainer: {
@@ -53,12 +49,11 @@ class SwitchApiKeys extends React.Component {
     }
 
     selectApiKey = index => event => {
-        this.props.loadStoredApiKeys(index, this.props.derivedPassword);
+        this.props.registrationSwitchStoredApiKey(index);
         this.props.history.push("/login");
     };
 
     removeStoredApiKey = index => event => {
-        // remove this key from history
         this.props.removeStoredApiKey(index);
     };
 
@@ -134,7 +129,7 @@ const mapStateToProps = state => {
     return {
         status_message: state.application.status_message,
 
-        derivedPassword: state.registration.derivedPassword,
+        derivedPassword: state.registration.derived_password,
         passwordIdentifier: state.registration.identifier,
         registrationLoading: state.registration.loading,
         storedApiKeys: state.registration.stored_api_keys,
@@ -146,14 +141,10 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = dispatch => {
     return {
         // attempt to load the api key with our password if one is stored
-        loadStoredApiKeys: (index, derivedPassword) =>
-            dispatch(registrationLoadStoredApiKey(BunqJSClient, index, derivedPassword)),
-
-        logOut: () => dispatch(registrationLogOut(BunqJSClient)),
+        registrationSwitchStoredApiKey: index => dispatch(registrationSwitchStoredApiKey(index)),
 
         removeStoredApiKey: index => dispatch(registrationRemoveStoredApiKey(index))
     };

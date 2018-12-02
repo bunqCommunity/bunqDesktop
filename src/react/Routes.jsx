@@ -130,7 +130,7 @@ const privateRoutes = [
 const standardRoutes = [
     {
         path: "/settings",
-        component: CL(() => import(/* webpackChunkName: "settings" */ "./Pages/Settings"))
+        component: CL(() => import(/* webpackChunkName: "settings" */ "./Pages/Settings/Settings"))
     },
     {
         path: "/application-info",
