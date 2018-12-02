@@ -231,6 +231,8 @@ class Settings extends React.Component {
         this.props.bunqMeTabsClear();
         this.props.scheduledPaymentsClear();
         this.props.paymentsClear();
+        this.resetRequestData();
+        this.requestConnectData();
     };
 
     render() {
