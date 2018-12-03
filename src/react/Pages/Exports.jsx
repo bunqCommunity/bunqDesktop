@@ -50,6 +50,8 @@ import { exportNew } from "../Actions/export_new";
 import { exportInfoUpdate } from "../Actions/exports";
 import { paymentFilter, masterCardActionFilter } from "../Helpers/DataFilters";
 
+const escapeCsv = val => `"${val.replace('"', '"""')}"`;
+
 const styles = {
     selectField: {
         width: "100%"
@@ -308,7 +310,7 @@ class Exports extends React.Component {
                 info.alias.iban ? formatIban(info.alias.iban) : null,
                 info.counterparty_alias.iban ? formatIban(info.counterparty_alias.iban) : null,
                 info.counterparty_alias.display_name,
-                info.description.replace("\n", " "),
+                escapeCsv(info.description.replace("\n", " ")),
                 labels.join(","),
                 info.eventType,
                 info.id,
