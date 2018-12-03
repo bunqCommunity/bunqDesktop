@@ -45,7 +45,7 @@ export default (state = defaultState, action) => {
                 ready: false,
                 api_key: false,
                 encrypted_api_key: false,
-                has_stored_api_key: false,
+                has_stored_api_key: action.payload.reset_stored_api_key === true ? false : true,
                 derived_password: false
             };
 
