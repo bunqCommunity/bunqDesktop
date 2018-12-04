@@ -8,14 +8,14 @@ import {
     RequestStatus,
     RequestSplitTheBill
 } from "../Types/Types";
-import Event, { EventType } from "../Types/Event";
+import Event, { EventTypeValue } from "../Types/Event";
 
 export default class RequestInquiry implements Event {
     // the original raw object
     private _rawData: any;
 
     public RequestInquiry = this;
-    get eventType(): EventType {
+    get eventType(): EventTypeValue {
         return "RequestInquiry";
     }
 

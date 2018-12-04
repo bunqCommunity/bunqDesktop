@@ -41,10 +41,6 @@ const labelFormat = (date, type = "daily") => {
     }
 };
 
-const roundMoney = amount => {
-    return Math.round(amount * 100) / 100;
-};
-
 const paymentMapper = (payments, paymentFilterSettings, categories, categoryConnections, hiddenPaymentIds = []) => {
     const data = [];
     payments
