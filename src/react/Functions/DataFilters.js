@@ -1,4 +1,4 @@
-import CategoryHelper from "./CategoryHelper";
+import CategoryHelper from "../Components/Categories/CategoryHelper";
 
 const checkDateRange = (fromDate, toDate, date) => {
     // nothing to check so always valid

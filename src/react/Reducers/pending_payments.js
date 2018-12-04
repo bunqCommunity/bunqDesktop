@@ -1,6 +1,6 @@
 import store from "store";
-import { generateGUID } from "../Helpers/Utils";
-import { storeEncryptString } from "../Helpers/CryptoWorkerWrapper";
+import { generateGUID } from "../Functions/Utils";
+import { storeEncryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
 import { PENDING_PAYMENTS_LOCATION } from "../Actions/pending_payments";
 
 export const defaultState = {

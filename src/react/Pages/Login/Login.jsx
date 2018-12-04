@@ -29,8 +29,8 @@ import OAuthManagement from "./OAuthManagement";
 import SideOptions from "./SideOptions";
 
 import { registrationLogOut, registrationLogin } from "../../Actions/registration";
-import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
-import Logger from "../../Helpers/Logger";
+import BunqErrorHandler from "../../Functions/BunqErrorHandler";
+import Logger from "../../Functions/Logger";
 
 const styles = {
     card: {

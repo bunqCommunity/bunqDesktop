@@ -1,6 +1,6 @@
 import store from "store";
-import MergeApiObjects from "../Helpers/MergeApiObjects";
-import { storeEncryptString } from "../Helpers/CryptoWorkerWrapper";
+import MergeApiObjects from "../Functions/MergeApiObjects";
+import { storeEncryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
 
 import { STORED_BUNQ_ME_TABS } from "../Actions/bunq_me_tabs";
 

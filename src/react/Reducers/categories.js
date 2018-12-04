@@ -1,5 +1,5 @@
 import settings from "../ImportWrappers/electronSettings";
-import { generateGUID } from "../Helpers/Utils";
+import { generateGUID } from "../Functions/Utils";
 
 // default categories if no previous were found
 const defaultCategories = require("@bunq-community/bunqdesktop-templates/categories.json");

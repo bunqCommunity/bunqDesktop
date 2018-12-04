@@ -6,7 +6,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 
 import LinearProgress from "./LinearProgress";
-import { formatMoney } from "../Helpers/Utils";
+import { formatMoney } from "../Functions/Utils";
 
 const styles = {
     iconButton: {

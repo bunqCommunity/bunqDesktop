@@ -19,7 +19,7 @@ import Share from "@material-ui/icons/Share";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 import RequestInquiryListItem from "./RequestInquiryListItem";
 
-import { formatMoney, humanReadableDate } from "../../Helpers/Utils";
+import { formatMoney, humanReadableDate } from "../../Functions/Utils";
 
 const styles = {
     listItemText: {

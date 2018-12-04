@@ -17,7 +17,7 @@ import CardListItem from "./CardListItem";
 import AccountListItem from "../../Components/AccountList/AccountListItem";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 
-import { cardStatus, cardOrderStatus } from "../../Helpers/StatusTexts";
+import { cardStatus, cardOrderStatus } from "../../Functions/EventStatusTexts";
 import { cardsUpdate, cardsSetCardOrder } from "../../Actions/cards";
 
 const styles = {

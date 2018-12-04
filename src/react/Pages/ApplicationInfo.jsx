@@ -23,9 +23,9 @@ import TranslateButton from "../Components/TranslationHelpers/Button";
 import TranslateTypography from "../Components/TranslationHelpers/Typography";
 
 import { openSnackbar } from "../Actions/snackbar";
-import { allReleases } from "../Helpers/VersionChecker";
-import { humanReadableDate } from "../Helpers/Utils";
-import Logger from "../Helpers/Logger";
+import { allReleases } from "../Functions/VersionChecker";
+import { humanReadableDate } from "../Functions/Utils";
+import Logger from "../Functions/Logger";
 
 const styles = {
     avatar: {

@@ -1,6 +1,6 @@
 import store from "store";
-import MergeApiObjects from "../Helpers/MergeApiObjects";
-import { storeEncryptString } from "../Helpers/CryptoWorkerWrapper";
+import MergeApiObjects from "../Functions/MergeApiObjects";
+import { storeEncryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
 
 import { STORED_REQUEST_INQUIRY_BATCHES } from "../Actions/request_inquiry_batches";
 

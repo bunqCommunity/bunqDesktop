@@ -1,6 +1,6 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
-import { moneyTemplate, sortLinearChartTooltips } from "../../../../Helpers/StatsFormattingTemplates";
+import { moneyTemplate, sortLinearChartTooltips } from "../../../../Functions/StatsFormattingTemplates";
 
 export default props => {
     const defaultOptions = {

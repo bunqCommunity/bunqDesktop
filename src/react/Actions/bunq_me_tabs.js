@@ -1,5 +1,5 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import { storeDecryptString } from "../Helpers/CryptoWorkerWrapper";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
+import { storeDecryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
 import BunqMeTab from "../Models/BunqMeTab.ts";
 
 export const STORED_BUNQ_ME_TABS = "BUNQDESKTOP_STORED_BUNQ_ME_TABS";

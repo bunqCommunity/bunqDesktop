@@ -8,7 +8,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
 
-import { formatMoney } from "../../Helpers/Utils";
+import { formatMoney } from "../../Functions/Utils";
 
 import TranslateButton from "../../Components/TranslationHelpers/Button";
 

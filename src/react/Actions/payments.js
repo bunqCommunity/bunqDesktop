@@ -1,6 +1,6 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import { storeDecryptString } from "../Helpers/CryptoWorkerWrapper";
-import { paymentApiFilter } from "../Helpers/DataFilters";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
+import { storeDecryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
+import { paymentApiFilter } from "../Functions/DataFilters";
 
 import Payment from "../Models/Payment";
 

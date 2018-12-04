@@ -25,7 +25,7 @@ import RemoveIcon from "@material-ui/icons/Delete";
 import HomeIcon from "@material-ui/icons/Home";
 
 import path from "../../ImportWrappers/path";
-import { getPrettyLanguage } from "../../Helpers/Utils";
+import { getPrettyLanguage } from "../../Functions/Utils";
 
 const packageInfo = require("../../../../package.json");
 const SUPPORTED_LANGUAGES = packageInfo.supported_languages;
@@ -653,9 +653,11 @@ class Settings extends React.Component {
 
                 <Grid item xs={12} sm={8}>
                     <Paper style={styles.paper}>{settingsContainer}</Paper>
-                    {this.props.registrationReady && <Paper style={styles.paper}>
-                        <EditPasswordForm />
-                    </Paper>}
+                    {this.props.registrationReady && (
+                        <Paper style={styles.paper}>
+                            <EditPasswordForm />
+                        </Paper>
+                    )}
                     <Paper style={styles.paper}>{dataManagementContainer}</Paper>
                 </Grid>
             </Grid>

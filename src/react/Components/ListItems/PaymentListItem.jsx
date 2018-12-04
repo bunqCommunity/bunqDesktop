@@ -6,9 +6,9 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Avatar from "@material-ui/core/Avatar";
 import Divider from "@material-ui/core/Divider";
 
-import { formatMoney } from "../../Helpers/Utils";
-import { paymentText } from "../../Helpers/StatusTexts";
-import { defaultPaymentImage } from "../../Helpers/DefaultImageHandlers";
+import { formatMoney } from "../../Functions/Utils";
+import { paymentText } from "../../Functions/EventStatusTexts";
+import { defaultPaymentImage } from "../../Functions/DefaultImageHandlers";
 
 import NavLink from "../Routing/NavLink";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";

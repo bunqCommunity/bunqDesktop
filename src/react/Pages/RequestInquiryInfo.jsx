@@ -26,7 +26,7 @@ import FilterIcon from "@material-ui/icons/FilterList";
 
 import FilterCreationDialog from "../Components/FilterCreationDialog";
 import ExportDialog from "../Components/ExportDialog";
-import PDFExportHelper from "../Components/PDFExportHelper";
+import PDFExportHelper from "../Components/PDFExportHelper/PDFExportHelper";
 import SpeedDial from "../Components/SpeedDial";
 import TranslateButton from "../Components/TranslationHelpers/Button";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
@@ -34,8 +34,8 @@ import TransactionHeader from "../Components/TransactionHeader";
 import CategorySelector from "../Components/Categories/CategorySelector";
 import NoteTextForm from "../Components/NoteTexts/NoteTextForm";
 
-import { formatMoney, humanReadableDate } from "../Helpers/Utils";
-import { requestInquiryText } from "../Helpers/StatusTexts";
+import { formatMoney, humanReadableDate } from "../Functions/Utils";
+import { requestInquiryText } from "../Functions/EventStatusTexts";
 import { requestInquiryCancel } from "../Actions/request_inquiry";
 import { requestInquiryUpdate } from "../Actions/request_inquiry_info";
 import { applicationSetPDFMode } from "../Actions/application";

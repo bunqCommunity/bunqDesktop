@@ -23,8 +23,8 @@ import AccountAvatarCircularProgress from "./AccountList/AccountAvatarCircularPr
 import LazyAttachmentImage from "./AttachmentImage/LazyAttachmentImage";
 import AccountQRFullscreen from "./QR/AccountQRFullscreen";
 
-import { formatMoney, formatIban } from "../Helpers/Utils";
-import GetShareDetailBudget from "../Helpers/GetShareDetailBudget";
+import { formatMoney, formatIban } from "../Functions/Utils";
+import { connectGetBudget } from "../Functions/ConnectGetPermissions";
 
 const styles = {
     avatar: {
@@ -54,7 +54,7 @@ class AccountCard extends React.Component {
         let formattedBalance = account.balance ? account.balance.value : 0;
 
         if (this.props.shareInviteBankResponses.length > 0) {
-            const connectBudget = GetShareDetailBudget(this.props.shareInviteBankResponses);
+            const connectBudget = connectGetBudget(this.props.shareInviteBankResponses);
             if (connectBudget) formattedBalance = connectBudget;
         }
 

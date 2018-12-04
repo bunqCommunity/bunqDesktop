@@ -1,5 +1,5 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import { storeDecryptString } from "../Helpers/CryptoWorkerWrapper";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
+import { storeDecryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
 import RequestResponse from "../Models/RequestResponse";
 
 export const STORED_REQUEST_RESPONSES = "BUNQDESKTOP_STORED_REQUEST_RESPONSES";

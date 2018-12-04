@@ -39,12 +39,11 @@ import { paySchedule, paySend } from "../../Actions/pay";
 import { paymentInfoUpdate } from "../../Actions/payments";
 import { pendingPaymentsAddPayment } from "../../Actions/pending_payments";
 
-import { getInternationalFormat, isValidPhonenumber } from "../../Helpers/PhoneLib";
-import { formatMoney, getUTCDate } from "../../Helpers/Utils";
-import { filterShareInviteBankResponses } from "../../Helpers/DataFilters";
-import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
-import scheduleTexts from "../../Helpers/ScheduleTexts";
-import { getConnectType, getConnectPermissions } from "../../Helpers/GetConnectPermissions";
+import { getInternationalFormat, isValidPhonenumber } from "../../Functions/PhoneLib";
+import { formatMoney, getUTCDate } from "../../Functions/Utils";
+import { filterShareInviteBankResponses } from "../../Functions/DataFilters";
+import scheduleTexts from "../../Functions/ScheduleTexts";
+import { connectGetBudget, connectGetType, connectGetPermissions } from "../../Functions/ConnectGetPermissions";
 
 const styles = {
     payButton: {
@@ -241,7 +240,7 @@ class Pay extends React.Component {
         const account = accounts[selectedAccount];
 
         // no results means no checks required
-        const connectType = getConnectType(shareInviteBankResponses, account.id);
+        const connectType = connectGetType(shareInviteBankResponses, account.id);
         if (connectType === "ShareDetailDraftPayment" && !sendDraftPayment) {
             this.setState({
                 sendDraftPayment: true
@@ -429,7 +428,7 @@ class Pay extends React.Component {
 
         // get budget if atleast one connect
         if (filteredInviteResponses.length > 0) {
-            const connectBudget = GetShareDetailBudget(filteredInviteResponses);
+            const connectBudget = connectGetBudget(filteredInviteResponses);
             if (connectBudget) {
                 accountBalance = connectBudget;
             }
@@ -572,7 +571,7 @@ class Pay extends React.Component {
         }
 
         setTimeout(() => {
-            const connectPermissions = getConnectPermissions(this.props.shareInviteBankResponses, account.id);
+            const connectPermissions = connectGetPermissions(this.props.shareInviteBankResponses, account.id);
             if (connectPermissions && connectPermissions.view_new_events) {
                 this.props.paymentInfoUpdate(userId, account.id);
             }
@@ -615,7 +614,7 @@ class Pay extends React.Component {
             // regular balance value
             accountBalance = account.balance ? account.balance.value : 0;
             if (filteredInviteResponses.length > 0) {
-                const connectBudget = GetShareDetailBudget(filteredInviteResponses);
+                const connectBudget = connectGetBudget(filteredInviteResponses);
                 if (connectBudget) {
                     accountBalance = connectBudget;
                 }

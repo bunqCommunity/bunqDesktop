@@ -1,5 +1,5 @@
 import EmailValidator from "email-validator";
-import { isValidPhonenumber } from "../../Helpers/PhoneLib";
+import { isValidPhonenumber } from "../../Functions/PhoneLib";
 
 const t = window.t;
 

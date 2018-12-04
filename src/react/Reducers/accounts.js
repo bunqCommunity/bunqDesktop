@@ -3,7 +3,7 @@ import { ipcRenderer } from "electron";
 import settings from "../ImportWrappers/electronSettings";
 
 import { STORED_ACCOUNTS } from "../Actions/accounts";
-import { formatMoney } from "../Helpers/Utils";
+import { formatMoney } from "../Functions/Utils";
 
 export const SELECTED_ACCOUNT_LOCAION = "BUNQDESKTOP_SELECTED_ACCOUNT";
 export const EXCLUDED_ACCOUNT_IDS = "BUNQDESKTOP_EXCLUDED_ACCOUNT_IDS";

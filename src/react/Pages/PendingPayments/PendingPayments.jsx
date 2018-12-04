@@ -22,8 +22,8 @@ import TranslateTypography from "../../Components/TranslationHelpers/Typography"
 import ConfirmationDialog from "./ConfirmationDialog";
 import PendingPaymentRow from "./PendingPaymentRow";
 
-import { formatMoney } from "../../Helpers/Utils";
-import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
+import { formatMoney } from "../../Functions/Utils";
+import BunqErrorHandler from "../../Functions/BunqErrorHandler";
 
 import {
     pendingPaymentsClear,
@@ -84,7 +84,7 @@ class PendingPayments extends React.Component {
     componentDidUpdate(previousProps, previousState) {
         if (previousState.paymentPromiseCount > 0 && this.state.paymentPromiseCount <= 0) {
             this.props.openSnackbar(this.props.t("Finished handling the selected payments"));
-            
+
             this.setState({
                 paymentPromiseCount: 0
             });

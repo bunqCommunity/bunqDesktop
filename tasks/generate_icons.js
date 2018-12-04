@@ -13,7 +13,7 @@ const icons = [];
  */
 const writeIconsFile = () => {
     fs.writeFileSync(
-        `${__dirname}/../src/react/Helpers/Icons.json`,
+        `${__dirname}/../src/react/StaticData/Functions/Con`,
         JSON.stringify({
             icons: icons
         })

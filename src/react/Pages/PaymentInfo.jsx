@@ -21,12 +21,12 @@ import HelpIcon from "@material-ui/icons/Help";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
 import FilterIcon from "@material-ui/icons/FilterList";
 
-import { formatMoney, humanReadableDate, formatIban } from "../Helpers/Utils";
-import { paymentText, paymentTypeParser } from "../Helpers/StatusTexts";
+import { formatMoney, humanReadableDate, formatIban } from "../Functions/Utils";
+import { paymentText, paymentTypeParser } from "../Functions/EventStatusTexts";
 
 import FilterCreationDialog from "../Components/FilterCreationDialog";
 import GeoLocationListItem from "../Components/GeoLocation/GeoLocationListItem";
-import PDFExportHelper from "../Components/PDFExportHelper";
+import PDFExportHelper from "../Components/PDFExportHelper/PDFExportHelper";
 import SpeedDial from "../Components/SpeedDial";
 import ExportDialog from "../Components/ExportDialog";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";

@@ -1,6 +1,6 @@
 import BunqJSClient from "@bunq-community/bunq-js-client";
 import awaiting from "awaiting";
-import { decryptString, derivePasswordKey, encryptString } from "./Helpers/Crypto";
+import { decryptString, derivePasswordKey, encryptString } from "./Functions/Crypto/Crypto";
 import { Environment, StoredApiKey } from "./Types/Types";
 
 export const SALT_LOCATION = "BUNQDESKTOP_PASSWORD_SALT";

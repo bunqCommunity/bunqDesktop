@@ -1,4 +1,4 @@
-import { storeDecryptString } from "../Helpers/CryptoWorkerWrapper";
+import { storeDecryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
 
 export const PENDING_PAYMENTS_LOCATION = "BUNQDESKTOP_STORED_PENDING_PAYMENTS";
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import CategoryHelper from "../../Helpers/CategoryHelper";
+import CategoryHelper from "./CategoryHelper";
 import PrioritySorter from "./PrioritySorter";
 import CategoryIcon from "./CategoryIcon";
 

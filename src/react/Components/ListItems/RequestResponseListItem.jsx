@@ -6,9 +6,9 @@ import { translate } from "react-i18next";
 import Avatar from "@material-ui/core/Avatar";
 import Divider from "@material-ui/core/Divider";
 
-import { formatMoney } from "../../Helpers/Utils";
-import { requestResponseText } from "../../Helpers/StatusTexts";
-import { defaultRequestResponseImage } from "../../Helpers/DefaultImageHandlers";
+import { formatMoney } from "../../Functions/Utils";
+import { requestResponseText } from "../../Functions/EventStatusTexts";
+import { defaultRequestResponseImage } from "../../Functions/DefaultImageHandlers";
 
 import NavLink from "../../Components/Routing/NavLink";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";

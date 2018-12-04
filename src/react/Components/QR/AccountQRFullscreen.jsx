@@ -15,7 +15,7 @@ import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 import QRSvg from "./QRSvg";
 import QRCode from "./QRCode";
 
-import { formatIban } from "../../Helpers/Utils";
+import { formatIban } from "../../Functions/Utils";
 
 const styles = theme => ({
     btnIcon: {

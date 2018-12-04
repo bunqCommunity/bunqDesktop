@@ -9,9 +9,9 @@ import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 
 // custom components
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import Logger from "../Helpers/Logger";
-import VersionChecker from "../Helpers/VersionChecker";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
+import Logger from "../Functions/Logger";
+import VersionChecker from "../Functions/VersionChecker";
 import NetworkStatusChecker from "./NetworkStatusChecker";
 import RuleCollectionChecker from "./RuleCollectionChecker";
 import QueueManager from "./Queue/QueueManager";
@@ -343,7 +343,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // functions to clear user data
         registrationClearUserInfo: () => dispatch(registrationClearUserInfo()),
 
-        registrationLoadBunqDesktopClient: () => dispatch(registrationSetBunqDesktopClientData()),
+        registrationLoadBunqDesktopClient: () => dispatch(registrationSetBunqDesktopClientData())
     };
 };
 

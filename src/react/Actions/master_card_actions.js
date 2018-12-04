@@ -1,5 +1,5 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import { storeDecryptString } from "../Helpers/CryptoWorkerWrapper";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
+import { storeDecryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
 import MasterCardAction from "../Models/MasterCardAction";
 
 export const STORED_MASTER_CARD_ACTIONS = "BUNQDESKTOP_STORED_MASTER_CARD_ACTIONS";

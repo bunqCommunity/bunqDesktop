@@ -1,5 +1,5 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import { storeDecryptString } from "../Helpers/CryptoWorkerWrapper";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
+import { storeDecryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
 import RequestInquiryBatch from "../Models/RequestInquiryBatch";
 
 export const STORED_REQUEST_INQUIRY_BATCHES = "BUNQDESKTOP_STORED_REQUEST_INQUIRY_BATCHES";

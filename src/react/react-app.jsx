@@ -12,8 +12,8 @@ import "../scss/main.scss";
 import "animate.css";
 import "typeface-roboto";
 
-import Logger from "./Helpers/Logger";
-import Analytics from "./Helpers/Analytics";
+import Logger from "./Functions/Logger";
+import Analytics from "./Functions/Analytics";
 
 Analytics();
 

@@ -1,6 +1,6 @@
-import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
-import { filterShareInviteBankResponses } from "../../Helpers/DataFilters";
-import { formatMoney } from "../../Helpers/Utils";
+import { connectGetBudget } from "../../Functions/ConnectGetPermissions";
+import { filterShareInviteBankResponses } from "../../Functions/DataFilters";
+import { formatMoney } from "../../Functions/Utils";
 
 export const calculateTotalBalance = (accounts, accountIds, shareInviteBankResponses = []) => {
     return accounts.reduce((accumulator, account) => {
@@ -12,7 +12,7 @@ export const calculateTotalBalance = (accounts, accountIds, shareInviteBankRespo
 
             // get budget from this response
             if (filteredResponses.length > 0) {
-                const connectBudget = GetShareDetailBudget(filteredResponses);
+                const connectBudget = connectGetBudget(filteredResponses);
                 if (connectBudget) {
                     accountBalance = parseFloat(connectBudget);
                 }

@@ -31,7 +31,7 @@ import AccountCard from "../Components/AccountCard";
 import TranslateButton from "../Components/TranslationHelpers/Button";
 import MoneyFormatInput from "../Components/FormFields/MoneyFormatInput";
 
-import { filterShareInviteBankResponses, filterShareInviteBankInquiries } from "../Helpers/DataFilters";
+import { filterShareInviteBankResponses, filterShareInviteBankInquiries } from "../Functions/DataFilters";
 
 import { openSnackbar } from "../Actions/snackbar";
 import { accountsUpdate, accountsUpdateSettings, accountsDeactivate } from "../Actions/accounts";
@@ -45,7 +45,7 @@ import { shareInviteBankInquiriesInfoUpdate } from "../Actions/share_invite_bank
 import { shareInviteBankResponsesInfoUpdate } from "../Actions/share_invite_bank_responses";
 import { shareInviteBankResponseChangeStatus } from "../Actions/share_invite_bank_response";
 import { shareInviteBankInquiryChangeStatus } from "../Actions/share_invite_bank_inquiry";
-import { getConnectPermissions } from "../Helpers/GetConnectPermissions";
+import { connectGetPermissions } from "../Functions/ConnectGetPermissions";
 
 const styles = {
     paper: {
@@ -139,7 +139,7 @@ class AccountInfo extends React.Component {
                 this.props.shareInviteBankInquiriesInfoUpdate(userId, accountId);
             }
             this.props.shareInviteBankResponsesInfoUpdate(userId);
-            const connectPermissions = getConnectPermissions(this.props.shareInviteBankResponses, accountId);
+            const connectPermissions = connectGetPermissions(this.props.shareInviteBankResponses, accountId);
             if (connectPermissions && connectPermissions.view_new_events) {
                 this.props.paymentsUpdate(userId, accountId);
                 this.props.bunqMeTabsUpdate(userId, accountId);
