@@ -24,19 +24,3 @@ export function userSetInfo(user, type) {
         });
     };
 }
-
-export function userLoading() {
-    return { type: "USER_IS_LOADING" };
-}
-
-export function userNotLoading() {
-    return { type: "USER_IS_NOT_LOADING" };
-}
-
-export function userInitialCheck() {
-    return { type: "USER_INITIAL_CHECK" };
-}
-
-export function userClear() {
-    return { type: "USER_CLEAR" };
-}

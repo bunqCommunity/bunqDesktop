@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import StickyBox from "react-sticky-box";
 import Paper from "@material-ui/core/Paper";
-import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import IconButton from "@material-ui/core/IconButton";
@@ -15,7 +14,6 @@ import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 
-import MoneyIcon from "@material-ui/icons/AttachMoney";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
 import TranslateButton from "../../Components/TranslationHelpers/Button";
@@ -25,9 +23,9 @@ import NavLink from "../../Components/Routing/NavLink";
 import AttachmentImage from "../../Components/AttachmentImage/AttachmentImage";
 import SavingsGoalsList from "../../Components/SavingsGoals/SavingsGoalsList";
 import SwitchKeysMenu from "../../Components/SwitchKeysMenu";
+import AddMoneyButton from "./AddMoneyButton";
 
-import { requestInquirySend } from "../../Actions/request_inquiry";
-import { registrationLogOut, registrationSwitchKeys } from "../../Actions/registration";
+import { registrationLogOut } from "../../Actions/registration";
 
 const styles = {
     btn: {
@@ -70,24 +68,6 @@ class Dashboard extends React.Component {
             selectedTab: "accounts"
         };
     }
-
-    addMoney = event => {
-        if (!this.props.requestInquiryLoading) {
-            const requestInquiry = {
-                amount_inquired: {
-                    value: "500",
-                    currency: "EUR"
-                },
-                counterparty_alias: {
-                    type: "EMAIL",
-                    value: "sugardaddy@bunq.com"
-                },
-                description: "Please daddy??",
-                allow_bunqme: true
-            };
-            this.props.requestInquirySend(this.props.user.id, this.props.selectedAccount, [requestInquiry]);
-        }
-    };
 
     handleChange = (event, value) => {
         this.setState({ selectedTab: value });
@@ -211,35 +191,14 @@ class Dashboard extends React.Component {
                         </Grid>
 
                         <Grid item xs={12} sm={5} md={4}>
-                            <StickyBox className={"sticky-container"}>
+                            <StickyBox className="sticky-container">
                                 {tabsComponent}
 
                                 {(selectedTab === "accounts" || tabsEnabled === false) && (
                                     <Paper>
                                         <AccountList BunqJSClient={this.props.BunqJSClient} />
 
-                                        {this.props.environment === "SANDBOX" ? (
-                                            !this.props.limitedPermissions ? (
-                                                <div
-                                                    style={{
-                                                        textAlign: "center",
-                                                        padding: 16
-                                                    }}
-                                                >
-                                                    <Button
-                                                        variant="outlined"
-                                                        onClick={this.addMoney}
-                                                        disabled={this.props.requestInquiryLoading}
-                                                    >
-                                                        <MoneyIcon />
-                                                    </Button>
-                                                </div>
-                                            ) : (
-                                                <Typography variant="body1" style={{ margin: 8 }}>
-                                                    Logged in as OAuth sandbox user. Requesting money isn't possible.
-                                                </Typography>
-                                            )
-                                        ) : null}
+                                        <AddMoneyButton />
                                     </Paper>
                                 )}
 
@@ -300,7 +259,7 @@ const mapStateToProps = state => {
 
         savingsGoals: state.savings_goals.savings_goals,
 
-        derivedPassword: state.registration.derivedPassword,
+        derivedPassword: state.registration.derived_password,
         derivedPasswordIdentifier: state.registration.identifier,
         useNoPassword: state.registration.use_no_password,
         storedApiKeys: state.registration.stored_api_keys,
@@ -312,13 +271,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         // hard-logout
-        registrationLogOut: () => dispatch(registrationLogOut(BunqJSClient)),
-        registrationSwitchKeys: (storedKeyIndex, derivedPassword, derivedPasswordIdentifier) =>
-            dispatch(registrationSwitchKeys(BunqJSClient, storedKeyIndex, derivedPassword, derivedPasswordIdentifier)),
-
-        // send a request, used for sandbox button
-        requestInquirySend: (userId, accountId, requestInquiries) =>
-            dispatch(requestInquirySend(BunqJSClient, userId, accountId, requestInquiries))
+        registrationLogOut: () => dispatch(registrationLogOut())
     };
 };
 export default connect(

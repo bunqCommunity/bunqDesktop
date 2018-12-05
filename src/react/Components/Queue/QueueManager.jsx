@@ -10,6 +10,8 @@ import RequestInquiryBatch from "../../Models/RequestInquiryBatch";
 import MasterCardAction from "../../Models/MasterCardAction";
 
 import NotificationHelper from "../../Helpers/NotificationHelper";
+import { getConnectPermissions } from "../../Helpers/GetConnectPermissions";
+import { paymentApiFilter } from "../../Helpers/DataFilters";
 
 import {
     queueDecreaseRequestCounter,
@@ -71,8 +73,8 @@ class QueueManager extends React.Component {
         this.setupTimer();
 
         // if sync on startup setting is false, we disable the initial sync event
-        if (syncOnStartup === false && this.state.initialSync === false) {
-            this.setState({ initialSync: true });
+        if (syncOnStartup === false && this.state.initialSync !== user.id) {
+            this.setState({ initialSync: user.id });
         }
 
         if (queueLoading && queueTriggerSync) {
@@ -80,7 +82,7 @@ class QueueManager extends React.Component {
         }
 
         // no initial sync completed or manual sync was triggered
-        if (this.state.initialSync === false || queueTriggerSync) {
+        if (this.state.initialSync !== user.id || queueTriggerSync) {
             if (user && !userLoading && accounts && !accountsLoading && accounts.length > 0 && !queueLoading) {
                 // if we continue, limit deep search to 5
                 const eventCount = queueTriggerSync ? this.props.eventCountLimit : DEFAULT_EVENT_COUNT_LIMIT;
@@ -121,10 +123,11 @@ class QueueManager extends React.Component {
 
         // ensure initial sync is true to avoid endless syncs
         const userId = user.id;
-        if (!this.state.initialSync)
+        if (this.state.initialSync !== userId) {
             this.setState({
-                initialSync: true
+                initialSync: userId
             });
+        }
 
         // only include active accounts
         const filteredAccounts = accounts.filter(account => {
@@ -132,27 +135,31 @@ class QueueManager extends React.Component {
         });
 
         // 6 / 7 requests per account + 1 for the user
-        const requestsPerAccount = limitedPermissions ? 6 : 7;
-        const bufferedCounter = filteredAccounts.length * requestsPerAccount + 1;
-
-        // set initial request count in one go
-        this.props.queueSetRequestCounter(bufferedCounter);
+        let bufferedCounter = 1;
 
         this.shareInviteBankResponsesUpdate(userId);
         filteredAccounts.forEach(account => {
             const accountId = account.id;
 
-            this.paymentsUpdate(userId, accountId, false, eventCount);
-            this.bunqMeTabsUpdate(userId, accountId, false, eventCount);
-            this.requestResponsesUpdate(userId, accountId, false, eventCount);
-            this.requestInquiriesUpdate(userId, accountId, false, eventCount);
-            this.requestInquiryBatchesUpdate(userId, accountId, false, eventCount);
-            this.masterCardActionsUpdate(userId, accountId, false, eventCount);
+            const connectPermissions = getConnectPermissions(this.props.shareInviteBankResponses, account.id);
+            if (connectPermissions === true || connectPermissions.view_new_events) {
+                bufferedCounter += 6;
+                this.paymentsUpdate(userId, accountId, false, eventCount);
+                this.bunqMeTabsUpdate(userId, accountId, false, eventCount);
+                this.requestResponsesUpdate(userId, accountId, false, eventCount);
+                this.requestInquiriesUpdate(userId, accountId, false, eventCount);
+                this.requestInquiryBatchesUpdate(userId, accountId, false, eventCount);
+                this.masterCardActionsUpdate(userId, accountId, false, eventCount);
+            }
 
             if (!limitedPermissions) {
+                bufferedCounter++;
                 this.shareInviteBankInquiriesUpdate(userId, accountId, false, eventCount);
             }
         });
+
+        // set initial request count in one go
+        this.props.queueSetRequestCounter(bufferedCounter);
     };
 
     /**
@@ -373,7 +380,7 @@ class QueueManager extends React.Component {
             })
             .then(payments => {
                 // turn plain objects into Model objects
-                const paymentsNew = payments.map(item => new Payment(item));
+                const paymentsNew = payments.map(item => new Payment(item)).filter(paymentApiFilter);
 
                 const currentPayments = { ...this.state.payments };
                 const accountPayments = currentPayments[account_id] || [];

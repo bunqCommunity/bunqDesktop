@@ -10,6 +10,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Select from "@material-ui/core/Select";
+import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
 import Switch from "@material-ui/core/Switch";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -23,18 +24,19 @@ import LogoutIcon from "@material-ui/icons/ExitToApp";
 import RemoveIcon from "@material-ui/icons/Delete";
 import HomeIcon from "@material-ui/icons/Home";
 
-import path from "../ImportWrappers/path";
-import { getPrettyLanguage } from "../Helpers/Utils";
-const packageInfo = require("../../../package.json");
+import path from "../../ImportWrappers/path";
+import { getPrettyLanguage } from "../../Helpers/Utils";
+
+const packageInfo = require("../../../../package.json");
 const SUPPORTED_LANGUAGES = packageInfo.supported_languages;
 
-import NavLink from "../Components/Routing/NavLink";
-import FilePicker from "../Components/FormFields/FilePicker";
-import TranslateButton from "../Components/TranslationHelpers/Button";
-import TranslateTypography from "../Components/TranslationHelpers/Typography";
-import MenuItemTranslate from "../Components/TranslationHelpers/MenuItem";
+import EditPasswordForm from "./EditPasswordForm";
+import NavLink from "../../Components/Routing/NavLink";
+import FilePicker from "../../Components/FormFields/FilePicker";
+import TranslateButton from "../../Components/TranslationHelpers/Button";
+import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 
-import { openSnackbar } from "../Actions/snackbar";
+import { openSnackbar } from "../../Actions/snackbar";
 import {
     resetApplication,
     setSyncOnStartup,
@@ -55,17 +57,17 @@ import {
     setAnalyticsEnabled,
     toggleAutomaticUpdatesSendNotification,
     setEventCountLimit
-} from "../Actions/options";
-import { registrationClearPrivateData, registrationLogOut } from "../Actions/registration";
-import { paymentsClear } from "../Actions/payments";
-import { masterCardActionsClear } from "../Actions/master_card_actions";
-import { bunqMeTabsClear } from "../Actions/bunq_me_tabs";
-import { scheduledPaymentsClear } from "../Actions/scheduled_payments";
-import { requestInquiryBatchesClear } from "../Actions/request_inquiry_batches";
-import { requestResponsesClear } from "../Actions/request_responses";
-import { requestInquiriesClear } from "../Actions/request_inquiries";
-import { shareInviteBankInquiriesClear } from "../Actions/share_invite_bank_inquiries";
-import { shareInviteBankResponsesClear } from "../Actions/share_invite_bank_responses";
+} from "../../Actions/options";
+import { registrationClearPrivateData, registrationLogOut } from "../../Actions/registration";
+import { paymentsClear } from "../../Actions/payments";
+import { masterCardActionsClear } from "../../Actions/master_card_actions";
+import { bunqMeTabsClear } from "../../Actions/bunq_me_tabs";
+import { scheduledPaymentsClear } from "../../Actions/scheduled_payments";
+import { requestInquiryBatchesClear } from "../../Actions/request_inquiry_batches";
+import { requestResponsesClear } from "../../Actions/request_responses";
+import { requestInquiriesClear } from "../../Actions/request_inquiries";
+import { shareInviteBankInquiriesClear } from "../../Actions/share_invite_bank_inquiries";
+import { shareInviteBankResponsesClear } from "../../Actions/share_invite_bank_responses";
 
 const styles = {
     sideButton: {
@@ -79,6 +81,9 @@ const styles = {
         width: "100%"
     },
     selectField: {
+        width: "100%"
+    },
+    textField: {
         width: "100%"
     },
     button: {
@@ -102,7 +107,11 @@ class Settings extends React.Component {
         this.state = {
             clearConfirmation: false,
             openImportDialog: false,
-            importTargetLocation: ""
+            importTargetLocation: "",
+
+            newPassword: "",
+            newPasswordTouched: false,
+            newPasswordValid: false
         };
     }
 
@@ -124,7 +133,7 @@ class Settings extends React.Component {
     };
 
     logout = event => {
-        this.props.logOut();
+        this.props.registrationLogOut();
 
         // minor delay to ensure it happens after the state updates
         setTimeout(() => {
@@ -222,6 +231,8 @@ class Settings extends React.Component {
         this.props.bunqMeTabsClear();
         this.props.scheduledPaymentsClear();
         this.props.paymentsClear();
+        this.resetRequestData();
+        this.requestConnectData();
     };
 
     render() {
@@ -642,6 +653,9 @@ class Settings extends React.Component {
 
                 <Grid item xs={12} sm={8}>
                     <Paper style={styles.paper}>{settingsContainer}</Paper>
+                    {this.props.registrationReady && <Paper style={styles.paper}>
+                        <EditPasswordForm />
+                    </Paper>}
                     <Paper style={styles.paper}>{dataManagementContainer}</Paper>
                 </Grid>
             </Grid>
@@ -724,9 +738,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         shareInviteBankResponsesClear: () => dispatch(shareInviteBankResponsesClear()),
 
         // clear api key from bunqjsclient and bunqdesktop
-        clearPrivateData: () => dispatch(registrationClearPrivateData(BunqJSClient)),
+        clearPrivateData: () => dispatch(registrationClearPrivateData()),
         // logout of current session without destroying stored keys
-        logOut: () => dispatch(registrationLogOut(BunqJSClient)),
+        registrationLogOut: () => dispatch(registrationLogOut()),
         // full hard reset off all storage
         resetApplication: () => dispatch(resetApplication())
     };

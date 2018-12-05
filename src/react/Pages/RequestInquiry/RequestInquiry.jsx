@@ -24,9 +24,11 @@ import AllowBunqMe from "./Options/AllowBunqMe";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { requestInquirySend } from "../../Actions/request_inquiry";
+import { requestInquiriesUpdate } from "../../Actions/request_inquiries";
 
 import { getInternationalFormat, isValidPhonenumber } from "../../Helpers/PhoneLib";
 import TotalSplitHelper from "./TotalSplitHelper";
+import { getConnectPermissions } from "../../Helpers/GetConnectPermissions";
 
 const styles = {
     payButton: {
@@ -432,6 +434,13 @@ class RequestInquiry extends React.Component {
 
         this.props.requestInquirySend(userId, account.id, requestInquiries);
 
+        setTimeout(() => {
+            const connectPermissions = getConnectPermissions(this.props.shareInviteBankResponses, account.id);
+            if (connectPermissions && connectPermissions.view_new_events) {
+                this.props.requestInquiriesUpdate(userId, account.id);
+            }
+        }, 1000);
+
         this.setState({
             validForm: false,
             amount: "",
@@ -631,6 +640,9 @@ const mapDispatchToProps = (dispatch, props) => {
     return {
         requestInquirySend: (userId, accountId, requestInquiries) =>
             dispatch(requestInquirySend(BunqJSClient, userId, accountId, requestInquiries)),
+
+        requestInquiryUpdate: (userId, accountId) => dispatch(requestInquiriesUpdate(BunqJSClient, userId, accountId)),
+
         openSnackbar: message => dispatch(openSnackbar(message))
     };
 };

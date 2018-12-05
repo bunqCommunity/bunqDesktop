@@ -45,6 +45,7 @@ import { shareInviteBankInquiriesInfoUpdate } from "../Actions/share_invite_bank
 import { shareInviteBankResponsesInfoUpdate } from "../Actions/share_invite_bank_responses";
 import { shareInviteBankResponseChangeStatus } from "../Actions/share_invite_bank_response";
 import { shareInviteBankInquiryChangeStatus } from "../Actions/share_invite_bank_inquiry";
+import { getConnectPermissions } from "../Helpers/GetConnectPermissions";
 
 const styles = {
     paper: {
@@ -52,7 +53,7 @@ const styles = {
         marginBottom: 16
     },
     dialogContent: {
-        width: 300
+        width: 240
     },
     chip: {
         margin: 8
@@ -138,12 +139,15 @@ class AccountInfo extends React.Component {
                 this.props.shareInviteBankInquiriesInfoUpdate(userId, accountId);
             }
             this.props.shareInviteBankResponsesInfoUpdate(userId);
-            this.props.paymentsUpdate(userId, accountId);
-            this.props.bunqMeTabsUpdate(userId, accountId);
-            this.props.requestResponsesUpdate(userId, accountId);
-            this.props.requestInquiriesUpdate(userId, accountId);
-            this.props.requestInquiryBatchesUpdate(userId, accountId);
-            this.props.masterCardActionsUpdate(userId, accountId);
+            const connectPermissions = getConnectPermissions(this.props.shareInviteBankResponses, accountId);
+            if (connectPermissions && connectPermissions.view_new_events) {
+                this.props.paymentsUpdate(userId, accountId);
+                this.props.bunqMeTabsUpdate(userId, accountId);
+                this.props.requestResponsesUpdate(userId, accountId);
+                this.props.requestInquiriesUpdate(userId, accountId);
+                this.props.requestInquiryBatchesUpdate(userId, accountId);
+                this.props.masterCardActionsUpdate(userId, accountId);
+            }
 
             const accountInfo = this.props.accounts.find(account => account.id === accountId);
             if (accountInfo) {
@@ -330,6 +334,7 @@ class AccountInfo extends React.Component {
                     allowConnectSettings = false;
 
                     profileIconList = filteredInviteResponses.map(filteredInviteResponse => {
+                        if (!filteredInviteResponse || !filteredInviteResponse.ShareInviteBankResponse) return null;
                         return (
                             <PersonChip
                                 BunqJSClient={this.props.BunqJSClient}
@@ -377,7 +382,7 @@ class AccountInfo extends React.Component {
                 );
 
                 connectComponent = (
-                    <Paper style={styles.paperIcons}>
+                    <Paper key="connect-paper" style={styles.paperIcons}>
                         <List dense={true}>
                             {allowConnectSettings ? (
                                 <ListItem to={`/connect/${accountId}`} component={NavLink} button>
@@ -393,12 +398,21 @@ class AccountInfo extends React.Component {
                 );
             }
 
+            const accountCardProps = {
+                account: accountInfo,
+                isJointAccount: isJointAccount,
+                isSavingsAccount: isSavingsAccount,
+                shareInviteBankResponses: filteredInviteResponses,
+                toggleSettingsDialog: filteredInviteResponses.length > 0 ? false : this.toggleSettingsDialog,
+                toggleDeactivateDialog: filteredInviteResponses.length > 0 ? false : this.toggleDeactivateDialog
+            };
+
             content = (
                 <React.Fragment>
-                    <Dialog open={this.state.openDialog} onClose={this.toggleDeactivateDialog}>
+                    <Dialog key="deactivate-dialog" open={this.state.openDialog} onClose={this.toggleDeactivateDialog}>
                         <DialogTitle>{t("Cancel account")}</DialogTitle>
 
-                        <DialogContent>
+                        <DialogContent style={styles.dialogContent}>
                             <DialogContentText>
                                 {isJointAccount
                                     ? t("It is not possible to delete a Joint or Connect account using bunqDesktop")
@@ -439,7 +453,11 @@ class AccountInfo extends React.Component {
                         </DialogActions>
                     </Dialog>
 
-                    <Dialog open={this.state.openSettingsDialog} onClose={this.toggleSettingsDialog}>
+                    <Dialog
+                        key="settings-dialog"
+                        open={this.state.openSettingsDialog}
+                        onClose={this.toggleSettingsDialog}
+                    >
                         <DialogTitle>{t("Edit account settings")}</DialogTitle>
 
                         <DialogContent style={styles.dialogContent}>
@@ -499,20 +517,16 @@ class AccountInfo extends React.Component {
                     </Dialog>
 
                     <AccountCard
+                        key="account-card"
                         BunqJSClient={this.props.BunqJSClient}
                         openSnackbar={this.props.openSnackbar}
                         hideBalance={this.props.hideBalance}
-                        toggleSettingsDialog={this.toggleSettingsDialog}
-                        toggleDeactivateDialog={this.toggleDeactivateDialog}
-                        shareInviteBankResponses={filteredInviteResponses}
-                        account={accountInfo}
-                        isJointAccount={isJointAccount}
-                        isSavingsAccount={isSavingsAccount}
+                        {...accountCardProps}
                     />
 
                     {connectComponent}
 
-                    <Paper style={styles.paperList}>
+                    <Paper key="combinedlist-paper" style={styles.paperList}>
                         <CombinedList
                             BunqJSClient={this.props.BunqJSClient}
                             hiddenTypes={["ShareInviteBankInquiry"]}

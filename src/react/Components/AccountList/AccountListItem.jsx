@@ -86,7 +86,9 @@ class AccountListItem extends React.Component {
         if (isSavingsAccount) {
             const targetAmount = formatMoney(account.savings_goal.value);
             const savingsPercentage = parseFloat(account.savings_goal_progress) * 100;
-            secondaryText = `${formattedBalance} ${t("out of")} ${targetAmount} - (${savingsPercentage.toFixed(2)}%)`;
+            secondaryText = this.props.hideBalance
+                ? `${savingsPercentage.toFixed(2)}%`
+                : `${formattedBalance} ${t("out of")} ${targetAmount} - (${savingsPercentage.toFixed(2)}%)`;
         }
 
         // check if any of the selected account ids are for this account
