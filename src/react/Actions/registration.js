@@ -274,7 +274,10 @@ export function registrationLogOut(resetStoredApiKey = true) {
     return dispatch => {
         BunqDesktopClient.destroyApiSession(resetStoredApiKey).then(_ => {
             dispatch({
-                type: "REGISTRATION_LOG_OUT"
+                type: "REGISTRATION_LOG_OUT",
+                payload: {
+                    reset_stored_api_key: resetStoredApiKey
+                }
             });
         });
     };
