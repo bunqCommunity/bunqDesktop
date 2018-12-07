@@ -1,8 +1,6 @@
 const gulp = require("gulp");
-const less = require("gulp-less");
-const watch = require("gulp-watch");
-const batch = require("gulp-batch");
-const plumber = require("gulp-plumber");
+const gulpWatch = require("gulp-watch");
+const gulpBatch = require("gulp-batch");
 const jetpack = require("fs-jetpack");
 const bundle = require("./bundle");
 const utils = require("./utils");
@@ -18,27 +16,35 @@ gulp.task("bundle", () => {
     ]);
 });
 
-gulp.task("environment", () => {
-    const configFile = `config/env_${utils.getEnvName()}.json`;
-    projectDir.copy(configFile, destDir.path("env.json"), { overwrite: true });
-});
+gulp.task(
+    "environment",
+    gulp.series(done => {
+        const configFile = `config/env_${utils.getEnvName()}.json`;
+        projectDir.copy(configFile, destDir.path("env.json"), { overwrite: true });
+        done();
+    })
+);
 
-gulp.task("watch", () => {
-    const beepOnError = done => {
-        return err => {
-            if (err) {
-                utils.beepSound();
-            }
-            done(err);
+gulp.task(
+    "watch",
+    gulp.series(done => {
+        const beepOnError = done => {
+            return err => {
+                if (err) {
+                    utils.beepSound();
+                }
+                done(err);
+            };
         };
-    };
 
-    watch(
-        "src/**/*.js",
-        batch((events, done) => {
-            gulp.start("bundle", beepOnError(done));
-        })
-    );
-});
+        gulpWatch(
+            "src/**/*.js",
+            gulpBatch((events, done) => {
+                gulp.start("bundle", beepOnError(done));
+            })
+        );
+        done();
+    })
+);
 
-gulp.task("build", ["bundle", "environment"]);
+gulp.task("build", gulp.series("bundle", "environment"));
