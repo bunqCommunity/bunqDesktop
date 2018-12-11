@@ -90,6 +90,8 @@ $ yarn start:dev
 ```
 
 ## Contact
+[![Together topic badge](https://img.shields.io/badge/Together-Discuss-orange.svg) ](https://together.bunq.com/d/6180-bunq-cli-a-new-unofficial-command-line-tool-for-the-bunq-api/11) [![Telegram chat badge](https://img.shields.io/badge/Telegram-Discuss-blue.svg) ](https://t.me/bunqcommunity) [![Telegram chat badge](https://img.shields.io/badge/Telegram-Announcements-blue.svg) ](https://t.me/bunqdesktop)
+
 We have a public [Telegram chat group ](https://t.me/bunqcommunity) and a topic on [bunq together](https://together.bunq.com/d/5763-bunqdesktop-the-unofficial-free-and-open-source-desktop-application-for-bunq/).
 
 If you just want a notification when a new version is released you can also join the [Telegram updates channel](https://t.me/bunqdesktop).

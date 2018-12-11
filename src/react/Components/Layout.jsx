@@ -143,6 +143,16 @@ class Layout extends React.Component {
         // make sure language is up-to-date
         this.checkLanguageChange(nextProps);
 
+        if (nextProps.theme === "DefaultTheme") {
+            if (document.documentElement.style.backgroundColor !== "#ffffff") {
+                document.documentElement.style.backgroundColor = "#ffffff";
+            }
+        } else {
+            if (document.documentElement.style.backgroundColor !== "#303030") {
+                document.documentElement.style.backgroundColor = "#303030";
+            }
+        }
+
         if (nextProps.apiKey !== this.props.apiKey || nextProps.environment !== this.props.environment) {
             if (this.props.apiKey !== false) {
                 // clear our old data associated with the previous session
