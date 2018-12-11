@@ -219,6 +219,7 @@
         "react-color": "^2.14.1",
         "react-copy-to-clipboard": "^5.0.1",
         "react-dom": "^16.4.1",
+        "react-dropzone": "^8.0.0",
         "react-helmet": "^5.2.0",
         "react-i18next": "^7.7.0",
         "react-json-view": "^1.17.1",

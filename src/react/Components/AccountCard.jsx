@@ -19,7 +19,7 @@ import UrlIcon from "@material-ui/icons/Link";
 import LinkIcon from "@material-ui/icons/Link";
 import PeopleIcon from "@material-ui/icons/People";
 
-import AccountAvatarCircularProgress from "./AccountList/AccountAvatarCircularProgress";
+import UploadFullscreen from "./FileUpload/UploadFullscreen";
 import LazyAttachmentImage from "./AttachmentImage/LazyAttachmentImage";
 import AccountQRFullscreen from "./QR/AccountQRFullscreen";
 
@@ -42,7 +42,10 @@ const styles = {
 class AccountCard extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+
+        this.state = {
+            displayUploadScreen: false
+        };
     }
 
     copiedValue = type => callback => {
@@ -77,10 +80,25 @@ class AccountCard extends React.Component {
 
         return (
             <Paper>
+                <UploadFullscreen
+                    BunqJSClient={this.props.BunqJSClient}
+                    open={this.state.displayUploadScreen}
+                    handleRequestClose={_ =>
+                        this.setState({
+                            displayUploadScreen: false
+                        })
+                    }
+                />
                 <List>
                     <ListItem>
-                        <AccountAvatarCircularProgress account={account} />
-                        <Avatar style={styles.avatar}>
+                        <Avatar
+                            style={styles.avatar}
+                            onClick={_ =>
+                                this.setState({
+                                    displayUploadScreen: true
+                                })
+                            }
+                        >
                             <LazyAttachmentImage
                                 BunqJSClient={this.props.BunqJSClient}
                                 height={60}
