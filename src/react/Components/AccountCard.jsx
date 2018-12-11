@@ -48,8 +48,23 @@ class AccountCard extends React.Component {
         };
     }
 
+    componentDidMount(){
+        this.handleFileUpload("aa8aa19c-c4a1-45b4-8df1-15b32b228208")
+    }
+
     copiedValue = type => callback => {
         this.props.openSnackbar(`Copied ${type} to your clipboard`);
+    };
+
+    handleFileUpload = fileUUID => {
+        this.toggleFileUploadDialog();
+        console.log("File upload", fileUUID);
+    };
+
+    toggleFileUploadDialog = () => {
+        this.setState({
+            displayUploadScreen: !this.state.displayUploadScreen
+        });
     };
 
     render() {
@@ -83,11 +98,8 @@ class AccountCard extends React.Component {
                 <UploadFullscreen
                     BunqJSClient={this.props.BunqJSClient}
                     open={this.state.displayUploadScreen}
-                    handleRequestClose={_ =>
-                        this.setState({
-                            displayUploadScreen: false
-                        })
-                    }
+                    onComplete={this.handleFileUpload}
+                    onClose={this.toggleFileUploadDialog}
                 />
                 <List>
                     <ListItem>

@@ -998,10 +998,10 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@bunq-community/bunq-js-client@^0.35.2":
-  version "0.35.4"
-  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.35.4.tgz#99a397fd82822394da5b3d95e5800388cdd478e2"
-  integrity sha512-KeB/tTFHyBLQSqMwOaaCQm92t5mwgpqd6JhEAz723QxiVwSEJ71ltTsPVCnW47fbHOCPjfXPG3xHWlgm6K30ug==
+"@bunq-community/bunq-js-client@^0.36.0":
+  version "0.36.0"
+  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.36.0.tgz#0eb0be823d7f17cf7c5bdb757caa565def31bc7c"
+  integrity sha512-Q6Rj9r9meIvTYUG+KCGh4vVtJ9LG2JFiPCUzWMrcWN5EyP62sBOBBnO7QU/1UweKcJe24OKqjZFeVlHFbf9A2Q==
   dependencies:
     awaiting "^3.0.0"
     axios "^0.16.2"
@@ -1899,13 +1899,6 @@ atob@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.1.tgz#ae2d5a729477f289d60dd7f96a6314a22dd6c22a"
   integrity sha1-ri1acpR38onWDdf5amMUoi3Wwio=
-
-attr-accept@^1.1.3:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/attr-accept/-/attr-accept-1.1.3.tgz#48230c79f93790ef2775fcec4f0db0f5db41ca52"
-  integrity sha512-iT40nudw8zmCweivz6j58g+RT33I4KbaIvRUhjNmDwO2WmsQUxFEZZYZ5w3vXe5x5MX9D7mfvA/XaLOZYFR9EQ==
-  dependencies:
-    core-js "^2.5.0"
 
 autoprefixer@^6.3.1:
   version "6.7.7"
@@ -9746,14 +9739,6 @@ react-dom@^16.4.1:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.0"
-
-react-dropzone@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-8.0.0.tgz#09ecf6973ac8fb598dd2d77c1a5890fe3cafdb83"
-  integrity sha512-k4/Un1LD62NDDRg7Y10Ywb8VBBQ2Gi3yjYJUf38CuMulsENCWrB87QwsTxDIb9gSd5d3tReOpXTprIEf1JdtnA==
-  dependencies:
-    attr-accept "^1.1.3"
-    prop-types "^15.6.2"
 
 react-event-listener@^0.6.2:
   version "0.6.2"

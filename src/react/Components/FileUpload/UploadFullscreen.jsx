@@ -1,19 +1,20 @@
 import React from "react";
+import { connect } from "react-redux";
 import { translate } from "react-i18next";
-import { withStyles } from "@material-ui/core/styles";
 import Dialog from "@material-ui/core/Dialog";
-import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Slide from "@material-ui/core/Slide";
-import FileDropZone from "./FileDropZone";
+import Button from "@material-ui/core/Button";
 
-import FileReaderHelper from "@bunq-community/bunq-js-client/dist/Helpers/FileReaderHelper";
+import FilePicker from "./FilePicker";
+
+import { openSnackbar } from "../../Actions/snackbar";
 
 const Transition = props => <Slide direction={"up"} {...props} />;
 
 const contentSize = 320;
 
-const styles = theme => ({
+const styles = {
     dialog: {
         marginTop: 50
     },
@@ -30,96 +31,99 @@ const styles = theme => ({
         width: contentSize,
         minHeight: contentSize
     },
+    closeButton: {
+        position: "fixed",
+        top: 20,
+        left: 20
+    },
     uploadButton: {
         width: "100%"
     }
-});
+};
 
-class UploadFullscreen extends React.PureComponent {
-    constructor(props, context) {
-        super(props, context);
+class UploadFullscreen extends React.Component {
+    constructor(props) {
+        super(props);
+
         this.state = {
-            file: false
+            file: false,
+            uploadingFile: false
         };
     }
 
-    onFileChange = file => this.setState({ file });
-
-    getFileInfo = async () => {
-        console.log("start");
-        const fileReader = new FileReader();
-
-        console.log("readAsArrayBuffer");
-        // start loading the file as binary
-        fileReader.readAsArrayBuffer(this.state.file);
-
-        console.log("wait");
-        // wrap the filereader callback in a promise
-        const fileArrayBuffer = await new Promise(resolve => {
-            console.log("waiting");
-            // resolve the output onload
-            fileReader.onload = () => {
-                console.log("loaded");
-                console.log(this.state.file);
-                console.log(fileReader);
-
-                resolve(fileReader.result);
-            };
-        });
-
-        console.log("from arraybuffer");
-        const fileBuffer = Buffer.from(fileArrayBuffer);
-
-        return {
-            contents: fileBuffer
-        };
+    handleFileDrop = file => {
+        this.setState({ file });
+        window.file = file;
     };
 
     startUpload = () => {
-        console.log("dang");
-        this.getFileInfo()
-            .then(result => {
-                console.log("result", result);
-            })
-            .catch(console.error);
+        const file = this.state.file;
 
-        // this.props.BunqJSClient.api.attachmentPublic
-        //     .post(this.state.file)
-        //     .then(console.log)
-        //     .catch(console.error);
+        this.setState({
+            uploadingFile: true
+        });
+
+        // start loading the file as array buffer
+        const fileReader = new FileReader();
+        fileReader.readAsArrayBuffer(file);
+
+        // wrap the filereader callback in a promise
+        new Promise(resolve => {
+            // resolve the output onload
+            fileReader.onload = () => resolve(fileReader.result);
+        }).then(fileArrayBuffer => {
+            // transform array buffer into regular buffer
+            const fileBuffer = Buffer.from(fileArrayBuffer);
+
+            this.props.BunqJSClient.api.attachmentPublic
+                .post(fileBuffer, file.type)
+                .then(response => {
+                    this.props.onComplete(response);
+                    this.setState({
+                        uploadingFile: false
+                    });
+                })
+                .catch(error => {
+                    this.props.openSnackbar(this.props.t("Failed to upload image"));
+                    this.setState({
+                        uploadingFile: false
+                    });
+                });
+        });
     };
 
     render() {
-        const { classes, t } = this.props;
+        const { t } = this.props;
+
+        t("Failed to upload image")
+
         return (
             <Dialog
                 fullScreen
-                className={classes.dialog}
+                style={styles.dialog}
                 open={this.props.open}
-                onClick={this.props.handleRequestClose}
-                onClose={close => {
-                    console.log("close", close);
-                    this.props.handleRequestClose(close);
-                }}
+                onClose={this.props.onClose}
                 TransitionComponent={Transition}
             >
-                <div className={classes.content}>
-                    <div className={classes.contentWrapper}>
-                        <Typography type={"headline"} className={classes.header}>
+                <Button style={styles.closeButton} onClick={this.props.onClose} color="primary" variant="contained">
+                    Close
+                </Button>
+                <div style={styles.content}>
+                    <div style={styles.contentWrapper}>
+                        <Typography type={"headline"} style={styles.header}>
                             {t(this.props.headlineText)}
                         </Typography>
-                        <FileDropZone onChange={this.onFileChange} />
-                        <br />
-                        {this.state.file !== false ? (
+                        <FilePicker handleFileDrop={this.handleFileDrop} />
+                        {this.state.file && (
                             <Button
-                                color="primary"
                                 variant="contained"
-                                className={classes.uploadButton}
+                                color="primary"
+                                style={styles.uploadButton}
                                 onClick={this.startUpload}
                             >
-                                {t(this.props.buttonText)}
+                                Upload
                             </Button>
-                        ) : null}
+                        )}
                     </div>
                 </div>
             </Dialog>
@@ -132,4 +136,19 @@ UploadFullscreen.defaultProps = {
     buttonText: "Upload"
 };
 
-export default withStyles(styles)(translate("translations")(UploadFullscreen));
+const mapStateToProps = state => {
+    return {};
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        openSnackbar: message => dispatch(openSnackbar(message))
+    };
+};
+
+export default translate("translations")(
+    connect(
+        mapStateToProps,
+        mapDispatchToProps
+    )(UploadFullscreen)
+);
