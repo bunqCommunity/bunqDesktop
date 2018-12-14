@@ -9,7 +9,7 @@ import IncomingIcon from "@material-ui/icons/KeyboardArrowDown";
 import OutgoingIcon from "@material-ui/icons/KeyboardArrowUp";
 import ChangeIcon from "@material-ui/icons/CompareArrows";
 
-import { formatMoney } from "../../Helpers/Utils";
+import { formatMoney } from "../../Functions/Utils";
 
 const styles = {
     gridContainer: {

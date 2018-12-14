@@ -9,9 +9,9 @@ import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 
 // custom components
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import Logger from "../Helpers/Logger";
-import VersionChecker from "../Helpers/VersionChecker";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
+import Logger from "../Functions/Logger";
+import VersionChecker from "../Functions/VersionChecker";
 import NetworkStatusChecker from "./NetworkStatusChecker";
 import RuleCollectionChecker from "./RuleCollectionChecker";
 import QueueManager from "./Queue/QueueManager";
@@ -34,7 +34,7 @@ const ThemeList = {
 // redux actions
 import { openModal } from "../Actions/modal";
 import { openSnackbar } from "../Actions/snackbar";
-import { registrationClearUserInfo } from "../Actions/registration";
+import { registrationClearUserInfo, registrationSetBunqDesktopClientData } from "../Actions/registration";
 import { setHideBalance, setTheme, setAutomaticThemeChange } from "../Actions/options";
 import { queueStartSync } from "../Actions/queue";
 
@@ -101,6 +101,8 @@ class Layout extends React.Component {
         // register mouse and network events
         window.onmousemove = this.onActivityEvent.bind(this);
         window.onkeypress = this.onActivityEvent.bind(this);
+
+        this.props.registrationLoadBunqDesktopClient();
     }
 
     componentDidMount() {
@@ -140,6 +142,16 @@ class Layout extends React.Component {
     componentWillUpdate(nextProps) {
         // make sure language is up-to-date
         this.checkLanguageChange(nextProps);
+
+        if (nextProps.theme === "DefaultTheme") {
+            if (document.documentElement.style.backgroundColor !== "#ffffff") {
+                document.documentElement.style.backgroundColor = "#ffffff";
+            }
+        } else {
+            if (document.documentElement.style.backgroundColor !== "#303030") {
+                document.documentElement.style.backgroundColor = "#303030";
+            }
+        }
 
         if (nextProps.apiKey !== this.props.apiKey || nextProps.environment !== this.props.environment) {
             if (this.props.apiKey !== false) {
@@ -298,7 +310,7 @@ const mapStateToProps = state => {
         automaticThemeChange: state.options.automatic_theme_change,
         inactivityCheckDuration: state.options.inactivity_check_duration,
 
-        derivedPassword: state.registration.derivedPassword,
+        derivedPassword: state.registration.derived_password,
         registrationIsLoading: state.registration.loading,
         environment: state.registration.environment,
         deviceName: state.registration.device_name,
@@ -330,7 +342,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         queueStartSync: () => dispatch(queueStartSync()),
 
         // functions to clear user data
-        registrationClearUserInfo: () => dispatch(registrationClearUserInfo())
+        registrationClearUserInfo: () => dispatch(registrationClearUserInfo()),
+
+        registrationLoadBunqDesktopClient: () => dispatch(registrationSetBunqDesktopClientData())
     };
 };
 

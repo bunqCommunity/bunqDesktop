@@ -3,7 +3,7 @@ import TransactionAmountRule from "./Rules/TransactionAmountRule";
 import ValueRule from "./Rules/ValueRule";
 import TypeRule from "./Rules/TypeRule";
 import AccountRule from "./Rules/AccountRule";
-import { generateGUID } from "../Helpers/Utils";
+import { generateGUID } from "../Functions/Utils";
 import { RuleTypes, EventObject, EventTypes } from "./Types";
 
 export type RuleCollectionMatchType = "OR" | "AND";

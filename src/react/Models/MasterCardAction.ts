@@ -1,5 +1,5 @@
 import { Amount, LabelCard, PaymentAlias, RequestReferenceSplitTheBill } from "../Types/Types";
-import EventType, { EventTypeValue } from "../Types/Event";
+import Event, { EventTypeValue } from "../Types/Event";
 
 export type PanEntryModeUser = "ATM" | "ICC" | "MAGNETIC_STRIPE" | "E_COMMERCE";
 

@@ -1,5 +1,5 @@
 import MonetaryAccount from "./MonetaryAccount";
-import { generateGUID } from "../Helpers/Utils";
+import { generateGUID } from "../Functions/Utils";
 import { calculateTotalBalance } from "../Components/SavingsGoals/Helpers.js";
 
 export type SavingsGoalSettings = {

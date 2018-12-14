@@ -3,7 +3,7 @@ const forge = require("./CustomForge");
 /**
  * Hash an arbitrary string and return the hash and salt
  * @param password - any string
- * @param salt - false or hex-encoded salt value
+ * @param {boolean|string} salt - false or hex-encoded salt value
  * @param iterations - integer, recommended value is between 8k and 20k
  * @returns {Promise.<{key: string, salt: string}>}
  */

@@ -1,4 +1,4 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
 import RequestResponse from "../Models/RequestResponse";
 
 export function requestResponseSetInfo(request_response_info, account_id, request_response_id) {

@@ -1,6 +1,6 @@
 import React from "react";
 import localforage from "../../ImportWrappers/localforage";
-import Logger from "../../Helpers/Logger";
+import Logger from "../../Functions/Logger";
 
 class AttachmentImage extends React.PureComponent {
     constructor(props, context) {

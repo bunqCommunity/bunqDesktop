@@ -18,7 +18,7 @@ import LiveHelpIcon from "@material-ui/icons/LiveHelp";
 
 import TranslateButton from "../Components/TranslationHelpers/Button";
 
-import Analytics from "../Helpers/Analytics";
+import Analytics from "../Functions/Analytics";
 import { setAnalyticsEnabled } from "../Actions/options";
 
 const styles = {

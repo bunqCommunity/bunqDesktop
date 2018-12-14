@@ -1,4 +1,4 @@
-import CategoryHelper from "./CategoryHelper";
+import CategoryHelper from "../Components/Categories/CategoryHelper";
 
 const checkDateRange = (fromDate, toDate, date) => {
     // nothing to check so always valid
@@ -21,6 +21,17 @@ const checkDateRange = (fromDate, toDate, date) => {
         }
     }
 
+    return true;
+};
+
+/**
+ * Filters out payments we don't need. E.G. Payment objects with a MASTERCARD type
+ * @param payment
+ */
+export const paymentApiFilter = payment => {
+    if (payment.type && payment.type === "MASTERCARD") {
+        return false;
+    }
     return true;
 };
 
@@ -58,8 +69,6 @@ export const eventFilter = options => event => {
 };
 
 export const paymentFilter = options => payment => {
-    if (options.hiddenTypes && options.hiddenTypes.includes("Payment")) return false;
-
     if (options.paymentVisibility === false) {
         return false;
     }
@@ -154,8 +163,6 @@ export const paymentFilter = options => payment => {
 };
 
 export const bunqMeTabsFilter = options => bunqMeTab => {
-    if (options.hiddenTypes && options.hiddenTypes.includes("BunqMeTab")) return false;
-
     if (options.bunqMeTabVisibility === false) {
         return false;
     }
@@ -229,8 +236,6 @@ export const bunqMeTabsFilter = options => bunqMeTab => {
 };
 
 export const masterCardActionFilter = options => masterCardAction => {
-    if (options.hiddenTypes && options.hiddenTypes.includes("MasterCardAction")) return false;
-
     if (options.paymentVisibility === false) {
         return false;
     }
@@ -311,14 +316,11 @@ export const requestResponseFilter = options => requestResponse => {
     const isRequestType = requestTypes.includes(requestResponse.type);
 
     if (isRequestType) {
-        if (
-            options.requestVisibility === false ||
-            (options.hiddenTypes && options.hiddenTypes.includes("RequestResponse"))
-        ) {
+        if (options.requestVisibility === false) {
             return false;
         }
     } else {
-        if (options.paymentVisibility === false || (options.hiddenTypes && options.hiddenTypes.includes("Payment"))) {
+        if (options.paymentVisibility === false) {
             return false;
         }
     }
@@ -329,11 +331,13 @@ export const requestResponseFilter = options => requestResponse => {
     }
 
     if (isRequestType) {
+        // check payment type since this is a payment
         if (options.requestType !== "sent" && options.requestType !== "default") {
             return false;
         }
     } else {
-        if (options.paymentType !== "sent" && options.paymentType !== "default") {
+        // check the request type since this is an actual request
+        if (options.requestType !== "sent" && options.requestType !== "default") {
             return false;
         }
     }
@@ -411,8 +415,6 @@ export const requestResponseFilter = options => requestResponse => {
 };
 
 export const requestInquiryFilter = options => requestInquiry => {
-    if (options.hiddenTypes && options.hiddenTypes.includes("RequestInquiry")) return false;
-
     if (options.requestVisibility === false) {
         return false;
     }
@@ -497,8 +499,6 @@ export const requestInquiryFilter = options => requestInquiry => {
 };
 
 export const requestInquiryBatchFilter = options => requestInquiryBatch => {
-    if (options.hiddenTypes && options.hiddenTypes.includes("RequestInquiryBatch")) return false;
-
     if (options.requestVisibility === false) {
         return false;
     }
@@ -535,10 +535,6 @@ export const shareInviteBankResponseFilter = options => shareInviteBankResponse 
         return false;
     }
 
-    if (options.requestVisibility === false) {
-        return false;
-    }
-
     // don't show share invites if amount filter is set
     if (options.amountFilterAmount !== "") return false;
 
@@ -567,10 +563,6 @@ export const shareInviteBankInquiryFilter = options => shareInviteBankInquiry =>
         : shareInviteBankInquiry.ShareInviteBankResponse;
 
     if (shareInviteBankInquiryInfo.status !== "PENDING") {
-        return false;
-    }
-
-    if (options.requestVisibility === false) {
         return false;
     }
 

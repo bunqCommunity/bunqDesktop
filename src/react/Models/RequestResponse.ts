@@ -9,7 +9,7 @@ import {
     RequestResponseType,
     RequestResponseSubType
 } from "../Types/Types";
-import EventType, { EventTypeValue } from "../Types/Event";
+import Event, { EventTypeValue } from "../Types/Event";
 
 export default class RequestResponse implements EventType {
     // the original raw object

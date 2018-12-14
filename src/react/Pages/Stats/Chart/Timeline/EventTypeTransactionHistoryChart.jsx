@@ -7,7 +7,7 @@ import {
     requestInquiryColor,
     requestResponseColor
 } from "../../Colors";
-import { moneyTemplate, sortLinearChartTooltips } from "../../../../Helpers/StatsFormattingTemplates";
+import { moneyTemplate, sortLinearChartTooltips } from "../../../../Functions/StatsFormattingTemplates";
 
 export default props => {
     const defaultOptions = {

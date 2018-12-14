@@ -1,5 +1,5 @@
 import React from "react";
-import Logger from "../../Helpers/Logger";
+import Logger from "../../Functions/Logger";
 
 export default ({ isLoading, pastDelay, error }) => {
     if (isLoading && pastDelay) {

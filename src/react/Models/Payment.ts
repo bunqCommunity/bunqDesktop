@@ -8,7 +8,7 @@ import {
     PaymentType,
     RequestReferenceSplitTheBill
 } from "../Types/Types";
-import EventType, { EventTypeValue } from "../Types/Event";
+import Event, { EventTypeValue } from "../Types/Event";
 
 export default class Payment implements EventType {
     // the original raw object
@@ -35,6 +35,7 @@ export default class Payment implements EventType {
     private _bunqto_expiry: string | null;
     private _bunqto_time_responded: string | null;
     private _attachment: AttachmentList;
+    private _balance_after_mutation: Amount | undefined = undefined;
     private _merchant_reference: string;
     private _batch_id: number | null;
     private _scheduled_id: number | null;
@@ -58,6 +59,13 @@ export default class Payment implements EventType {
 
         this._updated = new Date(this._updated);
         this._created = new Date(this._created);
+
+        // ignore balance after mutation value for older payments
+        if (this._balance_after_mutation) {
+            if (this._balance_after_mutation.value === "999999999.99") {
+                this._balance_after_mutation = undefined;
+            }
+        }
     }
 
     /**
@@ -130,6 +138,9 @@ export default class Payment implements EventType {
     }
     get attachment(): AttachmentList {
         return this._attachment;
+    }
+    get balance_after_mutation(): Amount | undefined {
+        return this._balance_after_mutation;
     }
     get merchant_reference(): string {
         return this._merchant_reference;

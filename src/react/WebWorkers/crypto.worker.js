@@ -1,4 +1,4 @@
-import { decryptString, encryptString } from "../Helpers/Crypto.js";
+import { decryptString, encryptString } from "../Functions/Crypto/Crypto.js";
 
 const defaultError = error => {
     console.error(error);

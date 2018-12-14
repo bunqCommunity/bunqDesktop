@@ -1,4 +1,4 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
 import RequestInquiry from "../Models/RequestInquiry";
 
 export function requestInquirySetInfo(request_inquiry_info, account_id, request_inquiry_id) {

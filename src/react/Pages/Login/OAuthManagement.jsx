@@ -13,8 +13,8 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
 
-import Logger from "../../Helpers/Logger";
-import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
+import Logger from "../../Functions/Logger";
+import BunqErrorHandler from "../../Functions/BunqErrorHandler";
 
 import { oauthSetDetails } from "../../Actions/oauth";
 import { openSnackbar } from "../../Actions/snackbar";

@@ -16,7 +16,7 @@ import NavLink from "../Routing/NavLink";
 import InputSuggestions from "./InputSuggestions";
 import AccountSelectorDialog from "./AccountSelectorDialog";
 import { openSnackbar } from "../../Actions/snackbar";
-import { formatIban } from "../../Helpers/Utils";
+import { formatIban } from "../../Functions/Utils";
 import TargetChipList from "./TargetChipList";
 
 const styles = {

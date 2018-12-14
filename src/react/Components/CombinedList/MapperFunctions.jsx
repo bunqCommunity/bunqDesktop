@@ -9,8 +9,8 @@ import RequestInquiryBatchListItem from "../ListItems/RequestInquiryBatchListIte
 import ShareInviteBankInquiryListItem from "../ListItems/ShareInviteBankInquiryListItem";
 import ShareInviteBankResponseListItem from "../ListItems/ShareInviteBankResponseListItem";
 
-import { UTCDateToLocalDate } from "../../Helpers/Utils";
-import { eventFilter, shareInviteBankInquiryFilter, shareInviteBankResponseFilter } from "../../Helpers/DataFilters";
+import { UTCDateToLocalDate } from "../../Functions/Utils";
+import { eventFilter, shareInviteBankInquiryFilter, shareInviteBankResponseFilter } from "../../Functions/DataFilters";
 
 export const eventMapper = (settings, onlyPending = false, onlyNonPending = false) => {
     if (settings.hiddenTypes.includes("Payment")) return [];

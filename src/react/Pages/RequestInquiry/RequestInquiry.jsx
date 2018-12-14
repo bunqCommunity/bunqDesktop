@@ -26,9 +26,9 @@ import { openSnackbar } from "../../Actions/snackbar";
 import { requestInquirySend } from "../../Actions/request_inquiry";
 import { eventInfoUpdate } from "../../Actions/events";
 
-import { getInternationalFormat, isValidPhonenumber } from "../../Helpers/PhoneLib";
+import { getInternationalFormat, isValidPhonenumber } from "../../Functions/PhoneLib";
 import TotalSplitHelper from "./TotalSplitHelper";
-import { getConnectPermissions } from "../../Helpers/GetConnectPermissions";
+import { connectGetPermissions } from "../../Functions/ConnectGetPermissions";
 
 const styles = {
     payButton: {
@@ -435,7 +435,7 @@ class RequestInquiry extends React.Component {
         this.props.requestInquirySend(userId, account.id, requestInquiries);
 
         setTimeout(() => {
-            const connectPermissions = getConnectPermissions(this.props.shareInviteBankResponses, account.id);
+            const connectPermissions = connectGetPermissions(this.props.shareInviteBankResponses, account.id);
             if (connectPermissions && connectPermissions.view_new_events) {
                 this.props.eventInfoUpdate(userId);
             }

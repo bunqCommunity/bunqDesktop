@@ -31,7 +31,7 @@ import AccountCard from "../Components/AccountCard";
 import TranslateButton from "../Components/TranslationHelpers/Button";
 import MoneyFormatInput from "../Components/FormFields/MoneyFormatInput";
 
-import { filterShareInviteBankResponses, filterShareInviteBankInquiries } from "../Helpers/DataFilters";
+import { filterShareInviteBankResponses, filterShareInviteBankInquiries } from "../Functions/DataFilters";
 
 import { openSnackbar } from "../Actions/snackbar";
 import { accountsUpdate, accountsUpdateSettings, accountsDeactivate } from "../Actions/accounts";
@@ -40,7 +40,7 @@ import { shareInviteBankInquiriesInfoUpdate } from "../Actions/share_invite_bank
 import { shareInviteBankResponsesInfoUpdate } from "../Actions/share_invite_bank_responses";
 import { shareInviteBankResponseChangeStatus } from "../Actions/share_invite_bank_response";
 import { shareInviteBankInquiryChangeStatus } from "../Actions/share_invite_bank_inquiry";
-import { getConnectPermissions } from "../Helpers/GetConnectPermissions";
+import { connectGetPermissions } from "../Functions/ConnectGetPermissions";
 
 const styles = {
     paper: {
@@ -48,7 +48,7 @@ const styles = {
         marginBottom: 16
     },
     dialogContent: {
-        width: 300
+        width: 240
     },
     chip: {
         margin: 8
@@ -134,7 +134,7 @@ class AccountInfo extends React.Component {
                 this.props.shareInviteBankInquiriesInfoUpdate(userId, accountId);
             }
             this.props.shareInviteBankResponsesInfoUpdate(userId);
-            const connectPermissions = getConnectPermissions(this.props.shareInviteBankResponses, accountId);
+            const connectPermissions = connectGetPermissions(this.props.shareInviteBankResponses, accountId);
             if (connectPermissions && connectPermissions.view_new_events) {
                 this.props.eventInfoUpdate(userId, accountId);
             }
@@ -401,7 +401,7 @@ class AccountInfo extends React.Component {
                     <Dialog key="deactivate-dialog" open={this.state.openDialog} onClose={this.toggleDeactivateDialog}>
                         <DialogTitle>{t("Cancel account")}</DialogTitle>
 
-                        <DialogContent>
+                        <DialogContent style={styles.dialogContent}>
                             <DialogContentText>
                                 {isJointAccount
                                     ? t("It is not possible to delete a Joint or Connect account using bunqDesktop")

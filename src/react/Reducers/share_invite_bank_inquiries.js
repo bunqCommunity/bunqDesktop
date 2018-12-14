@@ -1,6 +1,6 @@
 import store from "store";
 import { STORED_SHARE_INVITE_BANK_INQUIRIES } from "../Actions/share_invite_bank_inquiries";
-import { storeEncryptString } from "../Helpers/CryptoWorkerWrapper";
+import { storeEncryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
 
 export const defaultState = {
     share_invite_bank_inquiries: [],

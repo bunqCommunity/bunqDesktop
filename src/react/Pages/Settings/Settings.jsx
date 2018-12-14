@@ -10,6 +10,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Select from "@material-ui/core/Select";
+import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
 import Switch from "@material-ui/core/Switch";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -23,17 +24,19 @@ import LogoutIcon from "@material-ui/icons/ExitToApp";
 import RemoveIcon from "@material-ui/icons/Delete";
 import HomeIcon from "@material-ui/icons/Home";
 
-import path from "../ImportWrappers/path";
-import { getPrettyLanguage } from "../Helpers/Utils";
-const packageInfo = require("../../../package.json");
+import path from "../../ImportWrappers/path";
+import { getPrettyLanguage } from "../../Functions/Utils";
+
+const packageInfo = require("../../../../package.json");
 const SUPPORTED_LANGUAGES = packageInfo.supported_languages;
 
-import NavLink from "../Components/Routing/NavLink";
-import FilePicker from "../Components/FormFields/FilePicker";
-import TranslateButton from "../Components/TranslationHelpers/Button";
-import TranslateTypography from "../Components/TranslationHelpers/Typography";
+import EditPasswordForm from "./EditPasswordForm";
+import NavLink from "../../Components/Routing/NavLink";
+import FilePicker from "../../Components/FormFields/FilePicker";
+import TranslateButton from "../../Components/TranslationHelpers/Button";
+import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 
-import { openSnackbar } from "../Actions/snackbar";
+import { openSnackbar } from "../../Actions/snackbar";
 import {
     resetApplication,
     setSyncOnStartup,
@@ -54,12 +57,11 @@ import {
     setAnalyticsEnabled,
     toggleAutomaticUpdatesSendNotification,
     setEventCountLimit
-} from "../Actions/options";
-import { registrationClearPrivateData, registrationLogOut } from "../Actions/registration";
-import { scheduledPaymentsClear } from "../Actions/scheduled_payments";
-import { eventsClear } from "../Actions/events";
-import { shareInviteBankInquiriesClear } from "../Actions/share_invite_bank_inquiries";
-import { shareInviteBankResponsesClear } from "../Actions/share_invite_bank_responses";
+} from "../../Actions/options";
+import { registrationClearPrivateData, registrationLogOut } from "../../Actions/registration";
+import { scheduledPaymentsClear } from "../../Actions/scheduled_payments";
+import { shareInviteBankInquiriesClear } from "../../Actions/share_invite_bank_inquiries";
+import { shareInviteBankResponsesClear } from "../../Actions/share_invite_bank_responses";
 
 const styles = {
     sideButton: {
@@ -73,6 +75,9 @@ const styles = {
         width: "100%"
     },
     selectField: {
+        width: "100%"
+    },
+    textField: {
         width: "100%"
     },
     button: {
@@ -96,7 +101,11 @@ class Settings extends React.Component {
         this.state = {
             clearConfirmation: false,
             openImportDialog: false,
-            importTargetLocation: ""
+            importTargetLocation: "",
+
+            newPassword: "",
+            newPasswordTouched: false,
+            newPasswordValid: false
         };
     }
 
@@ -118,7 +127,7 @@ class Settings extends React.Component {
     };
 
     logout = event => {
-        this.props.logOut();
+        this.props.registrationLogOut();
 
         // minor delay to ensure it happens after the state updates
         setTimeout(() => {
@@ -201,16 +210,22 @@ class Settings extends React.Component {
         });
     };
 
+    resetRequestData = e => {
+        this.props.requestInquiriesClear();
+        this.props.requestResponsesClear();
+        this.props.requestInquiryBatchesClear();
+    };
     requestConnectData = e => {
         this.props.shareInviteBankInquiriesClear();
         this.props.shareInviteBankResponsesClear();
     };
-    resetEventData = e => {
-        this.props.eventsClear();
-    };
     resetAllEventData = e => {
-        this.resetEventData();
+        this.props.paymentsClear();
+        this.props.masterCardActionsClear();
+        this.props.bunqMeTabsClear();
         this.props.scheduledPaymentsClear();
+        this.props.paymentsClear();
+        this.resetRequestData();
         this.requestConnectData();
     };
 
@@ -488,7 +503,10 @@ class Settings extends React.Component {
             </Grid>
         );
 
-        const eventCount = this.props.events.length;
+        const paymentCount = this.props.payments.length;
+        const cardPaymentCount = this.props.masterCardActions.length;
+        const requestCount = this.props.requestInquiries.length + this.props.requestResponses.length;
+        const bunqMeTabsCount = this.props.bunqMeTabs.length;
         const connectCount = this.props.shareInviteBankInquiries.length + this.props.shareInviteBankResponses.length;
         const scheduledPaymentsCount = this.props.scheduledPayments.length;
 
@@ -550,10 +568,29 @@ class Settings extends React.Component {
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
-                    <Button variant="outlined" style={styles.button} onClick={this.props.eventsClear}>
-                        Events {eventCount}
+                    <Button variant="outlined" style={styles.button} onClick={this.props.paymentsClear}>
+                        Regular payments {paymentCount}
                     </Button>
                 </Grid>
+
+                <Grid item xs={12} sm={4}>
+                    <Button variant="outlined" style={styles.button} onClick={this.props.masterCardActionsClear}>
+                        Card payments {cardPaymentCount}
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                    <Button variant="outlined" style={styles.button} onClick={this.resetRequestData}>
+                        Requests {requestCount}
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                    <Button variant="outlined" style={styles.button} onClick={this.props.bunqMeTabsClear}>
+                        bunq.me Tabs {bunqMeTabsCount}
+                    </Button>
+                </Grid>
+
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" style={styles.button} onClick={this.requestConnectData}>
                         Connect requests {connectCount}
@@ -610,6 +647,11 @@ class Settings extends React.Component {
 
                 <Grid item xs={12} sm={8}>
                     <Paper style={styles.paper}>{settingsContainer}</Paper>
+                    {this.props.registrationReady && (
+                        <Paper style={styles.paper}>
+                            <EditPasswordForm />
+                        </Paper>
+                    )}
                     <Paper style={styles.paper}>{dataManagementContainer}</Paper>
                 </Grid>
             </Grid>
@@ -632,8 +674,13 @@ const mapStateToProps = state => {
         settingsLocation: state.options.settings_location,
         automaticThemeChange: state.options.automatic_theme_change,
 
+        payments: state.payments.payments,
         scheduledPayments: state.scheduled_payments.scheduled_payments,
-        events: state.events.events,
+        bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
+        masterCardActions: state.master_card_actions.master_card_actions,
+        requestInquiries: state.request_inquiries.request_inquiries,
+        requestInquiryBatches: state.request_inquiry_batches.request_inquiry_batches,
+        requestResponses: state.request_responses.request_responses,
         shareInviteBankInquiries: state.share_invite_bank_inquiries.share_invite_bank_inquiries,
         shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
 
@@ -676,15 +723,20 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         overwriteSettingsLocation: location => dispatch(overwriteSettingsLocation(location)),
         loadSettingsLocation: location => dispatch(loadSettingsLocation(location)),
 
-        eventsClear: () => dispatch(eventsClear()),
+        paymentsClear: () => dispatch(paymentsClear()),
+        masterCardActionsClear: () => dispatch(masterCardActionsClear()),
+        bunqMeTabsClear: () => dispatch(bunqMeTabsClear()),
         scheduledPaymentsClear: () => dispatch(scheduledPaymentsClear()),
+        requestInquiriesClear: () => dispatch(requestInquiriesClear()),
+        requestResponsesClear: () => dispatch(requestResponsesClear()),
+        requestInquiryBatchesClear: () => dispatch(requestInquiryBatchesClear()),
         shareInviteBankInquiriesClear: () => dispatch(shareInviteBankInquiriesClear()),
         shareInviteBankResponsesClear: () => dispatch(shareInviteBankResponsesClear()),
 
         // clear api key from bunqjsclient and bunqdesktop
-        clearPrivateData: () => dispatch(registrationClearPrivateData(BunqJSClient)),
+        clearPrivateData: () => dispatch(registrationClearPrivateData()),
         // logout of current session without destroying stored keys
-        logOut: () => dispatch(registrationLogOut(BunqJSClient)),
+        registrationLogOut: () => dispatch(registrationLogOut()),
         // full hard reset off all storage
         resetApplication: () => dispatch(resetApplication())
     };

@@ -19,9 +19,9 @@ import { openSnackbar } from "../../Actions/snackbar";
 import { bunqMeTabPut } from "../../Actions/bunq_me_tab";
 import { nextPage, previousPage, setPage, setPageSize, firstPage } from "../../Actions/pagination";
 
-import { humanReadableDate } from "../../Helpers/Utils";
+import { humanReadableDate } from "../../Functions/Utils";
 import { eventMapper, shareInviteBankInquiryMapper, shareInviteBankResponseMapper } from "./MapperFunctions";
-import FilterDisabledChecker from "../../Helpers/FilterDisabledChecker";
+import FilterDisabledChecker from "../../Functions/FilterDisabledChecker";
 
 const styles = {
     button: {

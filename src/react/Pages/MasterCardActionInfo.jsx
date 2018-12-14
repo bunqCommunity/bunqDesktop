@@ -23,7 +23,7 @@ import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 import FilterIcon from "@material-ui/icons/FilterList";
 
 import FilterCreationDialog from "../Components/FilterCreationDialog";
-import PDFExportHelper from "../Components/PDFExportHelper";
+import PDFExportHelper from "../Components/PDFExportHelper/PDFExportHelper";
 import ExportDialog from "../Components/ExportDialog";
 import SpeedDial from "../Components/SpeedDial";
 import TransactionHeader from "../Components/TransactionHeader";
@@ -32,8 +32,8 @@ import CategorySelectorDialog from "../Components/Categories/CategorySelectorDia
 import CategoryChips from "../Components/Categories/CategoryChips";
 import NoteTextForm from "../Components/NoteTexts/NoteTextForm";
 
-import { formatMoney, humanReadableDate } from "../Helpers/Utils";
-import { masterCardActionText, masterCardActionParser } from "../Helpers/StatusTexts";
+import { formatMoney, humanReadableDate } from "../Functions/Utils";
+import { masterCardActionText, masterCardActionParser } from "../Functions/EventStatusTexts";
 import { masterCardActionInfoUpdate } from "../Actions/master_card_action_info";
 import { applicationSetPDFMode } from "../Actions/application";
 

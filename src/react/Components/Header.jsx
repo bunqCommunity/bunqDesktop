@@ -12,7 +12,7 @@ import MinimizeIcon from "./CustomSVG/Minimize";
 import QueueHeaderIcon from "./Queue/QueueHeaderIcon";
 import TranslateTypography from "./TranslationHelpers/Typography";
 
-import IsDarwin from "../Helpers/IsDarwin";
+import IsDarwin from "../Functions/IsDarwin";
 import { toggleSidebar } from "../Actions/sidebar";
 
 const remote = require("electron").remote;

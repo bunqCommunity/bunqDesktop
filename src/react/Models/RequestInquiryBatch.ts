@@ -1,5 +1,5 @@
 import { Amount, RequestSplitTheBill } from "../Types/Types";
-import EventType, { EventTypeValue } from "../Types/Event";
+import Event, { EventTypeValue } from "../Types/Event";
 import RequestInquiry from "./RequestInquiry";
 
 export default class RequestInquiryBatch implements EventType {

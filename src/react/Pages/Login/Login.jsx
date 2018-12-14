@@ -28,16 +28,9 @@ import NavLink from "../../Components/Routing/NavLink";
 import OAuthManagement from "./OAuthManagement";
 import SideOptions from "./SideOptions";
 
-import {
-    registrationLogOut,
-    registrationLogin,
-    registrationSetApiKey,
-    registrationLoadApiKey,
-    registrationSetDeviceName,
-    registrationSetEnvironment
-} from "../../Actions/registration";
-import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
-import Logger from "../../Helpers/Logger";
+import { registrationLogOut, registrationLogin } from "../../Actions/registration";
+import BunqErrorHandler from "../../Functions/BunqErrorHandler";
+import Logger from "../../Functions/Logger";
 
 const styles = {
     card: {
@@ -154,8 +147,9 @@ class Login extends React.Component {
 
     componentDidMount() {
         const isSandboxMode = this.props.environment === "SANDBOX";
-        if (this.props.derivedPassword !== false) {
-            this.registrationLogin(false, false, false, false);
+
+        if (!this.props.registrationLoading) {
+            this.registrationLogin();
         }
 
         this.setState(
@@ -195,14 +189,12 @@ class Login extends React.Component {
         if (this.displayQrCodeDelay) clearTimeout(this.displayQrCodeDelay);
     }
 
-    registrationLogin = (apiKey = false, derivedPassword = false, permittedIps = false, checkApiKeyList = true) => {
+    registrationLogin = (apiKey = false, permittedIps = false) => {
         this.props.registrationLogin(
-            derivedPassword || this.props.derivedPassword,
-            apiKey || this.props.apiKey,
-            this.props.deviceName,
-            this.props.environment,
-            permittedIps || this.props.permittedIps,
-            checkApiKeyList
+            apiKey || false,
+            this.state.deviceName,
+            this.state.sandboxMode ? "SANDBOX" : "PRODUCTION",
+            permittedIps || []
         );
     };
 
@@ -225,16 +217,13 @@ class Login extends React.Component {
         }
 
         if (this.state.deviceNameValid && this.state.apiKeyValid) {
-            this.props.setDeviceName(this.state.deviceName);
-            this.props.setEnvironment(this.state.sandboxMode ? "SANDBOX" : "PRODUCTION");
-
             // check if we use default ips or current ip + wildcard mode
             let permittedIps = [];
             if (this.state.currentIp && this.state.wildcardMode) {
                 permittedIps = [this.state.currentIp, "*"];
             }
 
-            this.registrationLogin(this.state.apiKey, this.props.derivedPassword, permittedIps, true);
+            this.registrationLogin(this.state.apiKey, permittedIps);
         }
     };
 
@@ -640,7 +629,7 @@ const mapStateToProps = state => {
     return {
         status_message: state.application.status_message,
 
-        derivedPassword: state.registration.derivedPassword,
+        derivedPassword: state.registration.derived_password,
         registrationLoading: state.registration.loading,
         environment: state.registration.environment,
         deviceName: state.registration.device_name,
@@ -658,28 +647,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         // clear api key from bunqjsclient and bunqdesktop
-        logOut: () => dispatch(registrationLogOut(BunqJSClient, true)),
-        // set the api key and stores the encrypted version
-        registrationSetApiKey: (api_key, derivedPassword, permittedIps = []) =>
-            dispatch(registrationSetApiKey(api_key, derivedPassword, permittedIps)),
-        // attempt to load the api key with our password if one is stored
-        registrationLoadApiKey: derivedPassword => dispatch(registrationLoadApiKey(derivedPassword)),
+        logOut: () => dispatch(registrationLogOut()),
 
-        registrationLogin: (derivedPassword, apiKey, deviceName, environment, permittedIps, checkApiKeyList) =>
-            dispatch(
-                registrationLogin(
-                    BunqJSClient,
-                    derivedPassword,
-                    apiKey,
-                    deviceName,
-                    environment,
-                    permittedIps,
-                    checkApiKeyList
-                )
-            ),
-
-        setEnvironment: environment => dispatch(registrationSetEnvironment(environment)),
-        setDeviceName: device_name => dispatch(registrationSetDeviceName(device_name)),
+        registrationLogin: (apiKey, deviceName, environment, permittedIps) =>
+            dispatch(registrationLogin(apiKey, deviceName, environment, permittedIps)),
 
         handleBunqError: error => BunqErrorHandler(dispatch, error)
     };

@@ -8,7 +8,7 @@ import {
     RequestStatus,
     RequestSplitTheBill
 } from "../Types/Types";
-import EventType, { EventTypeValue } from "../Types/Event";
+import Event, { EventTypeValue } from "../Types/Event";
 
 export default class RequestInquiry implements EventType {
     // the original raw object

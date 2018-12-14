@@ -1,7 +1,7 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
 
-import Logger from "../Helpers/Logger";
+import Logger from "../Functions/Logger";
 import TranslateButton from "./TranslationHelpers/Button";
 import TranslateTypography from "./TranslationHelpers/Typography";
 

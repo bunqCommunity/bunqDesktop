@@ -1,9 +1,9 @@
 import url from "url";
 import axios from "axios";
 const vcf = require("vcf");
-import Logger from "../Helpers/Logger";
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import { getInternationalFormat } from "../Helpers/PhoneLib";
+import Logger from "../Functions/Logger";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
+import { getInternationalFormat } from "../Functions/PhoneLib";
 import fs from "../ImportWrappers/fs";
 
 export const STORED_CONTACTS = "BUNQDESKTOP_STORED_CONTACTS";

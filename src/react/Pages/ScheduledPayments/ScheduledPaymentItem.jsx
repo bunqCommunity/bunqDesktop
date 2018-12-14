@@ -11,8 +11,8 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 import MoneyAmountLabel from "../../Components/MoneyAmountLabel";
 
-import scheduleTexts from "../../Helpers/ScheduleTexts";
-import { formatMoney, humanReadableDate } from "../../Helpers/Utils";
+import scheduleTexts from "../../Functions/ScheduleTexts";
+import { formatMoney, humanReadableDate } from "../../Functions/Utils";
 
 const styles = {
     paper: {

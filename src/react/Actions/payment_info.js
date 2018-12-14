@@ -1,4 +1,4 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
 import Payment from "../Models/Payment";
 
 export function paymentInfoSetInfo(payment, account_id, payment_id) {

@@ -1,7 +1,6 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import { storeDecryptString } from "../Helpers/CryptoWorkerWrapper";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
+import { storeDecryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
 import { shareInviteBankInquiriesSetInfo } from "./share_invite_bank_inquiries";
-import { shareInviteBankResponsesSetInfo } from "./share_invite_bank_responses";
 import Event from "../Models/Event";
 import Payment from "../Models/Payment";
 import BunqMeTab from "../Models/BunqMeTab";

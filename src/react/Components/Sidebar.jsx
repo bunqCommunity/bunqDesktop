@@ -27,7 +27,7 @@ import TrophyIcon from "./CustomSVG/Trophy";
 import QueueSidebarListItem from "./Queue/QueueSidebarListItem";
 import NavLink from "./Routing/NavLink";
 import ListItemWrapper from "./ListItemWrapper";
-import IsDarwin from "../Helpers/IsDarwin";
+import IsDarwin from "../Functions/IsDarwin";
 
 import { closeSidebar } from "../Actions/sidebar";
 
@@ -237,7 +237,7 @@ const mapStateToProps = state => {
         pendingPayments: state.pending_payments.pending_payments,
 
         // used to determine if we need to disable certain items in the menu
-        derivedPassword: state.registration.derivedPassword,
+        derivedPassword: state.registration.derived_password,
         apiKey: state.registration.api_key,
 
         userType: state.user.user_type,

@@ -1,5 +1,5 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import { storeDecryptString } from "../Helpers/CryptoWorkerWrapper";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
+import { storeDecryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
 
 export const STORED_SHARE_INVITE_BANK_INQUIRIES = "BUNQDESKTOP_SHARE_INVITE_BANK_INQUIRIES";
 

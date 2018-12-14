@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import CategoryChip from "./CategoryChip";
-import CategoryHelper from "../../Helpers/CategoryHelper";
+import CategoryHelper from "./CategoryHelper";
 import PrioritySorter from "./PrioritySorter";
 
 const style = {

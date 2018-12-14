@@ -67,7 +67,7 @@ Check out the settings page to see where this information is stored and to chang
 ## Privacy
 At no point is your API key, session information or other data directly sent to other servers or systems. All requests to the bunq API are done directly from the bunqDesktop client to the bunq servers.
 
-We use Google Analytics with minimal settings ([Source code](./src/react/Helpers/Analytics.js)) to check 
+We use Google Analytics with minimal settings ([Source code](./src/react/Functions/Analytics.js)) to check 
 which version of the application is used and other basic information like system language, OS version and country. 
 Your IP address is anonymized using [IP Anonymization in Analytics](https://support.google.com/analytics/answer/2763052?hl=en).
 Google Analytics can be disabled on the settings page whenever you want.
@@ -90,6 +90,8 @@ $ yarn start:dev
 ```
 
 ## Contact
+[![Together topic badge](https://img.shields.io/badge/Together-Discuss-orange.svg) ](https://together.bunq.com/d/6180-bunq-cli-a-new-unofficial-command-line-tool-for-the-bunq-api/11) [![Telegram chat badge](https://img.shields.io/badge/Telegram-Discuss-blue.svg) ](https://t.me/bunqcommunity) [![Telegram chat badge](https://img.shields.io/badge/Telegram-Announcements-blue.svg) ](https://t.me/bunqdesktop)
+
 We have a public [Telegram chat group ](https://t.me/bunqcommunity) and a topic on [bunq together](https://together.bunq.com/d/5763-bunqdesktop-the-unofficial-free-and-open-source-desktop-application-for-bunq/).
 
 If you just want a notification when a new version is released you can also join the [Telegram updates channel](https://t.me/bunqdesktop).

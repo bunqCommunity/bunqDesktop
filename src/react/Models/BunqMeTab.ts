@@ -1,6 +1,5 @@
 import { BunqMeTabEntry, BunqMeTabResultInquiry, BunqMeTabStatus } from "../Types/Types";
 import Event, { EventTypeValue } from "../Types/Event";
-import RequestInquiry from "./RequestInquiry";
 
 export default class BunqMeTab implements Event {
     // the original raw object

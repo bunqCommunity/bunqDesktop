@@ -11,10 +11,10 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
-import { formatMoney } from "../../Helpers/Utils";
+import { formatMoney } from "../../Functions/Utils";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
-import { filterShareInviteBankResponses } from "../../Helpers/DataFilters";
-import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
+import { filterShareInviteBankResponses } from "../../Functions/DataFilters";
+import { connectGetBudget } from "../../Functions/ConnectGetPermissions";
 
 const styles = {
     formControl: {
@@ -37,7 +37,7 @@ const AccountItem = ({ account, onClick, BunqJSClient, hideBalance, shareInviteB
 
     // attempt to get connect budget if possible
     if (filteredInviteResponses.length > 0) {
-        const connectBudget = GetShareDetailBudget(filteredInviteResponses);
+        const connectBudget = connectGetBudget(filteredInviteResponses);
         if (connectBudget) {
             formattedBalance = connectBudget;
         }

@@ -20,8 +20,8 @@ import ProfileDetailsForm from "./ProfileDetailsForm";
 import { openSnackbar } from "../../Actions/snackbar";
 import { usersUpdate } from "../../Actions/users";
 
-import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
-import { formatMoney } from "../../Helpers/Utils";
+import BunqErrorHandler from "../../Functions/BunqErrorHandler";
+import { formatMoney } from "../../Functions/Utils";
 
 const styles = {
     title: {

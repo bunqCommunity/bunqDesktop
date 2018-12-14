@@ -4,7 +4,7 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import ClearIcon from "@material-ui/icons/Clear";
 
-import FilterDisabledChecker from "../../Helpers/FilterDisabledChecker";
+import FilterDisabledChecker from "../../Functions/FilterDisabledChecker";
 
 import { resetFilters } from "../../Actions/filters";
 

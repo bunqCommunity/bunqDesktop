@@ -40,15 +40,17 @@ import TranslateTypography from "../Components/TranslationHelpers/Typography";
 import TranslateButton from "../Components/TranslationHelpers/Button";
 import CombinedList from "../Components/CombinedList/CombinedList";
 
-import Logger from "../Helpers/Logger";
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import { humanReadableDate, formatIban } from "../Helpers/Utils";
-import CategoryHelper from "../Helpers/CategoryHelper";
+import Logger from "../Functions/Logger";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
+import { humanReadableDate, formatIban } from "../Functions/Utils";
+import CategoryHelper from "../Components/Categories/CategoryHelper";
 
 import { openSnackbar } from "../Actions/snackbar";
 import { exportNew } from "../Actions/export_new";
 import { exportInfoUpdate } from "../Actions/exports";
-import { paymentFilter, masterCardActionFilter, eventFilter } from "../Helpers/DataFilters";
+import { paymentFilter, masterCardActionFilter, ev } from "../Functions/DataFilters";
+
+const escapeCsv = val => `"${val.replace('"', '"""')}"`;
 
 const styles = {
     selectField: {
@@ -291,7 +293,7 @@ class Exports extends React.Component {
                 info.alias.iban ? formatIban(info.alias.iban) : null,
                 info.counterparty_alias.iban ? formatIban(info.counterparty_alias.iban) : null,
                 info.counterparty_alias.display_name,
-                info.description.replace("\n", " "),
+                escapeCsv(info.description.replace("\n", " ")),
                 labels.join(","),
                 info.eventType,
                 info.id,

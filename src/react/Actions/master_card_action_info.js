@@ -1,4 +1,4 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
 import MasterCardAction from "../Models/MasterCardAction";
 
 export function masterCardActionSetInfo(master_card_action_info, account_id, master_card_action_id) {
