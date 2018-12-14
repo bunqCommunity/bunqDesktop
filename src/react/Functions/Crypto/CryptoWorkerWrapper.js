@@ -1,5 +1,5 @@
 import store from "store";
-const CryptoWorker = require("react/WebWorkers/crypto.worker.js");
+const CryptoWorker = require("worker-loader!../../WebWorkers/crypto.worker.js");
 
 /**
  * Decrypt data stored in a specific location
