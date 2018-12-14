@@ -395,7 +395,7 @@ class QueueManager extends React.Component {
 
                 // more payments can be loaded for this account
                 if (
-                    paymentsNew.length === currentEventCount &&
+                    payments.length === currentEventCount &&
                     nextEventCount > 0 &&
                     totalEventCount < EVENT_TOTAL_LIMIT
                 ) {
