@@ -38,7 +38,6 @@ export const paymentApiFilter = payment => {
 export const eventFilter = options => event => {
     switch (event.type) {
         case "Payment":
-        case "Invoice":
         case "ScheduledInstance":
         case "ScheduledPayment":
             let paymentObject = event.object;
@@ -49,6 +48,10 @@ export const eventFilter = options => event => {
                 paymentObject = event.object.payment;
             }
             return paymentFilter(options)(paymentObject);
+        case "Invoice":
+            return invoiceFilter(options)(event.object);
+        case "IdealMerchantTransaction":
+            return idealMerchantTransactionFilter(options)(event.object);
         case "BunqMeTab":
             return bunqMeTabsFilter(options)(event.object);
         case "MasterCardAction":
@@ -66,6 +69,174 @@ export const eventFilter = options => event => {
     }
 
     return checkDateRange(options.dateFromFilter, options.dateToFilter, event.created);
+};
+
+export const idealMerchantTransactionFilter = options => idealMerchantTransaction => {
+    if (options.paymentVisibility === false) {
+        return false;
+    }
+
+    if (options.paymentType) {
+        if (options.paymentType === "received") {
+            return false;
+        } else if (options.paymentType === "sent") {
+            return true;
+        }
+    }
+
+    if (options.searchTerm && options.searchTerm.length > 0) {
+        const searchMatches = [
+            idealMerchantTransaction.transaction_identifier.toLowerCase(),
+            idealMerchantTransaction.purchase_identifier.toLowerCase(),
+            idealMerchantTransaction.alias.iban.toLowerCase(),
+            idealMerchantTransaction.alias.display_name.toLowerCase(),
+            idealMerchantTransaction.counterparty_alias.display_name.toLowerCase()
+        ].some(text => text.includes(options.searchTerm));
+        if (!searchMatches) return false;
+    }
+
+    if (options.amountFilterAmount !== "") {
+        let amountValue = idealMerchantTransaction.getAmount();
+        if (amountValue < 0) amountValue = amountValue * -1;
+
+        switch (options.amountFilterType) {
+            case "EQUALS":
+                if (amountValue != options.amountFilterAmount) return false;
+                break;
+            case "MORE":
+                if (amountValue < options.amountFilterAmount) return false;
+                break;
+            case "LESS":
+                if (amountValue > options.amountFilterAmount) return false;
+                break;
+        }
+    }
+
+    if (options.selectedCategories && options.categories && options.categoryConnections) {
+        if (options.selectedCategories.length > 0) {
+            const categories = CategoryHelper(
+                options.categories,
+                options.categoryConnections,
+                "IdealMerchantTransaction",
+                idealMerchantTransaction.id
+            );
+
+            // no categories linked so always unmatched
+            if (categories.length === 0) {
+                if (!options.toggleCategoryFilter) return false;
+            }
+
+            // go through the connected categories and selected categories to see if one matches
+            const categoryMatches = categories.some(category => {
+                return options.selectedCategories.some(selectedCategory => {
+                    return category.id === selectedCategory;
+                });
+            });
+
+            // if reversed and we got matches, return false
+            if (options.toggleCategoryFilter && categoryMatches) return false;
+
+            // no matches and not reversed so return false
+            if (!categoryMatches) {
+                if (!options.toggleCategoryFilter) return false;
+            }
+        }
+    }
+
+    if (options.selectedAccountIds) {
+        if (options.selectedAccountIds.length > 0) {
+            // check if the idealMerchantTransaction is connected to a selected account
+            const foundIndex = options.selectedAccountIds.findIndex(
+                selectedAccountId => selectedAccountId === idealMerchantTransaction.monetary_account_id
+            );
+
+            // if true only return true if account id is in the filter, else return false
+            return options.toggleAccountIds === false ? foundIndex > -1 : foundIndex === -1;
+        }
+    }
+
+    return checkDateRange(options.dateFromFilter, options.dateToFilter, idealMerchantTransaction.created);
+};
+
+export const invoiceFilter = options => invoice => {
+    if (options.paymentVisibility === false) {
+        return false;
+    }
+
+    if (options.paymentType) {
+        if (options.paymentType === "received") {
+            return false;
+        } else if (options.paymentType === "sent") {
+            return true;
+        }
+    }
+
+    if (options.searchTerm && options.searchTerm.length > 0) {
+        const searchMatches = [
+            invoice.vat_number.toLowerCase(),
+            invoice.alias.iban.toLowerCase(),
+            invoice.alias.display_name.toLowerCase(),
+            invoice.counterparty_alias.display_name.toLowerCase()
+        ].some(text => text.includes(options.searchTerm));
+        if (!searchMatches) return false;
+    }
+
+    if (options.amountFilterAmount !== "") {
+        let amountValue = invoice.getAmount();
+        if (amountValue < 0) amountValue = amountValue * -1;
+
+        switch (options.amountFilterType) {
+            case "EQUALS":
+                if (amountValue != options.amountFilterAmount) return false;
+                break;
+            case "MORE":
+                if (amountValue < options.amountFilterAmount) return false;
+                break;
+            case "LESS":
+                if (amountValue > options.amountFilterAmount) return false;
+                break;
+        }
+    }
+
+    if (options.selectedCategories && options.categories && options.categoryConnections) {
+        if (options.selectedCategories.length > 0) {
+            const categories = CategoryHelper(options.categories, options.categoryConnections, "Invoice", invoice.id);
+
+            // no categories linked so always unmatched
+            if (categories.length === 0) {
+                if (!options.toggleCategoryFilter) return false;
+            }
+
+            // go through the connected categories and selected categories to see if one matches
+            const categoryMatches = categories.some(category => {
+                return options.selectedCategories.some(selectedCategory => {
+                    return category.id === selectedCategory;
+                });
+            });
+
+            // if reversed and we got matches, return false
+            if (options.toggleCategoryFilter && categoryMatches) return false;
+
+            // no matches and not reversed so return false
+            if (!categoryMatches) {
+                if (!options.toggleCategoryFilter) return false;
+            }
+        }
+    }
+
+    if (options.selectedAccountIds) {
+        if (options.selectedAccountIds.length > 0) {
+            // check if the invoice is connected to a selected account
+            const foundIndex = options.selectedAccountIds.findIndex(
+                selectedAccountId => selectedAccountId === invoice.monetary_account_id
+            );
+
+            // if true only return true if account id is in the filter, else return false
+            return options.toggleAccountIds === false ? foundIndex > -1 : foundIndex === -1;
+        }
+    }
+
+    return checkDateRange(options.dateFromFilter, options.dateToFilter, invoice.created);
 };
 
 export const paymentFilter = options => payment => {

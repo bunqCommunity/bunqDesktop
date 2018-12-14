@@ -33,7 +33,6 @@ export function eventsSetInfo(events, resetOldItems = false, BunqJSClient = fals
                     eventsNew.push(eventObject);
                     break;
                 case "ShareInviteBankInquiry":
-                    console.log(eventObject.object);
                     shareInviteBankInquiries.push(eventObject.object);
                     break;
                 case "ShareInviteBankResponse":

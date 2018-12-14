@@ -131,6 +131,15 @@ export type PaymentAlias = {
     switft_account_number: null | string;
 };
 
+export type GenericAlias = {
+    avatar: Avatar;
+    country: string;
+    display_name: string;
+    iban: string;
+    is_light: boolean;
+    label_user: any;
+}
+
 export type PaymentSubType = "PAYMENT" | "WITHDRAWAL" | "REVERSAL" | "REQUEST" | "BILLING" | "SCT" | "SDD" | "NLO";
 
 export type PaymentType = "MASTERCARD" | "BUNQ" | "EBA_SCT" | "EBA_SDD" | "IDEAL" | "SWIFT" | "FIS";

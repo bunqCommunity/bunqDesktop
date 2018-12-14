@@ -48,7 +48,7 @@ import CategoryHelper from "../Components/Categories/CategoryHelper";
 import { openSnackbar } from "../Actions/snackbar";
 import { exportNew } from "../Actions/export_new";
 import { exportInfoUpdate } from "../Actions/exports";
-import { paymentFilter, masterCardActionFilter, ev } from "../Functions/DataFilters";
+import { eventFilter } from "../Functions/DataFilters";
 
 const escapeCsv = val => `"${val.replace('"', '"""')}"`;
 
@@ -109,7 +109,6 @@ class Exports extends React.Component {
                 eventFilter({
                     categories: this.props.categories,
                     categoryConnections: this.props.categoryConnections,
-                    selectedCategories: this.props.selectedCategories,
 
                     toggleCategoryFilter: this.props.toggleCategoryFilter,
                     selectedCategories: this.props.selectedCategories,
@@ -120,7 +119,6 @@ class Exports extends React.Component {
                     paymentType: this.props.paymentType,
                     paymentVisibility: this.props.paymentVisibility,
                     bunqMeTabType: this.props.bunqMeTabType,
-                    bunqMeTabVisibility: this.props.bunqMeTabVisibility,
                     requestType: this.props.requestType,
                     bunqMeTabVisibility: this.props.bunqMeTabVisibility,
 

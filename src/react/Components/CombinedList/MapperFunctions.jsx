@@ -15,8 +15,9 @@ import { eventFilter, shareInviteBankInquiryFilter, shareInviteBankResponseFilte
 export const eventMapper = (settings, onlyPending = false, onlyNonPending = false) => {
     if (settings.hiddenTypes.includes("Payment")) return [];
 
+    const eventFilterSetup = eventFilter(settings);
     return settings.events
-        .filter(eventFilter(settings))
+        .filter(eventFilterSetup)
         .filter(event => {
             if (settings.accountId) {
                 if (event.monetary_account_id !== settings.accountId) {
@@ -129,6 +130,12 @@ export const eventMapper = (settings, onlyPending = false, onlyNonPending = fals
                 case "Invoice":
                     return {
                         component: <div>Invoice</div>,
+                        filterDate: UTCDateToLocalDate(event.updated),
+                        info: event.object
+                    };
+                case "IdealMerchantTransaction":
+                    return {
+                        component: <div>IdealMerchantTransaction</div>,
                         filterDate: UTCDateToLocalDate(event.updated),
                         info: event.object
                     };

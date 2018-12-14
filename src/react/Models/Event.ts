@@ -19,12 +19,26 @@ export default class Event implements EventType {
         return "Event";
     }
 
+    public getAmount(): number {
+        if (typeof this._object.getAmount !== "undefined") {
+            return this._object.getAmount();
+        }
+        return 0;
+    }
+
+    public getDelta(): number {
+        if (typeof this._object.getDelta !== "undefined") {
+            return this._object.getDelta();
+        }
+        return 0;
+    }
+
     private _id: number;
     private _action: "CREATE" | "UPDATE";
     private _status: "FINALIZED";
     private _created: Date;
     private _updated: Date;
-    private _object: any;
+    private _object: any | EventType;
     private _updated_fields: any | null;
     private _user_id: number | null;
     private _monetary_account_id: number | null;

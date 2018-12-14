@@ -62,6 +62,7 @@ import { registrationClearPrivateData, registrationLogOut } from "../../Actions/
 import { scheduledPaymentsClear } from "../../Actions/scheduled_payments";
 import { shareInviteBankInquiriesClear } from "../../Actions/share_invite_bank_inquiries";
 import { shareInviteBankResponsesClear } from "../../Actions/share_invite_bank_responses";
+import {eventsClear} from "../../Actions/events";
 
 const styles = {
     sideButton: {
@@ -210,22 +211,13 @@ class Settings extends React.Component {
         });
     };
 
-    resetRequestData = e => {
-        this.props.requestInquiriesClear();
-        this.props.requestResponsesClear();
-        this.props.requestInquiryBatchesClear();
-    };
     requestConnectData = e => {
         this.props.shareInviteBankInquiriesClear();
         this.props.shareInviteBankResponsesClear();
     };
     resetAllEventData = e => {
-        this.props.paymentsClear();
-        this.props.masterCardActionsClear();
-        this.props.bunqMeTabsClear();
+        this.props.eventsClear();
         this.props.scheduledPaymentsClear();
-        this.props.paymentsClear();
-        this.resetRequestData();
         this.requestConnectData();
     };
 
@@ -503,10 +495,7 @@ class Settings extends React.Component {
             </Grid>
         );
 
-        const paymentCount = this.props.payments.length;
-        const cardPaymentCount = this.props.masterCardActions.length;
-        const requestCount = this.props.requestInquiries.length + this.props.requestResponses.length;
-        const bunqMeTabsCount = this.props.bunqMeTabs.length;
+        const eventsCount = this.props.events.length;
         const connectCount = this.props.shareInviteBankInquiries.length + this.props.shareInviteBankResponses.length;
         const scheduledPaymentsCount = this.props.scheduledPayments.length;
 
@@ -568,26 +557,8 @@ class Settings extends React.Component {
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
-                    <Button variant="outlined" style={styles.button} onClick={this.props.paymentsClear}>
-                        Regular payments {paymentCount}
-                    </Button>
-                </Grid>
-
-                <Grid item xs={12} sm={4}>
-                    <Button variant="outlined" style={styles.button} onClick={this.props.masterCardActionsClear}>
-                        Card payments {cardPaymentCount}
-                    </Button>
-                </Grid>
-
-                <Grid item xs={12} sm={4}>
-                    <Button variant="outlined" style={styles.button} onClick={this.resetRequestData}>
-                        Requests {requestCount}
-                    </Button>
-                </Grid>
-
-                <Grid item xs={12} sm={4}>
-                    <Button variant="outlined" style={styles.button} onClick={this.props.bunqMeTabsClear}>
-                        bunq.me Tabs {bunqMeTabsCount}
+                    <Button variant="outlined" style={styles.button} onClick={this.props.eventsClear}>
+                        Events {eventsCount}
                     </Button>
                 </Grid>
 
@@ -674,13 +645,8 @@ const mapStateToProps = state => {
         settingsLocation: state.options.settings_location,
         automaticThemeChange: state.options.automatic_theme_change,
 
-        payments: state.payments.payments,
+        events: state.events.events,
         scheduledPayments: state.scheduled_payments.scheduled_payments,
-        bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
-        masterCardActions: state.master_card_actions.master_card_actions,
-        requestInquiries: state.request_inquiries.request_inquiries,
-        requestInquiryBatches: state.request_inquiry_batches.request_inquiry_batches,
-        requestResponses: state.request_responses.request_responses,
         shareInviteBankInquiries: state.share_invite_bank_inquiries.share_invite_bank_inquiries,
         shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
 
@@ -699,11 +665,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
         // options and options_drawer handlers
         setSyncOnStartup: syncOnStartup => dispatch(setSyncOnStartup(syncOnStartup)),
-        openSnackbar: message => dispatch(openSnackbar(message)),
         setAutomaticThemeChange: automaticThemeChange => dispatch(setAutomaticThemeChange(automaticThemeChange)),
         setTheme: theme => dispatch(setTheme(theme)),
-        setLanguage: language => dispatch(setLanguage(language)),
-        setLanguage: language => dispatch(setLanguage(language)),
         setNativeFrame: useFrame => dispatch(setNativeFrame(useFrame)),
         setStickyMenu: userStickyMenu => dispatch(setStickyMenu(userStickyMenu)),
         setEventCountLimit: eventCountLimit => dispatch(setEventCountLimit(eventCountLimit)),
@@ -723,13 +686,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         overwriteSettingsLocation: location => dispatch(overwriteSettingsLocation(location)),
         loadSettingsLocation: location => dispatch(loadSettingsLocation(location)),
 
-        paymentsClear: () => dispatch(paymentsClear()),
-        masterCardActionsClear: () => dispatch(masterCardActionsClear()),
-        bunqMeTabsClear: () => dispatch(bunqMeTabsClear()),
+        eventsClear: () => dispatch(eventsClear()),
         scheduledPaymentsClear: () => dispatch(scheduledPaymentsClear()),
-        requestInquiriesClear: () => dispatch(requestInquiriesClear()),
-        requestResponsesClear: () => dispatch(requestResponsesClear()),
-        requestInquiryBatchesClear: () => dispatch(requestInquiryBatchesClear()),
         shareInviteBankInquiriesClear: () => dispatch(shareInviteBankInquiriesClear()),
         shareInviteBankResponsesClear: () => dispatch(shareInviteBankResponsesClear()),
 

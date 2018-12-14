@@ -13,4 +13,6 @@ export type EventTypeValue =
 
 export default interface EventType {
     eventType: EventTypeValue;
+    getAmount: () => number;
+    getDelta: () => number;
 }

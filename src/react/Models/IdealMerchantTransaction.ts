@@ -1,5 +1,5 @@
-import Payment from "./Payment";
 import EventType, { EventTypeValue } from "../Types/Event";
+import { Amount, GenericAlias } from "../Types/Types";
 
 export default class IdealMerchantTransaction implements EventType {
     // the original raw object
@@ -11,13 +11,19 @@ export default class IdealMerchantTransaction implements EventType {
     }
 
     private _id: number;
+    private _alias: GenericAlias; // TODO
+    private _allow_chat: boolean;
+    private _amount_guaranteed: Amount;
+    private _amount_requested: Amount;
+    private _counterparty_alias: GenericAlias; // TODO
     private _created: Date;
-    private _label_schedule_user_canceled: any;
-    private _label_schedule_user_created: any;
+    private _issuer: string;
+    private _issuer_authentication_url: string;
+    private _issuer_name: string;
     private _monetary_account_id: number;
-    private _payment: Payment;
-    private _schedule: any;
+    private _purchase_identifier: string;
     private _status: string;
+    private _transaction_identifier: string;
     private _updated: Date;
 
     constructor(eventObject: any) {
@@ -32,7 +38,7 @@ export default class IdealMerchantTransaction implements EventType {
             this[objectKey] = eventInfo[key];
         });
 
-        this._payment = new Payment({ Payment: this._payment });
+        // this._payment = new Payment({ Payment: this._payment });
         this._updated = new Date(this._updated);
         this._created = new Date(this._created);
     }
@@ -49,10 +55,7 @@ export default class IdealMerchantTransaction implements EventType {
      * @returns {number}
      */
     public getAmount(): number {
-        if (this.payment) {
-            return this.payment.getDelta();
-        }
-        return 0;
+        return parseFloat(this.amount_guaranteed.value);
     }
 
     /**
@@ -60,37 +63,59 @@ export default class IdealMerchantTransaction implements EventType {
      * @returns {number}
      */
     public getDelta(): number {
-        return -this.getAmount();
+        return this.getAmount();
     }
 
     get id(): number {
         return this._id;
     }
-    get created(): Date {
-        return this._created;
-    }
-    get updated(): Date {
-        return this._updated;
-    }
+
     get rawData(): any {
         return this._rawData;
     }
-    get label_schedule_user_canceled(): any {
-        return this._label_schedule_user_canceled;
+
+    get alias(): any {
+        return this._alias;
     }
-    get label_schedule_user_created(): any {
-        return this._label_schedule_user_created;
+
+    get allow_chat(): boolean {
+        return this._allow_chat;
+    }
+
+    get amount_guaranteed(): Amount {
+        return this._amount_guaranteed;
+    }
+    get amount_requested(): Amount {
+        return this._amount_requested;
+    }
+    get counterparty_alias(): any {
+        return this._counterparty_alias;
+    }
+    get created(): Date {
+        return this._created;
+    }
+    get issuer(): string {
+        return this._issuer;
+    }
+    get issuer_authentication_url(): string {
+        return this._issuer_authentication_url;
+    }
+    get issuer_name(): string {
+        return this._issuer_name;
     }
     get monetary_account_id(): number {
         return this._monetary_account_id;
     }
-    get payment(): Payment {
-        return this._payment;
-    }
-    get schedule(): any {
-        return this._schedule;
+    get purchase_identifier(): string {
+        return this._purchase_identifier;
     }
     get status(): string {
         return this._status;
+    }
+    get transaction_identifier(): string {
+        return this._transaction_identifier;
+    }
+    get updated(): Date {
+        return this._updated;
     }
 }

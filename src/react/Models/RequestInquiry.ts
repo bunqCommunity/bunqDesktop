@@ -10,7 +10,7 @@ import {
 } from "../Types/Types";
 import Event, { EventTypeValue } from "../Types/Event";
 
-export default class RequestInquiry implements EventType {
+export default class RequestInquiry implements Event {
     // the original raw object
     private _rawData: any;
 
