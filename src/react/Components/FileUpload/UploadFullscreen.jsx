@@ -59,6 +59,9 @@ class UploadFullscreen extends React.Component {
     startUpload = () => {
         const file = this.state.file;
 
+        // close the fullscreen page on upload
+        this.props.onClose();
+
         this.setState({
             uploadingFile: true
         });
@@ -120,6 +123,7 @@ class UploadFullscreen extends React.Component {
                                 color="primary"
                                 style={styles.uploadButton}
                                 onClick={this.startUpload}
+                                disabled={this.state.uploadingFile}
                             >
                                 Upload
                             </Button>

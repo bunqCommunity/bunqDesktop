@@ -130,7 +130,6 @@ class Profile extends React.Component {
 
     handleFileUpload = fileUUID => {
         const { user, userType } = this.props;
-        this.toggleFileUploadDialog();
 
         if (fileUUID) {
             this.props.userUpdateImage(user.id, fileUUID, userType);

@@ -59,7 +59,6 @@ class AccountCard extends React.Component {
 
     handleFileUpload = fileUUID => {
         const { user, account } = this.props;
-        this.toggleFileUploadDialog();
 
         if (fileUUID) {
             this.props.accountsUpdateImage(user.id, account.id, fileUUID, account.accountType);
