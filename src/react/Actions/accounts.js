@@ -118,11 +118,11 @@ export function accountsUpdateImage(
     attachmentId,
     accountType = "MonetaryAccountBank"
 ) {
-    const failedMessage = window.t("We received the following error while updating the image for account");
+    const failedMessage = window.t("We received the following error while updating the image for the monetary account");
     const successMessage = window.t("Image updated successfully!");
 
     return dispatch => {
-        dispatch(createAccountLoading());
+        dispatch(accountsLoading());
 
         // make the image public
         BunqJSClient.api.avatar
@@ -150,15 +150,15 @@ export function accountsUpdateImage(
                     .then(result => {
                         dispatch(openSnackbar(successMessage));
                         dispatch(accountsUpdate(BunqJSClient, userId));
-                        dispatch(createAccountNotLoading());
+                        dispatch(accountsNotLoading());
                     })
                     .catch(error => {
-                        dispatch(createAccountNotLoading());
+                        dispatch(accountsNotLoading());
                         BunqErrorHandler(dispatch, error, failedMessage);
                     });
             })
             .catch(error => {
-                dispatch(createAccountNotLoading());
+                dispatch(accountsNotLoading());
                 BunqErrorHandler(dispatch, error, failedMessage);
             });
     };

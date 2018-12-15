@@ -95,7 +95,7 @@ class UploadFullscreen extends React.Component {
     render() {
         const { t } = this.props;
 
-        t("Failed to upload image")
+        t("Failed to upload image");
 
         return (
             <Dialog

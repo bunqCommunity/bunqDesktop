@@ -12,12 +12,20 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItem from "@material-ui/core/ListItem";
+import List from "@material-ui/core/List";
+import Avatar from "@material-ui/core/Avatar";
+
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import ProfileDetailsForm from "./ProfileDetailsForm";
+import UploadFullscreen from "../../Components/FileUpload/UploadFullscreen";
+import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 
 import { openSnackbar } from "../../Actions/snackbar";
+import { userUpdateImage } from "../../Actions/user";
 import { usersUpdate } from "../../Actions/users";
 
 import BunqErrorHandler from "../../Functions/BunqErrorHandler";
@@ -42,6 +50,10 @@ const styles = {
     },
     circlePicker: {
         padding: 8
+    },
+    avatar: {
+        width: 70,
+        height: 70
     }
 };
 
@@ -51,7 +63,9 @@ class Profile extends React.Component {
         this.state = {
             loading: false,
             totalBalance: 0,
-            normalizedUserInfo: false
+            normalizedUserInfo: false,
+
+            displayUploadScreen: false
         };
     }
 
@@ -114,6 +128,21 @@ class Profile extends React.Component {
         });
     };
 
+    handleFileUpload = fileUUID => {
+        const { user, userType } = this.props;
+        this.toggleFileUploadDialog();
+
+        if (fileUUID) {
+            this.props.userUpdateImage(user.id, fileUUID, userType);
+        }
+    };
+
+    toggleFileUploadDialog = () => {
+        this.setState({
+            displayUploadScreen: !this.state.displayUploadScreen
+        });
+    };
+
     updateSettings = data => {
         const { address_postal, address_main, public_nick_name } = data;
 
@@ -156,7 +185,7 @@ class Profile extends React.Component {
     };
 
     render() {
-        const { t, userType, userLoading } = this.props;
+        const { t, user, userType, userLoading } = this.props;
         const { totalBalance } = this.state;
 
         let content = null;
@@ -242,7 +271,34 @@ class Profile extends React.Component {
 
             content = (
                 <React.Fragment>
+                    <UploadFullscreen
+                        BunqJSClient={this.props.BunqJSClient}
+                        open={this.state.displayUploadScreen}
+                        onComplete={this.handleFileUpload}
+                        onClose={this.toggleFileUploadDialog}
+                    />
+
                     <Paper style={styles.paper}>
+                        <List>
+                            <ListItem>
+                                <Avatar
+                                    style={{ ...styles.avatar, cursor: "pointer" }}
+                                    onClick={_ =>
+                                        this.setState({
+                                            displayUploadScreen: true
+                                        })
+                                    }
+                                >
+                                    <LazyAttachmentImage
+                                        BunqJSClient={this.props.BunqJSClient}
+                                        height={70}
+                                        imageUUID={user.avatar.image[0].attachment_public_uuid}
+                                    />
+                                </Avatar>
+                                <ListItemText primary={user.public_nick_name} secondary={user.legal_name} />
+                            </ListItem>
+                        </List>
+
                         {this.state.normalizedUserInfo && (
                             <ProfileDetailsForm
                                 initialValues={this.state.normalizedUserInfo}
@@ -292,7 +348,6 @@ const mapStateToProps = state => {
     return {
         user: state.user.user,
         userType: state.user.user_type,
-        userType: state.user.user_type,
         userLoading: state.user.loading,
         accounts: state.accounts.accounts,
         accountsLoading: state.accounts.loading
@@ -304,6 +359,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
         usersUpdate: updated => dispatch(usersUpdate(BunqJSClient, updated)),
+        userUpdateImage: (userId, attachmentId) => dispatch(userUpdateImage(BunqJSClient, userId, attachmentId)),
 
         BunqErrorHandler: (error, message) => BunqErrorHandler(dispatch, error, message)
     };

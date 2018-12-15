@@ -52,7 +52,9 @@ class AccountCard extends React.Component {
     }
 
     copiedValue = type => callback => {
-        this.props.openSnackbar(`Copied ${type} to your clipboard`);
+        if (type === "PHONE_NUMBER") type = "Phone number";
+        if (type === "EMAIL") type = "Email";
+        this.props.openSnackbar(window.t(`Copied ${type} to your clipboard`));
     };
 
     handleFileUpload = fileUUID => {
