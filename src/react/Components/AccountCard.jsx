@@ -32,7 +32,8 @@ import { accountsUpdateImage } from "../Actions/accounts";
 const styles = {
     avatar: {
         width: 60,
-        height: 60
+        height: 60,
+        cursor: "default"
     },
     secondaryIcon: {
         width: 26,
@@ -72,11 +73,11 @@ class AccountCard extends React.Component {
     };
 
     render() {
-        const { account, hideBalance, shareInviteBankResponses } = this.props;
+        const { account, hideBalance, filteredInviteResponses } = this.props;
         let formattedBalance = account.balance ? account.balance.value : 0;
 
-        if (this.props.shareInviteBankResponses.length > 0) {
-            const connectBudget = connectGetBudget(this.props.shareInviteBankResponses);
+        if (filteredInviteResponses.length > 0) {
+            const connectBudget = connectGetBudget(filteredInviteResponses);
             if (connectBudget) formattedBalance = connectBudget;
         }
 
@@ -87,7 +88,7 @@ class AccountCard extends React.Component {
                     <PeopleIcon />
                 </Avatar>
             );
-        } else if (this.props.shareInviteBankResponses.length > 0) {
+        } else if (filteredInviteResponses.length > 0) {
             avatarSub = (
                 <Avatar style={styles.secondaryIcon}>
                     <LinkIcon />
@@ -109,12 +110,12 @@ class AccountCard extends React.Component {
                     <ListItem>
                         <Avatar
                             style={
-                                shareInviteBankResponses.length > 0
+                                filteredInviteResponses.length > 0
                                     ? styles.avatar
                                     : { ...styles.avatar, cursor: "pointer" }
                             }
                             onClick={
-                                shareInviteBankResponses.length > 0
+                                filteredInviteResponses.length > 0
                                     ? () => {}
                                     : _ =>
                                           this.setState({
@@ -126,7 +127,9 @@ class AccountCard extends React.Component {
                                 BunqJSClient={this.props.BunqJSClient}
                                 height={60}
                                 imageUUID={account.avatar.image[0].attachment_public_uuid}
-                                style={shareInviteBankResponses.length > 0 ? {} : { cursor: "pointer" }}
+                                style={
+                                    filteredInviteResponses.length > 0 ? { cursor: "default" } : { cursor: "pointer" }
+                                }
                             />
                         </Avatar>
                         <div
