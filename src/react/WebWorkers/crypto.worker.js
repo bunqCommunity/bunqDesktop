@@ -1,33 +1,44 @@
 import { decryptString, encryptString } from "../Functions/Crypto/Crypto.js";
 
-const defaultError = error => {
+const defaultError = (error, taskId) => {
     console.error(error);
-
     postMessage({
-        error: error
+        error: error,
+        taskId: taskId
     });
 };
 
 onmessage = e => {
-    const { type, data, encryptionKey, iv = false } = e.data;
+    const taskId = e.data.taskId;
+    const { type, data, encryptionKey, iv = false } = e.data.task;
 
     if (type === "DECRYPT") {
         // decrypt the data with the given key and iv
         decryptString(data, encryptionKey, iv)
             .then(data => {
                 try {
-                    postMessage(JSON.parse(data));
+                    postMessage({
+                        data: JSON.parse(data),
+                        taskId: taskId
+                    });
                 } catch (error) {
-                    defaultError(error);
+                    defaultError(error, taskId);
                 }
             })
-            .catch(error => defaultError(error));
+            .catch(error => defaultError(error, taskId));
     }
 
     if (type === "ENCRYPT") {
         // encrypt the data with the given encryption key
         encryptString(data, encryptionKey)
-            .then(data => postMessage(data))
-            .catch(error => defaultError(error));
+            .then(data => {
+                postMessage({
+                    taskId: taskId,
+                    data: data
+                });
+            })
+            .catch(error => {
+                defaultError(error, taskId);
+            });
     }
 };
