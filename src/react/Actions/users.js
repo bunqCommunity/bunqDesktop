@@ -1,4 +1,4 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
 import { userSetInfo } from "./user";
 
 export function usersUpdate(BunqJSClient, updated = false) {

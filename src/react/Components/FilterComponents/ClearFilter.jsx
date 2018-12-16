@@ -4,7 +4,7 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import ClearIcon from "@material-ui/icons/Clear";
 
-import FilterDisabledChecker from "../../Helpers/FilterDisabledChecker";
+import FilterDisabledChecker from "../../Functions/FilterDisabledChecker";
 
 import { resetFilters } from "../../Actions/filters";
 
@@ -16,6 +16,8 @@ class ClearFilter extends React.Component {
 
     render() {
         const {
+            dateFromFilter,
+            dateToFilter,
             selectedAccountIds,
             selectedCategories,
             searchTerm,
@@ -30,6 +32,8 @@ class ClearFilter extends React.Component {
 
         if (
             FilterDisabledChecker({
+                dateFromFilter,
+                dateToFilter,
                 selectedAccountIds,
                 selectedCategories,
                 searchTerm,
@@ -74,6 +78,9 @@ const mapStateToProps = state => {
 
         requestType: state.request_filter.type,
         requestVisibility: state.request_filter.visible,
+
+        dateFromFilter: state.date_filter.from_date,
+        dateToFilter: state.date_filter.to_date,
 
         selectedCategories: state.category_filter.selected_categories,
         selectedAccountIds: state.account_id_filter.selected_account_ids,

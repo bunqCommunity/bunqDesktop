@@ -6,8 +6,8 @@ import { translate } from "react-i18next";
 import Avatar from "@material-ui/core/Avatar";
 import Divider from "@material-ui/core/Divider";
 
-import { formatMoney } from "../../Helpers/Utils";
-import { requestInquiryText } from "../../Helpers/StatusTexts";
+import { formatMoney } from "../../Functions/Utils";
+import { requestInquiryText } from "../../Functions/EventStatusTexts";
 import NavLink from "../../Components/Routing/NavLink";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 import CategoryIcons from "../Categories/CategoryIcons";

@@ -11,8 +11,8 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 
 import TranslateMenuItem from "../TranslationHelpers/MenuItem";
-import scheduleTexts from "../../Helpers/ScheduleTexts";
-import { getUTCDate, UTCDateToLocalDate } from "../../Helpers/Utils";
+import scheduleTexts from "../../Functions/ScheduleTexts";
+import { getUTCDate, UTCDateToLocalDate } from "../../Functions/Utils";
 
 const styles = {
     textField: {

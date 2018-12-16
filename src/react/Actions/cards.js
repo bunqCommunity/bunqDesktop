@@ -1,4 +1,4 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
 
 export function cardsSetInfo(cards, user_id) {
     return {

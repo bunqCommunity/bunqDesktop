@@ -3,7 +3,7 @@ import { translate } from "react-i18next";
 import DateTimePicker from "material-ui-pickers/DateTimePicker";
 import Typography from "@material-ui/core/Typography";
 
-import { getUTCDate, UTCDateToLocalDate } from "../../../Helpers/Utils";
+import { getUTCDate, UTCDateToLocalDate } from "../../../Functions/Utils";
 
 const styles = {
     dateTimePicker: {}

@@ -1,5 +1,4 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import { storeDecryptString } from "../Helpers/CryptoWorkerWrapper";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
 import RequestInquiry from "../Models/RequestInquiry";
 
 export const STORED_REQUEST_INQUIRIES = "BUNQDESKTOP_STORED_REQUEST_INQUIRIES";
@@ -20,7 +19,8 @@ export function requestInquiriesSetInfo(requestInquiries, account_id, resetOldIt
 export function loadStoredRequestInquiries(BunqJSClient) {
     return dispatch => {
         dispatch(requestInquiriesLoading());
-        storeDecryptString(STORED_REQUEST_INQUIRIES, BunqJSClient.Session.encryptionKey)
+        const BunqDesktopClient = window.BunqDesktopClient;
+        BunqDesktopClient.storeDecrypt(STORED_REQUEST_INQUIRIES)
             .then(data => {
                 if (data && data.items) {
                     const newRequestInquiries = data.items.map(item => new RequestInquiry(item));

@@ -177,19 +177,19 @@ export const cardOrderStatus = (cardInfo, t) => {
 
     switch (cardInfo.order_status) {
         case "VIRTUAL_DELIVERY":
-            return `${VIRTUAL_DELIVERY} (VIRTUAL_DELIVERY)`;
+            return `${VIRTUAL_DELIVERY}`;
         case "ACCEPTED_FOR_PRODUCTION":
-            return `${ACCEPTED_FOR_PRODUCTION} (ACCEPTED_FOR_PRODUCTION)`;
+            return `${ACCEPTED_FOR_PRODUCTION}`;
         case "NEW_CARD_REQUEST_RECEIVED":
-            return `${NEW_CARD_REQUEST_RECEIVED} (NEW_CARD_REQUEST_RECEIVED)`;
+            return `${NEW_CARD_REQUEST_RECEIVED}`;
         case "DELIVERED_TO_CUSTOMER":
-            return `${DELIVERED_TO_CUSTOMER} (DELIVERED_TO_CUSTOMER)`;
+            return `${DELIVERED_TO_CUSTOMER}`;
         case "CARD_UPDATE_REQUESTED":
-            return `${CARD_UPDATE_REQUESTED} (CARD_UPDATE_REQUESTED)`;
+            return `${CARD_UPDATE_REQUESTED}`;
         case "CARD_UPDATE_SENT":
-            return `${CARD_UPDATE_SENT} (CARD_UPDATE_SENT)`;
+            return `${CARD_UPDATE_SENT}`;
         case "CARD_UPDATE_ACCEPTED":
-            return `${CARD_UPDATE_ACCEPTED} (CARD_UPDATE_ACCEPTED)`;
+            return `${CARD_UPDATE_ACCEPTED}`;
     }
 
     return cardInfo.order_status;

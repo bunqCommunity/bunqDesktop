@@ -1,7 +1,13 @@
 import BunqJSClient from "@bunq-community/bunq-js-client";
+import StorageInterface from "@bunq-community/bunq-js-client/dist/Interfaces/StorageInterface";
 import awaiting from "awaiting";
-import { decryptString, derivePasswordKey, encryptString } from "./Helpers/Crypto";
 import { Environment, StoredApiKey } from "./Types/Types";
+
+import { decryptString, derivePasswordKey, encryptString } from "./Functions/Crypto/Crypto";
+import { storeDecryptString, storeEncryptString } from "./Functions/Crypto/CryptoWorkerWrapper";
+import Logger from "./Functions/Logger";
+import localforage from "./ImportWrappers/localforage";
+import store from "store/dist/store.legacy";
 
 export const SALT_LOCATION = "BUNQDESKTOP_PASSWORD_SALT";
 export const API_KEYS_LOCATION = "BUNQDESKTOP_API_KEYS";
@@ -14,10 +20,43 @@ export const ENVIRONMENT_LOCATION = "BUNQDESKTOP_ENVIRONMENT";
 
 const DEFAULT_PASSWORD = "SOME_DEFAULT_PASSWORD";
 
+class IndexedDbWrapper implements StorageInterface {
+    private _indexedDb: LocalForageDriver;
+
+    constructor(config: LocalForageOptions) {
+        this._indexedDb = localforage.createInstance(config);
+    }
+
+    public get = async (key: string): Promise<any> => {
+        return this._indexedDb.getItem(key);
+    };
+    public set = async (key: string, value: any): Promise<void> => {
+        return this._indexedDb.setItem(key, value);
+    };
+    public remove = async (key: string): Promise<void> => {
+        return this._indexedDb.removeItem(key);
+    };
+    public clear = async (): Promise<void> => {
+        return this._indexedDb.clear();
+    };
+
+    /**
+     * Does a remove action but swallows the promise and only outputs to logger
+     * Used in Redux actions for cleanup where the result isn't important
+     */
+    public silentRemove = (key: string): void => {
+        this.remove(key)
+            .then(() => {})
+            .catch(Logger.error);
+    };
+}
+
 class BunqDesktopClient {
     public BunqJSClient: BunqJSClient;
     public Logger: any;
-    public Store: any;
+    public Store: StorageInterface;
+    public IndexedDb: IndexedDbWrapper;
+    public ImageIndexedDb: IndexedDbWrapper;
 
     private derived_password: string | false = false;
     private derived_password_salt: string | false = false;
@@ -32,10 +71,28 @@ class BunqDesktopClient {
 
     private stored_api_keys: StoredApiKey[] = [];
 
-    constructor(BunqJSClient, Logger, Store) {
+    constructor(BunqJSClient, Logger, Store: StorageInterface) {
         this.BunqJSClient = BunqJSClient;
         this.Logger = Logger;
         this.Store = Store;
+
+        const basicConfig: LocalForageOptions = {
+            driver: localforage.INDEXEDDB,
+            name: "bunqDesktop",
+            version: 1.0
+        };
+
+        // setup two references to the main indexedDb stores
+        this.IndexedDb = new IndexedDbWrapper({
+            ...basicConfig,
+            storeName: "bunq_desktop_api_data",
+            description: "The main bunq-desktop-client data, not including session info"
+        });
+        this.ImageIndexedDb = new IndexedDbWrapper({
+            ...basicConfig,
+            storeName: "bunq_desktop_images",
+            description: "Image cache for bunq desktop in indexed db"
+        });
 
         // current session data if it exists
         this.device_name = this.getStoredValue(DEVICE_NAME_LOCATION, "My device");
@@ -413,6 +470,24 @@ class BunqDesktopClient {
 
         this.api_key = decryptedApiKey;
         return decryptedApiKey;
+    }
+
+    public async storeDecrypt(key: string, iv: any = false, type = "INDEXEDDB"): Promise<any> {
+        return storeDecryptString(key, this.BunqJSClient.Session.encryptionKey, iv, type);
+    }
+    public async storeEncrypt(data: any, key: string, type = "INDEXEDDB"): Promise<any> {
+        return storeEncryptString(data, key, this.BunqJSClient.Session.encryptionKey, type);
+    }
+    public storeRemove(key: string, type = "ALL"): void {
+        if (type === "INDEXEDDB" || type === "ALL") this.IndexedDb.silentRemove(key);
+        if (type === "LOCALSTORAGE" || type === "ALL") store.remove(key);
+
+        // backup, attempt to delete IV value when possible
+        if (!key.endsWith("_IV")) {
+            const ivKey = `${key}_IV`;
+            if (type === "INDEXEDDB" || type === "ALL") this.IndexedDb.silentRemove(ivKey);
+            if (type === "LOCALSTORAGE" || type === "ALL") store.remove(ivKey);
+        }
     }
 
     /** Getter functions **/

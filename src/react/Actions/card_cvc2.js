@@ -1,4 +1,4 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
 
 export function cardCvc2SetInfo(cvc2_codes, user_id, card_id) {
     return {

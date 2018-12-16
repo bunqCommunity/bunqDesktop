@@ -1,4 +1,4 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
 import { applicationSetStatus } from "./application";
 import { userSetInfo } from "./user";
 import { loadStoredPayments } from "./payments";

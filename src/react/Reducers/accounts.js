@@ -3,7 +3,8 @@ import { ipcRenderer } from "electron";
 import settings from "../ImportWrappers/electronSettings";
 
 import { STORED_ACCOUNTS } from "../Actions/accounts";
-import { formatMoney } from "../Helpers/Utils";
+import { storeEncryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
+import { formatMoney } from "../Functions/Utils";
 
 export const SELECTED_ACCOUNT_LOCAION = "BUNQDESKTOP_SELECTED_ACCOUNT";
 export const EXCLUDED_ACCOUNT_IDS = "BUNQDESKTOP_EXCLUDED_ACCOUNT_IDS";
@@ -26,7 +27,8 @@ export default (state = defaultState, action) => {
         case "ACCOUNTS_SET_INFO":
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
-                action.payload.BunqJSClient.Session.storeEncryptedData(
+                const BunqDesktopClient = window.BunqDesktopClient;
+                BunqDesktopClient.storeEncrypt(
                     {
                         items: action.payload.accounts
                     },
@@ -115,8 +117,9 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_CLEAR_PRIVATE_DATA":
         case "REGISTRATION_LOG_OUT":
         case "REGISTRATION_CLEAR_USER_INFO":
-            store.remove(SELECTED_ACCOUNT_LOCAION);
-            store.remove(STORED_ACCOUNTS);
+            const BunqDesktopClient = window.BunqDesktopClient;
+            BunqDesktopClient.storeRemove(SELECTED_ACCOUNT_LOCAION);
+            BunqDesktopClient.storeRemove(STORED_ACCOUNTS);
 
             ipcRenderer.send("set-tray-accounts", false);
             ipcRenderer.send("set-tray-balance", false);

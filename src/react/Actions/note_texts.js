@@ -1,4 +1,4 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
 
 export function noteTextsSetInfo(noteTexts, event_type, user_id, account_id, event_id) {
     return {

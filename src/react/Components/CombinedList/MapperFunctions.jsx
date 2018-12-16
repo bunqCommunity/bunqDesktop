@@ -9,7 +9,7 @@ import RequestInquiryBatchListItem from "../ListItems/RequestInquiryBatchListIte
 import ShareInviteBankInquiryListItem from "../ListItems/ShareInviteBankInquiryListItem";
 import ShareInviteBankResponseListItem from "../ListItems/ShareInviteBankResponseListItem";
 
-import { UTCDateToLocalDate } from "../../Helpers/Utils";
+import { UTCDateToLocalDate } from "../../Functions/Utils";
 import {
     paymentFilter,
     bunqMeTabsFilter,
@@ -19,7 +19,7 @@ import {
     requestResponseFilter,
     shareInviteBankInquiryFilter,
     shareInviteBankResponseFilter
-} from "../../Helpers/DataFilters";
+} from "../../Functions/DataFilters";
 
 export const paymentMapper = (settings, hiddenPaymentIds = []) => {
     if (settings.hiddenTypes.includes("Payment")) return [];

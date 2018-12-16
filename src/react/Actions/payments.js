@@ -1,6 +1,5 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import { storeDecryptString } from "../Helpers/CryptoWorkerWrapper";
-import { paymentApiFilter } from "../Helpers/DataFilters";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
+import { paymentApiFilter } from "../Functions/DataFilters";
 
 import Payment from "../Models/Payment";
 
@@ -22,7 +21,8 @@ export function paymentsSetInfo(payments, account_id, resetOldItems = false, Bun
 export function loadStoredPayments(BunqJSClient) {
     return dispatch => {
         dispatch(paymentsLoading());
-        storeDecryptString(STORED_PAYMENTS, BunqJSClient.Session.encryptionKey)
+        const BunqDesktopClient = window.BunqDesktopClient;
+        BunqDesktopClient.storeDecrypt(STORED_PAYMENTS)
             .then(data => {
                 if (data && data.items) {
                     // turn plain objects into Model objects

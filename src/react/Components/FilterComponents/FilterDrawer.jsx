@@ -106,7 +106,9 @@ class FilterDrawer extends React.Component {
         this.state = {
             selectedDateFrom: null,
             selectedDateTo: null,
-            open: false
+            open: false,
+
+            displayDateFilter: false
         };
     }
 
@@ -138,6 +140,9 @@ class FilterDrawer extends React.Component {
         this.props.toggleBunqMeTabFilterVisibility();
     };
 
+    toggleDateVisibilityChange = () => {
+        this.setState({ displayDateFilter: !this.state.displayDateFilter });
+    };
     handleDateFromChange = date => {
         this.props.setFromDateFilter(date);
     };
@@ -164,6 +169,9 @@ class FilterDrawer extends React.Component {
         } = this.props;
         const { sentPayment, receivedPayment } = theme.palette.common;
 
+        const displayDateFilters =
+            this.props.dateToFilter !== null || this.props.dateFromFilter !== null || this.state.displayDateFilter;
+
         const drawerList = (
             <List style={styles.list}>
                 <ListItem style={styles.textFieldListItem}>
@@ -186,33 +194,35 @@ class FilterDrawer extends React.Component {
                         </IconButton>
                     </ListItemSecondaryAction>
                 </ListSubheader>
-                <ListItem style={styles.radioListItem}>
-                    <RadioGroup
-                        name="payment-type"
-                        style={styles.radioGroup}
-                        value={paymentType}
-                        onChange={this.handlePaymentTypeChange}
-                    >
-                        <Radio
-                            style={styles.radioBtn}
-                            icon={<CompareArrowsIcon />}
-                            checkedIcon={<CompareArrowsIcon color="primary" />}
-                            value={"default"}
-                        />
-                        <Radio
-                            style={styles.radioBtn}
-                            icon={<ArrowDownward />}
-                            checkedIcon={<ArrowDownward style={{ color: receivedPayment }} color="inherit" />}
-                            value={"received"}
-                        />
-                        <Radio
-                            style={styles.radioBtn}
-                            icon={<ArrowUpward />}
-                            checkedIcon={<ArrowUpward style={{ color: sentPayment }} color="inherit" />}
-                            value={"sent"}
-                        />
-                    </RadioGroup>
-                </ListItem>
+                {paymentVisibility && (
+                    <ListItem style={styles.radioListItem}>
+                        <RadioGroup
+                            name="payment-type"
+                            style={styles.radioGroup}
+                            value={paymentType}
+                            onChange={this.handlePaymentTypeChange}
+                        >
+                            <Radio
+                                style={styles.radioBtn}
+                                icon={<CompareArrowsIcon />}
+                                checkedIcon={<CompareArrowsIcon color="primary" />}
+                                value={"default"}
+                            />
+                            <Radio
+                                style={styles.radioBtn}
+                                icon={<ArrowDownward />}
+                                checkedIcon={<ArrowDownward style={{ color: receivedPayment }} color="inherit" />}
+                                value={"received"}
+                            />
+                            <Radio
+                                style={styles.radioBtn}
+                                icon={<ArrowUpward />}
+                                checkedIcon={<ArrowUpward style={{ color: sentPayment }} color="inherit" />}
+                                value={"sent"}
+                            />
+                        </RadioGroup>
+                    </ListItem>
+                )}
 
                 {/* filters for both request-responses and request-requests*/}
                 <ListSubheader style={styles.subheaderTitle}>
@@ -226,33 +236,35 @@ class FilterDrawer extends React.Component {
                         </IconButton>
                     </ListItemSecondaryAction>
                 </ListSubheader>
-                <ListItem style={styles.radioListItem}>
-                    <RadioGroup
-                        name="request-type"
-                        style={styles.radioGroup}
-                        value={requestType}
-                        onChange={this.handleRequestTypeChange}
-                    >
-                        <Radio
-                            style={styles.radioBtn}
-                            icon={<CompareArrowsIcon />}
-                            checkedIcon={<CompareArrowsIcon color="primary" />}
-                            value={"default"}
-                        />
-                        <Radio
-                            style={styles.radioBtn}
-                            icon={<ArrowDownward />}
-                            checkedIcon={<ArrowDownward style={{ color: sentPayment }} color="inherit" />}
-                            value={"received"}
-                        />
-                        <Radio
-                            style={styles.radioBtn}
-                            icon={<ArrowUpward />}
-                            checkedIcon={<ArrowUpward style={{ color: receivedPayment }} color="inherit" />}
-                            value={"sent"}
-                        />
-                    </RadioGroup>
-                </ListItem>
+                {requestVisibility && (
+                    <ListItem style={styles.radioListItem}>
+                        <RadioGroup
+                            name="request-type"
+                            style={styles.radioGroup}
+                            value={requestType}
+                            onChange={this.handleRequestTypeChange}
+                        >
+                            <Radio
+                                style={styles.radioBtn}
+                                icon={<CompareArrowsIcon />}
+                                checkedIcon={<CompareArrowsIcon color="primary" />}
+                                value={"default"}
+                            />
+                            <Radio
+                                style={styles.radioBtn}
+                                icon={<ArrowDownward />}
+                                checkedIcon={<ArrowDownward style={{ color: sentPayment }} color="inherit" />}
+                                value={"received"}
+                            />
+                            <Radio
+                                style={styles.radioBtn}
+                                icon={<ArrowUpward />}
+                                checkedIcon={<ArrowUpward style={{ color: receivedPayment }} color="inherit" />}
+                                value={"sent"}
+                            />
+                        </RadioGroup>
+                    </ListItem>
+                )}
 
                 {/* filters bunq.me tabs */}
                 <ListSubheader style={styles.subheaderTitle}>
@@ -266,108 +278,125 @@ class FilterDrawer extends React.Component {
                         </IconButton>
                     </ListItemSecondaryAction>
                 </ListSubheader>
-                <ListItem style={styles.radioListItem}>
-                    <RadioGroup
-                        name="bunqmetab-type"
-                        style={styles.radioGroup}
-                        value={bunqMeTabType}
-                        onChange={this.handleBunqMeTabChange}
-                    >
-                        <Radio
-                            style={styles.radioBtn}
-                            icon={<CompareArrowsIcon />}
-                            checkedIcon={<CompareArrowsIcon color="primary" />}
-                            value={"default"}
-                        />
-                        <Radio
-                            style={styles.radioBtn}
-                            icon={<CheckCircle />}
-                            checkedIcon={
-                                <CheckCircle
-                                    style={{
-                                        color: theme.palette.bunqMeTabs.awaiting_payment
-                                    }}
-                                    color="inherit"
-                                />
-                            }
-                            value={"active"}
-                        />
-                        <Radio
-                            style={styles.radioBtn}
-                            icon={<Cancel />}
-                            checkedIcon={
-                                <Cancel
-                                    style={{
-                                        color: theme.palette.bunqMeTabs.cancelled
-                                    }}
-                                    color="inherit"
-                                />
-                            }
-                            value={"cancelled"}
-                        />
-                        <Radio
-                            style={styles.radioBtn}
-                            icon={<TimerOff />}
-                            checkedIcon={
-                                <TimerOff
-                                    style={{
-                                        color: theme.palette.bunqMeTabs.expired
-                                    }}
-                                    color="inherit"
-                                />
-                            }
-                            value={"expired"}
-                        />
-                    </RadioGroup>
-                </ListItem>
+                {bunqMeTabVisibility && (
+                    <ListItem style={styles.radioListItem}>
+                        <RadioGroup
+                            name="bunqmetab-type"
+                            style={styles.radioGroup}
+                            value={bunqMeTabType}
+                            onChange={this.handleBunqMeTabChange}
+                        >
+                            <Radio
+                                style={styles.radioBtn}
+                                icon={<CompareArrowsIcon />}
+                                checkedIcon={<CompareArrowsIcon color="primary" />}
+                                value={"default"}
+                            />
+                            <Radio
+                                style={styles.radioBtn}
+                                icon={<CheckCircle />}
+                                checkedIcon={
+                                    <CheckCircle
+                                        style={{
+                                            color: theme.palette.bunqMeTabs.awaiting_payment
+                                        }}
+                                        color="inherit"
+                                    />
+                                }
+                                value={"active"}
+                            />
+                            <Radio
+                                style={styles.radioBtn}
+                                icon={<Cancel />}
+                                checkedIcon={
+                                    <Cancel
+                                        style={{
+                                            color: theme.palette.bunqMeTabs.cancelled
+                                        }}
+                                        color="inherit"
+                                    />
+                                }
+                                value={"cancelled"}
+                            />
+                            <Radio
+                                style={styles.radioBtn}
+                                icon={<TimerOff />}
+                                checkedIcon={
+                                    <TimerOff
+                                        style={{
+                                            color: theme.palette.bunqMeTabs.expired
+                                        }}
+                                        color="inherit"
+                                    />
+                                }
+                                value={"expired"}
+                            />
+                        </RadioGroup>
+                    </ListItem>
+                )}
 
-                <ListSubheader style={styles.subheaderTitle}>{t("Date range filter")}</ListSubheader>
-                <ListItem style={styles.listItem}>
-                    <DatePicker
-                        id="from-date"
-                        helperText={t("From date")}
-                        emptyLabel={t("No filter")}
-                        format="MMMM dd, YYYY"
-                        disableFuture
-                        style={styles.dateInput}
-                        maxDate={this.props.dateToFilter}
-                        value={this.props.dateFromFilter}
-                        onChange={this.handleDateFromChange}
-                        clearable={true}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton onClick={this.clearDateFrom}>
-                                        <Icon>clear</Icon>
-                                    </IconButton>
-                                </InputAdornment>
-                            )
-                        }}
-                    />
-                </ListItem>
-                <ListItem style={styles.listItem}>
-                    <DatePicker
-                        id="to-date"
-                        helperText={t("To date")}
-                        emptyLabel={t("No filter")}
-                        format="MMMM dd, YYYY"
-                        disableFuture
-                        style={styles.dateInput}
-                        minDate={this.props.dateFromFilter}
-                        value={this.props.dateToFilter}
-                        onChange={this.handleDateToChange}
-                        clearable={true}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton onClick={this.clearDateTo}>
-                                        <Icon>clear</Icon>
-                                    </IconButton>
-                                </InputAdornment>
-                            )
-                        }}
-                    />
-                </ListItem>
+                <ListSubheader style={styles.subheaderTitle}>
+                    {t("Date range filter")}
+                    <ListItemSecondaryAction>
+                        <IconButton
+                            aria-label="Display or hide the date filters"
+                            onClick={this.toggleDateVisibilityChange}
+                        >
+                            {displayDateFilters ? <Visible /> : <VisibleOff />}
+                        </IconButton>
+                    </ListItemSecondaryAction>
+                </ListSubheader>
+
+                {displayDateFilters && (
+                    <React.Fragment>
+                        <ListItem style={styles.listItem}>
+                            <DatePicker
+                                id="from-date"
+                                helperText={t("From date")}
+                                emptyLabel={t("No filter")}
+                                format="MMMM dd, YYYY"
+                                disableFuture
+                                style={styles.dateInput}
+                                maxDate={this.props.dateToFilter}
+                                value={this.props.dateFromFilter}
+                                onChange={this.handleDateFromChange}
+                                clearable={true}
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton onClick={this.clearDateFrom}>
+                                                <Icon>clear</Icon>
+                                            </IconButton>
+                                        </InputAdornment>
+                                    )
+                                }}
+                            />
+                        </ListItem>
+                        <ListItem style={styles.listItem}>
+                            <DatePicker
+                                id="to-date"
+                                helperText={t("To date")}
+                                emptyLabel={t("No filter")}
+                                format="MMMM dd, YYYY"
+                                disableFuture
+                                style={styles.dateInput}
+                                minDate={this.props.dateFromFilter}
+                                value={this.props.dateToFilter}
+                                onChange={this.handleDateToChange}
+                                clearable={true}
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton onClick={this.clearDateTo}>
+                                                <Icon>clear</Icon>
+                                            </IconButton>
+                                        </InputAdornment>
+                                    )
+                                }}
+                            />
+                        </ListItem>
+                    </React.Fragment>
+                )}
 
                 <CategorySelection t={t} />
 

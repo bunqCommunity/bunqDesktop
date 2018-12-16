@@ -1,5 +1,4 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import { storeDecryptString } from "../Helpers/CryptoWorkerWrapper";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
 import RequestResponse from "../Models/RequestResponse";
 
 export const STORED_REQUEST_RESPONSES = "BUNQDESKTOP_STORED_REQUEST_RESPONSES";
@@ -20,7 +19,8 @@ export function requestResponsesSetInfo(requestResponses, account_id, resetOldIt
 export function loadStoredRequestResponses(BunqJSClient) {
     return dispatch => {
         dispatch(requestResponsesLoading());
-        storeDecryptString(STORED_REQUEST_RESPONSES, BunqJSClient.Session.encryptionKey)
+        const BunqDesktopClient = window.BunqDesktopClient;
+        BunqDesktopClient.storeDecrypt(STORED_REQUEST_RESPONSES)
             .then(data => {
                 if (data && data.items) {
                     const newRequestResponses = data.items.map(item => new RequestResponse(item));

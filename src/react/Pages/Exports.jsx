@@ -40,15 +40,15 @@ import TranslateTypography from "../Components/TranslationHelpers/Typography";
 import TranslateButton from "../Components/TranslationHelpers/Button";
 import CombinedList from "../Components/CombinedList/CombinedList";
 
-import Logger from "../Helpers/Logger";
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import { humanReadableDate, formatIban } from "../Helpers/Utils";
-import CategoryHelper from "../Helpers/CategoryHelper";
+import Logger from "../Functions/Logger";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
+import { humanReadableDate, formatIban } from "../Functions/Utils";
+import CategoryHelper from "../Components/Categories/CategoryHelper";
 
 import { openSnackbar } from "../Actions/snackbar";
 import { exportNew } from "../Actions/export_new";
 import { exportInfoUpdate } from "../Actions/exports";
-import { paymentFilter, masterCardActionFilter } from "../Helpers/DataFilters";
+import { paymentFilter, masterCardActionFilter } from "../Functions/DataFilters";
 
 const escapeCsv = val => `"${val.replace('"', '"""')}"`;
 

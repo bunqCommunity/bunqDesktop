@@ -8,7 +8,7 @@ import Button from "@material-ui/core/Button";
 
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
 
-import { formatMoney } from "../../Helpers/Utils";
+import { formatMoney } from "../../Functions/Utils";
 
 import { shareInviteBankInquiryChangeStatus } from "../../Actions/share_invite_bank_inquiry";
 import { shareInviteBankResponseChangeStatus } from "../../Actions/share_invite_bank_response";

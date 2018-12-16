@@ -15,8 +15,8 @@ import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachment
 import NavLink from "../../Components/Routing/NavLink";
 import AccountAvatarCircularProgress from "./AccountAvatarCircularProgress";
 
-import { formatMoney } from "../../Helpers/Utils";
-import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
+import { formatMoney } from "../../Functions/Utils";
+import { connectGetBudget } from "../../Functions/ConnectGetPermissions";
 
 import { accountsSelectAccount } from "../../Actions/accounts.js";
 import { addAccountIdFilter, removeAccountIdFilter, toggleAccountIdFilter } from "../../Actions/filters";
@@ -75,7 +75,7 @@ class AccountListItem extends React.Component {
 
         let accountBalance = account.balance ? account.balance.value : 0;
         if (shareInviteBankResponses.length > 0) {
-            const connectBudget = GetShareDetailBudget(shareInviteBankResponses);
+            const connectBudget = connectGetBudget(shareInviteBankResponses);
             if (connectBudget) {
                 accountBalance = connectBudget;
             }

@@ -12,9 +12,9 @@ import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 import CategoryIcons from "../Categories/CategoryIcons";
 import MoneyAmountLabel from "../MoneyAmountLabel";
 
-import { masterCardActionParser } from "../../Helpers/StatusTexts";
-import { formatMoney } from "../../Helpers/Utils";
-import { defaultMastercardImage } from "../../Helpers/DefaultImageHandlers";
+import { masterCardActionParser } from "../../Functions/EventStatusTexts";
+import { formatMoney } from "../../Functions/Utils";
+import { defaultMastercardImage } from "../../Functions/DefaultImageHandlers";
 
 const styles = {
     listItemText: {

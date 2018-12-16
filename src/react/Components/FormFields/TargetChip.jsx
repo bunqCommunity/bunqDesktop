@@ -44,7 +44,7 @@ const TargetChip = ({ target, targetKey, accounts, onClick = false, onDelete = f
             label={targetValue}
             style={{
                 ...styles.chip,
-                ...style,
+                ...style
             }}
             avatar={
                 <Avatar>

@@ -1,4 +1,4 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
 
 export function scheduledPaymentsSetInfo(scheduled_payments, account_id) {
     return {

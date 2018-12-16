@@ -1,5 +1,4 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import { storeDecryptString } from "../Helpers/CryptoWorkerWrapper";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
 import MasterCardAction from "../Models/MasterCardAction";
 
 export const STORED_MASTER_CARD_ACTIONS = "BUNQDESKTOP_STORED_MASTER_CARD_ACTIONS";
@@ -20,7 +19,8 @@ export function masterCardActionsSetInfo(masterCardActions, account_id, resetOld
 export function loadStoredMasterCardActions(BunqJSClient) {
     return dispatch => {
         dispatch(masterCardActionsLoading());
-        storeDecryptString(STORED_MASTER_CARD_ACTIONS, BunqJSClient.Session.encryptionKey)
+        const BunqDesktopClient = window.BunqDesktopClient;
+        BunqDesktopClient.storeDecrypt(STORED_MASTER_CARD_ACTIONS)
             .then(data => {
                 if (data && data.items) {
                     // turn plain objects into Model objects

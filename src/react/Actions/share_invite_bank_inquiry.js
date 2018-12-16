@@ -1,4 +1,4 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
 import { openSnackbar } from "./snackbar";
 import { shareInviteBankInquiriesInfoUpdate } from "./share_invite_bank_inquiries";
 

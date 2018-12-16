@@ -9,7 +9,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 
 import NavLink from "./Routing/NavLink";
-import { formatIban } from "../Helpers/Utils";
+import { formatIban } from "../Functions/Utils";
 
 export default props => {
     const { t, item, open, onClose } = props;

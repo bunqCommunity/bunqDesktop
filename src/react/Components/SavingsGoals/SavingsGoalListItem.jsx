@@ -12,7 +12,7 @@ import ExpiredIcon from "@material-ui/icons/TimerOff";
 import LinearProgressCustom from "../LinearProgress";
 import NavLink from "../Routing/NavLink";
 
-import { formatMoney, humanReadableDate } from "../../Helpers/Utils";
+import { formatMoney, humanReadableDate } from "../../Functions/Utils";
 
 const styles = {
     listItem: {

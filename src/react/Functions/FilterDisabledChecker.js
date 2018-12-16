@@ -1,4 +1,6 @@
 export default ({
+    dateFromFilter = null,
+    dateToFilter = null,
     selectedAccountIds,
     selectedCategories,
     searchTerm,
@@ -11,6 +13,8 @@ export default ({
     amountFilterAmount
 }) => {
     return (
+        dateFromFilter === null &&
+        dateToFilter === null &&
         selectedAccountIds.length <= 0 &&
         selectedCategories.length <= 0 &&
         searchTerm.length <= 0 &&
