@@ -479,11 +479,14 @@ class BunqDesktopClient {
         return storeEncryptString(data, key, this.BunqJSClient.Session.encryptionKey, type);
     }
     public storeRemove(key: string, type = "ALL"): void {
-        if (type === "INDEXEDDB" || type === "ALL") {
-            this.IndexedDb.silentRemove(key);
-        }
-        if (type === "LOCALSTORAGE" || type === "ALL") {
-            store.remove(key);
+        if (type === "INDEXEDDB" || type === "ALL") this.IndexedDb.silentRemove(key);
+        if (type === "LOCALSTORAGE" || type === "ALL") store.remove(key);
+
+        // backup, attempt to delete IV value when possible
+        if (!key.endsWith("_IV")) {
+            const ivKey = `${key}_IV`;
+            if (type === "INDEXEDDB" || type === "ALL") this.IndexedDb.silentRemove(ivKey);
+            if (type === "LOCALSTORAGE" || type === "ALL") store.remove(ivKey);
         }
     }
 
