@@ -12,14 +12,11 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Typography from "@material-ui/core/Typography";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import HelpIcon from "@material-ui/icons/Help";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
 import SaveIcon from "@material-ui/icons/Save";
-import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
-import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 import FilterIcon from "@material-ui/icons/FilterList";
 
 import FilterCreationDialog from "../Components/FilterCreationDialog";
@@ -141,7 +138,8 @@ class MasterCardActionInfo extends React.Component {
 
             const settledText = t("Settled");
             const openText = t("Open");
-            const settlementStatusText = masterCardAction._settlement_status === "SETTLED" ? settledText : openText;
+            const isSettled = masterCardAction._settlement_status === "SETTLED";
+            const settlementStatusText = isSettled ? settledText : openText;
 
             if (this.props.pdfSaveModeEnabled) {
                 return (
@@ -226,26 +224,18 @@ class MasterCardActionInfo extends React.Component {
                                 <ListItemText primary={t("Card")} secondary={masterCardAction.label_card.second_line} />
                             </ListItem>
 
-                            <Divider />
-                            <ListItem>
-                                <ListItemText primary={t("Settlement Status")} secondary={settlementStatusText} />
-                            </ListItem>
+                            {isSettled === false && (
+                                <React.Fragment>
+                                    <Divider />
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={t("Settlement Status")}
+                                            secondary={settlementStatusText}
+                                        />
+                                    </ListItem>
+                                </React.Fragment>
+                            )}
 
-                            <Divider />
-                            <ListItem>
-                                <ListItemText
-                                    primary={t("Authorisation Type")}
-                                    secondary={masterCardAction.authorisation_type}
-                                />
-                            </ListItem>
-
-                            <Divider />
-                            <ListItem>
-                                <ListItemText
-                                    primary={t("Authorisation Status")}
-                                    secondary={masterCardAction.authorisation_status}
-                                />
-                            </ListItem>
                             <Divider />
                         </List>
 
