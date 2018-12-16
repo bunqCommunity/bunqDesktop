@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -19,17 +20,20 @@ import UrlIcon from "@material-ui/icons/Link";
 import LinkIcon from "@material-ui/icons/Link";
 import PeopleIcon from "@material-ui/icons/People";
 
-import AccountAvatarCircularProgress from "./AccountList/AccountAvatarCircularProgress";
+import UploadFullscreen from "./FileUpload/UploadFullscreen";
 import LazyAttachmentImage from "./AttachmentImage/LazyAttachmentImage";
 import AccountQRFullscreen from "./QR/AccountQRFullscreen";
 
 import { formatMoney, formatIban } from "../Functions/Utils";
 import { connectGetBudget } from "../Functions/ConnectGetPermissions";
+import { openSnackbar } from "../Actions/snackbar";
+import { accountsUpdateImage } from "../Actions/accounts";
 
 const styles = {
     avatar: {
         width: 60,
-        height: 60
+        height: 60,
+        cursor: "default"
     },
     secondaryIcon: {
         width: 26,
@@ -42,19 +46,38 @@ const styles = {
 class AccountCard extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {};
+
+        this.state = {
+            displayUploadScreen: false
+        };
     }
 
     copiedValue = type => callback => {
-        this.props.openSnackbar(`Copied ${type} to your clipboard`);
+        if (type === "PHONE_NUMBER") type = "Phone number";
+        if (type === "EMAIL") type = "Email";
+        this.props.openSnackbar(window.t(`Copied ${type} to your clipboard`));
+    };
+
+    handleFileUpload = fileUUID => {
+        const { user, account } = this.props;
+
+        if (fileUUID) {
+            this.props.accountsUpdateImage(user.id, account.id, fileUUID, account.accountType);
+        }
+    };
+
+    toggleFileUploadDialog = () => {
+        this.setState({
+            displayUploadScreen: !this.state.displayUploadScreen
+        });
     };
 
     render() {
-        const { account, hideBalance } = this.props;
+        const { account, hideBalance, filteredInviteResponses } = this.props;
         let formattedBalance = account.balance ? account.balance.value : 0;
 
-        if (this.props.shareInviteBankResponses.length > 0) {
-            const connectBudget = connectGetBudget(this.props.shareInviteBankResponses);
+        if (filteredInviteResponses.length > 0) {
+            const connectBudget = connectGetBudget(filteredInviteResponses);
             if (connectBudget) formattedBalance = connectBudget;
         }
 
@@ -65,7 +88,7 @@ class AccountCard extends React.Component {
                     <PeopleIcon />
                 </Avatar>
             );
-        } else if (this.props.shareInviteBankResponses.length > 0) {
+        } else if (filteredInviteResponses.length > 0) {
             avatarSub = (
                 <Avatar style={styles.secondaryIcon}>
                     <LinkIcon />
@@ -77,14 +100,36 @@ class AccountCard extends React.Component {
 
         return (
             <Paper>
+                <UploadFullscreen
+                    BunqJSClient={this.props.BunqJSClient}
+                    open={this.state.displayUploadScreen}
+                    onComplete={this.handleFileUpload}
+                    onClose={this.toggleFileUploadDialog}
+                />
                 <List>
                     <ListItem>
-                        <AccountAvatarCircularProgress account={account} />
-                        <Avatar style={styles.avatar}>
+                        <Avatar
+                            style={
+                                filteredInviteResponses.length > 0
+                                    ? styles.avatar
+                                    : { ...styles.avatar, cursor: "pointer" }
+                            }
+                            onClick={
+                                filteredInviteResponses.length > 0
+                                    ? () => {}
+                                    : _ =>
+                                          this.setState({
+                                              displayUploadScreen: true
+                                          })
+                            }
+                        >
                             <LazyAttachmentImage
                                 BunqJSClient={this.props.BunqJSClient}
                                 height={60}
                                 imageUUID={account.avatar.image[0].attachment_public_uuid}
+                                style={
+                                    filteredInviteResponses.length > 0 ? { cursor: "default" } : { cursor: "pointer" }
+                                }
                             />
                         </Avatar>
                         <div
@@ -147,10 +192,22 @@ class AccountCard extends React.Component {
     }
 }
 
-AccountCard.defaultProps = {
-    isJointAccount: false,
-    toggleDeactivateDialog: false,
-    toggleSettingsDialog: false
+const mapStateToProps = state => {
+    return {
+        user: state.user.user
+    };
 };
 
-export default AccountCard;
+const mapDispatchToProps = (dispatch, props) => {
+    const { BunqJSClient } = props;
+    return {
+        openSnackbar: message => dispatch(openSnackbar(message)),
+        accountsUpdateImage: (userId, accountId, attachmentId, accountType) =>
+            dispatch(accountsUpdateImage(BunqJSClient, userId, accountId, attachmentId, accountType))
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AccountCard);

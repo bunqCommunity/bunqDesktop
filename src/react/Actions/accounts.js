@@ -113,6 +113,59 @@ export function createAccount(
     };
 }
 
+export function accountsUpdateImage(
+    BunqJSClient,
+    userId,
+    accountId,
+    attachmentId,
+    accountType = "MonetaryAccountBank"
+) {
+    const failedMessage = window.t("We received the following error while updating the image for the monetary account");
+    const successMessage = window.t("Image updated successfully!");
+
+    return dispatch => {
+        dispatch(accountsLoading());
+
+        // make the image public
+        BunqJSClient.api.avatar
+            .post(attachmentId)
+            .then(avatarUuid => {
+                const putRequest = {
+                    avatar_uuid: avatarUuid
+                };
+
+                let apiPromise;
+                switch (accountType) {
+                    case "MonetaryAccountSavings":
+                        apiPromise = BunqJSClient.api.monetaryAccountSavings.put(userId, accountId, putRequest);
+                        break;
+                    case "MonetaryAccountJoint":
+                        apiPromise = BunqJSClient.api.monetaryAccountJoint.put(userId, accountId, putRequest);
+                        break;
+                    case "MonetaryAccountBank":
+                    default:
+                        apiPromise = BunqJSClient.api.monetaryAccountBank.put(userId, accountId, putRequest);
+                        break;
+                }
+
+                apiPromise
+                    .then(result => {
+                        dispatch(openSnackbar(successMessage));
+                        dispatch(accountsUpdate(BunqJSClient, userId));
+                        dispatch(accountsNotLoading());
+                    })
+                    .catch(error => {
+                        dispatch(accountsNotLoading());
+                        BunqErrorHandler(dispatch, error, failedMessage);
+                    });
+            })
+            .catch(error => {
+                dispatch(accountsNotLoading());
+                BunqErrorHandler(dispatch, error, failedMessage);
+            });
+    };
+}
+
 export function accountsDeactivate(BunqJSClient, userId, accountId, reason, accountType = "MonetaryAccountBank") {
     const failedMessage = window.t("We received the following error while deactivating your account");
     const successMessage = window.t("Account deactivated successfully!");
