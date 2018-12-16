@@ -31,13 +31,13 @@ export default (state = defaultState, action) => {
 
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
-                storeEncryptString(
+                const BunqDesktopClient = window.BunqDesktopClient;
+                BunqDesktopClient.storeEncrypt(
                     {
                         items: mergedPayments,
                         account_id: action.payload.account_id
                     },
-                    STORED_PAYMENTS,
-                    action.payload.BunqJSClient.Session.encryptionKey
+                    STORED_PAYMENTS
                 )
                     .then(() => {})
                     .catch(() => {});
@@ -77,7 +77,8 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_LOG_OUT":
         case "REGISTRATION_CLEAR_PRIVATE_DATA":
         case "REGISTRATION_CLEAR_USER_INFO":
-            store.remove(STORED_PAYMENTS);
+            const BunqDesktopClient = window.BunqDesktopClient;
+            BunqDesktopClient.storeRemove(STORED_PAYMENTS);
             return {
                 payments: [],
                 account_id: false,

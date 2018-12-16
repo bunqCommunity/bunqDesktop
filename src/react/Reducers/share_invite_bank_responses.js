@@ -12,12 +12,12 @@ export default (state = defaultState, action) => {
         case "SHARE_INVITE_RESPONSES_SET_INFO":
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
-                storeEncryptString(
+                const BunqDesktopClient = window.BunqDesktopClient;
+                BunqDesktopClient.storeEncrypt(
                     {
                         items: action.payload.share_invite_bank_responses
                     },
-                    STORED_SHARE_INVITE_BANK_RESPONSES,
-                    action.payload.BunqJSClient.Session.encryptionKey
+                    STORED_SHARE_INVITE_BANK_RESPONSES
                 )
                     .then(() => {})
                     .catch(() => {});
@@ -44,7 +44,8 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_CLEAR_PRIVATE_DATA":
         case "REGISTRATION_LOG_OUT":
         case "REGISTRATION_CLEAR_USER_INFO":
-            store.remove(STORED_SHARE_INVITE_BANK_RESPONSES);
+            const BunqDesktopClient = window.BunqDesktopClient;
+            BunqDesktopClient.storeRemove(STORED_SHARE_INVITE_BANK_RESPONSES);
             return {
                 ...defaultState
             };

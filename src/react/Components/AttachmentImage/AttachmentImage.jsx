@@ -1,5 +1,4 @@
 import React from "react";
-import localforage from "../../ImportWrappers/localforage";
 import Logger from "../../Functions/Logger";
 
 class AttachmentImage extends React.PureComponent {
@@ -44,15 +43,6 @@ class AttachmentImage extends React.PureComponent {
             return;
         }
 
-        // configure the localforage instance
-        localforage.config({
-            driver: localforage.INDEXEDDB,
-            name: "bunqDesktop",
-            version: 1.0,
-            storeName: "bunq_desktop_images",
-            description: "Image cache for bunq desktop in indexed db"
-        });
-
         // set a timeout as a fallback incase loading the image takes too long
         this.timeout = setTimeout(() => {
             if (this.state.imageUrl === false) {
@@ -70,8 +60,10 @@ class AttachmentImage extends React.PureComponent {
     };
 
     loadImage = async () => {
+        const indexedDb = window.BunqDesktopClient.ImageIndexedDb;
+
         const storageKey = `image_${this.props.imageUUID}`;
-        const base64UrlStored = await localforage.getItem(storageKey);
+        const base64UrlStored = await indexedDb.get(storageKey);
         if (base64UrlStored === null) {
             // no image, fallback to default while we load the image remotely
             if (this._isMounted) {
@@ -94,7 +86,7 @@ class AttachmentImage extends React.PureComponent {
                 }
 
                 // store the full url in storage
-                await localforage.setItem(storageKey, base64Url);
+                await indexedDb.set(storageKey, base64Url);
 
                 return true;
             } catch (ex) {

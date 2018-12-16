@@ -1,5 +1,4 @@
 import BunqErrorHandler from "../Functions/BunqErrorHandler";
-import { storeDecryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
 import BunqMeTab from "../Models/BunqMeTab.ts";
 
 export const STORED_BUNQ_ME_TABS = "BUNQDESKTOP_STORED_BUNQ_ME_TABS";
@@ -20,7 +19,8 @@ export function bunqMeTabsSetInfo(bunqMeTabs, account_id, resetOldItems = false,
 export function loadStoredBunqMeTabs(BunqJSClient) {
     return dispatch => {
         dispatch(bunqMeTabsLoading());
-        storeDecryptString(STORED_BUNQ_ME_TABS, BunqJSClient.Session.encryptionKey)
+        const BunqDesktopClient = window.BunqDesktopClient;
+        BunqDesktopClient.storeDecrypt(STORED_BUNQ_ME_TABS)
             .then(data => {
                 if (data && data.items) {
                     const bunqMeTabsNew = data.items.map(item => new BunqMeTab(item));

@@ -1,5 +1,4 @@
 import BunqErrorHandler from "../Functions/BunqErrorHandler";
-import { storeDecryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
 import RequestInquiryBatch from "../Models/RequestInquiryBatch";
 
 export const STORED_REQUEST_INQUIRY_BATCHES = "BUNQDESKTOP_STORED_REQUEST_INQUIRY_BATCHES";
@@ -25,7 +24,8 @@ export function requestInquiryBatchesSetInfo(
 export function loadStoredrequestInquiryBatches(BunqJSClient) {
     return dispatch => {
         dispatch(requestInquiryBatchesLoading());
-        storeDecryptString(STORED_REQUEST_INQUIRY_BATCHES, BunqJSClient.Session.encryptionKey)
+        const BunqDesktopClient = window.BunqDesktopClient;
+        BunqDesktopClient.storeDecrypt(STORED_REQUEST_INQUIRY_BATCHES)
             .then(data => {
                 if (data && data.items) {
                     const requestInquiryBatchesNew = data.items.map(item => new RequestInquiryBatch(item));

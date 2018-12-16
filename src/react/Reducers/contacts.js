@@ -1,4 +1,9 @@
 import { STORED_CONTACTS } from "../Actions/contacts";
+import { storeEncryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
+import { STORED_ACCOUNTS } from "../Actions/accounts";
+import store from "store";
+import { ipcRenderer } from "electron";
+import { SELECTED_ACCOUNT_LOCAION } from "./accounts";
 
 export const defaultState = {
     last_update: new Date().getTime(),
@@ -53,7 +58,7 @@ export default function reducer(state = defaultState, action) {
 
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
-                action.payload.BunqJSClient.Session.storeEncryptedData(
+                storeEncryptString(
                     {
                         items: state.contacts
                     },
@@ -74,7 +79,8 @@ export default function reducer(state = defaultState, action) {
 
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
-                action.payload.BunqJSClient.Session.storeEncryptedData(
+                const BunqDesktopClient = window.BunqDesktopClient;
+                BunqDesktopClient.storeEncrypt(
                     {
                         items: contacts2
                     },
@@ -110,7 +116,8 @@ export default function reducer(state = defaultState, action) {
 
                 // store the data if we have access to the bunqjsclient
                 if (action.payload.BunqJSClient) {
-                    action.payload.BunqJSClient.Session.storeEncryptedData(
+                    const BunqDesktopClient = window.BunqDesktopClient;
+                    BunqDesktopClient.storeEncrypt(
                         {
                             items: newState.contacts
                         },
@@ -133,6 +140,18 @@ export default function reducer(state = defaultState, action) {
             return {
                 ...state,
                 ...newState
+            };
+        case "REGISTRATION_CLEAR_PRIVATE_DATA":
+        case "REGISTRATION_LOG_OUT":
+        case "REGISTRATION_CLEAR_USER_INFO":
+            const BunqDesktopClient = window.BunqDesktopClient;
+            BunqDesktopClient.storeRemove(STORED_CONTACTS);
+
+            return {
+                ...state,
+                last_update: new Date().getTime(),
+                contacts: {},
+                loading: false
             };
     }
     return state;

@@ -3,6 +3,7 @@ import MergeApiObjects from "../Functions/MergeApiObjects";
 import { storeEncryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
 
 import { STORED_MASTER_CARD_ACTIONS } from "../Actions/master_card_actions";
+import { STORED_BUNQ_ME_TABS } from "../Actions/bunq_me_tabs";
 
 export const defaultState = {
     master_card_actions: [],
@@ -35,13 +36,13 @@ export default (state = defaultState, action) => {
 
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
-                storeEncryptString(
+                const BunqDesktopClient = window.BunqDesktopClient;
+                BunqDesktopClient.storeEncrypt(
                     {
                         items: mergedMasterCardActions,
                         account_id: action.payload.account_id
                     },
-                    STORED_MASTER_CARD_ACTIONS,
-                    action.payload.BunqJSClient.Session.encryptionKey
+                    STORED_MASTER_CARD_ACTIONS
                 )
                     .then(() => {})
                     .catch(() => {});
@@ -81,7 +82,8 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_LOG_OUT":
         case "REGISTRATION_CLEAR_PRIVATE_DATA":
         case "REGISTRATION_CLEAR_USER_INFO":
-            store.remove(STORED_MASTER_CARD_ACTIONS);
+            const BunqDesktopClient = window.BunqDesktopClient;
+            BunqDesktopClient.storeRemove(STORED_MASTER_CARD_ACTIONS);
             return {
                 master_card_actions: [],
                 account_id: false,

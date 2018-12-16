@@ -6,19 +6,27 @@ const CryptoWorker = require("worker-loader!../../WebWorkers/crypto.worker.js");
  * @param location
  * @param encryptionKey
  * @param iv
+ * @param type
  * @returns {Promise<*>}
  */
-export const storeDecryptString = async (location, encryptionKey, iv = false) => {
-    const storedData = store.get(location);
-
-    let storedIv = iv;
-    if (iv === false) {
-        storedIv = store.get(`${location}_IV`);
+export const storeDecryptString = async (location, encryptionKey, iv = false, type = "LOCALSTORAGE") => {
+    let handler = store;
+    if (type === "INDEXEDDB") {
+        handler = window.BunqDesktopClient.IndexedDb;
     }
 
+    const storedDataPromise = handler.get(location);
+    let storedIvPromise = iv;
+    if (!storedIvPromise) {
+        storedIvPromise = handler.get(`${location}_IV`);
+    }
+
+    // wait for the promises to complete
+    const storedIv = await storedIvPromise;
+    const storedData = await storedDataPromise;
+
     // return false if no data or IV was found
-    if (!storedIv) return false;
-    if (!storedData) return false;
+    if (!storedIv || !storedData) return false;
 
     const cryptoWorker = new CryptoWorker();
 
@@ -27,13 +35,13 @@ export const storeDecryptString = async (location, encryptionKey, iv = false) =>
         type: "DECRYPT",
         encryptionKey: encryptionKey,
         data: storedData,
-        iv: storedIv
+        iv: storedIv,
+        tag: type
     });
 
     return new Promise((resolve, reject) => {
         cryptoWorker.onmessage = e => {
             resolve(e.data);
-
             cryptoWorker.terminate();
         };
     });
@@ -44,9 +52,15 @@ export const storeDecryptString = async (location, encryptionKey, iv = false) =>
  * @param data
  * @param location
  * @param encryptionKey
+ * @param type
  * @returns {Promise<void>}
  */
-export const storeEncryptString = async (data, location, encryptionKey) => {
+export const storeEncryptString = async (data, location, encryptionKey, type = "LOCALSTORAGE") => {
+    let handler = store;
+    if (type === "INDEXEDDB") {
+        handler = window.BunqDesktopClient.IndexedDb;
+    }
+
     // stringify the data
     const jsonData = JSON.stringify(data);
 
@@ -64,8 +78,10 @@ export const storeEncryptString = async (data, location, encryptionKey) => {
     });
 
     // store the key and iv details
-    store.set(location, encryptedDetails.encryptedString);
-    store.set(`${location}_IV`, encryptedDetails.iv);
+    const setDataPromise = handler.set(location, encryptedDetails.encryptedString);
+    const setIvPromise = handler.set(`${location}_IV`, encryptedDetails.iv);
+    await setDataPromise;
+    await setIvPromise;
 
     cryptoWorker.terminate();
 };

@@ -1,6 +1,7 @@
 import BunqErrorHandler from "../Functions/BunqErrorHandler";
-import { openSnackbar } from "./snackbar";
 import MonetaryAccount from "../Models/MonetaryAccount";
+
+import { openSnackbar } from "./snackbar";
 
 export const STORED_ACCOUNTS = "BUNQDESKTOP_STORED_ACCOUNTS";
 
@@ -16,7 +17,8 @@ export function accountsSetInfo(accounts, BunqJSClient = false) {
 
 export function loadStoredAccounts(BunqJSClient) {
     return dispatch => {
-        BunqJSClient.Session.loadEncryptedData(STORED_ACCOUNTS)
+        const BunqDesktopClient = window.BunqDesktopClient;
+        BunqDesktopClient.storeDecrypt(STORED_ACCOUNTS)
             .then(data => {
                 if (data && data.items) {
                     // turn plain objects back into MonetaryAccount objects
