@@ -176,6 +176,8 @@ class CombinedList extends React.Component {
             pageSize,
             selectedAccountIds,
             selectedCategories,
+            dateFromFilter,
+            dateToFilter,
             searchTerm,
             paymentType,
             bunqMeTabType,
@@ -189,6 +191,8 @@ class CombinedList extends React.Component {
 
         // check if a filter is set
         const filterIsDisabled = FilterDisabledChecker({
+            dateFromFilter,
+            dateToFilter,
             selectedAccountIds,
             selectedCategories,
             searchTerm,

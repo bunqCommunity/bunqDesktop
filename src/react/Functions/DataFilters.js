@@ -502,6 +502,10 @@ export const shareInviteBankResponseFilter = options => shareInviteBankResponse 
         return false;
     }
 
+    if (options.requestVisibility === false) {
+        return false;
+    }
+
     // don't show share invites if amount filter is set
     if (options.amountFilterAmount !== "") return false;
 
@@ -530,6 +534,10 @@ export const shareInviteBankInquiryFilter = options => shareInviteBankInquiry =>
         : shareInviteBankInquiry.ShareInviteBankResponse;
 
     if (shareInviteBankInquiryInfo.status !== "PENDING") {
+        return false;
+    }
+
+    if (options.requestVisibility === false) {
         return false;
     }
 

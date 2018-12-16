@@ -1,6 +1,6 @@
 export const defaultState = {
     from_date: null,
-    to_date: new Date()
+    to_date: null
 };
 
 export default function reducer(state = defaultState, action) {
@@ -24,7 +24,7 @@ export default function reducer(state = defaultState, action) {
         case "DATE_FILTER_TO_CLEAR":
             return {
                 ...state,
-                to_date: new Date()
+                to_date: null
             };
 
         case "GENERAL_FILTER_RESET":
