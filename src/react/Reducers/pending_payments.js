@@ -126,7 +126,7 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_CLEAR_PRIVATE_DATA":
         case "REGISTRATION_CLEAR_USER_INFO":
             const BunqDesktopClient = window.BunqDesktopClient;
-            BunqDesktopClient.removeStoredApiKey(PENDING_PAYMENTS_LOCATION);
+            BunqDesktopClient.storeRemove(PENDING_PAYMENTS_LOCATION);
             return { ...defaultState };
     }
     return state;
