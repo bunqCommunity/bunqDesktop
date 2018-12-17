@@ -45,6 +45,9 @@ class AccountSelection extends React.Component {
 
     addAccountId = accountId => event => {
         this.props.addAccountIdFilter(accountId);
+        if (this.props.accounts.length === this.props.selectedAccountIds.length) {
+            this.handleClose(event);
+        }
     };
     removeAccountId = accountId => event => {
         this.props.removeAccountIdFilter(accountId);
@@ -52,7 +55,7 @@ class AccountSelection extends React.Component {
 
     render() {
         const { anchorEl } = this.state;
-        const { accounts, selectedAccountIds } = this.props;
+        const { t, accounts, selectedAccountIds, toggleAccountIds } = this.props;
 
         const selectedAccountChipItems = selectedAccountIds.map((accountId, key) => {
             const account = accounts.find(account => account.id === accountId);
@@ -114,16 +117,10 @@ class AccountSelection extends React.Component {
                     <ListItemSecondaryAction>
                         <Tooltip
                             placement="left"
-                            title={t(
-                                `Click to ${this.props.toggleAccountIds ? "include" : "exclude"} the selected accounts`
-                            )}
+                            title={t(`Click to ${toggleAccountIds ? "include" : "exclude"} the selected accounts`)}
                         >
                             <IconButton aria-haspopup="true" onClick={this.props.toggleAccountIdFilter}>
-                                {this.props.toggleAccountIds ? (
-                                    <FilterListIcon className="icon-rotate-180" />
-                                ) : (
-                                    <FilterListIcon />
-                                )}
+                                {toggleAccountIds ? <FilterListIcon className="icon-rotate-180" /> : <FilterListIcon />}
                             </IconButton>
                         </Tooltip>
 

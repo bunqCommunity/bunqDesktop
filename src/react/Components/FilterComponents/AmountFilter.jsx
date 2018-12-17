@@ -55,8 +55,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         setAmountFilterAmount: amount => dispatch(setAmountFilterAmount(amount)),
-        setAmountFilterType: amount => dispatch(setAmountFilterType(amount)),
-        clearAmountFilter: () => dispatch(clearAmountFilter())
+        setAmountFilterType: amount => dispatch(setAmountFilterType(amount))
     };
 };
 

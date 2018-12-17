@@ -1,4 +1,3 @@
-
 export const PENDING_PAYMENTS_LOCATION = "BUNQDESKTOP_STORED_PENDING_PAYMENTS";
 
 export function loadPendingPayments(BunqJSClient) {

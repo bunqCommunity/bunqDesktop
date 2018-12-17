@@ -20,15 +20,25 @@ export default function reducer(state = defaultState, action) {
         case "ACCOUNT_ID_FILTER_TOGGLE":
         case "ACCOUNT_ID_FILTER_REMOVE":
         case "ACCOUNT_ID_FILTER_ADD":
+        case "ACCOUNT_ID_FILTER_CLEAR":
 
-        case "CATEGORY_FILTER_CLEAR":
-        case "CATEGORY_FILTER_ADD_CATEGORY_ID":
-        case "CATEGORY_FILTER_REMOVE_CATEGORY_ID":
+        case "CARD_ID_FILTER_TOGGLE":
+        case "CARD_ID_FILTER_REMOVE":
+        case "CARD_ID_FILTER_ADD":
+        case "CARD_ID_FILTER_CLEAR":
+
         case "CATEGORY_FILTER_TOGGLE_CATEGORY_ID":
+        case "CATEGORY_FILTER_REMOVE_CATEGORY_ID":
+        case "CATEGORY_FILTER_ADD_CATEGORY_ID":
+        case "CATEGORY_FILTER_CLEAR":
 
         case "BUNQ_ME_TAB_FILTER_SET_TYPE":
         case "BUNQ_ME_TAB_FILTER_TOGGLE_VISIBILITY":
         case "BUNQ_ME_TAB_FILTER_CLEAR":
+
+        case "REQUEST_FILTER_SET_TYPE":
+        case "REQUEST_FILTER_TOGGLE_VISIBILITY":
+        case "REQUEST_FILTER_CLEAR":
 
         case "REQUEST_FILTER_SET_TYPE":
         case "REQUEST_FILTER_TOGGLE_VISIBILITY":

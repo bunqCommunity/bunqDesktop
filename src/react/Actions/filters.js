@@ -165,6 +165,36 @@ export function clearAccountIdFilter() {
     };
 }
 
+export function addCardIdFilter(cardId) {
+    return {
+        type: "CARD_ID_FILTER_ADD",
+        payload: {
+            card_id: cardId
+        }
+    };
+}
+
+export function removeCardIdFilter(cardId) {
+    return {
+        type: "CARD_ID_FILTER_REMOVE",
+        payload: {
+            card_id: cardId
+        }
+    };
+}
+
+export function toggleCardIdFilter() {
+    return {
+        type: "CARD_ID_FILTER_TOGGLE"
+    };
+}
+
+export function clearCardIdFilter() {
+    return {
+        type: "CARD_ID_FILTER_CLEAR"
+    };
+}
+
 export function setAmountFilterAmount(amount = null) {
     return {
         type: "AMOUNT_FILTER_SET_AMOUNT",

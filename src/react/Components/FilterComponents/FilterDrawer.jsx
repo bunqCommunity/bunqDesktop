@@ -45,6 +45,7 @@ import {
 
 import SearchFilter from "./SearchFilter";
 import AccountSelection from "./AccountSelection";
+import CardSelection from "./CardSelection";
 import CategorySelection from "./CategorySelection";
 import AmountFilter from "./AmountFilter";
 
@@ -401,6 +402,8 @@ class FilterDrawer extends React.Component {
                 <CategorySelection t={t} />
 
                 <AccountSelection BunqJSClient={this.props.BunqJSClient} t={t} />
+
+                <CardSelection t={t} />
 
                 <ListItem style={styles.listFiller} />
 
