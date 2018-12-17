@@ -1,4 +1,5 @@
 import React from "react";
+const sessionStore = require("store/storages/sessionStorage");
 import { connect } from "react-redux";
 import { translate } from "react-i18next";
 import List from "@material-ui/core/List";
@@ -19,7 +20,6 @@ import { openSnackbar } from "../../Actions/snackbar";
 import { bunqMeTabPut } from "../../Actions/bunq_me_tab";
 import { nextPage, previousPage, setPage, setPageSize, firstPage } from "../../Actions/pagination";
 
-import { humanReadableDate } from "../../Functions/Utils";
 import {
     paymentMapper,
     bunqMeTabsMapper,
@@ -30,6 +30,7 @@ import {
     shareInviteBankInquiryMapper,
     shareInviteBankResponseMapper
 } from "./MapperFunctions";
+import { humanReadableDate } from "../../Functions/Utils";
 import FilterDisabledChecker from "../../Functions/FilterDisabledChecker";
 
 const styles = {
@@ -56,6 +57,8 @@ const styles = {
     }
 };
 
+const STORED_SCROLL_POSITION = "STORED_SCROLL_POSITION";
+
 class CombinedList extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -68,6 +71,11 @@ class CombinedList extends React.Component {
 
     componentDidMount() {
         this.loadEvents();
+    }
+
+    componentWillUnmount() {
+        // set current scroll position before leaving the page
+        sessionStore.write(STORED_SCROLL_POSITION, document.documentElement.scrollTop);
     }
 
     componentDidUpdate(prevProps) {
@@ -102,6 +110,14 @@ class CombinedList extends React.Component {
         }
     }
 
+    useOldPosition = () => {
+        const storedScrollPosition = sessionStore.read(STORED_SCROLL_POSITION);
+        if (storedScrollPosition) {
+            document.documentElement.scrollTop = storedScrollPosition;
+            sessionStore.remove(STORED_SCROLL_POSITION);
+        }
+    }
+
     loadEvents = () => {
         const settings = this.getSettings();
 
@@ -132,7 +148,7 @@ class CombinedList extends React.Component {
         this.setState({
             totalEvents: this.state.totalEvents < events.length ? events.length : this.state.totalEvents,
             events: events
-        });
+        }, this.useOldPosition);
     };
 
     copiedValue = type => callback => {
