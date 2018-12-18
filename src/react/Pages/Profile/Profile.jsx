@@ -5,13 +5,7 @@ import Helmet from "react-helmet";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItem from "@material-ui/core/ListItem";
 import List from "@material-ui/core/List";
@@ -19,17 +13,17 @@ import Avatar from "@material-ui/core/Avatar";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
-import TranslateTypography from "../../Components/TranslationHelpers/Typography";
-import ProfileDetailsForm from "./ProfileDetailsForm";
 import UploadFullscreen from "../../Components/FileUpload/UploadFullscreen";
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
+import ProfileDetailsForm from "./ProfileDetailsForm";
+import NotificationFilters from "./NotificationFilters";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { userUpdateImage } from "../../Actions/user";
 import { usersUpdate } from "../../Actions/users";
 
 import BunqErrorHandler from "../../Functions/BunqErrorHandler";
-import { formatMoney } from "../../Functions/Utils";
+import BusinessInfo from "./BusinessInfo";
 
 const styles = {
     title: {
@@ -41,6 +35,9 @@ const styles = {
     paper: {
         padding: 16,
         marginTop: 16
+    },
+    headerImageListItem: {
+        paddingLeft: 8
     },
     list: {
         textAlign: "left"
@@ -97,6 +94,12 @@ class Profile extends React.Component {
         }
     }
 
+    onChange = key => event => {
+        this.setState({
+            [key]: event.target.value
+        });
+    };
+
     calculateTotalBalance = () => {
         return this.props.accounts.reduce((total, account) => {
             return total + account.getBalance();
@@ -120,12 +123,6 @@ class Profile extends React.Component {
             formattedAddress[key] = address[key] !== null && typeof address[key] !== "undefined" ? address[key] : "";
         });
         return formattedAddress;
-    };
-
-    onChange = key => event => {
-        this.setState({
-            [key]: event.target.value
-        });
     };
 
     handleFileUpload = fileUUID => {
@@ -189,85 +186,6 @@ class Profile extends React.Component {
 
         let content = null;
         if (userLoading === false && this.state.loading === false) {
-            let businessInfo = null;
-            if (userType === "UserCompany") {
-                const safeKeepingValue = totalBalance - 100000;
-                const hasSafeKeepingFee = safeKeepingValue > 0;
-
-                let costsTable = null;
-                if (hasSafeKeepingFee) {
-                    costsTable = (
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>{t("Days")}</TableCell>
-                                    <TableCell numeric>{t("Estimated total cost")}</TableCell>
-                                    <TableCell numeric>{t("Balance after payments")}</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {[1, 7, 30, 90, 365].map(days => {
-                                    // to keep track of the amount across the dates
-                                    let accountBalance = safeKeepingValue;
-                                    let totalPayment = 0;
-
-                                    // go through the days to calculate historic change
-                                    for (let day = 0; day < days; day++) {
-                                        const thousands = accountBalance / 1000;
-                                        let nextPayment = (thousands * 2.4) / 100;
-
-                                        // update balance
-                                        accountBalance = accountBalance - nextPayment;
-                                        totalPayment = totalPayment + nextPayment;
-                                    }
-
-                                    return (
-                                        <TableRow key={`days${days}`}>
-                                            <TableCell component="th" scope="row">
-                                                {days}
-                                            </TableCell>
-                                            <TableCell numeric>{formatMoney(totalPayment)}</TableCell>
-                                            <TableCell numeric>{formatMoney(accountBalance)}</TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-                            </TableBody>
-                        </Table>
-                    );
-                }
-
-                businessInfo = (
-                    <Paper style={styles.paper}>
-                        <Grid container spacing={16} justify="center">
-                            <Grid item xs={12}>
-                                <TranslateTypography variant="subtitle1">
-                                    Safekeeping fee calculator
-                                </TranslateTypography>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <TextField
-                                    min={0}
-                                    step={0.01}
-                                    type="number"
-                                    label="Total account balance"
-                                    value={parseFloat(totalBalance ? totalBalance : 0).toFixed(2)}
-                                    onChange={this.onChange("totalBalance")}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                {hasSafeKeepingFee ? (
-                                    costsTable
-                                ) : (
-                                    <TranslateTypography variant="subtitle1">No safekeeping fee</TranslateTypography>
-                                )}
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                );
-            }
-
             content = (
                 <React.Fragment>
                     <UploadFullscreen
@@ -277,9 +195,9 @@ class Profile extends React.Component {
                         onClose={this.toggleFileUploadDialog}
                     />
 
-                    <Paper style={styles.paper}>
+                    <Paper style={{ ...styles.paper, paddingTop: 0 }}>
                         <List>
-                            <ListItem>
+                            <ListItem style={styles.headerImageListItem}>
                                 <Avatar
                                     style={{ ...styles.avatar, cursor: "pointer" }}
                                     onClick={_ =>
@@ -306,7 +224,16 @@ class Profile extends React.Component {
                         )}
                     </Paper>
 
-                    {businessInfo}
+                    <BusinessInfo t={t} onChange={this.onChange} totalBalance={totalBalance} userType={userType} />
+
+                    <NotificationFilters
+                        t={t}
+                        user={user}
+                        userType={userType}
+                        usersUpdate={this.props.usersUpdate}
+                        BunqJSClient={this.props.BunqJSClient}
+                        BunqErrorHandler={this.props.BunqErrorHandler}
+                    />
                 </React.Fragment>
             );
         } else {
