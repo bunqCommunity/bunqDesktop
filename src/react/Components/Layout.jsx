@@ -144,8 +144,8 @@ class Layout extends React.Component {
         this.checkLanguageChange(nextProps);
 
         if (nextProps.theme === "DefaultTheme") {
-            if (document.documentElement.style.backgroundColor !== "#ffffff") {
-                document.documentElement.style.backgroundColor = "#ffffff";
+            if (document.documentElement.style.backgroundColor !== "#fafafa") {
+                document.documentElement.style.backgroundColor = "#fafafa";
             }
         } else {
             if (document.documentElement.style.backgroundColor !== "#303030") {
