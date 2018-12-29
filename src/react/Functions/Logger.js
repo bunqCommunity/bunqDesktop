@@ -3,6 +3,7 @@ const remote = require("electron").remote;
 const electronLog = remote ? remote.require("electron-log") : require("electron-log");
 
 export default {
+    ...electronLog,
     log: params => {
         console.log(params);
         electronLog.log(params);
