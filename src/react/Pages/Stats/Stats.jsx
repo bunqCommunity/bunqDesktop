@@ -35,7 +35,7 @@ class Stats extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            timescale: "daily",
+            timescale: "weekly",
             parsedData: false,
 
             // card payments split or combined under mastercardaction
