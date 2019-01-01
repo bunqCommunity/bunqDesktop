@@ -1,30 +1,24 @@
 import React from "react";
 import { connect } from "react-redux";
-import { CopyToClipboard } from "react-copy-to-clipboard";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 import Avatar from "@material-ui/core/Avatar";
 
-import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
-import PhoneIcon from "@material-ui/icons/Phone";
-import EmailIcon from "@material-ui/icons/Email";
-import PersonIcon from "@material-ui/icons/Person";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import UrlIcon from "@material-ui/icons/Link";
 import LinkIcon from "@material-ui/icons/Link";
 import PeopleIcon from "@material-ui/icons/People";
 
 import UploadFullscreen from "./FileUpload/UploadFullscreen";
 import LazyAttachmentImage from "./AttachmentImage/LazyAttachmentImage";
 import AccountQRFullscreen from "./QR/AccountQRFullscreen";
+import AliasList from "./AliasList";
 
-import { formatMoney, formatIban } from "../Functions/Utils";
+import { formatMoney } from "../Functions/Utils";
 import { connectGetBudget } from "../Functions/ConnectGetPermissions";
 import { openSnackbar } from "../Actions/snackbar";
 import { accountsUpdateImage } from "../Actions/accounts";
@@ -158,34 +152,8 @@ class AccountCard extends React.Component {
                             ) : null}
                         </ListItemSecondaryAction>
                     </ListItem>
-                    {account.alias.map(alias => {
-                        let value = alias.value;
-                        let icon = <PersonIcon />;
-                        switch (alias.type) {
-                            case "EMAIL":
-                                icon = <EmailIcon />;
-                                break;
-                            case "PHONE_NUMBER":
-                                icon = <PhoneIcon />;
-                                break;
-                            case "IBAN":
-                                icon = <AccountBalanceIcon />;
-                                value = formatIban(alias.value);
-                                break;
-                            case "URL":
-                                icon = <UrlIcon />;
-                                break;
-                        }
 
-                        return (
-                            <ListItem button dense={true}>
-                                <ListItemIcon>{icon}</ListItemIcon>
-                                <CopyToClipboard text={alias.value} onCopy={this.copiedValue(alias.type)}>
-                                    <ListItemText primary={value} />
-                                </CopyToClipboard>
-                            </ListItem>
-                        );
-                    })}
+                    <AliasList aliasses={account.alias} copiedValue={this.copiedValue} />
                 </List>
             </Paper>
         );

@@ -6,9 +6,9 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItem from "@material-ui/core/ListItem";
 import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 import Avatar from "@material-ui/core/Avatar";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
@@ -23,7 +23,9 @@ import { userUpdateImage } from "../../Actions/user";
 import { usersUpdate } from "../../Actions/users";
 
 import BunqErrorHandler from "../../Functions/BunqErrorHandler";
+
 import BusinessInfo from "./BusinessInfo";
+import AliasList from "../../Components/AliasList";
 
 const styles = {
     title: {
@@ -36,7 +38,7 @@ const styles = {
         padding: 16,
         marginTop: 16
     },
-    headerImageListItem: {
+    listItem: {
         paddingLeft: 8
     },
     list: {
@@ -197,7 +199,7 @@ class Profile extends React.Component {
 
                     <Paper style={{ ...styles.paper, paddingTop: 0 }}>
                         <List>
-                            <ListItem style={styles.headerImageListItem}>
+                            <ListItem style={styles.listItem}>
                                 <Avatar
                                     style={{ ...styles.avatar, cursor: "pointer" }}
                                     onClick={_ =>
@@ -214,6 +216,8 @@ class Profile extends React.Component {
                                 </Avatar>
                                 <ListItemText primary={user.public_nick_name} secondary={user.legal_name} />
                             </ListItem>
+
+                            <AliasList aliasses={user.alias} />
                         </List>
 
                         {this.state.normalizedUserInfo && (
