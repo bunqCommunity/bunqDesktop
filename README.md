@@ -31,6 +31,11 @@ You can directly search for 'bunqDesktop' in the Ubuntu store or use  the snap c
 
 `choco install bunqdesktop`
 
+#### [AUR](https://aur.archlinux.org/packages/bunq-desktop-bin/)
+Replace the $AURHELPER section with your AUR helper command.
+
+`$AURHELPER -S bunq-desktop-bin`
+
 ## Features
 - View all your accounts and payments
 - Send new payments to other users
