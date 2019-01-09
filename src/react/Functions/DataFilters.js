@@ -265,6 +265,10 @@ export const paymentFilter = options => payment => {
         }
     }
 
+    if (options.selectedCardIds && options.selectedCardIds.length > 0) {
+        return false;
+    }
+
     if (options.searchTerm && options.searchTerm.length > 0) {
         const searchMatches = [
             payment.description.toLowerCase(),
@@ -350,6 +354,10 @@ export const bunqMeTabsFilter = options => bunqMeTab => {
 
     // don't show bunqme requests if amount filter is set
     if (options.amountFilterAmount !== "") return false;
+
+    if (options.selectedCardIds && options.selectedCardIds.length > 0) {
+        return false;
+    }
 
     if (options.selectedCategories && options.categories && options.categoryConnections) {
         if (options.selectedCategories.length > 0) {
@@ -466,16 +474,24 @@ export const masterCardActionFilter = options => masterCardAction => {
         }
     }
 
-    if (options.selectedAccountIds) {
-        if (options.selectedAccountIds.length > 0) {
-            // check if the payment is connected to a selected account
-            const foundIndex = options.selectedAccountIds.findIndex(
-                selectedAccountId => selectedAccountId === masterCardAction.monetary_account_id
-            );
+    if (options.selectedCardIds && options.selectedCardIds.length > 0) {
+        // check if the payment is connected to a selected account
+        const foundIndex = options.selectedCardIds.findIndex(
+            selectedCardId => selectedCardId === masterCardAction.card_id
+        );
 
-            // if true only return true if account id is in the filter, else return false
-            return options.toggleAccountIds === false ? foundIndex > -1 : foundIndex === -1;
-        }
+        // if true only return true if account id is in the filter, else return false
+        return options.toggleCardIds === false ? foundIndex > -1 : foundIndex === -1;
+    }
+
+    if (options.selectedAccountIds && options.selectedAccountIds.length > 0) {
+        // check if the payment is connected to a selected account
+        const foundIndex = options.selectedAccountIds.findIndex(
+            selectedAccountId => selectedAccountId === masterCardAction.monetary_account_id
+        );
+
+        // if true only return true if account id is in the filter, else return false
+        return options.toggleAccountIds === false ? foundIndex > -1 : foundIndex === -1;
     }
 
     return checkDateRange(options.dateFromFilter, options.dateToFilter, masterCardAction.MasterCardAction.created);
@@ -520,6 +536,10 @@ export const requestResponseFilter = options => requestResponse => {
             requestResponse.counterparty_alias.display_name.toLowerCase()
         ].some(text => text.includes(options.searchTerm));
         if (!searchMatches) return false;
+    }
+
+    if (options.selectedCardIds && options.selectedCardIds.length > 0) {
+        return false;
     }
 
     if (options.amountFilterAmount !== "") {
@@ -623,6 +643,10 @@ export const requestInquiryFilter = options => requestInquiry => {
         }
     }
 
+    if (options.selectedCardIds && options.selectedCardIds.length > 0) {
+        return false;
+    }
+
     if (options.selectedCategories && options.categories && options.categoryConnections) {
         if (options.selectedCategories.length > 0) {
             const categories = CategoryHelper(
@@ -685,6 +709,10 @@ export const requestInquiryBatchFilter = options => requestInquiryBatch => {
     // don't show requests if amount filter is set
     if (options.amountFilterAmount !== "") return false;
 
+    if (options.selectedCardIds && options.selectedCardIds.length > 0) {
+        return false;
+    }
+
     if (options.selectedAccountIds) {
         if (options.selectedAccountIds.length > 0) {
             // TODO check underlying request inquiry account ids
@@ -706,6 +734,10 @@ export const shareInviteBankResponseFilter = options => shareInviteBankResponse 
         return false;
     }
 
+    if (options.requestVisibility === false) {
+        return false;
+    }
+
     // don't show share invites if amount filter is set
     if (options.amountFilterAmount !== "") return false;
 
@@ -721,6 +753,23 @@ export const shareInviteBankResponseFilter = options => shareInviteBankResponse 
     ) {
         return false;
     }
+
+    if (options.selectedCardIds && options.selectedCardIds.length > 0) {
+        return false;
+    }
+
+    if (options.selectedAccountIds && options.selectedAccountIds.length > 0) {
+        if (!shareInviteBankResponseInfo.monetary_account_id) return false;
+
+        // check if the payment is connected to a selected account
+        const foundIndex = options.selectedAccountIds.findIndex(
+            selectedAccountId => selectedAccountId === shareInviteBankResponseInfo.monetary_account_id
+        );
+
+        // if true only return true if account id is in the filter, else return false
+        return options.toggleAccountIds === false ? foundIndex > -1 : foundIndex === -1;
+    }
+
     if (options.bunqMeTabType !== "default" || options.paymentType !== "default" || options.requestType !== "default") {
         return false;
     }
@@ -737,6 +786,10 @@ export const shareInviteBankInquiryFilter = options => shareInviteBankInquiry =>
         return false;
     }
 
+    if (options.requestVisibility === false) {
+        return false;
+    }
+
     // hide these if any type of filter is set
     if (options.searchTerm && options.searchTerm.length > 0) {
         return false;
@@ -744,6 +797,10 @@ export const shareInviteBankInquiryFilter = options => shareInviteBankInquiry =>
 
     // don't show share invites if amount filter is set
     if (options.amountFilterAmount !== "") return false;
+
+    if (options.selectedCardIds && options.selectedCardIds.length > 0) {
+        return false;
+    }
 
     if (
         options.selectedCategories &&
@@ -753,6 +810,17 @@ export const shareInviteBankInquiryFilter = options => shareInviteBankInquiry =>
     ) {
         return false;
     }
+
+    if (options.selectedAccountIds && options.selectedAccountIds.length > 0) {
+        // check if the payment is connected to a selected account
+        const foundIndex = options.selectedAccountIds.findIndex(
+            selectedAccountId => selectedAccountId === shareInviteBankInquiryInfo.monetary_account_id
+        );
+
+        // if true only return true if account id is in the filter, else return false
+        return options.toggleAccountIds === false ? foundIndex > -1 : foundIndex === -1;
+    }
+
     if (options.bunqMeTabType !== "default" || options.paymentType !== "default" || options.requestType !== "default") {
         return false;
     }

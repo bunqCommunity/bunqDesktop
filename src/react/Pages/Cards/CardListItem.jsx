@@ -10,6 +10,30 @@ const styles = {
     cardImage: {}
 };
 
+export const getCardTypeImage = type => {
+    let cardImage = null;
+    let cardType = null;
+    switch (type) {
+        case "MASTERCARD":
+            cardType = "MasterCard";
+            cardImage = "images/bunq-mastercard.png";
+            break;
+        case "MAESTRO":
+            cardType = "Maestro";
+            cardImage = "images/bunq-maestro.png";
+            break;
+        case "MAESTRO_MOBILE_NFC":
+            cardType = "Mobile NFC";
+            cardImage = "images/bunq-nfc-mobile-card.png";
+            break;
+        default:
+            cardType = "Unknown";
+            cardImage = "images/bunq-maestro.png";
+            break;
+    }
+    return { cardImage, cardType };
+};
+
 class CardListItem extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -18,26 +42,7 @@ class CardListItem extends React.Component {
 
     render() {
         const card = this.props.card;
-        let cardImage = null;
-        let cardType = null;
-        switch (card.type) {
-            case "MASTERCARD":
-                cardType = "MasterCard";
-                cardImage = "images/bunq-mastercard.png";
-                break;
-            case "MAESTRO":
-                cardType = "Maestro";
-                cardImage = "images/bunq-maestro.png";
-                break;
-            case "MAESTRO_MOBILE_NFC":
-                cardType = "Mobile NFC";
-                cardImage = "images/bunq-nfc-mobile-card.png";
-                break;
-            default:
-                cardType = "Unknown";
-                cardImage = "images/bunq-maestro.png";
-                break;
-        }
+        const { cardImage, cardType } = getCardTypeImage(card.type);
 
         return [
             <div className="single-card" style={styles.cardWrapper} onClick={this.props.onClick}>

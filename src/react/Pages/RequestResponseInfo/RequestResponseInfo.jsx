@@ -11,13 +11,10 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Typography from "@material-ui/core/Typography";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import HelpIcon from "@material-ui/icons/Help";
 import SaveIcon from "@material-ui/icons/Save";
-import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
-import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 import FilterIcon from "@material-ui/icons/FilterList";
 
 import FilterCreationDialog from "../../Components/FilterCreationDialog";

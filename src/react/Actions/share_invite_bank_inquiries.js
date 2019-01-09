@@ -1,5 +1,4 @@
 import BunqErrorHandler from "../Functions/BunqErrorHandler";
-import { storeDecryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
 
 export const STORED_SHARE_INVITE_BANK_INQUIRIES = "BUNQDESKTOP_SHARE_INVITE_BANK_INQUIRIES";
 
@@ -17,7 +16,8 @@ export function shareInviteBankInquiriesSetInfo(share_invite_bank_inquiries, acc
 export function loadStoredShareInviteBankInquiries(BunqJSClient) {
     return dispatch => {
         dispatch(shareInviteBankInquiriesLoading());
-        storeDecryptString(STORED_SHARE_INVITE_BANK_INQUIRIES, BunqJSClient.Session.encryptionKey)
+        const BunqDesktopClient = window.BunqDesktopClient;
+        BunqDesktopClient.storeDecrypt(STORED_SHARE_INVITE_BANK_INQUIRIES)
             .then(data => {
                 if (data && data.items) {
                     dispatch(shareInviteBankInquiriesSetInfo(data.items, data.account_id));

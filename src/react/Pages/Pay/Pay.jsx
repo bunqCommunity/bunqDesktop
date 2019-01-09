@@ -778,20 +778,19 @@ class Pay extends React.Component {
                                             </Tooltip>
                                         </Grid>
 
-                                        {limitedPermissions ? null : (
-                                            <Grid item xs={12} sm={4}>
-                                                <FormControlLabel
-                                                    control={
-                                                        <Switch
-                                                            color="primary"
-                                                            checked={this.state.schedulePayment}
-                                                            onChange={this.schedulePaymentChange}
-                                                        />
-                                                    }
-                                                    label={t("Schedule payment")}
-                                                />
-                                            </Grid>
-                                        )}
+                                        <Grid item xs={12} sm={4}>
+                                            <FormControlLabel
+                                                control={
+                                                    <Switch
+                                                        color="primary"
+                                                        disabled={limitedPermissions}
+                                                        checked={this.state.schedulePayment}
+                                                        onChange={this.schedulePaymentChange}
+                                                    />
+                                                }
+                                                label={t("Schedule payment")}
+                                            />
+                                        </Grid>
 
                                         <SchedulePaymentForm
                                             t={t}

@@ -1,4 +1,5 @@
 import React from "react";
+const sessionStore = require("store/storages/sessionStorage");
 import { connect } from "react-redux";
 import { translate } from "react-i18next";
 import List from "@material-ui/core/List";
@@ -47,6 +48,8 @@ const styles = {
     }
 };
 
+const STORED_SCROLL_POSITION = "STORED_SCROLL_POSITION";
+
 class CombinedList extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -59,6 +62,11 @@ class CombinedList extends React.Component {
 
     componentDidMount() {
         this.loadEvents();
+    }
+
+    componentWillUnmount() {
+        // set current scroll position before leaving the page
+        sessionStore.write(STORED_SCROLL_POSITION, document.documentElement.scrollTop);
     }
 
     componentDidUpdate(prevProps) {
@@ -76,6 +84,14 @@ class CombinedList extends React.Component {
             this.props.generalFilterDate !== prevProps.generalFilterDate
         ) {
             this.loadEvents();
+        }
+    }
+
+    useOldPosition = () => {
+        const storedScrollPosition = sessionStore.read(STORED_SCROLL_POSITION);
+        if (storedScrollPosition) {
+            document.documentElement.scrollTop = storedScrollPosition;
+            sessionStore.remove(STORED_SCROLL_POSITION);
         }
     }
 
@@ -97,7 +113,7 @@ class CombinedList extends React.Component {
         this.setState({
             totalEvents: this.state.totalEvents < events.length ? events.length : this.state.totalEvents,
             events: combinedEventsList
-        });
+        }, this.useOldPosition);
     };
 
     copiedValue = type => callback => {
@@ -139,8 +155,11 @@ class CombinedList extends React.Component {
             t,
             page,
             pageSize,
-            selectedAccountIds,
+            dateFromFilter,
+            dateToFilter,
             selectedCategories,
+            selectedAccountIds,
+            selectedCardIds,
             searchTerm,
             paymentType,
             bunqMeTabType,
@@ -154,8 +173,11 @@ class CombinedList extends React.Component {
 
         // check if a filter is set
         const filterIsDisabled = FilterDisabledChecker({
-            selectedAccountIds,
+            dateFromFilter,
+            dateToFilter,
             selectedCategories,
+            selectedAccountIds,
+            selectedCardIds,
             searchTerm,
             paymentType,
             bunqMeTabType,
@@ -303,10 +325,11 @@ const mapStateToProps = state => {
         amountFilterType: state.amount_filter.type,
 
         selectedCategories: state.category_filter.selected_categories,
-        toggleCategoryFilter: state.category_filter.toggle,
-
+        toggleCategoryIds: state.category_filter.toggle,
         selectedAccountIds: state.account_id_filter.selected_account_ids,
         toggleAccountIds: state.account_id_filter.toggle,
+        selectedCardIds: state.card_id_filter.selected_card_ids,
+        toggleCardIds: state.card_id_filter.toggle,
 
         categories: state.categories.categories,
         categoryConnections: state.categories.category_connections,

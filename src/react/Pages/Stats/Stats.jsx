@@ -35,7 +35,7 @@ class Stats extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            timescale: "daily",
+            timescale: "weekly",
             parsedData: false,
 
             // card payments split or combined under mastercardaction
@@ -108,9 +108,11 @@ class Stats extends React.Component {
             amountFilterAmount: this.props.amountFilterAmount,
             amountFilterType: this.props.amountFilterType,
             selectedAccountIds: props.selectedAccountIds,
-            toggleAccountIds: props.toggleAccountIds,
+            toggleAccountIdFilter: props.toggleAccountIdFilter,
             selectedCategories: props.selectedCategories,
-            toggleCategoryFilter: props.toggleCategoryFilter,
+            toggleCategoryIds: props.toggleCategoryIds,
+            selectedCardIds: props.selectedCardIds,
+            toggleCardIds: props.toggleCardIds,
             categories: props.categories,
             categoryConnections: props.categoryConnections,
             displayRequestPayments: false,
@@ -396,9 +398,10 @@ const mapStateToProps = state => {
 
         selectedAccountIds: state.account_id_filter.selected_account_ids,
         toggleAccountIds: state.account_id_filter.toggle,
-
         selectedCategories: state.category_filter.selected_categories,
-        toggleCategoryFilter: state.category_filter.toggle,
+        toggleCategoryIds: state.category_filter.toggle,
+        selectedCardIds: state.card_id_filter.selected_card_ids,
+        toggleCardIds: state.card_id_filter.toggle,
 
         amountFilterAmount: state.amount_filter.amount,
         amountFilterType: state.amount_filter.type

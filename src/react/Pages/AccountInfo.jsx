@@ -391,7 +391,7 @@ class AccountInfo extends React.Component {
                 account: accountInfo,
                 isJointAccount: isJointAccount,
                 isSavingsAccount: isSavingsAccount,
-                shareInviteBankResponses: filteredInviteResponses,
+                filteredInviteResponses: filteredInviteResponses,
                 toggleSettingsDialog: filteredInviteResponses.length > 0 ? false : this.toggleSettingsDialog,
                 toggleDeactivateDialog: filteredInviteResponses.length > 0 ? false : this.toggleDeactivateDialog
             };

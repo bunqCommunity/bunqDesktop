@@ -11,6 +11,7 @@ import categories from "./categories";
 import category_filter from "./category_filter";
 import cards from "./cards";
 import card_cvc2 from "./card_cvc2";
+import card_id_filter from "./card_id_filter";
 import category_rules from "./category_rules.ts";
 import contacts from "./contacts";
 import date_filter from "./date_filter";
@@ -57,6 +58,7 @@ export default combineReducers({
     category_filter,
     cards,
     card_cvc2,
+    card_id_filter,
     category_rules,
     contacts,
     date_filter,

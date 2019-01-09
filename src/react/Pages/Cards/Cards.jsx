@@ -350,10 +350,9 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, props) => {
-    const { BunqJSClient } = props;
+const mapDispatchToProps = (dispatch) => {
     return {
-        cardsUpdate: userId => dispatch(cardsUpdate(BunqJSClient, userId)),
+        cardsUpdate: userId => dispatch(cardsUpdate(userId)),
         cardsSetCardOrder: cardOrder => dispatch(cardsSetCardOrder(cardOrder))
     };
 };

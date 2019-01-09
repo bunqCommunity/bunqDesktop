@@ -19,12 +19,12 @@ export function cardsSetCardOrder(cardOrder) {
     };
 }
 
-export function cardsUpdate(BunqJSClient, user_id) {
+export function cardsUpdate(user_id) {
     const failedMessage = window.t("We failed to load the cards overview");
 
     return dispatch => {
         dispatch(cardsLoading());
-        BunqJSClient.api.card
+        window.BunqDesktopClient.BunqJSClient.api.card
             .list(user_id)
             .then(cards => {
                 dispatch(cardsSetInfo(cards, user_id));

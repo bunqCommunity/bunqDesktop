@@ -280,6 +280,7 @@ export function registrationResetToApiScreen(resetStoredApiKey = false) {
 export function registrationLogOut(resetStoredApiKey = true) {
     const BunqDesktopClient = window.BunqDesktopClient;
     return dispatch => {
+        BunqDesktopClient.clearPassword();
         BunqDesktopClient.destroyApiSession(resetStoredApiKey).then(_ => {
             dispatch({
                 type: "REGISTRATION_LOG_OUT",

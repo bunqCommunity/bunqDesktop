@@ -58,9 +58,6 @@ export default props => {
         apiKeyValid,
         sandboxMode,
         wildcardMode,
-        currentIp,
-        currentIpValid,
-        gettingCurrentIpLoading,
         buttonDisabled,
         sandboxButtonDisabled,
         setApiKeyClassname,
@@ -125,20 +122,6 @@ export default props => {
                             />
                         }
                     />
-
-                    {wildcardMode && (
-                        <FormControl style={styles.formControl}>
-                            <InputLabel style={styles.inputLabel}>Current IP Address</InputLabel>
-                            <Input
-                                style={styles.apiInput}
-                                className={"text-input"}
-                                onChange={handleChange("currentIp")}
-                                value={currentIp ? currentIp : ""}
-                                error={!currentIpValid}
-                                disabled={gettingCurrentIpLoading}
-                            />
-                        </FormControl>
-                    )}
 
                     {sandboxMode ? (
                         <TranslateButton

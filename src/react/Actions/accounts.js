@@ -1,6 +1,7 @@
 import BunqErrorHandler from "../Functions/BunqErrorHandler";
-import { openSnackbar } from "./snackbar";
 import MonetaryAccount from "../Models/MonetaryAccount";
+
+import { openSnackbar } from "./snackbar";
 
 export const STORED_ACCOUNTS = "BUNQDESKTOP_STORED_ACCOUNTS";
 
@@ -16,7 +17,8 @@ export function accountsSetInfo(accounts, BunqJSClient = false) {
 
 export function loadStoredAccounts(BunqJSClient) {
     return dispatch => {
-        BunqJSClient.Session.loadEncryptedData(STORED_ACCOUNTS)
+        const BunqDesktopClient = window.BunqDesktopClient;
+        BunqDesktopClient.storeDecrypt(STORED_ACCOUNTS)
             .then(data => {
                 if (data && data.items) {
                     // turn plain objects back into MonetaryAccount objects
@@ -106,6 +108,59 @@ export function createAccount(
             })
             .catch(error => {
                 dispatch(createAccountNotLoading());
+                BunqErrorHandler(dispatch, error, failedMessage);
+            });
+    };
+}
+
+export function accountsUpdateImage(
+    BunqJSClient,
+    userId,
+    accountId,
+    attachmentId,
+    accountType = "MonetaryAccountBank"
+) {
+    const failedMessage = window.t("We received the following error while updating the image for the monetary account");
+    const successMessage = window.t("Image updated successfully!");
+
+    return dispatch => {
+        dispatch(accountsLoading());
+
+        // make the image public
+        BunqJSClient.api.avatar
+            .post(attachmentId)
+            .then(avatarUuid => {
+                const putRequest = {
+                    avatar_uuid: avatarUuid
+                };
+
+                let apiPromise;
+                switch (accountType) {
+                    case "MonetaryAccountSavings":
+                        apiPromise = BunqJSClient.api.monetaryAccountSavings.put(userId, accountId, putRequest);
+                        break;
+                    case "MonetaryAccountJoint":
+                        apiPromise = BunqJSClient.api.monetaryAccountJoint.put(userId, accountId, putRequest);
+                        break;
+                    case "MonetaryAccountBank":
+                    default:
+                        apiPromise = BunqJSClient.api.monetaryAccountBank.put(userId, accountId, putRequest);
+                        break;
+                }
+
+                apiPromise
+                    .then(result => {
+                        dispatch(openSnackbar(successMessage));
+                        dispatch(accountsUpdate(BunqJSClient, userId));
+                        dispatch(accountsNotLoading());
+                    })
+                    .catch(error => {
+                        dispatch(accountsNotLoading());
+                        BunqErrorHandler(dispatch, error, failedMessage);
+                    });
+            })
+            .catch(error => {
+                dispatch(accountsNotLoading());
                 BunqErrorHandler(dispatch, error, failedMessage);
             });
     };

@@ -30,7 +30,7 @@ export default {
         },
         bunqMeTabs: {
             awaiting_payment: "#62ca04",
-            cancelled: "#a4a6a4",
+            cancelled: "#FF3333",
             expired: "#a4a6a4"
         }
     },

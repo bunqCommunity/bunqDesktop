@@ -1,10 +1,9 @@
-import { storeDecryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
-
 export const PENDING_PAYMENTS_LOCATION = "BUNQDESKTOP_STORED_PENDING_PAYMENTS";
 
 export function loadPendingPayments(BunqJSClient) {
     return dispatch => {
-        storeDecryptString(PENDING_PAYMENTS_LOCATION, BunqJSClient.Session.encryptionKey)
+        const BunqDesktopClient = window.BunqDesktopClient;
+        BunqDesktopClient.storeDecrypt(PENDING_PAYMENTS_LOCATION)
             .then(data => {
                 if (data) {
                     dispatch(pendingPaymentsSetPayments(false, data));
