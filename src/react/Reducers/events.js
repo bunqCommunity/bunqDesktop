@@ -26,12 +26,12 @@ export default (state = defaultState, action) => {
 
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
-                storeEncryptString(
+                const BunqDesktopClient = window.BunqDesktopClient;
+                BunqDesktopClient.storeEncrypt(
                     {
                         items: mergedEvents
                     },
-                    STORED_EVENTS,
-                    action.payload.BunqJSClient.Session.encryptionKey
+                    STORED_EVENTS
                 )
                     .then(() => {})
                     .catch(() => {});
@@ -60,7 +60,8 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_LOG_OUT":
         case "REGISTRATION_CLEAR_PRIVATE_DATA":
         case "REGISTRATION_CLEAR_USER_INFO":
-            store.remove(STORED_EVENTS);
+            const BunqDesktopClient = window.BunqDesktopClient;
+            BunqDesktopClient.storeRemove(STORED_EVENTS);
             return {
                 ...defaultState
             };

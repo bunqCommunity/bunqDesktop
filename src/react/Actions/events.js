@@ -39,7 +39,6 @@ export function eventsSetInfo(events, resetOldItems = false, BunqJSClient = fals
                 case "ShareInviteBankResponse":
                 case "FeatureAnnouncement":
                 default:
-                    console.log(eventObject);
                 // don't do anything special for these
             }
         });
@@ -71,10 +70,11 @@ export function eventsSetInfo(events, resetOldItems = false, BunqJSClient = fals
     };
 }
 
-export function loadStoredEvents(BunqJSClient) {
+export function loadStoredEvents() {
     return dispatch => {
         dispatch(eventsLoading());
-        storeDecryptString(STORED_EVENTS, BunqJSClient.Session.encryptionKey)
+        const BunqDesktopClient = window.BunqDesktopClient;
+        BunqDesktopClient.storeDecrypt(STORED_EVENTS)
             .then(data => {
                 if (data && data.items) {
                     dispatch(eventsSetInfo(data.items));

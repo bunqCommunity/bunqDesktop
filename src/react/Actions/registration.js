@@ -36,7 +36,7 @@ export function registrationLoadStoredData() {
         dispatch(loadStoredAccounts(BunqJSClient));
         dispatch(loadStoredContacts(BunqJSClient));
         dispatch(loadPendingPayments(BunqJSClient));
-        dispatch(loadStoredEvents(BunqJSClient));
+        dispatch(loadStoredEvents());
         dispatch(loadStoredShareInviteBankResponses(BunqJSClient));
         dispatch(loadStoredShareInviteBankInquiries(BunqJSClient));
     };

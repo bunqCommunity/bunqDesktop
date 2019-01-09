@@ -50,6 +50,8 @@ export const eventFilter = options => event => {
             return paymentFilter(options)(paymentObject);
         case "Invoice":
             return invoiceFilter(options)(event.object);
+        case "BunqMeFundraiserResult":
+            return bunqMeFundraiserResultFilter(options)(event.object);
         case "IdealMerchantTransaction":
             return idealMerchantTransactionFilter(options)(event.object);
         case "BunqMeTab":
@@ -725,6 +727,29 @@ export const requestInquiryBatchFilter = options => requestInquiryBatch => {
         options.dateToFilter,
         requestInquiryBatch.RequestInquiryBatch.updated
     );
+};
+
+export const bunqMeFundraiserResultFilter = options => bunqMeFundraiserResult => {
+    if (options.paymentVisibility === false) return false;
+
+    if (options.searchTerm && options.searchTerm.length > 0) return false;
+
+    if (options.amountFilterAmount !== "") return false;
+
+    if (options.selectedCardIds && options.selectedCardIds.length > 0) return false;
+
+    if (options.selectedCategories && options.categories && options.categoryConnections) {
+        if (options.selectedCategories.length > 0) return false;
+    }
+
+    const dateCheck = checkDateRange(
+        options.dateFromFilter,
+        options.dateToFilter,
+        bunqMeFundraiserResult.BunqMeFundraiserResult.updated
+    );
+    if (!dateCheck) return false;
+
+    return true;
 };
 
 export const shareInviteBankResponseFilter = options => shareInviteBankResponse => {
