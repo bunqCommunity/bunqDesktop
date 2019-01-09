@@ -139,6 +139,12 @@ export const eventMapper = (settings, onlyPending = false, onlyNonPending = fals
                         filterDate: UTCDateToLocalDate(event.updated),
                         info: event.object
                     };
+                case "BunqMeFundraiserResult":
+                    return {
+                        component: <div>BunqMeFundraiserResult</div>,
+                        filterDate: UTCDateToLocalDate(event.updated),
+                        info: event.object
+                    };
             }
 
             return null;

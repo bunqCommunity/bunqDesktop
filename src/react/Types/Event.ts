@@ -9,6 +9,7 @@ export type EventTypeValue =
     | "Invoice"
     | "ScheduledPayment"
     | "IdealMerchantTransaction"
+    | "BunqMeFundraiserResult"
     | "ScheduledInstance";
 
 export default interface EventType {

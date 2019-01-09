@@ -43,6 +43,8 @@ export default class Payment implements EventType {
     private _address_billing: Address | null;
     private _geolocation: Geolocation;
     private _allow_chat: boolean;
+    private _auto_save_entry: any;
+    private _maturity_date: string;
     private _request_reference_split_the_bill: RequestReferenceSplitTheBill;
 
     constructor(paymentObject: any) {
@@ -162,6 +164,12 @@ export default class Payment implements EventType {
     }
     get allow_chat(): boolean {
         return this._allow_chat;
+    }
+    get auto_save_entry(): any {
+        return this._auto_save_entry;
+    }
+    get maturity_date(): string {
+        return this._maturity_date;
     }
     get request_reference_split_the_bill(): RequestReferenceSplitTheBill {
         return this._request_reference_split_the_bill;

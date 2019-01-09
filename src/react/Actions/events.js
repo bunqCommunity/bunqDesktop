@@ -30,6 +30,7 @@ export function eventsSetInfo(events, resetOldItems = false, BunqJSClient = fals
                 case "ScheduledPayment":
                 case "Invoice":
                 case "IdealMerchantTransaction":
+                case "BunqMeFundraiserResult":
                     eventsNew.push(eventObject);
                     break;
                 case "ShareInviteBankInquiry":
@@ -38,6 +39,7 @@ export function eventsSetInfo(events, resetOldItems = false, BunqJSClient = fals
                 case "ShareInviteBankResponse":
                 case "FeatureAnnouncement":
                 default:
+                    console.log(eventObject);
                 // don't do anything special for these
             }
         });
