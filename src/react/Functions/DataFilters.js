@@ -742,6 +742,13 @@ export const bunqMeFundraiserResultFilter = options => bunqMeFundraiserResult =>
         if (options.selectedCategories.length > 0) return false;
     }
 
+    if (options.selectedAccountIds) {
+        if (options.selectedAccountIds.length > 0) {
+            // TODO check underlying request inquiry account ids
+            return false;
+        }
+    }
+
     const dateCheck = checkDateRange(
         options.dateFromFilter,
         options.dateToFilter,
