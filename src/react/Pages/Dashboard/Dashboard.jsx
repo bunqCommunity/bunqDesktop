@@ -198,7 +198,7 @@ class Dashboard extends React.Component {
                                     <Paper>
                                         <AccountList BunqJSClient={this.props.BunqJSClient} />
 
-                                        <AddMoneyButton />
+                                        <AddMoneyButton user={this.props.user} BunqJSClient={this.props.BunqJSClient} />
                                     </Paper>
                                 )}
 
