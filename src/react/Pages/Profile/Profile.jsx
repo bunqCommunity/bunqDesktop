@@ -175,6 +175,7 @@ class Profile extends React.Component {
             .then(response => {
                 this.setState({ loading: false });
                 this.props.usersUpdate(true);
+                this.props.history.push("/");
             })
             .catch(error => {
                 this.setState({ loading: false });
