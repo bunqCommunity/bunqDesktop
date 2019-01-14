@@ -24,19 +24,17 @@ export const defaultState = {
 
 export default (state = defaultState, action) => {
     switch (action.type) {
-        case "ACCOUNTS_SET_INFO":
+        case "ACCOUNTS_SET_INFO": {
             // store the data if we have access to the bunqjsclient
-            if (action.payload.BunqJSClient) {
-                const BunqDesktopClient = window.BunqDesktopClient;
-                BunqDesktopClient.storeEncrypt(
-                    {
-                        items: action.payload.accounts
-                    },
-                    STORED_ACCOUNTS
-                )
-                    .then(() => {})
-                    .catch(() => {});
-            }
+            const BunqDesktopClient = window.BunqDesktopClient;
+            BunqDesktopClient.storeEncrypt(
+                {
+                    items: action.payload.accounts
+                },
+                STORED_ACCOUNTS
+            )
+                .then(() => {})
+                .catch(() => {});
 
             ipcRenderer.send(
                 "set-tray-accounts",
@@ -56,6 +54,7 @@ export default (state = defaultState, action) => {
                 ...state,
                 accounts: action.payload.accounts
             };
+        }
 
         case "ACCOUNTS_SELECT_ACCOUNT":
             store.set(SELECTED_ACCOUNT_LOCAION, action.payload.selectedAccount);
@@ -64,7 +63,7 @@ export default (state = defaultState, action) => {
                 selected_account: action.payload.selectedAccount
             };
 
-        case "ACCOUNTS_EXCLUDE_FROM_TOTAL":
+        case "ACCOUNTS_EXCLUDE_FROM_TOTAL": {
             const currentAccountIds = [...state.excluded_account_ids];
             const existingIndex = currentAccountIds.indexOf(action.payload.account_id);
 
@@ -80,22 +79,24 @@ export default (state = defaultState, action) => {
                 ...state,
                 excluded_account_ids: currentAccountIds
             };
-        case "ACCOUNTS_INCLUDE_IN_TOTAL":
-            const currentAccountIds2 = [...state.excluded_account_ids];
-            const existingIndex2 = currentAccountIds2.indexOf(action.payload.account_id);
+        }
+        case "ACCOUNTS_INCLUDE_IN_TOTAL": {
+            const currentAccountIds = [...state.excluded_account_ids];
+            const existingIndex = currentAccountIds.indexOf(action.payload.account_id);
 
-            if (existingIndex2 > -1) {
+            if (existingIndex > -1) {
                 // exists, remove the id from the excluded list
-                currentAccountIds2.splice(existingIndex2, 1);
+                currentAccountIds.splice(existingIndex, 1);
 
                 // store in settings
-                settings.set(EXCLUDED_ACCOUNT_IDS, currentAccountIds2);
+                settings.set(EXCLUDED_ACCOUNT_IDS, currentAccountIds);
             }
 
             return {
                 ...state,
-                excluded_account_ids: currentAccountIds2
+                excluded_account_ids: currentAccountIds
             };
+        }
 
         case "ACCOUNTS_IS_LOADING":
         case "ACCOUNT_CREATE_IS_LOADING":
@@ -116,7 +117,7 @@ export default (state = defaultState, action) => {
         case "ACCOUNTS_CLEAR":
         case "REGISTRATION_CLEAR_PRIVATE_DATA":
         case "REGISTRATION_LOG_OUT":
-        case "REGISTRATION_CLEAR_USER_INFO":
+        case "REGISTRATION_CLEAR_USER_INFO": {
             const BunqDesktopClient = window.BunqDesktopClient;
             BunqDesktopClient.storeRemove(SELECTED_ACCOUNT_LOCAION);
             BunqDesktopClient.storeRemove(STORED_ACCOUNTS);
@@ -129,6 +130,7 @@ export default (state = defaultState, action) => {
                 selected_account: false,
                 loading: false
             };
+        }
     }
     return state;
 };

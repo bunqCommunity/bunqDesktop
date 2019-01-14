@@ -96,34 +96,6 @@ class Contacts extends React.Component {
         this.props.contactInfoUpdateOffice365(this.state.office365AccessToken);
     };
 
-    // removeContact = (sourceType, contactKey, itemKey, itemType) => event => {
-    //     if (
-    //         this.props.contacts[sourceType] &&
-    //         this.props.contacts[sourceType][contactKey]
-    //     ) {
-    //         const contacts = this.props.contacts[sourceType];
-    //
-    //         if (itemType === "EMAIL") {
-    //             // remove this email from the list
-    //             contacts[contactKey].emails.splice(itemKey, 1);
-    //         } else if (itemType === "PHONE") {
-    //             // remove this phonenumber from the list
-    //             contacts[contactKey].phoneNumbers.splice(itemKey, 1);
-    //         }
-    //
-    //         if (
-    //             contacts[contactKey].emails.length === 0 &&
-    //             contacts[contactKey].phoneNumbers.length === 0
-    //         ) {
-    //             // remove this entire contact since no emails/phonenumbers are left
-    //             contacts.splice(contactKey, 1);
-    //         }
-    //
-    //         // set the new contacts
-    //         this.props.contactsSetInfoType(contacts, contactKey);
-    //     }
-    // };
-
     render() {
         const { t, contacts } = this.props;
 
@@ -222,7 +194,7 @@ const mapDispatchToProps = (dispatch, props) => {
         contactInfoUpdateGoogle: accessToken => dispatch(contactInfoUpdateGoogle(BunqJSClient, accessToken)),
         contactInfoUpdateApple: filePaths => dispatch(contactInfoUpdateApple(BunqJSClient, filePaths)),
         contactInfoUpdateOffice365: accessToken => dispatch(contactInfoUpdateOffice365(BunqJSClient, accessToken)),
-        contactsSetInfoType: (contacts, type) => dispatch(contactsSetInfoType(contacts, type, BunqJSClient)),
+        contactsSetInfoType: (contacts, type) => dispatch(contactsSetInfoType(contacts, type)),
         clearContacts: (type = false) => dispatch(contactsClear(BunqJSClient, type)),
         openSnackbar: message => dispatch(openSnackbar(message))
     };

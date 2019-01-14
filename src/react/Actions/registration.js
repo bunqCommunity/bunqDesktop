@@ -359,7 +359,7 @@ export function registrationLoadStoredData() {
         if (!BunqDesktopClient.apiKey) return;
 
         dispatch(loadStoredAccounts(BunqJSClient));
-        dispatch(loadStoredContacts(BunqJSClient));
+        dispatch(loadStoredContacts());
         dispatch(loadPendingPayments(BunqJSClient));
         dispatch(loadStoredPayments(BunqJSClient));
         dispatch(loadStoredBunqMeTabs(BunqJSClient));

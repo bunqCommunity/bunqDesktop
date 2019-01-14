@@ -8,22 +8,20 @@ import fs from "../ImportWrappers/fs";
 
 export const STORED_CONTACTS = "BUNQDESKTOP_STORED_CONTACTS";
 
-export function contactsSetInfoType(contacts, type, BunqJSClient = false) {
+export function contactsSetInfoType(contacts, type) {
     return {
         type: "CONTACTS_SET_INFO_TYPE",
         payload: {
-            BunqJSClient,
             type: type,
             contacts: contacts
         }
     };
 }
 
-export function contactsSetInfo(contacts, BunqJSClient = false) {
+export function contactsSetInfo(contacts) {
     return {
         type: "CONTACTS_SET_INFO",
         payload: {
-            BunqJSClient,
             contacts: contacts
         }
     };
@@ -31,7 +29,8 @@ export function contactsSetInfo(contacts, BunqJSClient = false) {
 
 export function loadStoredContacts(BunqJSClient) {
     return dispatch => {
-        BunqJSClient.Session.loadEncryptedData(STORED_CONTACTS)
+        const BunqDesktopClient = window.BunqDesktopClient;
+        BunqDesktopClient.storeDecrypt(STORED_CONTACTS, false, "LOCALSTORAGE")
             .then(data => {
                 if (data && data.items) {
                     // turn plain objects into Model objects
@@ -76,6 +75,7 @@ export function contactInfoUpdateGoogle(BunqJSClient, accessToken) {
                     responseData.feed.entry.map(entry => {
                         // has email
 
+                        const ibans = [];
                         const emails = [];
                         const phoneNumbers = [];
                         let displayName = "";
@@ -84,6 +84,15 @@ export function contactInfoUpdateGoogle(BunqJSClient, accessToken) {
                         if (entry["gd$email"] && entry["gd$email"].length > 0) {
                             entry["gd$email"].map(email => {
                                 emails.push(email.address);
+                            });
+                        }
+
+                        // has emails, loop through them
+                        if (entry["gContact$userDefinedField"] && entry["gContact$userDefinedField"].length > 0) {
+                            entry["gContact$userDefinedField"].map(customField => {
+                                if (customField.key && customField.key.toUpperCase() === "IBAN") {
+                                    ibans.push(customField.value);
+                                }
                             });
                         }
 
@@ -114,6 +123,7 @@ export function contactInfoUpdateGoogle(BunqJSClient, accessToken) {
                             collectedEntries.push({
                                 name: displayName,
                                 emails: emails,
+                                ibans: ibans,
                                 phoneNumbers: phoneNumbers
                             });
                         }
@@ -121,7 +131,7 @@ export function contactInfoUpdateGoogle(BunqJSClient, accessToken) {
                 }
 
                 // set the contacts
-                dispatch(contactsSetInfoType(collectedEntries, "GoogleContacts", BunqJSClient));
+                dispatch(contactsSetInfoType(collectedEntries, "GoogleContacts"));
                 dispatch(contactsNotLoading());
             })
             .catch(error => {
@@ -161,6 +171,7 @@ export function contactInfoUpdateOffice365(BunqJSClient, accessToken) {
                     responseData.value.map(entry => {
                         // has email
 
+                        const ibans = [];
                         const emails = [];
                         const phoneNumbers = [];
 
@@ -193,6 +204,7 @@ export function contactInfoUpdateOffice365(BunqJSClient, accessToken) {
                         if (emails.length > 0 || phoneNumbers.length > 0) {
                             collectedEntries.push({
                                 name: entry.DisplayName,
+                                ibans: ibans,
                                 emails: emails,
                                 phoneNumbers: phoneNumbers
                             });
@@ -201,7 +213,7 @@ export function contactInfoUpdateOffice365(BunqJSClient, accessToken) {
                 }
 
                 // set the contacts
-                dispatch(contactsSetInfoType(collectedEntries, "Office365", BunqJSClient));
+                dispatch(contactsSetInfoType(collectedEntries, "Office365"));
                 dispatch(contactsNotLoading());
             })
             .catch(error => {
@@ -238,6 +250,7 @@ export function contactInfoUpdateApple(BunqJSClient, files) {
         // go through each result
         result.forEach(vcardInstance => {
             let displayName = "";
+            let ibans = [];
             let emails = [];
             let phoneNumbers = [];
 
@@ -276,6 +289,7 @@ export function contactInfoUpdateApple(BunqJSClient, files) {
             if (emails.length > 0 || phoneNumbers.length > 0) {
                 collectedEntries.push({
                     name: displayName,
+                    ibans: ibans,
                     emails: emails,
                     phoneNumbers: phoneNumbers
                 });
@@ -283,7 +297,7 @@ export function contactInfoUpdateApple(BunqJSClient, files) {
         });
 
         // set the contacts
-        dispatch(contactsSetInfoType(collectedEntries, "AppleContacts", BunqJSClient));
+        dispatch(contactsSetInfoType(collectedEntries, "AppleContacts"));
         dispatch(contactsNotLoading());
     };
 }

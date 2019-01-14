@@ -5,17 +5,16 @@ import { openSnackbar } from "./snackbar";
 
 export const STORED_ACCOUNTS = "BUNQDESKTOP_STORED_ACCOUNTS";
 
-export function accountsSetInfo(accounts, BunqJSClient = false) {
+export function accountsSetInfo(accounts) {
     return {
         type: "ACCOUNTS_SET_INFO",
         payload: {
-            accounts: accounts,
-            BunqJSClient
+            accounts: accounts
         }
     };
 }
 
-export function loadStoredAccounts(BunqJSClient) {
+export function loadStoredAccounts() {
     return dispatch => {
         const BunqDesktopClient = window.BunqDesktopClient;
         BunqDesktopClient.storeDecrypt(STORED_ACCOUNTS)
@@ -23,7 +22,7 @@ export function loadStoredAccounts(BunqJSClient) {
                 if (data && data.items) {
                     // turn plain objects back into MonetaryAccount objects
                     const accountsOld = data.items.map(item => new MonetaryAccount(item));
-                    dispatch(accountsSetInfo(accountsOld, BunqJSClient));
+                    dispatch(accountsSetInfo(accountsOld));
                 }
             })
             .catch(error => {});
@@ -41,7 +40,7 @@ export function accountsUpdate(BunqJSClient, userId) {
                 // turn plain objects into MonetaryAccount objects
                 const accountsNew = accounts.map(item => new MonetaryAccount(item));
 
-                dispatch(accountsSetInfo(accountsNew, BunqJSClient));
+                dispatch(accountsSetInfo(accountsNew));
                 dispatch(accountsNotLoading());
             })
             .catch(error => {
