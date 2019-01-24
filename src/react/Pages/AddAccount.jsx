@@ -218,7 +218,9 @@ class AddAccount extends React.Component {
                         <TranslateButton
                             variant="contained"
                             color="primary"
-                            disabled={!this.state.validForm || this.props.accountsLoading}
+                            disabled={
+                                !this.state.validForm || this.props.accountsLoading || this.props.accountsCreateLoading
+                            }
                             onClick={this.createAccount}
                             style={styles.btn}
                         >
@@ -227,7 +229,7 @@ class AddAccount extends React.Component {
                     </Paper>
                 </Grid>
 
-                {accountsAmount === 25 ? (
+                {accountsAmount >= 25 ? (
                     <Grid item xs={12} sm={6} md={4}>
                         <Paper style={{ padding: 8 }}>
                             <TranslateTypography variant="subtitle1">Attention!</TranslateTypography>
@@ -248,6 +250,7 @@ const mapStateToProps = state => {
     return {
         accounts: state.accounts.accounts,
         accountsLoading: state.accounts.loading,
+        accountsCreateLoading: state.accounts.create_loading,
 
         user: state.user.user
     };
