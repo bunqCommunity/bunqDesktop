@@ -38,7 +38,9 @@ export function eventsSetInfo(events, resetOldItems = false, BunqJSClient = fals
                     break;
                 case "ShareInviteBankResponse":
                 case "FeatureAnnouncement":
+                    break;
                 default:
+                    console.log("Unknown type");
                 // don't do anything special for these
             }
         });
