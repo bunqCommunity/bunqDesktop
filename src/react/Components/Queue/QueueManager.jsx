@@ -4,8 +4,6 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 
 import NotificationHelper from "../../Functions/NotificationHelper";
-import { connectGetPermissions } from "../../Functions/ConnectGetPermissions";
-import { paymentApiFilter } from "../../Functions/DataFilters";
 
 import {
     queueDecreaseRequestCounter,
@@ -126,7 +124,7 @@ class QueueManager extends React.Component {
 
         // count the new events for each type and account
         let newerEventCount = 0;
-        const newestStoredEvent = this.props.events[0];
+        const newestStoredEvent = this.props.events[this.props.events.length - 1];
         if (newestStoredEvent) {
             newerEventCount = events.filter(event => event.id > newestStoredEvent.id).length;
         }
