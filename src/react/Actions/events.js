@@ -15,6 +15,8 @@ export function eventsSetInfo(events, resetOldItems = false, BunqJSClient = fals
     return dispatch => {
         const type = resetOldItems ? "EVENTS_SET_INFO" : "EVENTS_UPDATE_INFO";
 
+        console.log(events.map(event => event.Event.object));
+
         const eventsNew = [];
         const shareInviteBankInquiries = [];
         events.forEach(event => {

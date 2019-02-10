@@ -107,7 +107,6 @@ export default class Event implements EventType {
                         break;
                     case "BunqMeFundraiserResult":
                         this._object = new BunqMeFundraiserResult(this._object);
-                        console.log(this._object);
                         break;
                     case "FeatureAnnouncement":
                     case "ShareInviteBankInquiry":
