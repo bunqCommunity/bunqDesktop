@@ -1,7 +1,7 @@
 import { app } from "electron";
 
 export default menus => {
-    if (process.platform !== "darwin") {
+    if (process.platform === "darwin") {
         menus.unshift({
             label: app.getName(),
             submenu: [
