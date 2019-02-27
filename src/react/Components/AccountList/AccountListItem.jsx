@@ -92,7 +92,9 @@ class AccountListItem extends React.Component {
         }
 
         // check if any of the selected account ids are for this account
-        let displayStyle = {};
+        let displayStyle = {
+            height: 83
+        };
         let circularLeftPostion = 20;
         let accountIsSelected = false;
         if (selectedAccountIds.length !== 0) {
@@ -105,7 +107,8 @@ class AccountListItem extends React.Component {
                 circularLeftPostion = 16;
                 displayStyle = {
                     borderLeft: "4px solid #1da1f2",
-                    paddingLeft: 20
+                    paddingLeft: 20,
+                    height: 83
                 };
             }
         }
