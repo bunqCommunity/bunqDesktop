@@ -574,8 +574,8 @@ export const shareInviteBankResponseFilter = options => shareInviteBankResponse 
 };
 
 export const shareInviteBankInquiryFilter = options => shareInviteBankInquiry => {
-    const shareInviteBankInquiryInfo = shareInviteBankInquiry.ShareInviteBankInquiry
-        ? shareInviteBankInquiry.ShareInviteBankInquiry
+    const shareInviteBankInquiryInfo = shareInviteBankInquiry.ShareInviteMonetaryAccountInquiry
+        ? shareInviteBankInquiry.ShareInviteMonetaryAccountInquiry
         : shareInviteBankInquiry.ShareInviteBankResponse;
 
     if (shareInviteBankInquiryInfo.status !== "PENDING") {
