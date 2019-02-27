@@ -18,6 +18,10 @@ export const getCardTypeImage = type => {
             cardType = "MasterCard";
             cardImage = "images/bunq-mastercard.png";
             break;
+        case "MASTERCARD_VIRTUAL":
+            cardType = "Virtual MasterCard";
+            cardImage = "images/bunq-mastercard-virtual.svg";
+            break;
         case "MAESTRO":
             cardType = "Maestro";
             cardImage = "images/bunq-maestro.png";

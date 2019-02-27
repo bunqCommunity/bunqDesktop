@@ -168,6 +168,7 @@ export const cardStatus = (cardInfo, t) => {
 
 export const cardOrderStatus = (cardInfo, t) => {
     const VIRTUAL_DELIVERY = t("Delivered virtually");
+    const SENT_FOR_PRODUCTION = t("Sent for production");
     const NEW_CARD_REQUEST_RECEIVED = t("New card request received");
     const ACCEPTED_FOR_PRODUCTION = t("Accepted for production");
     const DELIVERED_TO_CUSTOMER = t("Delivered to customer");
@@ -178,6 +179,8 @@ export const cardOrderStatus = (cardInfo, t) => {
     switch (cardInfo.order_status) {
         case "VIRTUAL_DELIVERY":
             return `${VIRTUAL_DELIVERY}`;
+        case "SENT_FOR_PRODUCTION":
+            return `${SENT_FOR_PRODUCTION}`;
         case "ACCEPTED_FOR_PRODUCTION":
             return `${ACCEPTED_FOR_PRODUCTION}`;
         case "NEW_CARD_REQUEST_RECEIVED":
