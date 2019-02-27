@@ -701,14 +701,11 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        openSnackbar: message => dispatch(openSnackbar(message)),
-
         // options and options_drawer handlers
         setSyncOnStartup: syncOnStartup => dispatch(setSyncOnStartup(syncOnStartup)),
         openSnackbar: message => dispatch(openSnackbar(message)),
         setAutomaticThemeChange: automaticThemeChange => dispatch(setAutomaticThemeChange(automaticThemeChange)),
         setTheme: theme => dispatch(setTheme(theme)),
-        setLanguage: language => dispatch(setLanguage(language)),
         setLanguage: language => dispatch(setLanguage(language)),
         setNativeFrame: useFrame => dispatch(setNativeFrame(useFrame)),
         setStickyMenu: userStickyMenu => dispatch(setStickyMenu(userStickyMenu)),

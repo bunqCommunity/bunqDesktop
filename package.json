@@ -13,7 +13,9 @@
     "supported_languages": [
         "en",
         "de",
-        "nl"
+        "nl",
+        "it",
+        "es"
     ],
     "scripts": {
         "webpack": "cross-env NODE_ENV=production RELEASE_MODE=true webpack --progress --colors",
