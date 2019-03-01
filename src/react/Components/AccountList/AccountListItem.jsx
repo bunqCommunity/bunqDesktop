@@ -28,9 +28,9 @@ const styles = {
         height: 60
     },
     avatarSub: {
-        position: "absolute",
-        left: 60,
-        bottom: 4
+        minWidth: 26,
+        marginLeft: -23,
+        marginTop: 40
     },
     secondaryIcon: {
         width: 26,
