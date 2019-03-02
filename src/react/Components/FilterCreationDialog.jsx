@@ -4,9 +4,9 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import List from "@material-ui/core/List";
-import Button from "@material-ui/core/Button";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import TranslateButton from "./TranslationHelpers/Button";
 
 import NavLink from "./Routing/NavLink";
 import { formatIban } from "../Functions/Utils";
@@ -86,9 +86,9 @@ export default props => {
                 </List>
             </DialogContent>
             <DialogActions>
-                <Button variant="contained" onClick={onClose} color="secondary">
+                <TranslateButton variant="contained" onClick={onClose} color="secondary">
                     Cancel
-                </Button>
+                </TranslateButton>
             </DialogActions>
         </Dialog>
     );

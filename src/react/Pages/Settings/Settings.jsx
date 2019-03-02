@@ -568,44 +568,44 @@ class Settings extends React.Component {
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
-                    <Button variant="outlined" color="secondary" style={styles.button} onClick={this.resetAllEventData}>
+                    <TranslateButton variant="outlined" color="secondary" style={styles.button} onClick={this.resetAllEventData}>
                         Reset all event data
-                    </Button>
+                    </TranslateButton>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" style={styles.button} onClick={this.props.paymentsClear}>
-                        Regular payments {paymentCount}
+                        {t("Regular payments")} {paymentCount}
                     </Button>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" style={styles.button} onClick={this.props.masterCardActionsClear}>
-                        Card payments {cardPaymentCount}
+                        {t("Card payments")} {cardPaymentCount}
                     </Button>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" style={styles.button} onClick={this.resetRequestData}>
-                        Requests {requestCount}
+                        {t("Requests")} {requestCount}
                     </Button>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" style={styles.button} onClick={this.props.bunqMeTabsClear}>
-                        bunq.me Tabs {bunqMeTabsCount}
+                        {t("bunq.me Tabs")} {bunqMeTabsCount}
                     </Button>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" style={styles.button} onClick={this.requestConnectData}>
-                        Connect requests {connectCount}
+                        {t("Connect requests")} {connectCount}
                     </Button>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" style={styles.button} onClick={this.props.scheduledPaymentsClear}>
-                        Scheduled payments {scheduledPaymentsCount}
+                        {t("Scheduled payments")} {scheduledPaymentsCount}
                     </Button>
                 </Grid>
             </Grid>
