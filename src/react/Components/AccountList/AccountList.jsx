@@ -237,7 +237,7 @@ class AccountList extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                             denseMode={this.props.denseMode}
                             account={account}
-                            isJoint={account.accountType === "MonetaryAccountJoint"}
+                            isJoint={!!account.all_co_owner}
                             shareInviteBankResponses={filteredResponses}
                             secondaryAction={secondaryAction}
                         />
