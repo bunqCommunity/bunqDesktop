@@ -307,6 +307,14 @@ class Cards extends React.Component {
                                     <CvcCodeListItem t={t} card={cardInfo} />
 
                                     <ListItem>
+                                        <ListItemText
+                                            secondary={t("Cards number")}
+                                            primary={`---- ---- ---- ${cardInfo.primary_account_number_four_digit}`}
+                                        />
+                                    </ListItem>
+                                    <Divider />
+
+                                    <ListItem>
                                         <ListItemText secondary={t("Cards status")} primary={cardStatus(cardInfo, t)} />
                                     </ListItem>
                                     <Divider />
