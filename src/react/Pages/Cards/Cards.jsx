@@ -14,6 +14,7 @@ import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 import CardListItem from "./CardListItem";
+import CvcCodeListItem from "./CvcCodeListItem";
 import AccountListItem from "../../Components/AccountList/AccountListItem";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 
@@ -303,18 +304,22 @@ class Cards extends React.Component {
                                     <Divider />
                                     {connectedAccounts}
 
+                                    <CvcCodeListItem t={t} card={cardInfo} />
+
                                     <ListItem>
-                                        <ListItemText primary={t("Cards status")} secondary={cardStatus(cardInfo, t)} />
+                                        <ListItemText secondary={t("Cards status")} primary={cardStatus(cardInfo, t)} />
                                     </ListItem>
                                     <Divider />
+
                                     <ListItem>
-                                        <ListItemText primary={t("Country")} secondary={cardInfo.country} />
+                                        <ListItemText secondary={t("Country")} primary={cardInfo.country} />
                                     </ListItem>
                                     <Divider />
+
                                     <ListItem>
                                         <ListItemText
-                                            primary={t("Order status")}
-                                            secondary={cardOrderStatus(cardInfo, t)}
+                                            secondary={t("Order status")}
+                                            primary={cardOrderStatus(cardInfo, t)}
                                         />
                                     </ListItem>
                                 </List>

@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 
 const styles = {
     cardWrapper: {},
@@ -56,17 +55,4 @@ class CardListItem extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        accounts: state.accounts
-    };
-};
-
-const mapDispatchToProps = dispatch => {
-    return {};
-};
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(CardListItem);
+export default CardListItem;
