@@ -236,10 +236,10 @@ class AccountInfo extends React.Component {
         let savingsGoalError = false;
         if (accountInfo.accountType === "MonetaryAccountSavings") {
             if (!settingsSavingsGoal) {
-                savingsGoalError = settingsSavingsGoal < 0.01 || settingsSavingsGoal > 10000;
+                savingsGoalError = settingsSavingsGoal < 0.01 || settingsSavingsGoal > 100000;
             }
         }
-        const limitErrorCondition = settingsDailyLimit < 0.01 || settingsDailyLimit > 10000;
+        const limitErrorCondition = settingsDailyLimit < 0.01 || settingsDailyLimit > 100000;
         const descriptionErrorCondition = settingsDescription.length < 1 || settingsDescription.length > 140;
 
         this.setState({

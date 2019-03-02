@@ -442,7 +442,7 @@ class Pay extends React.Component {
             amount !== "" &&
             // enough funds or draft enabled
             (amount > accountBalance && sendDraftPayment === false && schedulePayment === false);
-        const amountErrorCondition = amount < 0.01 || amount > 10000;
+        const amountErrorCondition = amount < 0.01 || amount > 100000;
         const descriptionErrorCondition = description.length > 140;
         const ibanNameErrorCondition = ibanName.length < 1 || ibanName.length > 64;
 
