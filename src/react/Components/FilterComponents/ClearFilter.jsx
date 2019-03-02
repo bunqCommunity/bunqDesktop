@@ -53,7 +53,7 @@ class ClearFilter extends React.PureComponent {
 
         return this.props.bigButton ? (
             <Button variant="outlined" key={"button"} onClick={this.props.resetFilters} {...this.props.buttonProps}>
-                Clear <ClearIcon />
+                {t("Clear")} <ClearIcon />
             </Button>
         ) : (
             <IconButton key={"iconbutton"} onClick={this.props.resetFilters} {...this.props.buttonProps}>

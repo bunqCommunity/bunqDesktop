@@ -1,6 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -8,6 +7,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
 import Slide from "@material-ui/core/Slide";
+import TranslateButton from "./TranslationHelpers/Button";
 
 const Transition = props => <Slide direction="left" {...props} />;
 
@@ -35,9 +35,9 @@ class MainDialog extends React.Component {
                 <DialogTitle>{modalTitle}</DialogTitle>
                 <DialogContent>{fixedModalText}</DialogContent>
                 <DialogActions>
-                    <Button variant="contained" onClick={this.props.closeModal} color="primary">
+                    <TranslateButton variant="contained" onClick={this.props.closeModal} color="primary">
                         Ok
-                    </Button>
+                    </TranslateButton>
                 </DialogActions>
             </Dialog>
         );

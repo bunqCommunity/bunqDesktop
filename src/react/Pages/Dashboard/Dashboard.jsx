@@ -174,7 +174,7 @@ class Dashboard extends React.Component {
                         <Grid item xs={6} style={styles.headerButtonWrapper}>
                             <SwitchKeysMenu history={this.props.history} BunqJSClient={this.props.BunqJSClient} />
 
-                            <Tooltip id="tooltip-fab" title="Logout of account">
+                            <Tooltip id="tooltip-fab" title={t("Logout")}>
                                 <IconButton
                                     style={styles.iconButton}
                                     onClick={() => {
