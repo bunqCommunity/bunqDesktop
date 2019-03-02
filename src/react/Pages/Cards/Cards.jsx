@@ -350,7 +350,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
     return {
         cardsUpdate: userId => dispatch(cardsUpdate(userId)),
         cardsSetCardOrder: cardOrder => dispatch(cardsSetCardOrder(cardOrder))

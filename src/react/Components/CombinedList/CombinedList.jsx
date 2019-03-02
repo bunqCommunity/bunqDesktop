@@ -116,7 +116,7 @@ class CombinedList extends React.Component {
             document.documentElement.scrollTop = storedScrollPosition;
             sessionStore.remove(STORED_SCROLL_POSITION);
         }
-    }
+    };
 
     loadEvents = () => {
         const settings = this.getSettings();
@@ -145,10 +145,13 @@ class CombinedList extends React.Component {
             return new Date(b.filterDate) - new Date(a.filterDate);
         });
 
-        this.setState({
-            totalEvents: this.state.totalEvents < events.length ? events.length : this.state.totalEvents,
-            events: events
-        }, this.useOldPosition);
+        this.setState(
+            {
+                totalEvents: this.state.totalEvents < events.length ? events.length : this.state.totalEvents,
+                events: events
+            },
+            this.useOldPosition
+        );
     };
 
     copiedValue = type => callback => {
