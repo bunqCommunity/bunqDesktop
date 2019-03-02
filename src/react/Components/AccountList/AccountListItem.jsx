@@ -119,11 +119,16 @@ class AccountListItem extends React.Component {
             ? e => this.props.removeAccountIdFilter(account.id)
             : e => this.props.addAccountIdFilter(account.id);
 
-        // allow overwrite by props
-        const onClickHandler = this.props.onClick ? e => this.props.onClick(user.id, account.id) : defaultClickHandler;
+        const listItemProps = {};
+        if (this.props.clickable) {
+            listItemProps.button = true;
+            listItemProps.onClick = this.props.onClick
+                ? e => this.props.onClick(user.id, account.id)
+                : defaultClickHandler;
+        }
 
         return (
-            <ListItem button onClick={onClickHandler} style={displayStyle} divider>
+            <ListItem {...listItemProps} style={displayStyle} divider>
                 <AccountAvatarCircularProgress account={account} style={{ left: circularLeftPostion }} />
                 <Avatar style={styles.bigAvatar}>
                     <LazyAttachmentImage

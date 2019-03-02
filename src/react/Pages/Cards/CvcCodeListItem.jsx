@@ -29,7 +29,9 @@ class CvcCodeListItem extends React.Component {
     };
 
     render() {
-        const { t, card, user, cvcCodesCardId, cvcCodes, cvcCodesLoading } = this.props;
+        const { t, card, user, cvcCodesCardId, cvcCodes, cvcCodesLoading, limitedPermissions } = this.props;
+
+        if (limitedPermissions) return null;
 
         const validCardTypes = ["MASTERCARD", "MASTERCARD_VIRTUAL"];
         if (!validCardTypes.includes(card.type)) return null;
@@ -45,6 +47,7 @@ class CvcCodeListItem extends React.Component {
 
         return (
             <React.Fragment>
+                <Divider />
                 <ListItem>
                     <ListItemText secondary={t("CVC Code")} primary={cvcCode} />
 
@@ -57,7 +60,6 @@ class CvcCodeListItem extends React.Component {
                         </IconButton>
                     </ListItemSecondaryAction>
                 </ListItem>
-                <Divider />
             </React.Fragment>
         );
     }
@@ -68,7 +70,9 @@ const mapStateToProps = state => {
         user: state.user.user,
         cvcCodes: state.card_cvc2.cvc2_codes,
         cvcCodesCardId: state.card_cvc2.card_id,
-        cvcCodesLoading: state.card_cvc2.loading
+        cvcCodesLoading: state.card_cvc2.loading,
+
+        limitedPermissions: state.user.limited_permissions
     };
 };
 

@@ -13,7 +13,8 @@ export const defaultState = {
 export default (state = defaultState, action) => {
     switch (action.type) {
         case "CARDS_SET_INFO":
-            const cardOrder = [...state.card_order];
+            const currentCardOrder = state.card_order ? state.card_order : [];
+            const cardOrder = [...currentCardOrder];
             const cards = action.payload.cards;
 
             cards.forEach(card => {

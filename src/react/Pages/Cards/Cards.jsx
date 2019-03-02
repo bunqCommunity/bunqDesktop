@@ -5,21 +5,25 @@ import { translate } from "react-i18next";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
 import Divider from "@material-ui/core/Divider";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListSubheader from "@material-ui/core/ListSubheader";
 import ListItemText from "@material-ui/core/ListItemText";
+import ListSubheader from "@material-ui/core/ListSubheader";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
+import DeleteIcon from "@material-ui/icons/Delete";
+
 import CardListItem from "./CardListItem";
 import CvcCodeListItem from "./CvcCodeListItem";
-import AccountListItem from "../../Components/AccountList/AccountListItem";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
+import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
 
 import { cardStatus, cardOrderStatus } from "../../Functions/EventStatusTexts";
-import { cardsUpdate, cardsSetCardOrder } from "../../Actions/cards";
+import { cardsUpdate, cardsSetCardOrder, cardsAssignAccounts } from "../../Actions/cards";
 
 const styles = {
     gridContainer: {
@@ -38,6 +42,9 @@ const styles = {
         top: 60,
         right: 8,
         zIndex: 2
+    },
+    assignmentSubHeader: {
+        lineHeight: "34px"
     }
 };
 
@@ -145,6 +152,52 @@ class Cards extends React.Component {
         });
     };
 
+    handleAccountChange = type => index => {
+        const filteredCards = this.getCardsList();
+        const selectedCardIndex = this.state.selectedCardIndex;
+        const cardInfo = filteredCards[selectedCardIndex].CardDebit;
+        const selectedAccount = this.props.accounts[index];
+
+        let primaryAssignment = cardInfo.pin_code_assignment.find(assignment => {
+            return assignment.type === "PRIMARY";
+        });
+        let secondaryAssignment = cardInfo.pin_code_assignment.find(assignment => {
+            return assignment.type === "SECONDARY";
+        });
+
+        let newCardAssignment = [];
+        if (type === "PRIMARY") {
+            primaryAssignment = {
+                type: "PRIMARY",
+                monetary_account_id: selectedAccount.id
+            };
+        } else {
+            secondaryAssignment = {
+                type: "SECONDARY",
+                monetary_account_id: selectedAccount.id
+            };
+        }
+
+        // combine the list into a single assignment object
+        if (primaryAssignment) newCardAssignment.push(primaryAssignment);
+        if (secondaryAssignment) newCardAssignment.push(secondaryAssignment);
+
+        this.props.cardsAssignAccounts(this.props.user.id, cardInfo.id, newCardAssignment);
+    };
+
+    handleSecondaryRemoval = event => {
+        const filteredCards = this.getCardsList();
+        const selectedCardIndex = this.state.selectedCardIndex;
+        const cardInfo = filteredCards[selectedCardIndex].CardDebit;
+
+        let primaryAssignment = cardInfo.pin_code_assignment.find(assignment => {
+            return assignment.type === "PRIMARY";
+        });
+        let newCardAssignment = [primaryAssignment];
+
+        this.props.cardsAssignAccounts(this.props.user.id, cardInfo.id, newCardAssignment);
+    };
+
     moveCardUp = e => {
         const index = this.state.selectedCardIndex;
         const cardsOrder = [...this.props.cardsOrder];
@@ -236,40 +289,68 @@ class Cards extends React.Component {
         const translateOffset = selectedCardIndex * 410;
         const carouselTranslate = "translateY(-" + translateOffset + "px)";
 
-        // account connected to the currently selected card
-        const connectedAccounts = cardInfo.pin_code_assignment.map(assignment => {
-            // try to find the connected accoutn by ID
-            const currentAccount = this.props.accounts.find(account => account.id == assignment.monetary_account_id);
-
-            let connectedText = "";
-            switch (assignment.type) {
-                case "PRIMARY":
-                    connectedText = t("Primary account");
-                    break;
-                case "SECONDARY":
-                    connectedText = t("Secondary account");
-                    break;
-            }
-
-            // return the accout item for this account
-            return (
-                <React.Fragment>
-                    <ListSubheader style={{ height: 28, marginBottom: 8 }}>{connectedText}</ListSubheader>
-                    {!currentAccount ? null : (
-                        <AccountListItem
-                            BunqJSClient={this.props.BunqJSClient}
-                            clickable={false}
-                            account={currentAccount}
-                        />
-                    )}
-                </React.Fragment>
-            );
-        });
-
         let second_line = cardInfo.second_line;
         if (second_line.length === 0 && cardInfo.type === "MAESTRO_MOBILE_NFC") {
             second_line = "Apple Pay";
         }
+
+        const primaryAssignment = cardInfo.pin_code_assignment.find(assignment => {
+            return assignment.type === "PRIMARY";
+        });
+        const secondaryAssignment = cardInfo.pin_code_assignment.find(assignment => {
+            return assignment.type === "SECONDARY";
+        });
+
+        const primaryAccountIndex =
+            primaryAssignment !== undefined
+                ? this.props.accounts.findIndex(account => account.id == primaryAssignment.monetary_account_id)
+                : false;
+        const secondaryAccountIndex =
+            secondaryAssignment !== undefined
+                ? this.props.accounts.findIndex(account => account.id == secondaryAssignment.monetary_account_id)
+                : "";
+
+        const secondaryAssignmentSelection = secondaryAccountIndex !== "" && (
+            <React.Fragment>
+                <Divider />
+                <ListSubheader style={styles.assignmentSubHeader}>
+                    {t("Secondary account")}
+
+                    <ListItemSecondaryAction>
+                        <IconButton onClick={this.handleSecondaryRemoval} disabled={this.props.cardsLoading}>
+                            <DeleteIcon />
+                        </IconButton>
+                    </ListItemSecondaryAction>
+                </ListSubheader>
+                <AccountSelectorDialog
+                    value={secondaryAccountIndex}
+                    onChange={this.handleAccountChange("SECONDARY")}
+                    accounts={this.props.accounts}
+                    BunqJSClient={this.props.BunqJSClient}
+                    hiddenConnectTypes={["draftOnly", "showOnly"]}
+                />
+            </React.Fragment>
+        );
+
+        const lastDigitsComponent = cardInfo.primary_account_number_four_digit && (
+            <React.Fragment>
+                <Divider />
+                <ListItem>
+                    <ListItemText
+                        secondary={t("Card number")}
+                        primary={`---- ---- ---- ${cardInfo.primary_account_number_four_digit}`}
+                    />
+                </ListItem>
+            </React.Fragment>
+        );
+        const countryComponent = cardInfo.country && (
+            <React.Fragment>
+                <Divider />
+                <ListItem>
+                    <ListItemText secondary={t("Country")} primary={cardInfo.country} />
+                </ListItem>
+            </React.Fragment>
+        );
 
         return (
             <Grid container spacing={24} style={styles.gridContainer}>
@@ -302,27 +383,29 @@ class Cards extends React.Component {
                                 <br />
                                 <List dense>
                                     <Divider />
-                                    {connectedAccounts}
+                                    <ListSubheader style={styles.assignmentSubHeader}>
+                                        {t("Primary account")}
+                                    </ListSubheader>
+                                    <AccountSelectorDialog
+                                        value={primaryAccountIndex}
+                                        onChange={this.handleAccountChange("PRIMARY")}
+                                        accounts={this.props.accounts}
+                                        BunqJSClient={this.props.BunqJSClient}
+                                        hiddenConnectTypes={["draftOnly", "showOnly"]}
+                                    />
+
+                                    {secondaryAssignmentSelection}
 
                                     <CvcCodeListItem t={t} card={cardInfo} />
 
-                                    <ListItem>
-                                        <ListItemText
-                                            secondary={t("Cards number")}
-                                            primary={`---- ---- ---- ${cardInfo.primary_account_number_four_digit}`}
-                                        />
-                                    </ListItem>
-                                    <Divider />
+                                    {lastDigitsComponent}
 
+                                    <Divider />
                                     <ListItem>
                                         <ListItemText secondary={t("Cards status")} primary={cardStatus(cardInfo, t)} />
                                     </ListItem>
-                                    <Divider />
 
-                                    <ListItem>
-                                        <ListItemText secondary={t("Country")} primary={cardInfo.country} />
-                                    </ListItem>
-                                    <Divider />
+                                    {countryComponent}
 
                                     <ListItem>
                                         <ListItemText
@@ -366,7 +449,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         cardsUpdate: userId => dispatch(cardsUpdate(userId)),
-        cardsSetCardOrder: cardOrder => dispatch(cardsSetCardOrder(cardOrder))
+        cardsSetCardOrder: cardOrder => dispatch(cardsSetCardOrder(cardOrder)),
+
+        cardsAssignAccounts: (user_id, card_id, assignment) =>
+            dispatch(cardsAssignAccounts(user_id, card_id, assignment))
     };
 };
 
