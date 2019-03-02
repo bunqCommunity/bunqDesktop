@@ -569,43 +569,43 @@ class Settings extends React.Component {
 
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" color="secondary" style={styles.button} onClick={this.resetAllEventData}>
-                        Reset all event data
+                        {t("Reset all event data")}
                     </Button>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" style={styles.button} onClick={this.props.paymentsClear}>
-                        Regular payments {paymentCount}
+                        {t("Regular payments")} {paymentCount}
                     </Button>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" style={styles.button} onClick={this.props.masterCardActionsClear}>
-                        Card payments {cardPaymentCount}
+                        {t("Card payments")} {cardPaymentCount}
                     </Button>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" style={styles.button} onClick={this.resetRequestData}>
-                        Requests {requestCount}
+                        {t("Requests")} {requestCount}
                     </Button>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" style={styles.button} onClick={this.props.bunqMeTabsClear}>
-                        bunq.me Tabs {bunqMeTabsCount}
+                        {t("bunq me Tabs")} {bunqMeTabsCount}
                     </Button>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" style={styles.button} onClick={this.requestConnectData}>
-                        Connect requests {connectCount}
+                        {t("Connect requests")} {connectCount}
                     </Button>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" style={styles.button} onClick={this.props.scheduledPaymentsClear}>
-                        Scheduled payments {scheduledPaymentsCount}
+                        {t("Scheduled payments")} {scheduledPaymentsCount}
                     </Button>
                 </Grid>
             </Grid>
@@ -618,14 +618,15 @@ class Settings extends React.Component {
                 </Helmet>
 
                 <Dialog open={this.state.openImportDialog}>
-                    <DialogTitle>Change settings location</DialogTitle>
+                    <DialogTitle>{t("Change settings location")}</DialogTitle>
 
                     <DialogContent>
-                        <DialogContentText>You are about to change the settings location to:</DialogContentText>
+                        <DialogContentText>{t("You are about to change the settings location to")}:</DialogContentText>
                         <DialogContentText>{this.state.importTargetLocation}</DialogContentText>
                         <DialogContentText>
-                            Would you like to import the settings file or overwrite the settings currently in
-                            bunqDesktop?
+                            {t(
+                                "Would you like to import the settings file or overwrite the settings currently in bunqDesktop?"
+                            )}
                         </DialogContentText>
                     </DialogContent>
 
