@@ -568,7 +568,12 @@ class Settings extends React.Component {
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
-                    <TranslateButton variant="outlined" color="secondary" style={styles.button} onClick={this.resetAllEventData}>
+                    <TranslateButton
+                        variant="outlined"
+                        color="secondary"
+                        style={styles.button}
+                        onClick={this.resetAllEventData}
+                    >
                         Reset all event data
                     </TranslateButton>
                 </Grid>

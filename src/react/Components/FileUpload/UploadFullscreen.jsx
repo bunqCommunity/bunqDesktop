@@ -108,7 +108,12 @@ class UploadFullscreen extends React.Component {
                 onClose={this.props.onClose}
                 TransitionComponent={Transition}
             >
-                <TranslateButton style={styles.closeButton} onClick={this.props.onClose} color="primary" variant="contained">
+                <TranslateButton
+                    style={styles.closeButton}
+                    onClick={this.props.onClose}
+                    color="primary"
+                    variant="contained"
+                >
                     Close
                 </TranslateButton>
                 <div style={styles.content}>
