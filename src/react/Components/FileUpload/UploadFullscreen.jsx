@@ -4,7 +4,7 @@ import { translate } from "react-i18next";
 import Dialog from "@material-ui/core/Dialog";
 import Typography from "@material-ui/core/Typography";
 import Slide from "@material-ui/core/Slide";
-import Button from "@material-ui/core/Button";
+import TranslateButton from "../../Components/TranslationHelpers/Button";
 
 import FilePicker from "./FilePicker";
 
@@ -108,9 +108,9 @@ class UploadFullscreen extends React.Component {
                 onClose={this.props.onClose}
                 TransitionComponent={Transition}
             >
-                <Button style={styles.closeButton} onClick={this.props.onClose} color="primary" variant="contained">
+                <TranslateButton style={styles.closeButton} onClick={this.props.onClose} color="primary" variant="contained">
                     Close
-                </Button>
+                </TranslateButton>
                 <div style={styles.content}>
                     <div style={styles.contentWrapper}>
                         <Typography type={"headline"} style={styles.header}>
@@ -118,7 +118,7 @@ class UploadFullscreen extends React.Component {
                         </Typography>
                         <FilePicker handleFileDrop={this.handleFileDrop} />
                         {this.state.file && (
-                            <Button
+                            <TranslateButton
                                 variant="contained"
                                 color="primary"
                                 style={styles.uploadButton}
@@ -126,7 +126,7 @@ class UploadFullscreen extends React.Component {
                                 disabled={this.state.uploadingFile}
                             >
                                 Upload
-                            </Button>
+                            </TranslateButton>
                         )}
                     </div>
                 </div>

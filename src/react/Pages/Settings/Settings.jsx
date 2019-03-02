@@ -568,9 +568,9 @@ class Settings extends React.Component {
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
-                    <Button variant="outlined" color="secondary" style={styles.button} onClick={this.resetAllEventData}>
-                        {t("Reset all event data")}
-                    </Button>
+                    <TranslateButton variant="outlined" color="secondary" style={styles.button} onClick={this.resetAllEventData}>
+                        Reset all event data
+                    </TranslateButton>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
@@ -593,7 +593,7 @@ class Settings extends React.Component {
 
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" style={styles.button} onClick={this.props.bunqMeTabsClear}>
-                        {t("bunq me Tabs")} {bunqMeTabsCount}
+                        {t("bunq.me Tabs")} {bunqMeTabsCount}
                     </Button>
                 </Grid>
 
@@ -618,15 +618,14 @@ class Settings extends React.Component {
                 </Helmet>
 
                 <Dialog open={this.state.openImportDialog}>
-                    <DialogTitle>{t("Change settings location")}</DialogTitle>
+                    <DialogTitle>Change settings location</DialogTitle>
 
                     <DialogContent>
-                        <DialogContentText>{t("You are about to change the settings location to")}:</DialogContentText>
+                        <DialogContentText>You are about to change the settings location to:</DialogContentText>
                         <DialogContentText>{this.state.importTargetLocation}</DialogContentText>
                         <DialogContentText>
-                            {t(
-                                "Would you like to import the settings file or overwrite the settings currently in bunqDesktop?"
-                            )}
+                            Would you like to import the settings file or overwrite the settings currently in
+                            bunqDesktop?
                         </DialogContentText>
                     </DialogContent>
 
