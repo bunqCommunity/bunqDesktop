@@ -30,7 +30,8 @@ const styles = {
     avatarSub: {
         minWidth: 26,
         marginLeft: -23,
-        marginTop: 40
+        marginTop: 40,
+        zIndex: 10
     },
     secondaryIcon: {
         width: 26,
