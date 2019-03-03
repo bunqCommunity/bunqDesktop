@@ -7,7 +7,7 @@ import {
     requestInquiryColor,
     requestResponseColor
 } from "../../Colors";
-import { moneyTemplate } from "../../../../Helpers/StatsFormattingTemplates";
+import { moneyTemplate } from "../../../../Functions/StatsFormattingTemplates";
 
 const countReducer = (a, b) => a + b;
 

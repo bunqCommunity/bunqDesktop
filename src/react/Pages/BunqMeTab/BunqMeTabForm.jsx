@@ -104,7 +104,7 @@ class BunqMeTabForm extends React.Component {
     validateForm = () => {
         const { description, amount, setRedirectUrl, redirectUrl } = this.state;
 
-        const amountErrorCondition = amount < 0.01 || amount > 10000;
+        const amountErrorCondition = amount < 0.01 || amount > 100000;
         const descriptionErrorCondition = description.length > 140;
         const redurectUrlErrorCondition = setRedirectUrl === true && redirectUrl.length < 5;
 

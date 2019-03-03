@@ -12,16 +12,15 @@ import differenceInCalendarMonths from "date-fns/differenceInCalendarMonths";
 import differenceInCalendarYears from "date-fns/differenceInCalendarYears";
 import format from "date-fns/format";
 
-import CategoryHelper from "../Helpers/CategoryHelper";
+import CategoryHelper from "../Components/Categories/CategoryHelper";
 import {
     bunqMeTabsFilter,
     masterCardActionFilter,
     paymentFilter,
     requestInquiryFilter,
     requestResponseFilter
-} from "../Helpers/DataFilters";
+} from "../Functions/DataFilters";
 
-import MonetaryAccount from "../Models/MonetaryAccount";
 import Payment from "../Models/Payment";
 import MasterCardAction from "../Models/MasterCardAction";
 import RequestInquiry from "../Models/RequestInquiry";
@@ -40,10 +39,6 @@ const labelFormat = (date, type = "daily") => {
         default:
             return format(date, "dd MMM YY");
     }
-};
-
-const roundMoney = amount => {
-    return Math.round(amount * 100) / 100;
 };
 
 const paymentMapper = (payments, paymentFilterSettings, categories, categoryConnections, hiddenPaymentIds = []) => {

@@ -1,4 +1,4 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
 
 export function cardsSetInfo(cards, user_id) {
     return {
@@ -19,15 +19,35 @@ export function cardsSetCardOrder(cardOrder) {
     };
 }
 
-export function cardsUpdate(BunqJSClient, user_id) {
+export function cardsUpdate(user_id) {
     const failedMessage = window.t("We failed to load the cards overview");
 
     return dispatch => {
         dispatch(cardsLoading());
-        BunqJSClient.api.card
+        window.BunqDesktopClient.BunqJSClient.api.card
             .list(user_id)
             .then(cards => {
                 dispatch(cardsSetInfo(cards, user_id));
+                dispatch(cardsNotLoading());
+            })
+            .catch(error => {
+                dispatch(cardsNotLoading());
+                BunqErrorHandler(dispatch, error, failedMessage);
+            });
+    };
+}
+
+export function cardsAssignAccounts(user_id, card_id, assignemnts) {
+    const failedMessage = window.t("We failed to assign the accounts to this card");
+
+    console.log(user_id, card_id, assignemnts);
+
+    return dispatch => {
+        dispatch(cardsLoading());
+        window.BunqDesktopClient.BunqJSClient.api.card
+            .update(user_id, card_id, null, null, null, null, null, null, assignemnts)
+            .then(cards => {
+                dispatch(cardsUpdate(user_id));
                 dispatch(cardsNotLoading());
             })
             .catch(error => {

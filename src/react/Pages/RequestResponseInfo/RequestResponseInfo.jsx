@@ -11,18 +11,15 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Typography from "@material-ui/core/Typography";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import HelpIcon from "@material-ui/icons/Help";
 import SaveIcon from "@material-ui/icons/Save";
-import ArrowUpIcon from "@material-ui/icons/ArrowUpward";
-import ArrowDownIcon from "@material-ui/icons/ArrowDownward";
 import FilterIcon from "@material-ui/icons/FilterList";
 
 import FilterCreationDialog from "../../Components/FilterCreationDialog";
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
-import PDFExportHelper from "../../Components/PDFExportHelper";
+import PDFExportHelper from "../../Components/PDFExportHelper/PDFExportHelper";
 import ExportDialog from "../../Components/ExportDialog";
 import SpeedDial from "../../Components/SpeedDial";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
@@ -32,8 +29,8 @@ import CategorySelector from "../../Components/Categories/CategorySelector";
 import NoteTextForm from "../../Components/NoteTexts/NoteTextForm";
 import GeoLocationListItem from "../../Components/GeoLocation/GeoLocationListItem";
 
-import { formatMoney, humanReadableDate } from "../../Helpers/Utils";
-import { requestResponseText, requestResponseTypeParser } from "../../Helpers/StatusTexts";
+import { formatMoney, humanReadableDate } from "../../Functions/Utils";
+import { requestResponseText, requestResponseTypeParser } from "../../Functions/EventStatusTexts";
 
 import { requestResponseUpdate } from "../../Actions/request_response_info";
 import { requestResponseReject, requestResponseAccept } from "../../Actions/request_response";

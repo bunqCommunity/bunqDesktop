@@ -29,8 +29,8 @@ import OAuthManagement from "./OAuthManagement";
 import SideOptions from "./SideOptions";
 
 import { registrationLogOut, registrationLogin } from "../../Actions/registration";
-import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
-import Logger from "../../Helpers/Logger";
+import BunqErrorHandler from "../../Functions/BunqErrorHandler";
+import Logger from "../../Functions/Logger";
 
 const styles = {
     card: {
@@ -116,11 +116,6 @@ class Login extends React.Component {
 
             // enable wildcard mode on device registration
             wildcardMode: false,
-
-            // allowed ip addresses for the session
-            currentIp: false,
-            currentIpValid: true,
-            gettingCurrentIpLoading: false,
 
             // apikey and device details
             apiKey: "",
@@ -219,8 +214,8 @@ class Login extends React.Component {
         if (this.state.deviceNameValid && this.state.apiKeyValid) {
             // check if we use default ips or current ip + wildcard mode
             let permittedIps = [];
-            if (this.state.currentIp && this.state.wildcardMode) {
-                permittedIps = [this.state.currentIp, "*"];
+            if (this.state.wildcardMode) {
+                permittedIps = ["*"];
             }
 
             this.registrationLogin(this.state.apiKey, permittedIps);
@@ -348,51 +343,22 @@ class Login extends React.Component {
     };
     handleWildcardModeChange = (event, checked) => {
         this.setState({ wildcardMode: checked });
-
-        // if checked and no ips set, get the user's current IP address
-        if (checked && !this.state.currentIp && !this.state.gettingCurrentIpLoading) {
-            this.setState({
-                gettingCurrentIpLoading: true
-            });
-
-            axios
-                .get("https://api.ipify.org?format=json")
-                .then(response => response.data.ip)
-                .then(ip => {
-                    // set current IP and wildcard IP
-                    this.setState({
-                        currentIp: ip,
-                        gettingCurrentIpLoading: false
-                    });
-                })
-                .catch(error => {
-                    Logger.error(error);
-                    this.setState({
-                        gettingCurrentIpLoading: false
-                    });
-                });
-        }
     };
     handleTabChange = (event, value) => {
         this.setState({ tabIndex: value });
     };
 
     validateInputs = (cb = () => {}) => {
-        const currentIp = this.state.currentIp;
         const apiKey = this.state.apiKey;
         const deviceName = this.state.deviceName;
 
         const apiKeyValid = apiKey !== false && apiKey.length === 64;
-
         const deviceNameValid = deviceName !== false && deviceName.length >= 1 && deviceName.length <= 32;
-
-        const currentIpValid = currentIp === false || currentIp.split(".").length === 4;
 
         this.setState(
             {
                 apiKeyValid: apiKeyValid,
-                deviceNameValid: deviceNameValid,
-                currentIpValid: currentIpValid
+                deviceNameValid: deviceNameValid
             },
             cb
         );
@@ -526,9 +492,6 @@ class Login extends React.Component {
                     openOptions={this.state.openOptions}
                     sandboxMode={this.state.sandboxMode}
                     wildcardMode={this.state.wildcardMode}
-                    currentIp={this.state.currentIp}
-                    currentIpValid={this.state.currentIpValid}
-                    gettingCurrentIpLoading={this.state.gettingCurrentIpLoading}
                     apiKey={this.state.apiKey}
                     apiKeyValid={this.state.apiKeyValid}
                     createSandboxUser={this.createSandboxUser}

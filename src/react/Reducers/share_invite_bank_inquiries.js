@@ -1,6 +1,6 @@
 import store from "store";
 import { STORED_SHARE_INVITE_BANK_INQUIRIES } from "../Actions/share_invite_bank_inquiries";
-import { storeEncryptString } from "../Helpers/CryptoWorkerWrapper";
+import { storeEncryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
 
 export const defaultState = {
     share_invite_bank_inquiries: [],
@@ -13,13 +13,13 @@ export default (state = defaultState, action) => {
         case "SHARE_INVITE_INQUIRIES_SET_INFO":
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
-                storeEncryptString(
+                const BunqDesktopClient = window.BunqDesktopClient;
+                BunqDesktopClient.storeEncrypt(
                     {
                         items: action.payload.share_invite_bank_inquiries,
                         account_id: action.payload.account_id
                     },
-                    STORED_SHARE_INVITE_BANK_INQUIRIES,
-                    action.payload.BunqJSClient.Session.encryptionKey
+                    STORED_SHARE_INVITE_BANK_INQUIRIES
                 )
                     .then(() => {})
                     .catch(() => {});
@@ -47,7 +47,8 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_CLEAR_PRIVATE_DATA":
         case "REGISTRATION_LOG_OUT":
         case "REGISTRATION_CLEAR_USER_INFO":
-            store.remove(STORED_SHARE_INVITE_BANK_INQUIRIES);
+            const BunqDesktopClient = window.BunqDesktopClient;
+            BunqDesktopClient.storeRemove(STORED_SHARE_INVITE_BANK_INQUIRIES);
             return {
                 ...defaultState
             };

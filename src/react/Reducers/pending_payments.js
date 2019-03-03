@@ -1,6 +1,6 @@
 import store from "store";
-import { generateGUID } from "../Helpers/Utils";
-import { storeEncryptString } from "../Helpers/CryptoWorkerWrapper";
+import { generateGUID } from "../Functions/Utils";
+import { storeEncryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
 import { PENDING_PAYMENTS_LOCATION } from "../Actions/pending_payments";
 
 export const defaultState = {
@@ -16,11 +16,8 @@ export default (state = defaultState, action) => {
             const newSetPendingPayment = action.payload.pending_payments;
 
             if (action.payload.BunqJSClient) {
-                storeEncryptString(
-                    newSetPendingPayment,
-                    PENDING_PAYMENTS_LOCATION,
-                    action.payload.BunqJSClient.Session.encryptionKey
-                )
+                const BunqDesktopClient = window.BunqDesktopClient;
+                BunqDesktopClient.storeEncrypt(newSetPendingPayment, PENDING_PAYMENTS_LOCATION)
                     .then(() => {})
                     .catch(() => {});
             }
@@ -42,11 +39,8 @@ export default (state = defaultState, action) => {
             };
 
             if (action.payload.BunqJSClient) {
-                storeEncryptString(
-                    pendingPayments,
-                    PENDING_PAYMENTS_LOCATION,
-                    action.payload.BunqJSClient.Session.encryptionKey
-                )
+                const BunqDesktopClient = window.BunqDesktopClient;
+                BunqDesktopClient.storeEncrypt(pendingPayments, PENDING_PAYMENTS_LOCATION)
                     .then(() => {})
                     .catch(() => {});
             }
@@ -71,11 +65,8 @@ export default (state = defaultState, action) => {
             });
 
             if (action.payload.BunqJSClient) {
-                storeEncryptString(
-                    pendingPayments,
-                    PENDING_PAYMENTS_LOCATION,
-                    action.payload.BunqJSClient.Session.encryptionKey
-                )
+                const BunqDesktopClient = window.BunqDesktopClient;
+                BunqDesktopClient.storeEncrypt(pendingPayments, PENDING_PAYMENTS_LOCATION)
                     .then(() => {})
                     .catch(() => {});
             }
@@ -98,11 +89,8 @@ export default (state = defaultState, action) => {
             });
 
             if (action.payload.BunqJSClient) {
-                storeEncryptString(
-                    pendingPayments,
-                    PENDING_PAYMENTS_LOCATION,
-                    action.payload.BunqJSClient.Session.encryptionKey
-                )
+                const BunqDesktopClient = window.BunqDesktopClient;
+                BunqDesktopClient.storeEncrypt(pendingPayments, PENDING_PAYMENTS_LOCATION)
                     .then(() => {})
                     .catch(() => {});
             }
@@ -121,11 +109,8 @@ export default (state = defaultState, action) => {
             }
 
             if (action.payload.BunqJSClient) {
-                storeEncryptString(
-                    pendingPayments,
-                    PENDING_PAYMENTS_LOCATION,
-                    action.payload.BunqJSClient.Session.encryptionKey
-                )
+                const BunqDesktopClient = window.BunqDesktopClient;
+                BunqDesktopClient.storeEncrypt(pendingPayments, PENDING_PAYMENTS_LOCATION)
                     .then(() => {})
                     .catch(() => {});
             }
@@ -140,7 +125,8 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_LOG_OUT":
         case "REGISTRATION_CLEAR_PRIVATE_DATA":
         case "REGISTRATION_CLEAR_USER_INFO":
-            store.remove(PENDING_PAYMENTS_LOCATION);
+            const BunqDesktopClient = window.BunqDesktopClient;
+            BunqDesktopClient.storeRemove(PENDING_PAYMENTS_LOCATION);
             return { ...defaultState };
     }
     return state;

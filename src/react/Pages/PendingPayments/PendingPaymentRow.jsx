@@ -12,7 +12,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import TargetChipList from "../../Components/FormFields/TargetChipList";
 import TargetChip from "../../Components/FormFields/TargetChip";
 
-import { formatMoney } from "../../Helpers/Utils";
+import { formatMoney } from "../../Functions/Utils";
 
 const styles = {
     subdirectoryIconGrid: {
@@ -37,9 +37,7 @@ export default ({ pendingPayment, selectedCheckBoxes, accounts, togglePaymentChe
 
     let targetComponents = null;
     if (paymentObject.counterparty_aliases) {
-        targetComponents = (
-            <TargetChipList targets={paymentObject.counterparty_aliases} accounts={accounts} />
-        );
+        targetComponents = <TargetChipList targets={paymentObject.counterparty_aliases} accounts={accounts} />;
     } else {
         targetComponents = <TargetChip target={paymentObject.counterparty_alias} accounts={accounts} />;
     }

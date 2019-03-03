@@ -15,8 +15,8 @@ import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachment
 import NavLink from "../../Components/Routing/NavLink";
 import AccountAvatarCircularProgress from "./AccountAvatarCircularProgress";
 
-import { formatMoney } from "../../Helpers/Utils";
-import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
+import { formatMoney } from "../../Functions/Utils";
+import { connectGetBudget } from "../../Functions/ConnectGetPermissions";
 
 import { accountsSelectAccount } from "../../Actions/accounts.js";
 import { addAccountIdFilter, removeAccountIdFilter, toggleAccountIdFilter } from "../../Actions/filters";
@@ -28,9 +28,10 @@ const styles = {
         height: 60
     },
     avatarSub: {
-        position: "absolute",
-        left: 60,
-        bottom: 4
+        minWidth: 26,
+        marginLeft: -23,
+        marginTop: 40,
+        zIndex: 10
     },
     secondaryIcon: {
         width: 26,
@@ -75,7 +76,7 @@ class AccountListItem extends React.Component {
 
         let accountBalance = account.balance ? account.balance.value : 0;
         if (shareInviteBankResponses.length > 0) {
-            const connectBudget = GetShareDetailBudget(shareInviteBankResponses);
+            const connectBudget = connectGetBudget(shareInviteBankResponses);
             if (connectBudget) {
                 accountBalance = connectBudget;
             }
@@ -92,7 +93,9 @@ class AccountListItem extends React.Component {
         }
 
         // check if any of the selected account ids are for this account
-        let displayStyle = {};
+        let displayStyle = {
+            height: 83
+        };
         let circularLeftPostion = 20;
         let accountIsSelected = false;
         if (selectedAccountIds.length !== 0) {
@@ -105,7 +108,8 @@ class AccountListItem extends React.Component {
                 circularLeftPostion = 16;
                 displayStyle = {
                     borderLeft: "4px solid #1da1f2",
-                    paddingLeft: 20
+                    paddingLeft: 20,
+                    height: 83
                 };
             }
         }
@@ -115,11 +119,16 @@ class AccountListItem extends React.Component {
             ? e => this.props.removeAccountIdFilter(account.id)
             : e => this.props.addAccountIdFilter(account.id);
 
-        // allow overwrite by props
-        const onClickHandler = this.props.onClick ? e => this.props.onClick(user.id, account.id) : defaultClickHandler;
+        const listItemProps = {};
+        if (this.props.clickable) {
+            listItemProps.button = true;
+            listItemProps.onClick = this.props.onClick
+                ? e => this.props.onClick(user.id, account.id)
+                : defaultClickHandler;
+        }
 
         return (
-            <ListItem button onClick={onClickHandler} style={displayStyle} divider>
+            <ListItem {...listItemProps} style={displayStyle} divider>
                 <AccountAvatarCircularProgress account={account} style={{ left: circularLeftPostion }} />
                 <Avatar style={styles.bigAvatar}>
                     <LazyAttachmentImage

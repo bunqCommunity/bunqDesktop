@@ -1,6 +1,9 @@
-export default ({
-    selectedAccountIds,
-    selectedCategories,
+const FilterDisabledChecker = ({
+    dateFromFilter = null,
+    dateToFilter = null,
+    selectedCategories = [],
+    selectedAccountIds = [],
+    selectedCardIds = [],
     searchTerm,
     paymentType,
     bunqMeTabType,
@@ -11,8 +14,11 @@ export default ({
     amountFilterAmount
 }) => {
     return (
-        selectedAccountIds.length <= 0 &&
+        dateFromFilter === null &&
+        dateToFilter === null &&
         selectedCategories.length <= 0 &&
+        selectedAccountIds.length <= 0 &&
+        selectedCardIds.length <= 0 &&
         searchTerm.length <= 0 &&
         paymentType === "default" &&
         bunqMeTabType === "default" &&
@@ -23,3 +29,5 @@ export default ({
         amountFilterAmount === ""
     );
 };
+
+export default FilterDisabledChecker;

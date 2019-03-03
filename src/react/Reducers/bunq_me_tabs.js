@@ -1,6 +1,6 @@
 import store from "store";
-import MergeApiObjects from "../Helpers/MergeApiObjects";
-import { storeEncryptString } from "../Helpers/CryptoWorkerWrapper";
+import MergeApiObjects from "../Functions/MergeApiObjects";
+import { storeEncryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
 
 import { STORED_BUNQ_ME_TABS } from "../Actions/bunq_me_tabs";
 
@@ -35,13 +35,13 @@ export default (state = defaultState, action) => {
 
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
-                storeEncryptString(
+                const BunqDesktopClient = window.BunqDesktopClient;
+                BunqDesktopClient.storeEncrypt(
                     {
                         items: mergedBunqMeTabs,
                         account_id: action.payload.account_id
                     },
-                    STORED_BUNQ_ME_TABS,
-                    action.payload.BunqJSClient.Session.encryptionKey
+                    STORED_BUNQ_ME_TABS
                 )
                     .then(() => {})
                     .catch(() => {});
@@ -81,7 +81,8 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_LOG_OUT":
         case "REGISTRATION_CLEAR_PRIVATE_DATA":
         case "REGISTRATION_CLEAR_USER_INFO":
-            store.remove(STORED_BUNQ_ME_TABS);
+            const BunqDesktopClient = window.BunqDesktopClient;
+            BunqDesktopClient.storeRemove(STORED_BUNQ_ME_TABS);
             return {
                 bunq_me_tabs: [],
                 account_id: false,

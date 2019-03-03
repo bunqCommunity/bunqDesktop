@@ -1,4 +1,4 @@
-let exportObject;
+let exportObject = {};
 
 if (process.env.JEST) {
     exportObject = {

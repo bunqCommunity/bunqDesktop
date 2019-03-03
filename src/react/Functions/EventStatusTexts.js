@@ -168,6 +168,7 @@ export const cardStatus = (cardInfo, t) => {
 
 export const cardOrderStatus = (cardInfo, t) => {
     const VIRTUAL_DELIVERY = t("Delivered virtually");
+    const SENT_FOR_PRODUCTION = t("Sent for production");
     const NEW_CARD_REQUEST_RECEIVED = t("New card request received");
     const ACCEPTED_FOR_PRODUCTION = t("Accepted for production");
     const DELIVERED_TO_CUSTOMER = t("Delivered to customer");
@@ -177,19 +178,21 @@ export const cardOrderStatus = (cardInfo, t) => {
 
     switch (cardInfo.order_status) {
         case "VIRTUAL_DELIVERY":
-            return `${VIRTUAL_DELIVERY} (VIRTUAL_DELIVERY)`;
+            return `${VIRTUAL_DELIVERY}`;
+        case "SENT_FOR_PRODUCTION":
+            return `${SENT_FOR_PRODUCTION}`;
         case "ACCEPTED_FOR_PRODUCTION":
-            return `${ACCEPTED_FOR_PRODUCTION} (ACCEPTED_FOR_PRODUCTION)`;
+            return `${ACCEPTED_FOR_PRODUCTION}`;
         case "NEW_CARD_REQUEST_RECEIVED":
-            return `${NEW_CARD_REQUEST_RECEIVED} (NEW_CARD_REQUEST_RECEIVED)`;
+            return `${NEW_CARD_REQUEST_RECEIVED}`;
         case "DELIVERED_TO_CUSTOMER":
-            return `${DELIVERED_TO_CUSTOMER} (DELIVERED_TO_CUSTOMER)`;
+            return `${DELIVERED_TO_CUSTOMER}`;
         case "CARD_UPDATE_REQUESTED":
-            return `${CARD_UPDATE_REQUESTED} (CARD_UPDATE_REQUESTED)`;
+            return `${CARD_UPDATE_REQUESTED}`;
         case "CARD_UPDATE_SENT":
-            return `${CARD_UPDATE_SENT} (CARD_UPDATE_SENT)`;
+            return `${CARD_UPDATE_SENT}`;
         case "CARD_UPDATE_ACCEPTED":
-            return `${CARD_UPDATE_ACCEPTED} (CARD_UPDATE_ACCEPTED)`;
+            return `${CARD_UPDATE_ACCEPTED}`;
     }
 
     return cardInfo.order_status;

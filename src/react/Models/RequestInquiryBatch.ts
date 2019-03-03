@@ -1,5 +1,5 @@
 import { Amount, RequestSplitTheBill } from "../Types/Types";
-import Event, { EventType } from "../Types/Event";
+import Event, { EventTypeValue } from "../Types/Event";
 import RequestInquiry from "./RequestInquiry";
 
 export default class RequestInquiryBatch implements Event {
@@ -7,7 +7,7 @@ export default class RequestInquiryBatch implements Event {
     private _rawData: any;
 
     public RequestInquiryBatch = this;
-    get eventType(): EventType {
+    get eventType(): EventTypeValue {
         return "RequestInquiryBatch";
     }
 

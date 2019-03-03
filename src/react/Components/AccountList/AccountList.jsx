@@ -18,9 +18,9 @@ import CheckBoxOutlinedIcon from "@material-ui/icons/CheckBoxOutlined";
 import LimitedPremiumListItem from "../LimitedPremiumListItem";
 import AccountListItem from "./AccountListItem";
 import AddAccount from "./AddAccount";
-import { formatMoney } from "../../Helpers/Utils";
-import GetShareDetailBudget from "../../Helpers/GetShareDetailBudget";
-import { filterShareInviteBankResponses } from "../../Helpers/DataFilters";
+import { formatMoney } from "../../Functions/Utils";
+import { connectGetBudget } from "../../Functions/ConnectGetPermissions";
+import { filterShareInviteBankResponses } from "../../Functions/DataFilters";
 
 import {
     accountsSelectAccount,
@@ -92,7 +92,7 @@ class AccountList extends React.Component {
 
                     // get budget from this response
                     if (filteredResponses.length > 0) {
-                        const connectBudget = GetShareDetailBudget(filteredResponses);
+                        const connectBudget = connectGetBudget(filteredResponses);
 
                         if (connectBudget) {
                             accountTrayItem.balance = formatMoney(parseFloat(connectBudget));
@@ -237,7 +237,7 @@ class AccountList extends React.Component {
                             BunqJSClient={this.props.BunqJSClient}
                             denseMode={this.props.denseMode}
                             account={account}
-                            isJoint={account.accountType === "MonetaryAccountJoint"}
+                            isJoint={!!account.all_co_owner}
                             shareInviteBankResponses={filteredResponses}
                             secondaryAction={secondaryAction}
                         />

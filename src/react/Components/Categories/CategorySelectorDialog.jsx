@@ -1,10 +1,10 @@
 import React from "react";
 import { translate } from "react-i18next";
-import Button from "@material-ui/core/Button";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
+import TranslateButton from "../../Components/TranslationHelpers/Button";
 
 import CategorySelector from "./CategorySelector";
 
@@ -24,7 +24,7 @@ class CategorySelectorDialog extends React.Component {
                     <CategorySelector displayToggleButton={false} type={type} item={item} />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={onClose}>Ok</Button>
+                    <TranslateButton onClick={onClose}>Ok</TranslateButton>
                 </DialogActions>
             </Dialog>
         );

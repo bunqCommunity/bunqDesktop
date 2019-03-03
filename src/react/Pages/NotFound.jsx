@@ -1,7 +1,6 @@
 import React from "react";
 import Helmet from "react-helmet";
 import { translate } from "react-i18next";
-import Typography from "@material-ui/core/Typography";
 
 import TranslateTypography from "../Components/TranslationHelpers/Typography";
 
