@@ -5,23 +5,27 @@ import Helmet from "react-helmet";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Avatar from "@material-ui/core/Avatar";
+
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
-import TranslateTypography from "../../Components/TranslationHelpers/Typography";
+import AliasList from "../../Components/AliasList";
+import UploadFullscreen from "../../Components/FileUpload/UploadFullscreen";
+import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
+import NotificationFilters from "./NotificationFilters";
 import ProfileDetailsForm from "./ProfileDetailsForm";
+import BusinessInfo from "./BusinessInfo";
+import BillingInfo from "./BillingInfo";
 
 import { openSnackbar } from "../../Actions/snackbar";
+import { userUpdateImage } from "../../Actions/user";
 import { usersUpdate } from "../../Actions/users";
 
-import BunqErrorHandler from "../../Helpers/BunqErrorHandler";
-import { formatMoney } from "../../Helpers/Utils";
+import BunqErrorHandler from "../../Functions/BunqErrorHandler";
 
 const styles = {
     title: {
@@ -34,6 +38,9 @@ const styles = {
         padding: 16,
         marginTop: 16
     },
+    listItem: {
+        paddingLeft: 8
+    },
     list: {
         textAlign: "left"
     },
@@ -42,6 +49,10 @@ const styles = {
     },
     circlePicker: {
         padding: 8
+    },
+    avatar: {
+        width: 70,
+        height: 70
     }
 };
 
@@ -51,7 +62,9 @@ class Profile extends React.Component {
         this.state = {
             loading: false,
             totalBalance: 0,
-            normalizedUserInfo: false
+            normalizedUserInfo: false,
+
+            displayUploadScreen: false
         };
     }
 
@@ -83,6 +96,12 @@ class Profile extends React.Component {
         }
     }
 
+    onChange = key => event => {
+        this.setState({
+            [key]: event.target.value
+        });
+    };
+
     calculateTotalBalance = () => {
         return this.props.accounts.reduce((total, account) => {
             return total + account.getBalance();
@@ -108,9 +127,17 @@ class Profile extends React.Component {
         return formattedAddress;
     };
 
-    onChange = key => event => {
+    handleFileUpload = fileUUID => {
+        const { user, userType } = this.props;
+
+        if (fileUUID) {
+            this.props.userUpdateImage(user.id, fileUUID, userType);
+        }
+    };
+
+    toggleFileUploadDialog = () => {
         this.setState({
-            [key]: event.target.value
+            displayUploadScreen: !this.state.displayUploadScreen
         });
     };
 
@@ -148,6 +175,7 @@ class Profile extends React.Component {
             .then(response => {
                 this.setState({ loading: false });
                 this.props.usersUpdate(true);
+                this.props.history.push("/");
             })
             .catch(error => {
                 this.setState({ loading: false });
@@ -156,93 +184,43 @@ class Profile extends React.Component {
     };
 
     render() {
-        const { t, userType, userLoading } = this.props;
+        const { t, user, userType, userLoading } = this.props;
         const { totalBalance } = this.state;
 
         let content = null;
         if (userLoading === false && this.state.loading === false) {
-            let businessInfo = null;
-            if (userType === "UserCompany") {
-                const safeKeepingValue = totalBalance - 100000;
-                const hasSafeKeepingFee = safeKeepingValue > 0;
-
-                let costsTable = null;
-                if (hasSafeKeepingFee) {
-                    costsTable = (
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>{t("Days")}</TableCell>
-                                    <TableCell numeric>{t("Estimated total cost")}</TableCell>
-                                    <TableCell numeric>{t("Balance after payments")}</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {[1, 7, 30, 90, 365].map(days => {
-                                    // to keep track of the amount across the dates
-                                    let accountBalance = safeKeepingValue;
-                                    let totalPayment = 0;
-
-                                    // go through the days to calculate historic change
-                                    for (let day = 0; day < days; day++) {
-                                        const thousands = accountBalance / 1000;
-                                        let nextPayment = (thousands * 2.4) / 100;
-
-                                        // update balance
-                                        accountBalance = accountBalance - nextPayment;
-                                        totalPayment = totalPayment + nextPayment;
-                                    }
-
-                                    return (
-                                        <TableRow key={`days${days}`}>
-                                            <TableCell component="th" scope="row">
-                                                {days}
-                                            </TableCell>
-                                            <TableCell numeric>{formatMoney(totalPayment)}</TableCell>
-                                            <TableCell numeric>{formatMoney(accountBalance)}</TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-                            </TableBody>
-                        </Table>
-                    );
-                }
-
-                businessInfo = (
-                    <Paper style={styles.paper}>
-                        <Grid container spacing={16} justify="center">
-                            <Grid item xs={12}>
-                                <TranslateTypography variant="subtitle1">
-                                    Safekeeping fee calculator
-                                </TranslateTypography>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <TextField
-                                    min={0}
-                                    step={0.01}
-                                    type="number"
-                                    label="Total account balance"
-                                    value={parseFloat(totalBalance ? totalBalance : 0).toFixed(2)}
-                                    onChange={this.onChange("totalBalance")}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                {hasSafeKeepingFee ? (
-                                    costsTable
-                                ) : (
-                                    <TranslateTypography variant="subtitle1">No safekeeping fee</TranslateTypography>
-                                )}
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                );
-            }
-
             content = (
                 <React.Fragment>
-                    <Paper style={styles.paper}>
+                    <UploadFullscreen
+                        BunqJSClient={this.props.BunqJSClient}
+                        open={this.state.displayUploadScreen}
+                        onComplete={this.handleFileUpload}
+                        onClose={this.toggleFileUploadDialog}
+                    />
+
+                    <Paper style={{ ...styles.paper, paddingTop: 0 }}>
+                        <List>
+                            <ListItem style={styles.listItem}>
+                                <Avatar
+                                    style={{ ...styles.avatar, cursor: "pointer" }}
+                                    onClick={_ =>
+                                        this.setState({
+                                            displayUploadScreen: true
+                                        })
+                                    }
+                                >
+                                    <LazyAttachmentImage
+                                        BunqJSClient={this.props.BunqJSClient}
+                                        height={70}
+                                        imageUUID={user.avatar.image[0].attachment_public_uuid}
+                                    />
+                                </Avatar>
+                                <ListItemText primary={user.public_nick_name} secondary={user.legal_name} />
+                            </ListItem>
+
+                            <AliasList aliasses={user.alias} />
+                        </List>
+
                         {this.state.normalizedUserInfo && (
                             <ProfileDetailsForm
                                 initialValues={this.state.normalizedUserInfo}
@@ -251,7 +229,23 @@ class Profile extends React.Component {
                         )}
                     </Paper>
 
-                    {businessInfo}
+                    <BusinessInfo t={t} onChange={this.onChange} totalBalance={totalBalance} userType={userType} />
+
+                    <BillingInfo
+                        t={t}
+                        user={user}
+                        BunqJSClient={this.props.BunqJSClient}
+                        BunqErrorHandler={this.props.BunqErrorHandler}
+                    />
+
+                    <NotificationFilters
+                        t={t}
+                        user={user}
+                        userType={userType}
+                        usersUpdate={this.props.usersUpdate}
+                        BunqJSClient={this.props.BunqJSClient}
+                        BunqErrorHandler={this.props.BunqErrorHandler}
+                    />
                 </React.Fragment>
             );
         } else {
@@ -292,7 +286,6 @@ const mapStateToProps = state => {
     return {
         user: state.user.user,
         userType: state.user.user_type,
-        userType: state.user.user_type,
         userLoading: state.user.loading,
         accounts: state.accounts.accounts,
         accountsLoading: state.accounts.loading
@@ -304,6 +297,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
         usersUpdate: updated => dispatch(usersUpdate(BunqJSClient, updated)),
+        userUpdateImage: (userId, attachmentId) => dispatch(userUpdateImage(BunqJSClient, userId, attachmentId)),
 
         BunqErrorHandler: (error, message) => BunqErrorHandler(dispatch, error, message)
     };

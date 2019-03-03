@@ -12,7 +12,7 @@ const getInviteResponse = (shareInviteBankResponses, accountId) => {
     return firstInviteResponse.ShareInviteBankResponse;
 };
 
-export const getConnectPermissions = (shareInviteBankResponses, accountId) => {
+export const connectGetPermissions = (shareInviteBankResponses, accountId) => {
     const inviteResponse = getInviteResponse(shareInviteBankResponses, accountId);
     if (!inviteResponse || inviteResponse === true) return true;
 
@@ -23,7 +23,7 @@ export const getConnectPermissions = (shareInviteBankResponses, accountId) => {
     return {};
 };
 
-export const getConnectType = (shareInviteBankResponses, accountId) => {
+export const connectGetType = (shareInviteBankResponses, accountId) => {
     const inviteResponse = getInviteResponse(shareInviteBankResponses, accountId);
     if (!inviteResponse || inviteResponse === true) return true;
 
@@ -32,4 +32,27 @@ export const getConnectType = (shareInviteBankResponses, accountId) => {
     if (inviteResponse.share_detail.ShareDetailDraftPayment) return "ShareDetailDraftPayment";
 
     return true;
+};
+
+export const connectGetBudget = (shareInviteBankResponses, accountId) => {
+    let inviteResponse = null;
+    if (accountId) {
+        inviteResponse = getInviteResponse(shareInviteBankResponses, accountId);
+    } else {
+        inviteResponse = shareInviteBankResponses.pop();
+        if (inviteResponse) inviteResponse = inviteResponse.ShareInviteBankResponse;
+    }
+    if (!inviteResponse || inviteResponse === true) return true;
+
+    // check if share details are available
+    if (inviteResponse.share_detail && inviteResponse.share_detail.ShareDetailPayment) {
+        // get budget from share invite bank response
+        const budgetInfo = inviteResponse.share_detail.ShareDetailPayment.budget;
+
+        if (budgetInfo) {
+            // get the available balance for this budget
+            return parseFloat(budgetInfo.amount_available.value);
+        }
+    }
+    return false;
 };

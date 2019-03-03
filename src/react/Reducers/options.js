@@ -1,16 +1,6 @@
 import store from "store";
-import localforage from "../ImportWrappers/localforage";
 import { ipcRenderer } from "electron";
 import settings from "../ImportWrappers/electronSettings";
-
-// configure the localforage instance
-localforage.config({
-    driver: localforage.INDEXEDDB,
-    name: "bunqDesktop",
-    version: 1.0,
-    storeName: "bunq_desktop_images",
-    description: "Image cache for bunqDesktop in IndexedDB"
-});
 
 export const SYNC_ON_STARTUP_LOCATION = "BUNQDESKTOP_SYNC_ON_STARTUP";
 export const THEME_LOCATION = "BUNQDESKTOP_THEME";
@@ -198,8 +188,10 @@ export default function reducer(state = defaultState, action) {
             // reset electron settings
             settings.deleteAll();
 
+            const ImageIndexedDb = window.BunqDesktopClient.ImageIndexedDb;
+
             // clear image cache and reload once that completes
-            localforage.clear().then(done => {
+            ImageIndexedDb.clear().then(done => {
                 location.reload();
             });
 

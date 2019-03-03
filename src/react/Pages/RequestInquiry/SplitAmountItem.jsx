@@ -10,7 +10,7 @@ import RemoveIcon from "@material-ui/icons/Remove";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 
-import { formatMoney } from "../../Helpers/Utils";
+import { formatMoney } from "../../Functions/Utils";
 
 import AccountListItemChip from "../../Components/AccountList/AccountListItemChip";
 

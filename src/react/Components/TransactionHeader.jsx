@@ -14,7 +14,7 @@ import {
     defaultMastercardImage,
     defaultRequestResponseImage,
     defaultPaymentImage
-} from "../Helpers/DefaultImageHandlers";
+} from "../Functions/DefaultImageHandlers";
 
 const styles = {
     targetWrapper: {

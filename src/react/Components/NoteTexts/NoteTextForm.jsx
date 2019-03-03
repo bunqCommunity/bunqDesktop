@@ -16,7 +16,7 @@ import {
     // notesTextsUpdateNote,
     notesTextsDeleteNote
 } from "../../Actions/note_texts";
-import NoteTextTypeParser from "../../Helpers/NoteTextTypeParser";
+import NoteTextTypeParser from "../../Functions/NoteTextTypeParser";
 
 const styles = {
     paper: {

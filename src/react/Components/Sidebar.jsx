@@ -27,7 +27,7 @@ import TrophyIcon from "./CustomSVG/Trophy";
 import QueueSidebarListItem from "./Queue/QueueSidebarListItem";
 import NavLink from "./Routing/NavLink";
 import ListItemWrapper from "./ListItemWrapper";
-import IsDarwin from "../Helpers/IsDarwin";
+import IsDarwin from "../Functions/IsDarwin";
 
 import { closeSidebar } from "../Actions/sidebar";
 

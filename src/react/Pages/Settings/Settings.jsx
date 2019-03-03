@@ -25,7 +25,7 @@ import RemoveIcon from "@material-ui/icons/Delete";
 import HomeIcon from "@material-ui/icons/Home";
 
 import path from "../../ImportWrappers/path";
-import { getPrettyLanguage } from "../../Helpers/Utils";
+import { getPrettyLanguage } from "../../Functions/Utils";
 
 const packageInfo = require("../../../../package.json");
 const SUPPORTED_LANGUAGES = packageInfo.supported_languages;
@@ -568,44 +568,49 @@ class Settings extends React.Component {
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
-                    <Button variant="outlined" color="secondary" style={styles.button} onClick={this.resetAllEventData}>
+                    <TranslateButton
+                        variant="outlined"
+                        color="secondary"
+                        style={styles.button}
+                        onClick={this.resetAllEventData}
+                    >
                         Reset all event data
-                    </Button>
+                    </TranslateButton>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" style={styles.button} onClick={this.props.paymentsClear}>
-                        Regular payments {paymentCount}
+                        {t("Regular payments")} {paymentCount}
                     </Button>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" style={styles.button} onClick={this.props.masterCardActionsClear}>
-                        Card payments {cardPaymentCount}
+                        {t("Card payments")} {cardPaymentCount}
                     </Button>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" style={styles.button} onClick={this.resetRequestData}>
-                        Requests {requestCount}
+                        {t("Requests")} {requestCount}
                     </Button>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" style={styles.button} onClick={this.props.bunqMeTabsClear}>
-                        bunq.me Tabs {bunqMeTabsCount}
+                        {t("bunq.me Tabs")} {bunqMeTabsCount}
                     </Button>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" style={styles.button} onClick={this.requestConnectData}>
-                        Connect requests {connectCount}
+                        {t("Connect requests")} {connectCount}
                     </Button>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" style={styles.button} onClick={this.props.scheduledPaymentsClear}>
-                        Scheduled payments {scheduledPaymentsCount}
+                        {t("Scheduled payments")} {scheduledPaymentsCount}
                     </Button>
                 </Grid>
             </Grid>
@@ -653,9 +658,11 @@ class Settings extends React.Component {
 
                 <Grid item xs={12} sm={8}>
                     <Paper style={styles.paper}>{settingsContainer}</Paper>
-                    {this.props.registrationReady && <Paper style={styles.paper}>
-                        <EditPasswordForm />
-                    </Paper>}
+                    {this.props.registrationReady && (
+                        <Paper style={styles.paper}>
+                            <EditPasswordForm />
+                        </Paper>
+                    )}
                     <Paper style={styles.paper}>{dataManagementContainer}</Paper>
                 </Grid>
             </Grid>
@@ -699,14 +706,11 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        openSnackbar: message => dispatch(openSnackbar(message)),
-
         // options and options_drawer handlers
         setSyncOnStartup: syncOnStartup => dispatch(setSyncOnStartup(syncOnStartup)),
         openSnackbar: message => dispatch(openSnackbar(message)),
         setAutomaticThemeChange: automaticThemeChange => dispatch(setAutomaticThemeChange(automaticThemeChange)),
         setTheme: theme => dispatch(setTheme(theme)),
-        setLanguage: language => dispatch(setLanguage(language)),
         setLanguage: language => dispatch(setLanguage(language)),
         setNativeFrame: useFrame => dispatch(setNativeFrame(useFrame)),
         setStickyMenu: userStickyMenu => dispatch(setStickyMenu(userStickyMenu)),

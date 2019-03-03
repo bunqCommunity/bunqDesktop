@@ -8,7 +8,7 @@ import Slide from "@material-ui/core/Slide";
 
 import TranslateButton from "./TranslationHelpers/Button";
 import ReactJsonWrapper from "./ReactJsonWrapper";
-import { anonymizeObject } from "../Helpers/Utils";
+import { anonymizeObject } from "../Functions/Utils";
 
 const Transition = props => <Slide direction="right" {...props} />;
 

@@ -9,9 +9,9 @@ import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 
 // custom components
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
-import Logger from "../Helpers/Logger";
-import VersionChecker from "../Helpers/VersionChecker";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
+import Logger from "../Functions/Logger";
+import VersionChecker from "../Functions/VersionChecker";
 import NetworkStatusChecker from "./NetworkStatusChecker";
 import RuleCollectionChecker from "./RuleCollectionChecker";
 import QueueManager from "./Queue/QueueManager";
@@ -142,6 +142,16 @@ class Layout extends React.Component {
     componentWillUpdate(nextProps) {
         // make sure language is up-to-date
         this.checkLanguageChange(nextProps);
+
+        if (nextProps.theme === "DefaultTheme") {
+            if (document.documentElement.style.backgroundColor !== "#fafafa") {
+                document.documentElement.style.backgroundColor = "#fafafa";
+            }
+        } else {
+            if (document.documentElement.style.backgroundColor !== "#303030") {
+                document.documentElement.style.backgroundColor = "#303030";
+            }
+        }
 
         if (nextProps.apiKey !== this.props.apiKey || nextProps.environment !== this.props.environment) {
             if (this.props.apiKey !== false) {
@@ -343,7 +353,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // functions to clear user data
         registrationClearUserInfo: () => dispatch(registrationClearUserInfo()),
 
-        registrationLoadBunqDesktopClient: () => dispatch(registrationSetBunqDesktopClientData()),
+        registrationLoadBunqDesktopClient: () => dispatch(registrationSetBunqDesktopClientData())
     };
 };
 

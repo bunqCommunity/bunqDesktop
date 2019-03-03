@@ -1,6 +1,6 @@
 import store from "store";
-import MergeApiObjects from "../Helpers/MergeApiObjects";
-import { storeEncryptString } from "../Helpers/CryptoWorkerWrapper";
+import MergeApiObjects from "../Functions/MergeApiObjects";
+import { storeEncryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
 
 import { STORED_REQUEST_INQUIRY_BATCHES } from "../Actions/request_inquiry_batches";
 
@@ -35,13 +35,13 @@ export default (state = defaultState, action) => {
 
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
-                storeEncryptString(
+                const BunqDesktopClient = window.BunqDesktopClient;
+                BunqDesktopClient.storeEncrypt(
                     {
                         items: mergedRequestBatches,
                         account_id: action.payload.account_id
                     },
-                    STORED_REQUEST_INQUIRY_BATCHES,
-                    action.payload.BunqJSClient.Session.encryptionKey
+                    STORED_REQUEST_INQUIRY_BATCHES
                 )
                     .then(() => {})
                     .catch(() => {});
@@ -81,7 +81,8 @@ export default (state = defaultState, action) => {
         case "REGISTRATION_LOG_OUT":
         case "REGISTRATION_CLEAR_PRIVATE_DATA":
         case "REGISTRATION_CLEAR_USER_INFO":
-            store.remove(STORED_REQUEST_INQUIRY_BATCHES);
+            const BunqDesktopClient = window.BunqDesktopClient;
+            BunqDesktopClient.storeRemove(STORED_REQUEST_INQUIRY_BATCHES);
             return {
                 request_inquiry_batches: [],
                 account_id: false,

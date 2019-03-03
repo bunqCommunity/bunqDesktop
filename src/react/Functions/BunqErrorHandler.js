@@ -34,6 +34,7 @@ export default (dispatch, error, customError = false, BunqJSClient = false) => {
 
     // log to logger
     Logger.error(response ? response.data : error.message);
+    console.error(error);
 
     // check if a network error occured
     if (error.toString() === "Error: Network Error") {

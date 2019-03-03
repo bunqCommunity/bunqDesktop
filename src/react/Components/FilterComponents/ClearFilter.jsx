@@ -4,11 +4,11 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import ClearIcon from "@material-ui/icons/Clear";
 
-import FilterDisabledChecker from "../../Helpers/FilterDisabledChecker";
+import FilterDisabledChecker from "../../Functions/FilterDisabledChecker";
 
 import { resetFilters } from "../../Actions/filters";
 
-class ClearFilter extends React.Component {
+class ClearFilter extends React.PureComponent {
     constructor(props, context) {
         super(props, context);
         this.state = {};
@@ -16,8 +16,11 @@ class ClearFilter extends React.Component {
 
     render() {
         const {
-            selectedAccountIds,
+            dateFromFilter,
+            dateToFilter,
             selectedCategories,
+            selectedAccountIds,
+            selectedCardIds,
             searchTerm,
             paymentType,
             bunqMeTabType,
@@ -30,8 +33,11 @@ class ClearFilter extends React.Component {
 
         if (
             FilterDisabledChecker({
-                selectedAccountIds,
+                dateFromFilter,
+                dateToFilter,
                 selectedCategories,
+                selectedAccountIds,
+                selectedCardIds,
                 searchTerm,
                 paymentType,
                 bunqMeTabType,
@@ -47,7 +53,7 @@ class ClearFilter extends React.Component {
 
         return this.props.bigButton ? (
             <Button variant="outlined" key={"button"} onClick={this.props.resetFilters} {...this.props.buttonProps}>
-                Clear <ClearIcon />
+                {t("Clear")} <ClearIcon />
             </Button>
         ) : (
             <IconButton key={"iconbutton"} onClick={this.props.resetFilters} {...this.props.buttonProps}>
@@ -65,18 +71,21 @@ ClearFilter.defaultProps = {
 const mapStateToProps = state => {
     return {
         searchTerm: state.search_filter.search_term,
-
         paymentType: state.payment_filter.type,
         paymentVisibility: state.payment_filter.visible,
-
         bunqMeTabType: state.bunq_me_tab_filter.type,
         bunqMeTabVisibility: state.bunq_me_tab_filter.visible,
-
         requestType: state.request_filter.type,
         requestVisibility: state.request_filter.visible,
+        dateFromFilter: state.date_filter.from_date,
+        dateToFilter: state.date_filter.to_date,
 
         selectedCategories: state.category_filter.selected_categories,
+        toggleCategoryIds: state.category_filter.toggle,
         selectedAccountIds: state.account_id_filter.selected_account_ids,
+        toggleAccountIds: state.account_id_filter.toggle,
+        selectedCardIds: state.card_id_filter.selected_card_ids,
+        toggleCardIds: state.card_id_filter.toggle,
 
         amountFilterAmount: state.amount_filter.amount
     };

@@ -6,12 +6,12 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 
-import { bunqTransparantLogo } from "../Helpers/Base64Images";
-import { formatIban } from "../Helpers/Utils";
+import bunqTransparantLogo from "./Base64BunqLogo";
+import { formatIban } from "../../Functions/Utils";
 
-import { applicationSetPDFMode } from "../Actions/application";
-import { openSnackbar } from "../Actions/snackbar";
-import { setTheme } from "../Actions/options";
+import { applicationSetPDFMode } from "../../Actions/application";
+import { openSnackbar } from "../../Actions/snackbar";
+import { setTheme } from "../../Actions/options";
 
 const styles = {
     bunqLogo: {

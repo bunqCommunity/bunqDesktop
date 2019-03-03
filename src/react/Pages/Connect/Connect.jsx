@@ -27,9 +27,9 @@ import FullAccess from "../../Components/ListItems/ShareInviteBankTypes/FullAcce
 import DraftAccess from "../../Components/ListItems/ShareInviteBankTypes/DraftAccess";
 import ShowOnly from "../../Components/ListItems/ShareInviteBankTypes/ShowOnly";
 
-import { filterShareInviteBankInquiries, filterShareInviteBankResponses } from "../../Helpers/DataFilters";
-import { getInternationalFormat, isValidPhonenumber } from "../../Helpers/PhoneLib";
-import { getUTCDate } from "../../Helpers/Utils";
+import { filterShareInviteBankInquiries, filterShareInviteBankResponses } from "../../Functions/DataFilters";
+import { getInternationalFormat, isValidPhonenumber } from "../../Functions/PhoneLib";
+import { getUTCDate } from "../../Functions/Utils";
 
 import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_responses";
 import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiries";
@@ -246,7 +246,7 @@ class Connect extends React.Component {
     validateForm = () => {
         const { budget, target, targets, targetType, timeLimit, setTimeLimit } = this.state;
 
-        const budgetErrorCondition = budget < 0.01 || budget > 10000;
+        const budgetErrorCondition = budget < 0.01 || budget > 100000;
         const timeLimitError = setTimeLimit === true && timeLimit === null;
 
         // check if the target is valid based onthe targetType

@@ -1,13 +1,8 @@
-import BunqErrorHandler from "../Helpers/BunqErrorHandler";
+import BunqErrorHandler from "../Functions/BunqErrorHandler";
 import { openSnackbar } from "./snackbar";
 import { shareInviteBankResponsesInfoUpdate } from "./share_invite_bank_responses";
 
-export function shareInviteBankResponseChangeStatus(
-    BunqJSClient,
-    userId,
-    shareInviteBankResponseId,
-    status
-) {
+export function shareInviteBankResponseChangeStatus(BunqJSClient, userId, shareInviteBankResponseId, status) {
     const failedMessage = window.t("We received the following error while updating your connect request");
     const successMessage = window.t("Connect request was updated successfully!");
 
@@ -15,7 +10,7 @@ export function shareInviteBankResponseChangeStatus(
         dispatch(shareInviteBankResponseLoading());
 
         BunqJSClient.api.shareInviteBankResponse
-            .putStatus(userId,  shareInviteBankResponseId, status)
+            .putStatus(userId, shareInviteBankResponseId, status)
             .then(result => {
                 dispatch(openSnackbar(successMessage));
 

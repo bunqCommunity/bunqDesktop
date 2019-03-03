@@ -22,7 +22,7 @@ import PaymentListItem from "./PaymentListItem";
 import AccountQRFullscreen from "../QR/AccountQRFullscreen";
 import TranslateButton from "../TranslationHelpers/Button";
 import CategoryIcons from "../Categories/CategoryIcons";
-import { humanReadableDate, formatMoney } from "../../Helpers/Utils";
+import { humanReadableDate, formatMoney } from "../../Functions/Utils";
 
 const styles = {
     actionListItem: {

@@ -51,11 +51,15 @@ class NetworkStatusChecker extends React.PureComponent {
      */
     checkNetWorkStatus = () => {
         axios
-            .get("https://google.com")
+            .get("https://api.bunq.com/v1/user")
             .then(response => {
                 this.props.applicationSetOnline();
             })
             .catch(error => {
+                if (error.toString() !== "Error: Network Error") {
+                    this.props.applicationSetOnline();
+                    return;
+                }
                 this.props.applicationSetOffline();
             });
     };

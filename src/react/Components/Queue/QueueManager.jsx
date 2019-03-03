@@ -9,9 +9,9 @@ import RequestInquiry from "../../Models/RequestInquiry";
 import RequestInquiryBatch from "../../Models/RequestInquiryBatch";
 import MasterCardAction from "../../Models/MasterCardAction";
 
-import NotificationHelper from "../../Helpers/NotificationHelper";
-import { getConnectPermissions } from "../../Helpers/GetConnectPermissions";
-import { paymentApiFilter } from "../../Helpers/DataFilters";
+import NotificationHelper from "../../Functions/NotificationHelper";
+import { connectGetPermissions } from "../../Functions/ConnectGetPermissions";
+import { paymentApiFilter } from "../../Functions/DataFilters";
 
 import {
     queueDecreaseRequestCounter,
@@ -141,7 +141,7 @@ class QueueManager extends React.Component {
         filteredAccounts.forEach(account => {
             const accountId = account.id;
 
-            const connectPermissions = getConnectPermissions(this.props.shareInviteBankResponses, account.id);
+            const connectPermissions = connectGetPermissions(this.props.shareInviteBankResponses, account.id);
             if (connectPermissions === true || connectPermissions.view_new_events) {
                 bufferedCounter += 6;
                 this.paymentsUpdate(userId, accountId, false, eventCount);
@@ -395,7 +395,7 @@ class QueueManager extends React.Component {
 
                 // more payments can be loaded for this account
                 if (
-                    paymentsNew.length === currentEventCount &&
+                    payments.length === currentEventCount &&
                     nextEventCount > 0 &&
                     totalEventCount < EVENT_TOTAL_LIMIT
                 ) {
