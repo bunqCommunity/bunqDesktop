@@ -30,7 +30,6 @@ import SideOptions from "./SideOptions";
 
 import { registrationLogOut, registrationLogin } from "../../Actions/registration";
 import BunqErrorHandler from "../../Functions/BunqErrorHandler";
-import Logger from "../../Functions/Logger";
 
 const styles = {
     card: {

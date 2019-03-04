@@ -19,9 +19,6 @@ import { bunqMeTabsUpdate } from "../../Actions/bunq_me_tabs";
 const styles = {
     paper: {
         marginBottom: 20
-    },
-    paper: {
-        marginBottom: 20
     }
 };
 
