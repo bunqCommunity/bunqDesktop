@@ -26,17 +26,20 @@ export const requestResponseText = (requestResponse, t) => {
 };
 
 export const requestResponseTypeParser = (requestResponse, t) => {
+    const directDebit = t("direct debit");
+    const request = t("Request");
+    
     switch (requestResponse.type) {
         case "DIRECT_DEBIT":
         case "DIRECT_DEBIT_B2B":
-            return "direct debit";
+            return directDebit;
         case "SOFORT":
             return "SOFORT";
         case "IDEAL":
             return "iDEAL";
         case "INTERNAL":
         default:
-            return t("Request");
+            return request;
     }
 };
 

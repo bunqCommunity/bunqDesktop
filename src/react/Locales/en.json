@@ -652,6 +652,7 @@
 	"day": "day",
 	"days": "days",
 	"description": "description",
+    "direct debit": "direct debit",
 	"events": "events",
 	"every": "every",
 	"expired": "expired",
