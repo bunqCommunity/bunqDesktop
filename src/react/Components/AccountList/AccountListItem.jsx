@@ -94,21 +94,21 @@ class AccountListItem extends React.Component {
 
         // check if any of the selected account ids are for this account
         let displayStyle = {
-            height: 83
+            height: 83,
+            paddingLeft: 20
         };
-        let circularLeftPostion = 20;
         let accountIsSelected = false;
+        let displayAsSelected = false;
         if (selectedAccountIds.length !== 0) {
             // check if the selected account ids list contains this account
             accountIsSelected = selectedAccountIds.some(id => id === account.id);
             // switch if toggle is true
-            const isSelected = toggleAccountIds ? !accountIsSelected : accountIsSelected;
+            displayAsSelected = toggleAccountIds ? !accountIsSelected : accountIsSelected;
 
-            if (isSelected) {
-                circularLeftPostion = 16;
+            if (displayAsSelected) {
                 displayStyle = {
                     borderLeft: "4px solid #1da1f2",
-                    paddingLeft: 20,
+                    paddingLeft: 16,
                     height: 83
                 };
             }
@@ -129,7 +129,7 @@ class AccountListItem extends React.Component {
 
         return (
             <ListItem {...listItemProps} style={displayStyle} divider>
-                <AccountAvatarCircularProgress account={account} style={{ left: circularLeftPostion }} />
+                <AccountAvatarCircularProgress account={account} selected={displayAsSelected} />
                 <Avatar style={styles.bigAvatar}>
                     <LazyAttachmentImage
                         height={60}
