@@ -547,14 +547,14 @@ class Pay extends React.Component {
 
         if (schedulePayment) {
             const schedule = {
-                time_start: format(getUTCDate(scheduleStartDate), "YYYY-MM-dd HH:mm:ss"),
+                time_start: format(getUTCDate(scheduleStartDate), "yyyy-MM-dd HH:mm:ss"),
                 recurrence_unit: recurrenceUnit,
                 // on once size has to be 1
                 recurrence_size: parseInt(recurrenceUnit !== "ONCE" ? recurrenceSize : 1)
             };
 
             if (scheduleEndDate) {
-                schedule.time_end = format(getUTCDate(scheduleEndDate), "YYYY-MM-dd HH:mm:ss");
+                schedule.time_end = format(getUTCDate(scheduleEndDate), "yyyy-MM-dd HH:mm:ss");
             }
 
             this.props.paySchedule(userId, account.id, description, amountInfo, targetInfoList, schedule);

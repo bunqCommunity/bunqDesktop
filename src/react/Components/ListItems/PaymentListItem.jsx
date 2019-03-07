@@ -113,13 +113,13 @@ class PaymentListItem extends React.Component {
                         imageUUID={imageUUID}
                     />
                 </Avatar>
+                <CategoryIcons style={{ marginTop: 26 }} type={"Payment"} id={payment.id} />
                 <ListItemText style={styles.listItemText} primary={primaryText} secondary={secondaryText} />
                 <ListItemSecondaryAction style={{ marginTop: -16 }}>
                     <MoneyAmountLabel style={styles.moneyAmountLabel} info={payment} type="payment">
                         {formattedPaymentAmount}
                     </MoneyAmountLabel>
                 </ListItemSecondaryAction>
-                <CategoryIcons style={{ marginTop: 26 }} type={"Payment"} id={payment.id} />
             </ListItem>,
             <Divider />
         ];

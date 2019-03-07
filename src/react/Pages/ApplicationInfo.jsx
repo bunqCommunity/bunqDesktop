@@ -129,7 +129,7 @@ class ApplicationInfo extends React.Component {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
-                                    fullWidth={true}
+                                    fullWidth
                                     inputProps={{ readOnly: true }}
                                     value={userDataPath}
                                     label={t("Application files")}
@@ -137,7 +137,7 @@ class ApplicationInfo extends React.Component {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
-                                    fullWidth={true}
+                                    fullWidth
                                     inputProps={{ readOnly: true }}
                                     value={Logger.transports.file.file}
                                     label={t("Log file")}

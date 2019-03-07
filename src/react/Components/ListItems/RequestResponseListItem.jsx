@@ -75,13 +75,13 @@ class RequestResponseListItem extends React.Component {
                         imageUUID={imageUUID}
                     />
                 </Avatar>
+                <CategoryIcons style={{ marginTop: 26 }} type={"RequestResponse"} id={requestResponse.id} />
                 <ListItemText style={styles.listItemText} primary={displayName} secondary={paymentLabel} />
                 <ListItemSecondaryAction style={{ marginTop: -16 }}>
                     <MoneyAmountLabel style={styles.moneyAmountLabel} info={requestResponse} type="requestResponse">
                         {formattedPaymentAmount}
                     </MoneyAmountLabel>
                 </ListItemSecondaryAction>
-                <CategoryIcons style={{ marginTop: 26 }} type={"RequestResponse"} id={requestResponse.id} />
             </ListItem>,
             <Divider />
         ];

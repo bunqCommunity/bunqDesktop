@@ -70,13 +70,13 @@ class MasterCardActionListItem extends React.Component {
                         imageUUID={imageUUID}
                     />
                 </Avatar>
+                <CategoryIcons style={{ marginTop: 26 }} type={"MasterCardAction"} id={masterCardAction.id} />
                 <ListItemText style={styles.listItemText} primary={displayName} secondary={secondaryText} />
                 <ListItemSecondaryAction style={{ marginTop: -16 }}>
                     <MoneyAmountLabel style={styles.moneyAmountLabel} info={masterCardAction} type="masterCardAction">
                         {formattedPaymentAmount}
                     </MoneyAmountLabel>
                 </ListItemSecondaryAction>
-                <CategoryIcons style={{ marginTop: 26 }} type={"MasterCardAction"} id={masterCardAction.id} />
             </ListItem>,
 
             <Divider />
