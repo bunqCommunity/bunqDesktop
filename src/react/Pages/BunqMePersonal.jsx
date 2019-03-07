@@ -22,10 +22,19 @@ const styles = {
     },
     urlContainer: {
         display: "flex",
-        flexDirection: "row"
+        flexDirection: "row",
+        alignItems: "middle"
     },
-    amountField: { width: 80, margin: "0px 2px" },
-    linkField: { margin: "0px 2px" }
+    linkTexts: {
+        marginTop: 2
+    },
+    amountField: {
+        width: 80,
+        margin: "0px 2px"
+    },
+    linkField: {
+        margin: "0px 2px"
+    }
 };
 
 class BunqMePersonal extends React.Component {
@@ -96,14 +105,18 @@ class BunqMePersonal extends React.Component {
                         <QRCode value={combinedLink} />
 
                         <div style={styles.urlContainer}>
-                            <Typography variant="h6">{personalLink}/</Typography>
+                            <Typography variant="subtitle1" style={styles.linkTexts}>
+                                {personalLink}/
+                            </Typography>
                             <TextField
                                 type="number"
                                 value={linkAmount}
                                 onChange={this.onChange("linkAmount")}
                                 style={styles.amountField}
                             />
-                            <Typography variant="h6">/</Typography>
+                            <Typography variant="subtitle1" style={styles.linkTexts}>
+                                /
+                            </Typography>
                             <TextField
                                 value={linkDescription}
                                 onChange={this.onChange("linkDescription")}
