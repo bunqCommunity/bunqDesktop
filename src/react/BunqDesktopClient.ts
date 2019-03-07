@@ -20,7 +20,7 @@ export const ENVIRONMENT_LOCATION = "BUNQDESKTOP_ENVIRONMENT";
 
 const DEFAULT_PASSWORD = "SOME_DEFAULT_PASSWORD";
 
-class IndexedDbWrapper implements StorageInterface {
+export class IndexedDbWrapper implements StorageInterface {
     private _indexedDb: LocalForageDriver;
 
     constructor(config: LocalForageOptions) {
@@ -51,7 +51,7 @@ class IndexedDbWrapper implements StorageInterface {
     };
 }
 
-class BunqDesktopClient {
+export class BunqDesktopClient {
     public BunqJSClient: BunqJSClient;
     public Logger: any;
     public Store: StorageInterface;

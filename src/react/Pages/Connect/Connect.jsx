@@ -274,7 +274,7 @@ class Connect extends React.Component {
 
             // set timelimit if set
             if (this.state.accessLevel !== "draft" && this.state.setTimeLimit) {
-                const timeFormatted = format(getUTCDate(this.state.timeLimit), "YYYY-MM-dd HH:mm:ss");
+                const timeFormatted = format(getUTCDate(this.state.timeLimit), "yyyy-MM-dd HH:mm:ss");
                 shareOptions = {
                     end_date: timeFormatted
                 };
