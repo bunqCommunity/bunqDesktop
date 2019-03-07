@@ -24,7 +24,14 @@ const styles = {
         height: 50
     },
     moneyAmountLabel: {
-        marginRight: 20
+        marginRight: 8,
+        textAlign: "right"
+    },
+    listItemSecondary: {
+        marginTop: -8
+    },
+    categoryIcons: {
+        marginTop: 12
     }
 };
 
@@ -113,12 +120,12 @@ class PaymentListItem extends React.Component {
                         imageUUID={imageUUID}
                     />
                 </Avatar>
-                <CategoryIcons style={{ marginTop: 26 }} type={"Payment"} id={payment.id} />
                 <ListItemText style={styles.listItemText} primary={primaryText} secondary={secondaryText} />
-                <ListItemSecondaryAction style={{ marginTop: -16 }}>
+                <ListItemSecondaryAction style={styles.listItemSecondary}>
                     <MoneyAmountLabel style={styles.moneyAmountLabel} info={payment} type="payment">
                         {formattedPaymentAmount}
                     </MoneyAmountLabel>
+                    <CategoryIcons style={styles.categoryIcons} type={"Payment"} id={payment.id} />
                 </ListItemSecondaryAction>
             </ListItem>,
             <Divider />

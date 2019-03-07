@@ -61,7 +61,7 @@ export default props => {
                     <Grid item xs={6}>
                         <DateTimePicker
                             helperText={t("Start date")}
-                            format="MMMM dd, YYYY HH:mm"
+                            format="MMMM dd, yyyy HH:mm"
                             style={styles.textField}
                             value={scheduleStartDate}
                             onChange={date => {
@@ -89,7 +89,7 @@ export default props => {
                         <DateTimePicker
                             helperText={t("End date")}
                             emptyLabel={t("No end date")}
-                            format="MMMM dd, YYYY HH:mm"
+                            format="MMMM dd, yyyy HH:mm"
                             style={styles.textField}
                             value={scheduleEndDate}
                             onChange={date => {

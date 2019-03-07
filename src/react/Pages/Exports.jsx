@@ -449,7 +449,7 @@ class Exports extends React.Component {
                                             id="from-date"
                                             label={t("From date")}
                                             emptyLabel="No filter"
-                                            format="MMMM dd, YYYY"
+                                            format="MMMM dd, yyyy"
                                             disableFuture
                                             style={styles.dateInput}
                                             maxDate={this.state.dateTo}
@@ -473,7 +473,7 @@ class Exports extends React.Component {
                                             id="to-date"
                                             label={t("To date")}
                                             emptyLabel="No filter"
-                                            format="MMMM dd, YYYY"
+                                            format="MMMM dd, yyyy"
                                             disableFuture
                                             style={styles.dateInput}
                                             minDate={this.state.dateFrom}

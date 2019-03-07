@@ -25,7 +25,14 @@ const styles = {
         height: 50
     },
     moneyAmountLabel: {
-        marginRight: 20
+        marginRight: 8,
+        textAlign: "right"
+    },
+    listItemSecondary: {
+        marginTop: -8
+    },
+    categoryIcons: {
+        marginTop: 12
     }
 };
 
@@ -70,12 +77,12 @@ class MasterCardActionListItem extends React.Component {
                         imageUUID={imageUUID}
                     />
                 </Avatar>
-                <CategoryIcons style={{ marginTop: 26 }} type={"MasterCardAction"} id={masterCardAction.id} />
                 <ListItemText style={styles.listItemText} primary={displayName} secondary={secondaryText} />
-                <ListItemSecondaryAction style={{ marginTop: -16 }}>
+                <ListItemSecondaryAction style={styles.listItemSecondary}>
                     <MoneyAmountLabel style={styles.moneyAmountLabel} info={masterCardAction} type="masterCardAction">
                         {formattedPaymentAmount}
                     </MoneyAmountLabel>
+                    <CategoryIcons style={styles.categoryIcons} type={"MasterCardAction"} id={masterCardAction.id} />
                 </ListItemSecondaryAction>
             </ListItem>,
 
