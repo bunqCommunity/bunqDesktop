@@ -18,7 +18,6 @@ import { openSnackbar } from "../../Actions/snackbar";
 import { shareInviteBankResponsesSetInfo } from "../../Actions/share_invite_bank_responses";
 
 export const DEFAULT_EVENT_COUNT_LIMIT = 200;
-export const EVENT_TOTAL_LIMIT = 1000;
 
 class QueueManager extends React.Component {
     constructor(props, context) {
@@ -234,7 +233,11 @@ class QueueManager extends React.Component {
                 const totalEventCount = currentEvents.length;
 
                 // more events can be loaded for this account
-                if (events.length === currentEventCount && nextEventCount > 0 && totalEventCount < EVENT_TOTAL_LIMIT) {
+                if (
+                    events.length === currentEventCount &&
+                    nextEventCount > 0 &&
+                    totalEventCount < this.props.eventCountLimit
+                ) {
                     const oldestEventIndex = events.length - 1;
                     const oldestEvent = events[oldestEventIndex];
 

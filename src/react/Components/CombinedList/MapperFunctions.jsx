@@ -145,6 +145,12 @@ export const eventMapper = (settings, onlyPending = false, onlyNonPending = fals
                         filterDate: UTCDateToLocalDate(event.updated),
                         info: event.object
                     };
+                case "BunqMeTabResultResponse":
+                    return {
+                        component: <div>BunqMeTabResultResponse</div>,
+                        filterDate: UTCDateToLocalDate(event.updated),
+                        info: event.object
+                    };
             }
 
             return null;

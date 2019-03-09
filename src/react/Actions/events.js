@@ -15,8 +15,6 @@ export function eventsSetInfo(events, resetOldItems = false, BunqJSClient = fals
     return dispatch => {
         const type = resetOldItems ? "EVENTS_SET_INFO" : "EVENTS_UPDATE_INFO";
 
-        console.log(events.map(event => event.Event.object));
-
         const eventsNew = [];
         const shareInviteBankInquiries = [];
         events.forEach(event => {
@@ -33,16 +31,21 @@ export function eventsSetInfo(events, resetOldItems = false, BunqJSClient = fals
                 case "Invoice":
                 case "IdealMerchantTransaction":
                 case "BunqMeFundraiserResult":
+                case "BunqMeTabResultResponse":
                     eventsNew.push(eventObject);
                     break;
                 case "ShareInviteBankInquiry":
                     shareInviteBankInquiries.push(eventObject.object);
                     break;
-                case "ShareInviteBankResponse":
+                case "DraftPayment":
+                    // Show in bunqDesktop?
                 case "FeatureAnnouncement":
+                case "ShareInviteBankResponse":
+                case "ShareInviteMonetaryAccountInquiry":
+                case "ShareInviteMonetaryAccountResponse":
                     break;
                 default:
-                    console.log("Unknown type");
+                    console.log("Unknown type", eventObject, eventObject.type);
                 // don't do anything special for these
             }
         });

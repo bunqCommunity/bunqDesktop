@@ -10,6 +10,7 @@ export type EventTypeValue =
     | "ScheduledPayment"
     | "IdealMerchantTransaction"
     | "BunqMeFundraiserResult"
+    | "BunqMeTabResultResponse"
     | "ScheduledInstance";
 
 export default interface EventType {

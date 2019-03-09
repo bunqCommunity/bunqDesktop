@@ -10,6 +10,7 @@ import ScheduledPayment from "./ScheduledPayment";
 import Invoice from "./Invoice";
 import IdealMerchantTransaction from "./IdealMerchantTransaction";
 import BunqMeFundraiserResult from "./BunqMeFundraiserResult";
+import BunqMeTabResultResponse from "./BunqMeTabResultResponse";
 
 export default class Event implements EventType {
     // the original raw object
@@ -56,6 +57,7 @@ export default class Event implements EventType {
         | "Invoice"
         | "IdealMerchantTransaction"
         | "BunqMeFundraiserResult"
+        | "BunqMeTabResultResponse"
         | "FeatureAnnouncement"
         | "ShareInviteBankInquiry"
         | "ShareInviteBankResponse";
@@ -107,6 +109,9 @@ export default class Event implements EventType {
                         break;
                     case "BunqMeFundraiserResult":
                         this._object = new BunqMeFundraiserResult(this._object);
+                        break;
+                    case "BunqMeTabResultResponse":
+                        this._object = new BunqMeTabResultResponse(this._object);
                         break;
                     case "FeatureAnnouncement":
                     case "ShareInviteBankInquiry":

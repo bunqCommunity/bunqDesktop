@@ -24,27 +24,20 @@ const checkDateRange = (fromDate, toDate, date) => {
     return true;
 };
 
-/**
- * Filters out payments we don't need. E.G. Payment objects with a MASTERCARD type
- * @param payment
- */
-export const paymentApiFilter = payment => {
-    if (payment.type && payment.type === "MASTERCARD") {
-        return false;
-    }
-    return true;
-};
-
 export const eventFilter = options => event => {
     switch (event.type) {
         case "Payment":
         case "ScheduledInstance":
         case "ScheduledPayment":
+        case "BunqMeTabResultResponse":
             let paymentObject = event.object;
             if (event.type === "ScheduledInstance") {
                 paymentObject = event.object.result_object;
             }
             if (event.type === "ScheduledPayment") {
+                paymentObject = event.object.payment;
+            }
+            if (event.type === "BunqMeTabResultResponse") {
                 paymentObject = event.object.payment;
             }
             return paymentFilter(options)(paymentObject);
