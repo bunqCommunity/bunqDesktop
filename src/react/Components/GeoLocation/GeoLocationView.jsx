@@ -1,8 +1,8 @@
 import React from "react";
-import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import Slide from "@material-ui/core/Slide";
 import GeoLocationMap from "./GeoLocationMap";
+import TranslateButton from "../../Components/TranslationHelpers/Button";
 
 const Transition = props => <Slide direction={"up"} {...props} />;
 
@@ -34,7 +34,7 @@ class GeoLocationView extends React.PureComponent {
                 <div style={styles.content} ref={this.containerRef}>
                     <GeoLocationMap t={t} geoLocation={geoLocation} containerRef={this.containerRef} />
                 </div>
-                <Button
+                <TranslateButton
                     onClick={this.props.onClose}
                     variant="outlined"
                     style={{
@@ -44,7 +44,7 @@ class GeoLocationView extends React.PureComponent {
                     }}
                 >
                     Back
-                </Button>
+                </TranslateButton>
             </Dialog>
         );
     }

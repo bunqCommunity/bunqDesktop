@@ -18,6 +18,7 @@ import Select from "@material-ui/core/Select";
 import Collapse from "@material-ui/core/Collapse";
 
 import DeleteIcon from "@material-ui/icons/Delete";
+import TranslateButton from "../../Components/TranslationHelpers/Button";
 
 const styles = {
     paper: {
@@ -216,7 +217,7 @@ class NotificationFilters extends React.Component {
                         </Grid>
 
                         <Grid item xs={4} sm={2} style={styles.addButtonWrapper}>
-                            <Button
+                            <TranslateButton
                                 style={styles.fullwidth}
                                 disabled={this.state.loading || this.state.newCallbackUrl.length === 0}
                                 onClick={this.addNotification}
@@ -224,7 +225,7 @@ class NotificationFilters extends React.Component {
                                 color="primary"
                             >
                                 Add
-                            </Button>
+                            </TranslateButton>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -244,7 +245,7 @@ class NotificationFilters extends React.Component {
                                 variant="outlined"
                                 onClick={() => this.setState({ showPushesMessages: !this.state.showPushesMessages })}
                             >
-                                {this.state.showPushesMessages ? "Hide" : "Show"}
+                                {this.state.showPushesMessages ? t("Hide") : t("Show")}
                             </Button>
                         </Grid>
                         <Collapse in={this.state.showPushesMessages} style={styles.fullwidth}>

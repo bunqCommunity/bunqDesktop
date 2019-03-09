@@ -285,7 +285,7 @@ class Exports extends React.Component {
             const info = event.event.object;
             const labels = event.categories.map(category => category.label);
             columnRows.push([
-                format(event.date, "YYYY-MM-dd"),
+                format(event.date, "yyyy-MM-dd"),
                 format(event.date, "HH:mm:ss"),
                 info.getDelta(),
                 info.alias.iban ? formatIban(info.alias.iban) : null,
@@ -313,8 +313,8 @@ class Exports extends React.Component {
         const dateToFilter = this.props.dateToFilter ? this.props.dateToFilter : new Date();
 
         // format a file name
-        const startDateLabel = format(dateFromFilter, "YYYY-MM-dd");
-        const endDateLabel = format(dateToFilter, "YYYY-MM-dd");
+        const startDateLabel = format(dateFromFilter, "yyyy-MM-dd");
+        const endDateLabel = format(dateToFilter, "yyyy-MM-dd");
         const fileName = `bunqdesktop-export.${startDateLabel}_${endDateLabel}.csv`;
 
         // store the file using our custom output
@@ -430,7 +430,7 @@ class Exports extends React.Component {
                                             id="from-date"
                                             label={t("From date")}
                                             emptyLabel="No filter"
-                                            format="MMMM dd, YYYY"
+                                            format="MMMM dd, yyyy"
                                             disableFuture
                                             style={styles.dateInput}
                                             maxDate={this.state.dateTo}
@@ -454,7 +454,7 @@ class Exports extends React.Component {
                                             id="to-date"
                                             label={t("To date")}
                                             emptyLabel="No filter"
-                                            format="MMMM dd, YYYY"
+                                            format="MMMM dd, yyyy"
                                             disableFuture
                                             style={styles.dateInput}
                                             minDate={this.state.dateFrom}

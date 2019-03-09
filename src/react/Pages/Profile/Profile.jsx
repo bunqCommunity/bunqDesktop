@@ -13,19 +13,19 @@ import Avatar from "@material-ui/core/Avatar";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
+import AliasList from "../../Components/AliasList";
 import UploadFullscreen from "../../Components/FileUpload/UploadFullscreen";
 import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachmentImage";
-import ProfileDetailsForm from "./ProfileDetailsForm";
 import NotificationFilters from "./NotificationFilters";
+import ProfileDetailsForm from "./ProfileDetailsForm";
+import BusinessInfo from "./BusinessInfo";
+import BillingInfo from "./BillingInfo";
 
 import { openSnackbar } from "../../Actions/snackbar";
 import { userUpdateImage } from "../../Actions/user";
 import { usersUpdate } from "../../Actions/users";
 
 import BunqErrorHandler from "../../Functions/BunqErrorHandler";
-
-import BusinessInfo from "./BusinessInfo";
-import AliasList from "../../Components/AliasList";
 
 const styles = {
     title: {
@@ -230,6 +230,13 @@ class Profile extends React.Component {
                     </Paper>
 
                     <BusinessInfo t={t} onChange={this.onChange} totalBalance={totalBalance} userType={userType} />
+
+                    <BillingInfo
+                        t={t}
+                        user={user}
+                        BunqJSClient={this.props.BunqJSClient}
+                        BunqErrorHandler={this.props.BunqErrorHandler}
+                    />
 
                     <NotificationFilters
                         t={t}

@@ -62,7 +62,7 @@ import { registrationClearPrivateData, registrationLogOut } from "../../Actions/
 import { scheduledPaymentsClear } from "../../Actions/scheduled_payments";
 import { shareInviteBankInquiriesClear } from "../../Actions/share_invite_bank_inquiries";
 import { shareInviteBankResponsesClear } from "../../Actions/share_invite_bank_responses";
-import {eventsClear} from "../../Actions/events";
+import { eventsClear } from "../../Actions/events";
 
 const styles = {
     sideButton: {
@@ -256,7 +256,7 @@ class Settings extends React.Component {
                             style={styles.selectField}
                         >
                             {Object.keys(this.props.themeList).map(themeKey => (
-                                <MenuItem value={themeKey}>{humanReadableThemes[themeKey]}</MenuItem>
+                                <MenuItem value={themeKey}>{t(humanReadableThemes[themeKey])}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>
@@ -551,26 +551,67 @@ class Settings extends React.Component {
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
-                    <Button variant="outlined" color="secondary" style={styles.button} onClick={this.resetAllEventData}>
+                    <TranslateButton
+                        variant="outlined"
+                        color="secondary"
+                        style={styles.button}
+                        onClick={this.resetAllEventData}
+                    >
                         Reset all event data
+                    </TranslateButton>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                    <Button variant="outlined" style={styles.button} onClick={this.props.paymentsClear}>
+                        {t("Regular payments")} {paymentCount}
                     </Button>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
-                    <Button variant="outlined" style={styles.button} onClick={this.props.eventsClear}>
-                        Events {eventsCount}
+                    <Button variant="outlined" style={styles.button} onClick={this.props.masterCardActionsClear}>
+                        {t("Card payments")} {cardPaymentCount}
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                    <Button variant="outlined" style={styles.button} onClick={this.resetRequestData}>
+                        {t("Requests")} {requestCount}
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                    <Button variant="outlined" style={styles.button} onClick={this.props.bunqMeTabsClear}>
+                        {t("bunqme Tabs")} {bunqMeTabsCount}
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                    <Button variant="outlined" style={styles.button} onClick={this.props.masterCardActionsClear}>
+                        {t("Card payments")} {cardPaymentCount}
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                    <Button variant="outlined" style={styles.button} onClick={this.resetRequestData}>
+                        {t("Requests")} {requestCount}
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                    <Button variant="outlined" style={styles.button} onClick={this.props.bunqMeTabsClear}>
+                        {t("bunqme Tabs")} {bunqMeTabsCount}
                     </Button>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" style={styles.button} onClick={this.requestConnectData}>
-                        Connect requests {connectCount}
+                        {t("Connect requests")} {connectCount}
                     </Button>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" style={styles.button} onClick={this.props.scheduledPaymentsClear}>
-                        Scheduled payments {scheduledPaymentsCount}
+                        {t("Scheduled payments")} {scheduledPaymentsCount}
                     </Button>
                 </Grid>
             </Grid>
@@ -661,12 +702,11 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        openSnackbar: message => dispatch(openSnackbar(message)),
-
         // options and options_drawer handlers
         setSyncOnStartup: syncOnStartup => dispatch(setSyncOnStartup(syncOnStartup)),
         setAutomaticThemeChange: automaticThemeChange => dispatch(setAutomaticThemeChange(automaticThemeChange)),
         setTheme: theme => dispatch(setTheme(theme)),
+        setLanguage: language => dispatch(setLanguage(language)),
         setNativeFrame: useFrame => dispatch(setNativeFrame(useFrame)),
         setStickyMenu: userStickyMenu => dispatch(setStickyMenu(userStickyMenu)),
         setEventCountLimit: eventCountLimit => dispatch(setEventCountLimit(eventCountLimit)),

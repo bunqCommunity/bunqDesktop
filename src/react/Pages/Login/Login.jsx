@@ -412,7 +412,7 @@ class Login extends React.Component {
             <div style={styles.cardWrapper}>
                 <div style={styles.cardWrapperInner}>
                     <AppBar position="static" color="default">
-                        <Tabs fullWidth value={this.state.tabIndex} onChange={this.handleTabChange}>
+                        <Tabs variant="fullWidth" value={this.state.tabIndex} onChange={this.handleTabChange}>
                             <Tab style={styles.tab} label="API key" />
                             <Tab style={styles.tab} label="OAuth" />
                         </Tabs>

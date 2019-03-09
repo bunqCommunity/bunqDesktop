@@ -442,7 +442,7 @@ class Pay extends React.Component {
             amount !== "" &&
             // enough funds or draft enabled
             (amount > accountBalance && sendDraftPayment === false && schedulePayment === false);
-        const amountErrorCondition = amount < 0.01 || amount > 10000;
+        const amountErrorCondition = amount < 0.01 || amount > 100000;
         const descriptionErrorCondition = description.length > 140;
         const ibanNameErrorCondition = ibanName.length < 1 || ibanName.length > 64;
 
@@ -547,14 +547,14 @@ class Pay extends React.Component {
 
         if (schedulePayment) {
             const schedule = {
-                time_start: format(getUTCDate(scheduleStartDate), "YYYY-MM-dd HH:mm:ss"),
+                time_start: format(getUTCDate(scheduleStartDate), "yyyy-MM-dd HH:mm:ss"),
                 recurrence_unit: recurrenceUnit,
                 // on once size has to be 1
                 recurrence_size: parseInt(recurrenceUnit !== "ONCE" ? recurrenceSize : 1)
             };
 
             if (scheduleEndDate) {
-                schedule.time_end = format(getUTCDate(scheduleEndDate), "YYYY-MM-dd HH:mm:ss");
+                schedule.time_end = format(getUTCDate(scheduleEndDate), "yyyy-MM-dd HH:mm:ss");
             }
 
             this.props.paySchedule(userId, account.id, description, amountInfo, targetInfoList, schedule);
@@ -875,7 +875,7 @@ const mapDispatchToProps = (dispatch, props) => {
             dispatch(paySchedule(BunqJSClient, userId, accountId, description, amount, targets, schedule)),
         openSnackbar: message => dispatch(openSnackbar(message)),
 
-        eventInfoUpdate: (userId) => dispatch(eventInfoUpdate(BunqJSClient, userId)),
+        eventInfoUpdate: userId => dispatch(eventInfoUpdate(BunqJSClient, userId)),
 
         pendingPaymentsAddPayment: (accountId, pendingPayment) =>
             dispatch(pendingPaymentsAddPayment(BunqJSClient, accountId, pendingPayment))

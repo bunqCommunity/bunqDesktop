@@ -138,7 +138,7 @@ export type GenericAlias = {
     iban: string;
     is_light: boolean;
     label_user: any;
-}
+};
 
 export type PaymentSubType = "PAYMENT" | "WITHDRAWAL" | "REVERSAL" | "REQUEST" | "BILLING" | "SCT" | "SDD" | "NLO";
 

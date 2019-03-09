@@ -115,10 +115,10 @@ class AddAccount extends React.Component {
         let savingsGoalError = false;
         if (accountType === "MonetaryAccountSavings") {
             if (!savingsGoal) {
-                savingsGoalError = savingsGoal < 0.01 || savingsGoal > 10000;
+                savingsGoalError = savingsGoal < 0.01 || savingsGoal > 100000;
             }
         }
-        const limitErrorCondition = limit < 0.01 || limit > 10000;
+        const limitErrorCondition = limit < 0.01 || limit > 100000;
         const descriptionErrorCondition = description.length < 1 || description.length > 140;
 
         this.setState({

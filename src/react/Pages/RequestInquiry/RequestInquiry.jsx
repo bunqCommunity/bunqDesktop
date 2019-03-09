@@ -301,7 +301,7 @@ class RequestInquiry extends React.Component {
         } = this.state;
         const minimumAgeInt = parseInt(minimumAge);
 
-        const amountErrorCondition = amount < 0.01 || amount > 10000;
+        const amountErrorCondition = amount < 0.01 || amount > 100000;
         const descriptionErrorCondition = description.length > 140;
         const minimumAgeErrorCondition = setMinimumAge === true && (minimumAgeInt < 12 || minimumAgeInt > 100);
         const redurectUrlErrorCondition = setRedirectUrl === true && redirectUrl.length < 5;
@@ -641,7 +641,7 @@ const mapDispatchToProps = (dispatch, props) => {
         requestInquirySend: (userId, accountId, requestInquiries) =>
             dispatch(requestInquirySend(BunqJSClient, userId, accountId, requestInquiries)),
 
-        eventInfoUpdate: (userId) => dispatch(eventInfoUpdate(BunqJSClient, userId)),
+        eventInfoUpdate: userId => dispatch(eventInfoUpdate(BunqJSClient, userId)),
 
         openSnackbar: message => dispatch(openSnackbar(message))
     };

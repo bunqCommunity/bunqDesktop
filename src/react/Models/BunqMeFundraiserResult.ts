@@ -13,8 +13,8 @@ export default class BunqMeFundraiserResult implements EventType {
     private _id: number;
     private _created: Date;
     private _updated: Date;
-    private _payments: Payment[]
-    private _bunqme_fundraiser_profile: any
+    private _payments: Payment[];
+    private _bunqme_fundraiser_profile: any;
 
     constructor(bunqMeTabObject: any) {
         this._rawData = bunqMeTabObject;

@@ -246,7 +246,7 @@ class Connect extends React.Component {
     validateForm = () => {
         const { budget, target, targets, targetType, timeLimit, setTimeLimit } = this.state;
 
-        const budgetErrorCondition = budget < 0.01 || budget > 10000;
+        const budgetErrorCondition = budget < 0.01 || budget > 100000;
         const timeLimitError = setTimeLimit === true && timeLimit === null;
 
         // check if the target is valid based onthe targetType
@@ -274,7 +274,7 @@ class Connect extends React.Component {
 
             // set timelimit if set
             if (this.state.accessLevel !== "draft" && this.state.setTimeLimit) {
-                const timeFormatted = format(getUTCDate(this.state.timeLimit), "YYYY-MM-dd HH:mm:ss");
+                const timeFormatted = format(getUTCDate(this.state.timeLimit), "yyyy-MM-dd HH:mm:ss");
                 shareOptions = {
                     end_date: timeFormatted
                 };

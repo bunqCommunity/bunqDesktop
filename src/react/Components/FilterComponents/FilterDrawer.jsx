@@ -355,7 +355,7 @@ class FilterDrawer extends React.Component {
                                 id="from-date"
                                 helperText={t("From date")}
                                 emptyLabel={t("No filter")}
-                                format="MMMM dd, YYYY"
+                                format="MMMM dd, yyyy"
                                 disableFuture
                                 style={styles.dateInput}
                                 maxDate={this.props.dateToFilter}
@@ -378,7 +378,7 @@ class FilterDrawer extends React.Component {
                                 id="to-date"
                                 helperText={t("To date")}
                                 emptyLabel={t("No filter")}
-                                format="MMMM dd, YYYY"
+                                format="MMMM dd, yyyy"
                                 disableFuture
                                 style={styles.dateInput}
                                 minDate={this.props.dateFromFilter}

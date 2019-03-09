@@ -7,11 +7,11 @@ const styles = {
         position: "absolute",
         width: 68,
         height: 68,
-        left: 20,
+        left: 12,
         top: 7
     }
 };
-const AccountAvatarCircularProgress = ({ account, theme, style = {} }) => {
+const AccountAvatarCircularProgress = ({ account, theme, selected = false, style = {} }) => {
     let isSavingsAccount = false;
     if (account.accountType === "MonetaryAccountSavings") {
         isSavingsAccount = true;
@@ -32,6 +32,7 @@ const AccountAvatarCircularProgress = ({ account, theme, style = {} }) => {
                 style={{
                     ...styles.overlayCircular,
                     zIndex: 2,
+                    left: selected ? 12 : 16,
                     ...style
                 }}
             />
@@ -39,6 +40,7 @@ const AccountAvatarCircularProgress = ({ account, theme, style = {} }) => {
                 style={{
                     ...styles.overlayCircular,
                     zIndex: 1,
+                    left: selected ? 12 : 16,
                     ...style
                 }}
             >

@@ -3,7 +3,7 @@ import { openSnackbar } from "./snackbar";
 import { accountsUpdate } from "./accounts";
 import { shareInviteBankInquiriesInfoUpdate } from "./share_invite_bank_inquiries";
 import { shareInviteBankResponsesInfoUpdate } from "./share_invite_bank_responses";
-import {eventInfoUpdate} from "./events";
+import { eventInfoUpdate } from "./events";
 
 export function paySend(BunqJSClient, userId, accountId, description, amount, targets, draft = false) {
     const failedMessage = window.t("We received the following error while sending your payment");

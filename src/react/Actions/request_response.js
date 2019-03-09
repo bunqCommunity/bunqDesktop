@@ -1,7 +1,7 @@
 import BunqErrorHandler from "../Functions/BunqErrorHandler";
 import { openSnackbar } from "./snackbar";
 import { requestResponseUpdate } from "./request_response_info";
-import {eventInfoUpdate} from "./events";
+import { eventInfoUpdate } from "./events";
 
 // Disabled until after 0.7 release
 export function requestResponseAccept(

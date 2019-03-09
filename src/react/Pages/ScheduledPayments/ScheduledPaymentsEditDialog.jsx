@@ -130,10 +130,10 @@ class ScheduledPaymentsEditDialog extends React.Component {
         const scheduleInfo = {
             recurrence_size: parseInt(recurrenceUnit !== "ONCE" ? recurrenceSize : 1),
             recurrence_unit: recurrenceUnit,
-            time_start: format(scheduleStartDate, "YYYY-MM-dd HH:mm:ss")
+            time_start: format(scheduleStartDate, "yyyy-MM-dd HH:mm:ss")
         };
         if (scheduleEndDate) {
-            scheduleInfo.time_end = format(scheduleEndDate, "YYYY-MM-dd HH:mm:ss");
+            scheduleInfo.time_end = format(scheduleEndDate, "yyyy-MM-dd HH:mm:ss");
         }
 
         this.props.scheduledPaymentUpdate(

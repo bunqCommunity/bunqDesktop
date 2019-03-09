@@ -28,9 +28,10 @@ const styles = {
         height: 60
     },
     avatarSub: {
-        position: "absolute",
-        left: 60,
-        bottom: 4
+        minWidth: 26,
+        marginLeft: -23,
+        marginTop: 40,
+        zIndex: 10
     },
     secondaryIcon: {
         width: 26,
@@ -92,20 +93,23 @@ class AccountListItem extends React.Component {
         }
 
         // check if any of the selected account ids are for this account
-        let displayStyle = {};
-        let circularLeftPostion = 20;
+        let displayStyle = {
+            height: 83,
+            paddingLeft: 20
+        };
         let accountIsSelected = false;
+        let displayAsSelected = false;
         if (selectedAccountIds.length !== 0) {
             // check if the selected account ids list contains this account
             accountIsSelected = selectedAccountIds.some(id => id === account.id);
             // switch if toggle is true
-            const isSelected = toggleAccountIds ? !accountIsSelected : accountIsSelected;
+            displayAsSelected = toggleAccountIds ? !accountIsSelected : accountIsSelected;
 
-            if (isSelected) {
-                circularLeftPostion = 16;
+            if (displayAsSelected) {
                 displayStyle = {
                     borderLeft: "4px solid #1da1f2",
-                    paddingLeft: 20
+                    paddingLeft: 16,
+                    height: 83
                 };
             }
         }
@@ -115,12 +119,17 @@ class AccountListItem extends React.Component {
             ? e => this.props.removeAccountIdFilter(account.id)
             : e => this.props.addAccountIdFilter(account.id);
 
-        // allow overwrite by props
-        const onClickHandler = this.props.onClick ? e => this.props.onClick(user.id, account.id) : defaultClickHandler;
+        const listItemProps = {};
+        if (this.props.clickable) {
+            listItemProps.button = true;
+            listItemProps.onClick = this.props.onClick
+                ? e => this.props.onClick(user.id, account.id)
+                : defaultClickHandler;
+        }
 
         return (
-            <ListItem button onClick={onClickHandler} style={displayStyle} divider>
-                <AccountAvatarCircularProgress account={account} style={{ left: circularLeftPostion }} />
+            <ListItem {...listItemProps} style={displayStyle} divider>
+                <AccountAvatarCircularProgress account={account} selected={displayAsSelected} />
                 <Avatar style={styles.bigAvatar}>
                     <LazyAttachmentImage
                         height={60}

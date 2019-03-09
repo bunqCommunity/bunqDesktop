@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 
 const styles = {
     cardWrapper: {},
@@ -17,6 +16,10 @@ export const getCardTypeImage = type => {
         case "MASTERCARD":
             cardType = "MasterCard";
             cardImage = "images/bunq-mastercard.png";
+            break;
+        case "MASTERCARD_VIRTUAL":
+            cardType = "Virtual MasterCard";
+            cardImage = "images/bunq-mastercard-virtual.svg";
             break;
         case "MAESTRO":
             cardType = "Maestro";
@@ -52,17 +55,4 @@ class CardListItem extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        accounts: state.accounts
-    };
-};
-
-const mapDispatchToProps = dispatch => {
-    return {};
-};
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(CardListItem);
+export default CardListItem;

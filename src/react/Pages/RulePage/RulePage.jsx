@@ -139,7 +139,7 @@ const mapStateToProps = state => {
         categoryRules: state.category_rules.category_rules,
 
         eventsLoading: state.events.loading,
-        events: state.events.events,
+        events: state.events.events
     };
 };
 
