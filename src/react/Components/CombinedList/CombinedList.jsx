@@ -112,8 +112,11 @@ class CombinedList extends React.Component {
 
         this.setState(
             {
-                totalEvents: this.state.totalEvents < events.length ? events.length : this.state.totalEvents,
-                events: events
+                totalEvents:
+                    this.state.totalEvents < combinedEventsList.length
+                        ? combinedEventsList.length
+                        : this.state.totalEvents,
+                events: combinedEventsList
             },
             this.useOldPosition
         );
