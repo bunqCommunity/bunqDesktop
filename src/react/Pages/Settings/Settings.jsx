@@ -10,7 +10,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Select from "@material-ui/core/Select";
-import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
 import Switch from "@material-ui/core/Switch";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -36,7 +35,6 @@ import FilePicker from "../../Components/FormFields/FilePicker";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 
-import { openSnackbar } from "../../Actions/snackbar";
 import {
     resetApplication,
     setSyncOnStartup,
@@ -562,44 +560,8 @@ class Settings extends React.Component {
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
-                    <Button variant="outlined" style={styles.button} onClick={this.props.paymentsClear}>
-                        {t("Regular payments")} {paymentCount}
-                    </Button>
-                </Grid>
-
-                <Grid item xs={12} sm={4}>
-                    <Button variant="outlined" style={styles.button} onClick={this.props.masterCardActionsClear}>
-                        {t("Card payments")} {cardPaymentCount}
-                    </Button>
-                </Grid>
-
-                <Grid item xs={12} sm={4}>
-                    <Button variant="outlined" style={styles.button} onClick={this.resetRequestData}>
-                        {t("Requests")} {requestCount}
-                    </Button>
-                </Grid>
-
-                <Grid item xs={12} sm={4}>
-                    <Button variant="outlined" style={styles.button} onClick={this.props.bunqMeTabsClear}>
-                        {t("bunqme Tabs")} {bunqMeTabsCount}
-                    </Button>
-                </Grid>
-
-                <Grid item xs={12} sm={4}>
-                    <Button variant="outlined" style={styles.button} onClick={this.props.masterCardActionsClear}>
-                        {t("Card payments")} {cardPaymentCount}
-                    </Button>
-                </Grid>
-
-                <Grid item xs={12} sm={4}>
-                    <Button variant="outlined" style={styles.button} onClick={this.resetRequestData}>
-                        {t("Requests")} {requestCount}
-                    </Button>
-                </Grid>
-
-                <Grid item xs={12} sm={4}>
-                    <Button variant="outlined" style={styles.button} onClick={this.props.bunqMeTabsClear}>
-                        {t("bunqme Tabs")} {bunqMeTabsCount}
+                    <Button variant="outlined" style={styles.button} onClick={this.props.eventsClear}>
+                        {t("Events")} {eventsCount}
                     </Button>
                 </Grid>
 
