@@ -105,6 +105,10 @@ const privateRoutes = [
         path: "/mastercard-action-info/:masterCardActionId/:accountId?",
         component: CL(() => import(/* webpackChunkName: "mastercardactioninfo" */ "./Pages/MasterCardActionInfo"))
     },
+    {
+        path: "/event/:eventId",
+        component: CL(() => import(/* webpackChunkName: "eventinfo" */ "./Pages/EventInfo"))
+    },
     /**
      * Monetary account info and settings pages
      */

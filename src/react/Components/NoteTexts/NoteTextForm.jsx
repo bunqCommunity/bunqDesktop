@@ -110,7 +110,6 @@ class NoteTextForm extends React.Component {
 
         // ignore if event mismatch
         if (!event || !noteTextsEventId || noteTextsEventId !== event.id) return null;
-
         const parsedEventType = NoteTextTypeParser(event);
 
         // ignore if false

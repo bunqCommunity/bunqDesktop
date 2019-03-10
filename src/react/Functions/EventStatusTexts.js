@@ -1,6 +1,28 @@
+export const eventGenericText = (event, t) => {
+    // const ACCEPTED = `${requestType} ${t(`payment accepted`)}`;
+    // const PENDING = `${requestType} ${t(`is pending`)} `;
+    // const REJECTED = `${t(`You denied the`)} ${requestType} ${t(`payment`)}`;
+    // const REVOKED = `${t(`The`)} ${requestType} ${t(`payment was cancelled`)}`;
+    // const EXPIRED = `${t(`The`)} ${requestType} ${t(`payment has expired`)}`;
+    // switch (requestResponse.status) {
+    //     case "ACCEPTED":
+    //         return ACCEPTED;
+    //     case "PENDING":
+    //         return PENDING;
+    //     case "REJECTED":
+    //         return REJECTED;
+    //     case "REVOKED":
+    //         return REVOKED;
+    //     case "EXPIRED":
+    //         return EXPIRED;
+    //     default:
+    //         return requestResponse.status;
+    // }
+    return "";
+};
+
 // type	= DIRECT_DEBIT, DIRECT_DEBIT_B2B, IDEAL, SOFORT or INTERNAL.
 // sub_type	= ONCE or RECURRING for DIRECT_DEBIT RequestInquiries and NONE
-
 export const requestResponseText = (requestResponse, t) => {
     let requestType = requestResponseTypeParser(requestResponse, t);
 
