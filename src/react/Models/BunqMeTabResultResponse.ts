@@ -1,5 +1,6 @@
 import EventType, { EventTypeValue } from "../Types/Event";
 import Payment from "./Payment";
+import { PaymentAlias } from "../Types/Types";
 
 export default class BunqMeTabResultResponse implements EventType {
     // the original raw object
@@ -9,6 +10,8 @@ export default class BunqMeTabResultResponse implements EventType {
     get eventType(): EventTypeValue {
         return "BunqMeTabResultResponse";
     }
+
+    public isTransaction: boolean = true;
 
     private _id: number;
     private _created: Date;
@@ -30,6 +33,10 @@ export default class BunqMeTabResultResponse implements EventType {
 
         this._updated = new Date(this._updated);
         this._created = new Date(this._created);
+
+        if (this.payment) {
+            this._payment = new Payment(this.payment);
+        }
     }
 
     /**
@@ -59,7 +66,7 @@ export default class BunqMeTabResultResponse implements EventType {
      * @returns {number}
      */
     public getTotalPaidAmount(): number {
-        return parseFloat(this.payment.Payment.amount.value);
+        return this.payment.getAmount();
     }
 
     get id(): number {
@@ -76,5 +83,11 @@ export default class BunqMeTabResultResponse implements EventType {
     }
     get bunqme_fundraiser_profile(): any {
         return this._bunqme_fundraiser_profile;
+    }
+    get alias(): PaymentAlias {
+        return this.payment.alias;
+    }
+    get counterparty_alias(): PaymentAlias {
+        return this.payment.counterparty_alias;
     }
 }

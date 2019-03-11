@@ -19,6 +19,10 @@ export default class RequestInquiry implements Event {
         return "RequestInquiry";
     }
 
+    get isTransaction(): boolean {
+        return !!this.amount_responded;
+    }
+
     private _id: number;
     private _created: Date;
     private _updated: Date;

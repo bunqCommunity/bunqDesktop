@@ -10,6 +10,10 @@ export default class BunqMeTab implements EventType {
         return "BunqMeTab";
     }
 
+    get isTransaction(): boolean {
+        return this.result_inquiries.length > 0;
+    }
+
     private _id: number;
     private _created: Date;
     private _updated: Date;

@@ -10,6 +10,8 @@ export default class IdealMerchantTransaction implements EventType {
         return "IdealMerchantTransaction";
     }
 
+    public isTransaction: boolean = true;
+
     private _id: number;
     private _alias: GenericAlias; // TODO
     private _allow_chat: boolean;

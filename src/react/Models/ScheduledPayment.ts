@@ -10,6 +10,10 @@ export default class ScheduledPayment implements EventType {
         return "ScheduledPayment";
     }
 
+    get isTransaction(): boolean {
+        return !!this.payment;
+    }
+
     private _id: number;
     private _created: Date;
     private _label_schedule_user_canceled: any;

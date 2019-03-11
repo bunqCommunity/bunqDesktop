@@ -10,6 +10,11 @@ export default class BunqMeFundraiserResult implements EventType {
         return "BunqMeFundraiserResult";
     }
 
+    get isTransaction(): boolean {
+        return false;
+        return this.payments.length > 0;
+    }
+
     private _id: number;
     private _created: Date;
     private _updated: Date;

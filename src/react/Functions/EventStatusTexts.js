@@ -1,24 +1,39 @@
 export const eventGenericText = (event, t) => {
-    // const ACCEPTED = `${requestType} ${t(`payment accepted`)}`;
-    // const PENDING = `${requestType} ${t(`is pending`)} `;
-    // const REJECTED = `${t(`You denied the`)} ${requestType} ${t(`payment`)}`;
-    // const REVOKED = `${t(`The`)} ${requestType} ${t(`payment was cancelled`)}`;
-    // const EXPIRED = `${t(`The`)} ${requestType} ${t(`payment has expired`)}`;
-    // switch (requestResponse.status) {
-    //     case "ACCEPTED":
-    //         return ACCEPTED;
-    //     case "PENDING":
-    //         return PENDING;
-    //     case "REJECTED":
-    //         return REJECTED;
-    //     case "REVOKED":
-    //         return REVOKED;
-    //     case "EXPIRED":
-    //         return EXPIRED;
-    //     default:
-    //         return requestResponse.status;
-    // }
-    return "";
+    const IdealMerchantTransaction = t("Received iDeal payment");
+    switch (event.type) {
+        case "BunqMeFundraiserResult":
+            return bunqMeFundRaiserResultText(event.object, t);
+        case "BunqMeTabResultResponse":
+            return bunqMeTabResultResponseText(event.object, t);
+        case "IdealMerchantTransaction":
+            return IdealMerchantTransaction;
+        case "Invoice":
+            return invoiceText(event.object, t);
+        default:
+            return `Event ${event.type}`;
+    }
+};
+
+export const bunqMeFundRaiserResultText = (bunqMeFundRaiserResult, t) => {
+    const received = t("Received bunqme payments");
+
+    return received;
+};
+const bunqMeTabResultResponseText = (bunqMeTabResultResponse, t) => {
+    const received = t("Received bunqme payment");
+    const fromText = t("from");
+
+    return `${received} ${fromText} ${bunqMeTabResultResponse.payment.counterparty_alias.display_name}`;
+};
+export const invoiceText = (invoice, t) => {
+    const paidText = t("Invoice paid");
+
+    switch (invoice.status) {
+        // TODO missing types
+        case "CREDITED":
+        default:
+            return paidText;
+    }
 };
 
 // type	= DIRECT_DEBIT, DIRECT_DEBIT_B2B, IDEAL, SOFORT or INTERNAL.

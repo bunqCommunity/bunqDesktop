@@ -10,6 +10,8 @@ export default class Invoice implements EventType {
         return "Invoice";
     }
 
+    public isTransaction: boolean = true;
+
     private _id: number;
     private _address: Address | null;
     private _alias: any;

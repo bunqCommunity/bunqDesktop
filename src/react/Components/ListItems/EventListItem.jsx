@@ -10,6 +10,8 @@ import Divider from "@material-ui/core/Divider";
 import NavLink from "../Routing/NavLink";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 
+import { eventGenericText } from "../../Functions/EventStatusTexts";
+
 const styles = {
     listItemText: {
         marginRight: 40
@@ -35,6 +37,8 @@ class EventListItem extends React.Component {
     render() {
         const { t, event } = this.props;
 
+        const eventLabel = eventGenericText(event, t);
+
         console.log(event);
 
         return [
@@ -44,8 +48,8 @@ class EventListItem extends React.Component {
                 {/*</Avatar>*/}
                 <ListItemText
                     style={styles.listItemText}
-                    primary={"displayname"}
-                    secondary={event.type}
+                    primary={eventLabel}
+                    secondary={event.getAmount()}
                 />
                 <ListItemSecondaryAction />
             </ListItem>,

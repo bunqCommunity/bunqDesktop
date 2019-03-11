@@ -20,6 +20,8 @@ export default class RequestResponse implements EventType {
         return "RequestResponse";
     }
 
+    public isTransaction: boolean = true;
+
     private _id: number;
     private _created: Date;
     private _updated: Date;

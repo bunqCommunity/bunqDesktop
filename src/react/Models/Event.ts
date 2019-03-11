@@ -22,17 +22,24 @@ export default class Event implements EventType {
     }
 
     public getAmount(): number {
-        if (typeof this._object.getAmount !== "undefined") {
-            return this._object.getAmount();
+        if (typeof this.object.getAmount !== "undefined") {
+            return this.object.getAmount();
         }
         return 0;
     }
 
     public getDelta(): number {
-        if (typeof this._object.getDelta !== "undefined") {
-            return this._object.getDelta();
+        if (typeof this.object.getDelta !== "undefined") {
+            return this.object.getDelta();
         }
         return 0;
+    }
+
+    /**
+     * Whether this event will be included in the exports and is shown as a transaction
+     */
+    get isTransaction(): boolean {
+        return !!this.object.isTransaction;
     }
 
     private _id: number;
@@ -160,6 +167,12 @@ export default class Event implements EventType {
     }
     get monetary_account_id(): number | null {
         return this._monetary_account_id;
+    }
+    get description() {
+        if (this.object && this.object.description) {
+            return this.object.description;
+        }
+        return "";
     }
     get updated_fields() {
         return this._updated_fields;

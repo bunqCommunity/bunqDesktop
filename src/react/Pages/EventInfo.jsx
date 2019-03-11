@@ -28,8 +28,8 @@ import ExportDialog from "../Components/ExportDialog";
 import CategorySelectorDialog from "../Components/Categories/CategorySelectorDialog";
 import CategoryChips from "../Components/Categories/CategoryChips";
 // import NoteTextForm from "../Components/NoteTexts/NoteTextForm";
-// import MoneyAmountLabel from "../Components/MoneyAmountLabel";
-// import TransactionHeader from "../Components/TransactionHeader";
+import MoneyAmountLabel from "../Components/MoneyAmountLabel";
+import TransactionHeader from "../Components/TransactionHeader";
 
 import { setTheme } from "../Actions/options";
 import { eventInfoUpdate } from "../Actions/event_info";
@@ -135,18 +135,18 @@ class EventInfo extends React.Component {
             const event = eventInfo.Event;
             const eventDescription = event.description;
             const eventDate = humanReadableDate(event.updated);
-            const eventAmount = parseFloat(event.object.getAmount());
+            const eventAmount = parseFloat(event.getAmount());
             const formattedEventAmount = formatMoney(eventAmount, true);
             const eventLabel = eventGenericText(event, t);
-            const personalAlias = event.alias;
-            const counterPartyAlias = event.counterparty_alias;
+            const personalAlias = event.object.alias;
+            const counterPartyAlias = event.object.counterparty_alias;
             const counterPartyIban = counterPartyAlias ? counterPartyAlias.iban : null;
 
-            if (pdfSaveModeEnabled) {
+            if (pdfSaveModeEnabled && personalAlias && counterPartyAlias) {
                 return (
                     <PDFExportHelper
                         t={t}
-                        event={event}
+                        payment={event}
                         formattedEventAmount={formattedEventAmount}
                         eventDate={eventDate}
                         personalAlias={personalAlias}
@@ -157,31 +157,35 @@ class EventInfo extends React.Component {
 
             // noteTextsForm = <NoteTextForm BunqJSClient={this.props.BunqJSClient} event={event} />;
 
-            // const transactionHeaderProps = {
-            //     BunqJSClient: this.props.BunqJSClient,
-            //     to: event.counterparty_alias,
-            //     from: event.alias,
-            //     user: this.props.user,
-            //     accounts: this.props.accounts,
-            //     swap: eventAmount > 0,
-            //     type: "event",
-            //     onForwardColor: "secondary",
-            //     event: event,
-            //     transferAmountComponent: (
-            //         <MoneyAmountLabel component={"h1"} style={{ textAlign: "center" }} info={event} type="event">
-            //             {formattedEventAmount}
-            //         </MoneyAmountLabel>
-            //     )
-            // };
-            // if (eventInfo.getDelta() < 0) {
-            //     transactionHeaderProps.onRequest = this.onRequest;
-            // } else {
-            //     transactionHeaderProps.onForward = this.onForward;
-            // }
+            let headerComponent = null;
+            if (event.isTransaction && personalAlias && counterPartyAlias) {
+                const transactionHeaderProps = {
+                    BunqJSClient: this.props.BunqJSClient,
+                    to: counterPartyAlias,
+                    from: personalAlias,
+                    user: this.props.user,
+                    accounts: this.props.accounts,
+                    swap: eventAmount > 0,
+                    type: "event",
+                    onForwardColor: "secondary",
+                    event: event.object,
+                    transferAmountComponent: (
+                        <MoneyAmountLabel component={"h1"} style={{ textAlign: "center" }} info={event} type="event">
+                            {formattedEventAmount}
+                        </MoneyAmountLabel>
+                    )
+                };
+                if (eventInfo.getDelta() < 0) {
+                    transactionHeaderProps.onRequest = this.onRequest;
+                } else {
+                    transactionHeaderProps.onForward = this.onForward;
+                }
+                headerComponent = <TransactionHeader {...transactionHeaderProps} />;
+            }
 
             content = (
                 <Grid container spacing={24} align={"center"} justify={"center"}>
-                    {/*<TransactionHeader {...transactionHeaderProps} />*/}
+                    {headerComponent}
 
                     <FilterCreationDialog
                         t={t}

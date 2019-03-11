@@ -45,25 +45,25 @@ export const eventMapper = (settings, onlyPending = false, onlyNonPending = fals
             switch (event.type) {
                 // case "ScheduledInstance":
                 // case "ScheduledPayment":
-                // case "Payment":
-                //     let paymentObject = event.object;
-                //     if (event.type === "ScheduledInstance") {
-                //         paymentObject = event.object.result_object;
-                //     }
-                //     if (event.type === "ScheduledPayment") {
-                //         paymentObject = event.object.payment;
-                //     }
-                //     return {
-                //         component: (
-                //             <PaymentListItem
-                //                 payment={paymentObject}
-                //                 accounts={settings.accounts}
-                //                 BunqJSClient={settings.BunqJSClient}
-                //             />
-                //         ),
-                //         filterDate: UTCDateToLocalDate(event.created),
-                //         info: event.object
-                //     };
+                case "Payment":
+                    let paymentObject = event.object;
+                    if (event.type === "ScheduledInstance") {
+                        paymentObject = event.object.result_object;
+                    }
+                    if (event.type === "ScheduledPayment") {
+                        paymentObject = event.object.payment;
+                    }
+                    return {
+                        component: (
+                            <PaymentListItem
+                                payment={paymentObject}
+                                accounts={settings.accounts}
+                                BunqJSClient={settings.BunqJSClient}
+                            />
+                        ),
+                        filterDate: UTCDateToLocalDate(event.created),
+                        info: event.object
+                    };
                 // case "MasterCardAction":
                 //     return {
                 //         component: (

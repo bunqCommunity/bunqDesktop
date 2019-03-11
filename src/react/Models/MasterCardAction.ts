@@ -12,6 +12,8 @@ export default class MasterCardAction implements EventType {
         return "MasterCardAction";
     }
 
+    public isTransaction: boolean = true;
+
     private _id: number;
     private _created: Date;
     private _updated: Date;

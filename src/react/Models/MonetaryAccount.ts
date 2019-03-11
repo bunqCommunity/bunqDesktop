@@ -1,6 +1,6 @@
 import { AccountType, MonetaryAccountSetting, AllCoOwner, Alias, Avatar, Balance, Amount } from "../Types/Types";
 
-import NotificationFilter from "@bunq-community/bunq-js-client/src/Types/NotificationFilter";
+import NotificationFilter from "@bunq-community/bunq-js-client/dist/Types/NotificationFilter";
 
 export default class MonetaryAccount {
     // the original raw object

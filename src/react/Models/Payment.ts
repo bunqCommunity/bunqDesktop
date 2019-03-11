@@ -19,6 +19,8 @@ export default class Payment implements EventType {
         return "Payment";
     }
 
+    public isTransaction: boolean = true;
+
     private _id: number;
     private _created: Date;
     private _updated: Date;
