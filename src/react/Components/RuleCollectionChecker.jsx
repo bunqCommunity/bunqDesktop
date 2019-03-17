@@ -61,10 +61,7 @@ class RuleCollectionChecker extends React.Component {
         const events = [];
         this.props.events.map(event => {
             if (typeof event.object.toJSON !== "undefined") {
-                events.push({
-                    item: event.object.toJSON(),
-                    type: event.type
-                });
+                events.push(event.toJSON());
             }
         });
 

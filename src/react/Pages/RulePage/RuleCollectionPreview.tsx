@@ -65,10 +65,7 @@ class RuleCollectionPreview extends React.Component<any, any> {
         const events = [];
         props.events.map(event => {
             if (typeof event.object.toJSON !== "undefined") {
-                events.push({
-                    item: event.object.toJSON(),
-                    type: event.type
-                });
+                events.push(event.toJSON());
             }
         });
 

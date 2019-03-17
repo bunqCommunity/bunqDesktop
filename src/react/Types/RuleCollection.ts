@@ -4,7 +4,8 @@ import ValueRule from "./Rules/ValueRule";
 import TypeRule from "./Rules/TypeRule";
 import AccountRule from "./Rules/AccountRule";
 import { generateGUID } from "../Functions/Utils";
-import { RuleTypes, EventObject, EventTypes } from "./Types";
+import { EventObject, EventTypes } from "./Types";
+import Event from "../Models/Event";
 
 export type RuleCollectionMatchType = "OR" | "AND";
 
@@ -18,7 +19,7 @@ export type EventObjectMatchingRule = {
     matched: boolean;
 };
 export type EventObjectResult = {
-    item: any;
+    item: Event;
     type: EventTypes;
     matches: boolean;
     matchingRules: EventObjectMatchingRule[];
@@ -101,14 +102,14 @@ export default class RuleCollection {
 
     /**
      * Goes through all events and returns the ones
-     * @param {EventObject[]} events
+     * @param {Event[]} events
      * @returns {EventObjectResult[]}
      */
-    public filterItems(events: EventObject[]): EventObjectResult[] {
+    public filterItems(events: Event[]): EventObjectResult[] {
         const resultingEvents: EventObjectResult[] = [];
         const ruleCount = this.rules.length;
 
-        events.forEach((event: EventObject) => {
+        events.forEach((event: Event) => {
             let matches = false;
             let matchingRules: EventObjectMatchingRule[] = [];
 
@@ -123,7 +124,7 @@ export default class RuleCollection {
 
             // add this event to the resulting events list
             resultingEvents.push({
-                item: event.item,
+                item: event,
                 type: event.type,
                 matches: matches,
                 matchingRules: matchingRules
@@ -135,10 +136,10 @@ export default class RuleCollection {
 
     /**
      * Checks if a single item matches all the currently set rules
-     * @param {EventObject} event
+     * @param {Event} event
      * @returns {boolean}
      */
-    public checkRules(event: EventObject): RuleCollectionCheckRulesResult {
+    public checkRules(event: Event): RuleCollectionCheckRulesResult {
         const matchingRules: EventObjectMatchingRule[] = [];
         let checkRuleResult = false;
 
@@ -173,10 +174,10 @@ export default class RuleCollection {
     /**
      * Checks if a single item matches a single rule
      * @param {Rule} rule
-     * @param {EventObject} event
+     * @param {Event} event
      * @returns {boolean}
      */
-    public checkRule(rule: Rule, event: EventObject): boolean {
+    public checkRule(rule: Rule, event: Event): boolean {
         // return an iterator function which has access to the event
         switch (rule.ruleType) {
             case "VALUE":
@@ -194,55 +195,33 @@ export default class RuleCollection {
     /**
      * Check if a field or custom field matches the given value
      * @param {ValueRule} rule
-     * @param {EventObject} event
+     * @param {Event} event
      * @returns {boolean}
      */
-    private checkValueRule(rule: ValueRule, event: EventObject): boolean {
+    private checkValueRule(rule: ValueRule, event: Event): boolean {
         let dataToCheck = [];
 
         switch (rule.field) {
             case "DESCRIPTION":
-                if (event.item.description) {
-                    dataToCheck.push(event.item.description);
+                if (event.object.description) {
+                    dataToCheck.push(event.object.description);
                 }
                 break;
             case "IBAN":
-                switch (event.type) {
-                    case "BunqMeTab":
-                    case "MasterCardAction":
-                        return false;
-
-                    case "Payment":
-                        // just check both
-                        const ibanAlias = event.item.alias.iban;
-                        const ibanCounterparty = event.item.alias.iban;
-
-                        // don't push invalid/missing iban values
-                        if (ibanAlias) dataToCheck.push(ibanAlias);
-                        if (ibanCounterparty) dataToCheck.push(ibanCounterparty);
-                        break;
-
-                    case "RequestResponse":
-                    case "RequestInquiry":
-                        const iban = event.item.counterparty_alias.iban;
-                        // return false if null
-                        if (iban === null) return false;
-                        dataToCheck.push(iban);
-                        break;
-                }
-
-                dataToCheck = null;
+                if (event.object.alias && event.object.alias.iban) dataToCheck.push(event.object.alias.iban);
+                if (event.object.counterparty_alias && event.object.counterparty_alias.iban)
+                    dataToCheck.push(event.object.counterparty_alias.iban);
                 break;
             case "COUNTERPARTY_NAME":
-                if (event.item.counterparty_alias) {
-                    dataToCheck.push(event.item.counterparty_alias.display_name);
+                if (event.object.counterparty_alias) {
+                    dataToCheck.push(event.object.counterparty_alias.display_name);
                 }
                 break;
             case "CUSTOM":
                 // split the custom field on . character
                 const customFieldParts = rule.customField.split(".");
 
-                let tempObject = event.item;
+                let tempObject = event.object;
                 let failedToFind = false;
                 for (let key in customFieldParts) {
                     const customFieldPart = customFieldParts[key];
@@ -256,7 +235,7 @@ export default class RuleCollection {
                     }
                 }
 
-                // if we found the custom item, add it to the list
+                // if we found the custom object, add it to the list
                 if (failedToFind === false) {
                     dataToCheck.push(tempObject);
                 }
@@ -269,12 +248,12 @@ export default class RuleCollection {
         // no data found or null so we return true of the rule value is empty
         if (dataToCheck.length === 0) return rule.value && rule.value.length === 0;
 
-        // go through every item
-        let matchedItem = false;
+        // go through every object
+        let matchedObject = false;
         for (var index in dataToCheck) {
-            const dataItem = dataToCheck[index];
+            const dataObject = dataToCheck[index];
 
-            const valueToCheck = dataItem.toString().toLowerCase();
+            const valueToCheck = dataObject.toString().toLowerCase();
             const ruleValue = rule.value.toLowerCase();
 
             switch (rule.matchType) {
@@ -282,66 +261,37 @@ export default class RuleCollection {
                     // create a regexp so we can directly use the input value
                     const regex = new RegExp(rule.value, "igm");
                     // test the data with the regex pattern
-                    matchedItem = regex.test(valueToCheck);
+                    matchedObject = regex.test(valueToCheck);
                     break;
                 case "EXACT":
-                    matchedItem = valueToCheck === ruleValue;
+                    matchedObject = valueToCheck === ruleValue;
                     break;
                 case "CONTAINS":
-                    matchedItem = valueToCheck.includes(ruleValue);
+                    matchedObject = valueToCheck.includes(ruleValue);
                     break;
                 case "ENDS_WITH":
-                    matchedItem = valueToCheck.endsWith(ruleValue);
+                    matchedObject = valueToCheck.endsWith(ruleValue);
                     break;
                 case "STARTS_WITH":
-                    matchedItem = valueToCheck.startsWith(ruleValue);
+                    matchedObject = valueToCheck.startsWith(ruleValue);
                     break;
             }
 
             // break out since we found a match already
-            if (matchedItem) break;
+            if (matchedObject) break;
         }
 
-        return matchedItem;
+        return matchedObject;
     }
 
     /**
      * Check if for the event type the given amount that was transacted is higher/lower than the rule amount
      * @param {TransactionAmountRule} rule
-     * @param {EventObject} event
+     * @param {Event} event
      * @returns {boolean}
      */
-    private checkTransactionAmountRule(rule: TransactionAmountRule, event: EventObject): boolean {
-        let amount: number = 0;
-        switch (event.type) {
-            case "Payment":
-                amount = parseFloat(event.item.amount.value);
-                break;
-            case "BunqMeTab":
-                // no transaction amount for this so we ignore it
-                return false;
-            case "RequestInquiry":
-                if (event.item.status === "ACCEPTED") {
-                    // accepted so an amount was transferred
-                    amount = parseFloat(event.item.amount_responded.value);
-                } else {
-                    // invalid type, just return false
-                    return false;
-                }
-                break;
-            case "RequestResponse":
-                if (event.item.status === "ACCEPTED") {
-                    // accepted so an amount was transferred
-                    amount = parseFloat(event.item.amount_responded.value);
-                } else {
-                    // invalid type, just return false
-                    return false;
-                }
-                break;
-            case "MasterCardAction":
-                amount = parseFloat(event.item.amount_billing.value);
-                break;
-        }
+    private checkTransactionAmountRule(rule: TransactionAmountRule, event: Event): boolean {
+        let amount: number = event.getAmount();
 
         // turn negative numbers into possitive numbers for outgoing payments
         amount = amount < 0 ? amount * -1 : amount;
@@ -362,11 +312,11 @@ export default class RuleCollection {
 
     /**
      * @param {AccountRule} rule
-     * @param {EventObject} event
+     * @param {Event} event
      * @returns {boolean}
      */
-    private checkAccountTypeRule(rule: AccountRule, event: EventObject): boolean {
-        if (event.item.monetary_account_id !== rule.accountId) {
+    private checkAccountTypeRule(rule: AccountRule, event: Event): boolean {
+        if (event.object.monetary_account_id !== rule.accountId) {
             return false;
         }
 
@@ -374,36 +324,27 @@ export default class RuleCollection {
             return true;
         }
 
-        // let amount: number = 0;
-        switch (event.type) {
-            case "Payment":
-                if (rule.paymentType === "SENDS") {
-                    // send type and amount is negative
-                    return event.item.amount.value < 0;
-                } else if (rule.paymentType === "RECEIVES") {
-                    // receive type and amount is positive
-                    return event.item.amount.value > 0;
-                }
-                return false;
-            case "MasterCardAction":
-                if (rule.paymentType === "SENDS") {
-                    return true;
-                }
-                return false;
-            case "BunqMeTab":
-            case "RequestInquiry":
-            case "RequestResponse":
-                return false;
+        // ignore non-transaction
+        if (event.isTransaction === false) {
+            return false;
+        }
+
+        // check if the payment is outgoing or incoming
+        if (rule.paymentType === "SENDS") {
+            return event.getDelta() < 0;
+        }
+        if (rule.paymentType === "RECEIVES") {
+            return event.getDelta() > 0;
         }
     }
 
     /**
      * Checks if the given matchType for the rule matches the event type
      * @param {Rule} rule
-     * @param {EventObject} event
+     * @param {Event} event
      * @returns {boolean}
      */
-    private checkItemTypeRule(rule: TypeRule, event: EventObject): boolean {
+    private checkItemTypeRule(rule: TypeRule, event: Event): boolean {
         // simply check if the event type matches the requried rule type
         switch (rule.matchType) {
             case "PAYMENT":
@@ -412,14 +353,14 @@ export default class RuleCollection {
                 // not a payment so false
                 if (event.type !== "Payment") return false;
 
-                return event.item.amount.value > 0;
+                return event.object.amount.value > 0;
             case "PAYMENT_SENT":
                 // all mastercardactions are outgoing payments
                 if (event.type === "MasterCardAction") return true;
                 // not mastercard or payment so false
                 if (event.type !== "Payment") return false;
 
-                return event.item.amount.value < 0;
+                return event.object.amount.value < 0;
             case "REGULAR_PAYMENT":
                 return event.type === "Payment";
             case "MASTERCARD_PAYMENT":
