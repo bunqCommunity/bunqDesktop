@@ -196,7 +196,7 @@ class PaymentInfo extends React.Component {
                                 <ListItemText primary={paymentLabel} />
                             </ListItem>
 
-                            {paymentDescription.length > 0 ? (
+                            {paymentDescription && paymentDescription.length > 0 ? (
                                 <React.Fragment>
                                     <Divider />
                                     <ListItem>
