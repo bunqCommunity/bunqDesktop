@@ -29,6 +29,7 @@ export const eventFilter = options => event => {
         case "Payment":
         case "ScheduledInstance":
         case "ScheduledPayment":
+        case "InterestPayout":
         case "BunqMeTabResultResponse":
             let paymentObject = event.object;
             if (event.type === "ScheduledInstance") {
@@ -38,6 +39,9 @@ export const eventFilter = options => event => {
                 paymentObject = event.object.payment;
             }
             if (event.type === "BunqMeTabResultResponse") {
+                paymentObject = event.object.payment;
+            }
+            if (event.type === "InterestPayout") {
                 paymentObject = event.object.payment;
             }
             return paymentFilter(options)(paymentObject);
@@ -61,6 +65,8 @@ export const eventFilter = options => event => {
             return shareInviteBankResponseFilter(options)(event.object);
         case "ShareInviteBankInquiry":
             return shareInviteBankInquiryFilter(options)(event.object);
+        case "SavingsAutoSaveResult":
+            return savingsAutoSaveResultFilter(options)(event.object);
     }
 
     return checkDateRange(options.dateFromFilter, options.dateToFilter, event.created);
@@ -752,6 +758,44 @@ export const bunqMeFundraiserResultFilter = options => bunqMeFundraiserResult =>
     return true;
 };
 
+export const savingsAutoSaveResultFilter = options => savingsAutoSaveResult => {
+    if (options.paymentVisibility === false) return false;
+
+    if (options.searchTerm && options.searchTerm.length > 0) return false;
+
+    if (options.amountFilterAmount !== "") return false;
+
+    if (options.selectedCardIds && options.selectedCardIds.length > 0) return false;
+
+    if (options.selectedCategories && options.categories && options.categoryConnections) {
+        if (options.selectedCategories.length > 0) return false;
+    }
+
+    if (options.selectedAccountIds) {
+        if (options.selectedAccountIds.length > 0) {
+            const firstEntry = savingsAutoSaveResult.savings_auto_save_entries[0];
+            if (!firstEntry) return false;
+
+            const firstPayment = firstEntry.payment_savings;
+            if (!firstPayment) return false;
+
+            // check if the payment is connected to a selected account
+            const foundIndex = options.selectedAccountIds.findIndex(selectedAccountId => {
+                return selectedAccountId === firstPayment.monetary_account_id;
+            });
+
+            // if true only return true if account id is in the filter, else return false
+            const result = options.toggleAccountIds === false ? foundIndex > -1 : foundIndex === -1;
+            if (!result) return false;
+        }
+    }
+
+    const dateCheck = checkDateRange(options.dateFromFilter, options.dateToFilter, savingsAutoSaveResult.updated);
+    if (!dateCheck) return false;
+
+    return true;
+};
+
 export const shareInviteBankResponseFilter = options => shareInviteBankResponse => {
     const shareInviteBankResponseInfo = shareInviteBankResponse.ShareInviteBankResponse;
 
@@ -792,7 +836,8 @@ export const shareInviteBankResponseFilter = options => shareInviteBankResponse 
         );
 
         // if true only return true if account id is in the filter, else return false
-        return options.toggleAccountIds === false ? foundIndex > -1 : foundIndex === -1;
+        const result = options.toggleAccountIds === false ? foundIndex > -1 : foundIndex === -1;
+        if (!result) return false;
     }
 
     if (options.bunqMeTabType !== "default" || options.paymentType !== "default" || options.requestType !== "default") {

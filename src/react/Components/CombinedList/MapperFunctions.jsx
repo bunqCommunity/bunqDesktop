@@ -9,6 +9,7 @@ import RequestInquiryListItem from "../ListItems/RequestInquiryListItem";
 import RequestInquiryBatchListItem from "../ListItems/RequestInquiryBatchListItem";
 import ShareInviteBankInquiryListItem from "../ListItems/ShareInviteBankInquiryListItem";
 import ShareInviteBankResponseListItem from "../ListItems/ShareInviteBankResponseListItem";
+import SavingsAutoSaveResultListItem from "../ListItems/SavingsAutoSaveResultListItem";
 
 import { UTCDateToLocalDate } from "../../Functions/Utils";
 import { eventFilter, shareInviteBankInquiryFilter, shareInviteBankResponseFilter } from "../../Functions/DataFilters";
@@ -43,8 +44,8 @@ export const eventMapper = (settings, onlyPending = false, onlyNonPending = fals
         })
         .map(event => {
             switch (event.type) {
-                // case "ScheduledInstance":
-                // case "ScheduledPayment":
+                case "ScheduledInstance":
+                case "ScheduledPayment":
                 case "Payment":
                     let paymentObject = event.object;
                     if (event.type === "ScheduledInstance") {
@@ -64,84 +65,93 @@ export const eventMapper = (settings, onlyPending = false, onlyNonPending = fals
                         filterDate: UTCDateToLocalDate(event.created),
                         info: event.object
                     };
-                // case "MasterCardAction":
-                //     return {
-                //         component: (
-                //             <MasterCardActionListItem
-                //                 masterCardAction={event.object}
-                //                 BunqJSClient={settings.BunqJSClient}
-                //             />
-                //         ),
-                //         filterDate: UTCDateToLocalDate(event.created),
-                //         info: event.object
-                //     };
-                // case "BunqMeTab":
-                //     return {
-                //         component: (
-                //             <BunqMeTabListItem
-                //                 bunqMeTab={event.object}
-                //                 BunqJSClient={settings.BunqJSClient}
-                //                 copiedValue={settings.copiedValue}
-                //                 bunqMeTabLoading={settings.bunqMeTabLoading}
-                //                 bunqMeTabsLoading={settings.bunqMeTabsLoading}
-                //                 bunqMeTabPut={settings.bunqMeTabPut}
-                //                 accounts={settings.accounts}
-                //                 user={settings.user}
-                //             />
-                //         ),
-                //         filterDate: UTCDateToLocalDate(event.object.updated),
-                //         info: event.object
-                //     };
-                // case "RequestInquiry":
-                //     return {
-                //         component: (
-                //             <RequestInquiryListItem
-                //                 requestInquiry={event.object}
-                //                 BunqJSClient={settings.BunqJSClient}
-                //             />
-                //         ),
-                //         filterDate: UTCDateToLocalDate(event.created),
-                //         info: event.object
-                //     };
-                // case "RequestResponse":
-                //     return {
-                //         component: (
-                //             <RequestResponseListItem
-                //                 requestResponse={event.object}
-                //                 BunqJSClient={settings.BunqJSClient}
-                //             />
-                //         ),
-                //         filterDate: UTCDateToLocalDate(
-                //             event.object.status === "ACCEPTED" ? event.object.time_responded : event.created
-                //         ),
-                //         info: event.object
-                //     };
-                // case "RequestInquiryBatch":
-                //     return {
-                //         component: (
-                //             <RequestInquiryBatchListItem
-                //                 accounts={settings.accounts}
-                //                 requestInquiryBatch={event.object}
-                //                 BunqJSClient={settings.BunqJSClient}
-                //             />
-                //         ),
-                //         filterDate: UTCDateToLocalDate(event.updated),
-                //         info: event.object
-                //     };
+                case "MasterCardAction":
+                    return {
+                        component: (
+                            <MasterCardActionListItem
+                                masterCardAction={event.object}
+                                BunqJSClient={settings.BunqJSClient}
+                            />
+                        ),
+                        filterDate: UTCDateToLocalDate(event.created),
+                        info: event.object
+                    };
+                case "BunqMeTab":
+                    return {
+                        component: (
+                            <BunqMeTabListItem
+                                bunqMeTab={event.object}
+                                BunqJSClient={settings.BunqJSClient}
+                                copiedValue={settings.copiedValue}
+                                bunqMeTabLoading={settings.bunqMeTabLoading}
+                                bunqMeTabsLoading={settings.bunqMeTabsLoading}
+                                bunqMeTabPut={settings.bunqMeTabPut}
+                                accounts={settings.accounts}
+                                user={settings.user}
+                            />
+                        ),
+                        filterDate: UTCDateToLocalDate(event.object.updated),
+                        info: event.object
+                    };
+                case "RequestInquiry":
+                    return {
+                        component: (
+                            <RequestInquiryListItem
+                                requestInquiry={event.object}
+                                BunqJSClient={settings.BunqJSClient}
+                            />
+                        ),
+                        filterDate: UTCDateToLocalDate(event.created),
+                        info: event.object
+                    };
+                case "RequestResponse":
+                    return {
+                        component: (
+                            <RequestResponseListItem
+                                requestResponse={event.object}
+                                BunqJSClient={settings.BunqJSClient}
+                            />
+                        ),
+                        filterDate: UTCDateToLocalDate(
+                            event.object.status === "ACCEPTED" ? event.object.time_responded : event.created
+                        ),
+                        info: event.object
+                    };
+                case "RequestInquiryBatch":
+                    return {
+                        component: (
+                            <RequestInquiryBatchListItem
+                                accounts={settings.accounts}
+                                requestInquiryBatch={event.object}
+                                BunqJSClient={settings.BunqJSClient}
+                            />
+                        ),
+                        filterDate: UTCDateToLocalDate(event.updated),
+                        info: event.object
+                    };
+                case "SavingsAutoSaveResult":
+                    return {
+                        component: (
+                            <SavingsAutoSaveResultListItem
+                                accounts={settings.accounts}
+                                savingsAutoSaveResult={event.object}
+                                BunqJSClient={settings.BunqJSClient}
+                            />
+                        ),
+                        filterDate: UTCDateToLocalDate(event.updated),
+                        info: event.object
+                    };
                 case "Invoice":
                 case "IdealMerchantTransaction":
                 case "BunqMeFundraiserResult":
                 case "BunqMeTabResultResponse":
-                    // return {
-                    //     component: <div>BunqMeTabResultResponse</div>,
-                    //     filterDate: UTCDateToLocalDate(event.updated),
-                    //     info: event.object
-                    // };
-                    return  {
-                        component: <EventListItem event={event} />,
+                case "BunqMeTabResultResponse":
+                case "InterestPayout":
+                    return {
+                        component: <EventListItem BunqJSClient={settings.BunqJSClient} event={event} />,
                         filterDate: UTCDateToLocalDate(event.updated),
                         info: event.object
-                    }
+                    };
             }
 
             return null;

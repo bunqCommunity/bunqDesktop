@@ -1,5 +1,6 @@
 import EventType, { EventTypeValue } from "../Types/Event";
 import Payment from "./Payment";
+import { BunqDesktopImageConfig } from "../Types/Types";
 
 export default class BunqMeFundraiserResult implements EventType {
     // the original raw object
@@ -11,8 +12,18 @@ export default class BunqMeFundraiserResult implements EventType {
     }
 
     get isTransaction(): boolean {
+        return this.payments && this.payments.length > 0;
+    }
+
+    get image(): BunqDesktopImageConfig {
+        if (this.payments.length > 0) {
+            return this.payments[0].image;
+        }
         return false;
-        return this.payments.length > 0;
+    }
+
+    get eventCount(): number {
+        return this.payments.length;
     }
 
     private _id: number;
@@ -33,6 +44,9 @@ export default class BunqMeFundraiserResult implements EventType {
             if (typeof this[objectKey] !== undefined) this[objectKey] = bunqMeTabInfo[key];
         });
 
+        this._payments = this._payments.map(payment => {
+            return new Payment({ Payment: payment });
+        });
         this._updated = new Date(this._updated);
         this._created = new Date(this._created);
     }

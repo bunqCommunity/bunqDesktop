@@ -1,5 +1,5 @@
 import EventType, { EventTypeValue } from "../Types/Event";
-import { Amount, GenericAlias } from "../Types/Types";
+import { Amount, BunqDesktopImageConfig, GenericAlias } from "../Types/Types";
 
 export default class IdealMerchantTransaction implements EventType {
     // the original raw object
@@ -11,6 +11,13 @@ export default class IdealMerchantTransaction implements EventType {
     }
 
     public isTransaction: boolean = true;
+
+    get image(): BunqDesktopImageConfig {
+        return {
+            type: "IMAGE_UUID",
+            value: this.getImageUuid("COUNTERPARTY")
+        };
+    }
 
     private _id: number;
     private _alias: GenericAlias; // TODO
@@ -66,6 +73,26 @@ export default class IdealMerchantTransaction implements EventType {
      */
     public getDelta(): number {
         return this.getAmount();
+    }
+
+    /**
+     * Returns the image ID for the alias or counterparty_alias
+     * @param type
+     */
+    public getImageUuid(type: "COUNTERPARTY" | "ALIAS") {
+        let aliasObject: any | false = false;
+        if (type === "COUNTERPARTY") {
+            aliasObject = this.counterparty_alias;
+        }
+
+        if (type === "ALIAS") {
+            aliasObject = this.alias;
+        }
+
+        if (aliasObject.avatar && aliasObject.avatar.image && aliasObject.avatar.image[0]) {
+            return aliasObject.avatar.image[0].attachment_public_uuid;
+        }
+        return false;
     }
 
     get id(): number {

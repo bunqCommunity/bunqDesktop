@@ -1,4 +1,4 @@
-import { Address, Amount, RequestReferenceSplitTheBill } from "../Types/Types";
+import { Address, Amount, BunqDesktopImageConfig, RequestReferenceSplitTheBill } from "../Types/Types";
 import EventType, { EventTypeValue } from "../Types/Event";
 
 export default class Invoice implements EventType {
@@ -11,6 +11,13 @@ export default class Invoice implements EventType {
     }
 
     public isTransaction: boolean = true;
+
+    get image(): BunqDesktopImageConfig {
+        return {
+            type: "IMAGE_UUID",
+            value: this.getImageUuid("COUNTERPARTY")
+        };
+    }
 
     private _id: number;
     private _address: Address | null;
@@ -65,6 +72,26 @@ export default class Invoice implements EventType {
      */
     public getDelta(): number {
         return -this.getAmount();
+    }
+
+    /**
+     * Returns the image ID for the alias or counterparty_alias
+     * @param type
+     */
+    public getImageUuid(type: "COUNTERPARTY" | "ALIAS") {
+        let aliasObject: any | false = false;
+        if (type === "COUNTERPARTY") {
+            aliasObject = this.counterparty_alias;
+        }
+
+        if (type === "ALIAS") {
+            aliasObject = this.alias;
+        }
+
+        if (aliasObject.avatar && aliasObject.avatar.image && aliasObject.avatar.image[0]) {
+            return aliasObject.avatar.image[0].attachment_public_uuid;
+        }
+        return false;
     }
 
     get rawData(): any {

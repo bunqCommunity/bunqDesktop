@@ -8,7 +8,9 @@ export type EventTypeValue =
     | "RequestResponse"
     | "Invoice"
     | "ScheduledPayment"
+    | "SavingsAutoSaveResult"
     | "IdealMerchantTransaction"
+    | "InterestPayout"
     | "BunqMeFundraiserResult"
     | "BunqMeTabResultResponse"
     | "ScheduledInstance";

@@ -1,3 +1,4 @@
+import { BunqDesktopImageConfig } from "../Types/Types";
 import EventType, { EventTypeValue } from "../Types/Event";
 import Payment from "./Payment";
 import RequestInquiry from "./RequestInquiry";
@@ -11,6 +12,8 @@ import Invoice from "./Invoice";
 import IdealMerchantTransaction from "./IdealMerchantTransaction";
 import BunqMeFundraiserResult from "./BunqMeFundraiserResult";
 import BunqMeTabResultResponse from "./BunqMeTabResultResponse";
+import SavingsAutoSaveResult from "./SavingsAutoSaveResult";
+import InterestPayout from "./InterestPayout";
 
 export default class Event implements EventType {
     // the original raw object
@@ -42,6 +45,18 @@ export default class Event implements EventType {
         return !!this.object.isTransaction;
     }
 
+    get image(): BunqDesktopImageConfig {
+        if (typeof this.object.image === "undefined") return false;
+
+        return this.object.image;
+    }
+
+    get eventCount(): number | false {
+        if (typeof this.object.eventCount === "undefined") return false;
+
+        return this.object.eventCount;
+    }
+
     private _id: number;
     private _action: "CREATE" | "UPDATE";
     private _status: "FINALIZED";
@@ -61,6 +76,8 @@ export default class Event implements EventType {
         | "RequestResponse"
         | "ScheduledInstance"
         | "ScheduledPayment"
+        | "InterestPayout"
+        | "SavingsAutoSaveResult"
         | "Invoice"
         | "IdealMerchantTransaction"
         | "BunqMeFundraiserResult"
@@ -119,6 +136,12 @@ export default class Event implements EventType {
                         break;
                     case "BunqMeTabResultResponse":
                         this._object = new BunqMeTabResultResponse(this._object);
+                        break;
+                    case "InterestPayout":
+                        this._object = new InterestPayout(this._object);
+                        break;
+                    case "SavingsAutoSaveResult":
+                        this._object = new SavingsAutoSaveResult(this._object);
                         break;
                     case "FeatureAnnouncement":
                     case "ShareInviteBankInquiry":

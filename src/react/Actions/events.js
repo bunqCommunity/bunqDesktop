@@ -32,6 +32,8 @@ export function eventsSetInfo(events, resetOldItems = false, BunqJSClient = fals
                 case "IdealMerchantTransaction":
                 case "BunqMeFundraiserResult":
                 case "BunqMeTabResultResponse":
+                case "InterestPayout":
+                case "SavingsAutoSaveResult":
                     eventsNew.push(eventObject);
                     break;
                 case "ShareInviteBankInquiry":

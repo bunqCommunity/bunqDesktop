@@ -1,6 +1,6 @@
 import EventType, { EventTypeValue } from "../Types/Event";
 import Payment from "./Payment";
-import { PaymentAlias } from "../Types/Types";
+import {BunqDesktopImageConfig, PaymentAlias} from "../Types/Types";
 
 export default class BunqMeTabResultResponse implements EventType {
     // the original raw object
@@ -12,6 +12,10 @@ export default class BunqMeTabResultResponse implements EventType {
     }
 
     public isTransaction: boolean = true;
+
+    get image(): BunqDesktopImageConfig {
+        return this.payment.image;
+    }
 
     private _id: number;
     private _created: Date;

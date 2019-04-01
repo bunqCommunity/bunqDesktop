@@ -1,5 +1,30 @@
+import { formatMoney } from "./Utils";
+
+export const eventGenericPrimaryText = (event, t, accounts = false) => {
+    const interestEventText = t("You have received interest");
+    const invoiceText = t("Invoice ");
+    switch (event.type) {
+        case "InterestPayout":
+            return interestEventText;
+        case "Invoice":
+            return `${invoiceText} ${event.object.invoice_number}`;
+        case "SavingsAutoSaveResult":
+            return savingsAutoSaveResultPrimaryText(event.object, t, accounts);
+        case "BunqMeFundraiserResult":
+            return bunqMeFundRaiserResultPrimaryText(event.object, t);
+        case "IdealMerchantTransaction":
+            return event.object.counterparty_alias.display_name;
+        case "BunqMeTabResultResponse":
+        default:
+            return `Event ${event.type}`;
+    }
+};
+
 export const eventGenericText = (event, t) => {
     const IdealMerchantTransaction = t("Received iDeal payment");
+    const interestEventText = t("So far you've earned");
+    const dailySaveTotalText = t("Daily Auto Save Total");
+
     switch (event.type) {
         case "BunqMeFundraiserResult":
             return bunqMeFundRaiserResultText(event.object, t);
@@ -7,6 +32,10 @@ export const eventGenericText = (event, t) => {
             return bunqMeTabResultResponseText(event.object, t);
         case "IdealMerchantTransaction":
             return IdealMerchantTransaction;
+        case "SavingsAutoSaveResult":
+            return dailySaveTotalText;
+        case "InterestPayout":
+            return `${interestEventText} ${formatMoney(event.getAmount())}`;
         case "Invoice":
             return invoiceText(event.object, t);
         default:
@@ -14,10 +43,43 @@ export const eventGenericText = (event, t) => {
     }
 };
 
+export const savingsAutoSaveResultPrimaryText = (savingsAutoSaveResult, t, accounts = false) => {
+    const firstEntry = savingsAutoSaveResult._savings_auto_save_entries[0];
+    if (firstEntry && accounts) {
+        const firstPayment = firstEntry.payment_savings;
+
+        if (firstPayment.alias && firstPayment.alias.iban) {
+            const matchedAccount = accounts.find(account => {
+                return !!account.alias.find(alias => {
+                    if (alias.type === "IBAN") {
+                        if (alias.value === firstPayment.alias.iban) return true;
+                    }
+                    return false;
+                });
+            });
+
+            if (matchedAccount) return matchedAccount.description;
+        }
+    }
+
+    return "Daily savings summary";
+};
+
 export const bunqMeFundRaiserResultText = (bunqMeFundRaiserResult, t) => {
     const received = t("Received bunqme payments");
 
     return received;
+};
+export const bunqMeFundRaiserResultPrimaryText = (bunqMeFundRaiserResult, t) => {
+    const andOthersText = t("and others");
+
+    const firstPayment = bunqMeFundRaiserResult.payments[0];
+    let resultText = firstPayment.counterparty_alias.display_name;
+    if(bunqMeFundRaiserResult.payments.length > 1){
+        resultText = `${resultText} ${andOthersText}`
+    }
+
+    return resultText;
 };
 const bunqMeTabResultResponseText = (bunqMeTabResultResponse, t) => {
     const received = t("Received bunqme payment");

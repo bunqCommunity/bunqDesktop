@@ -120,7 +120,6 @@ ContactHeader.propTypes = {
     loading: PropTypes.bool.isRequired,
     canImport: PropTypes.bool.isRequired,
     logo: PropTypes.string.isRequired,
-    contactType: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
 
     questionLink: PropTypes.string,

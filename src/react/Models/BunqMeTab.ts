@@ -1,5 +1,6 @@
 import { BunqMeTabEntry, BunqMeTabResultInquiry, BunqMeTabStatus } from "../Types/Types";
 import EventType, { EventTypeValue } from "../Types/Event";
+import Payment from "./Payment";
 
 export default class BunqMeTab implements EventType {
     // the original raw object
@@ -39,6 +40,15 @@ export default class BunqMeTab implements EventType {
         this._updated = new Date(this._updated);
         this._created = new Date(this._created);
         this._time_expiry = new Date(this._time_expiry);
+        this._result_inquiries = this._result_inquiries.map(result_inquiry => {
+            return {
+                id: result_inquiry.id,
+                created: new Date(result_inquiry.created),
+                updated: new Date(result_inquiry.updated),
+                payment: new Payment(result_inquiry.payment),
+                bunq_me_tab_id: result_inquiry.bunq_me_tab_id
+            };
+        });
     }
 
     /**

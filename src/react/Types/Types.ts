@@ -51,6 +51,13 @@ export type Balance = {
     currency: string | "EUR";
 };
 
+export type BunqDesktopImageConfig =
+    | false
+    | {
+          type: "IMAGE_UUID" | "LOCATION" | false;
+          value: string;
+      };
+
 export type BunqMeTabStatus = "WAITING_FOR_PAYMENT" | "CANCELLED" | "EXPIRED";
 
 export type BunqMeTabMerchantAvailableTypes = "";
@@ -71,6 +78,9 @@ export type BunqMeTabEntry = {
 };
 
 export type BunqMeTabResultInquiry = {
+    id: number;
+    created: Date;
+    updated: Date;
     payment: Payment;
     bunq_me_tab_id: number;
 };
