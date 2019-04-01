@@ -64,7 +64,7 @@ export default class ScheduledPayment implements EventType {
      * @returns {number}
      */
     public getDelta(): number {
-        return -this.getAmount();
+        return this.getAmount();
     }
 
     get id(): number {

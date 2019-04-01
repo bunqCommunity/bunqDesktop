@@ -63,7 +63,8 @@ export const eventMapper = (settings, onlyPending = false, onlyNonPending = fals
                             />
                         ),
                         filterDate: UTCDateToLocalDate(event.created),
-                        info: event.object
+                        info: event.object,
+                        type: event.type
                     };
                 case "MasterCardAction":
                     return {
@@ -74,7 +75,8 @@ export const eventMapper = (settings, onlyPending = false, onlyNonPending = fals
                             />
                         ),
                         filterDate: UTCDateToLocalDate(event.created),
-                        info: event.object
+                        info: event.object,
+                        type: event.type
                     };
                 case "BunqMeTab":
                     return {
@@ -91,7 +93,8 @@ export const eventMapper = (settings, onlyPending = false, onlyNonPending = fals
                             />
                         ),
                         filterDate: UTCDateToLocalDate(event.object.updated),
-                        info: event.object
+                        info: event.object,
+                        type: event.type
                     };
                 case "RequestInquiry":
                     return {
@@ -102,7 +105,8 @@ export const eventMapper = (settings, onlyPending = false, onlyNonPending = fals
                             />
                         ),
                         filterDate: UTCDateToLocalDate(event.created),
-                        info: event.object
+                        info: event.object,
+                        type: event.type
                     };
                 case "RequestResponse":
                     return {
@@ -115,7 +119,8 @@ export const eventMapper = (settings, onlyPending = false, onlyNonPending = fals
                         filterDate: UTCDateToLocalDate(
                             event.object.status === "ACCEPTED" ? event.object.time_responded : event.created
                         ),
-                        info: event.object
+                        info: event.object,
+                        type: event.type
                     };
                 case "RequestInquiryBatch":
                     return {
@@ -127,7 +132,8 @@ export const eventMapper = (settings, onlyPending = false, onlyNonPending = fals
                             />
                         ),
                         filterDate: UTCDateToLocalDate(event.updated),
-                        info: event.object
+                        info: event.object,
+                        type: event.type
                     };
                 case "SavingsAutoSaveResult":
                     return {
@@ -139,7 +145,8 @@ export const eventMapper = (settings, onlyPending = false, onlyNonPending = fals
                             />
                         ),
                         filterDate: UTCDateToLocalDate(event.updated),
-                        info: event.object
+                        info: event.object,
+                        type: event.type
                     };
                 case "Invoice":
                 case "IdealMerchantTransaction":
@@ -150,7 +157,8 @@ export const eventMapper = (settings, onlyPending = false, onlyNonPending = fals
                     return {
                         component: <EventListItem BunqJSClient={settings.BunqJSClient} event={event} />,
                         filterDate: UTCDateToLocalDate(event.updated),
-                        info: event.object
+                        info: event.object,
+                        type: event.type
                     };
             }
 

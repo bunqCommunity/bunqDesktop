@@ -1,4 +1,4 @@
-import { Address, Amount, BunqDesktopImageConfig, RequestReferenceSplitTheBill } from "../Types/Types";
+import { Address, Amount, BunqDesktopImageConfig, GenericAlias, RequestReferenceSplitTheBill } from "../Types/Types";
 import EventType, { EventTypeValue } from "../Types/Event";
 
 export default class Invoice implements EventType {
@@ -19,12 +19,16 @@ export default class Invoice implements EventType {
         };
     }
 
+    get paymentObject(): any | false {
+        return this;
+    }
+
     private _id: number;
     private _address: Address | null;
-    private _alias: any;
+    private _alias: GenericAlias;
     private _chamber_of_commerce_number: string;
     private _counterparty_address: Address;
-    private _counterparty_alias: Address;
+    private _counterparty_alias: GenericAlias;
     private _created: Date;
     private _invoice_date: string;
     private _invoice_number: number;

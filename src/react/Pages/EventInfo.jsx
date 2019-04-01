@@ -19,7 +19,7 @@ import BookmarkIcon from "@material-ui/icons/Bookmark";
 import FilterIcon from "@material-ui/icons/FilterList";
 
 import { formatMoney, humanReadableDate, formatIban } from "../Functions/Utils";
-import { eventGenericText } from "../Functions/EventStatusTexts";
+import { eventGenericPrimaryText } from "../Functions/EventStatusTexts";
 
 import FilterCreationDialog from "../Components/FilterCreationDialog";
 import PDFExportHelper from "../Components/PDFExportHelper/PDFExportHelper";
@@ -27,9 +27,9 @@ import SpeedDial from "../Components/SpeedDial";
 import ExportDialog from "../Components/ExportDialog";
 import CategorySelectorDialog from "../Components/Categories/CategorySelectorDialog";
 import CategoryChips from "../Components/Categories/CategoryChips";
-// import NoteTextForm from "../Components/NoteTexts/NoteTextForm";
 import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import TransactionHeader from "../Components/TransactionHeader";
+// import NoteTextForm from "../Components/NoteTexts/NoteTextForm";
 
 import { setTheme } from "../Actions/options";
 import { eventInfoUpdate } from "../Actions/event_info";
@@ -117,8 +117,6 @@ class EventInfo extends React.Component {
     render() {
         const { eventInfo, eventLoading, pdfSaveModeEnabled, t } = this.props;
 
-        console.log(eventInfo);
-
         let content;
         let noteTextsForm = null;
         if (eventInfo === false || eventLoading === true || this.state.initialUpdate === false) {
@@ -132,55 +130,65 @@ class EventInfo extends React.Component {
                 </Grid>
             );
         } else {
-            const event = eventInfo.Event;
-            const eventDescription = event.description;
-            const eventDate = humanReadableDate(event.updated);
-            const eventAmount = parseFloat(event.getAmount());
+            const eventObject = eventInfo.object;
+            const eventDescription = eventGenericPrimaryText(eventInfo, t);
+            const eventDate = humanReadableDate(eventObject.updated);
+            const eventAmount = parseFloat(eventObject.getAmount());
             const formattedEventAmount = formatMoney(eventAmount, true);
-            const eventLabel = eventGenericText(event, t);
-            const personalAlias = event.object.alias;
-            const counterPartyAlias = event.object.counterparty_alias;
-            const counterPartyIban = counterPartyAlias ? counterPartyAlias.iban : null;
-
-            if (pdfSaveModeEnabled && personalAlias && counterPartyAlias) {
-                return (
-                    <PDFExportHelper
-                        t={t}
-                        payment={event}
-                        formattedEventAmount={formattedEventAmount}
-                        eventDate={eventDate}
-                        personalAlias={personalAlias}
-                        counterPartyAlias={counterPartyAlias}
-                    />
-                );
-            }
+            let counterPartyIban = null;
+            const eventPayment = eventObject.paymentObject;
 
             // noteTextsForm = <NoteTextForm BunqJSClient={this.props.BunqJSClient} event={event} />;
 
             let headerComponent = null;
-            if (event.isTransaction && personalAlias && counterPartyAlias) {
-                const transactionHeaderProps = {
-                    BunqJSClient: this.props.BunqJSClient,
-                    to: counterPartyAlias,
-                    from: personalAlias,
-                    user: this.props.user,
-                    accounts: this.props.accounts,
-                    swap: eventAmount > 0,
-                    type: "event",
-                    onForwardColor: "secondary",
-                    event: event.object,
-                    transferAmountComponent: (
-                        <MoneyAmountLabel component={"h1"} style={{ textAlign: "center" }} info={event} type="event">
-                            {formattedEventAmount}
-                        </MoneyAmountLabel>
-                    )
-                };
-                if (eventInfo.getDelta() < 0) {
-                    transactionHeaderProps.onRequest = this.onRequest;
-                } else {
-                    transactionHeaderProps.onForward = this.onForward;
+            if (eventPayment) {
+                const personalAlias = eventPayment.alias;
+                const counterPartyAlias = eventPayment.counterparty_alias;
+                counterPartyIban = counterPartyAlias ? counterPartyAlias.iban : null;
+
+                // pdf export for the underlying payment
+                if (pdfSaveModeEnabled && personalAlias && counterPartyAlias) {
+                    return (
+                        <PDFExportHelper
+                            t={t}
+                            payment={eventPayment}
+                            formattedPaymentAmount={formattedEventAmount}
+                            eventDate={eventDate}
+                            personalAlias={personalAlias}
+                            counterPartyAlias={counterPartyAlias}
+                        />
+                    );
                 }
-                headerComponent = <TransactionHeader {...transactionHeaderProps} />;
+
+                if (eventObject.isTransaction && personalAlias && counterPartyAlias) {
+                    const transactionHeaderProps = {
+                        BunqJSClient: this.props.BunqJSClient,
+                        user: this.props.user,
+                        accounts: this.props.accounts,
+                        to: counterPartyAlias,
+                        from: personalAlias,
+                        swap: eventAmount > 0,
+                        type: "event",
+                        onForwardColor: "secondary",
+                        event: eventObject.object,
+                        transferAmountComponent: (
+                            <MoneyAmountLabel
+                                component={"h1"}
+                                style={{ textAlign: "center" }}
+                                info={eventObject}
+                                type="event"
+                            >
+                                {formattedEventAmount}
+                            </MoneyAmountLabel>
+                        )
+                    };
+                    if (eventObject.getDelta() < 0) {
+                        transactionHeaderProps.onRequest = this.onRequest;
+                    } else {
+                        transactionHeaderProps.onForward = this.onForward;
+                    }
+                    headerComponent = <TransactionHeader key="transaction-header" {...transactionHeaderProps} />;
+                }
             }
 
             content = (
@@ -189,18 +197,13 @@ class EventInfo extends React.Component {
 
                     <FilterCreationDialog
                         t={t}
-                        item={event}
+                        item={eventInfo}
                         open={this.state.viewFilterCreationDialog}
                         onClose={this.toggleCreateFilterDialog}
                     />
 
                     <Grid item xs={12}>
                         <List style={styles.list}>
-                            <Divider />
-                            <ListItem>
-                                <ListItemText primary={eventLabel} />
-                            </ListItem>
-
                             {eventDescription && eventDescription.length > 0 ? (
                                 <React.Fragment>
                                     <Divider />
@@ -216,9 +219,8 @@ class EventInfo extends React.Component {
                             </ListItem>
 
                             <Divider />
-                            {/* TODO event type parser? */}
                             <ListItem>
-                                <ListItemText primary={t("Event Type")} secondary={event.type} />
+                                <ListItemText primary={t("Event Type")} secondary={eventInfo.type} />
                             </ListItem>
 
                             {counterPartyIban && (
@@ -231,10 +233,9 @@ class EventInfo extends React.Component {
                             )}
 
                             <Divider />
-                            {/*<GeoLocationListItem t={t} geoLocation={eventInfo.geolocation} />*/}
                         </List>
 
-                        <CategoryChips type={"Event"} id={event.id} />
+                        <CategoryChips type="Event" id={eventInfo.id} />
 
                         <CategorySelectorDialog
                             type={"Event"}
@@ -267,7 +268,7 @@ class EventInfo extends React.Component {
                                     name: t("View debug information"),
                                     icon: HelpIcon,
                                     color: "action",
-                                    onClick: event =>
+                                    onClick: () =>
                                         this.setState({
                                             displayExport: true
                                         })
@@ -289,7 +290,7 @@ class EventInfo extends React.Component {
                 </Helmet>
 
                 <ExportDialog
-                    closeModal={event => this.setState({ displayExport: false })}
+                    closeModal={() => this.setState({ displayExport: false })}
                     title={t("Export info")}
                     open={this.state.displayExport}
                     object={exportData}

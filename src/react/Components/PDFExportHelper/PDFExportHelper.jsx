@@ -195,7 +195,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+    const {} = ownProps;
     return {
         openSnackbar: message => dispatch(openSnackbar(message)),
 

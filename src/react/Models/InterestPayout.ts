@@ -1,5 +1,5 @@
 import Payment from "./Payment";
-import {Amount, BunqDesktopImageConfig} from "../Types/Types";
+import { Amount, BunqDesktopImageConfig } from "../Types/Types";
 import EventType, { EventTypeValue } from "../Types/Event";
 
 export default class InterestPayout implements EventType {
@@ -20,6 +20,10 @@ export default class InterestPayout implements EventType {
             type: "LOCATION",
             value: "./images/svg/bunq-placeholders/Interest_badge.svg"
         };
+    }
+
+    get paymentObject(): Payment | false {
+        return this.payment;
     }
 
     private _id: number;

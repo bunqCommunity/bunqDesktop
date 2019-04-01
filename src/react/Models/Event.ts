@@ -57,6 +57,12 @@ export default class Event implements EventType {
         return this.object.eventCount;
     }
 
+    get paymentObject(): Payment | false {
+        if (typeof this.object.paymentObject === "undefined") return false;
+
+        return this.object.paymentObject;
+    }
+
     private _id: number;
     private _action: "CREATE" | "UPDATE";
     private _status: "FINALIZED";

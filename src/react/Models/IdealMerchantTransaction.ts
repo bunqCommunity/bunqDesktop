@@ -19,6 +19,10 @@ export default class IdealMerchantTransaction implements EventType {
         };
     }
 
+    get paymentObject(): any | false {
+        return this;
+    }
+
     private _id: number;
     private _alias: GenericAlias; // TODO
     private _allow_chat: boolean;

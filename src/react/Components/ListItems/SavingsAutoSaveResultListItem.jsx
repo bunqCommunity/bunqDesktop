@@ -32,7 +32,7 @@ const styles = {
     },
     listItemSecondary: {
         marginTop: -8
-    },
+    }
 };
 
 const classStyles = theme => ({
@@ -84,7 +84,7 @@ class SavingsAutoSaveResultListItem extends React.Component {
                 />
             </Avatar>
         );
-        let itemAvatar = null;
+        let itemAvatar = avatarStandalone;
         if (savingsAutoSaveResult.eventCount > 1) {
             itemAvatar = (
                 <Badge
