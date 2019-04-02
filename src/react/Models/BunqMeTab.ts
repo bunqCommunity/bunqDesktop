@@ -15,6 +15,10 @@ export default class BunqMeTab implements EventType {
         return this.result_inquiries.length > 0;
     }
 
+    get paymentObjects(): Payment[] | false {
+        return this.result_inquiries.map(resultInquiry => resultInquiry.payment);
+    }
+
     private _id: number;
     private _created: Date;
     private _updated: Date;

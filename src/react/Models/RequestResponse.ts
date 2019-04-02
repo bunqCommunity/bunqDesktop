@@ -22,6 +22,10 @@ export default class RequestResponse implements EventType {
 
     public isTransaction: boolean = true;
 
+    get paymentObject(): any | false {
+        return this;
+    }
+
     private _id: number;
     private _created: Date;
     private _updated: Date;

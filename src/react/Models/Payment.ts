@@ -29,6 +29,10 @@ export default class Payment implements EventType {
         };
     }
 
+    get paymentObject(): Payment | false {
+        return this;
+    }
+
     private _id: number;
     private _created: Date;
     private _updated: Date;
@@ -203,5 +207,12 @@ export default class Payment implements EventType {
     }
     get request_reference_split_the_bill(): RequestReferenceSplitTheBill {
         return this._request_reference_split_the_bill;
+    }
+
+    set created(value: Date) {
+        this._created = value;
+    }
+    set updated(value: Date) {
+        this._updated = value;
     }
 }

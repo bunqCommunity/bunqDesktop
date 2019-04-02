@@ -57,10 +57,20 @@ export default class Event implements EventType {
         return this.object.eventCount;
     }
 
-    get paymentObject(): Payment | false {
+    /**
+     * The paymentObject and paymentObjects helpers return the actual underlying payments
+     * OR a objec that closely represent a Payment object
+     */
+    get paymentObject(): Payment | any | false {
         if (typeof this.object.paymentObject === "undefined") return false;
 
         return this.object.paymentObject;
+    }
+
+    get paymentObjects(): Payment[] | any[] | false {
+        if (typeof this.object.paymentObjects === "undefined") return false;
+
+        return this.object.paymentObjects;
     }
 
     private _id: number;

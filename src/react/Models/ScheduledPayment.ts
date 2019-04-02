@@ -14,6 +14,12 @@ export default class ScheduledPayment implements EventType {
         return !!this.payment;
     }
 
+    get paymentObject(): Payment | false {
+        if (!this.isTransaction) return false;
+
+        return this.payment;
+    }
+
     private _id: number;
     private _created: Date;
     private _label_schedule_user_canceled: any;
@@ -36,9 +42,13 @@ export default class ScheduledPayment implements EventType {
             this[objectKey] = eventInfo[key];
         });
 
-        this._payment = new Payment({ Payment: this._payment });
-        this._updated = new Date(this._updated);
         this._created = new Date(this._created);
+        this._updated = new Date(this._updated);
+
+        // create payment and fix missing date values
+        this._payment = new Payment({ Payment: this._payment });
+        this._payment.updated = this._updated;
+        this._payment.created = this._created;
     }
 
     /**

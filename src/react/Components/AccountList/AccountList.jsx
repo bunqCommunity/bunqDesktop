@@ -188,7 +188,7 @@ class AccountList extends React.Component {
     };
 
     render() {
-        const { t, user, shareInviteBankResponses, excludedAccountIds = [] } = this.props;
+        const { t, user, shareInviteBankResponses, excludedAccountIds = [], displayInactive = false } = this.props;
         const { accountTotalSelectionMode } = this.state;
 
         let accounts = [];
@@ -196,7 +196,7 @@ class AccountList extends React.Component {
             accounts = this.props.accounts
                 .filter(account => {
                     if (account && account.status !== "ACTIVE") {
-                        return false;
+                        return displayInactive;
                     }
                     return true;
                 })
@@ -235,6 +235,7 @@ class AccountList extends React.Component {
                             isJoint={!!account.all_co_owner}
                             shareInviteBankResponses={filteredResponses}
                             secondaryAction={secondaryAction}
+                            displayInactive={displayInactive}
                         />
                     );
                 });
@@ -285,10 +286,6 @@ class AccountList extends React.Component {
     }
 }
 
-AccountList.defaultProps = {
-    denseMode: false
-};
-
 const mapStateToProps = state => {
     return {
         user: state.user.user,
@@ -332,6 +329,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         updateStatisticsSavingsGoals: (accounts, shareInviteBankResponses) =>
             dispatch(updateStatisticsSavingsGoals(accounts, shareInviteBankResponses))
     };
+};
+
+AccountList.defaultProps = {
+    denseMode: false,
+    displayInactive: false
 };
 
 export default connect(

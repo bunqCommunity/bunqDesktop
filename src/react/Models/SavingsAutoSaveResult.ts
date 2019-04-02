@@ -21,6 +21,12 @@ export default class SavingsAutoSaveResult implements EventType {
 
     public isTransaction: boolean = true;
 
+    get paymentObjects(): Payment[] | false {
+        return this.savings_auto_save_entries.map(savingsAutoSaveEntry => {
+            return savingsAutoSaveEntry.payment_savings;
+        });
+    }
+
     get image(): BunqDesktopImageConfig {
         if (this._savings_auto_save_entries.length > 0) {
             const firstSaving = this._savings_auto_save_entries[0];

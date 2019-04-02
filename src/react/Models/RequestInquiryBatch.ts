@@ -14,11 +14,20 @@ export default class RequestInquiryBatch implements EventType {
     get isTransaction(): boolean {
         return this.request_inquiries.length > 0;
     }
+
+    get paymentObjects(): any[] | false {
+        if (this.isTransaction) {
+            return this.request_inquiries.map(requestInquiry => requestInquiry.paymentObject);
+        }
+
+        return false;
+    }
+
     private _id: number;
     private _created: Date;
     private _updated: Date;
     private _reference_split_the_bill: RequestSplitTheBill;
-    private _request_inquiries: any[];
+    private _request_inquiries: RequestInquiry[];
     private _total_amount_inquired: Amount;
 
     constructor(requestObject: any) {
@@ -101,7 +110,7 @@ export default class RequestInquiryBatch implements EventType {
     get reference_split_the_bill(): RequestSplitTheBill {
         return this._reference_split_the_bill;
     }
-    get request_inquiries(): any[] {
+    get request_inquiries(): RequestInquiry[] {
         return this._request_inquiries;
     }
     get total_amount_inquired(): Amount {

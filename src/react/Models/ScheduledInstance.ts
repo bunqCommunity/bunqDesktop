@@ -14,6 +14,12 @@ export default class ScheduledInstance implements EventType {
         return !!this._result_object;
     }
 
+    get paymentObject(): Payment | false {
+        if (!this.isTransaction) return false;
+
+        return this.result_object;
+    }
+
     private _id: number;
     private _created: Date;
     private _updated: Date;
@@ -22,7 +28,7 @@ export default class ScheduledInstance implements EventType {
     private _state: "FINISHED_SUCCESSFULLY" | string;
     private _error_message: string | null;
     private _scheduled_object: any;
-    private _result_object: any;
+    private _result_object: Payment;
     private _request_reference_split_the_bill: any;
 
     constructor(eventObject: any) {
@@ -103,7 +109,7 @@ export default class ScheduledInstance implements EventType {
     get scheduled_object(): any {
         return this._scheduled_object;
     }
-    get result_object(): any {
+    get result_object(): Payment {
         return this._result_object;
     }
     get request_reference_split_the_bill(): any {

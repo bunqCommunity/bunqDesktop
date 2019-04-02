@@ -237,7 +237,11 @@ class OfficialExports extends React.Component {
 
                 <Grid item xs={12} md={4}>
                     <Paper>
-                        <AccountList updateExternal={this.updateExports} BunqJSClient={this.props.BunqJSClient} />
+                        <AccountList
+                            updateExternal={this.updateExports}
+                            BunqJSClient={this.props.BunqJSClient}
+                            displayInactive={true}
+                        />
                     </Paper>
                 </Grid>
 

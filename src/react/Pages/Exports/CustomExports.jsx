@@ -75,14 +75,6 @@ class CustomExports extends React.Component {
     createCustomExport = () => {
         const events = this.eventMapper();
 
-        console.log(events);
-
-        const sortedEvents = events
-            .sort(function(a, b) {
-                return b.date - a.date;
-            })
-            .reverse();
-
         const columnNames = [
             "Date",
             "Time",
@@ -100,22 +92,67 @@ class CustomExports extends React.Component {
             "AuthorisationType"
         ];
 
+        const paymentObjectList = [];
+        events.forEach(event => {
+            const eventInfo = event.event;
+            if (!eventInfo.isTransaction) return;
+
+            // check for payment objects
+            if (eventInfo.paymentObject) {
+                paymentObjectList.push({
+                    ...event,
+                    payment: eventInfo.paymentObject
+                });
+            } else if (eventInfo.paymentObjects) {
+                eventInfo.paymentObjects.forEach(paymentObject => {
+                    if (paymentObject) {
+                        paymentObjectList.push({
+                            ...event,
+                            date: paymentObject.updated,
+                            payment: paymentObject
+                        });
+                    }
+                });
+            }
+        });
+
+        const sortedEvents = paymentObjectList
+            .sort(function(a, b) {
+                return b.date - a.date;
+            })
+            .reverse();
+
         const columnRows = [];
         sortedEvents.forEach(event => {
-            const eventType = event.event.type;
-            const info = event.event.object;
-            const labels = event.categories.map(category => category.label);
+            const eventType = event.eventType;
 
+            // fallback to event object or use payment event
+            const info = event.payment ? event.payment : event.event.object;
+
+            const delta = info.getDelta();
+
+            if (delta === 0) {
+                console.log("");
+                console.log("Zero delta");
+                console.log(event);
+                console.log("");
+                return;
+            }
+
+            const labels = event.categories.map(category => category.label);
             const description = info.description ? info.description.replace("\n", " ") : "";
             const counterParty = info.counterparty_alias ? info.counterparty_alias : {};
-            const alias = info.alias ? info.alias : {};
+            const alias = info.alias || info.user_alias_created || {};
 
-            console.log(event);
+            if (!alias || !counterParty || !counterParty.display_name) {
+                console.log(alias, counterParty, counterParty.display_name);
+                console.log(event);
+            }
 
             columnRows.push([
-                format(event.date, "yyyy-MM-dd"),
+                format(event.date, "dd-MM-yyyy"),
                 format(event.date, "HH:mm:ss"),
-                info.getDelta(),
+                delta,
                 alias.iban ? formatIban(alias.iban) : null,
                 counterParty.iban ? formatIban(counterParty.iban) : null,
                 counterParty.display_name || "",
@@ -135,10 +172,9 @@ class CustomExports extends React.Component {
             resultingCsv += `\n${row.join(";")}`;
         });
 
-        // if no from date is set, the export targets the oldest event
-        const dateFromFilter = this.props.dateFromFilter ? this.props.dateFromFilter : events[0].date;
-        // if no date is set the bunqdesktop app creates a date range which defaults to today
-        const dateToFilter = this.props.dateToFilter ? this.props.dateToFilter : new Date();
+        // get start and end date
+        const dateFromFilter = events[0].date;
+        const dateToFilter = events[events.length - 1].date;
 
         // format a file name
         const startDateLabel = format(dateFromFilter, "yyyy-MM-dd");
@@ -200,7 +236,9 @@ class CustomExports extends React.Component {
 
                 return {
                     date: event.created,
+                    // date: event.updated,
                     event: event,
+                    eventType: event.type,
                     categories: categories
                 };
             });

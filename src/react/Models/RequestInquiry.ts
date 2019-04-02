@@ -9,6 +9,7 @@ import {
     RequestSplitTheBill
 } from "../Types/Types";
 import Event, { EventTypeValue } from "../Types/Event";
+import Payment from "./Payment";
 
 export default class RequestInquiry implements Event {
     // the original raw object
@@ -21,6 +22,12 @@ export default class RequestInquiry implements Event {
 
     get isTransaction(): boolean {
         return !!this.amount_responded;
+    }
+
+    get paymentObject(): any | false {
+        if (!this.isTransaction) return false;
+
+        return this;
     }
 
     private _id: number;

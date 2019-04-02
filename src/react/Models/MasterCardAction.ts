@@ -1,5 +1,6 @@
 import { Amount, LabelCard, PaymentAlias, RequestReferenceSplitTheBill } from "../Types/Types";
 import EventType, { EventTypeValue } from "../Types/Event";
+import Payment from "./Payment";
 
 export type PanEntryModeUser = "ATM" | "ICC" | "MAGNETIC_STRIPE" | "E_COMMERCE";
 
@@ -13,6 +14,10 @@ export default class MasterCardAction implements EventType {
     }
 
     public isTransaction: boolean = true;
+
+    get paymentObject(): any | false {
+        return this;
+    }
 
     private _id: number;
     private _created: Date;

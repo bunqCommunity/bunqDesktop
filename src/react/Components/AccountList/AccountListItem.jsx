@@ -48,10 +48,18 @@ class AccountListItem extends React.Component {
     }
 
     render() {
-        const { t, user, account, shareInviteBankResponses, selectedAccountIds, toggleAccountIds } = this.props;
+        const {
+            t,
+            user,
+            account,
+            shareInviteBankResponses,
+            selectedAccountIds,
+            toggleAccountIds,
+            displayInactive
+        } = this.props;
 
-        if (account.status !== "ACTIVE") {
-            return null;
+        if (account.status !== "ACTIVE" && !displayInactive) {
+            return displayInactive;
         }
 
         let isSavingsAccount = false;
@@ -90,6 +98,10 @@ class AccountListItem extends React.Component {
             secondaryText = this.props.hideBalance
                 ? `${savingsPercentage.toFixed(2)}%`
                 : `${formattedBalance} ${t("out of")} ${targetAmount} - (${savingsPercentage.toFixed(2)}%)`;
+        }
+
+        if (account.status !== "ACTIVE") {
+            secondaryText = t("Inactive account");
         }
 
         // check if any of the selected account ids are for this account
@@ -180,7 +192,8 @@ AccountListItem.defaultProps = {
     denseMode: false,
     isJoint: false,
     shareInviteBankResponses: [],
-    secondaryAction: false
+    secondaryAction: false,
+    displayInactive: false
 };
 
 export default connect(

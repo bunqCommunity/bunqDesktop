@@ -26,6 +26,10 @@ export default class BunqMeFundraiserResult implements EventType {
         return this.payments.length;
     }
 
+    get paymentObjects(): Payment[] | false {
+        return this.payments;
+    }
+
     private _id: number;
     private _created: Date;
     private _updated: Date;
