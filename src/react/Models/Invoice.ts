@@ -107,7 +107,7 @@ export default class Invoice implements EventType {
     get address(): Address | null {
         return this._address;
     }
-    get alias(): any {
+    get alias(): GenericAlias {
         return this._alias;
     }
     get chamber_of_commerce_number(): string {
@@ -116,7 +116,7 @@ export default class Invoice implements EventType {
     get counterparty_address(): Address {
         return this._counterparty_address;
     }
-    get counterparty_alias(): Address {
+    get counterparty_alias(): GenericAlias {
         return this._counterparty_alias;
     }
     get created(): Date {

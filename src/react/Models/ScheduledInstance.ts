@@ -10,6 +10,10 @@ export default class ScheduledInstance implements EventType {
         return "ScheduledInstance";
     }
 
+    get isTransaction(): boolean {
+        return !!this._result_object;
+    }
+
     private _id: number;
     private _created: Date;
     private _updated: Date;
@@ -33,7 +37,7 @@ export default class ScheduledInstance implements EventType {
             this[objectKey] = eventInfo[key];
         });
 
-        if (this._result_object.Payment) {
+        if (this._result_object && this._result_object.Payment) {
             this._result_object = new Payment(this._result_object);
         }
 

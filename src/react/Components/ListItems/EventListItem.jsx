@@ -100,7 +100,7 @@ class EventListItem extends React.Component {
                 <ListItemText style={styles.listItemText} primary={eventPrimaryLabel} secondary={eventLabel} />
                 <ListItemSecondaryAction style={styles.listItemSecondary}>
                     {paymentLabel}
-                    <CategoryIcons style={styles.categoryIcons} type="Event" id={event.id} />
+                    <CategoryIcons style={styles.categoryIcons} type={event.type} id={event.id} />
                 </ListItemSecondaryAction>
             </ListItem>,
             <Divider />

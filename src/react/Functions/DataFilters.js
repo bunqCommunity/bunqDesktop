@@ -105,10 +105,10 @@ export const idealMerchantTransactionFilter = options => idealMerchantTransactio
                 if (amountValue != options.amountFilterAmount) return false;
                 break;
             case "MORE":
-                if (amountValue < options.amountFilterAmount) return false;
+                if (amountValue <= options.amountFilterAmount) return false;
                 break;
             case "LESS":
-                if (amountValue > options.amountFilterAmount) return false;
+                if (amountValue >= options.amountFilterAmount) return false;
                 break;
         }
     }
@@ -191,10 +191,10 @@ export const invoiceFilter = options => invoice => {
                 if (amountValue != options.amountFilterAmount) return false;
                 break;
             case "MORE":
-                if (amountValue < options.amountFilterAmount) return false;
+                if (amountValue <= options.amountFilterAmount) return false;
                 break;
             case "LESS":
-                if (amountValue > options.amountFilterAmount) return false;
+                if (amountValue >= options.amountFilterAmount) return false;
                 break;
         }
     }
@@ -289,10 +289,10 @@ export const paymentFilter = options => payment => {
                 if (amountValue != options.amountFilterAmount) return false;
                 break;
             case "MORE":
-                if (amountValue < options.amountFilterAmount) return false;
+                if (amountValue <= options.amountFilterAmount) return false;
                 break;
             case "LESS":
-                if (amountValue > options.amountFilterAmount) return false;
+                if (amountValue >= options.amountFilterAmount) return false;
                 break;
         }
     }
@@ -440,10 +440,10 @@ export const masterCardActionFilter = options => masterCardAction => {
                 if (amountValue != options.amountFilterAmount) return false;
                 break;
             case "MORE":
-                if (amountValue < options.amountFilterAmount) return false;
+                if (amountValue <= options.amountFilterAmount) return false;
                 break;
             case "LESS":
-                if (amountValue > options.amountFilterAmount) return false;
+                if (amountValue >= options.amountFilterAmount) return false;
                 break;
         }
     }
@@ -552,10 +552,10 @@ export const requestResponseFilter = options => requestResponse => {
                 if (amountValue != options.amountFilterAmount) return false;
                 break;
             case "MORE":
-                if (amountValue < options.amountFilterAmount) return false;
+                if (amountValue <= options.amountFilterAmount) return false;
                 break;
             case "LESS":
-                if (amountValue > options.amountFilterAmount) return false;
+                if (amountValue >= options.amountFilterAmount) return false;
                 break;
         }
     }
@@ -636,10 +636,10 @@ export const requestInquiryFilter = options => requestInquiry => {
                 if (amountValue != options.amountFilterAmount) return false;
                 break;
             case "MORE":
-                if (amountValue < options.amountFilterAmount) return false;
+                if (amountValue <= options.amountFilterAmount) return false;
                 break;
             case "LESS":
-                if (amountValue > options.amountFilterAmount) return false;
+                if (amountValue >= options.amountFilterAmount) return false;
                 break;
         }
     }
@@ -763,12 +763,54 @@ export const savingsAutoSaveResultFilter = options => savingsAutoSaveResult => {
 
     if (options.searchTerm && options.searchTerm.length > 0) return false;
 
-    if (options.amountFilterAmount !== "") return false;
+    if (options.amountFilterAmount !== "") {
+        let amountValue = savingsAutoSaveResult.getAmount();
+        if (amountValue < 0) amountValue = amountValue * -1;
+
+        switch (options.amountFilterType) {
+            case "EQUALS":
+                if (amountValue != options.amountFilterAmount) return false;
+                break;
+            case "MORE":
+                if (amountValue <= options.amountFilterAmount) return false;
+                break;
+            case "LESS":
+                if (amountValue >= options.amountFilterAmount) return false;
+                break;
+        }
+    }
 
     if (options.selectedCardIds && options.selectedCardIds.length > 0) return false;
 
     if (options.selectedCategories && options.categories && options.categoryConnections) {
-        if (options.selectedCategories.length > 0) return false;
+        if (options.selectedCategories.length > 0) {
+            const categories = CategoryHelper(
+                options.categories,
+                options.categoryConnections,
+                "SavingsAutoSaveResult",
+                savingsAutoSaveResult.id
+            );
+
+            // no categories linked so always unmatched
+            if (categories.length === 0) {
+                if (!options.toggleCategoryFilter) return false;
+            }
+
+            // go through the connected categories and selected categories to see if one matches
+            const categoryMatches = categories.some(category => {
+                return options.selectedCategories.some(selectedCategory => {
+                    return category.id === selectedCategory;
+                });
+            });
+
+            // if reversed and we got matches, return false
+            if (options.toggleCategoryFilter && categoryMatches) return false;
+
+            // no matches and not reversed so return false
+            if (!categoryMatches) {
+                if (!options.toggleCategoryFilter) return false;
+            }
+        }
     }
 
     if (options.selectedAccountIds) {

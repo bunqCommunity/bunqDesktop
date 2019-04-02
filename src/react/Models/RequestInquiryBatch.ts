@@ -11,6 +11,9 @@ export default class RequestInquiryBatch implements EventType {
         return "RequestInquiryBatch";
     }
 
+    get isTransaction(): boolean {
+        return this.request_inquiries.length > 0;
+    }
     private _id: number;
     private _created: Date;
     private _updated: Date;

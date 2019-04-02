@@ -238,7 +238,7 @@ class EventInfo extends React.Component {
                         <CategoryChips type="Event" id={eventInfo.id} />
 
                         <CategorySelectorDialog
-                            type={"Event"}
+                            type={eventInfo.type}
                             item={eventInfo}
                             onClose={this.toggleCategoryDialog}
                             open={this.state.displayCategories}

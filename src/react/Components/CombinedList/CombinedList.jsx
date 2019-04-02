@@ -267,7 +267,7 @@ class CombinedList extends React.Component {
         return (
             <List style={styles.left}>
                 <ListSubheader>
-                    {t("Payments and requests")}: {events.length}
+                    {t("Events")}: {events.length}
                     {filterEnabledText}
                     <ListItemSecondaryAction>
                         <ClearBtn />
@@ -366,7 +366,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 CombinedList.defaultProps = {
-    hiddenTypes: []
+    hiddenTypes: [],
+    onlyTransactions: false
 };
 
 export default connect(

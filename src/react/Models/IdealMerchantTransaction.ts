@@ -24,11 +24,11 @@ export default class IdealMerchantTransaction implements EventType {
     }
 
     private _id: number;
-    private _alias: GenericAlias; // TODO
+    private _alias: GenericAlias;
     private _allow_chat: boolean;
     private _amount_guaranteed: Amount;
     private _amount_requested: Amount;
-    private _counterparty_alias: GenericAlias; // TODO
+    private _counterparty_alias: GenericAlias;
     private _created: Date;
     private _issuer: string;
     private _issuer_authentication_url: string;

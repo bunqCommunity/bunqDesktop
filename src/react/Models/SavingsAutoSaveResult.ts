@@ -19,9 +19,7 @@ export default class SavingsAutoSaveResult implements EventType {
         return "SavingsAutoSaveResult";
     }
 
-    get isTransaction(): boolean {
-        return true;
-    }
+    public isTransaction: boolean = true;
 
     get image(): BunqDesktopImageConfig {
         if (this._savings_auto_save_entries.length > 0) {

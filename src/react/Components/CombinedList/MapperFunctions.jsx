@@ -15,10 +15,14 @@ import { UTCDateToLocalDate } from "../../Functions/Utils";
 import { eventFilter, shareInviteBankInquiryFilter, shareInviteBankResponseFilter } from "../../Functions/DataFilters";
 
 export const eventMapper = (settings, onlyPending = false, onlyNonPending = false) => {
-    if (settings.hiddenTypes.includes("Payment")) return [];
-
     const eventFilterSetup = eventFilter(settings);
     return settings.events
+        .filter(event => {
+            if (settings.onlyTransactions) {
+                return event.isTransaction;
+            }
+            return true;
+        })
         .filter(eventFilterSetup)
         .filter(event => {
             if (settings.accountId) {
