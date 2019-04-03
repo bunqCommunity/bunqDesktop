@@ -75,8 +75,8 @@ export const bunqMeFundRaiserResultPrimaryText = (bunqMeFundRaiserResult, t) => 
 
     const firstPayment = bunqMeFundRaiserResult.payments[0];
     let resultText = firstPayment.counterparty_alias.display_name;
-    if(bunqMeFundRaiserResult.payments.length > 1){
-        resultText = `${resultText} ${andOthersText}`
+    if (bunqMeFundRaiserResult.payments.length > 1) {
+        resultText = `${resultText} ${andOthersText}`;
     }
 
     return resultText;

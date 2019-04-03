@@ -235,7 +235,7 @@ class EventInfo extends React.Component {
                             <Divider />
                         </List>
 
-                        <CategoryChips type="Event" id={eventInfo.id} />
+                        <CategoryChips type={eventInfo.type} id={eventInfo.id} />
 
                         <CategorySelectorDialog
                             type={eventInfo.type}

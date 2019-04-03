@@ -87,12 +87,13 @@ class EventListItem extends React.Component {
         }
 
         let displayImage = eventAvatar;
-        if (event.eventCount && event.eventCount > 1)
+        if (event.eventCount && event.eventCount > 1) {
             displayImage = (
                 <Badge badgeContent={event.eventCount} color="primary" classes={{ badge: this.props.classes.badge }}>
                     {eventAvatar}
                 </Badge>
             );
+        }
 
         return [
             <ListItem button to={`/event/${event.id}`} component={NavLink}>

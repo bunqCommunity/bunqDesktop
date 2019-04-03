@@ -1,6 +1,6 @@
 import EventType, { EventTypeValue } from "../Types/Event";
 import Payment from "./Payment";
-import {BunqDesktopImageConfig, PaymentAlias} from "../Types/Types";
+import { BunqDesktopImageConfig, PaymentAlias } from "../Types/Types";
 
 export default class BunqMeTabResultResponse implements EventType {
     // the original raw object

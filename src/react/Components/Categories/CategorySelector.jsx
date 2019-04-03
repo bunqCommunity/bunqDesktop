@@ -33,24 +33,42 @@ class CategorySelector extends React.Component {
 
     handleDisconnect = event => {
         const { item, type } = this.props;
+        let itemInfo = false;
         if (item[type]) {
-            const itemInfo = item[type];
+            itemInfo = item[type];
+        } else if (item.object) {
+            itemInfo = item;
+        }
+
+        if (itemInfo) {
             this.props.removeCategoryConnection(event.category.id, type, itemInfo.id);
         }
     };
 
     handleConnect = event => {
         const { item, type } = this.props;
+        let itemInfo = false;
         if (item[type]) {
-            const itemInfo = item[type];
+            itemInfo = item[type];
+        } else if (item.object) {
+            itemInfo = item;
+        }
+
+        if (itemInfo) {
             this.props.setCategoryConnection(event.category.id, type, itemInfo.id);
         }
     };
 
     render() {
         const { item, type, displayToggleButton, t } = this.props;
-        if (!item[type]) return null;
-        const itemInfo = item[type];
+
+        let itemInfo = false;
+        if (item[type]) {
+            itemInfo = item[type];
+        } else if (item.object) {
+            itemInfo = item;
+        }
+        if (!itemInfo) return null;
 
         // don't allow the delete button by default
         const categoryChipProps = {

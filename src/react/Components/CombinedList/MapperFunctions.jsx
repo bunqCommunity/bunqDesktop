@@ -18,8 +18,9 @@ export const eventMapper = (settings, onlyPending = false, onlyNonPending = fals
     const eventFilterSetup = eventFilter(settings);
     return settings.events
         .filter(event => {
-            if (settings.onlyTransactions) {
+            if (settings.onlyTransactions && !event.isTransaction) {
                 return event.isTransaction;
+                return false;
             }
             return true;
         })

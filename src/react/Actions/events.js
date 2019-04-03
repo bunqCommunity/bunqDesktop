@@ -40,7 +40,7 @@ export function eventsSetInfo(events, resetOldItems = false, BunqJSClient = fals
                     shareInviteBankInquiries.push(eventObject.object);
                     break;
                 case "DraftPayment":
-                    // Show in bunqDesktop?
+                // Show in bunqDesktop?
                 case "FeatureAnnouncement":
                 case "ShareInviteBankResponse":
                 case "ShareInviteMonetaryAccountInquiry":
