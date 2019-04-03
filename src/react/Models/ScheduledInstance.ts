@@ -1,4 +1,5 @@
 import EventType, { EventTypeValue } from "../Types/Event";
+import ScheduledPayment from "./ScheduledPayment";
 import Payment from "./Payment";
 
 export default class ScheduledInstance implements EventType {
@@ -14,10 +15,10 @@ export default class ScheduledInstance implements EventType {
         return !!this._result_object;
     }
 
-    get paymentObject(): Payment | false {
+    get paymentObject(): Payment | any | false {
         if (!this.isTransaction) return false;
 
-        return this.result_object;
+        return this._result_object;
     }
 
     private _id: number;
@@ -27,7 +28,7 @@ export default class ScheduledInstance implements EventType {
     private _time_start: Date;
     private _state: "FINISHED_SUCCESSFULLY" | string;
     private _error_message: string | null;
-    private _scheduled_object: any;
+    private _scheduled_object: ScheduledPayment;
     private _result_object: Payment;
     private _request_reference_split_the_bill: any;
 
@@ -45,6 +46,9 @@ export default class ScheduledInstance implements EventType {
 
         if (this._result_object && this._result_object.Payment) {
             this._result_object = new Payment(this._result_object);
+        }
+        if (this._scheduled_object) {
+            this._scheduled_object = new ScheduledPayment(this._scheduled_object);
         }
 
         this._updated = new Date(this._updated);
@@ -106,7 +110,7 @@ export default class ScheduledInstance implements EventType {
     get error_message(): string | null {
         return this._error_message;
     }
-    get scheduled_object(): any {
+    get scheduled_object(): ScheduledPayment {
         return this._scheduled_object;
     }
     get result_object(): Payment {

@@ -75,6 +75,8 @@ class CustomExports extends React.Component {
     createCustomExport = () => {
         const events = this.eventMapper();
 
+        console.log(events);
+
         const columnNames = [
             "Date",
             "Time",
@@ -92,31 +94,7 @@ class CustomExports extends React.Component {
             "AuthorisationType"
         ];
 
-        const paymentObjectList = [];
-        events.forEach(event => {
-            const eventInfo = event.event;
-            if (!eventInfo.isTransaction) return;
-
-            // check for payment objects
-            if (eventInfo.paymentObject) {
-                paymentObjectList.push({
-                    ...event,
-                    payment: eventInfo.paymentObject
-                });
-            } else if (eventInfo.paymentObjects) {
-                eventInfo.paymentObjects.forEach(paymentObject => {
-                    if (paymentObject) {
-                        paymentObjectList.push({
-                            ...event,
-                            date: paymentObject.updated,
-                            payment: paymentObject
-                        });
-                    }
-                });
-            }
-        });
-
-        const sortedEvents = paymentObjectList
+        const sortedEvents = events
             .sort(function(a, b) {
                 return b.date - a.date;
             })
@@ -127,15 +105,13 @@ class CustomExports extends React.Component {
             const eventType = event.eventType;
 
             // fallback to event object or use payment event
-            const info = event.payment ? event.payment : event.event.object;
+            const info = event.event.object ? event.event.object : event.event;
 
             const delta = info.getDelta();
-
             if (delta === 0) {
                 console.log("");
                 console.log("Zero delta");
                 console.log(event);
-                console.log("");
                 return;
             }
 
@@ -145,8 +121,11 @@ class CustomExports extends React.Component {
             const alias = info.alias || info.user_alias_created || {};
 
             if (!alias || !counterParty || !counterParty.display_name) {
+                console.log("");
+                console.log("Missing details");
                 console.log(alias, counterParty, counterParty.display_name);
                 console.log(event);
+                console.log(info);
             }
 
             columnRows.push([
@@ -172,6 +151,8 @@ class CustomExports extends React.Component {
             resultingCsv += `\n${row.join(";")}`;
         });
 
+        console.log(columnRows);
+
         // get start and end date
         const dateFromFilter = events[0].date;
         const dateToFilter = events[events.length - 1].date;
@@ -186,38 +167,8 @@ class CustomExports extends React.Component {
     };
 
     eventMapper = () => {
-        return this.props.events
-            .filter(event => {
-                const filterResult = eventFilter({
-                    categories: this.props.categories,
-                    categoryConnections: this.props.categoryConnections,
-
-                    toggleCategoryFilter: this.props.toggleCategoryFilter,
-                    selectedCategories: this.props.selectedCategories,
-
-                    selectedAccountIds: this.props.selectedAccountIds,
-                    toggleAccountIds: this.props.toggleAccountIds,
-
-                    paymentType: this.props.paymentType,
-                    paymentVisibility: this.props.paymentVisibility,
-                    bunqMeTabType: this.props.bunqMeTabType,
-                    requestType: this.props.requestType,
-                    bunqMeTabVisibility: this.props.bunqMeTabVisibility,
-
-                    searchTerm: this.props.searchTerm,
-                    dateFromFilter: this.props.dateFromFilter,
-                    dateToFilter: this.props.dateToFilter,
-                    amountFilterAmount: this.props.amountFilterAmount,
-                    amountFilterType: this.props.amountFilterType
-                });
-
-                if (!filterResult) {
-                    console.log("Filtered out");
-                    console.log(event);
-                }
-
-                return filterResult;
-            })
+        const events = this.props.events
+            .filter(eventFilter({ ...this.props }))
             .filter(event => {
                 if (!event.isTransaction) {
                     console.log("Not transaction");
@@ -242,6 +193,33 @@ class CustomExports extends React.Component {
                     categories: categories
                 };
             });
+
+        const paymentObjectList = [];
+        events.forEach(event => {
+            const eventInfo = event.event;
+            if (!eventInfo.isTransaction) return;
+
+            // check for payment objects
+            if (eventInfo.paymentObject) {
+                paymentObjectList.push({
+                    ...event,
+                    date: eventInfo.paymentObject.updated,
+                    event: eventInfo.paymentObject
+                });
+            } else if (eventInfo.paymentObjects) {
+                eventInfo.paymentObjects.forEach(paymentObject => {
+                    if (paymentObject) {
+                        paymentObjectList.push({
+                            ...event,
+                            date: paymentObject.updated,
+                            event: paymentObject
+                        });
+                    }
+                });
+            }
+        });
+
+        return paymentObjectList;
     };
 
     render() {
@@ -296,14 +274,26 @@ const mapStateToProps = state => {
         selectedAccountId: state.accounts.selected_account,
 
         searchTerm: state.search_filter.search_term,
+        paymentType: state.payment_filter.type,
+        paymentVisibility: state.payment_filter.visible,
+        bunqMeTabType: state.bunq_me_tab_filter.type,
+        bunqMeTabVisibility: state.bunq_me_tab_filter.visible,
+        requestType: state.request_filter.type,
+        requestVisibility: state.request_filter.visible,
+
         dateFromFilter: state.date_filter.from_date,
         dateToFilter: state.date_filter.to_date,
+        generalFilterDate: state.general_filter.date,
 
-        toggleCategoryFilter: state.category_filter.toggle,
+        amountFilterAmount: state.amount_filter.amount,
+        amountFilterType: state.amount_filter.type,
+
         selectedCategories: state.category_filter.selected_categories,
-
+        toggleCategoryIds: state.category_filter.toggle,
         selectedAccountIds: state.account_id_filter.selected_account_ids,
         toggleAccountIds: state.account_id_filter.toggle,
+        selectedCardIds: state.card_id_filter.selected_card_ids,
+        toggleCardIds: state.card_id_filter.toggle,
 
         categories: state.categories.categories,
         categoryConnections: state.categories.category_connections,
