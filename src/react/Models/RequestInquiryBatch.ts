@@ -4,7 +4,7 @@ import RequestInquiry from "./RequestInquiry";
 
 export default class RequestInquiryBatch implements EventType {
     // the original raw object
-    private _rawData: any;
+    public _rawData: any;
 
     public RequestInquiryBatch = this;
     get eventType(): EventTypeValue {

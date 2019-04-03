@@ -6,7 +6,7 @@ export type PanEntryModeUser = "ATM" | "ICC" | "MAGNETIC_STRIPE" | "E_COMMERCE";
 
 export default class MasterCardAction implements EventType {
     // the original raw object
-    private _rawData: any;
+    public _rawData: any;
 
     public MasterCardAction = this;
     get eventType(): EventTypeValue {

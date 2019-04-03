@@ -3,7 +3,7 @@ import EventType, { EventTypeValue } from "../Types/Event";
 
 export default class ScheduledPayment implements EventType {
     // the original raw object
-    private _rawData: any;
+    public _rawData: any;
 
     public ScheduledPayment = this;
     get eventType(): EventTypeValue {

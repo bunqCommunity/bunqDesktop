@@ -4,7 +4,7 @@ import Payment from "./Payment";
 
 export default class BunqMeTab implements EventType {
     // the original raw object
-    private _rawData: any;
+    public _rawData: any;
 
     public BunqMeTab = this;
     get eventType(): EventTypeValue {

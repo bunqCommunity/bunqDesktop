@@ -4,7 +4,7 @@ import Payment from "./Payment";
 
 export default class ScheduledInstance implements EventType {
     // the original raw object
-    private _rawData: any;
+    public _rawData: any;
 
     public ScheduledInstance = this;
     get eventType(): EventTypeValue {

@@ -3,7 +3,7 @@ import EventType, { EventTypeValue } from "../Types/Event";
 
 export default class Invoice implements EventType {
     // the original raw object
-    private _rawData: any;
+    public _rawData: any;
 
     public Invoice = this;
     get eventType(): EventTypeValue {

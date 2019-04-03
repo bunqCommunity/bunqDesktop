@@ -29,7 +29,7 @@ export default class SavingsGoal {
     private _settings: SavingsGoalSettings = {};
     private _statistics: SavingsGoalStatistics = false;
 
-    private _rawData: any;
+    public _rawData: any;
 
     constructor(savingsGoalObject: any | undefined) {
         if (!savingsGoalObject) return this;

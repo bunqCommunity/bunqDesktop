@@ -4,7 +4,7 @@ import NotificationFilter from "@bunq-community/bunq-js-client/dist/Types/Notifi
 
 export default class MonetaryAccount {
     // the original raw object
-    private _rawData: any;
+    public _rawData: any;
 
     // account type of this monetary account
     private _accountType: AccountType;

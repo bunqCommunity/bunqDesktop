@@ -3,7 +3,7 @@ import { Amount, BunqDesktopImageConfig, GenericAlias } from "../Types/Types";
 
 export default class IdealMerchantTransaction implements EventType {
     // the original raw object
-    private _rawData: any;
+    public _rawData: any;
 
     public IdealMerchantTransaction = this;
     get eventType(): EventTypeValue {

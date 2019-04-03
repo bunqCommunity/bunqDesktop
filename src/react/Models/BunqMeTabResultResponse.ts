@@ -4,7 +4,7 @@ import {BunqDesktopImageConfig, PaymentAlias} from "../Types/Types";
 
 export default class BunqMeTabResultResponse implements EventType {
     // the original raw object
-    private _rawData: any;
+    public _rawData: any;
 
     public BunqMeTabResultResponse = this;
     get eventType(): EventTypeValue {

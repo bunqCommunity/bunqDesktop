@@ -4,7 +4,7 @@ import EventType, { EventTypeValue } from "../Types/Event";
 
 export default class InterestPayout implements EventType {
     // the original raw object
-    private _rawData: any;
+    public _rawData: any;
 
     public InterestPayout = this;
     get eventType(): EventTypeValue {

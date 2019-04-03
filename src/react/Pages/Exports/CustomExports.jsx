@@ -167,11 +167,22 @@ class CustomExports extends React.Component {
     };
 
     eventMapper = () => {
+        const eventFilterHandler = eventFilter({ ...this.props });
+
         const events = this.props.events
-            .filter(eventFilter({ ...this.props }))
+            .filter(event => {
+                const result = eventFilterHandler(event);
+
+                if (!result) {
+                    console.log("Filtered out");
+                    console.log(event);
+                }
+
+                return result;
+            })
             .filter(event => {
                 if (!event.isTransaction) {
-                    console.log("Not transaction");
+                    console.warn("Not transaction");
                     console.log(event);
                     return false;
                 }
@@ -197,13 +208,16 @@ class CustomExports extends React.Component {
         const paymentObjectList = [];
         events.forEach(event => {
             const eventInfo = event.event;
-            if (!eventInfo.isTransaction) return;
+            if (!eventInfo.isTransaction) {
+                console.warn("Not a transaction");
+                return;
+            }
 
             // check for payment objects
             if (eventInfo.paymentObject) {
                 paymentObjectList.push({
                     ...event,
-                    date: eventInfo.paymentObject.updated,
+                    date: eventInfo.paymentObject.created,
                     event: eventInfo.paymentObject
                 });
             } else if (eventInfo.paymentObjects) {
@@ -266,12 +280,14 @@ const mapStateToProps = state => {
         user: state.user.user,
         limitedPermissions: state.user.limited_permissions,
 
+        events: state.events.events,
+        eventsLoading: state.events.loading,
+
         accountsAccountId: state.accounts.selected_account,
+        selectedAccountId: state.accounts.selected_account,
 
         exports: state.exports.exports,
         exportsLoading: state.exports.loading,
-
-        selectedAccountId: state.accounts.selected_account,
 
         searchTerm: state.search_filter.search_term,
         paymentType: state.payment_filter.type,
@@ -298,8 +314,7 @@ const mapStateToProps = state => {
         categories: state.categories.categories,
         categoryConnections: state.categories.category_connections,
 
-        events: state.events.events,
-        eventsLoading: state.events.loading
+        registrationReady: state.registration.ready
     };
 };
 

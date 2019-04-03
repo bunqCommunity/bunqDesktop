@@ -13,7 +13,7 @@ import EventType, { EventTypeValue } from "../Types/Event";
 
 export default class Payment implements EventType {
     // the original raw object
-    private _rawData: any;
+    public _rawData: any;
 
     public Payment = this;
     get eventType(): EventTypeValue {
@@ -214,5 +214,8 @@ export default class Payment implements EventType {
     }
     set updated(value: Date) {
         this._updated = value;
+    }
+    set amount(value: Amount) {
+        this._amount = value;
     }
 }

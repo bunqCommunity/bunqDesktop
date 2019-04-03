@@ -4,7 +4,7 @@ import { BunqDesktopImageConfig } from "../Types/Types";
 
 export default class BunqMeFundraiserResult implements EventType {
     // the original raw object
-    private _rawData: any;
+    public _rawData: any;
 
     public BunqMeFundraiserResult = this;
     get eventType(): EventTypeValue {

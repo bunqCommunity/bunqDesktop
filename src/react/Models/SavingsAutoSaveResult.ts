@@ -12,7 +12,7 @@ export type SavingsAutoSaveEntry = {
 
 export default class SavingsAutoSaveResult implements EventType {
     // the original raw object
-    private _rawData: any;
+    public _rawData: any;
 
     public SavingsAutoSaveResult = this;
     get eventType(): EventTypeValue {
@@ -22,9 +22,25 @@ export default class SavingsAutoSaveResult implements EventType {
     public isTransaction: boolean = true;
 
     get paymentObjects(): Payment[] | false {
-        return this.savings_auto_save_entries.map(savingsAutoSaveEntry => {
-            return savingsAutoSaveEntry.payment_savings;
+        const paymentObjects = [];
+
+        this.savings_auto_save_entries.forEach(savingsAutoSaveEntry => {
+            paymentObjects.push(savingsAutoSaveEntry.payment_savings);
+
+            // stringify and parse to get rid of all references ...
+            const paymentReverse = JSON.parse(JSON.stringify(savingsAutoSaveEntry.payment_savings._rawData.Payment));
+            const paymentReverseAlias = paymentReverse.alias;
+            const paymentReverseCounterAlias = paymentReverse.counterparty_alias;
+
+            // reverse alias and counter alias and amount
+            paymentReverse.alias = paymentReverseCounterAlias;
+            paymentReverse.counterparty_alias = paymentReverseAlias;
+            paymentReverse.amount.value = parseFloat(paymentReverse.amount.value) * -1;
+
+            paymentObjects.push(new Payment({ Payment: paymentReverse }));
         });
+
+        return paymentObjects;
     }
 
     get image(): BunqDesktopImageConfig {

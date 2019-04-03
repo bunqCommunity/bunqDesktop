@@ -9,11 +9,10 @@ import {
     RequestSplitTheBill
 } from "../Types/Types";
 import Event, { EventTypeValue } from "../Types/Event";
-import Payment from "./Payment";
 
 export default class RequestInquiry implements Event {
     // the original raw object
-    private _rawData: any;
+    public _rawData: any;
 
     public RequestInquiry = this;
     get eventType(): EventTypeValue {

@@ -17,7 +17,7 @@ import InterestPayout from "./InterestPayout";
 
 export default class Event implements EventType {
     // the original raw object
-    private _rawData: any;
+    public _rawData: any;
 
     public Event = this;
     get eventType(): EventTypeValue {
