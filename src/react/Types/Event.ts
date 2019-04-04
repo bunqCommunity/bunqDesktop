@@ -13,7 +13,8 @@ export type EventTypeValue =
     | "InterestPayout"
     | "BunqMeFundraiserResult"
     | "BunqMeTabResultResponse"
-    | "ScheduledInstance";
+    | "ScheduledInstance"
+    | "TransferwisePayment";
 
 export default interface EventType {
     eventType: EventTypeValue;

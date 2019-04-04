@@ -100,6 +100,15 @@ export type EventObject = {
 
 export type Environment = "PRODUCTION" | "SANDBOX";
 
+export type GenericAlias = {
+    avatar: Avatar;
+    country: string;
+    display_name: string;
+    iban: string;
+    is_light: boolean;
+    label_user: any;
+};
+
 export type Geolocation = {
     latitude: number;
     longitude: number;
@@ -141,14 +150,7 @@ export type PaymentAlias = {
     switft_account_number: null | string;
 };
 
-export type GenericAlias = {
-    avatar: Avatar;
-    country: string;
-    display_name: string;
-    iban: string;
-    is_light: boolean;
-    label_user: any;
-};
+export type PanEntryModeUser = "ATM" | "ICC" | "MAGNETIC_STRIPE" | "E_COMMERCE";
 
 export type PaymentSubType = "PAYMENT" | "WITHDRAWAL" | "REVERSAL" | "REQUEST" | "BILLING" | "SCT" | "SDD" | "NLO";
 
@@ -191,4 +193,15 @@ export type StoredApiKey = {
     environment: Environment;
     // helps mark keys as OAuth for UI purposes
     isOAuth: boolean;
+};
+
+export type TransferwisePaymentAlias = {
+    avatar: null;
+    country: string;
+    display_name: string;
+    iban: null;
+    is_light: null;
+    label_user: ExtendedAlias;
+    transferwise_account_number: string;
+    transferwise_bank_code: string;
 };

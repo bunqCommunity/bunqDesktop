@@ -1,8 +1,5 @@
-import { Amount, LabelCard, PaymentAlias, RequestReferenceSplitTheBill } from "../Types/Types";
+import { Amount, LabelCard, PaymentAlias, RequestReferenceSplitTheBill, PanEntryModeUser } from "../Types/Types";
 import EventType, { EventTypeValue } from "../Types/Event";
-import Payment from "./Payment";
-
-export type PanEntryModeUser = "ATM" | "ICC" | "MAGNETIC_STRIPE" | "E_COMMERCE";
 
 export default class MasterCardAction implements EventType {
     // the original raw object

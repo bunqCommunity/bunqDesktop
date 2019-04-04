@@ -19,7 +19,6 @@ export const eventMapper = (settings, onlyPending = false, onlyNonPending = fals
     return settings.events
         .filter(event => {
             if (settings.onlyTransactions && !event.isTransaction) {
-                return event.isTransaction;
                 return false;
             }
             return true;
