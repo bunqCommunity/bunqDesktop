@@ -153,6 +153,11 @@ class CustomExports extends React.Component {
 
         console.log(columnRows);
 
+        if (columnRows.length === 0) {
+            this.props.openSnackbar("No events made it through the filter");
+            return;
+        }
+
         // get start and end date
         const dateFromFilter = events[0].date;
         const dateToFilter = events[events.length - 1].date;
@@ -214,20 +219,12 @@ class CustomExports extends React.Component {
             }
 
             // check for payment objects
-            if (eventInfo.paymentObject) {
-                paymentObjectList.push({
-                    ...event,
-                    date: eventInfo.paymentObject.created,
-                    event: eventInfo.paymentObject
-                });
-            } else if (eventInfo.paymentObjects) {
-                eventInfo.paymentObjects.forEach(paymentObject => {
-                    if (paymentObject) {
-                        paymentObjectList.push({
-                            ...event,
-                            date: paymentObject.updated,
-                            event: paymentObject
-                        });
+            if (eventInfo.mutations) {
+                eventInfo.mutations.forEach(mutation => {
+                    if (mutation) {
+                        console.log(mutation);
+                    } else {
+                        console.warn("No mutation", mutation);
                     }
                 });
             }

@@ -158,6 +158,7 @@ export const eventMapper = (settings, onlyPending = false, onlyNonPending = fals
                 case "BunqMeTabResultResponse":
                 case "BunqMeTabResultResponse":
                 case "InterestPayout":
+                case "TransferwisePayment":
                     return {
                         component: <EventListItem BunqJSClient={settings.BunqJSClient} event={event} />,
                         filterDate: UTCDateToLocalDate(event.updated),

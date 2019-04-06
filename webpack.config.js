@@ -59,6 +59,11 @@ let config = {
         fs: "empty",
         net: "empty",
         tls: "empty"
+    },
+    stats: {
+        cachedAssets: false,
+        children: false,
+        colors: true
     }
 };
 

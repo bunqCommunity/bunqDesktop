@@ -20,27 +20,27 @@ export function eventsSetInfo(events, resetOldItems = false, BunqJSClient = fals
         events.forEach(event => {
             const eventObject = new Event(event);
             switch (eventObject.type) {
-                case "Payment":
+                case "BunqMeFundraiserResult":
                 case "BunqMeTab":
+                case "BunqMeTabResultResponse":
+                case "IdealMerchantTransaction":
+                case "InterestPayout":
+                case "Invoice":
                 case "MasterCardAction":
+                case "Payment":
                 case "RequestInquiry":
                 case "RequestInquiryBatch":
                 case "RequestResponse":
+                case "SavingsAutoSaveResult":
                 case "ScheduledInstance":
                 case "ScheduledPayment":
-                case "Invoice":
-                case "IdealMerchantTransaction":
-                case "BunqMeFundraiserResult":
-                case "BunqMeTabResultResponse":
-                case "InterestPayout":
-                case "SavingsAutoSaveResult":
+                case "TransferwisePayment":
                     eventsNew.push(eventObject);
                     break;
                 case "ShareInviteBankInquiry":
                     shareInviteBankInquiries.push(eventObject.object);
                     break;
                 case "DraftPayment":
-                // Show in bunqDesktop?
                 case "FeatureAnnouncement":
                 case "ShareInviteBankResponse":
                 case "ShareInviteMonetaryAccountInquiry":

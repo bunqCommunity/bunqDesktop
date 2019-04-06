@@ -1,4 +1,11 @@
-import { Amount, LabelCard, PaymentAlias, RequestReferenceSplitTheBill, PanEntryModeUser } from "../Types/Types";
+import {
+    Amount,
+    LabelCard,
+    PaymentAlias,
+    RequestReferenceSplitTheBill,
+    PanEntryModeUser,
+    BunqDesktopImageConfig
+} from "../Types/Types";
 import EventType, { EventTypeValue } from "../Types/Event";
 
 export default class MasterCardAction implements EventType {
@@ -12,8 +19,15 @@ export default class MasterCardAction implements EventType {
 
     public isTransaction: boolean = true;
 
-    get paymentObject(): any | false {
-        return this;
+    get image(): BunqDesktopImageConfig {
+        return {
+            type: "MONETARY_ACCOUNT_ID",
+            value: this.monetary_account_id
+        };
+    }
+
+    get mutations(): any[] {
+        return [this];
     }
 
     private _id: number;

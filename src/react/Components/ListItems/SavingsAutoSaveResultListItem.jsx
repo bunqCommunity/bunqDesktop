@@ -77,10 +77,10 @@ class SavingsAutoSaveResultListItem extends React.Component {
         const avatarStandalone = (
             <Avatar style={styles.smallAvatar}>
                 <BunqDesktopImage
+                    BunqJSClient={this.props.BunqJSClient}
                     config={savingsAutoSaveResult.image}
                     lazy={true}
                     height={50}
-                    BunqJSClient={this.props.BunqJSClient}
                 />
             </Avatar>
         );

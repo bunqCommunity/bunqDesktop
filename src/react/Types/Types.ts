@@ -54,8 +54,8 @@ export type Balance = {
 export type BunqDesktopImageConfig =
     | false
     | {
-          type: "IMAGE_UUID" | "LOCATION" | false;
-          value: string;
+          type: "IMAGE_UUID" | "LOCATION" | "MONETARY_ACCOUNT_ID" | false;
+          value: string | number;
       };
 
 export type BunqMeTabStatus = "WAITING_FOR_PAYMENT" | "CANCELLED" | "EXPIRED";

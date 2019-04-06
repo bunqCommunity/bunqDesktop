@@ -6,7 +6,8 @@ import {
     Geolocation,
     PaymentAlias,
     RequestStatus,
-    RequestSplitTheBill
+    RequestSplitTheBill,
+    BunqDesktopImageConfig
 } from "../Types/Types";
 import Event, { EventTypeValue } from "../Types/Event";
 
@@ -23,10 +24,17 @@ export default class RequestInquiry implements Event {
         return !!this.amount_responded;
     }
 
-    get paymentObject(): any | false {
-        if (!this.isTransaction) return false;
+    get image(): BunqDesktopImageConfig {
+        return {
+            type: "MONETARY_ACCOUNT_ID",
+            value: this.monetary_account_id
+        };
+    }
 
-        return this;
+    get mutations(): any[] {
+        if (!this.isTransaction) return [];
+
+        return [this];
     }
 
     private _id: number;

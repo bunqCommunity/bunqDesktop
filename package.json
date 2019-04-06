@@ -18,9 +18,8 @@
         "es"
     ],
     "scripts": {
-        "webpack": "cross-env NODE_ENV=production RELEASE_MODE=true webpack --progress --colors",
-        "webpack:cache": "cross-env NODE_ENV=production webpack --progress --colors",
-        "webpack:dev": "cross-env NODE_ENV=development node --max_old_space_size=4092 ./node_modules/webpack/bin/webpack.js --debug --watch --progress --colors",
+        "webpack": "cross-env NODE_ENV=production RELEASE_MODE=true webpack --progress",
+        "webpack:dev": "cross-env NODE_ENV=development node --max_old_space_size=4092 ./node_modules/webpack/bin/webpack.js --debug --watch --progress",
         "prettier": "./node_modules/.bin/prettier --tab-width 4 --print-width 120 --write \"src/**/**.+(js|jsx|ts|tsx)\"",
         "prerelease": "npm run update-release-files && gulp build --env=production && yarn run webpack",
         "release": "build",

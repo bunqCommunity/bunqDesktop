@@ -1,19 +1,19 @@
 import { BunqDesktopImageConfig } from "../Types/Types";
 import EventType, { EventTypeValue } from "../Types/Event";
+import BunqMeFundraiserResult from "./BunqMeFundraiserResult";
+import BunqMeTab from "./BunqMeTab";
+import BunqMeTabResultResponse from "./BunqMeTabResultResponse";
+import IdealMerchantTransaction from "./IdealMerchantTransaction";
+import InterestPayout from "./InterestPayout";
+import Invoice from "./Invoice";
+import MasterCardAction from "./MasterCardAction";
 import Payment from "./Payment";
 import RequestInquiry from "./RequestInquiry";
-import MasterCardAction from "./MasterCardAction";
-import RequestResponse from "./RequestResponse";
-import BunqMeTab from "./BunqMeTab";
 import RequestInquiryBatch from "./RequestInquiryBatch";
+import RequestResponse from "./RequestResponse";
+import SavingsAutoSaveResult from "./SavingsAutoSaveResult";
 import ScheduledInstance from "./ScheduledInstance";
 import ScheduledPayment from "./ScheduledPayment";
-import Invoice from "./Invoice";
-import IdealMerchantTransaction from "./IdealMerchantTransaction";
-import BunqMeFundraiserResult from "./BunqMeFundraiserResult";
-import BunqMeTabResultResponse from "./BunqMeTabResultResponse";
-import SavingsAutoSaveResult from "./SavingsAutoSaveResult";
-import InterestPayout from "./InterestPayout";
 
 export default class Event implements EventType {
     // the original raw object
@@ -38,9 +38,6 @@ export default class Event implements EventType {
         return 0;
     }
 
-    /**
-     * Whether this event will be included in the exports and is shown as a transaction
-     */
     get isTransaction(): boolean {
         return !!this.object.isTransaction;
     }
@@ -57,20 +54,10 @@ export default class Event implements EventType {
         return this.object.eventCount;
     }
 
-    /**
-     * The paymentObject and paymentObjects helpers return the actual underlying payments
-     * OR a objec that closely represent a Payment object
-     */
-    get paymentObject(): Payment | any | false {
-        if (typeof this.object.paymentObject === "undefined") return false;
+    get mutations(): Payment[] {
+        if (typeof this.object.mutations === "undefined") return [];
 
-        return this.object.paymentObject;
-    }
-
-    get paymentObjects(): Payment[] | any[] | false {
-        if (typeof this.object.paymentObjects === "undefined") return false;
-
-        return this.object.paymentObjects;
+        return this.object.mutations;
     }
 
     private _id: number;
@@ -82,25 +69,7 @@ export default class Event implements EventType {
     private _updated_fields: any | null;
     private _user_id: number | null;
     private _monetary_account_id: number | null;
-    private _type:
-        | string
-        | "Payment"
-        | "BunqMeTab"
-        | "MasterCardAction"
-        | "RequestInquiry"
-        | "RequestInquiryBatch"
-        | "RequestResponse"
-        | "ScheduledInstance"
-        | "ScheduledPayment"
-        | "InterestPayout"
-        | "SavingsAutoSaveResult"
-        | "Invoice"
-        | "IdealMerchantTransaction"
-        | "BunqMeFundraiserResult"
-        | "BunqMeTabResultResponse"
-        | "FeatureAnnouncement"
-        | "ShareInviteBankInquiry"
-        | "ShareInviteBankResponse";
+    private _type: EventTypeValue;
 
     constructor(eventObject: any) {
         this._rawData = eventObject;
@@ -114,7 +83,8 @@ export default class Event implements EventType {
             this[objectKey] = eventInfo[key];
 
             if (key === "_object" || key === "object") {
-                this._type = Object.keys(this[objectKey])[0];
+                const objectType: any = Object.keys(this[objectKey])[0];
+                this._type = objectType;
 
                 switch (this._type) {
                     case "Payment":

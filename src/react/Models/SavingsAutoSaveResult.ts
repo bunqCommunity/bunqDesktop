@@ -21,7 +21,7 @@ export default class SavingsAutoSaveResult implements EventType {
 
     public isTransaction: boolean = true;
 
-    get paymentObjects(): Payment[] | false {
+    get mutations(): Payment[] {
         const paymentObjects = [];
 
         this.savings_auto_save_entries.forEach(savingsAutoSaveEntry => {

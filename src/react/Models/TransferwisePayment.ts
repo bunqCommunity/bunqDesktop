@@ -1,4 +1,4 @@
-import { Amount, LabelCard, PaymentAlias, TransferwisePaymentAlias } from "../Types/Types";
+import { Amount, BunqDesktopImageConfig, PaymentAlias, TransferwisePaymentAlias } from "../Types/Types";
 import EventType, { EventTypeValue } from "../Types/Event";
 
 export default class TransferwisePayment implements EventType {
@@ -12,8 +12,16 @@ export default class TransferwisePayment implements EventType {
 
     public isTransaction: boolean = true;
 
-    get paymentObject(): any | false {
-        return this;
+    get image(): BunqDesktopImageConfig {
+        return {
+            type: "LOCATION",
+            value: "./images/default-avatar.svg"
+        };
+    }
+
+    get mutations(): any[] {
+        // TODO fix
+        return [];
     }
 
     private _id: number;

@@ -26,7 +26,7 @@ export default class BunqMeFundraiserResult implements EventType {
         return this.payments.length;
     }
 
-    get paymentObjects(): Payment[] | false {
+    get mutations(): Payment[] {
         return this.payments;
     }
 

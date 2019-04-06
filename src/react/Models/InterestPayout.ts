@@ -22,8 +22,8 @@ export default class InterestPayout implements EventType {
         };
     }
 
-    get paymentObject(): Payment | false {
-        return this.payment;
+    get mutations(): Payment[] {
+        return [this.payment];
     }
 
     private _id: number;

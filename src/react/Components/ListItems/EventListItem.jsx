@@ -77,10 +77,10 @@ class EventListItem extends React.Component {
             eventAvatar = (
                 <Avatar style={styles.smallAvatar}>
                     <BunqDesktopImage
+                        BunqJSClient={this.props.BunqJSClient}
                         config={event.image}
                         lazy={true}
                         height={50}
-                        BunqJSClient={this.props.BunqJSClient}
                     />
                 </Avatar>
             );

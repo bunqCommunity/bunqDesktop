@@ -1,4 +1,4 @@
-import { Amount, RequestSplitTheBill } from "../Types/Types";
+import { Amount, BunqDesktopImageConfig, RequestSplitTheBill } from "../Types/Types";
 import EventType, { EventTypeValue } from "../Types/Event";
 import RequestInquiry from "./RequestInquiry";
 
@@ -12,15 +12,25 @@ export default class RequestInquiryBatch implements EventType {
     }
 
     get isTransaction(): boolean {
-        return this.request_inquiries.length > 0;
+        return (
+            this.request_inquiries.filter(requestInquiry => {
+                return requestInquiry.getAmount() > 0;
+            }).length > 0
+        );
     }
 
-    get paymentObjects(): any[] | false {
+    get image(): BunqDesktopImageConfig {
+        return false;
+    }
+
+    get mutations(): any[] {
         if (this.isTransaction) {
-            return this.request_inquiries.map(requestInquiry => requestInquiry.paymentObject);
+            return this.request_inquiries.filter(requestInquiry => {
+                return requestInquiry.getAmount() > 0;
+            });
         }
 
-        return false;
+        return [];
     }
 
     private _id: number;

@@ -1,23 +1,31 @@
+import { BunqDesktopImageConfig } from "./Types";
+
 export type EventTypeValue =
-    | "Event"
-    | "Payment"
+    | "BunqMeFundraiserResult"
     | "BunqMeTab"
+    | "BunqMeTabResultResponse"
+    | "Event"
+    | "FeatureAnnouncement"
+    | "IdealMerchantTransaction"
+    | "InterestPayout"
+    | "Invoice"
     | "MasterCardAction"
+    | "Payment"
     | "RequestInquiry"
     | "RequestInquiryBatch"
     | "RequestResponse"
-    | "Invoice"
-    | "ScheduledPayment"
     | "SavingsAutoSaveResult"
-    | "IdealMerchantTransaction"
-    | "InterestPayout"
-    | "BunqMeFundraiserResult"
-    | "BunqMeTabResultResponse"
     | "ScheduledInstance"
+    | "ScheduledPayment"
+    | "ShareInviteBankInquiry"
+    | "ShareInviteBankResponse"
     | "TransferwisePayment";
 
 export default interface EventType {
     eventType: EventTypeValue;
+    mutations: any[];
+    isTransaction: boolean;
+    image: BunqDesktopImageConfig;
     getAmount: () => number;
     getDelta: () => number;
 }

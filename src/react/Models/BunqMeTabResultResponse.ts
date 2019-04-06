@@ -17,8 +17,8 @@ export default class BunqMeTabResultResponse implements EventType {
         return this.payment.image;
     }
 
-    get paymentObject(): Payment | false {
-        return this.payment;
+    get mutations(): Payment[] {
+        return [this.payment];
     }
 
     private _id: number;

@@ -1,5 +1,6 @@
 import Payment from "./Payment";
 import EventType, { EventTypeValue } from "../Types/Event";
+import { BunqDesktopImageConfig } from "../Types/Types";
 
 export default class ScheduledPayment implements EventType {
     // the original raw object
@@ -14,10 +15,14 @@ export default class ScheduledPayment implements EventType {
         return !!this.payment;
     }
 
-    get paymentObject(): Payment | false {
-        if (!this.isTransaction) return false;
+    get image(): BunqDesktopImageConfig {
+        return this.payment.image;
+    }
 
-        return this.payment;
+    get mutations(): Payment[] {
+        if (!this.isTransaction) return [];
+
+        return [this.payment];
     }
 
     private _id: number;

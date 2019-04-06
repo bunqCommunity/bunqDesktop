@@ -19,8 +19,8 @@ export default class Invoice implements EventType {
         };
     }
 
-    get paymentObject(): any | false {
-        return this;
+    get mutations(): any[] {
+        return [this];
     }
 
     private _id: number;

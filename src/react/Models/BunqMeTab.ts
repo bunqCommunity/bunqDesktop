@@ -1,4 +1,4 @@
-import { BunqMeTabEntry, BunqMeTabResultInquiry, BunqMeTabStatus } from "../Types/Types";
+import { BunqDesktopImageConfig, BunqMeTabEntry, BunqMeTabResultInquiry, BunqMeTabStatus } from "../Types/Types";
 import EventType, { EventTypeValue } from "../Types/Event";
 import Payment from "./Payment";
 
@@ -15,7 +15,14 @@ export default class BunqMeTab implements EventType {
         return this.result_inquiries.length > 0;
     }
 
-    get paymentObjects(): Payment[] | false {
+    get image(): BunqDesktopImageConfig {
+        return {
+            type: "MONETARY_ACCOUNT_ID",
+            value: this.monetary_account_id
+        };
+    }
+
+    get mutations(): Payment[] {
         return this.result_inquiries.map(resultInquiry => resultInquiry.payment);
     }
 

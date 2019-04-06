@@ -1,6 +1,5 @@
 import BunqErrorHandler from "../Functions/BunqErrorHandler";
 import { openSnackbar } from "./snackbar";
-import { requestInquiryUpdate } from "./request_inquiry_info";
 import { eventInfoUpdate } from "./events";
 
 export function requestInquirySend(BunqJSClient, userId, accountId, requestInquiries) {
@@ -35,7 +34,6 @@ export function requestInquiryCancel(BunqJSClient, userId, accountId, requestInq
                 dispatch(requestInquiryNotLoading());
 
                 // update the information page
-                dispatch(requestInquiryUpdate(BunqJSClient, userId, accountId, requestInquiryId));
                 dispatch(eventInfoUpdate(BunqJSClient, userId));
             })
             .catch(error => {

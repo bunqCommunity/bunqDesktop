@@ -29,8 +29,8 @@ export default class Payment implements EventType {
         };
     }
 
-    get paymentObject(): Payment | false {
-        return this;
+    get mutations(): Payment[] {
+        return [this];
     }
 
     private _id: number;
