@@ -103,7 +103,7 @@ const TransactionHeader = props => {
     }
 
     const components = [
-        <Grid item xs={12} md={4} style={styles.targetWrapper}>
+        <Grid item xs={12} md={4} style={styles.targetWrapper} key="main-content">
             <Avatar style={styles.avatar}>
                 <LazyAttachmentImage
                     height={90}
@@ -170,10 +170,11 @@ const TransactionHeader = props => {
     if (swap) components.reverse();
 
     components.push(
-        <Grid item xs={12}>
+        <Grid key="quick-events" item xs={12}>
             {props.onRequest ? (
                 <Chip
                     onClick={props.onRequest}
+                    key="Request"
                     label="Request"
                     color={props.onRequestColor ? props.onRequestColor : "primary"}
                     variant="outlined"
@@ -183,6 +184,7 @@ const TransactionHeader = props => {
             {props.onRepeat ? (
                 <Chip
                     onClick={props.onRepeat}
+                    key="Repeat"
                     label="Repeat"
                     color={props.onRepeatColor ? props.onRepeatColor : "primary"}
                     variant="outlined"
@@ -192,6 +194,7 @@ const TransactionHeader = props => {
             {props.onForward ? (
                 <Chip
                     onClick={props.onForward}
+                    key="Forward"
                     label="Forward"
                     color={props.onForwardColor ? props.onForwardColor : "primary"}
                     variant="outlined"

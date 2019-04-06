@@ -180,7 +180,7 @@ class PaymentInfo extends React.Component {
 
             content = (
                 <Grid container spacing={24} align={"center"} justify={"center"}>
-                    <TransactionHeader {...transactionHeaderProps} />
+                    <TransactionHeader key="transaction-header" {...transactionHeaderProps} />
 
                     <FilterCreationDialog
                         t={t}

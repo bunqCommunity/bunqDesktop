@@ -6,6 +6,7 @@ import Grid from "@material-ui/core/Grid";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
+import Paper from "@material-ui/core/Paper";
 
 import CustomExports from "./CustomExports";
 import OfficialExports from "./OfficialExports";
@@ -46,7 +47,10 @@ class Exports extends React.Component {
 
                     {this.state.selectedTab === 0 ? <OfficialExports BunqJSClient={this.props.BunqJSClient} /> : null}
 
-                    {this.state.selectedTab === 1 ? <CustomExports BunqJSClient={this.props.BunqJSClient} /> : null}
+                    {this.state.selectedTab === 1 ? (
+                        <Paper>{t("Currently disabled as it is too inaccurate")}</Paper>
+                    ) : null}
+                    {/*{this.state.selectedTab === 1 ? <CustomExports BunqJSClient={this.props.BunqJSClient} /> : null}*/}
                 </Grid>
             </Grid>
         );

@@ -99,7 +99,7 @@ class MoneyAmountLabel extends React.Component {
 
         // switch between incoming/outgoing colors
         const paymentColor =
-            info.getAmount() < 0 ? theme.palette.common.sentPayment : theme.palette.common.receivedPayment;
+            info.getDelta() < 0 ? theme.palette.common.sentPayment : theme.palette.common.receivedPayment;
 
         return {
             color: paymentColor,

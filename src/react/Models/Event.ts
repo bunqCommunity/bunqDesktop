@@ -14,6 +14,7 @@ import RequestResponse from "./RequestResponse";
 import SavingsAutoSaveResult from "./SavingsAutoSaveResult";
 import ScheduledInstance from "./ScheduledInstance";
 import ScheduledPayment from "./ScheduledPayment";
+import TransferwisePayment from "./TransferwisePayment";
 
 export default class Event implements EventType {
     // the original raw object
@@ -129,10 +130,15 @@ export default class Event implements EventType {
                     case "SavingsAutoSaveResult":
                         this._object = new SavingsAutoSaveResult(this._object);
                         break;
+                    case "TransferwisePayment":
+                        this._object = new TransferwisePayment(this._object);
+                        break;
                     case "FeatureAnnouncement":
                     case "ShareInviteBankInquiry":
                     case "ShareInviteBankResponse":
+                        break;
                     default:
+                        console.log("Unknown type in Event", this.type);
                     // don't do anything special for these
                 }
             }

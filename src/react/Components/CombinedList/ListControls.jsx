@@ -12,7 +12,7 @@ import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
 
 const styles = {
     button: {
-        width: "100%",
+        textAlign: "center",
         height: "100%"
     },
     pageField: {

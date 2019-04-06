@@ -21,7 +21,7 @@ export default class TransferwisePayment implements EventType {
 
     get mutations(): any[] {
         // TODO fix
-        return [];
+        return [this];
     }
 
     private _id: number;
@@ -36,7 +36,7 @@ export default class TransferwisePayment implements EventType {
     private _rate: number;
     private _reference: string;
     private _status: string | "COMPLETED";
-    private _status_transferwise: string;
+    private _status_transferwise: string | "OUTGOING_PAYMENT_SENT";
     private _status_transferwise_issue: string | "NO_ISSUE";
     private _sub_status: string | "SETTLED";
     private _time_delivery_estimate: string | "SETTLED";
@@ -73,27 +73,9 @@ export default class TransferwisePayment implements EventType {
     }
 
     /**
-     * Returns the change in account balance if any based on this object's data
      * @returns {number}
      */
     public getDelta(): number {
-        // const validTypes = [
-        //     "ACQUIRER_AUTHORISED",
-        //     "AUTHORISED",
-        //     "AUTHORISED_PARTIAL",
-        //     "CLEARING_REFUND",
-        //     "PRE_AUTHORISATION_FINALISED",
-        //     "PRE_AUTHORISED",
-        //     "STAND_IN_AUTHORISED",
-        //     "UNAUTHORISED_CLEARING"
-        // ];
-        //
-        // // check if auth status means the payment completed
-        // if (!validTypes.includes(this.authorisation_status)) {
-        //     return 0;
-        // }
-
-        // mastercard payments means we sent money
         return this.getAmount() * -1;
     }
 

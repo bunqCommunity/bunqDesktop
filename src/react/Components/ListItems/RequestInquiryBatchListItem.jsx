@@ -30,8 +30,14 @@ const styles = {
         height: 50
     },
     moneyAmountLabel: {
-        marginRight: 20,
-        fontSize: "1rem"
+        marginRight: 8,
+        textAlign: "right"
+    },
+    listItemSecondary: {
+        marginTop: -8
+    },
+    categoryIcons: {
+        marginTop: 12
     }
 };
 
@@ -124,9 +130,9 @@ class RequestInquiryBatchListItem extends React.Component {
                 ? // pick between pending or finished color
                   theme.palette.requestInquiry.pending
                 : requestItemCounts.accepted > 0
-                ? // pick between accepted or expired if atleast 1 got accepted
-                  theme.palette.requestInquiry.accepted
-                : theme.palette.requestInquiry.expired;
+                    ? // pick between accepted or expired if atleast 1 got accepted
+                      theme.palette.requestInquiry.accepted
+                    : theme.palette.requestInquiry.expired;
         if (requestItemCounts.pending === 0) {
             if (requestItemCounts.rejected > 0 || requestItemCounts.revoked > 0) {
                 strikeThrough = true;
@@ -194,14 +200,14 @@ class RequestInquiryBatchListItem extends React.Component {
             <ListItem button onClick={this.toggleExtraInfo}>
                 {itemAvatar}
                 <ListItemText primary={primaryText} secondary={secondaryText} />
-                <ListItemSecondaryAction style={{ marginTop: -16 }}>
+                <ListItemSecondaryAction style={{ marginTop: -8 }}>
                     <Typography
                         style={{
                             ...styles.moneyAmountLabel,
                             color: eventColor,
                             textDecoration: strikeThrough ? "line-through" : "none"
                         }}
-                        variant="body2"
+                        variant="body1"
                     >
                         {formattedInquiredAmount}
                     </Typography>

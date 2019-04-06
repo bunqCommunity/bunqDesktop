@@ -1,5 +1,6 @@
 import EventType, { EventTypeValue } from "../Types/Event";
 import { Amount, BunqDesktopImageConfig, GenericAlias } from "../Types/Types";
+import { getAliasImageUuid } from "../Functions/AliasImageHelper";
 
 export default class IdealMerchantTransaction implements EventType {
     // the original raw object
@@ -84,18 +85,8 @@ export default class IdealMerchantTransaction implements EventType {
      * @param type
      */
     public getImageUuid(type: "COUNTERPARTY" | "ALIAS") {
-        let aliasObject: any | false = false;
-        if (type === "COUNTERPARTY") {
-            aliasObject = this.counterparty_alias;
-        }
-
-        if (type === "ALIAS") {
-            aliasObject = this.alias;
-        }
-
-        if (aliasObject.avatar && aliasObject.avatar.image && aliasObject.avatar.image[0]) {
-            return aliasObject.avatar.image[0].attachment_public_uuid;
-        }
+        if (type === "COUNTERPARTY") return getAliasImageUuid(this.counterparty_alias);
+        if (type === "ALIAS") return getAliasImageUuid(this.alias);
         return false;
     }
 

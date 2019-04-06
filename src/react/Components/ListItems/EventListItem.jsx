@@ -64,7 +64,7 @@ class EventListItem extends React.Component {
 
         let paymentLabel = null;
         if (event.isTransaction) {
-            const formattedPaymentAmount = formatMoney(event.getAmount());
+            const formattedPaymentAmount = formatMoney(event.getDelta(), true);
             paymentLabel = (
                 <MoneyAmountLabel style={styles.moneyAmountLabel} info={event} type="event">
                     {formattedPaymentAmount}
