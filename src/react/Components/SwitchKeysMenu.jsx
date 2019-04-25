@@ -120,40 +120,53 @@ class SwitchKeysMenu extends React.Component {
         const { t, storedApiKeys, derivedPasswordIdentifier } = this.props;
         const noKeysText = t("No stored keys found");
 
-        const apiKeyItems = storedApiKeys.map((storedApiKey, index) => {
-            const environmentText = storedApiKey.environment === "SANDBOX" ? t("Sandbox key") : t("Production key");
-            const OAuthText = storedApiKey.isOAuth ? t("OAuth") : "";
-            const secondaryText = `${OAuthText} ${environmentText}`;
+        const apiKeyItems = storedApiKeys
+            .sort((a, b) => {
+                if (a.environment === "SANDBOX" && b.environment === "PRODUCTION") {
+                    return 1;
+                }
+                if (a.environment === "PRODUCTION" && b.environment === "SANDBOX") {
+                    return -1;
+                }
+                if (a.isOAuth && !b.isOAuth) return 1;
+                if (!a.isOAuth && b.isOAuth) return -1;
 
-            return this.state.editMode ? (
-                <ListItem dense>
-                    <TextField
-                        style={styles.textField}
-                        value={storedKeyValues[index] || storedApiKey.device_name}
-                        onChange={this.onChange(index)}
-                    />
-                </ListItem>
-            ) : (
-                <ListItem
-                    dense
-                    button
-                    onClick={this.selectApiKey(index)}
-                    disabled={storedApiKey.identifier !== derivedPasswordIdentifier}
-                >
-                    <ListItemText
-                        style={styles.listItemText}
-                        primary={storedApiKey.device_name}
-                        secondary={secondaryText}
-                    />
-                    <ListItemSecondaryAction style={styles.secondaryAction}>
-                        {storedApiKey.isOAuth ? <VerifiedUserIcon color="action" style={styles.icon} /> : null}
-                        <IconButton onClick={this.removeStoredApiKey(index)}>
-                            <RemoveIcon />
-                        </IconButton>
-                    </ListItemSecondaryAction>
-                </ListItem>
-            );
-        });
+                return a.device_name > b.device_name ? 1 : -1;
+            })
+            .map((storedApiKey, index) => {
+                const environmentText = storedApiKey.environment === "SANDBOX" ? t("Sandbox key") : t("Production key");
+                const OAuthText = storedApiKey.isOAuth ? t("OAuth") : "";
+                const secondaryText = `${OAuthText} ${environmentText}`;
+
+                return this.state.editMode ? (
+                    <ListItem dense>
+                        <TextField
+                            style={styles.textField}
+                            value={storedKeyValues[index] || storedApiKey.device_name}
+                            onChange={this.onChange(index)}
+                        />
+                    </ListItem>
+                ) : (
+                    <ListItem
+                        dense
+                        button
+                        onClick={this.selectApiKey(index)}
+                        disabled={storedApiKey.identifier !== derivedPasswordIdentifier}
+                    >
+                        <ListItemText
+                            style={styles.listItemText}
+                            primary={storedApiKey.device_name}
+                            secondary={secondaryText}
+                        />
+                        <ListItemSecondaryAction style={styles.secondaryAction}>
+                            {storedApiKey.isOAuth ? <VerifiedUserIcon color="action" style={styles.icon} /> : null}
+                            <IconButton onClick={this.removeStoredApiKey(index)}>
+                                <RemoveIcon />
+                            </IconButton>
+                        </ListItemSecondaryAction>
+                    </ListItem>
+                );
+            });
 
         return (
             <React.Fragment>

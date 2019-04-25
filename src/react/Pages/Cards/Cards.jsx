@@ -407,6 +407,7 @@ class Cards extends React.Component {
 
                                     {countryComponent}
 
+                                    <Divider />
                                     <ListItem>
                                         <ListItemText
                                             secondary={t("Order status")}
