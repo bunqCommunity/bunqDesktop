@@ -285,7 +285,14 @@ class AccountInfo extends React.Component {
     };
 
     render() {
-        const { accounts, user, shareInviteBankResponses, shareInviteBankInquiries, t } = this.props;
+        const {
+            t,
+            accounts,
+            user,
+            shareInviteBankResponses,
+            shareInviteBankInquiries,
+            limitedPermissions
+        } = this.props;
         const accountId = parseFloat(this.props.match.params.accountId);
 
         const noneText = t("None");
@@ -313,7 +320,7 @@ class AccountInfo extends React.Component {
 
             let primaryConnectText = sharedWithText;
             let profileIconList = [];
-            let allowConnectSettings = true;
+            let allowConnectSettings = !limitedPermissions;
 
             // don't render if on a joint account
             if (isJointAccount) {
