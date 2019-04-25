@@ -65,39 +65,26 @@ class SwitchApiKeys extends React.Component {
             return <Redirect to="/password" />;
         }
 
-        const apiKeyItems = storedApiKeys
-            .sort((a, b) => {
-                if (a.environment === "SANDBOX" && b.environment === "PRODUCTION") {
-                    return 1;
-                }
-                if (a.environment === "PRODUCTION" && b.environment === "SANDBOX") {
-                    return -1;
-                }
-                if (a.isOAuth && !b.isOAuth) return 1;
-                if (!a.isOAuth && b.isOAuth) return -1;
-
-                return a.device_name > b.device_name ? 1 : -1;
-            })
-            .map((storedApiKey, index) => {
-                return (
-                    <ListItem
-                        button
-                        onClick={this.selectApiKey(index)}
-                        disabled={storedApiKey.identifier !== passwordIdentifier}
-                    >
-                        <ListItemText
-                            primary={storedApiKey.device_name}
-                            secondary={storedApiKey.environment === "SANDBOX" ? t("Sandbox key") : t("Production key")}
-                        />
-                        <ListItemSecondaryAction>
-                            {storedApiKey.isOAuth ? <Chip label="OAuth" /> : null}
-                            <IconButton onClick={this.removeStoredApiKey(index)}>
-                                <RemoveIcon />
-                            </IconButton>
-                        </ListItemSecondaryAction>
-                    </ListItem>
-                );
-            });
+        const apiKeyItems = storedApiKeys.map((storedApiKey, index) => {
+            return (
+                <ListItem
+                    button
+                    onClick={this.selectApiKey(index)}
+                    disabled={storedApiKey.identifier !== passwordIdentifier}
+                >
+                    <ListItemText
+                        primary={storedApiKey.device_name}
+                        secondary={storedApiKey.environment === "SANDBOX" ? t("Sandbox key") : t("Production key")}
+                    />
+                    <ListItemSecondaryAction>
+                        {storedApiKey.isOAuth ? <Chip label="OAuth" /> : null}
+                        <IconButton onClick={this.removeStoredApiKey(index)}>
+                            <RemoveIcon />
+                        </IconButton>
+                    </ListItemSecondaryAction>
+                </ListItem>
+            );
+        });
 
         return (
             <Grid container spacing={16} style={styles.wrapperContainer}>
