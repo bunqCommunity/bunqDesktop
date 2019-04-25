@@ -19,6 +19,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 
 import CardListItem from "./CardListItem";
 import CvcCodeListItem from "./CvcCodeListItem";
+import VirtualAccountNumbersDialog from "./VirtualAccountNumbersDialog";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
 
@@ -244,12 +245,12 @@ class Cards extends React.Component {
     };
 
     render() {
-        const { t, cards } = this.props;
+        const { t, accounts, cards } = this.props;
         const selectedCardIndex = this.state.selectedCardIndex;
         let cardItems = [];
         const filteredCards = this.getCardsList();
 
-        if (this.props.cards !== false) {
+        if (cards !== false) {
             // then generate the items seperately
             cardItems = filteredCards.map((card, index) => (
                 <CardListItem
@@ -380,7 +381,6 @@ class Cards extends React.Component {
                                     </Grid>
                                 </Grid>
 
-                                <br />
                                 <List dense>
                                     <Divider />
                                     <ListSubheader style={styles.assignmentSubHeader}>
@@ -414,6 +414,8 @@ class Cards extends React.Component {
                                             primary={cardOrderStatus(cardInfo, t)}
                                         />
                                     </ListItem>
+
+                                    <VirtualAccountNumbersDialog t={t} accounts={accounts} cardInfo={cardInfo} />
                                 </List>
                             </Paper>
                         </Grid>

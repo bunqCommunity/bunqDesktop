@@ -20,7 +20,6 @@ import { connectGetBudget } from "../../Functions/ConnectGetPermissions";
 
 import { accountsSelectAccount } from "../../Actions/accounts.js";
 import { addAccountIdFilter, removeAccountIdFilter, toggleAccountIdFilter } from "../../Actions/filters";
-import LinearProgress from "../LinearProgress";
 
 const styles = {
     bigAvatar: {
