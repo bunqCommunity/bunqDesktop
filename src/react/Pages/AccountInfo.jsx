@@ -343,7 +343,7 @@ class AccountInfo extends React.Component {
                                     this.props.shareInviteBankResponseChangeStatus(
                                         this.props.user.id,
                                         filteredInviteResponse.ShareInviteBankResponse.id,
-                                        "CANCELED"
+                                        "CANCELLED"
                                     );
                                 }}
                             />
@@ -363,7 +363,7 @@ class AccountInfo extends React.Component {
                                         this.props.user.id,
                                         filteredShareInquiry.ShareInviteBankInquiry.monetary_account_id,
                                         filteredShareInquiry.ShareInviteBankInquiry.id,
-                                        "CANCELED"
+                                        "CANCELLED"
                                     );
                                 }}
                             />

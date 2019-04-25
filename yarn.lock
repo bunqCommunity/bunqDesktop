@@ -921,10 +921,10 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@bunq-community/bunq-js-client@^0.40.0":
-  version "0.40.0"
-  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.40.0.tgz#52a76926afeaee9ceb087cf42966432275e7189f"
-  integrity sha512-96TacgvJ3uUJCPmC52sxC07q/Xe3WY+Ypmc87pqKNmjHRPN808GAuawwtgOIXx4U9rORjCD9C1oI1HKDOxNXoA==
+"@bunq-community/bunq-js-client@^0.40.2":
+  version "0.40.2"
+  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.40.2.tgz#bff6baac68ffe21a25389a301560897859180125"
+  integrity sha512-3nU7d6NpYBsuEdBAbR2ZfWqOz97Gj/WZ3UOpNNyBhgN1AkBRQ5/1wgC2RBMHX41gG37rZ/OMnX0PTvFrDrIR1Q==
   dependencies:
     awaiting "^3.0.0"
     axios "^0.16.2"
