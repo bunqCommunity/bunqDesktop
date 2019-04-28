@@ -121,16 +121,15 @@ class PDFExportHelper extends React.PureComponent {
                     </ListItem>
                     <Divider style={styles.divider} />
 
-                    {paymentDateUpdated &&
-                        paymentDate !== paymentDateUpdated && (
-                            <React.Fragment>
-                                <ListItem>
-                                    <ListItemText primary={t("Date updated")} secondary={paymentDateUpdated} />
-                                </ListItem>
+                    {paymentDateUpdated && paymentDate !== paymentDateUpdated && (
+                        <React.Fragment>
+                            <ListItem>
+                                <ListItemText primary={t("Date updated")} secondary={paymentDateUpdated} />
+                            </ListItem>
 
-                                <Divider style={styles.divider} />
-                            </React.Fragment>
-                        )}
+                            <Divider style={styles.divider} />
+                        </React.Fragment>
+                    )}
 
                     <ListItem>
                         <ListItemText primary={t("Counterparty name")} secondary={counterPartyAlias.display_name} />

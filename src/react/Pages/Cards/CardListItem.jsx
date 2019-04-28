@@ -45,7 +45,7 @@ class CardListItem extends React.Component {
 
     render() {
         const card = this.props.card;
-        const { cardImage, cardType } = getCardTypeImage(card.type);
+        const { cardImage } = getCardTypeImage(card.type);
 
         return [
             <div className="single-card" style={styles.cardWrapper} onClick={this.props.onClick}>

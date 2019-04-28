@@ -24,7 +24,14 @@ const styles = {
         height: 50
     },
     moneyAmountLabel: {
-        marginRight: 20
+        marginRight: 8,
+        textAlign: "right"
+    },
+    listItemSecondary: {
+        marginTop: -8
+    },
+    categoryIcons: {
+        marginTop: 12
     }
 };
 
@@ -76,12 +83,12 @@ class RequestResponseListItem extends React.Component {
                     />
                 </Avatar>
                 <ListItemText style={styles.listItemText} primary={displayName} secondary={paymentLabel} />
-                <ListItemSecondaryAction style={{ marginTop: -16 }}>
+                <ListItemSecondaryAction style={styles.listItemSecondary}>
                     <MoneyAmountLabel style={styles.moneyAmountLabel} info={requestResponse} type="requestResponse">
                         {formattedPaymentAmount}
                     </MoneyAmountLabel>
+                    <CategoryIcons style={styles.categoryIcons} type={"RequestResponse"} id={requestResponse.id} />
                 </ListItemSecondaryAction>
-                <CategoryIcons style={{ marginTop: 26 }} type={"RequestResponse"} id={requestResponse.id} />
             </ListItem>,
             <Divider />
         ];

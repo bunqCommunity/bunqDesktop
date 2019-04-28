@@ -12,7 +12,7 @@ The terms used in this Privacy Policy have the same meanings as in our Terms and
 For a better experience, while using our Service, I may require you to provide us with certain personally identifiable information. 
 The information that I request is retained on your device and is not collected by me in any way
 
-The app does use third party services that may collect information used to identify you.
+The app will ask you if it may use third-party services such as Google Analytics and this can be changed at any time on the settings page. Minimal and anonymous info is collected using these services and this is done to find out which OS and languages make use of bunqDesktop.
 
 ### Log Data
 

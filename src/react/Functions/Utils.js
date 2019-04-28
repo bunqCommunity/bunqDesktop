@@ -172,6 +172,8 @@ export const getPrettyLanguage = key => {
             return "Español (Needs work)";
         case "it":
             return "Italiano (Needs work)";
+        case "gr":
+            return "Greek (Needs work)";
     }
     return key;
 };
@@ -242,9 +244,10 @@ export const humanReadableDate = (date, displayHoursMins = true, localization = 
  * @returns {string}
  */
 export const formatIban = iban => {
+    if (!iban) return "";
     const ret = [];
-    let len;
 
+    let len;
     for (let i = 0, len = iban.length; i < len; i += 4) {
         ret.push(iban.substr(i, 4));
     }

@@ -20,7 +20,20 @@ export const ENVIRONMENT_LOCATION = "BUNQDESKTOP_ENVIRONMENT";
 
 const DEFAULT_PASSWORD = "SOME_DEFAULT_PASSWORD";
 
-class IndexedDbWrapper implements StorageInterface {
+const sortApiKeyList = (a, b) => {
+    if (a.environment === "SANDBOX" && b.environment === "PRODUCTION") {
+        return 1;
+    }
+    if (a.environment === "PRODUCTION" && b.environment === "SANDBOX") {
+        return -1;
+    }
+    if (a.isOAuth && !b.isOAuth) return 1;
+    if (!a.isOAuth && b.isOAuth) return -1;
+
+    return a.device_name > b.device_name ? 1 : -1;
+};
+
+export class IndexedDbWrapper implements StorageInterface {
     private _indexedDb: LocalForageDriver;
 
     constructor(config: LocalForageOptions) {
@@ -51,7 +64,7 @@ class IndexedDbWrapper implements StorageInterface {
     };
 }
 
-class BunqDesktopClient {
+export class BunqDesktopClient {
     public BunqJSClient: BunqJSClient;
     public Logger: any;
     public Store: StorageInterface;
@@ -412,7 +425,7 @@ class BunqDesktopClient {
      * @param storedApiKeys
      */
     public setStoredApiKeys(storedApiKeys) {
-        this.stored_api_keys = storedApiKeys;
+        this.stored_api_keys = storedApiKeys.sort(sortApiKeyList);
         this.setStoredValue(API_KEYS_LOCATION, this.stored_api_keys);
     }
 
@@ -424,8 +437,8 @@ class BunqDesktopClient {
         const storedApiKeys = this.storedApiKeys;
         storedApiKeys.splice(keyIndex, 1);
 
-        this.setStoredValue(API_KEYS_LOCATION, storedApiKeys);
-        this.stored_api_keys = storedApiKeys;
+        this.stored_api_keys = storedApiKeys.sort(sortApiKeyList);
+        this.setStoredValue(API_KEYS_LOCATION, this.stored_api_keys);
     }
 
     /**
