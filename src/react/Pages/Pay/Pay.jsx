@@ -669,13 +669,11 @@ class Pay extends React.Component {
                     <title>{`bunqDesktop - Pay`}</title>
                 </Helmet>
                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={localeData}>
-
                     <Grid item xs={12} sm={12} md={2} lg={3}>
                         <Button onClick={this.props.history.goBack}>
                             <ArrowBackIcon />
                         </Button>
                     </Grid>
-
 
                     <Grid item xs={12} sm={10} md={8} lg={6}>
                         <Grid container spacing={8}>

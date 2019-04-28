@@ -9,6 +9,7 @@ const MoneyFormatInput = props => {
 
     const mergedStyle = {
         fontSize: 30,
+        fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
         ...props.theme.styles.moneyInput,
         ...style
     };

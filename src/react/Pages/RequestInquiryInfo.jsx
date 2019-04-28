@@ -3,7 +3,6 @@ import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { ipcRenderer } from "electron";
 import Helmet from "react-helmet";
-import CopyToClipboard from "react-copy-to-clipboard";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
@@ -30,6 +29,7 @@ import MoneyAmountLabel from "../Components/MoneyAmountLabel";
 import TransactionHeader from "../Components/TransactionHeader";
 import CategorySelector from "../Components/Categories/CategorySelector";
 import NoteTextForm from "../Components/NoteTexts/NoteTextForm";
+import CopyToClipboardWrap from "../Components/CopyToClipboardWrap";
 
 import { formatMoney, humanReadableDate } from "../Functions/Utils";
 import { requestInquiryText } from "../Functions/EventStatusTexts";
@@ -231,11 +231,11 @@ class RequestInquiryInfo extends React.Component {
                                             secondary={requestInquiry.bunqme_share_url}
                                         />
                                         <ListItemSecondaryAction>
-                                            <CopyToClipboard text={requestInquiry.bunqme_share_url}>
+                                            <CopyToClipboardWrap text={requestInquiry.bunqme_share_url}>
                                                 <IconButton>
                                                     <CopyIcon />
                                                 </IconButton>
-                                            </CopyToClipboard>
+                                            </CopyToClipboardWrap>
                                         </ListItemSecondaryAction>
                                     </ListItem>
                                 </React.Fragment>

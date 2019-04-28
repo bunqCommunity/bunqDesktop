@@ -1,6 +1,5 @@
 import React from "react";
 import { translate } from "react-i18next";
-import CopyToClipboard from "react-copy-to-clipboard";
 import withTheme from "@material-ui/core/styles/withTheme";
 import withStyles from "@material-ui/core/styles/withStyles";
 import ListItem from "@material-ui/core/ListItem";
@@ -21,6 +20,7 @@ import Share from "@material-ui/icons/Share";
 import PaymentListItem from "./PaymentListItem";
 import AccountQRFullscreen from "../QR/AccountQRFullscreen";
 import TranslateButton from "../TranslationHelpers/Button";
+import CopyToClipboardWrap from "../CopyToClipboardWrap";
 
 import { humanReadableDate, formatMoney } from "../../Functions/Utils";
 
@@ -137,11 +137,11 @@ class BunqMeTabListItem extends React.Component {
                 <ListItemText primary={bunqMeTab.bunqme_tab_entry.description} secondary={secondaryText} />
                 <ListItemSecondaryAction style={{ marginTop: -16 }}>
                     <AccountQRFullscreen mode="HIDDEN" text={shareUrl} />
-                    <CopyToClipboard text={shareUrl} onCopy={this.props.copiedValue("the bunq tab url")}>
+                    <CopyToClipboardWrap text={shareUrl} onCopy={this.props.copiedValue("the bunq tab url")}>
                         <IconButton aria-label="Copy the share url">
                             <CopyIcon />
                         </IconButton>
-                    </CopyToClipboard>
+                    </CopyToClipboardWrap>
                 </ListItemSecondaryAction>
             </ListItem>,
             <Collapse in={this.state.extraInfoOpen} unmountOnExit>

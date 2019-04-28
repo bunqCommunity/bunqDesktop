@@ -118,17 +118,16 @@ export default props => {
                     </Grid>
                 </ListItem>
 
-                {savingsGoal.isEnded &&
-                    percentage >= 100 && (
-                        <Grid item xs={12}>
-                            <ListItem dense>
-                                <ListItemIcon>
-                                    <EndedIcon />
-                                </ListItemIcon>
-                                <ListItemText primary={humanReadableDate(savingsGoal.ended)} secondary="Ended" />
-                            </ListItem>
-                        </Grid>
-                    )}
+                {savingsGoal.isEnded && percentage >= 100 && (
+                    <Grid item xs={12}>
+                        <ListItem dense>
+                            <ListItemIcon>
+                                <EndedIcon />
+                            </ListItemIcon>
+                            <ListItemText primary={humanReadableDate(savingsGoal.ended)} secondary="Ended" />
+                        </ListItem>
+                    </Grid>
+                )}
                 {savingsGoal.isExpired && (
                     <Grid item xs={12}>
                         <ListItem dense>

@@ -28,7 +28,7 @@ export const requestResponseText = (requestResponse, t) => {
 export const requestResponseTypeParser = (requestResponse, t) => {
     const directDebit = t("direct debit");
     const request = t("Request");
-    
+
     switch (requestResponse.type) {
         case "DIRECT_DEBIT":
         case "DIRECT_DEBIT_B2B":

@@ -22,8 +22,8 @@ const isSemVer = (function() {
                   (d[3] || "~") +
                   '"'
             : c
-                ? "==0"
-                : 1;
+            ? "==0"
+            : 1;
     }
     return function(e) {
         e = b(e);

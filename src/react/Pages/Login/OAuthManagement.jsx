@@ -287,14 +287,13 @@ class OAuthManagement extends React.Component {
                     />
                 </FormControl>
 
-                {this.state.clientSecretValid &&
-                    this.state.clientIdValid && (
-                        <img
-                            style={styles.connectButton}
-                            src="images/bunq_Connect_button_svg.svg"
-                            onClick={this.openBunqConsentScreen}
-                        />
-                    )}
+                {this.state.clientSecretValid && this.state.clientIdValid && (
+                    <img
+                        style={styles.connectButton}
+                        src="images/bunq_Connect_button_svg.svg"
+                        onClick={this.openBunqConsentScreen}
+                    />
+                )}
 
                 <TranslateButton
                     style={styles.button}
