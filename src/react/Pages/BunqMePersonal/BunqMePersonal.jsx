@@ -71,8 +71,8 @@ class BunqMePersonal extends React.Component {
             bunqMeLinks: [],
             checked: false,
 
-            linkAmount: 3,
-            linkDescription: "Test description"
+            linkAmount: "",
+            linkDescription: ""
         };
     }
 
