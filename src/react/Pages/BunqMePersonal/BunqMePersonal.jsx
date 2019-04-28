@@ -119,6 +119,14 @@ class BunqMePersonal extends React.Component {
         });
     };
 
+    downloadQrImage = () => {
+        const link = document.getElementById("hidden-link");
+        const canvas = document.querySelector(".qr-code-wrapper > canvas");
+        link.setAttribute("download", "bunqme-link-qr.png");
+        link.setAttribute("href", canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
+        link.click();
+    };
+
     render() {
         const { t } = this.props;
         const { checked, selectedLink, bunqMeLinks, linkAmount, linkDescription } = this.state;
@@ -131,6 +139,8 @@ class BunqMePersonal extends React.Component {
                 if (linkAmount) {
                     const urlEncodedNumber = parseFloat(linkAmount);
                     combinedLink = `${combinedLink}/${urlEncodedNumber}`;
+                } else if (!linkDescription) {
+                    combinedLink = `${combinedLink}`;
                 } else {
                     combinedLink = `${combinedLink}/0`;
                 }
@@ -143,8 +153,9 @@ class BunqMePersonal extends React.Component {
                     <div>
                         <LinkPreviewField value={combinedLink} reset={this.reset} />
 
-                        <div style={styles.qrCodeContainer}>
-                            <QRCode value={combinedLink} />
+                        <div style={styles.qrCodeContainer} className="qr-code-wrapper">
+                            <a id="hidden-link" style={{ display: "none" }} />
+                            <QRCode value={combinedLink} onClick={this.downloadQrImage} />
                         </div>
 
                         <Paper style={styles.paper}>

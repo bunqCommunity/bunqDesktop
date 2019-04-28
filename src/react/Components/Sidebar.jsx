@@ -128,12 +128,6 @@ class Sidebar extends React.Component {
                       text={"bunqme Requests"}
                       location={this.props.location}
                   />,
-                  <ListItemWrapper
-                      to="/bunqme-personal"
-                      icon={ShareIcon}
-                      text={"bunqme Personal"}
-                      location={this.props.location}
-                  />,
                   <ListItemWrapper to="/cards" icon={CardIcon} text={"Cards"} location={this.props.location} />,
                   <Divider />,
                   <ListItemWrapper to="/stats" icon={TimeLineIcon} text={"Stats"} location={this.props.location} />,
