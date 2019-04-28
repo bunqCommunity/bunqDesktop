@@ -196,7 +196,7 @@ class PaymentInfo extends React.Component {
                                 <ListItemText primary={paymentLabel} />
                             </ListItem>
 
-                            {paymentDescription.length > 0 ? (
+                            {paymentDescription && paymentDescription.length > 0 ? (
                                 <React.Fragment>
                                     <Divider />
                                     <ListItem>
@@ -218,10 +218,14 @@ class PaymentInfo extends React.Component {
                                 />
                             </ListItem>
 
-                            <Divider />
-                            <ListItem>
-                                <ListItemText primary={"IBAN"} secondary={formatIban(counterPartyIban)} />
-                            </ListItem>
+                            {counterPartyIban && counterPartyIban.length > 0 ? (
+                                <React.Fragment>
+                                    <Divider />
+                                    <ListItem>
+                                        <ListItemText primary={"IBAN"} secondary={formatIban(counterPartyIban)} />
+                                    </ListItem>
+                                </React.Fragment>
+                            ) : null}
 
                             <Divider />
                             <GeoLocationListItem t={t} geoLocation={paymentInfo.geolocation} />

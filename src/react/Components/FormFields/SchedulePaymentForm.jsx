@@ -43,6 +43,13 @@ export default props => {
         handleChangeDirect(name)(getUTCDate(value));
     };
 
+    const wrapRecurrenceSizeChange = e => {
+        let value = e.target.value;
+        if (value <= 0) value = 1;
+
+        handleChangeDirect("recurrenceSize")(value);
+    };
+
     let scheduledPaymentText = null;
     if (schedulePayment) {
         const scheduleTextResult = scheduleTexts(t, scheduleStartDate, scheduleEndDate, recurrenceSize, recurrenceUnit);
@@ -114,11 +121,11 @@ export default props => {
                             style={styles.textField}
                             value={recurrenceSize}
                             disabled={recurrenceUnit === "ONCE"}
-                            onChange={handleChange("recurrenceSize")}
+                            onChange={wrapRecurrenceSizeChange}
                             helperText={"Repeat every"}
                             type={"number"}
                             inputProps={{
-                                min: 0,
+                                min: 1,
                                 step: 1
                             }}
                         />

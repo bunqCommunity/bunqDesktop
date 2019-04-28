@@ -9,6 +9,9 @@ import Paper from "@material-ui/core/Paper";
 import Collapse from "@material-ui/core/Collapse";
 import Switch from "@material-ui/core/Switch";
 import FormControl from "@material-ui/core/FormControl";
+import Button from "@material-ui/core/Button";
+
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
@@ -522,6 +525,12 @@ class RequestInquiry extends React.Component {
                     <title>{`bunqDesktop - ${t("Pay")}`}</title>
                 </Helmet>
 
+                <Grid item xs={12} sm={12} md={2} lg={3} xl={4}>
+                    <Button onClick={this.props.history.goBack}>
+                        <ArrowBackIcon />
+                    </Button>
+                </Grid>
+
                 <Grid item xs={12} sm={10} md={8} lg={6} xl={4}>
                     <Paper style={styles.paper}>
                         <TranslateTypography variant="h5">Request Payment</TranslateTypography>
@@ -618,6 +627,8 @@ class RequestInquiry extends React.Component {
                         splitRequest={splitRequest}
                     />
                 </Grid>
+
+                <Grid item xs={12} sm={12} md={2} lg={3} xl={4} />
             </Grid>
         );
     }

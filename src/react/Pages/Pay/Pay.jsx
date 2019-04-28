@@ -25,6 +25,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 
 import EventIcon from "@material-ui/icons/Event";
 import ListIcon from "@material-ui/icons/List";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 import ConfirmationDialog from "./ConfirmationDialog";
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
@@ -668,6 +669,12 @@ class Pay extends React.Component {
                     <title>{`bunqDesktop - Pay`}</title>
                 </Helmet>
                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={localeData}>
+                    <Grid item xs={12} sm={12} md={2} lg={3}>
+                        <Button onClick={this.props.history.goBack}>
+                            <ArrowBackIcon />
+                        </Button>
+                    </Grid>
+
                     <Grid item xs={12} sm={10} md={8} lg={6}>
                         <Grid container spacing={8}>
                             <Grid item xs={12} sm={6}>
@@ -842,6 +849,8 @@ class Pay extends React.Component {
                             confirmModalOpen={this.state.confirmModalOpen}
                         />
                     </Grid>
+
+                    <Grid item md={2} lg={3} />
                 </MuiPickersUtilsProvider>
             </Grid>
         );

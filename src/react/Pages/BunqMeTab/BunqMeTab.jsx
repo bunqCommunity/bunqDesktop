@@ -19,9 +19,6 @@ import { eventInfoUpdate } from "../../Actions/events";
 const styles = {
     paper: {
         marginBottom: 20
-    },
-    paper: {
-        marginBottom: 20
     }
 };
 

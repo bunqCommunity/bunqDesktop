@@ -921,10 +921,10 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@bunq-community/bunq-js-client@^0.40.0":
-  version "0.40.0"
-  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.40.0.tgz#52a76926afeaee9ceb087cf42966432275e7189f"
-  integrity sha512-96TacgvJ3uUJCPmC52sxC07q/Xe3WY+Ypmc87pqKNmjHRPN808GAuawwtgOIXx4U9rORjCD9C1oI1HKDOxNXoA==
+"@bunq-community/bunq-js-client@^0.40.2":
+  version "0.40.2"
+  resolved "https://registry.yarnpkg.com/@bunq-community/bunq-js-client/-/bunq-js-client-0.40.2.tgz#bff6baac68ffe21a25389a301560897859180125"
+  integrity sha512-3nU7d6NpYBsuEdBAbR2ZfWqOz97Gj/WZ3UOpNNyBhgN1AkBRQ5/1wgC2RBMHX41gG37rZ/OMnX0PTvFrDrIR1Q==
   dependencies:
     awaiting "^3.0.0"
     axios "^0.16.2"
@@ -8692,10 +8692,10 @@ react-map-gl@^3.3.5:
     prop-types "^15.5.7"
     viewport-mercator-project "^6.0.0"
 
-react-number-format@^3.4.2:
-  version "3.6.2"
-  resolved "https://registry.yarnpkg.com/react-number-format/-/react-number-format-3.6.2.tgz#46fb692a88ed25808f0cb08fd12aeae4ae68295a"
-  integrity sha512-HsO11fH6WiugtJflrMQn3/Yhq2J4uEWLxrKCQbI1gSGAOwIhUsOGJJeP8Vci/U4A7xK5SjC95ngZU8//Nuz3Gg==
+react-number-format@^4.0.7:
+  version "4.0.7"
+  resolved "https://registry.yarnpkg.com/react-number-format/-/react-number-format-4.0.7.tgz#b3294b95bcadfbbec1b7e86740c3950818f532bc"
+  integrity sha512-boRHwPzkNDuyqeQ9zyHp0XgVAqT5RyS+BsohOhiTz6VMxEQr3DuSuNdg0Q8c3CYTgNESYlxnH278DPqaQFO72w==
   dependencies:
     prop-types "^15.6.0"
 

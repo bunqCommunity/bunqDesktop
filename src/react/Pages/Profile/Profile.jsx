@@ -1,6 +1,7 @@
 import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
+import Link from "react-router-dom/Link";
 import Helmet from "react-helmet";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
@@ -10,8 +11,10 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Avatar from "@material-ui/core/Avatar";
+import Chip from "@material-ui/core/Chip";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import UrlIcon from "@material-ui/icons/Link";
 
 import AliasList from "../../Components/AliasList";
 import UploadFullscreen from "../../Components/FileUpload/UploadFullscreen";
@@ -26,6 +29,7 @@ import { userUpdateImage } from "../../Actions/user";
 import { usersUpdate } from "../../Actions/users";
 
 import BunqErrorHandler from "../../Functions/BunqErrorHandler";
+import { ListItemSecondaryAction } from "@material-ui/core";
 
 const styles = {
     title: {
@@ -53,6 +57,9 @@ const styles = {
     avatar: {
         width: 70,
         height: 70
+    },
+    chip: {
+        cursor: "pointer"
     }
 };
 
@@ -216,6 +223,19 @@ class Profile extends React.Component {
                                     />
                                 </Avatar>
                                 <ListItemText primary={user.public_nick_name} secondary={user.legal_name} />
+                                <ListItemSecondaryAction>
+                                    <Chip
+                                        style={styles.chip}
+                                        avatar={
+                                            <Avatar>
+                                                <UrlIcon />
+                                            </Avatar>
+                                        }
+                                        component={Link}
+                                        label={t("bunqme links")}
+                                        to="/bunqme-personal"
+                                    />
+                                </ListItemSecondaryAction>
                             </ListItem>
 
                             <AliasList aliasses={user.alias} />
