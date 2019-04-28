@@ -9157,10 +9157,10 @@ react-map-gl@^3.3.5:
     prop-types "^15.5.7"
     viewport-mercator-project "^6.0.0"
 
-react-number-format@^3.4.2:
-  version "3.6.2"
-  resolved "https://registry.yarnpkg.com/react-number-format/-/react-number-format-3.6.2.tgz#46fb692a88ed25808f0cb08fd12aeae4ae68295a"
-  integrity sha512-HsO11fH6WiugtJflrMQn3/Yhq2J4uEWLxrKCQbI1gSGAOwIhUsOGJJeP8Vci/U4A7xK5SjC95ngZU8//Nuz3Gg==
+react-number-format@^4.0.7:
+  version "4.0.7"
+  resolved "https://registry.yarnpkg.com/react-number-format/-/react-number-format-4.0.7.tgz#b3294b95bcadfbbec1b7e86740c3950818f532bc"
+  integrity sha512-boRHwPzkNDuyqeQ9zyHp0XgVAqT5RyS+BsohOhiTz6VMxEQr3DuSuNdg0Q8c3CYTgNESYlxnH278DPqaQFO72w==
   dependencies:
     prop-types "^15.6.0"
 
