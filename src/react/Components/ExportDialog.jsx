@@ -1,5 +1,4 @@
 import React from "react";
-import CopyToClipboard from "react-copy-to-clipboard";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -9,6 +8,7 @@ import Slide from "@material-ui/core/Slide";
 import TranslateButton from "./TranslationHelpers/Button";
 import ReactJsonWrapper from "./ReactJsonWrapper";
 import { anonymizeObject } from "../Functions/Utils";
+import CopyToClipboardWrap from "../Components/CopyToClipboardWrap";
 
 const Transition = props => <Slide direction="right" {...props} />;
 
@@ -65,11 +65,11 @@ export default class ExportDialog extends React.Component {
                         {anonymize ? "Original" : "Anonymize"}
                     </TranslateButton>
 
-                    <CopyToClipboard text={jsonPretty}>
+                    <CopyToClipboardWrap text={jsonPretty}>
                         <TranslateButton variant="outlined" onClick={closeModal}>
                             Copy
                         </TranslateButton>
-                    </CopyToClipboard>
+                    </CopyToClipboardWrap>
 
                     <TranslateButton variant="contained" onClick={closeModal} color="primary">
                         Ok
