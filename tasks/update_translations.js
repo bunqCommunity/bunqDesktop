@@ -45,7 +45,13 @@ const getCrowdinAPIData = async (update = true) => {
 
         // map key/value combos
         const keyedData = data.reduce((accumulator, translations) => {
-            accumulator[translations[0]] = { de: translations[1], nl: translations[2], it: translations[3], es: translations[4] };
+            accumulator[translations[0]] = {
+                de: translations[1],
+                nl: translations[2],
+                it: translations[3],
+                es: translations[4],
+                gr: translations[5]
+            };
             return accumulator;
         }, {});
 

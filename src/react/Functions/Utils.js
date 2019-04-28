@@ -172,6 +172,8 @@ export const getPrettyLanguage = key => {
             return "Español (Needs work)";
         case "it":
             return "Italiano (Needs work)";
+        case "gr":
+            return "Greek (Needs work)";
     }
     return key;
 };
