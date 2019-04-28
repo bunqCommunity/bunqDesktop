@@ -22,7 +22,14 @@ const styles = {
         height: 50
     },
     moneyAmountLabel: {
-        marginRight: 20
+        marginRight: 8,
+        textAlign: "right"
+    },
+    listItemSecondary: {
+        marginTop: -8
+    },
+    categoryIcons: {
+        marginTop: 12
     }
 };
 
@@ -66,12 +73,12 @@ class RequestInquiryListItem extends React.Component {
                     <LazyAttachmentImage height={50} BunqJSClient={this.props.BunqJSClient} imageUUID={imageUUID} />
                 </Avatar>
                 <ListItemText style={styles.listItemText} primary={displayName} secondary={paymentLabel} />
-                <ListItemSecondaryAction style={{ marginTop: -16 }}>
+                <ListItemSecondaryAction style={styles.listItemSecondary}>
                     <MoneyAmountLabel style={styles.moneyAmountLabel} info={requestInquiry} type="requestInquiry">
                         {formattedPaymentAmount}
                     </MoneyAmountLabel>
+                    <CategoryIcons style={styles.categoryIcons} type={"RequestInquiry"} id={requestInquiry.id} />
                 </ListItemSecondaryAction>
-                <CategoryIcons style={{ marginTop: 26 }} type={"RequestInquiry"} id={requestInquiry.id} />
             </ListItem>,
             <Divider />
         ];

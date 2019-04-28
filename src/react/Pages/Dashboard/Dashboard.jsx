@@ -109,7 +109,7 @@ class Dashboard extends React.Component {
                         color="primary"
                         indicatorColor="primary"
                         textColor="primary"
-                        fullWidth
+                        variant="fullwidth"
                     >
                         <Tab style={styles.tabItems} value="accounts" label={t("Accounts")} />
                         {displaySavingsGoals && (

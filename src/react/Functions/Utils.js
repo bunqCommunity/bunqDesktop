@@ -242,9 +242,10 @@ export const humanReadableDate = (date, displayHoursMins = true, localization = 
  * @returns {string}
  */
 export const formatIban = iban => {
+    if (!iban) return "";
     const ret = [];
-    let len;
 
+    let len;
     for (let i = 0, len = iban.length; i < len; i += 4) {
         ret.push(iban.substr(i, 4));
     }

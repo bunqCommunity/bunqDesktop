@@ -30,11 +30,11 @@ import BunqMeTab from "../Models/BunqMeTab";
 const labelFormat = (date, type = "daily") => {
     switch (type) {
         case "yearly":
-            return `year ${format(date, "YYYY")}`;
+            return `year ${format(date, "yyyy")}`;
         case "monthly":
-            return format(date, "MMM YYYY");
+            return format(date, "MMM yyyy");
         case "weekly":
-            return format(date, "ww/YYYY");
+            return format(date, "ww/yyyy");
         case "daily":
         default:
             return format(date, "dd MMM YY");
