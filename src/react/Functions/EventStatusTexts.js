@@ -127,8 +127,11 @@ export const masterCardActionParser = (masterCardAction, t) => {
     }
 
     if (masterCardAction.label_card) {
-        if (masterCardAction.wallet_provider_id === "103") {
-            return "Apple Pay " + secondaryText;
+        switch (masterCardAction.wallet_provider_id) {
+            case "103":
+                return "Apple Pay " + secondaryText;
+            case "216":
+                return "Google Pay " + secondaryText;
         }
 
         switch (masterCardAction.label_card.type) {
