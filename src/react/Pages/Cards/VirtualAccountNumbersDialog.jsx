@@ -32,25 +32,31 @@ class VirtualAccountNumbersDialog extends React.Component {
 
         if (cardInfo.type !== "MASTERCARD_VIRTUAL") return null;
 
-        const virtualCardComponents = cardInfo.primary_account_numbers_virtual
-            .filter(virtualNumber => virtualNumber.status === "ACTIVE")
-            .map(virtualNumber => {
-                const accountInfo = accounts.find(account => {
-                    return virtualNumber.monetary_account_id === account.id;
-                });
+        const virtualCardComponents = cardInfo.primary_account_numbers_virtual ? (
+            cardInfo.primary_account_numbers_virtual
+                .filter(virtualNumber => virtualNumber.status === "ACTIVE")
+                .map(virtualNumber => {
+                    const accountInfo = accounts.find(account => {
+                        return virtualNumber.monetary_account_id === account.id;
+                    });
 
-                return (
-                    <React.Fragment>
-                        <ListItem>
-                            <ListItemText
-                                primary={virtualNumber.description}
-                                secondary={`---- ---- ---- ${virtualNumber.four_digit}`}
-                            />
-                        </ListItem>
-                        {accountInfo && <AccountListItem clickable={false} account={accountInfo} />}
-                    </React.Fragment>
-                );
-            });
+                    return (
+                        <React.Fragment>
+                            <ListItem>
+                                <ListItemText
+                                    primary={virtualNumber.description}
+                                    secondary={`---- ---- ---- ${virtualNumber.four_digit}`}
+                                />
+                            </ListItem>
+                            {accountInfo && <AccountListItem clickable={false} account={accountInfo} />}
+                        </React.Fragment>
+                    );
+                })
+        ) : (
+            <ListItem>
+                <ListItemText primary={t("It seems no Virtual Account Numbers are available")} />
+            </ListItem>
+        );
 
         return (
             <React.Fragment>
