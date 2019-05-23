@@ -43,8 +43,6 @@ export function cardsUpdate(user_id) {
 export function cardsAssignAccounts(user_id, card_id, assignemnts) {
     const failedMessage = window.t("We failed to assign the accounts to this card");
 
-    console.log(user_id, card_id, assignemnts);
-
     return dispatch => {
         dispatch(cardsLoading());
         window.BunqDesktopClient.BunqJSClient.api.card

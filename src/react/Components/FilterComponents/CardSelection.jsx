@@ -86,7 +86,7 @@ class CardSelection extends React.Component {
             // ensure card exists
             if (!card) return null;
             card = card;
-            const { cardImage, cardType } = getCardTypeImage(card.type);
+            const { cardImage, cardType } = getCardTypeImage(card.type, card.cardType);
 
             // display big chip or smaller icon
             return (
@@ -114,7 +114,7 @@ class CardSelection extends React.Component {
                 if (selectedCardIds.includes(card.id)) {
                     return null;
                 }
-                const { cardImage, cardType } = getCardTypeImage(card.type);
+                const { cardImage, cardType } = getCardTypeImage(card.type, card.cardType);
 
                 return (
                     <MenuItem key={key} onClick={this.addCardId(card.id)}>
