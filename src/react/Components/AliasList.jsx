@@ -1,5 +1,4 @@
 import React from "react";
-import { CopyToClipboard } from "react-copy-to-clipboard";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -11,6 +10,7 @@ import PersonIcon from "@material-ui/icons/Person";
 import UrlIcon from "@material-ui/icons/Link";
 
 import { formatIban } from "../Functions/Utils";
+import CopyToClipboardWrap from "../Components/CopyToClipboardWrap";
 
 export default ({ aliasses, copiedValue = () => {} }) => {
     return aliasses.map(alias => {
@@ -35,9 +35,9 @@ export default ({ aliasses, copiedValue = () => {} }) => {
         return (
             <ListItem button dense={true}>
                 <ListItemIcon>{icon}</ListItemIcon>
-                <CopyToClipboard text={alias.value} onCopy={copiedValue(alias.type)}>
+                <CopyToClipboardWrap text={alias.value} onCopy={copiedValue(alias.type)}>
                     <ListItemText primary={value} />
-                </CopyToClipboard>
+                </CopyToClipboardWrap>
             </ListItem>
         );
     });

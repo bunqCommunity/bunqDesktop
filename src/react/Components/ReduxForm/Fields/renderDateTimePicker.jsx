@@ -38,7 +38,7 @@ const renderDateTimePicker = ({ t, i18n, tReady, input, label, meta: { touched, 
         <React.Fragment>
             <DateTimePicker
                 key={label}
-                format="MMMM dd, YYYY HH:mm"
+                format="MMMM dd, yyyy HH:mm"
                 cancelLabel={t("Cancel")}
                 clearLabel={t("Clear")}
                 okLabel={t("Ok")}

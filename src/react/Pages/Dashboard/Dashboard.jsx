@@ -109,7 +109,7 @@ class Dashboard extends React.Component {
                         color="primary"
                         indicatorColor="primary"
                         textColor="primary"
-                        fullWidth
+                        variant="fullwidth"
                     >
                         <Tab style={styles.tabItems} value="accounts" label={t("Accounts")} />
                         {displaySavingsGoals && (
@@ -202,31 +202,30 @@ class Dashboard extends React.Component {
                                     </Paper>
                                 )}
 
-                                {selectedTab === "savingsGoals" &&
-                                    displaySavingsGoals && (
-                                        <Paper style={styles.savingsGoalsPaper}>
-                                            <SavingsGoalsList hiddenTypes={["ended", "expired"]} type="small" />
+                                {selectedTab === "savingsGoals" && displaySavingsGoals && (
+                                    <Paper style={styles.savingsGoalsPaper}>
+                                        <SavingsGoalsList hiddenTypes={["ended", "expired"]} type="small" />
 
-                                            <TranslateButton
-                                                component={NavLink}
-                                                to="/savings-goal-page/null"
-                                                variant="outlined"
-                                                color="primary"
-                                                style={styles.savingsGoalsButton}
-                                            >
-                                                New savings goal
-                                            </TranslateButton>
+                                        <TranslateButton
+                                            component={NavLink}
+                                            to="/savings-goal-page/null"
+                                            variant="outlined"
+                                            color="primary"
+                                            style={styles.savingsGoalsButton}
+                                        >
+                                            New savings goal
+                                        </TranslateButton>
 
-                                            <TranslateButton
-                                                component={NavLink}
-                                                to="/savings-goals"
-                                                variant="outlined"
-                                                style={styles.savingsGoalsButton}
-                                            >
-                                                More details
-                                            </TranslateButton>
-                                        </Paper>
-                                    )}
+                                        <TranslateButton
+                                            component={NavLink}
+                                            to="/savings-goals"
+                                            variant="outlined"
+                                            style={styles.savingsGoalsButton}
+                                        >
+                                            More details
+                                        </TranslateButton>
+                                    </Paper>
+                                )}
                             </StickyBox>
                         </Grid>
 

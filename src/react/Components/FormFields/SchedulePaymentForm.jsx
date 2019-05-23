@@ -43,6 +43,13 @@ export default props => {
         handleChangeDirect(name)(getUTCDate(value));
     };
 
+    const wrapRecurrenceSizeChange = e => {
+        let value = e.target.value;
+        if (value <= 0) value = 1;
+
+        handleChangeDirect("recurrenceSize")(value);
+    };
+
     let scheduledPaymentText = null;
     if (schedulePayment) {
         const scheduleTextResult = scheduleTexts(t, scheduleStartDate, scheduleEndDate, recurrenceSize, recurrenceUnit);
@@ -61,7 +68,7 @@ export default props => {
                     <Grid item xs={6}>
                         <DateTimePicker
                             helperText={t("Start date")}
-                            format="MMMM dd, YYYY HH:mm"
+                            format="MMMM dd, yyyy HH:mm"
                             style={styles.textField}
                             value={scheduleStartDate}
                             onChange={date => {
@@ -89,7 +96,7 @@ export default props => {
                         <DateTimePicker
                             helperText={t("End date")}
                             emptyLabel={t("No end date")}
-                            format="MMMM dd, YYYY HH:mm"
+                            format="MMMM dd, yyyy HH:mm"
                             style={styles.textField}
                             value={scheduleEndDate}
                             onChange={date => {
@@ -114,11 +121,11 @@ export default props => {
                             style={styles.textField}
                             value={recurrenceSize}
                             disabled={recurrenceUnit === "ONCE"}
-                            onChange={handleChange("recurrenceSize")}
+                            onChange={wrapRecurrenceSizeChange}
                             helperText={"Repeat every"}
                             type={"number"}
                             inputProps={{
-                                min: 0,
+                                min: 1,
                                 step: 1
                             }}
                         />

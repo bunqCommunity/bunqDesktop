@@ -116,6 +116,7 @@ class MoneyAmountLabel extends React.Component {
                     color: theme.palette.masterCardAction.authorized,
                     ...style
                 };
+            case "REVERSED":
             case "BLOCKED":
                 return {
                     color: theme.palette.masterCardAction.blocked,

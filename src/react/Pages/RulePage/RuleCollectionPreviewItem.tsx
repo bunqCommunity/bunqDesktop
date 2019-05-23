@@ -1,9 +1,7 @@
 import * as React from "react";
-import * as CopyToClipboard from "react-copy-to-clipboard";
 import Avatar from "@material-ui/core/Avatar";
 import Collapse from "@material-ui/core/Collapse";
 import ListItem from "@material-ui/core/ListItem";
-import IconButton from "@material-ui/core/IconButton";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
@@ -13,12 +11,12 @@ import Tab from "@material-ui/core/Tab";
 
 import CheckIcon from "@material-ui/icons/Check";
 import CrossIcon from "@material-ui/icons/Cancel";
-import CopyIcon from "@material-ui/icons/FileCopy";
 
 import { EventObjectMatchingRule, EventObjectResult } from "../../Types/RuleCollection";
 import TypeRule from "../../Types/Rules/TypeRule";
 import ValueRule from "../../Types/Rules/ValueRule";
 import TransactionAmountRule from "../../Types/Rules/TransactionAmountRule";
+import CopyToClipboardWrap from "../../Components/CopyToClipboardWrap";
 
 const styles = {};
 
@@ -117,11 +115,11 @@ class RuleCollectionPreviewItem extends React.Component<any, any> {
 
                 if (foundValue) {
                     valueItems.push(
-                        <CopyToClipboard key={key} text={foundValue} onCopy={this.copiedValue}>
+                        <CopyToClipboardWrap key={key} text={foundValue} onCopy={this.copiedValue}>
                             <ListItem dense button>
                                 <ListItemText primary={valueKey.text} secondary={foundValue} />
                             </ListItem>
-                        </CopyToClipboard>
+                        </CopyToClipboardWrap>
                     );
                 }
             });

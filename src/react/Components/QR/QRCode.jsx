@@ -2,10 +2,30 @@ import React from "react";
 import QRCodeReact from "qrcode.react";
 import PropTypes from "prop-types";
 
+const styles = {
+    clickable: {
+        pointer: "cursor"
+    }
+};
+
 class QRCode extends React.PureComponent {
     render() {
-        const { size, value, style } = this.props;
-        return <QRCodeReact size={size} value={value} style={style} />;
+        const { size, value, style, onClick, ...otherProps } = this.props;
+
+        let qrOnClick = () => {};
+        if (onClick) {
+            qrOnClick = onClick;
+        }
+
+        return (
+            <QRCodeReact
+                size={size}
+                value={value}
+                style={style}
+                onClick={qrOnClick}
+                style={onClick && styles.clickable}
+            />
+        );
     }
 }
 

@@ -29,9 +29,10 @@ export function contactsSetInfo(contacts, BunqJSClient = false) {
     };
 }
 
-export function loadStoredContacts(BunqJSClient) {
+export function loadStoredContacts() {
     return dispatch => {
-        BunqJSClient.Session.loadEncryptedData(STORED_CONTACTS)
+        const BunqDesktopClient = window.BunqDesktopClient;
+        BunqDesktopClient.storeDecrypt(STORED_CONTACTS)
             .then(data => {
                 if (data && data.items) {
                     // turn plain objects into Model objects

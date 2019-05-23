@@ -124,9 +124,9 @@ class RequestInquiryBatchListItem extends React.Component {
                 ? // pick between pending or finished color
                   theme.palette.requestInquiry.pending
                 : requestItemCounts.accepted > 0
-                    ? // pick between accepted or expired if atleast 1 got accepted
-                      theme.palette.requestInquiry.accepted
-                    : theme.palette.requestInquiry.expired;
+                ? // pick between accepted or expired if atleast 1 got accepted
+                  theme.palette.requestInquiry.accepted
+                : theme.palette.requestInquiry.expired;
         if (requestItemCounts.pending === 0) {
             if (requestItemCounts.rejected > 0 || requestItemCounts.revoked > 0) {
                 strikeThrough = true;

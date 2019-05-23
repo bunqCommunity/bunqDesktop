@@ -270,7 +270,7 @@ class Settings extends React.Component {
                             style={styles.selectField}
                         >
                             {Object.keys(this.props.themeList).map(themeKey => (
-                                <MenuItem value={themeKey}>{humanReadableThemes[themeKey]}</MenuItem>
+                                <MenuItem value={themeKey}>{t(humanReadableThemes[themeKey])}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>
@@ -598,7 +598,7 @@ class Settings extends React.Component {
 
                 <Grid item xs={12} sm={4}>
                     <Button variant="outlined" style={styles.button} onClick={this.props.bunqMeTabsClear}>
-                        {t("bunq.me Tabs")} {bunqMeTabsCount}
+                        {t("bunqme Tabs")} {bunqMeTabsCount}
                     </Button>
                 </Grid>
 

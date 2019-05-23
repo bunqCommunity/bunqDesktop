@@ -5,6 +5,10 @@ import { translate } from "react-i18next";
 import { ipcRenderer } from "electron";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
+
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import TranslateButton from "../../Components/TranslationHelpers/Button";
 import ContactHeader from "./ContactHeader";
@@ -19,7 +23,6 @@ import {
     contactsSetInfoType
 } from "../../Actions/contacts";
 import { openSnackbar } from "../../Actions/snackbar";
-
 const styles = {
     row: {
         marginBottom: 8
@@ -96,42 +99,20 @@ class Contacts extends React.Component {
         this.props.contactInfoUpdateOffice365(this.state.office365AccessToken);
     };
 
-    // removeContact = (sourceType, contactKey, itemKey, itemType) => event => {
-    //     if (
-    //         this.props.contacts[sourceType] &&
-    //         this.props.contacts[sourceType][contactKey]
-    //     ) {
-    //         const contacts = this.props.contacts[sourceType];
-    //
-    //         if (itemType === "EMAIL") {
-    //             // remove this email from the list
-    //             contacts[contactKey].emails.splice(itemKey, 1);
-    //         } else if (itemType === "PHONE") {
-    //             // remove this phonenumber from the list
-    //             contacts[contactKey].phoneNumbers.splice(itemKey, 1);
-    //         }
-    //
-    //         if (
-    //             contacts[contactKey].emails.length === 0 &&
-    //             contacts[contactKey].phoneNumbers.length === 0
-    //         ) {
-    //             // remove this entire contact since no emails/phonenumbers are left
-    //             contacts.splice(contactKey, 1);
-    //         }
-    //
-    //         // set the new contacts
-    //         this.props.contactsSetInfoType(contacts, contactKey);
-    //     }
-    // };
-
     render() {
         const { t, contacts } = this.props;
 
         return (
-            <Grid container spacing={8} justify={"center"}>
+            <Grid container spacing={8}>
                 <Helmet>
                     <title>{`bunqDesktop - ${t("Contacts")}`}</title>
                 </Helmet>
+
+                <Grid item xs={12} sm={12} md={3} lg={4}>
+                    <Button onClick={this.props.history.goBack}>
+                        <ArrowBackIcon />
+                    </Button>
+                </Grid>
 
                 <Grid item xs={12} sm={10} md={6} lg={4}>
                     <Grid container spacing={8} justify={"center"}>

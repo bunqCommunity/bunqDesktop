@@ -38,7 +38,7 @@ export default props => {
                     <Grid item xs={12} sm={8}>
                         <DateTimePicker
                             helperText={t("Time limit")}
-                            format="MMMM dd, YYYY HH:mm"
+                            format="MMMM dd, yyyy HH:mm"
                             style={styles.textField}
                             value={props.timeLimit}
                             onChange={handleChangeDirect("timeLimit")}
