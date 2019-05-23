@@ -3,7 +3,7 @@
     "description": "The unofficial, free and open source desktop application for the bunq API",
     "productName": "bunqDesktop",
     "homepage": "https://bunqdesk.top/",
-    "version": "0.9.7",
+    "version": "0.9.8",
     "author": {
         "name": "bunqCommunity",
         "email": "bunqcommunity@gmail.com"

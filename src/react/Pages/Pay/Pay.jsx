@@ -234,7 +234,6 @@ class Pay extends React.Component {
                     this.props.openSnackbar(outgoingPaymentsMessage);
                     return;
                 }
-
             }
         }
 

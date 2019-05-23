@@ -124,7 +124,7 @@ const masterCardActionMapper = (masterCardActions, paymentFilterSettings, catego
                         paymentSubType = "googlePayPayment";
                         break;
                 }
-                
+
                 switch (masterCardAction.label_card.type) {
                     case "MAESTRO":
                         paymentSubType = "maestroPayment";

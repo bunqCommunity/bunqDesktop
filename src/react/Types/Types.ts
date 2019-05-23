@@ -161,10 +161,10 @@ export type PrimaryAccountNumber = {
     four_digit: string;
     id: number;
     monetary_account_id: number;
-    status: "ACTIVE"|"INACTIVE";
+    status: "ACTIVE" | "INACTIVE";
     uuid: string;
-}
-export type PrimaryAccountNumberCollection = PrimaryAccountNumber[]
+};
+export type PrimaryAccountNumberCollection = PrimaryAccountNumber[];
 
 export type RequestStatus = "ACCEPTED" | "PENDING" | "REJECTED" | "REVOKED";
 

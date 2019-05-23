@@ -33,7 +33,7 @@ export const isObject = a => {
  */
 export const getObjectType = object => {
     return Object.keys(object)[0];
-}
+};
 
 // list of keys which should be anonymized
 export const anonymizeKeys = [
