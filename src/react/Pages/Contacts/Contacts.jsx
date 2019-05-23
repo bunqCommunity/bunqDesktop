@@ -203,7 +203,7 @@ const mapDispatchToProps = (dispatch, props) => {
         contactInfoUpdateGoogle: accessToken => dispatch(contactInfoUpdateGoogle(BunqJSClient, accessToken)),
         contactInfoUpdateApple: filePaths => dispatch(contactInfoUpdateApple(BunqJSClient, filePaths)),
         contactInfoUpdateOffice365: accessToken => dispatch(contactInfoUpdateOffice365(BunqJSClient, accessToken)),
-        contactsSetInfoType: (contacts, type) => dispatch(contactsSetInfoType(contacts, type, BunqJSClient)),
+        contactsSetInfoType: (contacts, type) => dispatch(contactsSetInfoType(contacts, type)),
         clearContacts: (type = false) => dispatch(contactsClear(BunqJSClient, type)),
         openSnackbar: message => dispatch(openSnackbar(message))
     };
