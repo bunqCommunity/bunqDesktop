@@ -92,6 +92,8 @@ export const paymentTypeParser = (paymentType, t) => {
 };
 
 export const masterCardActionText = (masterCardAction, t) => {
+    const reversedText = t("The payment was reversed");
+
     switch (masterCardAction.authorisation_status) {
         case "AUTHORISED":
             return `${t("Sent payment with ")}${masterCardActionParser(masterCardAction, t)}`;
@@ -103,7 +105,11 @@ export const masterCardActionText = (masterCardAction, t) => {
             }
             return t("Payment was refunded");
         case "REVERSED":
-            return t("The payment was reversed");
+            const authorisationTypeText = masterCardActionAuthorisationType(masterCardAction.authorisation_type, t);
+            if (authorisationTypeText) {
+                return `${reversedText}: ${authorisationTypeText}`;
+            }
+            return reversedText;
         default:
             return `${t("The payment currently has the status ")}${masterCardAction.authorisation_status} - ${
                 masterCardAction.authorisation_type
@@ -111,15 +117,38 @@ export const masterCardActionText = (masterCardAction, t) => {
     }
 };
 
+export const masterCardActionAuthorisationType = (authorisationType, t) => {
+    const authorisationPayment = t("Authorisation payment");
+
+    switch (authorisationType) {
+        case "ACCOUNT_STATUS":
+        case "NORMAL_AUTHORISATION":
+            return authorisationPayment;
+        default:
+            return "";
+    }
+};
+
 export const masterCardActionParser = (masterCardAction, t) => {
     const defaultMessage = t("Card payment");
     const paymentText = t("Payment");
     const refundText = t("Refund");
+    const reversedText = t("Reversed");
+    const authorisationPayment = t("Authorisation");
     const atmText = t("ATM Withdrawal");
 
     let secondaryText = paymentText;
     if (masterCardAction.authorisation_status === "CLEARING_REFUND") {
         secondaryText = refundText;
+    } else if (masterCardAction.authorisation_status === "REVERSED") {
+        if (
+            masterCardAction.authorisation_type === "NORMAL_AUTHORISATION" ||
+            masterCardAction.authorisation_type === "ACCOUNT_STATUS"
+        ) {
+            secondaryText = authorisationPayment;
+        } else {
+            secondaryText = reversedText;
+        }
     }
 
     if (masterCardAction.pan_entry_mode_user === "ATM") {
