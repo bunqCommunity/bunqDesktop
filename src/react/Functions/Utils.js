@@ -27,6 +27,14 @@ export const isObject = a => {
     return !!a && a.constructor === Object;
 };
 
+/**
+ * Returns first key of Object list to get type
+ * @param object
+ */
+export const getObjectType = object => {
+    return Object.keys(object)[0];
+}
+
 // list of keys which should be anonymized
 export const anonymizeKeys = [
     "card_authorisation_id_response",

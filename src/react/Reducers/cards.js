@@ -18,7 +18,7 @@ export default (state = defaultState, action) => {
             const cards = action.payload.cards;
 
             cards.forEach(card => {
-                const cardId = card.CardDebit.id;
+                const cardId = card.id;
                 if (!cardOrder.includes(cardId)) {
                     cardOrder.push(cardId);
                 }

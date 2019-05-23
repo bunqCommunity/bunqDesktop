@@ -1,4 +1,5 @@
 import BunqErrorHandler from "../Functions/BunqErrorHandler";
+import Card from "../Models/Card";
 
 export function cardsSetInfo(cards, user_id) {
     return {
@@ -27,7 +28,9 @@ export function cardsUpdate(user_id) {
         window.BunqDesktopClient.BunqJSClient.api.card
             .list(user_id)
             .then(cards => {
-                dispatch(cardsSetInfo(cards, user_id));
+                const wrappedCards = cards.map(card => new Card(card));
+
+                dispatch(cardsSetInfo(wrappedCards, user_id));
                 dispatch(cardsNotLoading());
             })
             .catch(error => {

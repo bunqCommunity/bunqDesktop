@@ -81,11 +81,11 @@ class CardSelection extends React.Component {
         const { t, cards, selectedCardIds, toggleCardIds } = this.props;
 
         const selectedCardChipItems = selectedCardIds.map((cardId, key) => {
-            let card = cards.find(card => card.CardDebit.id === cardId);
+            let card = cards.find(card => card.id === cardId);
 
             // ensure card exists
             if (!card) return null;
-            card = card.CardDebit;
+            card = card;
             const { cardImage, cardType } = getCardTypeImage(card.type);
 
             // display big chip or smaller icon
@@ -101,14 +101,14 @@ class CardSelection extends React.Component {
 
         const cardMenuItems = Object.keys(cards)
             .filter(cardIndex => {
-                const card = cards[cardIndex].CardDebit;
+                const card = cards[cardIndex];
                 if (card && card.status !== "ACTIVE") {
                     return false;
                 }
                 return true;
             })
             .map((cardIndex, key) => {
-                const card = cards[cardIndex].CardDebit;
+                const card = cards[cardIndex];
 
                 // don't display already selected items
                 if (selectedCardIds.includes(card.id)) {

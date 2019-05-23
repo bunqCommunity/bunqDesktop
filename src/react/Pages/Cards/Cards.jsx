@@ -87,7 +87,7 @@ class Cards extends React.Component {
         if (this.state.displayInactive) return true;
 
         // filter if not active
-        return !(card.CardDebit && card.CardDebit.status !== "ACTIVE");
+        return !(card && card.status !== "ACTIVE");
     };
     sortCards = (card1, card2) => {
         const card1OrderIndex = this.findCardOrderIndex(card1);
@@ -97,7 +97,7 @@ class Cards extends React.Component {
     };
     findCardOrderIndex = card => {
         return this.props.cardsOrder.findIndex(cardId => {
-            return cardId === card.CardDebit.id;
+            return cardId === card.id;
         });
     };
 
@@ -156,7 +156,7 @@ class Cards extends React.Component {
     handleAccountChange = type => index => {
         const filteredCards = this.getCardsList();
         const selectedCardIndex = this.state.selectedCardIndex;
-        const cardInfo = filteredCards[selectedCardIndex].CardDebit;
+        const cardInfo = filteredCards[selectedCardIndex];
         const selectedAccount = this.props.accounts[index];
 
         let primaryAssignment = cardInfo.pin_code_assignment.find(assignment => {
@@ -189,7 +189,7 @@ class Cards extends React.Component {
     handleSecondaryRemoval = event => {
         const filteredCards = this.getCardsList();
         const selectedCardIndex = this.state.selectedCardIndex;
-        const cardInfo = filteredCards[selectedCardIndex].CardDebit;
+        const cardInfo = filteredCards[selectedCardIndex];
 
         let primaryAssignment = cardInfo.pin_code_assignment.find(assignment => {
             return assignment.type === "PRIMARY";
@@ -212,8 +212,8 @@ class Cards extends React.Component {
             const cardOrderIndex = this.findCardOrderIndex(cardInfo);
 
             // switch the indexes
-            cardsOrder.splice(cardOrderAboveIndex, 1, cardInfo.CardDebit.id);
-            cardsOrder.splice(cardOrderIndex, 1, cardInfoAbove.CardDebit.id);
+            cardsOrder.splice(cardOrderAboveIndex, 1, cardInfo.id);
+            cardsOrder.splice(cardOrderIndex, 1, cardInfoAbove.id);
 
             this.props.cardsSetCardOrder(cardsOrder);
             this.setState({
@@ -234,8 +234,8 @@ class Cards extends React.Component {
             const cardOrderIndex = this.findCardOrderIndex(cardInfo);
 
             // switch the indexes
-            cardsOrder.splice(cardOrderUnderIndex, 1, cardInfo.CardDebit.id);
-            cardsOrder.splice(cardOrderIndex, 1, cardInfoUnder.CardDebit.id);
+            cardsOrder.splice(cardOrderUnderIndex, 1, cardInfo.id);
+            cardsOrder.splice(cardOrderIndex, 1, cardInfoUnder.id);
 
             this.props.cardsSetCardOrder(cardsOrder);
             this.setState({
@@ -255,7 +255,7 @@ class Cards extends React.Component {
             cardItems = filteredCards.map((card, index) => (
                 <CardListItem
                     BunqJSClient={this.props.BunqJSClient}
-                    card={card.CardDebit}
+                    card={card}
                     onClick={this.handleCardClick.bind(this, index)}
                 />
             ));
@@ -286,12 +286,23 @@ class Cards extends React.Component {
             );
         }
 
-        const cardInfo = filteredCards[selectedCardIndex].CardDebit;
+        const cardInfo = filteredCards[selectedCardIndex];
         const translateOffset = selectedCardIndex * 410;
         const carouselTranslate = "translateY(-" + translateOffset + "px)";
 
         let second_line = cardInfo.second_line;
-        if (second_line.length === 0 && cardInfo.type === "MAESTRO_MOBILE_NFC") {
+        const primaryNumbers = cardInfo.primary_account_numbers;
+        if (primaryNumbers && primaryNumbers.length > 0) {
+            // if no status is set or status is ACTIVE use alternative second line
+            const firstActivePrimaryNumber = primaryNumbers.find(primaryNumber => {
+                if (!primaryNumber.status) return true;
+                return primaryNumber.status === "ACTIVE";
+            });
+
+            if (firstActivePrimaryNumber) {
+                second_line = firstActivePrimaryNumber.description;
+            }
+        } else if (second_line.length === 0 && cardInfo.type === "MAESTRO_MOBILE_NFC") {
             second_line = "Apple Pay";
         }
 
