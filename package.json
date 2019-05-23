@@ -255,7 +255,7 @@
         "universal-analytics": "^0.4.15",
         "vcf": "^2.0.1",
         "webpack": "4.19.0",
-        "webpack-bundle-analyzer": "^2.13.1",
+        "webpack-bundle-analyzer": "^3.3.2",
         "webpack-cli": "^3.1.0",
         "worker-loader": "^2.0.0"
     }
