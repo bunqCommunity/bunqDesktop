@@ -1,9 +1,5 @@
 import { STORED_CONTACTS } from "../Actions/contacts";
 import { storeEncryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
-import { STORED_ACCOUNTS } from "../Actions/accounts";
-import store from "store";
-import { ipcRenderer } from "electron";
-import { SELECTED_ACCOUNT_LOCAION } from "./accounts";
 
 export const defaultState = {
     last_update: new Date().getTime(),
