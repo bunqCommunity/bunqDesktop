@@ -70,6 +70,7 @@ class BunqMeTab extends React.Component {
                     <Paper style={styles.paper}>
                         <BunqMeTabList
                             BunqJSClient={this.props.BunqJSClient}
+                            t={t}
                             secondaryActions={
                                 this.props.limitedPermissions ? null : (
                                     <IconButton aria-label="Toggle the form" onClick={this.toggleForm}>
