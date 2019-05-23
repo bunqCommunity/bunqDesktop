@@ -105,6 +105,9 @@ export default (window, log) => {
         consentWindow.webContents.on("will-navigate", function(event, receivedUrl) {
             handleUrl(receivedUrl);
         });
+        consentWindow.webContents.on("will-redirect", function(event, receivedUrl) {
+            handleUrl(receivedUrl);
+        });
 
         consentWindow.webContents.on("did-get-redirect-request", function(event, oldUrl, newUrl) {
             handleUrl(newUrl);
@@ -145,6 +148,9 @@ export default (window, log) => {
 
         // check if the page changed and we received a valid url
         consentWindow.webContents.on("will-navigate", function(event, receivedUrl) {
+            handleUrl(receivedUrl);
+        });
+        consentWindow.webContents.on("will-redirect", function(event, receivedUrl) {
             handleUrl(receivedUrl);
         });
 
@@ -191,6 +197,9 @@ export default (window, log) => {
 
         // check if the page changed and we received a valid url
         consentWindow.webContents.on("will-navigate", function(event, receivedUrl) {
+            handleUrl(receivedUrl);
+        });
+        consentWindow.webContents.on("will-redirect", function(event, receivedUrl) {
             handleUrl(receivedUrl);
         });
 

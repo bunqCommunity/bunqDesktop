@@ -187,7 +187,7 @@
         "csv-parse": "^4.0.1",
         "date-fns": "^2.0.0-alpha.16",
         "dotenv": "^6.1.0",
-        "electron": "^4.0.7",
+        "electron": "4.2.2",
         "electron-builder": "^20.38.5",
         "electron-reload": "^1.4.0",
         "email-validator": "^1.1.1",
