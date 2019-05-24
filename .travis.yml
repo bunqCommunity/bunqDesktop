@@ -113,7 +113,7 @@ deploy:
 
 
 after_success:
-  - openssl aes-256-cbc -K $encrypted_6a955bf10c5f_key -iv $encrypted_6a955bf10c5f_iv -in .snapcraft/travis_snapcraft.cfg -out .snapcraft/snapcraft.cfg -d
+  - openssl aes-256-cbc -K $encrypted_68d7de2f7cf4_key -iv $encrypted_68d7de2f7cf4_iv -in .snapcraft/travis_snapcraft.cfg -out .snapcraft/snapcraft.cfg -d
 
 env:
   global:
