@@ -19,7 +19,8 @@ Download the latest version of bunqDesktop from the [GitHub releases page](https
 
 There is also a [Nightly build](https://github.com/bunqCommunity/bunqDesktop/releases/snapshot) which is built automatically every night and contains the latest experimental changes and features. Only use this if you want to test new features and are okay with potential errors.
 
-#### [Snapcraft](https://snapcraft.io/bunqdesktop)
+#### [Snapcraft](https://snapcraft.io/bunqdesktop) [![bunqDesktop](https://snapcraft.io/bunqdesktop/badge.svg)](https://snapcraft.io/bunqdesktop)
+
 You can directly search for 'bunqDesktop' in the Ubuntu store or use  the snap command.
 
 `sudo snap install bunqdesktop`
