@@ -4,8 +4,8 @@ version: '0.9.8'
 summary: The unofficial, free and open source desktop application for the bunq API
 description: The unofficial, free and open source desktop application for the bunq API
 
-grade: stable
-confinement: classic
+grade: edge
+confinement: strict
 parts:
     my-part:
         plugin: nil
