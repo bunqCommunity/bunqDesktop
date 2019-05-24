@@ -8,11 +8,10 @@ import fs from "../ImportWrappers/fs";
 
 export const STORED_CONTACTS = "BUNQDESKTOP_STORED_CONTACTS";
 
-export function contactsSetInfoType(contacts, type, BunqJSClient = false) {
+export function contactsSetInfoType(contacts, type) {
     return {
         type: "CONTACTS_SET_INFO_TYPE",
         payload: {
-            BunqJSClient,
             type: type,
             contacts: contacts
         }
@@ -29,9 +28,10 @@ export function contactsSetInfo(contacts, BunqJSClient = false) {
     };
 }
 
-export function loadStoredContacts(BunqJSClient) {
+export function loadStoredContacts() {
     return dispatch => {
-        BunqJSClient.Session.loadEncryptedData(STORED_CONTACTS)
+        const BunqDesktopClient = window.BunqDesktopClient;
+        BunqDesktopClient.storeDecrypt(STORED_CONTACTS)
             .then(data => {
                 if (data && data.items) {
                     // turn plain objects into Model objects
@@ -121,7 +121,7 @@ export function contactInfoUpdateGoogle(BunqJSClient, accessToken) {
                 }
 
                 // set the contacts
-                dispatch(contactsSetInfoType(collectedEntries, "GoogleContacts", BunqJSClient));
+                dispatch(contactsSetInfoType(collectedEntries, "GoogleContacts"));
                 dispatch(contactsNotLoading());
             })
             .catch(error => {
@@ -201,7 +201,7 @@ export function contactInfoUpdateOffice365(BunqJSClient, accessToken) {
                 }
 
                 // set the contacts
-                dispatch(contactsSetInfoType(collectedEntries, "Office365", BunqJSClient));
+                dispatch(contactsSetInfoType(collectedEntries, "Office365"));
                 dispatch(contactsNotLoading());
             })
             .catch(error => {
@@ -283,7 +283,7 @@ export function contactInfoUpdateApple(BunqJSClient, files) {
         });
 
         // set the contacts
-        dispatch(contactsSetInfoType(collectedEntries, "AppleContacts", BunqJSClient));
+        dispatch(contactsSetInfoType(collectedEntries, "AppleContacts"));
         dispatch(contactsNotLoading());
     };
 }

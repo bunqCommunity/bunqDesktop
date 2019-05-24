@@ -1,9 +1,4 @@
 import { STORED_CONTACTS } from "../Actions/contacts";
-import { storeEncryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
-import { STORED_ACCOUNTS } from "../Actions/accounts";
-import store from "store";
-import { ipcRenderer } from "electron";
-import { SELECTED_ACCOUNT_LOCAION } from "./accounts";
 
 export const defaultState = {
     last_update: new Date().getTime(),
@@ -17,9 +12,12 @@ const uniqueArray = a => {
 
 export default function reducer(state = defaultState, action) {
     switch (action.type) {
-        case "CONTACTS_SET_INFO_TYPE":
+        case "CONTACTS_SET_INFO_TYPE": {
+            const currentContactState = { ...state.contacts };
             const contacts = action.payload.contacts;
-            const currentContacts = state.contacts[action.payload.type];
+            const contactType = action.payload.type;
+
+            const currentContacts = currentContactState[contactType] ? currentContactState[contactType] : [];
 
             // go through all contacts and combine theme
             contacts.map(newContact => {
@@ -54,48 +52,44 @@ export default function reducer(state = defaultState, action) {
             });
 
             // set the new combined contacts for this type
-            state.contacts[action.payload.type] = sortedCombinedContacts;
+            currentContactState[action.payload.type] = sortedCombinedContacts;
 
-            // store the data if we have access to the bunqjsclient
-            if (action.payload.BunqJSClient) {
-                storeEncryptString(
-                    {
-                        items: state.contacts
-                    },
-                    STORED_CONTACTS
-                )
-                    .then(() => {})
-                    .catch(() => {});
-            }
+            const BunqDesktopClient = window.BunqDesktopClient;
+            BunqDesktopClient.storeEncrypt(
+                {
+                    items: currentContactState
+                },
+                STORED_CONTACTS
+            )
+                .then(() => {})
+                .catch(() => {});
 
             return {
                 ...state,
                 last_update: new Date().getTime(),
-                contacts: state.contacts
+                contacts: currentContactState
             };
+        }
 
-        case "CONTACTS_SET_INFO":
+        case "CONTACTS_SET_INFO": {
             const contacts2 = action.payload.contacts;
 
-            // store the data if we have access to the bunqjsclient
-            if (action.payload.BunqJSClient) {
-                const BunqDesktopClient = window.BunqDesktopClient;
-                BunqDesktopClient.storeEncrypt(
-                    {
-                        items: contacts2
-                    },
-                    STORED_CONTACTS
-                )
-                    .then(() => {})
-                    .catch(() => {});
-            }
+            const BunqDesktopClient = window.BunqDesktopClient;
+            BunqDesktopClient.storeEncrypt(
+                {
+                    items: contacts2
+                },
+                STORED_CONTACTS
+            )
+                .then(() => {})
+                .catch(() => {});
 
             return {
                 ...state,
                 last_update: new Date().getTime(),
                 contacts: contacts2
             };
-
+        }
         case "CONTACTS_IS_LOADING":
             return {
                 ...state,

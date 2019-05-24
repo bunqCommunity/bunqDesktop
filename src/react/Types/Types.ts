@@ -40,6 +40,8 @@ export type Alias = {
     name: string;
 };
 
+export type AssignmentType = "PRIMARY" | "SECONDARY" | "TERTIARY";
+
 export type Attachment = {
     id: number;
     monetary_account_id: number;
@@ -74,6 +76,15 @@ export type BunqMeTabResultInquiry = {
     payment: Payment;
     bunq_me_tab_id: number;
 };
+
+export type CardType = "CardDebit" | "CardCredit";
+
+export type CountryPermission = {
+    id: number;
+    country: string;
+    expiry_time: string;
+};
+export type CountryPermissionCollection = CountryPermission[] | null;
 
 export type ExtendedAlias = Alias & {
     public_nick_name: string;
@@ -134,6 +145,26 @@ export type PaymentAlias = {
 export type PaymentSubType = "PAYMENT" | "WITHDRAWAL" | "REVERSAL" | "REQUEST" | "BILLING" | "SCT" | "SDD" | "NLO";
 
 export type PaymentType = "MASTERCARD" | "BUNQ" | "EBA_SCT" | "EBA_SDD" | "IDEAL" | "SWIFT" | "FIS";
+
+export type PinCodeAssignment = {
+    id: number;
+    type: AssignmentType;
+    pin_code?: string;
+    monetary_account_id: number;
+    updated: string;
+    created: string;
+};
+export type PinCodeAssignmentCollection = PinCodeAssignment[];
+
+export type PrimaryAccountNumber = {
+    description: string;
+    four_digit: string;
+    id: number;
+    monetary_account_id: number;
+    status: "ACTIVE" | "INACTIVE";
+    uuid: string;
+};
+export type PrimaryAccountNumberCollection = PrimaryAccountNumber[];
 
 export type RequestStatus = "ACCEPTED" | "PENDING" | "REJECTED" | "REVOKED";
 

@@ -1,21 +1,31 @@
 import React from "react";
 import { connect } from "react-redux";
+import Link from "react-router-dom/Link";
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Divider from "@material-ui/core/Divider";
+import Chip from "@material-ui/core/Chip";
+import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
+
 import Visible from "@material-ui/icons/Visibility";
 import VisibleOff from "@material-ui/icons/VisibilityOff";
+import UrlIcon from "@material-ui/icons/Link";
 
 import BunqMeTabListItem from "./ListItems/BunqMeTabListItem";
+
 import { openSnackbar } from "../Actions/snackbar";
 import { bunqMeTabPut } from "../Actions/bunq_me_tab";
 
 const styles = {
     list: {
         textAlign: "left"
+    },
+    chip: {
+        cursor: "pointer",
+        marginRight: 8
     }
 };
 
@@ -36,6 +46,7 @@ class BunqMeTabList extends React.Component {
     };
 
     render() {
+        const { t } = this.props;
         const loadingContent = this.props.bunqMeTabsLoading ? <LinearProgress /> : <Divider />;
 
         const bunqMeTabs = this.props.bunqMeTabs.map(bunqMeTab => {
@@ -61,6 +72,18 @@ class BunqMeTabList extends React.Component {
                 <ListSubheader>
                     bunq.me requests - {bunqMeTabs.length}
                     <ListItemSecondaryAction>
+                        <Chip
+                            style={styles.chip}
+                            avatar={
+                                <Avatar>
+                                    <UrlIcon />
+                                </Avatar>
+                            }
+                            component={Link}
+                            label={t("bunqme links")}
+                            to="/bunqme-personal"
+                        />
+
                         <IconButton
                             aria-label="Display or hide expired and cancelled bunqme requests"
                             onClick={this.toggleTabVisibility}

@@ -229,11 +229,11 @@ class Pay extends React.Component {
                     this.setState({
                         sendDraftPayment: true
                     });
-                }
 
-                // notify the user
-                this.props.openSnackbar(outgoingPaymentsMessage);
-                return;
+                    // notify the user
+                    this.props.openSnackbar(outgoingPaymentsMessage);
+                    return;
+                }
             }
         }
 

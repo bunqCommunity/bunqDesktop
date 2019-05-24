@@ -3,7 +3,7 @@
     "description": "The unofficial, free and open source desktop application for the bunq API",
     "productName": "bunqDesktop",
     "homepage": "https://bunqdesk.top/",
-    "version": "0.9.7",
+    "version": "0.9.8",
     "author": {
         "name": "bunqCommunity",
         "email": "bunqcommunity@gmail.com"
@@ -187,7 +187,7 @@
         "csv-parse": "^4.0.1",
         "date-fns": "^2.0.0-alpha.16",
         "dotenv": "^6.1.0",
-        "electron": "^4.0.7",
+        "electron": "4.2.2",
         "electron-builder": "^20.38.5",
         "electron-reload": "^1.4.0",
         "email-validator": "^1.1.1",
@@ -255,7 +255,7 @@
         "universal-analytics": "^0.4.15",
         "vcf": "^2.0.1",
         "webpack": "4.19.0",
-        "webpack-bundle-analyzer": "^2.13.1",
+        "webpack-bundle-analyzer": "^3.3.2",
         "webpack-cli": "^3.1.0",
         "worker-loader": "^2.0.0"
     }

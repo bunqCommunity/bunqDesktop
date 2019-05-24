@@ -116,20 +116,25 @@ const masterCardActionMapper = (masterCardActions, paymentFilterSettings, catego
             if (validTypes.includes(masterCardAction.authorisation_status)) {
                 let paymentSubType = "";
 
-                if (masterCardAction.wallet_provider_id === "103") {
-                    paymentSubType = "applePayPayment";
-                } else {
-                    switch (masterCardAction.label_card.type) {
-                        case "MAESTRO":
-                            paymentSubType = "maestroPayment";
-                            break;
-                        case "MASTERCARD":
-                            paymentSubType = "masterCardPayment";
-                            break;
-                        case "MAESTRO_MOBILE_NFC":
-                            paymentSubType = "tapAndPayPayment";
-                            break;
-                    }
+                switch (masterCardAction.wallet_provider_id) {
+                    case "103":
+                        paymentSubType = "applePayPayment";
+                        break;
+                    case "216":
+                        paymentSubType = "googlePayPayment";
+                        break;
+                }
+
+                switch (masterCardAction.label_card.type) {
+                    case "MAESTRO":
+                        paymentSubType = "maestroPayment";
+                        break;
+                    case "MASTERCARD":
+                        paymentSubType = "masterCardPayment";
+                        break;
+                    case "MAESTRO_MOBILE_NFC":
+                        paymentSubType = "tapAndPayPayment";
+                        break;
                 }
 
                 data.push({
@@ -375,7 +380,8 @@ const getData = (events, categories, timeFrom = null, timeTo = new Date(), type 
             masterCardPayment: 0,
             maestroPayment: 0,
             tapAndPayPayment: 0,
-            applePayPayment: 0
+            applePayPayment: 0,
+            googlePayPayment: 0
         };
 
         let timescaleChange = 0;
