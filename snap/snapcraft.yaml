@@ -1,0 +1,11 @@
+name: bunqdesktop
+base: core18
+version: '0.9.8'
+summary: The unofficial, free and open source desktop application for the bunq API
+description: The unofficial, free and open source desktop application for the bunq API
+
+grade: stable
+confinement: classic
+parts:
+    my-part:
+        plugin: nil
