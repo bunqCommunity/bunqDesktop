@@ -23,6 +23,7 @@ import VirtualAccountNumbersDialog from "./VirtualAccountNumbersDialog";
 import TranslateTypography from "../../Components/TranslationHelpers/Typography";
 import AccountSelectorDialog from "../../Components/FormFields/AccountSelectorDialog";
 
+import { getCardDescription } from "../../Functions/Utils";
 import { cardStatus, cardOrderStatus } from "../../Functions/EventStatusTexts";
 import { cardsUpdate, cardsSetCardOrder, cardsAssignAccounts } from "../../Actions/cards";
 
@@ -290,21 +291,7 @@ class Cards extends React.Component {
         const translateOffset = selectedCardIndex * 410;
         const carouselTranslate = "translateY(-" + translateOffset + "px)";
 
-        let second_line = cardInfo.second_line;
-        const primaryNumbers = cardInfo.primary_account_numbers;
-        if (primaryNumbers && primaryNumbers.length > 0) {
-            // if no status is set or status is ACTIVE use alternative second line
-            const firstActivePrimaryNumber = primaryNumbers.find(primaryNumber => {
-                if (!primaryNumber.status) return true;
-                return primaryNumber.status === "ACTIVE";
-            });
-
-            if (firstActivePrimaryNumber) {
-                second_line = firstActivePrimaryNumber.description;
-            }
-        } else if (second_line.length === 0 && cardInfo.type === "MAESTRO_MOBILE_NFC") {
-            second_line = "Apple Pay";
-        }
+        const cardDescription = getCardDescription(cardInfo);
 
         const primaryAssignment = cardInfo.pin_code_assignment.find(assignment => {
             return assignment.type === "PRIMARY";
@@ -382,7 +369,7 @@ class Cards extends React.Component {
                                 <Grid container spacing={16}>
                                     <Grid item xs={12} sm={6}>
                                         <Typography variant="h6">{cardInfo.name_on_card}</Typography>
-                                        <Typography variant="subtitle1">{second_line}</Typography>
+                                        <Typography variant="subtitle1">{cardDescription}</Typography>
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Typography variant="body1" style={{ textAlign: "right" }}>

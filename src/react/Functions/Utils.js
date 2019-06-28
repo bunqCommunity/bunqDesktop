@@ -246,6 +246,30 @@ export const humanReadableDate = (date, displayHoursMins = true, localization = 
     return `${createDate.getDate()} ${month} ${hoursMinutes}`;
 };
 
+export const getCardDescription = card => {
+    let second_line = card.second_line;
+    console.log(card, second_line);
+    const primaryNumbers = card.primary_account_numbers;
+    if (primaryNumbers && primaryNumbers.length > 0) {
+        // if no status is set or status is ACTIVE use alternative second line
+        const firstActivePrimaryNumber = primaryNumbers.find(primaryNumber => {
+            if (!primaryNumber.status) return true;
+            return primaryNumber.status === "ACTIVE";
+        });
+
+        if (firstActivePrimaryNumber) {
+            second_line = firstActivePrimaryNumber.description;
+        }
+    } else if (second_line.length === 0 && card.type === "MAESTRO_MOBILE_NFC") {
+        second_line = "Apple Pay";
+    }
+
+    console.log(card, second_line);
+    console.log("");
+
+    return second_line || card.type;
+};
+
 /**
  * Adds space every fourth character for IBAN numbers
  * @param iban
