@@ -12,10 +12,12 @@ const uniqueArray = a => {
 
 export default function reducer(state = defaultState, action) {
     switch (action.type) {
-        case "CONTACTS_SET_INFO_TYPE":
+        case "CONTACTS_SET_INFO_TYPE": {
+            const currentContactState = { ...state.contacts };
             const contacts = action.payload.contacts;
-            const stateContacts = state.contacts[action.payload.type];
-            const currentContacts = stateContacts ? [...stateContacts] : [];
+            const contactType = action.payload.type;
+
+            const currentContacts = currentContactState[contactType] ? currentContactState[contactType] : [];
 
             // go through all contacts and combine theme
             contacts.map(newContact => {
@@ -50,42 +52,37 @@ export default function reducer(state = defaultState, action) {
             });
 
             // set the new combined contacts for this type
-            stateContacts[action.payload.type] = sortedCombinedContacts;
+            currentContactState[action.payload.type] = sortedCombinedContacts;
 
-            // store the data if we have access to the bunqjsclient
-            if (action.payload.BunqJSClient) {
-                const BunqDesktopClient = window.BunqDesktopClient;
-                BunqDesktopClient.storeEncrypt(
-                    {
-                        items: stateContacts
-                    },
-                    STORED_CONTACTS
-                )
-                    .then(() => {})
-                    .catch(() => {});
-            }
+            const BunqDesktopClient = window.BunqDesktopClient;
+            BunqDesktopClient.storeEncrypt(
+                {
+                    items: currentContactState
+                },
+                STORED_CONTACTS
+            )
+                .then(() => {})
+                .catch(() => {});
 
             return {
                 ...state,
                 last_update: new Date().getTime(),
-                contacts: stateContacts
+                contacts: currentContactState
             };
+        }
 
         case "CONTACTS_SET_INFO": {
             const contacts2 = action.payload.contacts;
 
-            // store the data if we have access to the bunqjsclient
-            if (action.payload.BunqJSClient) {
-                const BunqDesktopClient = window.BunqDesktopClient;
-                BunqDesktopClient.storeEncrypt(
-                    {
-                        items: contacts2
-                    },
-                    STORED_CONTACTS
-                )
-                    .then(() => {})
-                    .catch(() => {});
-            }
+            const BunqDesktopClient = window.BunqDesktopClient;
+            BunqDesktopClient.storeEncrypt(
+                {
+                    items: contacts2
+                },
+                STORED_CONTACTS
+            )
+                .then(() => {})
+                .catch(() => {});
 
             return {
                 ...state,
