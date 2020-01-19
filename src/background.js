@@ -17,6 +17,7 @@ import registerTouchBar from "./helpers/touchbar";
 import setupTrayIcon from "./helpers/tray";
 import settingsHelper from "./helpers/settings";
 import oauth from "./helpers/oauth";
+import devTools from "./helpers/devtools";
 import env from "./env";
 
 // disable security warnings since we need cross-origin requests
@@ -126,7 +127,11 @@ app.on("ready", () => {
         mainWindow.focus();
 
         if (env.name === "development") {
-            mainWindow.openDevTools();
+            // Add React dev tools
+            devTools()
+              .catch(console.error)
+              .then(() => mainWindow.openDevTools())
+            ;
         }
     });
 
