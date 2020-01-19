@@ -14,7 +14,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 
 import { formatMoney } from "../../Functions/Utils";
-import { filterShareInviteBankResponses } from "../../Functions/DataFilters";
+import { filterShareInviteMonetaryAccountResponses } from "../../Functions/DataFilters";
 import { connectGetBudget } from "../../Functions/ConnectGetPermissions";
 
 const styles = {
@@ -30,11 +30,11 @@ const styles = {
     }
 };
 
-const AccountItem = ({ account, onClick, BunqJSClient, hideBalance, shareInviteBankResponses }) => {
+const AccountItem = ({ account, onClick, BunqJSClient, hideBalance, shareInviteMonetaryAccountResponses }) => {
     // format default balance
     let formattedBalance = account.balance ? account.balance.value : 0;
 
-    const filteredInviteResponses = shareInviteBankResponses.filter(filterShareInviteBankResponses(account.id));
+    const filteredInviteResponses = shareInviteMonetaryAccountResponses.filter(filterShareInviteMonetaryAccountResponses(account.id));
 
     // attempt to get connect budget if possible
     if (filteredInviteResponses.length > 0) {
@@ -91,7 +91,7 @@ class AccountSelectorDialog extends React.Component {
             accounts,
             value,
             hiddenConnectTypes,
-            shareInviteBankResponses,
+            shareInviteMonetaryAccountResponses,
             t,
             ...otherProps
         } = this.props;
@@ -105,15 +105,15 @@ class AccountSelectorDialog extends React.Component {
                 return account.status === "ACTIVE";
             })
             .filter(account => {
-                const filteredInviteResponses = shareInviteBankResponses.filter(
-                    filterShareInviteBankResponses(account.id)
+                const filteredInviteResponses = shareInviteMonetaryAccountResponses.filter(
+                    filterShareInviteMonetaryAccountResponses(account.id)
                 );
 
                 // no results means no filter required
                 if (filteredInviteResponses.length == 0) return true;
 
                 const firstInviteResponse = filteredInviteResponses.pop();
-                const inviteResponse = firstInviteResponse.ShareInviteBankResponse;
+                const inviteResponse = firstInviteResponse.ShareInviteMonetaryAccountResponse;
 
                 // get the key values for this list
                 const shareDetailKeys = Object.keys(inviteResponse.share_detail);
@@ -130,7 +130,7 @@ class AccountSelectorDialog extends React.Component {
             .map((account, accountKey) => {
                 return (
                     <AccountItem
-                        shareInviteBankResponses={shareInviteBankResponses}
+                        shareInviteMonetaryAccountResponses={shareInviteMonetaryAccountResponses}
                         onClick={this.onClickHandler(accountKey)}
                         hideBalance={this.props.hideBalance}
                         BunqJSClient={BunqJSClient}
@@ -143,7 +143,7 @@ class AccountSelectorDialog extends React.Component {
         if (value !== "" && accounts[value]) {
             selectedAccountItem = (
                 <AccountItem
-                    shareInviteBankResponses={shareInviteBankResponses}
+                    shareInviteMonetaryAccountResponses={shareInviteMonetaryAccountResponses}
                     hideBalance={this.props.hideBalance}
                     BunqJSClient={BunqJSClient}
                     account={accounts[value]}
@@ -185,7 +185,7 @@ AccountSelectorDialog.defaultProps = {
 
 const mapStateToProps = state => {
     return {
-        shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
+        shareInviteMonetaryAccountResponses: state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
 
         hideBalance: state.options.hide_balance
     };

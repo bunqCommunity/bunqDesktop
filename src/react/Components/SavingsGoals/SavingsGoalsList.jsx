@@ -42,8 +42,8 @@ const SavingsGoalList = props => {
                 return 1;
             }
             return (
-                savingsGoalA.getStatistic("percentage", props.accounts, props.shareInviteBankResponses) <
-                savingsGoalB.getStatistic("percentage", props.accounts, props.shareInviteBankResponses)
+                savingsGoalA.getStatistic("percentage", props.accounts, props.shareInviteMonetaryAccountResponses) <
+                savingsGoalB.getStatistic("percentage", props.accounts, props.shareInviteMonetaryAccountResponses)
             );
         })
         .map(savingsGoalId => (
@@ -77,7 +77,7 @@ const mapStateToProps = state => {
     return {
         accounts: state.accounts.accounts,
 
-        shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
+        shareInviteMonetaryAccountResponses: state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
 
         savingsGoalsLastUpdate: state.savings_goals.last_update,
         savingsGoals: state.savings_goals.savings_goals

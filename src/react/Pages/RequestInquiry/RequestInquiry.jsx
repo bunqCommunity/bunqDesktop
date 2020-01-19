@@ -438,7 +438,7 @@ class RequestInquiry extends React.Component {
         this.props.requestInquirySend(userId, account.id, requestInquiries);
 
         setTimeout(() => {
-            const connectPermissions = connectGetPermissions(this.props.shareInviteBankResponses, account.id);
+            const connectPermissions = connectGetPermissions(this.props.shareInviteMonetaryAccountResponses, account.id);
             if (connectPermissions && connectPermissions.view_new_events) {
                 this.props.requestInquiriesUpdate(userId, account.id);
             }

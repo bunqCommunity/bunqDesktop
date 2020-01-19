@@ -441,7 +441,7 @@ const mapStateToProps = state => {
         requestResponseAccountId: state.request_response_info.account_id,
         requestResponseInfoLoading: state.request_response_info.loading,
 
-        shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
+        shareInviteMonetaryAccountResponses: state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
 
         requestResponseLoading: state.request_response.loading,
 

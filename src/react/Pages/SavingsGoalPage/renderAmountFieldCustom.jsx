@@ -47,7 +47,7 @@ const renderTextField = ({
     dispatch,
     accounts = [],
     accountIds = [],
-    shareInviteBankResponses = [],
+    shareInviteMonetaryAccountResponses = [],
     formStyle = {},
     meta: { touched, error },
     ...custom
@@ -64,7 +64,7 @@ const renderTextField = ({
 
     // gets total balance from selected accounts
     const setAccountBalances = () => {
-        const accountsTotalFunds = calculateTotalBalance(accounts, accountIds, shareInviteBankResponses);
+        const accountsTotalFunds = calculateTotalBalance(accounts, accountIds, shareInviteMonetaryAccountResponses);
 
         onChange(accountsTotalFunds);
     };
@@ -100,7 +100,7 @@ const mapStateToProps = state => {
     return {
         accountIds: formSelector(state, "account_ids"),
         accounts: state.accounts.accounts,
-        shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses
+        shareInviteMonetaryAccountResponses: state.share_invite_monetary_account_responses.share_invite_monetary_account_responses
     };
 };
 

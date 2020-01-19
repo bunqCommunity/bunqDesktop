@@ -27,8 +27,8 @@ import { masterCardActionsSetInfo } from "../../Actions/master_card_actions";
 import { requestInquiriesSetInfo } from "../../Actions/request_inquiries";
 import { requestInquiryBatchesSetInfo } from "../../Actions/request_inquiry_batches";
 import { requestResponsesSetInfo } from "../../Actions/request_responses";
-import { shareInviteBankInquiriesSetInfo } from "../../Actions/share_invite_bank_inquiries";
-import { shareInviteBankResponsesSetInfo } from "../../Actions/share_invite_bank_responses";
+import { shareInviteBankInquiriesSetInfo } from "../../Actions/share_invite_monetary_account_inquiries";
+import { shareInviteMonetaryAccountResponsesSetInfo } from "../../Actions/share_invite_monetary_account_responses";
 import { openSnackbar } from "../../Actions/snackbar";
 
 export const DEFAULT_EVENT_COUNT_LIMIT = 50;
@@ -47,7 +47,7 @@ class QueueManager extends React.Component {
             requestInquiryBatches: {},
             masterCardActions: {},
             shareInviteBankInquiries: {},
-            shareInviteBankResponses: []
+            shareInviteMonetaryAccountResponses: []
         };
 
         this.delayedQueue = null;
@@ -137,11 +137,11 @@ class QueueManager extends React.Component {
         // 6 / 7 requests per account + 1 for the user
         let bufferedCounter = 1;
 
-        this.shareInviteBankResponsesUpdate(userId);
+        this.shareInviteMonetaryAccountResponsesUpdate(userId);
         filteredAccounts.forEach(account => {
             const accountId = account.id;
 
-            const connectPermissions = connectGetPermissions(this.props.shareInviteBankResponses, account.id);
+            const connectPermissions = connectGetPermissions(this.props.shareInviteMonetaryAccountResponses, account.id);
             if (connectPermissions === true || connectPermissions.view_new_events) {
                 bufferedCounter += 6;
                 this.paymentsUpdate(userId, accountId, false, eventCount);
@@ -178,8 +178,8 @@ class QueueManager extends React.Component {
         let newerRequestResponsesCount = 0;
         let newerRequestInquiriesCount = 0;
         let newerMasterCardActionsCount = 0;
-        let newerShareInviteBankInquiriesCount = 0;
-        let newerShareInviteBankResponsesCount = 0;
+        let newerShareInviteMonetaryAccountInquiriesCount = 0;
+        let newerShareInviteMonetaryAccountResponsesCount = 0;
         filteredAccounts.forEach(account => {
             // get events for this account and fallback to empty list
             const payments = this.state.payments[account.id] || [];
@@ -189,7 +189,7 @@ class QueueManager extends React.Component {
             const requestInquiryBatches = this.state.requestInquiryBatches[account.id] || [];
             const masterCardActions = this.state.masterCardActions[account.id] || [];
             const shareInviteBankInquiries = this.state.shareInviteBankInquiries[account.id] || [];
-            const shareInviteBankResponses = this.state.shareInviteBankResponses || [];
+            const shareInviteMonetaryAccountResponses = this.state.shareInviteMonetaryAccountResponses || [];
 
             // count the new events for each type and account
             const newestPayment = this.props.payments.find(payment => account.id === payment.monetary_account_id);
@@ -225,20 +225,20 @@ class QueueManager extends React.Component {
                     masterCardAction => masterCardAction.id > newestMasterCardAction.id
                 ).length;
 
-            const newestShareInviteBankInquiry = this.props.shareInviteBankInquiries.find(
-                shareInviteBankInquiry => account.id === shareInviteBankInquiry.monetary_account_id
+            const newestShareInviteMonetaryAccountInquiry = this.props.shareInviteBankInquiries.find(
+                shareInviteMonetaryAccountInquiry => account.id === shareInviteMonetaryAccountInquiry.monetary_account_id
             );
-            if (newestShareInviteBankInquiry)
-                newerShareInviteBankInquiriesCount += shareInviteBankInquiries.filter(
-                    shareInviteBankInquiry => shareInviteBankInquiry.id > newestShareInviteBankInquiry.id
+            if (newestShareInviteMonetaryAccountInquiry)
+                newerShareInviteMonetaryAccountInquiriesCount += shareInviteBankInquiries.filter(
+                    shareInviteMonetaryAccountInquiry => shareInviteMonetaryAccountInquiry.id > newestShareInviteMonetaryAccountInquiry.id
                 ).length;
 
-            const newestShareInviteBankResponse = this.props.shareInviteBankResponses.find(
-                shareInviteBankResponse => account.id === shareInviteBankResponse.monetary_account_id
+            const newestShareInviteMonetaryAccountResponse = this.props.shareInviteMonetaryAccountResponses.find(
+                shareInviteMonetaryAccountResponse => account.id === shareInviteMonetaryAccountResponse.monetary_account_id
             );
-            if (newestShareInviteBankResponse)
-                newerShareInviteBankResponsesCount += shareInviteBankResponses.filter(
-                    shareInviteBankResponse => shareInviteBankResponse.id > newestShareInviteBankResponse.id
+            if (newestShareInviteMonetaryAccountResponse)
+                newerShareInviteMonetaryAccountResponsesCount += shareInviteMonetaryAccountResponses.filter(
+                    shareInviteMonetaryAccountResponse => shareInviteMonetaryAccountResponse.id > newestShareInviteMonetaryAccountResponse.id
                 ).length;
 
             // count the total amount of events
@@ -248,7 +248,7 @@ class QueueManager extends React.Component {
             eventCount += requestInquiries.length;
             eventCount += masterCardActions.length;
             eventCount += shareInviteBankInquiries.length;
-            eventCount += shareInviteBankResponses.length;
+            eventCount += shareInviteMonetaryAccountResponses.length;
 
             // set the info into the application state
             if (payments.length > 0) {
@@ -272,8 +272,8 @@ class QueueManager extends React.Component {
             if (shareInviteBankInquiries.length > 0) {
                 this.props.shareInviteBankInquiriesSetInfo(shareInviteBankInquiries, account.id);
             }
-            if (shareInviteBankResponses.length > 0) {
-                this.props.shareInviteBankResponsesSetInfo(shareInviteBankResponses);
+            if (shareInviteMonetaryAccountResponses.length > 0) {
+                this.props.shareInviteMonetaryAccountResponsesSetInfo(shareInviteMonetaryAccountResponses);
             }
         });
 
@@ -293,8 +293,8 @@ class QueueManager extends React.Component {
             newerRequestResponsesCount +
             newerRequestInquiriesCount +
             newerMasterCardActionsCount +
-            newerShareInviteBankInquiriesCount +
-            newerShareInviteBankResponsesCount;
+            newerShareInviteMonetaryAccountInquiriesCount +
+            newerShareInviteMonetaryAccountResponsesCount;
 
         if (totalNewEvents > 0) {
             extraMessage = `${totalNewEvents} ${newEventsText}`;
@@ -328,7 +328,7 @@ class QueueManager extends React.Component {
             requestInquiryBatches: {},
             masterCardActions: {},
             shareInviteBankInquiries: {},
-            shareInviteBankResponses: []
+            shareInviteMonetaryAccountResponses: []
         });
     };
 
@@ -710,7 +710,7 @@ class QueueManager extends React.Component {
 
         const currentEventCount = eventCount > 200 ? 200 : eventCount;
         const nextEventCount = eventCount > 200 ? eventCount - 200 : 0;
-        BunqJSClient.api.shareInviteBankInquiry
+        BunqJSClient.api.shareInviteMonetaryAccountInquiry
             .list(user_id, account_id, {
                 older_id: olderId,
                 count: currentEventCount
@@ -718,11 +718,11 @@ class QueueManager extends React.Component {
             .then(shareInviteBankInquiries => {
                 // more shareInviteBankInquiries can be loaded for this account
                 if (shareInviteBankInquiries.length === currentEventCount && nextEventCount > 0) {
-                    const oldestShareInviteBankInquiryIndex = shareInviteBankInquiries.length - 1;
-                    const oldestShareInviteBankInquiry = shareInviteBankInquiries[oldestShareInviteBankInquiryIndex];
+                    const oldestShareInviteMonetaryAccountInquiryIndex = shareInviteBankInquiries.length - 1;
+                    const oldestShareInviteMonetaryAccountInquiry = shareInviteBankInquiries[oldestShareInviteMonetaryAccountInquiryIndex];
 
                     // re-run the shareInviteBankInquiries to continue deeper into the acocunt
-                    this.shareInviteBankInquiriesUpdate(user_id, oldestShareInviteBankInquiry.id, nextEventCount);
+                    this.shareInviteBankInquiriesUpdate(user_id, oldestShareInviteMonetaryAccountInquiry.id, nextEventCount);
                 }
 
                 const currentShareInviteBankInquiries = {
@@ -750,17 +750,17 @@ class QueueManager extends React.Component {
             });
     };
 
-    shareInviteBankResponsesUpdate = (user_id, eventCount = 200) => {
+    shareInviteMonetaryAccountResponsesUpdate = (user_id, eventCount = 200) => {
         const { BunqJSClient } = this.props;
 
-        BunqJSClient.api.shareInviteBankResponse
+        BunqJSClient.api.shareInviteMonetaryAccountResponse
             .list(user_id, {
                 count: eventCount
             })
-            .then(shareInviteBankResponses => {
-                // set these shareInviteBankResponses in the state
+            .then(shareInviteMonetaryAccountResponses => {
+                // set these shareInviteMonetaryAccountResponses in the state
                 this.setState({
-                    shareInviteBankResponses: shareInviteBankResponses
+                    shareInviteMonetaryAccountResponses: shareInviteMonetaryAccountResponses
                 });
 
                 // decrease the request count since this request is done
@@ -803,8 +803,8 @@ const mapStateToProps = state => {
         requestInquiries: state.request_inquiries.request_inquiries,
         requestInquiryBatches: state.request_inquiry_batches.request_inquiry_batches,
         requestResponses: state.request_responses.request_responses,
-        shareInviteBankInquiries: state.share_invite_bank_inquiries.share_invite_bank_inquiries,
-        shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses
+        shareInviteBankInquiries: state.share_invite_monetary_account_inquiries.share_invite_monetary_account_inquiries,
+        shareInviteMonetaryAccountResponses: state.share_invite_monetary_account_responses.share_invite_monetary_account_responses
     };
 };
 
@@ -833,8 +833,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(requestResponsesSetInfo(requestResponses, accountId, false, BunqJSClient)),
         shareInviteBankInquiriesSetInfo: (shareInviteBankInquiries, accountId) =>
             dispatch(shareInviteBankInquiriesSetInfo(shareInviteBankInquiries, accountId, BunqJSClient)),
-        shareInviteBankResponsesSetInfo: shareInviteBankResponses =>
-            dispatch(shareInviteBankResponsesSetInfo(shareInviteBankResponses, BunqJSClient))
+        shareInviteMonetaryAccountResponsesSetInfo: shareInviteMonetaryAccountResponses =>
+            dispatch(shareInviteMonetaryAccountResponsesSetInfo(shareInviteMonetaryAccountResponses, BunqJSClient))
     };
 };
 

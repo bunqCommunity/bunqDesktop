@@ -1,8 +1,8 @@
 import BunqErrorHandler from "../Functions/BunqErrorHandler";
 import { openSnackbar } from "./snackbar";
-import { shareInviteBankInquiriesInfoUpdate } from "./share_invite_bank_inquiries";
+import { shareInviteBankInquiriesInfoUpdate } from "./share_invite_monetary_account_inquiries";
 
-export function shareInviteBankInquirySend(
+export function shareInviteMonetaryAccountInquirySend(
     BunqJSClient,
     userId,
     accountId,
@@ -15,9 +15,9 @@ export function shareInviteBankInquirySend(
     const successMessage = window.t("Connect request was sent successfully!");
 
     return dispatch => {
-        dispatch(shareInviteBankInquiryLoading());
+        dispatch(shareInviteMonetaryAccountInquiryLoading());
 
-        BunqJSClient.api.shareInviteBankInquiry
+        BunqJSClient.api.shareInviteMonetaryAccountInquiry
             .post(userId, accountId, counterparty, shareDetail, shareStatus, {
                 share_type: "STANDARD",
                 ...shareOptions
@@ -27,42 +27,42 @@ export function shareInviteBankInquirySend(
 
                 // update the payments, accounts and share list
                 dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId, accountId));
-                dispatch(shareInviteBankInquiryNotLoading());
+                dispatch(shareInviteMonetaryAccountInquiryNotLoading());
             })
             .catch(error => {
-                dispatch(shareInviteBankInquiryNotLoading());
+                dispatch(shareInviteMonetaryAccountInquiryNotLoading());
                 BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }
 
-export function shareInviteBankInquiryChangeStatus(BunqJSClient, userId, accountId, shareInviteBankInquiryId, status) {
+export function shareInviteMonetaryAccountInquiryChangeStatus(BunqJSClient, userId, accountId, shareInviteMonetaryAccountInquiryId, status) {
     const failedMessage = window.t("We received the following error while updating your connect request");
     const successMessage = window.t("Connect request was updated successfully!");
 
     return dispatch => {
-        dispatch(shareInviteBankInquiryLoading());
+        dispatch(shareInviteMonetaryAccountInquiryLoading());
 
-        BunqJSClient.api.shareInviteBankInquiry
-            .putStatus(userId, accountId, shareInviteBankInquiryId, status)
+        BunqJSClient.api.shareInviteMonetaryAccountInquiry
+            .putStatus(userId, accountId, shareInviteMonetaryAccountInquiryId, status)
             .then(result => {
                 dispatch(openSnackbar(successMessage));
 
                 // update the payments, accounts and share list
                 dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId, accountId));
-                dispatch(shareInviteBankInquiryNotLoading());
+                dispatch(shareInviteMonetaryAccountInquiryNotLoading());
             })
             .catch(error => {
-                dispatch(shareInviteBankInquiryNotLoading());
+                dispatch(shareInviteMonetaryAccountInquiryNotLoading());
                 BunqErrorHandler(dispatch, error, failedMessage);
             });
     };
 }
 
-export function shareInviteBankInquiryLoading() {
-    return { type: "SHARE_INVITE_BANK_INQUIRY_IS_LOADING" };
+export function shareInviteMonetaryAccountInquiryLoading() {
+    return { type: "SHARE_INVITE_MONETARY_ACCOUNT_INQUIRY_IS_LOADING" };
 }
 
-export function shareInviteBankInquiryNotLoading() {
-    return { type: "SHARE_INVITE_BANK_INQUIRY_IS_NOT_LOADING" };
+export function shareInviteMonetaryAccountInquiryNotLoading() {
+    return { type: "SHARE_INVITE_MONETARY_ACCOUNT_INQUIRY_IS_NOT_LOADING" };
 }

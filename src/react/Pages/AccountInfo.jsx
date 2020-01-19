@@ -31,7 +31,7 @@ import AccountCard from "../Components/AccountCard";
 import TranslateButton from "../Components/TranslationHelpers/Button";
 import MoneyFormatInput from "../Components/FormFields/MoneyFormatInput";
 
-import { filterShareInviteBankResponses, filterShareInviteBankInquiries } from "../Functions/DataFilters";
+import { filterShareInviteMonetaryAccountResponses, filterShareInviteBankInquiries } from "../Functions/DataFilters";
 
 import { openSnackbar } from "../Actions/snackbar";
 import { accountsUpdate, accountsUpdateSettings, accountsDeactivate } from "../Actions/accounts";
@@ -41,10 +41,10 @@ import { bunqMeTabsUpdate } from "../Actions/bunq_me_tabs";
 import { masterCardActionsUpdate } from "../Actions/master_card_actions";
 import { requestInquiriesUpdate } from "../Actions/request_inquiries";
 import { requestInquiryBatchesUpdate } from "../Actions/request_inquiry_batches";
-import { shareInviteBankInquiriesInfoUpdate } from "../Actions/share_invite_bank_inquiries";
-import { shareInviteBankResponsesInfoUpdate } from "../Actions/share_invite_bank_responses";
-import { shareInviteBankResponseChangeStatus } from "../Actions/share_invite_bank_response";
-import { shareInviteBankInquiryChangeStatus } from "../Actions/share_invite_bank_inquiry";
+import { shareInviteBankInquiriesInfoUpdate } from "../Actions/share_invite_monetary_account_inquiries";
+import { shareInviteMonetaryAccountResponsesInfoUpdate } from "../Actions/share_invite_monetary_account_responses";
+import { shareInviteMonetaryAccountResponseChangeStatus } from "../Actions/share_invite_monetary_account_response";
+import { shareInviteMonetaryAccountInquiryChangeStatus } from "../Actions/share_invite_monetary_account_inquiry";
 import { connectGetPermissions } from "../Functions/ConnectGetPermissions";
 
 const styles = {
@@ -138,8 +138,8 @@ class AccountInfo extends React.Component {
             if (this.props.limitedPermissions === false) {
                 this.props.shareInviteBankInquiriesInfoUpdate(userId, accountId);
             }
-            this.props.shareInviteBankResponsesInfoUpdate(userId);
-            const connectPermissions = connectGetPermissions(this.props.shareInviteBankResponses, accountId);
+            this.props.shareInviteMonetaryAccountResponsesInfoUpdate(userId);
+            const connectPermissions = connectGetPermissions(this.props.shareInviteMonetaryAccountResponses, accountId);
             if (connectPermissions && connectPermissions.view_new_events) {
                 this.props.paymentsUpdate(userId, accountId);
                 this.props.bunqMeTabsUpdate(userId, accountId);
@@ -178,7 +178,7 @@ class AccountInfo extends React.Component {
             if (this.props.limitedPermissions === false) {
                 this.props.shareInviteBankInquiriesInfoUpdate(user.id, nextAccountId);
             }
-            this.props.shareInviteBankResponsesInfoUpdate(user.id);
+            this.props.shareInviteMonetaryAccountResponsesInfoUpdate(user.id);
             this.props.paymentsUpdate(user.id, nextAccountId);
             this.props.bunqMeTabsUpdate(user.id, nextAccountId);
             this.props.requestResponsesUpdate(user.id, nextAccountId);
@@ -289,7 +289,7 @@ class AccountInfo extends React.Component {
             t,
             accounts,
             user,
-            shareInviteBankResponses,
+            shareInviteMonetaryAccountResponses,
             shareInviteBankInquiries,
             limitedPermissions
         } = this.props;
@@ -311,8 +311,8 @@ class AccountInfo extends React.Component {
             isSavingsAccount = accountInfo.accountType === "MonetaryAccountSavings";
             isJointAccount = accountInfo.accountType === "MonetaryAccountJoint";
 
-            const filteredInviteResponses = shareInviteBankResponses.filter(
-                filterShareInviteBankResponses(accountInfo.id)
+            const filteredInviteResponses = shareInviteMonetaryAccountResponses.filter(
+                filterShareInviteMonetaryAccountResponses(accountInfo.id)
             );
             const filteredShareInquiries = shareInviteBankInquiries.filter(
                 filterShareInviteBankInquiries(accountInfo.id)
@@ -341,15 +341,15 @@ class AccountInfo extends React.Component {
                     allowConnectSettings = false;
 
                     profileIconList = filteredInviteResponses.map(filteredInviteResponse => {
-                        if (!filteredInviteResponse || !filteredInviteResponse.ShareInviteBankResponse) return null;
+                        if (!filteredInviteResponse || !filteredInviteResponse.ShareInviteMonetaryAccountResponse) return null;
                         return (
                             <PersonChip
                                 BunqJSClient={this.props.BunqJSClient}
-                                alias={filteredInviteResponse.ShareInviteBankResponse.counter_alias}
+                                alias={filteredInviteResponse.ShareInviteMonetaryAccountResponse.counter_alias}
                                 onDelete={e => {
-                                    this.props.shareInviteBankResponseChangeStatus(
+                                    this.props.shareInviteMonetaryAccountResponseChangeStatus(
                                         this.props.user.id,
-                                        filteredInviteResponse.ShareInviteBankResponse.id,
+                                        filteredInviteResponse.ShareInviteMonetaryAccountResponse.id,
                                         "CANCELLED"
                                     );
                                 }}
@@ -364,12 +364,12 @@ class AccountInfo extends React.Component {
                         return (
                             <PersonChip
                                 BunqJSClient={this.props.BunqJSClient}
-                                alias={filteredShareInquiry.ShareInviteBankInquiry.counter_user_alias}
+                                alias={filteredShareInquiry.ShareInviteMonetaryAccountInquiry.counter_user_alias}
                                 onDelete={e => {
-                                    this.props.shareInviteBankInquiryChangeStatus(
+                                    this.props.shareInviteMonetaryAccountInquiryChangeStatus(
                                         this.props.user.id,
-                                        filteredShareInquiry.ShareInviteBankInquiry.monetary_account_id,
-                                        filteredShareInquiry.ShareInviteBankInquiry.id,
+                                        filteredShareInquiry.ShareInviteMonetaryAccountInquiry.monetary_account_id,
+                                        filteredShareInquiry.ShareInviteMonetaryAccountInquiry.id,
                                         "CANCELLED"
                                     );
                                 }}
@@ -536,7 +536,7 @@ class AccountInfo extends React.Component {
                     <Paper key="combinedlist-paper" style={styles.paperList}>
                         <CombinedList
                             BunqJSClient={this.props.BunqJSClient}
-                            hiddenTypes={["ShareInviteBankInquiry"]}
+                            hiddenTypes={["ShareInviteMonetaryAccountInquiry"]}
                             accountId={accountId}
                             displayRequestPayments={false}
                             displayAcceptedRequests={true}
@@ -582,11 +582,11 @@ const mapStateToProps = state => {
     return {
         hideBalance: state.options.hide_balance,
 
-        shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
-        shareInviteBankResponsesLoading: state.share_invite_bank_responses.loading,
+        shareInviteMonetaryAccountResponses: state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
+        shareInviteMonetaryAccountResponsesLoading: state.share_invite_monetary_account_responses.loading,
 
-        shareInviteBankInquiries: state.share_invite_bank_inquiries.share_invite_bank_inquiries,
-        shareInviteBankInquiriesLoading: state.share_invite_bank_inquiries.loading,
+        shareInviteBankInquiries: state.share_invite_monetary_account_inquiries.share_invite_monetary_account_inquiries,
+        shareInviteBankInquiriesLoading: state.share_invite_monetary_account_inquiries.loading,
 
         user: state.user.user,
         limitedPermissions: state.user.limited_permissions,
@@ -607,17 +607,17 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         updateSettings: (userId, accountId, settings, accountType) =>
             dispatch(accountsUpdateSettings(BunqJSClient, userId, accountId, settings, accountType)),
 
-        shareInviteBankResponseChangeStatus: (userId, shareInviteBankResponseId, status) =>
-            dispatch(shareInviteBankResponseChangeStatus(BunqJSClient, userId, shareInviteBankResponseId, status)),
-        shareInviteBankInquiryChangeStatus: (userId, accountId, shareInviteBankInquiryId, status) =>
+        shareInviteMonetaryAccountResponseChangeStatus: (userId, shareInviteMonetaryAccountResponseId, status) =>
+            dispatch(shareInviteMonetaryAccountResponseChangeStatus(BunqJSClient, userId, shareInviteMonetaryAccountResponseId, status)),
+        shareInviteMonetaryAccountInquiryChangeStatus: (userId, accountId, shareInviteMonetaryAccountInquiryId, status) =>
             dispatch(
-                shareInviteBankInquiryChangeStatus(BunqJSClient, userId, accountId, shareInviteBankInquiryId, status)
+                shareInviteMonetaryAccountInquiryChangeStatus(BunqJSClient, userId, accountId, shareInviteMonetaryAccountInquiryId, status)
             ),
 
         shareInviteBankInquiriesInfoUpdate: (userId, accountId) =>
             dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId, accountId)),
-        shareInviteBankResponsesInfoUpdate: (userId, accountId) =>
-            dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId)),
+        shareInviteMonetaryAccountResponsesInfoUpdate: (userId, accountId) =>
+            dispatch(shareInviteMonetaryAccountResponsesInfoUpdate(BunqJSClient, userId)),
         paymentsUpdate: (userId, accountId) => dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId)),
         requestInquiriesUpdate: (userId, accountId) =>
             dispatch(requestInquiriesUpdate(BunqJSClient, userId, accountId)),

@@ -24,14 +24,14 @@ export const setSavingsGoal = savings_goal => {
 
 /**
  * @param {any[]} accounts
- * @param {any[]} shareInviteBankResponses
+ * @param {any[]} shareInviteMonetaryAccountResponses
  */
-export const updateStatisticsSavingsGoals = (accounts, shareInviteBankResponses) => {
+export const updateStatisticsSavingsGoals = (accounts, shareInviteMonetaryAccountResponses) => {
     return {
         type: "SAVINGS_GOALS_UPDATE_STATISTICS",
         payload: {
             accounts: accounts,
-            shareInviteBankResponses: shareInviteBankResponses
+            shareInviteMonetaryAccountResponses: shareInviteMonetaryAccountResponses
         }
     };
 };

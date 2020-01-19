@@ -14,7 +14,7 @@ import TranslateButton from "../TranslationHelpers/Button";
 import ShowOnly from "./ShareInviteBankTypes/ShowOnly";
 import FullAccess from "./ShareInviteBankTypes/FullAccess";
 import DraftAccess from "./ShareInviteBankTypes/DraftAccess";
-import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiries";
+import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_monetary_account_inquiries";
 
 const styles = {
     listItemText: {
@@ -29,7 +29,7 @@ const styles = {
     }
 };
 
-class ShareInviteBankInquiryListItem extends React.Component {
+class ShareInviteMonetaryAccountInquiryListItem extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -39,7 +39,7 @@ class ShareInviteBankInquiryListItem extends React.Component {
     }
 
     cancel = event => {
-        const { t, BunqJSClient, user, shareInviteBankInquiry } = this.props;
+        const { t, BunqJSClient, user, shareInviteMonetaryAccountInquiry } = this.props;
 
         const success = t("The share request was successfully revoked");
         const failed = t("Failed to revoke the share request");
@@ -47,11 +47,11 @@ class ShareInviteBankInquiryListItem extends React.Component {
         if (!this.state.loading) {
             this.setState({ loading: true });
 
-            BunqJSClient.api.shareInviteBankInquiry
-                .putStatus(user.id, shareInviteBankInquiry.monetary_account_id, shareInviteBankInquiry.id, "REVOKED")
+            BunqJSClient.api.shareInviteMonetaryAccountInquiry
+                .putStatus(user.id, shareInviteMonetaryAccountInquiry.monetary_account_id, shareInviteMonetaryAccountInquiry.id, "REVOKED")
                 .then(response => {
                     // trigger an update
-                    this.props.shareInviteBankInquiriesInfoUpdate(user.id, shareInviteBankInquiry.monetary_account_id);
+                    this.props.shareInviteBankInquiriesInfoUpdate(user.id, shareInviteMonetaryAccountInquiry.monetary_account_id);
 
                     this.setState({ loading: false });
                     this.props.openSnackbar(success);
@@ -64,12 +64,12 @@ class ShareInviteBankInquiryListItem extends React.Component {
     };
 
     render() {
-        const { t, shareInviteBankInquiry } = this.props;
-        if (!shareInviteBankInquiry) return null;
+        const { t, shareInviteMonetaryAccountInquiry } = this.props;
+        if (!shareInviteMonetaryAccountInquiry) return null;
 
-        let aliasInfo = shareInviteBankInquiry.counter_user_alias
-            ? shareInviteBankInquiry.counter_user_alias
-            : shareInviteBankInquiry.counter_alias;
+        let aliasInfo = shareInviteMonetaryAccountInquiry.counter_user_alias
+            ? shareInviteMonetaryAccountInquiry.counter_user_alias
+            : shareInviteMonetaryAccountInquiry.counter_alias;
         if (!aliasInfo) return null;
 
         let imageUUID = false;
@@ -92,7 +92,7 @@ class ShareInviteBankInquiryListItem extends React.Component {
             </React.Fragment>
         );
 
-        const shareDetailTypes = Object.keys(shareInviteBankInquiry.share_detail);
+        const shareDetailTypes = Object.keys(shareInviteMonetaryAccountInquiry.share_detail);
         const shareDetailType = shareDetailTypes[0];
 
         let shareTypeObject = null;
@@ -124,7 +124,7 @@ class ShareInviteBankInquiryListItem extends React.Component {
     }
 }
 
-ShareInviteBankInquiryListItem.defaultProps = {
+ShareInviteMonetaryAccountInquiryListItem.defaultProps = {
     displayAcceptedRequests: true,
     minimalDisplay: false
 };
@@ -145,4 +145,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(translate("translations")(ShareInviteBankInquiryListItem));
+)(translate("translations")(ShareInviteMonetaryAccountInquiryListItem));

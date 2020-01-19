@@ -19,8 +19,8 @@ const styles = {
 };
 
 const SavingsGoalSmallListItem = props => {
-    const { t, savingsGoal, accounts, shareInviteBankResponses } = props;
-    const { percentage } = savingsGoal.getStatistics(accounts, shareInviteBankResponses);
+    const { t, savingsGoal, accounts, shareInviteMonetaryAccountResponses } = props;
+    const { percentage } = savingsGoal.getStatistics(accounts, shareInviteMonetaryAccountResponses);
 
     let listItemProps = {
         button: true,

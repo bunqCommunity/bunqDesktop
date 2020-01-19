@@ -2,8 +2,8 @@ import BunqErrorHandler from "../Functions/BunqErrorHandler";
 import { openSnackbar } from "./snackbar";
 import { paymentInfoUpdate } from "./payments";
 import { accountsUpdate } from "./accounts";
-import { shareInviteBankInquiriesInfoUpdate } from "./share_invite_bank_inquiries";
-import { shareInviteBankResponsesInfoUpdate } from "./share_invite_bank_responses";
+import { shareInviteMonetaryAccountInquiriesInfoUpdate } from "./share_invite_monetary_account_inquiries";
+import { shareInviteMonetaryAccountResponsesInfoUpdate } from "./share_invite_monetary_account_responses";
 
 export function paySend(BunqJSClient, userId, accountId, description, amount, targets, draft = false) {
     const failedMessage = window.t("We received the following error while sending your payment");
@@ -34,7 +34,7 @@ export function paySend(BunqJSClient, userId, accountId, description, amount, ta
                 dispatch(openSnackbar(notification));
 
                 // update the payments, accounts and share list
-                dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId));
+                dispatch(shareInviteMonetaryAccountResponsesInfoUpdate(BunqJSClient, userId));
                 dispatch(accountsUpdate(BunqJSClient, userId));
 
                 dispatch(payNotLoading());
@@ -79,8 +79,8 @@ export function paySchedule(BunqJSClient, userId, accountId, description, amount
 
                 // update the payments, accounts and share list
                 dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId));
-                dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId, accountId));
-                dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId));
+                dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(BunqJSClient, userId, accountId));
+                dispatch(shareInviteMonetaryAccountResponsesInfoUpdate(BunqJSClient, userId));
                 dispatch(accountsUpdate(BunqJSClient, userId));
 
                 dispatch(payNotLoading());

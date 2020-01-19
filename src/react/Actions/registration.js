@@ -9,8 +9,8 @@ import { loadStoredRequestInquiries } from "./request_inquiries";
 import { loadStoredrequestInquiryBatches } from "./request_inquiry_batches";
 import { loadStoredRequestResponses } from "./request_responses";
 import { loadStoredContacts } from "./contacts";
-import { loadStoredShareInviteBankResponses } from "./share_invite_bank_responses";
-import { loadStoredShareInviteBankInquiries } from "./share_invite_bank_inquiries";
+import { loadStoredShareInviteMonetaryAccountResponses } from "./share_invite_monetary_account_responses";
+import { loadStoredShareInviteBankInquiries } from "./share_invite_monetary_account_inquiries";
 import { loadPendingPayments } from "./pending_payments";
 import { openSnackbar } from "./snackbar";
 
@@ -367,7 +367,7 @@ export function registrationLoadStoredData() {
         dispatch(loadStoredRequestInquiries(BunqJSClient));
         dispatch(loadStoredrequestInquiryBatches(BunqJSClient));
         dispatch(loadStoredRequestResponses(BunqJSClient));
-        dispatch(loadStoredShareInviteBankResponses(BunqJSClient));
+        dispatch(loadStoredShareInviteMonetaryAccountResponses(BunqJSClient));
         dispatch(loadStoredShareInviteBankInquiries(BunqJSClient));
     };
 }

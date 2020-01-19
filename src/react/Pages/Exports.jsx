@@ -576,7 +576,7 @@ class Exports extends React.Component {
                                         "RequestInquiry",
                                         "RequestInquiryBatch",
                                         "RequestResponse",
-                                        "ShareInviteBankInquiry"
+                                        "ShareInviteMonetaryAccountInquiry"
                                     ]}
                                 />
                             </Paper>

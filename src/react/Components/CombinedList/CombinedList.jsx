@@ -27,8 +27,8 @@ import {
     requestInquiryBatchMapper,
     requestInquiryMapper,
     requestResponseMapper,
-    shareInviteBankInquiryMapper,
-    shareInviteBankResponseMapper
+    shareInviteMonetaryAccountInquiryMapper,
+    shareInviteMonetaryAccountResponseMapper
 } from "./MapperFunctions";
 import { humanReadableDate } from "../../Functions/Utils";
 import FilterDisabledChecker from "../../Functions/FilterDisabledChecker";
@@ -130,7 +130,7 @@ class CombinedList extends React.Component {
         const { requestInquiryBatches, hiddenRequestInquiryIds } = requestInquiryBatchMapper(settings);
         // load request inquiries while hiding requests connected to the request inquiry batches
         const requestInquiries = requestInquiryMapper(settings, hiddenRequestInquiryIds);
-        const shareInviteBankInquiries = shareInviteBankInquiryMapper(settings);
+        const shareInviteBankInquiries = shareInviteMonetaryAccountInquiryMapper(settings);
 
         // combine the list, order by date and group by day
         const events = [
@@ -245,7 +245,7 @@ class CombinedList extends React.Component {
 
         const settings = this.getSettings();
         const requestResponsesPending = requestResponseMapper(settings, true);
-        const shareInviteBankResponses = shareInviteBankResponseMapper(settings);
+        const shareInviteMonetaryAccountResponses = shareInviteMonetaryAccountResponseMapper(settings);
 
         // directly create a list for the pending requests
         const pendingRequestResponseComponents = requestResponsesPending.map(
@@ -300,7 +300,7 @@ class CombinedList extends React.Component {
         });
 
         // add the connect requests and pending request responses to the top
-        combinedComponentList.unshift(...shareInviteBankResponses);
+        combinedComponentList.unshift(...shareInviteMonetaryAccountResponses);
         combinedComponentList.unshift(...pendingRequestResponseComponents);
 
         return (
@@ -398,11 +398,11 @@ const mapStateToProps = state => {
         requestResponses: state.request_responses.request_responses,
         requestResponsesLoading: state.request_responses.loading,
 
-        shareInviteBankInquiries: state.share_invite_bank_inquiries.share_invite_bank_inquiries,
-        shareInviteBankInquiriesLoading: state.share_invite_bank_inquiries.loading,
+        shareInviteBankInquiries: state.share_invite_monetary_account_inquiries.share_invite_monetary_account_inquiries,
+        shareInviteBankInquiriesLoading: state.share_invite_monetary_account_inquiries.loading,
 
-        shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
-        shareInviteBankResponsesLoading: state.share_invite_bank_responses.loading
+        shareInviteMonetaryAccountResponses: state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
+        shareInviteMonetaryAccountResponsesLoading: state.share_invite_monetary_account_responses.loading
     };
 };
 
