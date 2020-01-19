@@ -438,7 +438,10 @@ class RequestInquiry extends React.Component {
         this.props.requestInquirySend(userId, account.id, requestInquiries);
 
         setTimeout(() => {
-            const connectPermissions = connectGetPermissions(this.props.shareInviteBankResponses, account.id);
+            const connectPermissions = connectGetPermissions(
+                this.props.shareInviteMonetaryAccountResponses,
+                account.id
+            );
             if (connectPermissions && connectPermissions.view_new_events) {
                 this.props.requestInquiriesUpdate(userId, account.id);
             }
@@ -602,7 +605,8 @@ class RequestInquiry extends React.Component {
                             color="primary"
                             disabled={
                                 !this.state.validForm ||
-                                (this.props.requestInquiryLoading || (totalSplit <= 0 && splitRequest === true))
+                                this.props.requestInquiryLoading ||
+                                (totalSplit <= 0 && splitRequest === true)
                             }
                             style={styles.payButton}
                             onClick={this.openModal}
@@ -658,7 +662,4 @@ const mapDispatchToProps = (dispatch, props) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(RequestInquiry));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(RequestInquiry));

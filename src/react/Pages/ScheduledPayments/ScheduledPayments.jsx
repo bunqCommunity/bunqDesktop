@@ -200,7 +200,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(ScheduledPayments));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(ScheduledPayments));

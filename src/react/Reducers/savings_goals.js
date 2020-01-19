@@ -46,7 +46,7 @@ export default function reducer(state = defaultState, action) {
                 if (savingsGoal.isEnded || savingsGoal.isExpired) return;
 
                 // force update the statistics
-                savingsGoal.getStatistics(action.payload.accounts, action.payload.shareInviteBankResponses);
+                savingsGoal.getStatistics(action.payload.accounts, action.payload.shareInviteMonetaryAccountResponses);
 
                 const savingsGoalPercentage = savingsGoal.getStatistic("percentage");
                 if (savingsGoalPercentage >= 100) {

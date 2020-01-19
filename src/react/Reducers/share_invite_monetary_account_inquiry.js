@@ -4,13 +4,13 @@ export const defaultState = {
 
 export default function reducer(state = defaultState, action) {
     switch (action.type) {
-        case "SHARE_INVITE_BANK_INQUIRY_IS_LOADING":
+        case "SHARE_INVITE_MONETARY_ACCOUNT_INQUIRY_IS_LOADING":
             return {
                 ...state,
                 loading: true
             };
 
-        case "SHARE_INVITE_BANK_INQUIRY_IS_NOT_LOADING":
+        case "SHARE_INVITE_MONETARY_ACCOUNT_INQUIRY_IS_NOT_LOADING":
             return {
                 ...state,
                 loading: false

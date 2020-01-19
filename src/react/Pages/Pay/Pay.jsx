@@ -42,7 +42,7 @@ import { pendingPaymentsAddPayment } from "../../Actions/pending_payments";
 
 import { getInternationalFormat, isValidPhonenumber } from "../../Functions/PhoneLib";
 import { formatMoney, getUTCDate } from "../../Functions/Utils";
-import { filterShareInviteBankResponses } from "../../Functions/DataFilters";
+import { filterShareInviteMonetaryAccountResponses } from "../../Functions/DataFilters";
 import scheduleTexts from "../../Functions/ScheduleTexts";
 import { connectGetBudget, connectGetType, connectGetPermissions } from "../../Functions/ConnectGetPermissions";
 
@@ -202,7 +202,7 @@ class Pay extends React.Component {
     };
 
     checkDraftOnly = () => {
-        const { t, accounts, shareInviteBankResponses } = this.props;
+        const { t, accounts, shareInviteMonetaryAccountResponses } = this.props;
         const { selectedAccount, sendDraftPayment, addToPendingPayments } = this.state;
         const outgoingPaymentsConnectMessage = t(
             "It is not possible to send outgoing payments using a draft-only account"
@@ -241,7 +241,7 @@ class Pay extends React.Component {
         const account = accounts[selectedAccount];
 
         // no results means no checks required
-        const connectType = connectGetType(shareInviteBankResponses, account.id);
+        const connectType = connectGetType(shareInviteMonetaryAccountResponses, account.id);
         if (connectType === "ShareDetailDraftPayment" && !sendDraftPayment) {
             this.setState({
                 sendDraftPayment: true
@@ -420,8 +420,8 @@ class Pay extends React.Component {
         const account = this.props.accounts[selectedAccount];
 
         // check if this account item has connect details
-        const filteredInviteResponses = this.props.shareInviteBankResponses.filter(
-            filterShareInviteBankResponses(account.id)
+        const filteredInviteResponses = this.props.shareInviteMonetaryAccountResponses.filter(
+            filterShareInviteMonetaryAccountResponses(account.id)
         );
 
         // regular balance value
@@ -442,7 +442,9 @@ class Pay extends React.Component {
         const insufficientFundsCondition =
             amount !== "" &&
             // enough funds or draft enabled
-            (amount > accountBalance && sendDraftPayment === false && schedulePayment === false);
+            amount > accountBalance &&
+            sendDraftPayment === false &&
+            schedulePayment === false;
         const amountErrorCondition = amount < 0.01 || amount > 100000;
         const descriptionErrorCondition = description.length > 140;
         const ibanNameErrorCondition = ibanName.length < 1 || ibanName.length > 64;
@@ -572,7 +574,10 @@ class Pay extends React.Component {
         }
 
         setTimeout(() => {
-            const connectPermissions = connectGetPermissions(this.props.shareInviteBankResponses, account.id);
+            const connectPermissions = connectGetPermissions(
+                this.props.shareInviteMonetaryAccountResponses,
+                account.id
+            );
             if (connectPermissions && connectPermissions.view_new_events) {
                 this.props.paymentInfoUpdate(userId, account.id);
             }
@@ -608,8 +613,8 @@ class Pay extends React.Component {
         let accountBalance = 0;
         if (account) {
             // check if this account item has connect details
-            const filteredInviteResponses = this.props.shareInviteBankResponses.filter(
-                filterShareInviteBankResponses(account.id)
+            const filteredInviteResponses = this.props.shareInviteMonetaryAccountResponses.filter(
+                filterShareInviteMonetaryAccountResponses(account.id)
             );
 
             // regular balance value
@@ -868,7 +873,8 @@ const mapStateToProps = state => {
 
         pendingPayments: state.pending_payments.pending_payments,
 
-        shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
+        shareInviteMonetaryAccountResponses:
+            state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
 
         user: state.user.user,
         limitedPermissions: state.user.limited_permissions
@@ -891,7 +897,4 @@ const mapDispatchToProps = (dispatch, props) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(Pay));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(Pay));

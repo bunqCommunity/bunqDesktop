@@ -10,8 +10,8 @@ import LazyAttachmentImage from "../../Components/AttachmentImage/LazyAttachment
 
 import { formatMoney } from "../../Functions/Utils";
 
-import { shareInviteBankInquiryChangeStatus } from "../../Actions/share_invite_bank_inquiry";
-import { shareInviteBankResponseChangeStatus } from "../../Actions/share_invite_bank_response";
+import { shareInviteMonetaryAccountInquiryChangeStatus } from "../../Actions/share_invite_monetary_account_inquiry";
+import { shareInviteMonetaryAccountResponseChangeStatus } from "../../Actions/share_invite_monetary_account_response";
 
 const styles = {
     smallAvatar: {
@@ -32,28 +32,28 @@ class ConnectListItem extends React.Component {
 
     revokeConnect = e => {
         const { user, type, connectInfo } = this.props;
-        if (type === "ShareInviteBankInquiry") {
-            this.props.shareInviteBankInquiryChangeStatus(
+        if (type === "ShareInviteMonetaryAccountInquiry") {
+            this.props.shareInviteMonetaryAccountInquiryChangeStatus(
                 user.id,
                 connectInfo.monetary_account_id,
                 connectInfo.id,
                 "REVOKED"
             );
         } else {
-            this.props.shareInviteBankResponseChangeStatus(user.id, connectInfo.id, "REVOKED");
+            this.props.shareInviteMonetaryAccountResponseChangeStatus(user.id, connectInfo.id, "REVOKED");
         }
     };
     cancelConnect = e => {
         const { user, type, connectInfo } = this.props;
-        if (type === "ShareInviteBankInquiry") {
-            this.props.shareInviteBankInquiryChangeStatus(
+        if (type === "ShareInviteMonetaryAccountInquiry") {
+            this.props.shareInviteMonetaryAccountInquiryChangeStatus(
                 user.id,
                 connectInfo.monetary_account_id,
                 connectInfo.id,
                 "CANCELLED"
             );
         } else {
-            this.props.shareInviteBankResponseChangeStatus(user.id, connectInfo.id, "CANCELLED");
+            this.props.shareInviteMonetaryAccountResponseChangeStatus(user.id, connectInfo.id, "CANCELLED");
         }
     };
 
@@ -200,16 +200,31 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        shareInviteBankInquiryChangeStatus: (userId, accountId, shareInviteBankInquiryId, status) =>
+        shareInviteMonetaryAccountInquiryChangeStatus: (
+            userId,
+            accountId,
+            shareInviteMonetaryAccountInquiryId,
+            status
+        ) =>
             dispatch(
-                shareInviteBankInquiryChangeStatus(BunqJSClient, userId, accountId, shareInviteBankInquiryId, status)
+                shareInviteMonetaryAccountInquiryChangeStatus(
+                    BunqJSClient,
+                    userId,
+                    accountId,
+                    shareInviteMonetaryAccountInquiryId,
+                    status
+                )
             ),
-        shareInviteBankResponseChangeStatus: (userId, shareInviteBankResponseId, status) =>
-            dispatch(shareInviteBankResponseChangeStatus(BunqJSClient, userId, shareInviteBankResponseId, status))
+        shareInviteMonetaryAccountResponseChangeStatus: (userId, shareInviteMonetaryAccountResponseId, status) =>
+            dispatch(
+                shareInviteMonetaryAccountResponseChangeStatus(
+                    BunqJSClient,
+                    userId,
+                    shareInviteMonetaryAccountResponseId,
+                    status
+                )
+            )
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ConnectListItem);
+export default connect(mapStateToProps, mapDispatchToProps)(ConnectListItem);
