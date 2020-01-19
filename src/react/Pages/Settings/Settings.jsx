@@ -66,8 +66,8 @@ import { scheduledPaymentsClear } from "../../Actions/scheduled_payments";
 import { requestInquiryBatchesClear } from "../../Actions/request_inquiry_batches";
 import { requestResponsesClear } from "../../Actions/request_responses";
 import { requestInquiriesClear } from "../../Actions/request_inquiries";
-import { shareInviteBankInquiriesClear } from "../../Actions/share_invite_bank_inquiries";
-import { shareInviteBankResponsesClear } from "../../Actions/share_invite_bank_responses";
+import { shareInviteBankInquiriesClear } from "../../Actions/share_invite_monetary_account_inquiries";
+import { shareInviteMonetaryAccountResponsesClear } from "../../Actions/share_invite_monetary_account_responses";
 
 const styles = {
     sideButton: {
@@ -223,7 +223,7 @@ class Settings extends React.Component {
     };
     requestConnectData = e => {
         this.props.shareInviteBankInquiriesClear();
-        this.props.shareInviteBankResponsesClear();
+        this.props.shareInviteMonetaryAccountResponsesClear();
     };
     resetAllEventData = e => {
         this.props.paymentsClear();
@@ -513,7 +513,8 @@ class Settings extends React.Component {
         const cardPaymentCount = this.props.masterCardActions.length;
         const requestCount = this.props.requestInquiries.length + this.props.requestResponses.length;
         const bunqMeTabsCount = this.props.bunqMeTabs.length;
-        const connectCount = this.props.shareInviteBankInquiries.length + this.props.shareInviteBankResponses.length;
+        const connectCount =
+            this.props.shareInviteBankInquiries.length + this.props.shareInviteMonetaryAccountResponses.length;
         const scheduledPaymentsCount = this.props.scheduledPayments.length;
 
         const dataManagementContainer = (
@@ -692,8 +693,9 @@ const mapStateToProps = state => {
         requestInquiries: state.request_inquiries.request_inquiries,
         requestInquiryBatches: state.request_inquiry_batches.request_inquiry_batches,
         requestResponses: state.request_responses.request_responses,
-        shareInviteBankInquiries: state.share_invite_bank_inquiries.share_invite_bank_inquiries,
-        shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
+        shareInviteBankInquiries: state.share_invite_monetary_account_inquiries.share_invite_monetary_account_inquiries,
+        shareInviteMonetaryAccountResponses:
+            state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
 
         checkInactivity: state.options.check_inactivity,
         inactivityCheckDuration: state.options.inactivity_check_duration,
@@ -739,7 +741,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         requestResponsesClear: () => dispatch(requestResponsesClear()),
         requestInquiryBatchesClear: () => dispatch(requestInquiryBatchesClear()),
         shareInviteBankInquiriesClear: () => dispatch(shareInviteBankInquiriesClear()),
-        shareInviteBankResponsesClear: () => dispatch(shareInviteBankResponsesClear()),
+        shareInviteMonetaryAccountResponsesClear: () => dispatch(shareInviteMonetaryAccountResponsesClear()),
 
         // clear api key from bunqjsclient and bunqdesktop
         clearPrivateData: () => dispatch(registrationClearPrivateData()),
@@ -750,7 +752,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(Settings));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(Settings));

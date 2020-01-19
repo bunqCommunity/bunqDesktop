@@ -238,7 +238,4 @@ const mapDispatchToProps = (dispatch, props) => {
     return {};
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(BunqMePersonal));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(BunqMePersonal));

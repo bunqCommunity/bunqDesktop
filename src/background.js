@@ -90,7 +90,7 @@ log.transports.file.file = `${userDataPath}${path.sep}bunqDesktop.${env.name}.lo
 // hot reloading
 if (process.env.NODE_ENV === "development") {
     require("electron-reload")(path.join(__dirname, `..${path.sep}app${path.sep}**`), {
-        electron: path.join(__dirname, "../node_modules/electron"),
+        electron: path.join(__dirname, "../node_modules/electron")
     });
 }
 

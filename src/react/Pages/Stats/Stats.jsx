@@ -446,7 +446,4 @@ const mapDispatchToProps = dispatch => {
     return {};
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(withTheme()(translate("translations")(Stats)));
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme()(translate("translations")(Stats)));

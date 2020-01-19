@@ -173,7 +173,8 @@ const mapStateToProps = state => {
         savingsGoals: state.savings_goals.savings_goals,
 
         accounts: state.accounts.accounts,
-        shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
+        shareInviteMonetaryAccountResponses:
+            state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
 
         form: state.form.savingsGoal
     };
@@ -187,7 +188,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(SavingsGoalPage));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(SavingsGoalPage));

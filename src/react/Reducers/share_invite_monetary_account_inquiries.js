@@ -1,23 +1,25 @@
 import store from "store";
-import { STORED_SHARE_INVITE_BANK_RESPONSES } from "../Actions/share_invite_bank_responses";
+import { STORED_SHARE_INVITE_MONETARY_ACCOUNT_INQUIRIES } from "../Actions/share_invite_monetary_account_inquiries";
 import { storeEncryptString } from "../Functions/Crypto/CryptoWorkerWrapper";
 
 export const defaultState = {
-    share_invite_bank_responses: [],
+    share_invite_monetary_account_inquiries: [],
+    account_id: false,
     loading: false
 };
 
 export default (state = defaultState, action) => {
     switch (action.type) {
-        case "SHARE_INVITE_RESPONSES_SET_INFO":
+        case "SHARE_INVITE_INQUIRIES_SET_INFO":
             // store the data if we have access to the bunqjsclient
             if (action.payload.BunqJSClient) {
                 const BunqDesktopClient = window.BunqDesktopClient;
                 BunqDesktopClient.storeEncrypt(
                     {
-                        items: action.payload.share_invite_bank_responses
+                        items: action.payload.share_invite_monetary_account_inquiries,
+                        account_id: action.payload.account_id
                     },
-                    STORED_SHARE_INVITE_BANK_RESPONSES
+                    STORED_SHARE_INVITE_MONETARY_ACCOUNT_INQUIRIES
                 )
                     .then(() => {})
                     .catch(() => {});
@@ -25,27 +27,28 @@ export default (state = defaultState, action) => {
 
             return {
                 ...state,
-                share_invite_bank_responses: action.payload.share_invite_bank_responses
+                share_invite_monetary_account_inquiries: action.payload.share_invite_monetary_account_inquiries,
+                account_id: action.payload.account_id
             };
 
-        case "SHARE_INVITE_RESPONSES_IS_LOADING":
+        case "SHARE_INVITE_INQUIRIES_IS_LOADING":
             return {
                 ...state,
                 loading: true
             };
 
-        case "SHARE_INVITE_RESPONSES_IS_NOT_LOADING":
+        case "SHARE_INVITE_INQUIRIES_IS_NOT_LOADING":
             return {
                 ...state,
                 loading: false
             };
 
-        case "SHARE_INVITE_RESPONSES_CLEAR":
+        case "SHARE_INVITE_INQUIRIES_CLEAR":
         case "REGISTRATION_CLEAR_PRIVATE_DATA":
         case "REGISTRATION_LOG_OUT":
         case "REGISTRATION_CLEAR_USER_INFO":
             const BunqDesktopClient = window.BunqDesktopClient;
-            BunqDesktopClient.storeRemove(STORED_SHARE_INVITE_BANK_RESPONSES);
+            BunqDesktopClient.storeRemove(STORED_SHARE_INVITE_MONETARY_ACCOUNT_INQUIRIES);
             return {
                 ...defaultState
             };

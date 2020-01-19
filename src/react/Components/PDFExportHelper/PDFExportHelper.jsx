@@ -205,7 +205,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(PDFExportHelper);
+export default connect(mapStateToProps, mapDispatchToProps)(PDFExportHelper);

@@ -155,9 +155,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default translate("translations")(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps
-    )(UploadFullscreen)
-);
+export default translate("translations")(connect(mapStateToProps, mapDispatchToProps)(UploadFullscreen));

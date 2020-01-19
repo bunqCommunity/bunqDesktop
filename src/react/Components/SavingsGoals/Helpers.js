@@ -1,14 +1,16 @@
 import { connectGetBudget } from "../../Functions/ConnectGetPermissions";
-import { filterShareInviteBankResponses } from "../../Functions/DataFilters";
+import { filterShareInviteMonetaryAccountResponses } from "../../Functions/DataFilters";
 import { formatMoney } from "../../Functions/Utils";
 
-export const calculateTotalBalance = (accounts, accountIds, shareInviteBankResponses = []) => {
+export const calculateTotalBalance = (accounts, accountIds, shareInviteMonetaryAccountResponses = []) => {
     return accounts.reduce((accumulator, account) => {
         if (accountIds.includes(account.id)) {
             let accountBalance = account.getBalance();
 
             // get responses for this account
-            const filteredResponses = shareInviteBankResponses.filter(filterShareInviteBankResponses(account.id));
+            const filteredResponses = shareInviteMonetaryAccountResponses.filter(
+                filterShareInviteMonetaryAccountResponses(account.id)
+            );
 
             // get budget from this response
             if (filteredResponses.length > 0) {

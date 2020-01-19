@@ -362,9 +362,7 @@ export class BunqDesktopClient {
         if (this.stored_api_keys.length === 0 || !this.stored_api_keys[keyIndex]) {
             // no api key stored on this index
             this.Logger.error(
-                `No stored API keys or index not found (index: ${keyIndex}) in storedKeys ${
-                    this.stored_api_keys.length
-                }`
+                `No stored API keys or index not found (index: ${keyIndex}) in storedKeys ${this.stored_api_keys.length}`
             );
             return false;
         }

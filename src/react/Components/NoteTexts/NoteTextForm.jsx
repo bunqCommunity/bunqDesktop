@@ -198,7 +198,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(NoteTextForm));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(NoteTextForm));
