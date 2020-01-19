@@ -2,7 +2,10 @@ import BunqErrorHandler from "../Functions/BunqErrorHandler";
 
 export const STORED_SHARE_INVITE_MONETARY_ACCOUNT_RESPONSES = "BUNQDESKTOP_SHARE_INVITE_MONETARY_ACCOUNT_RESPONSES";
 
-export function shareInviteMonetaryAccountResponsesSetInfo(share_invite_monetary_account_responses, BunqJSClient = false) {
+export function shareInviteMonetaryAccountResponsesSetInfo(
+    share_invite_monetary_account_responses,
+    BunqJSClient = false
+) {
     return {
         type: "SHARE_INVITE_RESPONSES_SET_INFO",
         payload: {

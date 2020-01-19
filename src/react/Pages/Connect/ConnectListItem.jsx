@@ -200,16 +200,31 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        shareInviteMonetaryAccountInquiryChangeStatus: (userId, accountId, shareInviteMonetaryAccountInquiryId, status) =>
+        shareInviteMonetaryAccountInquiryChangeStatus: (
+            userId,
+            accountId,
+            shareInviteMonetaryAccountInquiryId,
+            status
+        ) =>
             dispatch(
-                shareInviteMonetaryAccountInquiryChangeStatus(BunqJSClient, userId, accountId, shareInviteMonetaryAccountInquiryId, status)
+                shareInviteMonetaryAccountInquiryChangeStatus(
+                    BunqJSClient,
+                    userId,
+                    accountId,
+                    shareInviteMonetaryAccountInquiryId,
+                    status
+                )
             ),
         shareInviteMonetaryAccountResponseChangeStatus: (userId, shareInviteMonetaryAccountResponseId, status) =>
-            dispatch(shareInviteMonetaryAccountResponseChangeStatus(BunqJSClient, userId, shareInviteMonetaryAccountResponseId, status))
+            dispatch(
+                shareInviteMonetaryAccountResponseChangeStatus(
+                    BunqJSClient,
+                    userId,
+                    shareInviteMonetaryAccountResponseId,
+                    status
+                )
+            )
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ConnectListItem);
+export default connect(mapStateToProps, mapDispatchToProps)(ConnectListItem);

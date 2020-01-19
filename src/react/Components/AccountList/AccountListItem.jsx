@@ -47,7 +47,14 @@ class AccountListItem extends React.Component {
     }
 
     render() {
-        const { t, user, account, shareInviteMonetaryAccountResponses, selectedAccountIds, toggleAccountIds } = this.props;
+        const {
+            t,
+            user,
+            account,
+            shareInviteMonetaryAccountResponses,
+            selectedAccountIds,
+            toggleAccountIds
+        } = this.props;
 
         if (account.status !== "ACTIVE") {
             return null;
@@ -183,7 +190,4 @@ AccountListItem.defaultProps = {
     secondaryAction: false
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(AccountListItem));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(AccountListItem));

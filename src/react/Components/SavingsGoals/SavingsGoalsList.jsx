@@ -77,7 +77,8 @@ const mapStateToProps = state => {
     return {
         accounts: state.accounts.accounts,
 
-        shareInviteMonetaryAccountResponses: state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
+        shareInviteMonetaryAccountResponses:
+            state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
 
         savingsGoalsLastUpdate: state.savings_goals.last_update,
         savingsGoals: state.savings_goals.savings_goals

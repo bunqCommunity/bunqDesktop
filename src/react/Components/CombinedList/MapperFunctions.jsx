@@ -285,7 +285,9 @@ export const shareInviteMonetaryAccountResponseMapper = settings => {
             return (
                 <ShareInviteMonetaryAccountResponseListItem
                     BunqJSClient={settings.BunqJSClient}
-                    shareInviteMonetaryAccountResponse={shareInviteMonetaryAccountResponse.ShareInviteMonetaryAccountResponse}
+                    shareInviteMonetaryAccountResponse={
+                        shareInviteMonetaryAccountResponse.ShareInviteMonetaryAccountResponse
+                    }
                     openSnackbar={settings.openSnackbar}
                     user={settings.user}
                 />

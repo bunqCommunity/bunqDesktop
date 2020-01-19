@@ -56,17 +56,13 @@ class RuleCollectionPreviewItem extends React.Component<any, any> {
                         let ruleValue: ValueRule = matchingRule.rule;
                         let fieldChecked = ruleValue.field !== "CUSTOM" ? ruleValue.field : ruleValue.customField;
 
-                        primaryText = `Field ${fieldChecked} does ${negativeText} ${ruleValue.matchType} '${
-                            matchingRule.rule.value
-                        }'`;
+                        primaryText = `Field ${fieldChecked} does ${negativeText} ${ruleValue.matchType} '${matchingRule.rule.value}'`;
 
                         break;
                     case "TRANSACTION_AMOUNT":
                         let ruleTransactionAMount: TransactionAmountRule = matchingRule.rule;
 
-                        primaryText = `Transaction amount is ${negativeText} ${ruleTransactionAMount.matchType} than ${
-                            ruleTransactionAMount.amount
-                        }`;
+                        primaryText = `Transaction amount is ${negativeText} ${ruleTransactionAMount.matchType} than ${ruleTransactionAMount.amount}`;
 
                         break;
                 }

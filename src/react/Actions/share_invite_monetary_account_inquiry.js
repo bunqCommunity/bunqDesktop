@@ -1,6 +1,6 @@
 import BunqErrorHandler from "../Functions/BunqErrorHandler";
 import { openSnackbar } from "./snackbar";
-import { shareInviteBankInquiriesInfoUpdate } from "./share_invite_monetary_account_inquiries";
+import { shareInviteMonetaryAccountInquiriesInfoUpdate } from "./share_invite_monetary_account_inquiries";
 
 export function shareInviteMonetaryAccountInquirySend(
     BunqJSClient,
@@ -26,7 +26,7 @@ export function shareInviteMonetaryAccountInquirySend(
                 dispatch(openSnackbar(successMessage));
 
                 // update the payments, accounts and share list
-                dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId, accountId));
+                dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(BunqJSClient, userId, accountId));
                 dispatch(shareInviteMonetaryAccountInquiryNotLoading());
             })
             .catch(error => {
@@ -36,7 +36,13 @@ export function shareInviteMonetaryAccountInquirySend(
     };
 }
 
-export function shareInviteMonetaryAccountInquiryChangeStatus(BunqJSClient, userId, accountId, shareInviteMonetaryAccountInquiryId, status) {
+export function shareInviteMonetaryAccountInquiryChangeStatus(
+    BunqJSClient,
+    userId,
+    accountId,
+    shareInviteMonetaryAccountInquiryId,
+    status
+) {
     const failedMessage = window.t("We received the following error while updating your connect request");
     const successMessage = window.t("Connect request was updated successfully!");
 
@@ -49,7 +55,7 @@ export function shareInviteMonetaryAccountInquiryChangeStatus(BunqJSClient, user
                 dispatch(openSnackbar(successMessage));
 
                 // update the payments, accounts and share list
-                dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId, accountId));
+                dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(BunqJSClient, userId, accountId));
                 dispatch(shareInviteMonetaryAccountInquiryNotLoading());
             })
             .catch(error => {

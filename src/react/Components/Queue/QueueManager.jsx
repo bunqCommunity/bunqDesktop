@@ -141,7 +141,10 @@ class QueueManager extends React.Component {
         filteredAccounts.forEach(account => {
             const accountId = account.id;
 
-            const connectPermissions = connectGetPermissions(this.props.shareInviteMonetaryAccountResponses, account.id);
+            const connectPermissions = connectGetPermissions(
+                this.props.shareInviteMonetaryAccountResponses,
+                account.id
+            );
             if (connectPermissions === true || connectPermissions.view_new_events) {
                 bufferedCounter += 6;
                 this.paymentsUpdate(userId, accountId, false, eventCount);
@@ -226,19 +229,23 @@ class QueueManager extends React.Component {
                 ).length;
 
             const newestShareInviteMonetaryAccountInquiry = this.props.shareInviteBankInquiries.find(
-                shareInviteMonetaryAccountInquiry => account.id === shareInviteMonetaryAccountInquiry.monetary_account_id
+                shareInviteMonetaryAccountInquiry =>
+                    account.id === shareInviteMonetaryAccountInquiry.monetary_account_id
             );
             if (newestShareInviteMonetaryAccountInquiry)
                 newerShareInviteMonetaryAccountInquiriesCount += shareInviteBankInquiries.filter(
-                    shareInviteMonetaryAccountInquiry => shareInviteMonetaryAccountInquiry.id > newestShareInviteMonetaryAccountInquiry.id
+                    shareInviteMonetaryAccountInquiry =>
+                        shareInviteMonetaryAccountInquiry.id > newestShareInviteMonetaryAccountInquiry.id
                 ).length;
 
             const newestShareInviteMonetaryAccountResponse = this.props.shareInviteMonetaryAccountResponses.find(
-                shareInviteMonetaryAccountResponse => account.id === shareInviteMonetaryAccountResponse.monetary_account_id
+                shareInviteMonetaryAccountResponse =>
+                    account.id === shareInviteMonetaryAccountResponse.monetary_account_id
             );
             if (newestShareInviteMonetaryAccountResponse)
                 newerShareInviteMonetaryAccountResponsesCount += shareInviteMonetaryAccountResponses.filter(
-                    shareInviteMonetaryAccountResponse => shareInviteMonetaryAccountResponse.id > newestShareInviteMonetaryAccountResponse.id
+                    shareInviteMonetaryAccountResponse =>
+                        shareInviteMonetaryAccountResponse.id > newestShareInviteMonetaryAccountResponse.id
                 ).length;
 
             // count the total amount of events
@@ -719,10 +726,15 @@ class QueueManager extends React.Component {
                 // more shareInviteBankInquiries can be loaded for this account
                 if (shareInviteBankInquiries.length === currentEventCount && nextEventCount > 0) {
                     const oldestShareInviteMonetaryAccountInquiryIndex = shareInviteBankInquiries.length - 1;
-                    const oldestShareInviteMonetaryAccountInquiry = shareInviteBankInquiries[oldestShareInviteMonetaryAccountInquiryIndex];
+                    const oldestShareInviteMonetaryAccountInquiry =
+                        shareInviteBankInquiries[oldestShareInviteMonetaryAccountInquiryIndex];
 
                     // re-run the shareInviteBankInquiries to continue deeper into the acocunt
-                    this.shareInviteBankInquiriesUpdate(user_id, oldestShareInviteMonetaryAccountInquiry.id, nextEventCount);
+                    this.shareInviteBankInquiriesUpdate(
+                        user_id,
+                        oldestShareInviteMonetaryAccountInquiry.id,
+                        nextEventCount
+                    );
                 }
 
                 const currentShareInviteBankInquiries = {
@@ -804,7 +816,8 @@ const mapStateToProps = state => {
         requestInquiryBatches: state.request_inquiry_batches.request_inquiry_batches,
         requestResponses: state.request_responses.request_responses,
         shareInviteBankInquiries: state.share_invite_monetary_account_inquiries.share_invite_monetary_account_inquiries,
-        shareInviteMonetaryAccountResponses: state.share_invite_monetary_account_responses.share_invite_monetary_account_responses
+        shareInviteMonetaryAccountResponses:
+            state.share_invite_monetary_account_responses.share_invite_monetary_account_responses
     };
 };
 
@@ -838,7 +851,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(QueueManager));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(QueueManager));

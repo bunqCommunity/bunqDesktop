@@ -14,7 +14,7 @@ import TranslateButton from "../TranslationHelpers/Button";
 import ShowOnly from "./ShareInviteBankTypes/ShowOnly";
 import FullAccess from "./ShareInviteBankTypes/FullAccess";
 import DraftAccess from "./ShareInviteBankTypes/DraftAccess";
-import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_monetary_account_inquiries";
+import { shareInviteMonetaryAccountInquiriesInfoUpdate } from "../../Actions/share_invite_monetary_account_inquiries";
 
 const styles = {
     listItemText: {
@@ -48,10 +48,18 @@ class ShareInviteMonetaryAccountInquiryListItem extends React.Component {
             this.setState({ loading: true });
 
             BunqJSClient.api.shareInviteMonetaryAccountInquiry
-                .putStatus(user.id, shareInviteMonetaryAccountInquiry.monetary_account_id, shareInviteMonetaryAccountInquiry.id, "REVOKED")
+                .putStatus(
+                    user.id,
+                    shareInviteMonetaryAccountInquiry.monetary_account_id,
+                    shareInviteMonetaryAccountInquiry.id,
+                    "REVOKED"
+                )
                 .then(response => {
                     // trigger an update
-                    this.props.shareInviteBankInquiriesInfoUpdate(user.id, shareInviteMonetaryAccountInquiry.monetary_account_id);
+                    this.props.shareInviteMonetaryAccountInquiriesInfoUpdate(
+                        user.id,
+                        shareInviteMonetaryAccountInquiry.monetary_account_id
+                    );
 
                     this.setState({ loading: false });
                     this.props.openSnackbar(success);
@@ -139,7 +147,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        shareInviteBankInquiriesInfoUpdate: userId => dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId))
+        shareInviteMonetaryAccountInquiriesInfoUpdate: userId =>
+            dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(BunqJSClient, userId))
     };
 };
 export default connect(

@@ -35,7 +35,7 @@ import { masterCardActionsUpdate } from "../../Actions/master_card_actions";
 import { requestInquiriesUpdate } from "../../Actions/request_inquiries";
 import { updateStatisticsSavingsGoals } from "../../Actions/savings_goals";
 import { shareInviteMonetaryAccountResponsesInfoUpdate } from "../../Actions/share_invite_monetary_account_responses";
-import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_monetary_account_inquiries";
+import { shareInviteMonetaryAccountInquiriesInfoUpdate } from "../../Actions/share_invite_monetary_account_inquiries";
 
 const styles = {
     list: {
@@ -110,10 +110,14 @@ class AccountList extends React.Component {
 
         if (
             (previousProps.accountsLoading && !this.props.accountsLoading) ||
-            (previousProps.shareInviteMonetaryAccountResponsesLoading && !this.props.shareInviteMonetaryAccountResponsesLoading)
+            (previousProps.shareInviteMonetaryAccountResponsesLoading &&
+                !this.props.shareInviteMonetaryAccountResponsesLoading)
         ) {
             // update the savings goals when the accounts are updated
-            this.props.updateStatisticsSavingsGoals(this.props.accounts, this.props.shareInviteMonetaryAccountResponses);
+            this.props.updateStatisticsSavingsGoals(
+                this.props.accounts,
+                this.props.shareInviteMonetaryAccountResponses
+            );
         }
 
         if (this.state.totalBalance !== totalBalance) {
@@ -137,7 +141,7 @@ class AccountList extends React.Component {
             this.props.limitedPermissions === false &&
             selectedAccountId
         ) {
-            this.props.shareInviteBankInquiriesInfoUpdate(userId, selectedAccountId);
+            this.props.shareInviteMonetaryAccountInquiriesInfoUpdate(userId, selectedAccountId);
         }
         if (!this.props.shareInviteMonetaryAccountResponsesLoading) {
             this.props.shareInviteMonetaryAccountResponsesInfoUpdate(userId);
@@ -312,7 +316,8 @@ const mapStateToProps = state => {
         accountsLoading: state.accounts.loading,
         excludedAccountIds: state.accounts.excluded_account_ids,
 
-        shareInviteMonetaryAccountResponses: state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
+        shareInviteMonetaryAccountResponses:
+            state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
         shareInviteMonetaryAccountResponsesLoading: state.share_invite_monetary_account_responses.loading,
         shareInviteBankInquiriesLoading: state.share_invite_monetary_account_inquiries.loading,
 
@@ -343,8 +348,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
         shareInviteMonetaryAccountResponsesInfoUpdate: userId =>
             dispatch(shareInviteMonetaryAccountResponsesInfoUpdate(BunqJSClient, userId)),
-        shareInviteBankInquiriesInfoUpdate: (userId, accountId) =>
-            dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId, accountId)),
+        shareInviteMonetaryAccountInquiriesInfoUpdate: (userId, accountId) =>
+            dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(BunqJSClient, userId, accountId)),
         selectAccount: acountId => dispatch(accountsSelectAccount(acountId)),
 
         updateStatisticsSavingsGoals: (accounts, shareInviteMonetaryAccountResponses) =>
@@ -352,7 +357,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(AccountList));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(AccountList));

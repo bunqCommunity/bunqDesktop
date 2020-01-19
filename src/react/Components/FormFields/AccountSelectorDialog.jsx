@@ -34,7 +34,9 @@ const AccountItem = ({ account, onClick, BunqJSClient, hideBalance, shareInviteM
     // format default balance
     let formattedBalance = account.balance ? account.balance.value : 0;
 
-    const filteredInviteResponses = shareInviteMonetaryAccountResponses.filter(filterShareInviteMonetaryAccountResponses(account.id));
+    const filteredInviteResponses = shareInviteMonetaryAccountResponses.filter(
+        filterShareInviteMonetaryAccountResponses(account.id)
+    );
 
     // attempt to get connect budget if possible
     if (filteredInviteResponses.length > 0) {
@@ -185,7 +187,8 @@ AccountSelectorDialog.defaultProps = {
 
 const mapStateToProps = state => {
     return {
-        shareInviteMonetaryAccountResponses: state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
+        shareInviteMonetaryAccountResponses:
+            state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
 
         hideBalance: state.options.hide_balance
     };

@@ -32,7 +32,7 @@ import { getInternationalFormat, isValidPhonenumber } from "../../Functions/Phon
 import { getUTCDate } from "../../Functions/Utils";
 
 import { shareInviteMonetaryAccountResponsesInfoUpdate } from "../../Actions/share_invite_monetary_account_responses";
-import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_monetary_account_inquiries";
+import { shareInviteMonetaryAccountInquiriesInfoUpdate } from "../../Actions/share_invite_monetary_account_inquiries";
 import { shareInviteMonetaryAccountInquirySend } from "../../Actions/share_invite_monetary_account_inquiry";
 import { accountsUpdate } from "../../Actions/accounts";
 import { openSnackbar } from "../../Actions/snackbar";
@@ -104,7 +104,7 @@ class Connect extends React.Component {
             const userId = this.props.user.id;
             const accountId = parseFloat(this.props.match.params.accountId);
 
-            this.props.shareInviteBankInquiriesInfoUpdate(userId, accountId);
+            this.props.shareInviteMonetaryAccountInquiriesInfoUpdate(userId, accountId);
             this.props.shareInviteMonetaryAccountResponsesInfoUpdate(userId);
         }
     }
@@ -118,7 +118,7 @@ class Connect extends React.Component {
             this.props.accountsUpdate(user.id);
 
             if (this.props.limitedPermissions === false) {
-                this.props.shareInviteBankInquiriesInfoUpdate(user.id, nextAccountId);
+                this.props.shareInviteMonetaryAccountInquiriesInfoUpdate(user.id, nextAccountId);
             }
             this.props.shareInviteMonetaryAccountResponsesInfoUpdate(user.id);
         }
@@ -357,7 +357,13 @@ class Connect extends React.Component {
             const accountId = parseFloat(this.props.match.params.accountId);
             if (!accountId) return;
 
-            this.props.shareInviteMonetaryAccountInquirySend(this.props.user.id, accountId, targetInfo, shareDetail, shareOptions);
+            this.props.shareInviteMonetaryAccountInquirySend(
+                this.props.user.id,
+                accountId,
+                targetInfo,
+                shareDetail,
+                shareOptions
+            );
         }
     };
 
@@ -533,7 +539,9 @@ class Connect extends React.Component {
                                 <TranslateButton
                                     variant="contained"
                                     color="primary"
-                                    disabled={!this.state.validForm || this.props.shareInviteMonetaryAccountInquiryLoading}
+                                    disabled={
+                                        !this.state.validForm || this.props.shareInviteMonetaryAccountInquiryLoading
+                                    }
                                     onClick={this.sendConnectRequest}
                                     style={styles.btn}
                                 >
@@ -556,7 +564,9 @@ class Connect extends React.Component {
                                                 <ConnectListItem
                                                     t={t}
                                                     type="ShareInviteMonetaryAccountInquiry"
-                                                    connectInfo={filteredInviteInquiry.ShareInviteMonetaryAccountInquiry}
+                                                    connectInfo={
+                                                        filteredInviteInquiry.ShareInviteMonetaryAccountInquiry
+                                                    }
                                                     BunqJSClient={this.props.BunqJSClient}
                                                 />
                                             ))}
@@ -574,7 +584,9 @@ class Connect extends React.Component {
                                                 <ConnectListItem
                                                     t={t}
                                                     type="ShareInviteMonetaryAccountResponse"
-                                                    connectInfo={filteredInviteResponse.ShareInviteMonetaryAccountResponse}
+                                                    connectInfo={
+                                                        filteredInviteResponse.ShareInviteMonetaryAccountResponse
+                                                    }
                                                     BunqJSClient={this.props.BunqJSClient}
                                                 />
                                             ))}
@@ -597,7 +609,8 @@ const mapStateToProps = state => {
         user: state.user.user,
         limitedPermissions: state.user.limited_permissions,
 
-        shareInviteMonetaryAccountResponses: state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
+        shareInviteMonetaryAccountResponses:
+            state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
         shareInviteMonetaryAccountResponsesLoading: state.share_invite_monetary_account_responses.loading,
 
         shareInviteBankInquiries: state.share_invite_monetary_account_inquiries.share_invite_monetary_account_inquiries,
@@ -618,12 +631,19 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
         accountsUpdate: userId => dispatch(accountsUpdate(BunqJSClient, userId)),
 
-        shareInviteBankInquiriesInfoUpdate: (userId, accountId) =>
-            dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId, accountId)),
+        shareInviteMonetaryAccountInquiriesInfoUpdate: (userId, accountId) =>
+            dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(BunqJSClient, userId, accountId)),
         shareInviteMonetaryAccountResponsesInfoUpdate: (userId, accountId) =>
             dispatch(shareInviteMonetaryAccountResponsesInfoUpdate(BunqJSClient, userId)),
 
-        shareInviteMonetaryAccountInquirySend: (userId, accountId, counterparty, shareDetail, shareOptions, shareStatus) =>
+        shareInviteMonetaryAccountInquirySend: (
+            userId,
+            accountId,
+            counterparty,
+            shareDetail,
+            shareOptions,
+            shareStatus
+        ) =>
             dispatch(
                 shareInviteMonetaryAccountInquirySend(
                     BunqJSClient,
@@ -638,7 +658,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(Connect));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(Connect));

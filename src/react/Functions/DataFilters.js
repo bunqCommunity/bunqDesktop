@@ -524,7 +524,8 @@ export const requestInquiryBatchFilter = options => requestInquiryBatch => {
 };
 
 export const shareInviteMonetaryAccountResponseFilter = options => shareInviteMonetaryAccountResponse => {
-    const shareInviteMonetaryAccountResponseInfo = shareInviteMonetaryAccountResponse.ShareInviteMonetaryAccountResponse;
+    const shareInviteMonetaryAccountResponseInfo =
+        shareInviteMonetaryAccountResponse.ShareInviteMonetaryAccountResponse;
 
     if (shareInviteMonetaryAccountResponseInfo.status !== "PENDING") {
         return false;
@@ -624,7 +625,10 @@ export const shareInviteMonetaryAccountInquiryFilter = options => shareInviteMon
     return checkDateRange(options.dateFromFilter, options.dateToFilter, shareInviteMonetaryAccountInquiryInfo.updated);
 };
 
-export const filterShareInviteMonetaryAccountResponses = (accountId, statusList = ["ACCEPTED"]) => shareInviteMonetaryAccountResponse => {
+export const filterShareInviteMonetaryAccountResponses = (
+    accountId,
+    statusList = ["ACCEPTED"]
+) => shareInviteMonetaryAccountResponse => {
     if (!shareInviteMonetaryAccountResponse.ShareInviteMonetaryAccountResponse) return false;
 
     return (
@@ -633,7 +637,10 @@ export const filterShareInviteMonetaryAccountResponses = (accountId, statusList 
     );
 };
 
-export const filterShareInviteBankInquiries = (accountId, statusList = ["ACCEPTED"]) => shareInviteMonetaryAccountInquiry => {
+export const filterShareInviteBankInquiries = (
+    accountId,
+    statusList = ["ACCEPTED"]
+) => shareInviteMonetaryAccountInquiry => {
     if (shareInviteMonetaryAccountInquiry.ShareInviteMonetaryAccountInquiry) {
         return (
             statusList.includes(shareInviteMonetaryAccountInquiry.ShareInviteMonetaryAccountInquiry.status) &&

@@ -41,7 +41,7 @@ import { bunqMeTabsUpdate } from "../Actions/bunq_me_tabs";
 import { masterCardActionsUpdate } from "../Actions/master_card_actions";
 import { requestInquiriesUpdate } from "../Actions/request_inquiries";
 import { requestInquiryBatchesUpdate } from "../Actions/request_inquiry_batches";
-import { shareInviteBankInquiriesInfoUpdate } from "../Actions/share_invite_monetary_account_inquiries";
+import { shareInviteMonetaryAccountInquiriesInfoUpdate } from "../Actions/share_invite_monetary_account_inquiries";
 import { shareInviteMonetaryAccountResponsesInfoUpdate } from "../Actions/share_invite_monetary_account_responses";
 import { shareInviteMonetaryAccountResponseChangeStatus } from "../Actions/share_invite_monetary_account_response";
 import { shareInviteMonetaryAccountInquiryChangeStatus } from "../Actions/share_invite_monetary_account_inquiry";
@@ -136,7 +136,7 @@ class AccountInfo extends React.Component {
             const accountId = parseFloat(this.props.match.params.accountId);
 
             if (this.props.limitedPermissions === false) {
-                this.props.shareInviteBankInquiriesInfoUpdate(userId, accountId);
+                this.props.shareInviteMonetaryAccountInquiriesInfoUpdate(userId, accountId);
             }
             this.props.shareInviteMonetaryAccountResponsesInfoUpdate(userId);
             const connectPermissions = connectGetPermissions(this.props.shareInviteMonetaryAccountResponses, accountId);
@@ -176,7 +176,7 @@ class AccountInfo extends React.Component {
             this.props.accountsUpdate(user.id);
 
             if (this.props.limitedPermissions === false) {
-                this.props.shareInviteBankInquiriesInfoUpdate(user.id, nextAccountId);
+                this.props.shareInviteMonetaryAccountInquiriesInfoUpdate(user.id, nextAccountId);
             }
             this.props.shareInviteMonetaryAccountResponsesInfoUpdate(user.id);
             this.props.paymentsUpdate(user.id, nextAccountId);
@@ -341,7 +341,8 @@ class AccountInfo extends React.Component {
                     allowConnectSettings = false;
 
                     profileIconList = filteredInviteResponses.map(filteredInviteResponse => {
-                        if (!filteredInviteResponse || !filteredInviteResponse.ShareInviteMonetaryAccountResponse) return null;
+                        if (!filteredInviteResponse || !filteredInviteResponse.ShareInviteMonetaryAccountResponse)
+                            return null;
                         return (
                             <PersonChip
                                 BunqJSClient={this.props.BunqJSClient}
@@ -582,7 +583,8 @@ const mapStateToProps = state => {
     return {
         hideBalance: state.options.hide_balance,
 
-        shareInviteMonetaryAccountResponses: state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
+        shareInviteMonetaryAccountResponses:
+            state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
         shareInviteMonetaryAccountResponsesLoading: state.share_invite_monetary_account_responses.loading,
 
         shareInviteBankInquiries: state.share_invite_monetary_account_inquiries.share_invite_monetary_account_inquiries,
@@ -608,14 +610,32 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(accountsUpdateSettings(BunqJSClient, userId, accountId, settings, accountType)),
 
         shareInviteMonetaryAccountResponseChangeStatus: (userId, shareInviteMonetaryAccountResponseId, status) =>
-            dispatch(shareInviteMonetaryAccountResponseChangeStatus(BunqJSClient, userId, shareInviteMonetaryAccountResponseId, status)),
-        shareInviteMonetaryAccountInquiryChangeStatus: (userId, accountId, shareInviteMonetaryAccountInquiryId, status) =>
             dispatch(
-                shareInviteMonetaryAccountInquiryChangeStatus(BunqJSClient, userId, accountId, shareInviteMonetaryAccountInquiryId, status)
+                shareInviteMonetaryAccountResponseChangeStatus(
+                    BunqJSClient,
+                    userId,
+                    shareInviteMonetaryAccountResponseId,
+                    status
+                )
+            ),
+        shareInviteMonetaryAccountInquiryChangeStatus: (
+            userId,
+            accountId,
+            shareInviteMonetaryAccountInquiryId,
+            status
+        ) =>
+            dispatch(
+                shareInviteMonetaryAccountInquiryChangeStatus(
+                    BunqJSClient,
+                    userId,
+                    accountId,
+                    shareInviteMonetaryAccountInquiryId,
+                    status
+                )
             ),
 
-        shareInviteBankInquiriesInfoUpdate: (userId, accountId) =>
-            dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId, accountId)),
+        shareInviteMonetaryAccountInquiriesInfoUpdate: (userId, accountId) =>
+            dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(BunqJSClient, userId, accountId)),
         shareInviteMonetaryAccountResponsesInfoUpdate: (userId, accountId) =>
             dispatch(shareInviteMonetaryAccountResponsesInfoUpdate(BunqJSClient, userId)),
         paymentsUpdate: (userId, accountId) => dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId)),
@@ -631,7 +651,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(AccountInfo));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(AccountInfo));

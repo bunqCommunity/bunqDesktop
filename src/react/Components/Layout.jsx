@@ -114,9 +114,7 @@ class Layout extends React.Component {
             VersionChecker().then(versionInfo => {
                 if (versionInfo.newerLink !== false) {
                     this.props.openSnackbar(
-                        `A new version (v${versionInfo.latestVersion}) is available! You are currently using ${
-                            versionInfo.currentVersion
-                        }`,
+                        `A new version (v${versionInfo.latestVersion}) is available! You are currently using ${versionInfo.currentVersion}`,
                         8000
                     );
                 }
@@ -358,10 +356,5 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 export default withStyles(styles, { withTheme: true })(
-    withRouter(
-        connect(
-            mapStateToProps,
-            mapDispatchToProps
-        )(translate("translations")(Layout))
-    )
+    withRouter(connect(mapStateToProps, mapDispatchToProps)(translate("translations")(Layout)))
 );

@@ -155,7 +155,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(AccountSelection);
+export default connect(mapStateToProps, mapDispatchToProps)(AccountSelection);

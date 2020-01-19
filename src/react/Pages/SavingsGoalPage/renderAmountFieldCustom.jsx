@@ -100,7 +100,8 @@ const mapStateToProps = state => {
     return {
         accountIds: formSelector(state, "account_ids"),
         accounts: state.accounts.accounts,
-        shareInviteMonetaryAccountResponses: state.share_invite_monetary_account_responses.share_invite_monetary_account_responses
+        shareInviteMonetaryAccountResponses:
+            state.share_invite_monetary_account_responses.share_invite_monetary_account_responses
     };
 };
 

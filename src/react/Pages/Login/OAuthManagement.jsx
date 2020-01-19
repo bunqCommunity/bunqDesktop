@@ -346,7 +346,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(OAuthManagement));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(OAuthManagement));

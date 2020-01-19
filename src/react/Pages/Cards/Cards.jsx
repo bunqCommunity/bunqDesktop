@@ -457,7 +457,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(Cards));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(Cards));

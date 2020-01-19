@@ -2,7 +2,11 @@ import BunqErrorHandler from "../Functions/BunqErrorHandler";
 
 export const STORED_SHARE_INVITE_MONETARY_ACCOUNT_INQUIRIES = "BUNQDESKTOP_SHARE_INVITE_MONETARY_ACCOUNT_INQUIRIES";
 
-export function shareInviteBankInquiriesSetInfo(share_invite_monetary_account_inquiries, account_id, BunqJSClient = false) {
+export function shareInviteBankInquiriesSetInfo(
+    share_invite_monetary_account_inquiries,
+    account_id,
+    BunqJSClient = false
+) {
     return {
         type: "SHARE_INVITE_INQUIRIES_SET_INFO",
         payload: {

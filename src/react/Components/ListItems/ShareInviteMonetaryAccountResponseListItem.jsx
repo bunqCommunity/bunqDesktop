@@ -175,7 +175,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        shareInviteMonetaryAccountResponsesInfoUpdate: userId => dispatch(shareInviteMonetaryAccountResponsesInfoUpdate(BunqJSClient, userId))
+        shareInviteMonetaryAccountResponsesInfoUpdate: userId =>
+            dispatch(shareInviteMonetaryAccountResponsesInfoUpdate(BunqJSClient, userId))
     };
 };
 export default connect(

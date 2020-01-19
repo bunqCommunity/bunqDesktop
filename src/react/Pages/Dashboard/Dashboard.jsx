@@ -273,7 +273,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         registrationLogOut: () => dispatch(registrationLogOut())
     };
 };
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(Dashboard));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(Dashboard));

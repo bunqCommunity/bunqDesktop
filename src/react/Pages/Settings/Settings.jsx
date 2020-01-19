@@ -513,7 +513,8 @@ class Settings extends React.Component {
         const cardPaymentCount = this.props.masterCardActions.length;
         const requestCount = this.props.requestInquiries.length + this.props.requestResponses.length;
         const bunqMeTabsCount = this.props.bunqMeTabs.length;
-        const connectCount = this.props.shareInviteBankInquiries.length + this.props.shareInviteMonetaryAccountResponses.length;
+        const connectCount =
+            this.props.shareInviteBankInquiries.length + this.props.shareInviteMonetaryAccountResponses.length;
         const scheduledPaymentsCount = this.props.scheduledPayments.length;
 
         const dataManagementContainer = (
@@ -693,7 +694,8 @@ const mapStateToProps = state => {
         requestInquiryBatches: state.request_inquiry_batches.request_inquiry_batches,
         requestResponses: state.request_responses.request_responses,
         shareInviteBankInquiries: state.share_invite_monetary_account_inquiries.share_invite_monetary_account_inquiries,
-        shareInviteMonetaryAccountResponses: state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
+        shareInviteMonetaryAccountResponses:
+            state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
 
         checkInactivity: state.options.check_inactivity,
         inactivityCheckDuration: state.options.inactivity_check_duration,
@@ -750,7 +752,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(Settings));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(Settings));

@@ -313,7 +313,4 @@ TargetSelection.defaultProps = {
     disabledTypes: []
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(TargetSelection));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(TargetSelection));

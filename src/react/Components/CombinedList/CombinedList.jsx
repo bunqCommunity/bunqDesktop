@@ -401,7 +401,8 @@ const mapStateToProps = state => {
         shareInviteBankInquiries: state.share_invite_monetary_account_inquiries.share_invite_monetary_account_inquiries,
         shareInviteBankInquiriesLoading: state.share_invite_monetary_account_inquiries.loading,
 
-        shareInviteMonetaryAccountResponses: state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
+        shareInviteMonetaryAccountResponses:
+            state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
         shareInviteMonetaryAccountResponsesLoading: state.share_invite_monetary_account_responses.loading
     };
 };
@@ -424,7 +425,4 @@ CombinedList.defaultProps = {
     hiddenTypes: []
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(CombinedList));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(CombinedList));

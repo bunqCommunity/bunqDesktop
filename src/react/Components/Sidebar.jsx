@@ -257,8 +257,5 @@ Sidebar.propTypes = {
 };
 
 export default withStyles(styles, { withTheme: true })(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps
-    )(translate("translations")(Sidebar))
+    connect(mapStateToProps, mapDispatchToProps)(translate("translations")(Sidebar))
 );

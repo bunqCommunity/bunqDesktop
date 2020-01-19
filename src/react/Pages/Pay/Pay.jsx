@@ -442,7 +442,9 @@ class Pay extends React.Component {
         const insufficientFundsCondition =
             amount !== "" &&
             // enough funds or draft enabled
-            (amount > accountBalance && sendDraftPayment === false && schedulePayment === false);
+            amount > accountBalance &&
+            sendDraftPayment === false &&
+            schedulePayment === false;
         const amountErrorCondition = amount < 0.01 || amount > 100000;
         const descriptionErrorCondition = description.length > 140;
         const ibanNameErrorCondition = ibanName.length < 1 || ibanName.length > 64;
@@ -572,7 +574,10 @@ class Pay extends React.Component {
         }
 
         setTimeout(() => {
-            const connectPermissions = connectGetPermissions(this.props.shareInviteMonetaryAccountResponses, account.id);
+            const connectPermissions = connectGetPermissions(
+                this.props.shareInviteMonetaryAccountResponses,
+                account.id
+            );
             if (connectPermissions && connectPermissions.view_new_events) {
                 this.props.paymentInfoUpdate(userId, account.id);
             }
@@ -868,7 +873,8 @@ const mapStateToProps = state => {
 
         pendingPayments: state.pending_payments.pending_payments,
 
-        shareInviteMonetaryAccountResponses: state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
+        shareInviteMonetaryAccountResponses:
+            state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
 
         user: state.user.user,
         limitedPermissions: state.user.limited_permissions
@@ -891,7 +897,4 @@ const mapDispatchToProps = (dispatch, props) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(Pay));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(Pay));

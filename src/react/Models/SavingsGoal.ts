@@ -87,7 +87,11 @@ export default class SavingsGoal {
      * @param accounts
      */
     public getStatistics(accounts: any[], shareInviteMonetaryAccountResponses: any[] = []): SavingsGoalStatistics {
-        const accountsTotalFunds = calculateTotalBalance(accounts, this._account_ids, shareInviteMonetaryAccountResponses);
+        const accountsTotalFunds = calculateTotalBalance(
+            accounts,
+            this._account_ids,
+            shareInviteMonetaryAccountResponses
+        );
 
         const startValue = this.startAmount || 0;
         const goalAmount = this.goalAmount || 0;
@@ -117,7 +121,11 @@ export default class SavingsGoal {
      * @param {any[]} shareInviteMonetaryAccountResponses
      * @returns {any}
      */
-    public getStatistic(key: string, accounts: MonetaryAccount[] = [], shareInviteMonetaryAccountResponses: any[] = []): any {
+    public getStatistic(
+        key: string,
+        accounts: MonetaryAccount[] = [],
+        shareInviteMonetaryAccountResponses: any[] = []
+    ): any {
         if (this._statistics === false && accounts.length > 0) {
             this.getStatistics(accounts, shareInviteMonetaryAccountResponses);
         }

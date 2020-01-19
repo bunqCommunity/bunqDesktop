@@ -441,7 +441,8 @@ const mapStateToProps = state => {
         requestResponseAccountId: state.request_response_info.account_id,
         requestResponseInfoLoading: state.request_response_info.loading,
 
-        shareInviteMonetaryAccountResponses: state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
+        shareInviteMonetaryAccountResponses:
+            state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
 
         requestResponseLoading: state.request_response.loading,
 
@@ -465,7 +466,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(RequestResponseInfo));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(RequestResponseInfo));

@@ -1,7 +1,9 @@
 import { filterShareInviteMonetaryAccountResponses } from "./DataFilters";
 
 const getInviteResponse = (shareInviteMonetaryAccountResponses, accountId) => {
-    const filteredInviteResponses = shareInviteMonetaryAccountResponses.filter(filterShareInviteMonetaryAccountResponses(accountId));
+    const filteredInviteResponses = shareInviteMonetaryAccountResponses.filter(
+        filterShareInviteMonetaryAccountResponses(accountId)
+    );
 
     // no results means no checks required
     if (filteredInviteResponses.length === 0) return true;

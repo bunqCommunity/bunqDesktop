@@ -8,7 +8,9 @@ export const calculateTotalBalance = (accounts, accountIds, shareInviteMonetaryA
             let accountBalance = account.getBalance();
 
             // get responses for this account
-            const filteredResponses = shareInviteMonetaryAccountResponses.filter(filterShareInviteMonetaryAccountResponses(account.id));
+            const filteredResponses = shareInviteMonetaryAccountResponses.filter(
+                filterShareInviteMonetaryAccountResponses(account.id)
+            );
 
             // get budget from this response
             if (filteredResponses.length > 0) {
