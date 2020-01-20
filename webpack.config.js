@@ -8,7 +8,7 @@ const PRODUCTION = process.env.NODE_ENV === "production";
 const DEVELOPMENT = !PRODUCTION;
 const RELEASE_MODE = !!process.env.RELEASE_MODE;
 
-const SRC_DIR = path.resolve(__dirname, "src/react");
+const SRC_DIR = path.resolve(__dirname, "src");
 const BUILD_DIR = path.resolve(__dirname, "app/react");
 const OUTPUT_DIR = "./";
 
@@ -22,7 +22,7 @@ const moduleOptions = {
 
 let config = {
     entry: {
-        bunqDesktop: `${SRC_DIR}/react-app.jsx`
+        bunqDesktop: `${SRC_DIR}/components/react-app.tsx`
     },
     target: "electron-renderer",
     output: {

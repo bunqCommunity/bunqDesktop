@@ -7,7 +7,7 @@ const CSVParse = require("csv-parse/lib/sync");
 const packageInfo = require("../package.json");
 const SUPPORTED_LANGUAGES = packageInfo.supported_languages;
 
-const LOCALES_DIR = path.join(__dirname, "../src/react/Locales");
+const LOCALES_DIR = path.join(__dirname, "../src/locales");
 const LOCALES_CRODWIN_FILE = `${LOCALES_DIR}/Crowdin/import.csv`;
 
 /**
@@ -164,7 +164,7 @@ const start = async () => {
         return output;
     };
 
-    fs.writeFileSync(`${__dirname}/../src/react/Locales/Crowdin/export.csv`, generateCsv());
+    fs.writeFileSync(`${__dirname}/../src/locales/Crowdin/export.csv`, generateCsv());
 };
 
 start()
