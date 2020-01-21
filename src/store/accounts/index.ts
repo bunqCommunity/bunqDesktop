@@ -6,6 +6,8 @@ import { AppWindow } from "~app";
 import { EXCLUDED_ACCOUNT_IDS, SELECTED_ACCOUNT_LOCATION, STORED_ACCOUNTS } from "~misc/consts";
 import { formatMoney } from "~functions/Utils";
 import settings from "~importwrappers/electronSettings";
+import MonetaryAccount from "~models/MonetaryAccount";
+import { IMonetaryAccount } from "~types/MonetaryAccount";
 
 declare let window: AppWindow;
 
@@ -16,7 +18,7 @@ const selectedAccountDefault: number | boolean = selectedAccountStored !== undef
 const excludedAccountIdsDefault: Array<number> = excludedAccountIdsStored !== undefined ? excludedAccountIdsStored : [];
 
 export interface ISetInfoPayload {
-    accounts: any;
+    accounts: Array<IMonetaryAccount>;
 }
 
 const setInfoAction = createAction("setInfo");
@@ -69,23 +71,17 @@ const slice = createSlice({
     reducers: {
         [setInfoAction.type](state, action: PayloadAction<ISetInfoPayload>) {
             const BunqDesktopClient = window.BunqDesktopClient;
-            BunqDesktopClient.storeEncrypt(
-                {
-                    items: action.payload.accounts
-                },
-                STORED_ACCOUNTS
-            ).then();
-
+            BunqDesktopClient.storeEncrypt({ items: action.payload.accounts }, STORED_ACCOUNTS).then();
             ipcRenderer.send(
                 "set-tray-accounts",
                 action.payload.accounts
                     .filter(account => {
                         return account && account.status === "ACTIVE";
                     })
-                    .map(account => {
+                    .map((account) => {
                         return {
                             description: account.description,
-                            balance: formatMoney(account.getBalance())
+                            balance: formatMoney((new MonetaryAccount(account)).getBalance())
                         };
                     })
             );

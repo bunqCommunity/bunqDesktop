@@ -89,7 +89,7 @@ class AccountList extends React.Component<ReturnType<typeof mapStateToProps> & R
             .reduce((total, account) => {
                 const accountTrayItem = {
                     description: account.description,
-                    balance: formatMoney(account.getBalance())
+                    balance: formatMoney(account.balance.value)
                 };
 
                 if (account.balance) {
@@ -217,7 +217,7 @@ class AccountList extends React.Component<ReturnType<typeof mapStateToProps> & R
         const { accountTotalSelectionMode } = this.state;
 
         let accounts = [];
-        if (this.props.accounts !== false) {
+        if (this.props.accounts.length) {
             accounts = this.props.accounts
                 .filter(account => {
                     if (account && account.status !== "ACTIVE") {

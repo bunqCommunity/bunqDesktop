@@ -73,7 +73,33 @@ export default class MonetaryAccount {
     }
 
     public toPlainObject(): IMonetaryAccount {
-        return JSON.parse(this._rawData);
+        return JSON.parse(JSON.stringify({
+            accountType: this._accountType,
+            id: this._id,
+            created: this._created,
+            updated: this._updated,
+            avatar: this._avatar,
+            currency: this._currency,
+            description: this._description,
+            daily_limit: this._daily_limit,
+            daily_spent: this._daily_spent,
+            overdraft_limit: this._overdraft_limit,
+            balance: this._balance,
+            alias: this._alias,
+            public_uuid: this._public_uuid,
+            status: this._status,
+            sub_status: this._sub_status,
+            user_id: this._user_id,
+            monetary_account_profile: this._monetary_account_profile,
+            notification_filters: this._notification_filters,
+            setting: this._setting,
+
+            savings_goal: this._savings_goal,
+            savings_goal_progress: this._savings_goal_progress,
+
+            // only available on MonetaryAccountJoint objects
+            all_co_owner: this._all_co_owner,
+        }));
     }
 
     /**

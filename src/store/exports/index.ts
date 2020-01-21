@@ -1,7 +1,7 @@
 import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface ISetInfoPayload {
-    exports: Array<any>;
+    exports: any;
     user_id: number;
     account_id: number;
 }

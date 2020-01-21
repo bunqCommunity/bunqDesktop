@@ -3,7 +3,9 @@ import { AppWindow } from "~app";
 
 import BunqErrorHandler from "~functions/BunqErrorHandler";
 import { STORED_ACCOUNTS } from "~misc/consts";
+import MonetaryAccount from "~models/MonetaryAccount";
 import { AppDispatch, BatchedActions } from "~store/index";
+import { IMonetaryAccount } from "~types/MonetaryAccount";
 import { actions } from "./index";
 import { actions as snackbarActions } from "../snackbar";
 
@@ -30,7 +32,10 @@ export function accountsUpdate(userId): ThunkAction<any, any, any, any> {
         dispatch(actions.isLoading());
         const batchedActions = [];
         try {
-            batchedActions.push(actions.setInfo({ accounts: await BunqJSClient.api.monetaryAccount.list(userId) }));
+            const accounts: Array<IMonetaryAccount> = (await BunqJSClient.api.monetaryAccount.list(userId)).map((account) => {
+                return new MonetaryAccount(account).toPlainObject() as IMonetaryAccount;
+            });
+            batchedActions.push(actions.setInfo({ accounts }));
         } catch (error) {
             BunqErrorHandler(batchedActions, error, failedMessage);
         } finally {
