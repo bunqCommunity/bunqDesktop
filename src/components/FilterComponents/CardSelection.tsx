@@ -99,7 +99,7 @@ class CardSelection extends React.Component<ReturnType<typeof mapStateToProps> &
             // ensure card exists
             if (!card) return null;
             card = card;
-            const { cardImage, cardType } = getCardTypeImage(card.type, card.cardType);
+            const { cardImage, cardType } = getCardTypeImage(card);
 
             // display big chip or smaller icon
             return (
@@ -132,7 +132,7 @@ class CardSelection extends React.Component<ReturnType<typeof mapStateToProps> &
                 }
 
                 const cardDescription = getCardDescription(card);
-                const { cardImage, cardType } = getCardTypeImage(card.type, card.cardType);
+                const { cardImage, cardType } = getCardTypeImage(card);
 
                 return (
                     <MenuItem key={key} onClick={this.addCardId(card.id)}>

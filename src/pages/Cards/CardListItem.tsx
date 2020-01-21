@@ -10,15 +10,29 @@ const styles = {
     cardImage: {}
 };
 
-export const getCardTypeImage = (type, apiType = "CardDebit") => {
+export const getCardTypeImage = (card) => {
+    const type = card.type;
+    const productType = card.product_type;
+    let cardType = card.cardType;
+
     let cardImage = null;
-    let cardType = null;
     switch (type) {
         case "MASTERCARD": {
-            switch (apiType) {
+            // check the different physical mastercard types
+            switch (cardType) {
                 case "CardCredit":
-                    cardType = "MasterCard Credit";
-                    cardImage = "images/bunq-mastercard-credit.png";
+                    // check the different credit card types
+                    switch (productType) {
+                        case "MASTERCARD_GREEN":
+                            cardType = "MasterCard Green";
+                            cardImage = "images/bunq-mastercard-metal.png";
+                            break;
+                        default:
+                        case "MASTERCARD_TRAVEL":
+                            cardType = "MasterCard Credit";
+                            cardImage = "images/bunq-mastercard-credit.png";
+                            break;
+                    }
                     break;
                 default:
                 case "CardDebit":
@@ -56,7 +70,7 @@ class CardListItem extends React.Component<{ card: Card; onClick: any }> {
 
     render() {
         const card = this.props.card;
-        const { cardImage } = getCardTypeImage(card.type, card.cardType);
+        const { cardImage } = getCardTypeImage(card);
 
         return [
             <div className="single-card" style={styles.cardWrapper} onClick={this.props.onClick}>
