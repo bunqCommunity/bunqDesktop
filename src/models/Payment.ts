@@ -1,3 +1,4 @@
+import { IPayment } from "~types/Payment";
 import {
     Address,
     Amount,
@@ -74,6 +75,48 @@ export default class Payment implements Event {
      */
     public toJSON(): any {
         return this._rawData;
+    }
+
+    /**
+     * Convert from a plain serializable object
+     */
+    public static fromPlainObject(plainObject: IPayment): Payment {
+        return new Payment({ Payment: plainObject });
+    }
+
+    /**
+     * Convert to a serializable plain object
+     */
+    public toPlainObject(): IPayment {
+        return JSON.parse(JSON.stringify({
+            Payment: {
+                id: this._id,
+                created: this._created,
+                updated: this._updated,
+                monetary_account_id: this._monetary_account_id,
+                amount: this._amount,
+                alias: this._alias,
+                counterparty_alias: this._counterparty_alias,
+                description: this._description,
+                type: this._type,
+                sub_type: this._sub_type,
+                bunqto_status: this._bunqto_status,
+                bunqto_sub_status: this._bunqto_sub_status,
+                bunqto_share_url: this._bunqto_share_url,
+                bunqto_expiry: this._bunqto_expiry,
+                bunqto_time_responded: this._bunqto_time_responded,
+                attachment: this._attachment,
+                balance_after_mutation: this._balance_after_mutation,
+                merchant_reference: this._merchant_reference,
+                batch_id: this._batch_id,
+                scheduled_id: this._scheduled_id,
+                address_shipping: this._address_shipping,
+                address_billing: this._address_billing,
+                geolocation: this._geolocation,
+                allow_chat: this._allow_chat,
+                request_reference_split_the_bill: this._request_reference_split_the_bill,
+            },
+        }));
     }
 
     /**

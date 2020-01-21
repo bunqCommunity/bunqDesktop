@@ -27,7 +27,7 @@ export default (state = defaultState, action) => {
             );
 
             // limit payments to 1000 in total
-            const mergedPayments = mergedInfo.items.slice(0, 1000);
+            const mergedPayments = mergedInfo.items.slice(0, 1000).map(item => item.toPlainObject());
 
             // store the data if we have access to the bunqjsclient
             window.BunqDesktopClient.storeEncrypt(

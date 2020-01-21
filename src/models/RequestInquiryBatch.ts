@@ -1,3 +1,4 @@
+import { IRequestInquiryBatch } from "~types/RequestInquiryBatch";
 import { Amount, RequestSplitTheBill } from "~types/Types";
 import Event, { EventTypeValue } from "~types/Event";
 import RequestInquiry from "./RequestInquiry";
@@ -53,6 +54,29 @@ export default class RequestInquiryBatch implements Event {
      */
     public toJSON(): any {
         return this._rawData;
+    }
+
+    /**
+     * Convert from a plain serializable object
+     */
+    public static fromPlainObject(plainObject: IRequestInquiryBatch): RequestInquiryBatch {
+        return new RequestInquiryBatch(plainObject);
+    }
+
+    /**
+     * Convert to a plain serializable object
+     */
+    public toPlainObject(): IRequestInquiryBatch {
+        return JSON.parse(JSON.stringify({
+            RequestInquiryBatch: {
+                id: this._id,
+                created: this._created,
+                updated: this._updated,
+                reference_split_the_bill: this._reference_split_the_bill,
+                request_inquiries: this.request_inquiries,
+                total_amount_inquired: this._total_amount_inquired,
+            },
+        }));
     }
 
     /**

@@ -73,34 +73,46 @@ export default class RequestInquiry implements Event {
         return this._rawData;
     }
 
+    /**
+     * Convert from a plain serializable object
+     */
+    public static fromPlainObject(plainObject: IRequestInquiry): RequestInquiry {
+        return new RequestInquiry(plainObject);
+    }
+
+    /**
+     * Convert to a plain serializable object
+     */
     public toPlainObject(): IRequestInquiry {
         return JSON.parse(JSON.stringify({
-            id: this._id,
-            created: this._created,
-            updated: this._updated,
-            time_responded: this._time_responded,
-            time_expiry: this._time_expiry,
-            monetary_account_id: this._monetary_account_id,
-            amount_inquired: this._amount_inquired,
-            amount_responded: this._amount_responded,
-            user_alias_created: this._user_alias_created,
-            user_alias_revoked: this._user_alias_revoked,
-            counterparty_alias: this._counterparty_alias,
-            description: this._description,
-            merchant_reference: this._merchant_reference,
-            attachment: this._attachment,
-            status: this._status,
-            batch_id: this._batch_id,
-            bunqme_share_url: this._bunqme_share_url,
-            scheduled_id: this._scheduled_id,
-            minimum_age: this._minimum_age,
-            require_address: this._require_address,
-            redirect_url: this._redirect_url,
-            address_shipping: this._address_shipping,
-            address_billing: this._address_billing,
-            geolocation: this._geolocation,
-            allow_chat: this._allow_chat,
-            request_reference_split_the_bill: this._request_reference_split_the_bill,
+            RequestInquiry: {
+                id: this._id,
+                created: this._created,
+                updated: this._updated,
+                time_responded: this._time_responded,
+                time_expiry: this._time_expiry,
+                monetary_account_id: this._monetary_account_id,
+                amount_inquired: this._amount_inquired,
+                amount_responded: this._amount_responded,
+                user_alias_created: this._user_alias_created,
+                user_alias_revoked: this._user_alias_revoked,
+                counterparty_alias: this._counterparty_alias,
+                description: this._description,
+                merchant_reference: this._merchant_reference,
+                attachment: this._attachment,
+                status: this._status,
+                batch_id: this._batch_id,
+                bunqme_share_url: this._bunqme_share_url,
+                scheduled_id: this._scheduled_id,
+                minimum_age: this._minimum_age,
+                require_address: this._require_address,
+                redirect_url: this._redirect_url,
+                address_shipping: this._address_shipping,
+                address_billing: this._address_billing,
+                geolocation: this._geolocation,
+                allow_chat: this._allow_chat,
+                request_reference_split_the_bill: this._request_reference_split_the_bill,
+            },
         }));
     }
 

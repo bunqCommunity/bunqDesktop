@@ -72,6 +72,16 @@ export default class MonetaryAccount {
         return this._rawData;
     }
 
+    /**
+     * Converts a plain object into a MonetaryAccount object
+     */
+    public static fromPlainObject(plainObject: IMonetaryAccount): MonetaryAccount {
+        return new MonetaryAccount({ [plainObject.accountType]: plainObject });
+    }
+
+    /**
+     * Converts this instantiated object into a serializable MonetaryAccount object
+     */
     public toPlainObject(): IMonetaryAccount {
         return JSON.parse(JSON.stringify({
             accountType: this._accountType,

@@ -1,10 +1,9 @@
 import NotificationFilter from "@bunq-community/bunq-js-client/dist/Types/NotificationFilter";
 import { AccountType, Alias, AllCoOwner, Amount, Avatar, Balance, MonetaryAccountSetting } from "~types/Types";
 
-export interface IMonetaryAccount {
+export type IMonetaryAccount = {
     // account type of this monetary account
     accountType: AccountType;
-
     // common fields
     id: number;
     created: Date;
@@ -24,10 +23,8 @@ export interface IMonetaryAccount {
     monetary_account_profile: any;
     notification_filters: NotificationFilter[];
     setting: MonetaryAccountSetting;
-
     savings_goal: Amount;
     savings_goal_progress: string;
-
     // only available on MonetaryAccountJoint objects
     all_co_owner: AllCoOwner | undefined;
-}
+};

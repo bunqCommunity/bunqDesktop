@@ -486,6 +486,7 @@ export const requestInquiryFilter = options => requestInquiry => {
         }
     }
 
+    console.log(requestInquiry.RequestInquiry);
     return checkDateRange(options.dateFromFilter, options.dateToFilter, requestInquiry.RequestInquiry.updated);
 };
 
