@@ -15,10 +15,12 @@ import Chip from "@material-ui/core/Chip";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import UrlIcon from "@material-ui/icons/Link";
+import { AppWindow } from "~app";
 
 import AliasList from "~components/AliasList";
 import UploadFullscreen from "~components/FileUpload/UploadFullscreen";
 import LazyAttachmentImage from "~components/AttachmentImage/LazyAttachmentImage";
+import MonetaryAccount from "~models/MonetaryAccount";
 import { AppDispatch, ReduxState } from "~store/index";
 import NotificationFilters from "./NotificationFilters";
 import ProfileDetailsForm from "./ProfileDetailsForm";
@@ -32,6 +34,8 @@ import BunqErrorHandler from "~functions/BunqErrorHandler";
 import { ListItemSecondaryAction } from "@material-ui/core";
 
 import { actions as snackbarActions } from "~store/snackbar";
+
+declare let window: AppWindow;
 
 const styles: any = {
     title: {
@@ -69,6 +73,7 @@ interface IState {
 }
 
 interface IProps {
+    t: AppWindow["t"];
 }
 
 class Profile extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
@@ -121,7 +126,8 @@ class Profile extends React.Component<ReturnType<typeof mapStateToProps> & Retur
 
     calculateTotalBalance = () => {
         return this.props.accounts.reduce((total, account) => {
-            return total + account.getBalance();
+            const monetaryAccount = new MonetaryAccount(account);
+            return total + monetaryAccount.getBalance();
         }, 0);
     };
 
@@ -159,9 +165,10 @@ class Profile extends React.Component<ReturnType<typeof mapStateToProps> & Retur
     };
 
     updateSettings = data => {
+        const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
         const { address_postal, address_main, public_nick_name } = data;
 
-        const { t, user, userType, BunqJSClient } = this.props;
+        const { t, user, userType } = this.props;
         const errorMessage = t("We failed to update your user information");
         this.setState({ loading: true });
 
