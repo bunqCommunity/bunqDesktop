@@ -9,14 +9,15 @@ export function requestInquiriesSetInfo(requestInquiries, account_id, resetOldIt
     return {
         type: type,
         payload: {
-            BunqJSClient,
             requestInquiries,
             account_id
         }
     };
 }
 
-export function loadStoredRequestInquiries(BunqJSClient) {
+export function loadStoredRequestInquiries() {
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
+
     return dispatch => {
         dispatch(requestInquiriesLoading());
         const BunqDesktopClient = window.BunqDesktopClient;
@@ -35,7 +36,6 @@ export function loadStoredRequestInquiries(BunqJSClient) {
 }
 
 export function requestInquiriesUpdate(
-    BunqJSClient,
     userId,
     accountId,
     options = {

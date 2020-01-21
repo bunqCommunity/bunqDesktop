@@ -147,7 +147,7 @@ class ScheduledPaymentsEditDialog extends React.Component {
     };
 
     render() {
-        const { t, BunqJSClient, scheduledPayments } = this.props;
+        const { t, scheduledPayments } = this.props;
         const { selectedPaymentIndex } = this.state;
         const open = selectedPaymentIndex !== false;
         const isValid = this.state.description.length <= 140;
@@ -175,7 +175,7 @@ class ScheduledPaymentsEditDialog extends React.Component {
                     <ListItem>
                         {imageUUID && (
                             <Avatar style={styles.smallAvatar}>
-                                <AttachmentImage height={60} BunqJSClient={BunqJSClient} imageUUID={imageUUID} />
+                                <AttachmentImage height={60} imageUUID={imageUUID} />
                             </Avatar>
                         )}
 
@@ -253,7 +253,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        scheduledPaymentUpdate: (...params) => dispatch(scheduledPaymentUpdate(BunqJSClient, ...params))
+        scheduledPaymentUpdate: (...params) => dispatch(scheduledPaymentUpdate(...params))
     };
 };
 

@@ -112,7 +112,6 @@ class TargetSelection extends React.Component<any> {
                         value={this.props.selectedTargetAccount}
                         onChange={this.props.handleChangeDirect("selectedTargetAccount")}
                         accounts={this.props.accounts}
-                        BunqJSClient={this.props.BunqJSClient}
                     />
                 );
                 break;

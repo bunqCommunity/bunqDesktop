@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { translate } from "react-i18next";
 import ChromePicker from "react-color/lib/Chrome";
 import Button from "@material-ui/core/Button";
@@ -19,7 +18,21 @@ const styles = {
     }
 };
 
-class ColorPicker extends React.Component {
+interface IState {
+}
+
+interface IProps {
+}
+
+class ColorPicker extends React.Component<IProps> {
+    static defaultProps = {
+        style: {},
+        buttonStyle: {},
+        buttonProps: {}
+    };
+
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -55,15 +68,5 @@ class ColorPicker extends React.Component {
         );
     }
 }
-
-ColorPicker.defaultProps = {
-    style: {},
-    buttonStyle: {},
-    buttonProps: {}
-};
-
-ColorPicker.propTypes = {
-    pickerProps: PropTypes.object.isRequired
-};
 
 export default translate("translations")(ColorPicker);

@@ -1,5 +1,6 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { connect } from "react-redux";
+import { AppDispatch, ReduxState } from "~store/index";
 import CategoryHelper from "./CategoryHelper";
 import PrioritySorter from "./PrioritySorter";
 import CategoryIcon from "./CategoryIcon";
@@ -12,7 +13,24 @@ const style = {
     minWidth: 160
 };
 
-class CategoryIcons extends React.Component {
+interface IState {
+}
+
+interface IProps {
+    style: CSSProperties;
+}
+
+class CategoryIcons extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    static defaultProps = {
+        chipStyle: {
+            margin: 5
+        },
+        iconCount: 5,
+        style: style
+    };
+
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {};
@@ -55,15 +73,7 @@ class CategoryIcons extends React.Component {
     }
 }
 
-CategoryIcons.defaultProps = {
-    chipStyle: {
-        margin: 5
-    },
-    iconCount: 5,
-    style: style
-};
-
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         categories: state.categories.categories,
         categories_last_udate: state.categories.last_update,
@@ -71,7 +81,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {};
 };
 

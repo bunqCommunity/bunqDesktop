@@ -1,3 +1,4 @@
+import BunqJSClient from "@bunq-community/bunq-js-client";
 import React from "react";
 const sessionStore = require("store/storages/sessionStorage");
 import { connect } from "react-redux";
@@ -11,6 +12,7 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 
 import InfoIcon from "@material-ui/icons/Info";
 import { bunqMeTabPut } from "~store/bunqMeTab/thunks";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import ClearBtn from "../FilterComponents/ClearFilter";
 import FilterDrawer from "../FilterComponents/FilterDrawer";
@@ -60,12 +62,22 @@ const styles: any = {
 
 const STORED_SCROLL_POSITION = "STORED_SCROLL_POSITION";
 
-class CombinedList extends React.Component<any> {
+interface IProps {
+  BunqJSClient: BunqJSClient;
+}
+
+interface IState {
+    displayEventData: boolean,
+    totalEvents: number,
+    events: Array<any>;
+}
+
+class CombinedList extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
     static defaultProps = {
         hiddenTypes: []
     };
 
-    state: any;
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -345,7 +357,7 @@ class CombinedList extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
 
@@ -355,7 +367,7 @@ const mapStateToProps = state => {
         queueFinishedQueue: state.queue.finished_queue,
 
         accounts: state.accounts.accounts,
-        accountsAccountId: state.accounts.selected_account,
+        accountsAccountId: state.accounts.selectedAccount,
 
         forceUpdate: state.application.force_update,
 
@@ -365,23 +377,23 @@ const mapStateToProps = state => {
         searchTerm: state.search_filter.search_term,
         paymentType: state.payment_filter.type,
         paymentVisibility: state.payment_filter.visible,
-        bunqMeTabType: state.bunq_me_tab_filter.type,
-        bunqMeTabVisibility: state.bunq_me_tab_filter.visible,
+        bunqMeTabType: state.bunqMeTabFilter.type,
+        bunqMeTabVisibility: state.bunqMeTabFilter.visible,
         requestType: state.request_filter.type,
         requestVisibility: state.request_filter.visible,
-        dateFromFilter: state.date_filter.from_date,
-        dateToFilter: state.date_filter.to_date,
+        dateFromFilter: state.dateFilter.from_date,
+        dateToFilter: state.dateFilter.to_date,
         generalFilterDate: state.general_filter.date,
 
-        amountFilterAmount: state.amount_filter.amount,
-        amountFilterType: state.amount_filter.type,
+        amountFilterAmount: state.amountFilter.amount,
+        amountFilterType: state.amountFilter.type,
 
-        selectedCategories: state.category_filter.selected_categories,
-        toggleCategoryIds: state.category_filter.toggle,
-        selectedAccountIds: state.account_id_filter.selected_account_ids,
-        toggleAccountIds: state.account_id_filter.toggle,
-        selectedCardIds: state.card_id_filter.selected_card_ids,
-        toggleCardIds: state.card_id_filter.toggle,
+        selectedCategories: state.categoryFilter.selected_categories,
+        toggleCategoryIds: state.categoryFilter.toggle,
+        selectedAccountIds: state.accountIdFilter.selectedAccountIds,
+        toggleAccountIds: state.accountIdFilter.toggle,
+        selectedCardIds: state.cardIdFilter.selected_card_ids,
+        toggleCardIds: state.cardIdFilter.toggle,
 
         categories: state.categories.categories,
         categoryConnections: state.categories.category_connections,
@@ -389,9 +401,9 @@ const mapStateToProps = state => {
         payments: state.payments.payments,
         paymentsLoading: state.payments.loading,
 
-        bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
-        bunqMeTabsLoading: state.bunq_me_tabs.loading,
-        bunqMeTabLoading: state.bunq_me_tab.loading,
+        bunqMeTabs: state.bunqMeTabs.bunq_me_tabs,
+        bunqMeTabsLoading: state.bunqMeTabs.loading,
+        bunqMeTabLoading: state.bunqMeTab.loading,
 
         masterCardActions: state.master_card_actions.master_card_actions,
         masterCardActionsLoading: state.master_card_actions.loading,
@@ -414,12 +426,11 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         openSnackbar: message => dispatch(snackbarActions.open({ message })),
         bunqMeTabPut: (userId, accountId, tabId, status) =>
-            dispatch(bunqMeTabPut(BunqJSClient, userId, accountId, tabId, status)),
+            dispatch(bunqMeTabPut(userId, accountId, tabId, status)),
         firstPage: () => dispatch(firstPage()),
         nextPage: () => dispatch(nextPage()),
         previousPage: () => dispatch(previousPage()),

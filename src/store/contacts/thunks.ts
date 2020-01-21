@@ -1,6 +1,7 @@
 import url from "url";
 import axios from "axios";
 import vcf from "vcf";
+import { AppWindow } from "~app";
 
 import BunqDesktopClient from "~components/BunqDesktopClient";
 import Logger from "~functions/Logger";
@@ -11,7 +12,7 @@ import { STORED_CONTACTS } from "~misc/consts";
 import { AppDispatch, BatchedActions } from "~store/index";
 import { actions } from "./index";
 
-declare let window: Window & { BunqDesktopClient: BunqDesktopClient; t: Function };
+declare let window: AppWindow;
 
 export function loadStoredContacts() {
     return async (dispatch: AppDispatch) => {
@@ -26,7 +27,7 @@ export function loadStoredContacts() {
     };
 }
 
-export function contactInfoUpdateGoogle(BunqJSClient, accessToken) {
+export function contactInfoUpdateGoogle(accessToken) {
     const failedMessage = window.t("We failed to load the contacts from your Google account");
 
     return async (dispatch: AppDispatch) => {
@@ -114,7 +115,7 @@ export function contactInfoUpdateGoogle(BunqJSClient, accessToken) {
     };
 }
 
-export function contactInfoUpdateOffice365(BunqJSClient, accessToken) {
+export function contactInfoUpdateOffice365(accessToken) {
     const failedMessage = window.t("We failed to load the contacts from your Google account");
 
     return async (dispatch) => {
@@ -193,7 +194,7 @@ export function contactInfoUpdateOffice365(BunqJSClient, accessToken) {
     };
 }
 
-export function contactInfoUpdateApple(BunqJSClient, files) {
+export function contactInfoUpdateApple(files) {
     const failedMessage = window.t("We failed to load the contacts from the vCard file");
 
     return async (dispatch: AppDispatch) => {

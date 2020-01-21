@@ -107,7 +107,6 @@ class ScheduledPayments extends React.Component<any> {
                 <ScheduledPaymentItem
                     t={t}
                     key={key}
-                    BunqJSClient={this.props.BunqJSClient}
                     scheduledPayment={scheduledPayment}
                     showInactive={this.state.showInactive}
                     deleteLoading={this.state.deleteLoading || this.props.scheduledPaymentsLoading}
@@ -125,7 +124,6 @@ class ScheduledPayments extends React.Component<any> {
 
                 <ScheduledPaymentsEditDialog
                     t={t}
-                    BunqJSClient={this.props.BunqJSClient}
                     scheduledPayments={this.props.scheduledPayments}
                     selectedPaymentIndex={this.state.selectedPaymentIndex}
                     selectScheduledPayment={this.selectScheduledPayment}
@@ -135,7 +133,6 @@ class ScheduledPayments extends React.Component<any> {
                     <Paper>
                         <AccountList
                             updateExternal={this.updateScheduledPayments}
-                            BunqJSClient={this.props.BunqJSClient}
                         />
                     </Paper>
                 </Grid>
@@ -198,7 +195,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         openSnackbar: message => dispatch(snackbarActions.open({ message })),
         scheduledPaymentsInfoUpdate: (userId, accountId) =>
-            dispatch(scheduledPaymentsInfoUpdate(BunqJSClient, userId, accountId))
+            dispatch(scheduledPaymentsInfoUpdate(userId, accountId))
     };
 };
 

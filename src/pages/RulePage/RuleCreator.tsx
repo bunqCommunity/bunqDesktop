@@ -339,7 +339,6 @@ class RuleCreator extends React.Component<any, any> {
                 case "ACCOUNT_TYPE":
                     return (
                         <AccountRuleItem
-                            BunqJSClient={this.props.BunqJSClient}
                             openExportDialog={this.openExportDialog}
                             removeRule={this.removeRule(ruleKey)}
                             updateRule={this.updateRule(ruleKey)}

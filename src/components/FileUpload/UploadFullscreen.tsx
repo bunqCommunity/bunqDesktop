@@ -5,11 +5,11 @@ import Dialog from "@material-ui/core/Dialog";
 import Typography from "@material-ui/core/Typography";
 import Slide from "@material-ui/core/Slide";
 import TranslateButton from "~components/TranslationHelpers/Button";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import FilePicker from "./FilePicker";
 
 import { actions as snackbarActions } from "~store/snackbar";
-
 
 const Transition = props => <Slide direction={"up"} {...props} />;
 
@@ -42,7 +42,20 @@ const styles = {
     }
 };
 
-class UploadFullscreen extends React.Component {
+interface IState {
+}
+
+interface IProps {
+}
+
+class UploadFullscreen extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    static defaultProps = {
+        headlineText: "Upload a new avatar",
+        buttonText: "Upload"
+    };
+
+    state: IState;
+
     constructor(props) {
         super(props);
 
@@ -141,16 +154,11 @@ class UploadFullscreen extends React.Component {
     }
 }
 
-UploadFullscreen.defaultProps = {
-    headlineText: "Upload a new avatar",
-    buttonText: "Upload"
-};
-
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {};
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         openSnackbar: message => dispatch(snackbarActions.open({ message }))
     };

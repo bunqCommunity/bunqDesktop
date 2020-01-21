@@ -1,12 +1,13 @@
+import { AppWindow } from "~app";
 import { STORED_BUNQ_ME_TABS } from "~misc/consts";
 import BunqDesktopClient from "~components/BunqDesktopClient";
 import BunqErrorHandler from "~functions/BunqErrorHandler";
 import BunqMeTab from "~models/BunqMeTab";
 import { actions } from "./index";
 
-declare let window: Window & { BunqDesktopClient: BunqDesktopClient; t: Function };
+declare let window: AppWindow;
 
-export function loadStoredBunqMeTabs(BunqJSClient) {
+export function loadStoredBunqMeTabs() {
     return async (dispatch) => {
         dispatch(actions.isLoading());
         const BunqDesktopClient = window.BunqDesktopClient;
@@ -26,7 +27,6 @@ export function loadStoredBunqMeTabs(BunqJSClient) {
 }
 
 export function bunqMeTabsUpdate(
-    BunqJSClient,
     user_id,
     accountId,
     options = {
@@ -36,6 +36,7 @@ export function bunqMeTabsUpdate(
     }
 ) {
     const failedMessage = window.t("We failed to load the bunqme requests for this monetary account");
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
     return async (dispatch) => {
         dispatch(actions.isLoading());
@@ -48,7 +49,6 @@ export function bunqMeTabsUpdate(
                 bunqMeTabs: bunqMeTabsNew,
                 account_id: accountId,
                 resetOldItems: false,
-                BunqJSClient
             }));
             batchedActions.push(actions.isNotLoading());
         } catch (error) {

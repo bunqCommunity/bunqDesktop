@@ -9,14 +9,15 @@ export function requestResponsesSetInfo(requestResponses, account_id, resetOldIt
     return {
         type: type,
         payload: {
-            BunqJSClient,
             requestResponses,
             account_id
         }
     };
 }
 
-export function loadStoredRequestResponses(BunqJSClient) {
+export function loadStoredRequestResponses() {
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
+
     return dispatch => {
         dispatch(requestResponsesLoading());
         const BunqDesktopClient = window.BunqDesktopClient;
@@ -35,7 +36,6 @@ export function loadStoredRequestResponses(BunqJSClient) {
 }
 
 export function requestResponsesUpdate(
-    BunqJSClient,
     userId,
     accountId,
     options = {

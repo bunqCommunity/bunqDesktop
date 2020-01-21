@@ -26,8 +26,9 @@ export function masterCardActionInfoClear() {
     return { type: "MASTER_CARD_ACTION_INFO_CLEAR" };
 }
 
-export function masterCardActionInfoUpdate(BunqJSClient, user_id, account_id, master_card_action_id) {
+export function masterCardActionInfoUpdate(user_id, account_id, master_card_action_id) {
     const failedMessage = window.t("We failed to load the mastercard payment information");
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
     return dispatch => {
         dispatch(masterCardActionInfoLoading());
@@ -37,7 +38,7 @@ export function masterCardActionInfoUpdate(BunqJSClient, user_id, account_id, ma
                 const masterCardActionInfo = new MasterCardAction(masterCardAction);
 
                 // update this item in the list and the stored data
-                dispatch(masterCardActionsSetInfo([masterCardActionInfo], parseInt(account_id), false, BunqJSClient));
+                dispatch(masterCardActionsSetInfo([masterCardActionInfo], parseInt(account_id), false));
 
                 dispatch(masterCardActionSetInfo(masterCardActionInfo, parseInt(account_id), master_card_action_id));
                 dispatch(masterCardActionInfoNotLoading());

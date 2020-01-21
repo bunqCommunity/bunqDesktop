@@ -58,7 +58,7 @@ class ConnectListItem extends React.Component {
     };
 
     render() {
-        const { t, BunqJSClient, connectInfo } = this.props;
+        const { t, connectInfo } = this.props;
 
         const yesText = t("Yes");
         const noText = t("No");
@@ -178,7 +178,7 @@ class ConnectListItem extends React.Component {
             <>
                 <ListItem button onClick={this.toggleOpen}>
                     <Avatar style={styles.smallAvatar}>
-                        <LazyAttachmentImage height={50} BunqJSClient={BunqJSClient} imageUUID={imageUUID} />
+                        <LazyAttachmentImage height={50} imageUUID={imageUUID} />
                     </Avatar>
                     <ListItemText
                         primary={counterAliasInfo.display_name}
@@ -208,7 +208,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         ) =>
             dispatch(
                 shareInviteMonetaryAccountInquiryChangeStatus(
-                    BunqJSClient,
                     userId,
                     accountId,
                     shareInviteMonetaryAccountInquiryId,
@@ -218,7 +217,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         shareInviteMonetaryAccountResponseChangeStatus: (userId, shareInviteMonetaryAccountResponseId, status) =>
             dispatch(
                 shareInviteMonetaryAccountResponseChangeStatus(
-                    BunqJSClient,
                     userId,
                     shareInviteMonetaryAccountResponseId,
                     status

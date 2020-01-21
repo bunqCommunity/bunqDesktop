@@ -9,13 +9,14 @@ export function shareInviteMonetaryAccountResponsesSetInfo(
     return {
         type: "SHARE_INVITE_RESPONSES_SET_INFO",
         payload: {
-            BunqJSClient: BunqJSClient,
             share_invite_monetary_account_responses: share_invite_monetary_account_responses
         }
     };
 }
 
-export function loadStoredShareInviteMonetaryAccountResponses(BunqJSClient) {
+export function loadStoredShareInviteMonetaryAccountResponses() {
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
+
     return dispatch => {
         dispatch(shareInviteMonetaryAccountResponsesLoading());
         const BunqDesktopClient = window.BunqDesktopClient;
@@ -33,7 +34,6 @@ export function loadStoredShareInviteMonetaryAccountResponses(BunqJSClient) {
 }
 
 export function shareInviteMonetaryAccountResponsesInfoUpdate(
-    BunqJSClient,
     user_id,
     options = {
         count: 200,
@@ -42,6 +42,7 @@ export function shareInviteMonetaryAccountResponsesInfoUpdate(
     }
 ) {
     const failedMessage = window.t("We failed to load the share invite responses for this account");
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
     return dispatch => {
         dispatch(shareInviteMonetaryAccountResponsesLoading());
@@ -49,7 +50,7 @@ export function shareInviteMonetaryAccountResponsesInfoUpdate(
         BunqJSClient.api.shareInviteMonetaryAccountResponse
             .list(user_id, options)
             .then(shareInviteMonetaryAccountResponses => {
-                dispatch(shareInviteMonetaryAccountResponsesSetInfo(shareInviteMonetaryAccountResponses, BunqJSClient));
+                dispatch(shareInviteMonetaryAccountResponsesSetInfo(shareInviteMonetaryAccountResponses));
                 dispatch(shareInviteMonetaryAccountResponsesNotLoading());
             })
             .catch(error => {

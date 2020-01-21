@@ -6,7 +6,6 @@ import LazyAttachmentImage from "~components/AttachmentImage/LazyAttachmentImage
 
 export default props => {
     const {
-        BunqJSClient,
         account,
         style = {
             margin: 6
@@ -42,7 +41,6 @@ export default props => {
             avatar={
                 <Avatar>
                     <LazyAttachmentImage
-                        BunqJSClient={BunqJSClient}
                         imageUUID={account.avatar.image[0].attachment_public_uuid}
                         style={{ width: 32, height: 32 }}
                     />

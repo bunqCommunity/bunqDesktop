@@ -18,7 +18,15 @@ const styles = {
     }
 };
 
-class EmailSuggestions extends React.Component {
+interface IState {
+}
+
+interface IProps {
+}
+
+class EmailSuggestions extends React.Component<IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -93,9 +101,5 @@ class EmailSuggestions extends React.Component {
         );
     }
 }
-
-EmailSuggestions.propTypes = {
-    // itemSelected: PropTypes.func.isRequired
-};
 
 export default EmailSuggestions;

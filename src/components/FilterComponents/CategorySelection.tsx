@@ -11,6 +11,8 @@ import Tooltip from "@material-ui/core/Tooltip";
 
 import AddIcon from "@material-ui/icons/Add";
 import FilterListIcon from "@material-ui/icons/FilterList";
+import { AppWindow } from "~app";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import CustomIcon from "../CustomIcon";
 import CategoryIcon from "../Categories/CategoryIcon";
@@ -29,7 +31,17 @@ const styles = {
     }
 };
 
-class CategorySelection extends React.Component {
+interface IState {
+    anchorEl: HTMLElement | null;
+}
+
+interface IProps {
+    t: AppWindow['t'];
+}
+
+class CategorySelection extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -78,7 +90,7 @@ class CategorySelection extends React.Component {
             const category = categories[categoryId];
 
             // don't display already selected items
-            if (selectedCategories.includes(categoryId)) {
+            if (selectedCategories.includes(+categoryId)) {
                 return null;
             }
 
@@ -137,16 +149,16 @@ class CategorySelection extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         categories: state.categories.categories,
 
-        toggleCategoryFilter: state.category_filter.toggle,
-        selectedCategories: state.category_filter.selected_categories
+        toggleCategoryFilter: state.categoryFilter.toggle,
+        selectedCategories: state.categoryFilter.selected_categories
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         toggleCategoryIdFilter: () => dispatch(toggleCategoryIdFilter()),
         addCategoryId: categoryId => dispatch(addCategoryIdFilter(categoryId)),

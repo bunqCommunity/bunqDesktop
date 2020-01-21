@@ -39,10 +39,11 @@ class ShareInviteMonetaryAccountResponseListItem extends React.Component {
     }
 
     accept = event => {
-        const { t, BunqJSClient, user, shareInviteMonetaryAccountResponse } = this.props;
+        const { t, user, shareInviteMonetaryAccountResponse } = this.props;
 
         const success = t("The share request was successfully accepted");
         const failed = t("Failed to accept the share request");
+        const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
         if (!this.state.loading) {
             this.setState({ loading: true });
@@ -64,10 +65,11 @@ class ShareInviteMonetaryAccountResponseListItem extends React.Component {
     };
 
     reject = event => {
-        const { t, BunqJSClient, user, shareInviteMonetaryAccountResponse } = this.props;
+        const { t, user, shareInviteMonetaryAccountResponse } = this.props;
 
         const success = t("The share request was successfully cancelled");
         const failed = t("Failed to reject the share request");
+        const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
         if (!this.state.loading) {
             this.setState({ loading: true });
@@ -143,7 +145,7 @@ class ShareInviteMonetaryAccountResponseListItem extends React.Component {
         return [
             <ListItem button onClick={e => this.setState({ open: !this.state.open })}>
                 <Avatar style={styles.smallAvatar}>
-                    <LazyAttachmentImage height={50} BunqJSClient={this.props.BunqJSClient} imageUUID={imageUUID} />
+                    <LazyAttachmentImage height={50} imageUUID={imageUUID} />
                 </Avatar>
                 <ListItemText
                     style={styles.listItemText}
@@ -172,11 +174,10 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = (dispatch) => {
     return {
         shareInviteMonetaryAccountResponsesInfoUpdate: userId =>
-            dispatch(shareInviteMonetaryAccountResponsesInfoUpdate(BunqJSClient, userId))
+            dispatch(shareInviteMonetaryAccountResponsesInfoUpdate(userId))
     };
 };
 export default connect(

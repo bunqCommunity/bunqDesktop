@@ -4,6 +4,7 @@ import { translate } from "react-i18next";
 import Grid from "@material-ui/core/Grid";
 import Divider from "@material-ui/core/Divider";
 import Collapse from "@material-ui/core/Collapse";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import TranslateButton from "../TranslationHelpers/Button";
 
@@ -17,13 +18,19 @@ const styles = {
     }
 };
 
-class CategorySelector extends React.Component<any> {
+interface IState {
+}
+
+interface IProps {
+}
+
+class CategorySelector extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
     static defaultProps = {
         style: {},
         displayToggleButton: true
     };
 
-    state: any;
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -96,7 +103,7 @@ class CategorySelector extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         categories: state.categories.categories,
         categories_last_udate: state.categories.last_update,
@@ -104,7 +111,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         setCategoryConnection: (id, type, itemInfo) => dispatch(categoriesActions.setCategoryConnection({ category_id: id, item_type: type, item_id: itemInfo })),
         removeCategoryConnection: (id, type, itemInfo) => dispatch(categoriesActions.removeCategoryConnection({ category_id: id, item_type: type, item_id: itemInfo }))

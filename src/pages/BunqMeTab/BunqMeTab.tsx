@@ -58,19 +58,18 @@ class BunqMeTab extends React.Component<any> {
 
                 <Grid item xs={12} md={4} lg={3}>
                     <Paper style={styles.paper}>
-                        <AccountList BunqJSClient={this.props.BunqJSClient} updateExternal={this.updateTabs} />
+                        <AccountList updateExternal={this.updateTabs} />
                     </Paper>
                 </Grid>
 
                 <Grid item xs={12} md={8} lg={6}>
                     <Collapse in={this.state.showForm} unmountOnExit>
                         <Paper style={styles.paper}>
-                            <BunqMeTabForm BunqJSClient={this.props.BunqJSClient} />
+                            <BunqMeTabForm />
                         </Paper>
                     </Collapse>
                     <Paper style={styles.paper}>
                         <BunqMeTabList
-                            BunqJSClient={this.props.BunqJSClient}
                             t={t}
                             secondaryActions={
                                 this.props.limitedPermissions ? null : (
@@ -101,7 +100,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, props) => {
     const { BunqJSClient } = props;
     return {
-        bunqMeTabsUpdate: (userId, accountId) => dispatch(bunqMeTabsUpdate(BunqJSClient, userId, accountId))
+        bunqMeTabsUpdate: (userId, accountId) => dispatch(bunqMeTabsUpdate(userId, accountId))
     };
 };
 

@@ -178,7 +178,6 @@ class BunqMeTabListItem extends React.Component {
                             <PaymentListItem
                                 accounts={accounts}
                                 payment={bunqMeTabPayment.payment.Payment}
-                                BunqJSClient={this.props.BunqJSClient}
                             />
                         );
                     })}

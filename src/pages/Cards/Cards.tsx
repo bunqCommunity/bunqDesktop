@@ -258,7 +258,6 @@ class Cards extends React.Component<any> {
             // then generate the items seperately
             cardItems = filteredCards.map((card, index) => (
                 <CardListItem
-                    BunqJSClient={this.props.BunqJSClient}
                     card={card}
                     onClick={this.handleCardClick.bind(this, index)}
                 />
@@ -328,7 +327,6 @@ class Cards extends React.Component<any> {
                     value={secondaryAccountIndex}
                     onChange={this.handleAccountChange("SECONDARY")}
                     accounts={this.props.accounts}
-                    BunqJSClient={this.props.BunqJSClient}
                     hiddenConnectTypes={["draftOnly", "showOnly"]}
                 />
             </>
@@ -391,7 +389,6 @@ class Cards extends React.Component<any> {
                                         value={primaryAccountIndex}
                                         onChange={this.handleAccountChange("PRIMARY")}
                                         accounts={this.props.accounts}
-                                        BunqJSClient={this.props.BunqJSClient}
                                         hiddenConnectTypes={["draftOnly", "showOnly"]}
                                     />
 

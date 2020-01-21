@@ -10,6 +10,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import { ReduxState } from "~store/index";
 
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 
@@ -30,7 +31,7 @@ const styles = {
     }
 };
 
-const AccountItem = ({ account, onClick, BunqJSClient, hideBalance, shareInviteMonetaryAccountResponses }) => {
+const AccountItem = ({ account, onClick, hideBalance, shareInviteMonetaryAccountResponses }) => {
     // format default balance
     let formattedBalance = account.balance ? account.balance.value : 0;
 
@@ -54,7 +55,6 @@ const AccountItem = ({ account, onClick, BunqJSClient, hideBalance, shareInviteM
             <Avatar style={styles.bigAvatar}>
                 <LazyAttachmentImage
                     height={50}
-                    BunqJSClient={BunqJSClient}
                     imageUUID={account.avatar.image[0].attachment_public_uuid}
                 />
             </Avatar>
@@ -63,7 +63,23 @@ const AccountItem = ({ account, onClick, BunqJSClient, hideBalance, shareInviteM
     );
 };
 
-class AccountSelectorDialog extends React.Component {
+interface IState {
+}
+
+interface IProps {
+    value: any;
+    onChange: Function;
+}
+
+class AccountSelectorDialog extends React.Component<ReturnType<typeof mapStateToProps> & IProps> {
+    static defaultProps = {
+        hiddenConnectTypes: [],
+        style: styles.formControl,
+        selectStyle: styles.selectField
+    };
+
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -89,7 +105,6 @@ class AccountSelectorDialog extends React.Component {
 
     render() {
         const {
-            BunqJSClient,
             accounts,
             value,
             hiddenConnectTypes,
@@ -135,7 +150,6 @@ class AccountSelectorDialog extends React.Component {
                         shareInviteMonetaryAccountResponses={shareInviteMonetaryAccountResponses}
                         onClick={this.onClickHandler(accountKey)}
                         hideBalance={this.props.hideBalance}
-                        BunqJSClient={BunqJSClient}
                         account={account}
                     />
                 );
@@ -147,7 +161,6 @@ class AccountSelectorDialog extends React.Component {
                 <AccountItem
                     shareInviteMonetaryAccountResponses={shareInviteMonetaryAccountResponses}
                     hideBalance={this.props.hideBalance}
-                    BunqJSClient={BunqJSClient}
                     account={accounts[value]}
                     onClick={this.openDialog}
                 />
@@ -174,18 +187,7 @@ class AccountSelectorDialog extends React.Component {
     }
 }
 
-AccountSelectorDialog.propTypes = {
-    value: PropTypes.any.isRequired,
-    onChange: PropTypes.func.isRequired
-};
-
-AccountSelectorDialog.defaultProps = {
-    hiddenConnectTypes: [],
-    style: styles.formControl,
-    selectStyle: styles.selectField
-};
-
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         shareInviteMonetaryAccountResponses:
             state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,

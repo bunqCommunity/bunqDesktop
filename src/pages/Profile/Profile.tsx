@@ -202,7 +202,6 @@ class Profile extends React.Component<any> {
             content = (
                 <>
                     <UploadFullscreen
-                        BunqJSClient={this.props.BunqJSClient}
                         open={this.state.displayUploadScreen}
                         onComplete={this.handleFileUpload}
                         onClose={this.toggleFileUploadDialog}
@@ -220,7 +219,6 @@ class Profile extends React.Component<any> {
                                     }
                                 >
                                     <LazyAttachmentImage
-                                        BunqJSClient={this.props.BunqJSClient}
                                         height={70}
                                         imageUUID={user.avatar.image[0].attachment_public_uuid}
                                     />
@@ -257,7 +255,6 @@ class Profile extends React.Component<any> {
                     <BillingInfo
                         t={t}
                         user={user}
-                        BunqJSClient={this.props.BunqJSClient}
                         BunqErrorHandler={this.props.BunqErrorHandler}
                     />
 
@@ -266,7 +263,6 @@ class Profile extends React.Component<any> {
                         user={user}
                         userType={userType}
                         usersUpdate={this.props.usersUpdate}
-                        BunqJSClient={this.props.BunqJSClient}
                         BunqErrorHandler={this.props.BunqErrorHandler}
                     />
                 </>
@@ -319,8 +315,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         openSnackbar: message => dispatch(snackbarActions.open({ message })),
-        usersUpdate: updated => dispatch(usersUpdate(BunqJSClient, updated)),
-        userUpdateImage: (userId, attachmentId) => dispatch(userUpdateImage(BunqJSClient, userId, attachmentId)),
+        usersUpdate: updated => dispatch(usersUpdate(updated)),
+        userUpdateImage: (userId, attachmentId) => dispatch(userUpdateImage(userId, attachmentId)),
 
         BunqErrorHandler: (error, message) => BunqErrorHandler(dispatch, error, message)
     };

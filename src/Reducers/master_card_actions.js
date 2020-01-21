@@ -32,18 +32,15 @@ export default (state = defaultState, action) => {
             const mergedMasterCardActions = mergedInfo.items.slice(0, 1000);
 
             // store the data if we have access to the bunqjsclient
-            if (action.payload.BunqJSClient) {
-                const BunqDesktopClient = window.BunqDesktopClient;
-                BunqDesktopClient.storeEncrypt(
-                    {
-                        items: mergedMasterCardActions,
-                        account_id: action.payload.account_id
-                    },
-                    STORED_MASTER_CARD_ACTIONS
-                )
-                    .then(() => {})
-                    .catch(() => {});
-            }
+            window.BunqDesktopClient.storeEncrypt(
+                {
+                    items: mergedMasterCardActions,
+                    account_id: action.payload.account_id
+                },
+                STORED_MASTER_CARD_ACTIONS
+            )
+                .then(() => {})
+                .catch(() => {});
 
             // update newer and older id for this monetary account
             const newerIds = {

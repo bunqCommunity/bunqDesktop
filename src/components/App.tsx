@@ -33,7 +33,6 @@ export default class App extends React.Component<IProps> {
                             <Layout
                                 routesComponent={Routes}
                                 analytics={this.props.analytics}
-                                BunqJSClient={this.props.BunqJSClient}
                             />
                         </HashRouter>
                     </Provider>

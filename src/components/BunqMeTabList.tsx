@@ -67,7 +67,6 @@ class BunqMeTabList extends React.Component<any> {
                     bunqMeTabLoading={this.props.bunqMeTabLoading}
                     bunqMeTabsLoading={this.props.bunqMeTabsLoading}
                     bunqMeTabPut={this.props.bunqMeTabPut}
-                    BunqJSClient={this.props.BunqJSClient}
                     user={this.props.user}
                 />
             );
@@ -117,12 +116,11 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, props) => {
-    const { BunqJSClient } = props;
+const mapDispatchToProps = (dispatch) => {
     return {
         openSnackbar: message => dispatch(snackbarActions.open(message)),
         bunqMeTabPut: (userId, accountId, tabId, status) =>
-            dispatch(bunqMeTabPut(BunqJSClient, userId, accountId, tabId, status))
+            dispatch(bunqMeTabPut(userId, accountId, tabId, status))
     };
 };
 

@@ -318,7 +318,7 @@ class Stats extends React.Component<any> {
                     </Paper>
 
                     <Paper style={styles.sideBarPaper}>
-                        <AccountList BunqJSClient={this.props.BunqJSClient} denseMode={true} />
+                        <AccountList denseMode={true} />
                     </Paper>
 
                     <EventCountSidebarSection

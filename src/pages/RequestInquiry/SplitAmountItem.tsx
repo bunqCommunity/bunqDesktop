@@ -75,13 +75,13 @@ class SplitAmountItem extends React.Component {
     };
 
     render() {
-        const { BunqJSClient, account, target, splitAmount, totalSplit, amount } = this.props;
+        const { account, target, splitAmount, totalSplit, amount } = this.props;
 
         const splitAmountValue = typeof splitAmount !== "undefined" ? splitAmount : 1;
 
         let targetInfo = null;
         if (account) {
-            targetInfo = <AccountListItemChip BunqJSClient={BunqJSClient} account={account} />;
+            targetInfo = <AccountListItemChip account={account} />;
         } else {
             let Icon = null;
             switch (target.type) {

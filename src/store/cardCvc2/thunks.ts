@@ -1,8 +1,9 @@
+import { AppWindow } from "~app";
 import BunqDesktopClient from "~components/BunqDesktopClient";
 import BunqErrorHandler from "~functions/BunqErrorHandler";
 import { actions } from "./index";
 
-declare let window: Window & { BunqDesktopClient: BunqDesktopClient; t: Function };
+declare let window: AppWindow;
 
 export function cardUpdateCvc2Codes(user_id, card_id) {
     const failedMessage = window.t("We failed to load the CVC codes");

@@ -3,9 +3,10 @@ import { requestInquiryUpdate } from "./request_inquiry_info";
 import { requestInquiryBatchesUpdate } from "./request_inquiry_batches";
 import { actions as snackbarActions } from "~store/snackbar";
 
-export function requestInquirySend(BunqJSClient, userId, accountId, requestInquiries) {
+export function requestInquirySend(userId, accountId, requestInquiries) {
     const failedMessage = window.t("We received the following error while sending your request");
     const successMessage = window.t("Request was sent successfully!");
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
     return dispatch => {
         dispatch(requestInquiryLoading());
@@ -23,9 +24,10 @@ export function requestInquirySend(BunqJSClient, userId, accountId, requestInqui
     };
 }
 
-export function requestInquiryCancel(BunqJSClient, userId, accountId, requestInquiryId) {
+export function requestInquiryCancel(userId, accountId, requestInquiryId) {
     const failedMessage = window.t("We received the following error while trying to cancel your request inquiry");
     const successMessage = window.t("Request was cancelled successfully!");
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
     return dispatch => {
         dispatch(requestInquiryLoading());
@@ -36,8 +38,8 @@ export function requestInquiryCancel(BunqJSClient, userId, accountId, requestInq
                 dispatch(requestInquiryNotLoading());
 
                 // update the information page
-                dispatch(requestInquiryUpdate(BunqJSClient, userId, accountId, requestInquiryId));
-                dispatch(requestInquiryBatchesUpdate(BunqJSClient, userId, accountId));
+                dispatch(requestInquiryUpdate(userId, accountId, requestInquiryId));
+                dispatch(requestInquiryBatchesUpdate(userId, accountId));
             })
             .catch(error => {
                 dispatch(requestInquiryNotLoading());

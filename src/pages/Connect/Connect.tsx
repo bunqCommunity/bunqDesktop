@@ -569,7 +569,6 @@ class Connect extends React.Component<any> {
                                                     connectInfo={
                                                         filteredInviteInquiry.ShareInviteMonetaryAccountInquiry
                                                     }
-                                                    BunqJSClient={this.props.BunqJSClient}
                                                 />
                                             ))}
                                         </List>
@@ -589,7 +588,6 @@ class Connect extends React.Component<any> {
                                                     connectInfo={
                                                         filteredInviteResponse.ShareInviteMonetaryAccountResponse
                                                     }
-                                                    BunqJSClient={this.props.BunqJSClient}
                                                 />
                                             ))}
                                         </List>
@@ -631,12 +629,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         openSnackbar: message => dispatch(snackbarActions.open({ message })),
 
-        accountsUpdate: userId => dispatch(accountsUpdate(BunqJSClient, userId)),
+        accountsUpdate: userId => dispatch(accountsUpdate(userId)),
 
         shareInviteMonetaryAccountInquiriesInfoUpdate: (userId, accountId) =>
-            dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(BunqJSClient, userId, accountId)),
+            dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(userId, accountId)),
         shareInviteMonetaryAccountResponsesInfoUpdate: (userId, accountId) =>
-            dispatch(shareInviteMonetaryAccountResponsesInfoUpdate(BunqJSClient, userId)),
+            dispatch(shareInviteMonetaryAccountResponsesInfoUpdate(userId)),
 
         shareInviteMonetaryAccountInquirySend: (
             userId,
@@ -648,7 +646,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         ) =>
             dispatch(
                 shareInviteMonetaryAccountInquirySend(
-                    BunqJSClient,
                     userId,
                     accountId,
                     counterparty,

@@ -1,5 +1,5 @@
 export const defaultState = {
-    date: new Date()
+    date: +new Date()
 };
 
 export default function reducer(state = defaultState, action) {
@@ -50,9 +50,8 @@ export default function reducer(state = defaultState, action) {
             // any filter change updates the filter timestamp
             // for easier comparisons in shouldComponentUpdate handlers
             return {
-                date: new Date()
+                date: +new Date()
             };
-            break;
     }
     return state;
 }

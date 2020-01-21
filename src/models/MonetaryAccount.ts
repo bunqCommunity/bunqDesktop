@@ -1,3 +1,4 @@
+import { IMonetaryAccount } from "~types/MonetaryAccount";
 import { AccountType, MonetaryAccountSetting, AllCoOwner, Alias, Avatar, Balance, Amount } from "~types/Types";
 
 import NotificationFilter from "@bunq-community/bunq-js-client/dist/Types/NotificationFilter";
@@ -67,8 +68,12 @@ export default class MonetaryAccount {
      * Used to store this object in JSON
      * @returns {string}
      */
-    public toJSON(): any {
+    public toJSON(): string {
         return this._rawData;
+    }
+
+    public toPlainObject(): IMonetaryAccount {
+        return JSON.parse(this._rawData);
     }
 
     /**

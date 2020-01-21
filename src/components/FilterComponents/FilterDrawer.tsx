@@ -42,6 +42,7 @@ import {
     clearToDateFilter,
     resetFilters
 } from "~actions/filters";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import SearchFilter from "./SearchFilter";
 import AccountSelection from "./AccountSelection";
@@ -101,7 +102,23 @@ const styles = {
     }
 };
 
-class FilterDrawer extends React.Component {
+interface IProps {
+
+}
+
+interface IState {
+
+}
+
+class FilterDrawer extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    static defaultProps = {
+        bigButton: false,
+        buttonProps: {},
+        buttonContent: null
+    };
+
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -401,7 +418,7 @@ class FilterDrawer extends React.Component {
 
                 <CategorySelection t={t} />
 
-                <AccountSelection BunqJSClient={this.props.BunqJSClient} t={t} />
+                <AccountSelection t={t} />
 
                 <CardSelection t={t} />
 
@@ -445,29 +462,23 @@ class FilterDrawer extends React.Component {
     }
 }
 
-FilterDrawer.defaultProps = {
-    bigButton: false,
-    buttonProps: {},
-    buttonContent: null
-};
-
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         paymentType: state.payment_filter.type,
         paymentVisibility: state.payment_filter.visible,
 
-        bunqMeTabType: state.bunq_me_tab_filter.type,
-        bunqMeTabVisibility: state.bunq_me_tab_filter.visible,
+        bunqMeTabType: state.bunqMeTabFilter.type,
+        bunqMeTabVisibility: state.bunqMeTabFilter.visible,
 
         requestType: state.request_filter.type,
         requestVisibility: state.request_filter.visible,
 
-        dateFromFilter: state.date_filter.from_date,
-        dateToFilter: state.date_filter.to_date
+        dateFromFilter: state.dateFilter.from_date,
+        dateToFilter: state.dateFilter.to_date
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         resetFilters: () => dispatch(resetFilters()),
 

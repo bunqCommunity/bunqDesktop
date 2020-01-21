@@ -1,41 +1,36 @@
 import { ThunkAction } from "redux-thunk";
+import { AppWindow } from "~app";
 
-import BunqDesktopClient from "~components/BunqDesktopClient";
 import BunqErrorHandler from "~functions/BunqErrorHandler";
-import MonetaryAccount from "~models/MonetaryAccount";
 import { STORED_ACCOUNTS } from "~misc/consts";
 import { AppDispatch, BatchedActions } from "~store/index";
 import { actions } from "./index";
 import { actions as snackbarActions } from "../snackbar";
 
-declare let window: Window & { BunqDesktopClient: BunqDesktopClient; t: Function };
+declare let window: AppWindow;
 
-export function loadStoredAccounts(BunqJSClient) {
+export function loadStoredAccounts() {
     return async (dispatch) => {
         const BunqDesktopClient = window.BunqDesktopClient;
         try {
             const data = await BunqDesktopClient.storeDecrypt(STORED_ACCOUNTS);
-            if (data && data.items) {
-                // turn plain objects back into MonetaryAccount objects
-                const accountsOld = data.items.map(item => new MonetaryAccount(item));
-                dispatch(actions.setInfo({ accounts: accountsOld, BunqJSClient }));
+            if (data?.items) {
+                dispatch(actions.setInfo({ accounts: data.items }));
             }
         } catch (e) {
         }
     };
 }
 
-export function accountsUpdate(BunqJSClient, userId): ThunkAction<any, any, any, any> {
+export function accountsUpdate(userId): ThunkAction<any, any, any, any> {
     const failedMessage = window.t("We failed to load your monetary accounts");
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
     return async (dispatch) => {
         dispatch(actions.isLoading());
         const batchedActions = [];
         try {
-            const accounts = await BunqJSClient.api.monetaryAccount.list(userId);
-            // turn plain objects into MonetaryAccount objects
-            const accountsNew = accounts.map(item => new MonetaryAccount(item));
-            batchedActions.push(actions.setInfo({ accounts: accountsNew, BunqJSClient }));
+            batchedActions.push(actions.setInfo({ accounts: await BunqJSClient.api.monetaryAccount.list(userId) }));
         } catch (error) {
             BunqErrorHandler(batchedActions, error, failedMessage);
         } finally {
@@ -45,17 +40,17 @@ export function accountsUpdate(BunqJSClient, userId): ThunkAction<any, any, any,
 }
 
 export function createAccount(
-    BunqJSClient,
     userId,
     currency,
     description,
     dailyLimit,
     color,
-    savingsGoal = false,
+    savingsGoal = '',
     accountType = "MonetaryAccountBank"
 ) {
     const failedMessage: string = window.t("We received the following error while creating your account");
     const successMessage: string = window.t("Account created successfully!");
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
     return async (dispatch: AppDispatch) => {
         dispatch(actions.isLoading());
@@ -97,7 +92,7 @@ export function createAccount(
         try {
             await apiPromise;
             batchedActions.push(snackbarActions.open({ message: successMessage }));
-            batchedActions.push(accountsUpdate(BunqJSClient, userId));
+            batchedActions.push(accountsUpdate(userId));
         } catch (error) {
             BunqErrorHandler(batchedActions, error, failedMessage);
         } finally {
@@ -107,7 +102,6 @@ export function createAccount(
 }
 
 export function accountsUpdateImage(
-    BunqJSClient,
     userId,
     accountId,
     attachmentId,
@@ -115,6 +109,7 @@ export function accountsUpdateImage(
 ) {
     const failedMessage = window.t("We received the following error while updating the image for the monetary account");
     const successMessage = window.t("Image updated successfully!");
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
     return async (dispatch) => {
         dispatch(actions.isLoading());
@@ -143,7 +138,7 @@ export function accountsUpdateImage(
 
             await apiPromise;
             batchedActions.push(snackbarActions.open(successMessage));
-            batchedActions.push(accountsUpdate(BunqJSClient, userId));
+            batchedActions.push(accountsUpdate(userId));
         } catch (error) {
             BunqErrorHandler(dispatch, error, failedMessage);
         } finally {
@@ -152,9 +147,10 @@ export function accountsUpdateImage(
     };
 }
 
-export function accountsDeactivate(BunqJSClient, userId, accountId, reason, accountType = "MonetaryAccountBank") {
+export function accountsDeactivate(userId, accountId, reason, accountType = "MonetaryAccountBank") {
     const failedMessage = window.t("We received the following error while deactivating your account");
     const successMessage = window.t("Account deactivated successfully!");
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
     return async (dispatch) => {
         dispatch(actions.updateAccountStatusLoading());
@@ -177,7 +173,7 @@ export function accountsDeactivate(BunqJSClient, userId, accountId, reason, acco
         try {
             await apiHandler.putCancel(userId, accountId, "CANCELLED", "REDEMPTION_VOLUNTARY", reason);
             batchedActions.push(snackbarActions.open({ message: successMessage }));
-            batchedActions.push(accountsUpdate(BunqJSClient, userId));
+            batchedActions.push(accountsUpdate(userId));
         } catch (error) {
             BunqErrorHandler(dispatch, error, failedMessage);
         } finally {
@@ -187,7 +183,6 @@ export function accountsDeactivate(BunqJSClient, userId, accountId, reason, acco
 }
 
 export function accountsUpdateSettings(
-    BunqJSClient,
     userId,
     accountId,
     monetaryAccountSettings,
@@ -195,6 +190,7 @@ export function accountsUpdateSettings(
 ) {
     const failedMessage = window.t("We received the following error updating the settings for your account");
     const successMessage = window.t("Account settings updated successfully!");
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
     return async (dispatch) => {
         dispatch(actions.updateAccountStatusLoading());
@@ -217,7 +213,7 @@ export function accountsUpdateSettings(
         try {
             await apiHandler.put(userId, accountId, monetaryAccountSettings);
             batchedActions.push(snackbarActions.open({ message: successMessage }));
-            batchedActions.push(accountsUpdate(BunqJSClient, userId));
+            batchedActions.push(accountsUpdate(userId));
         } catch (error) {
             BunqErrorHandler(dispatch, error, failedMessage);
         } finally {

@@ -7,6 +7,7 @@ import MarkerIcon from "@material-ui/icons/LocationOn";
 
 // import the mapbox css sheet
 import "mapbox-gl/dist/mapbox-gl.css";
+import { ReduxState } from "~store/index";
 
 const MAPBOX_TOKEN =
     "pk.eyJ1IjoiYnVucWNvbW11bml0eSIsImEiOiJjam1uZnExcjgwcjEzM3ZwazhuaDBmNWw1In0.iKFjMHlXQ8PkvTagdi74-w";
@@ -18,8 +19,23 @@ const styles = {
     }
 };
 
-class GeoLocationMap extends React.Component {
-    state = {
+interface IState {
+    show: boolean;
+    mapStyle: string;
+    mapStyleMode: string;
+    viewport: {
+        zoom: number;
+        pitch: number;
+        height: number;
+        width: number;
+    }
+}
+
+interface IProps {
+}
+
+class GeoLocationMap extends React.Component<ReturnType<typeof mapStateToProps> & IProps> {
+    state: IState = {
         show: false,
         mapStyle: "mapbox://styles/bunqcommunity/cjmngc001153m2ss143lhxlzw",
         mapStyleMode: "none",
@@ -42,6 +58,7 @@ class GeoLocationMap extends React.Component {
             }
         });
     }
+
     componentDidUpdate() {
         this.updateMap();
     }
@@ -139,7 +156,7 @@ class GeoLocationMap extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         theme: state.options.theme
     };

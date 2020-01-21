@@ -14,14 +14,15 @@ export function requestInquiryBatchesSetInfo(
     return {
         type: type,
         payload: {
-            BunqJSClient,
             requestInquiryBatches,
             account_id
         }
     };
 }
 
-export function loadStoredrequestInquiryBatches(BunqJSClient) {
+export function loadStoredrequestInquiryBatches() {
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
+
     return dispatch => {
         dispatch(requestInquiryBatchesLoading());
         const BunqDesktopClient = window.BunqDesktopClient;
@@ -40,7 +41,6 @@ export function loadStoredrequestInquiryBatches(BunqJSClient) {
 }
 
 export function requestInquiryBatchesUpdate(
-    BunqJSClient,
     user_id,
     accountId,
     options = {

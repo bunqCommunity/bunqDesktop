@@ -718,7 +718,6 @@ class Pay extends React.Component<any> {
                                         value={this.state.selectedAccount}
                                         onChange={this.handleChangeDirect("selectedAccount")}
                                         accounts={this.props.accounts}
-                                        BunqJSClient={this.props.BunqJSClient}
                                         hiddenConnectTypes={["showOnly"]}
                                     />
                                     {this.state.insufficientFundsCondition !== false ? (
@@ -887,15 +886,15 @@ const mapDispatchToProps = (dispatch, props) => {
     const { BunqJSClient } = props;
     return {
         paySend: (userId, accountId, description, amount, targets, draft = false) =>
-            dispatch(paySend(BunqJSClient, userId, accountId, description, amount, targets, draft)),
+            dispatch(paySend(userId, accountId, description, amount, targets, draft)),
         paySchedule: (userId, accountId, description, amount, targets, schedule) =>
-            dispatch(paySchedule(BunqJSClient, userId, accountId, description, amount, targets, schedule)),
+            dispatch(paySchedule(userId, accountId, description, amount, targets, schedule)),
         openSnackbar: message => dispatch(snackbarActions.open({ message })),
 
-        paymentInfoUpdate: (userId, accountId) => dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId)),
+        paymentInfoUpdate: (userId, accountId) => dispatch(paymentInfoUpdate(userId, accountId)),
 
         pendingPaymentsAddPayment: (accountId, pendingPayment) =>
-            dispatch(pendingPaymentsAddPayment(BunqJSClient, accountId, pendingPayment))
+            dispatch(pendingPaymentsAddPayment(accountId, pendingPayment))
     };
 };
 

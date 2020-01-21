@@ -169,7 +169,6 @@ class BunqMeTabForm extends React.Component<any> {
                     value={this.state.selectedAccount}
                     onChange={this.handleChange("selectedAccount")}
                     accounts={this.props.accounts}
-                    BunqJSClient={this.props.BunqJSClient}
                 />
 
                 <TextField
@@ -230,7 +229,7 @@ const mapDispatchToProps = (dispatch, props) => {
     const { BunqJSClient } = props;
     return {
         bunqMeTabSend: (userId, accountId, description, amount, options) =>
-            dispatch(bunqMeTabSend(BunqJSClient, userId, accountId, description, amount, options)),
+            dispatch(bunqMeTabSend(userId, accountId, description, amount, options)),
         openSnackbar: message => dispatch(snackbarActions.open({ message }))
     };
 };

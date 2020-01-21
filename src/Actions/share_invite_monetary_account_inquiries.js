@@ -10,14 +10,15 @@ export function shareInviteBankInquiriesSetInfo(
     return {
         type: "SHARE_INVITE_INQUIRIES_SET_INFO",
         payload: {
-            BunqJSClient: BunqJSClient,
             account_id: account_id,
             share_invite_monetary_account_inquiries: share_invite_monetary_account_inquiries
         }
     };
 }
 
-export function loadStoredShareInviteBankInquiries(BunqJSClient) {
+export function loadStoredShareInviteBankInquiries() {
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
+
     return dispatch => {
         dispatch(shareInviteBankInquiriesLoading());
         const BunqDesktopClient = window.BunqDesktopClient;
@@ -35,7 +36,6 @@ export function loadStoredShareInviteBankInquiries(BunqJSClient) {
 }
 
 export function shareInviteMonetaryAccountInquiriesInfoUpdate(
-    BunqJSClient,
     user_id,
     account_id,
     options = {
@@ -45,6 +45,7 @@ export function shareInviteMonetaryAccountInquiriesInfoUpdate(
     }
 ) {
     const failedMessage = window.t("We failed to load the share invite inquiries for this monetary account");
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
     return dispatch => {
         dispatch(shareInviteBankInquiriesLoading());

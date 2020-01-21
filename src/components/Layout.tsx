@@ -1,3 +1,4 @@
+import BunqJSClient from "@bunq-community/bunq-js-client";
 import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
@@ -128,7 +129,7 @@ class Layout extends React.Component<ReturnType<typeof mapStateToProps> & Return
     }
 
     componentDidMount() {
-        this.props.BunqJSClient.run(false)
+        window.BunqDesktopClient.BunqJSClient.run(false)
             .then(_ => {})
             .catch(error => {});
 
@@ -254,7 +255,6 @@ class Layout extends React.Component<ReturnType<typeof mapStateToProps> & Return
             // uniqueness to help with triggering route change animations
             key: this.props.location.pathname,
             // give all routes access to bunq-js-client
-            BunqJSClient: this.props.BunqJSClient,
             // modal and snackbar helpers
             openModal: this.props.openModal,
             themeList: ThemeList,
@@ -283,10 +283,10 @@ class Layout extends React.Component<ReturnType<typeof mapStateToProps> & Return
                     <RuleCollectionChecker updateToggle={isLoading} />
                     <NetworkStatusChecker />
 
-                    <QueueManager BunqJSClient={this.props.BunqJSClient} />
+                    <QueueManager />
 
-                    <Header BunqJSClient={this.props.BunqJSClient} />
-                    <Sidebar BunqJSClient={this.props.BunqJSClient} location={this.props.location} />
+                    <Header />
+                    <Sidebar location={this.props.location} />
                     <Grid
                         container
                         spacing={16}

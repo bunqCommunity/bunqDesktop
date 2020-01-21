@@ -389,7 +389,7 @@ class Exports extends React.Component<any> {
 
                 <Grid item xs={12} md={4}>
                     <Paper>
-                        <AccountList updateExternal={this.updateExports} BunqJSClient={this.props.BunqJSClient} />
+                        <AccountList updateExternal={this.updateExports} />
                     </Paper>
                 </Grid>
 
@@ -571,7 +571,6 @@ class Exports extends React.Component<any> {
 
                             <Paper>
                                 <CombinedList
-                                    BunqJSClient={this.props.BunqJSClient}
                                     hiddenTypes={[
                                         "BunqMeTab",
                                         "RequestInquiry",
@@ -621,8 +620,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         openSnackbar: message => dispatch(snackbarActions.open({ message })),
-        exportInfoUpdate: (userId, accountId) => dispatch(exportInfoUpdate(BunqJSClient, userId, accountId)),
-        exportNew: (...params) => dispatch(exportNew(BunqJSClient, ...params))
+        exportInfoUpdate: (userId, accountId) => dispatch(exportInfoUpdate(userId, accountId)),
+        exportNew: (...params) => dispatch(exportNew(...params))
     };
 };
 

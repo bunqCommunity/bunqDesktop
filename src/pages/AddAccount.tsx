@@ -263,7 +263,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         createAccount: (userId, currency, description, dailyLimit, color, savingsGoal, accountType) =>
             dispatch(
-                createAccount(BunqJSClient, userId, currency, description, dailyLimit, color, savingsGoal, accountType)
+                createAccount(userId, currency, description, dailyLimit, color, savingsGoal, accountType)
             ),
         openSnackbar: message => dispatch(snackbarActions.open({ message })),
     };

@@ -26,7 +26,15 @@ const styles = {
     }
 };
 
-class EventData extends React.Component {
+interface IState {
+}
+
+interface IProps {
+}
+
+class EventData extends React.Component<IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {};

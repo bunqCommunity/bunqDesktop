@@ -157,12 +157,11 @@ class MasterCardActionInfo extends React.Component<any> {
                 );
             }
 
-            noteTextsForm = <NoteTextForm BunqJSClient={this.props.BunqJSClient} event={masterCardAction} />;
+            noteTextsForm = <NoteTextForm event={masterCardAction} />;
 
             content = (
                 <Grid container spacing={24} align={"center"} justify={"center"}>
                     <TransactionHeader
-                        BunqJSClient={this.props.BunqJSClient}
                         to={masterCardAction.counterparty_alias}
                         from={masterCardAction.alias}
                         user={this.props.user}
@@ -334,7 +333,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         applicationSetPDFMode: enabled => dispatch(applicationActions.setPdfMode(enabled)),
 
         masterCardActionInfoUpdate: (user_id, account_id, master_card_action_id) =>
-            dispatch(masterCardActionInfoUpdate(BunqJSClient, user_id, account_id, master_card_action_id))
+            dispatch(masterCardActionInfoUpdate(user_id, account_id, master_card_action_id))
     };
 };
 

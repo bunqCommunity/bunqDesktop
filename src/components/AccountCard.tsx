@@ -12,7 +12,9 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import LinkIcon from "@material-ui/icons/Link";
 import PeopleIcon from "@material-ui/icons/People";
+import { AppWindow } from "~app";
 import BunqDesktopClient from "~components/BunqDesktopClient";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import UploadFullscreen from "./FileUpload/UploadFullscreen";
 import LazyAttachmentImage from "./AttachmentImage/LazyAttachmentImage";
@@ -25,7 +27,7 @@ import { connectGetBudget } from "~functions/ConnectGetPermissions";
 import { actions as snackbarActions } from "~store/snackbar";
 import { actions as accountsActions } from "~store/accounts";
 
-declare let window: Window & { BunqDesktopClient: BunqDesktopClient; t: Function };
+declare let window: AppWindow;
 
 const styles = {
     avatar: {
@@ -41,7 +43,15 @@ const styles = {
     }
 };
 
-class AccountCard extends React.Component {
+interface IState {
+}
+
+interface IProps {
+}
+
+class AccountCard extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
 
@@ -99,7 +109,6 @@ class AccountCard extends React.Component {
         return (
             <Paper>
                 <UploadFullscreen
-                    BunqJSClient={this.props.BunqJSClient}
                     open={this.state.displayUploadScreen}
                     onComplete={this.handleFileUpload}
                     onClose={this.toggleFileUploadDialog}
@@ -122,7 +131,6 @@ class AccountCard extends React.Component {
                             }
                         >
                             <LazyAttachmentImage
-                                BunqJSClient={this.props.BunqJSClient}
                                 height={60}
                                 imageUUID={account.avatar.image[0].attachment_public_uuid}
                                 style={
@@ -164,18 +172,18 @@ class AccountCard extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user
     };
 };
 
-const mapDispatchToProps = (dispatch, props) => {
-    const { BunqJSClient } = props;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         openSnackbar: message => dispatch(snackbarActions.open( { message })),
         accountsUpdateImage: (userId, accountId, attachmentId, accountType) =>
-            dispatch(accountsActions.updateImage(BunqJSClient, userId, accountId, attachmentId, accountType))
+            // FIXME
+            dispatch(accountsActions.updateImage(userId, accountId, attachmentId, accountType))
     };
 };
 

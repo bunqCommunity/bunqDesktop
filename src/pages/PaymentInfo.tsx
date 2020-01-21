@@ -156,10 +156,9 @@ class PaymentInfo extends React.Component<any> {
                 );
             }
 
-            noteTextsForm = <NoteTextForm BunqJSClient={this.props.BunqJSClient} event={payment} />;
+            noteTextsForm = <NoteTextForm event={payment} />;
 
             const transactionHeaderProps = {
-                BunqJSClient: this.props.BunqJSClient,
                 to: payment.counterparty_alias,
                 from: payment.alias,
                 user: this.props.user,
@@ -329,7 +328,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         applicationSetPDFMode: enabled => dispatch(applicationActions.setPdfMode(enabled)),
 
         updatePayment: (user_id, account_id, payment_id) =>
-            dispatch(paymentsUpdate(BunqJSClient, user_id, account_id, payment_id)),
+            dispatch(paymentsUpdate(user_id, account_id, payment_id)),
 
         setTheme: theme => dispatch(setTheme(theme))
     };

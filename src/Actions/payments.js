@@ -11,14 +11,15 @@ export function paymentsSetInfo(payments, account_id, resetOldItems = false, Bun
     return {
         type: type,
         payload: {
-            BunqJSClient,
             payments,
             account_id
         }
     };
 }
 
-export function loadStoredPayments(BunqJSClient) {
+export function loadStoredPayments() {
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
+
     return dispatch => {
         dispatch(paymentsLoading());
         const BunqDesktopClient = window.BunqDesktopClient;
@@ -39,7 +40,6 @@ export function loadStoredPayments(BunqJSClient) {
 }
 
 export function paymentInfoUpdate(
-    BunqJSClient,
     user_id,
     account_id,
     options = {
@@ -59,7 +59,7 @@ export function paymentInfoUpdate(
                 // turn plain objects into Model objects
                 const paymentsNew = payments.map(item => new Payment(item)).filter(paymentApiFilter);
 
-                dispatch(paymentsSetInfo(paymentsNew, account_id, false, BunqJSClient));
+                dispatch(paymentsSetInfo(paymentsNew, account_id, false));
                 dispatch(paymentsNotLoading());
             })
             .catch(error => {

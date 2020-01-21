@@ -11,19 +11,13 @@ export const defaultState = {
 export default (state = defaultState, action) => {
     switch (action.type) {
         case "SHARE_INVITE_INQUIRIES_SET_INFO":
-            // store the data if we have access to the bunqjsclient
-            if (action.payload.BunqJSClient) {
-                const BunqDesktopClient = window.BunqDesktopClient;
-                BunqDesktopClient.storeEncrypt(
-                    {
-                        items: action.payload.share_invite_monetary_account_inquiries,
-                        account_id: action.payload.account_id
-                    },
-                    STORED_SHARE_INVITE_MONETARY_ACCOUNT_INQUIRIES
-                )
-                    .then(() => {})
-                    .catch(() => {});
-            }
+            window.BunqDesktopClient.storeEncrypt(
+                {
+                    items: action.payload.share_invite_monetary_account_inquiries,
+                    account_id: action.payload.account_id
+                },
+                STORED_SHARE_INVITE_MONETARY_ACCOUNT_INQUIRIES
+            ).then();
 
             return {
                 ...state,

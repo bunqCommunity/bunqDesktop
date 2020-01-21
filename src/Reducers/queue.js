@@ -52,7 +52,7 @@ export default function reducer(state = defaultState, action) {
                 trigger_sync: false,
                 request_counter: 0,
                 max_request_counter: 0,
-                finished_queue: new Date()
+                finished_queue: +new Date(),
             };
         case "QUEUE_START_SYNC":
             return {

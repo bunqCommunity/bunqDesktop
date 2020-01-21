@@ -1,8 +1,9 @@
 import BunqErrorHandler from "~functions/BunqErrorHandler";
 import { userSetInfo } from "./user";
 
-export function usersUpdate(BunqJSClient, updated = false) {
+export function usersUpdate(updated = false) {
     const failedMessage = window.t("We failed to load your users");
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
     return dispatch => {
         dispatch(usersLoading());

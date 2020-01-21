@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { connect } from "react-redux";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -7,8 +7,21 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 
 import { setAmountFilterAmount, setAmountFilterType, clearAmountFilter } from "~actions/filters";
+import { AppWindow } from "~app";
+import { AppDispatch, ReduxState } from "~store/index";
 
-class AmountFilter extends React.Component {
+interface IProps {
+    style: CSSProperties;
+    t: AppWindow['t'];
+}
+
+interface IState {
+
+}
+
+class AmountFilter extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {};
@@ -45,14 +58,14 @@ class AmountFilter extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
-        amountFilterAmount: state.amount_filter.amount,
-        amountFilterType: state.amount_filter.type
+        amountFilterAmount: state.amountFilter.amount,
+        amountFilterType: state.amountFilter.type
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         setAmountFilterAmount: amount => dispatch(setAmountFilterAmount(amount)),
         setAmountFilterType: amount => dispatch(setAmountFilterType(amount))

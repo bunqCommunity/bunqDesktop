@@ -115,7 +115,6 @@ class RulesPage extends React.Component<any> {
                 <Grid item xs={12}>
                     <RuleCreator
                         t={t}
-                        BunqJSClient={this.props.BunqJSClient}
                         categories={this.props.categories}
                         accounts={this.props.accounts}
                         ruleCollection={ruleCollection}

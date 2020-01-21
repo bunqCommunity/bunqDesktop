@@ -4,7 +4,7 @@ import { storeEncryptString } from "~functions/Crypto/CryptoWorkerWrapper";
 import { PENDING_PAYMENTS_LOCATION } from "~actions/pending_payments";
 
 export const defaultState = {
-    last_updated: new Date(),
+    last_updated: +new Date(),
     pending_payments: {}
 };
 
@@ -15,16 +15,15 @@ export default (state = defaultState, action) => {
         case "PENDING_PAYMENTS_SET_PAYMENTS":
             const newSetPendingPayment = action.payload.pending_payments;
 
-            if (action.payload.BunqJSClient) {
-                const BunqDesktopClient = window.BunqDesktopClient;
-                BunqDesktopClient.storeEncrypt(newSetPendingPayment, PENDING_PAYMENTS_LOCATION)
-                    .then(() => {})
-                    .catch(() => {});
-            }
+            window.BunqDesktopClient.storeEncrypt(newSetPendingPayment, PENDING_PAYMENTS_LOCATION)
+                .then(() => {
+                })
+                .catch(() => {
+                });
 
             return {
                 ...state,
-                last_updated: new Date(),
+                last_updated: +new Date(),
                 pending_payments: newSetPendingPayment
             };
 
@@ -38,16 +37,15 @@ export default (state = defaultState, action) => {
                 payment: newPendingPayment
             };
 
-            if (action.payload.BunqJSClient) {
-                const BunqDesktopClient = window.BunqDesktopClient;
-                BunqDesktopClient.storeEncrypt(pendingPayments, PENDING_PAYMENTS_LOCATION)
-                    .then(() => {})
-                    .catch(() => {});
-            }
+            window.BunqDesktopClient.storeEncrypt(pendingPayments, PENDING_PAYMENTS_LOCATION)
+                .then(() => {
+                })
+                .catch(() => {
+                });
 
             return {
                 ...state,
-                last_updated: new Date(),
+                last_updated: +new Date(),
                 pending_payments: pendingPayments
             };
 
@@ -64,16 +62,15 @@ export default (state = defaultState, action) => {
                 };
             });
 
-            if (action.payload.BunqJSClient) {
-                const BunqDesktopClient = window.BunqDesktopClient;
-                BunqDesktopClient.storeEncrypt(pendingPayments, PENDING_PAYMENTS_LOCATION)
-                    .then(() => {})
-                    .catch(() => {});
-            }
+            window.BunqDesktopClient.storeEncrypt(pendingPayments, PENDING_PAYMENTS_LOCATION)
+                .then(() => {
+                })
+                .catch(() => {
+                });
 
             return {
                 ...state,
-                last_updated: new Date(),
+                last_updated: +new Date(),
                 pending_payments: pendingPayments
             };
 
@@ -88,16 +85,11 @@ export default (state = defaultState, action) => {
                 }
             });
 
-            if (action.payload.BunqJSClient) {
-                const BunqDesktopClient = window.BunqDesktopClient;
-                BunqDesktopClient.storeEncrypt(pendingPayments, PENDING_PAYMENTS_LOCATION)
-                    .then(() => {})
-                    .catch(() => {});
-            }
+            window.BunqDesktopClient.storeEncrypt(pendingPayments, PENDING_PAYMENTS_LOCATION).then();
 
             return {
                 ...state,
-                last_updated: new Date(),
+                last_updated: +new Date(),
                 pending_payments: pendingPayments
             };
 
@@ -108,16 +100,11 @@ export default (state = defaultState, action) => {
                 delete pendingPayments[clearPendingPaymentId];
             }
 
-            if (action.payload.BunqJSClient) {
-                const BunqDesktopClient = window.BunqDesktopClient;
-                BunqDesktopClient.storeEncrypt(pendingPayments, PENDING_PAYMENTS_LOCATION)
-                    .then(() => {})
-                    .catch(() => {});
-            }
+            window.BunqDesktopClient.storeEncrypt(pendingPayments, PENDING_PAYMENTS_LOCATION).then();
 
             return {
                 ...state,
-                last_updated: new Date(),
+                last_updated: +new Date(),
                 pending_payments: pendingPayments
             };
 

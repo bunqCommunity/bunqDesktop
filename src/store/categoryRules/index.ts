@@ -1,10 +1,10 @@
 import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import _ from "lodash";
 
 import { STORED_CATEGORY_RULES } from "~misc/consts";
 import settings from "~importwrappers/electronSettings";
 import { RuleCollectionList } from "~types/Types";
-import RuleCollection from "~types/RuleCollection";
+import { IRuleCollection } from "~types/RuleCollection";
+import RuleCollection from "~models/RuleCollection";
 
 // default category rules if no previous were found
 
@@ -48,12 +48,14 @@ const removeRuleAction = createAction("removeRule");
 
 export interface ICategoryRulesState {
     last_update: number;
-    category_rules: RuleCollectionList;
+    category_rules: {
+        [key: string]: IRuleCollection;
+    };
 }
 
 const initialState: ICategoryRulesState = {
     last_update: +new Date(),
-    category_rules: _.toPlainObject(formattedCategoryRulesDefault),
+    category_rules: JSON.parse(JSON.stringify(formattedCategoryRulesDefault)),
 };
 
 const slice = createSlice({
@@ -105,7 +107,7 @@ const slice = createSlice({
 
             if (storedCategoryRules) {
                 Object.keys(storedCategoryRules).forEach(id => {
-                    parsedStoredList[id] = _.toPlainObject(new RuleCollection(storedCategoryRules[id]));
+                    parsedStoredList[id] = JSON.parse(JSON.stringify(new RuleCollection(storedCategoryRules[id])));
                 });
             }
 

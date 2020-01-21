@@ -108,7 +108,6 @@ const TransactionHeader = props => {
                 <LazyAttachmentImage
                     height={90}
                     defaultImage={defaultImage}
-                    BunqJSClient={props.BunqJSClient}
                     imageUUID={fromAvatar}
                     style={{
                         cursor: fromIsCounterparty ? "pointer" : "default"
@@ -154,7 +153,6 @@ const TransactionHeader = props => {
                 <LazyAttachmentImage
                     height={90}
                     defaultImage={defaultImage}
-                    BunqJSClient={props.BunqJSClient}
                     imageUUID={toAvatar}
                     style={{
                         cursor: toIsCounterparty ? "pointer" : "default"

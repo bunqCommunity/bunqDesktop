@@ -18,7 +18,19 @@ const styles = {
     }
 };
 
-class GeoLocationView extends React.PureComponent {
+interface IState {
+}
+
+interface IProps {
+}
+
+class GeoLocationView extends React.PureComponent<IProps> {
+    static defaultProps = {
+        visible: false
+    };
+
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {};
@@ -32,7 +44,7 @@ class GeoLocationView extends React.PureComponent {
         return (
             <Dialog fullScreen style={styles.dialog} open={visible} TransitionComponent={Transition}>
                 <div style={styles.content} ref={this.containerRef}>
-                    <GeoLocationMap t={t} geoLocation={geoLocation} containerRef={this.containerRef} />
+                    <GeoLocationMap t={t} geoLocation={geoLocation} containerRef={this.containerRef}/>
                 </div>
                 <TranslateButton
                     onClick={this.props.onClose}
@@ -49,9 +61,5 @@ class GeoLocationView extends React.PureComponent {
         );
     }
 }
-
-GeoLocationView.defaultProps = {
-    visible: false
-};
 
 export default GeoLocationView;

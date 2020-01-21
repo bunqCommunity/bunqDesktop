@@ -6,7 +6,6 @@ import { actions as snackbarActions } from "~store/snackbar";
 
 // Disabled until after 0.7 release
 export function requestResponseAccept(
-    BunqJSClient,
     userId,
     accountId,
     requestResponseId,
@@ -18,6 +17,7 @@ export function requestResponseAccept(
 ) {
     const failedMessage = window.t("We received the following error while trying to accept your request response");
     const successMessage = window.t("Request response was successfully accepted!");
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
     return dispatch => {
         dispatch(requestResponseLoading());
@@ -31,8 +31,8 @@ export function requestResponseAccept(
                 dispatch([
                     snackbarActions.open({ message: successMessage }),
                     requestResponseNotLoading(),
-                    requestResponseUpdate(BunqJSClient, userId, accountId, requestResponseId),
-                    requestInquiryBatchesUpdate(BunqJSClient, userId, accountId),
+                    requestResponseUpdate(userId, accountId, requestResponseId),
+                    requestInquiryBatchesUpdate(userId, accountId),
                 ]);
             })
             .catch(error => {
@@ -42,23 +42,25 @@ export function requestResponseAccept(
     };
 }
 
-export function requestResponseReject(BunqJSClient, userId, accountId, requestResponseId) {
+export function requestResponseReject(userId, accountId, requestResponseId) {
     const failedMessage = window.t("We received the following error while trying to cancel the request");
     const successMessage = window.t("Request was rejected successfully!");
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
     return dispatch => {
         dispatch(requestResponseLoading());
         BunqJSClient.api.requestResponse
             .put(userId, accountId, requestResponseId, "REJECTED", {})
             .then(result => {
-                dispatch(openSnackbar(successMessage));
+                dispatch(snackbarActions.open({ message: successMessage }));
                 dispatch(requestResponseNotLoading());
 
                 // update the information page
-                dispatch(requestResponseUpdate(BunqJSClient, userId, accountId, requestResponseId));
+                dispatch(requestResponseUpdate(userId, accountId, requestResponseId));
             })
             .catch(error => {
                 dispatch(requestResponseNotLoading());
+                // FIXME: restore
                 // BunqErrorHandler(dispatch, error, failedMessage);
             });
     };

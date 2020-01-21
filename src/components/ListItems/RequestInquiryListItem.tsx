@@ -70,7 +70,7 @@ class RequestInquiryListItem extends React.Component {
                 to={`/request-inquiry-info/${requestInquiry.id}/${requestInquiry.monetary_account_id}`}
             >
                 <Avatar style={styles.smallAvatar}>
-                    <LazyAttachmentImage height={50} BunqJSClient={this.props.BunqJSClient} imageUUID={imageUUID} />
+                    <LazyAttachmentImage height={50} imageUUID={imageUUID} />
                 </Avatar>
                 <ListItemText style={styles.listItemText} primary={displayName} secondary={paymentLabel} />
                 <ListItemSecondaryAction style={styles.listItemSecondary}>

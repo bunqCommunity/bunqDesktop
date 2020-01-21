@@ -39,10 +39,11 @@ class ShareInviteMonetaryAccountInquiryListItem extends React.Component {
     }
 
     cancel = event => {
-        const { t, BunqJSClient, user, shareInviteMonetaryAccountInquiry } = this.props;
+        const { t, user, shareInviteMonetaryAccountInquiry } = this.props;
 
         const success = t("The share request was successfully revoked");
         const failed = t("Failed to revoke the share request");
+        const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
         if (!this.state.loading) {
             this.setState({ loading: true });
@@ -119,7 +120,7 @@ class ShareInviteMonetaryAccountInquiryListItem extends React.Component {
         return [
             <ListItem button onClick={e => this.setState({ open: !this.state.open })}>
                 <Avatar style={styles.smallAvatar}>
-                    <LazyAttachmentImage height={50} BunqJSClient={this.props.BunqJSClient} imageUUID={imageUUID} />
+                    <LazyAttachmentImage height={50} imageUUID={imageUUID} />
                 </Avatar>
                 <ListItemText style={styles.listItemText} primary={displayName} secondary={t("Connect invite sent")} />
                 <ListItemSecondaryAction />
@@ -148,7 +149,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         shareInviteMonetaryAccountInquiriesInfoUpdate: userId =>
-            dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(BunqJSClient, userId))
+            dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(userId))
     };
 };
 export default connect(

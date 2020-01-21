@@ -29,9 +29,10 @@ export function userSetInfo(user, type) {
     };
 }
 
-export function userUpdateImage(BunqJSClient, userId, attachmentId, userType = "UserPerson") {
+export function userUpdateImage(userId, attachmentId, userType = "UserPerson") {
     const failedMessage = window.t("We received the following error while updating the image for your account");
     const successMessage = window.t("Image updated successfully!");
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
     return dispatch => {
         // make the image public
@@ -55,7 +56,7 @@ export function userUpdateImage(BunqJSClient, userId, attachmentId, userType = "
                 apiPromise
                     .then(() => {
                         dispatch(snackbarActions.open({ message: successMessage }));
-                        dispatch(usersUpdate(BunqJSClient, true));
+                        dispatch(usersUpdate( true));
                     })
                     .catch(error => {
                         BunqErrorHandler(dispatch, error, failedMessage);

@@ -30,7 +30,7 @@ class SplitAmountForm extends React.Component {
     }
 
     render() {
-        const { BunqJSClient, account, targets, splitAmounts, splitRequest, toggleSplitRequest, amount } = this.props;
+        const { account, targets, splitAmounts, splitRequest, toggleSplitRequest, amount } = this.props;
 
         if (targets.length === 0) return null;
         if (!amount) return null;
@@ -63,7 +63,6 @@ class SplitAmountForm extends React.Component {
                             <Table style={styles.table}>
                                 <TableBody>
                                     <SplitAmountItem
-                                        BunqJSClient={BunqJSClient}
                                         account={account}
                                         amount={amount}
                                         totalSplit={totalSplit}

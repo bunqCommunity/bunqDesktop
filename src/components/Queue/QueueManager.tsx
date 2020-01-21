@@ -1,3 +1,4 @@
+import BunqJSClient from "@bunq-community/bunq-js-client";
 import React from "react";
 import { ipcRenderer } from "electron";
 import { translate } from "react-i18next";
@@ -36,6 +37,7 @@ export const DEFAULT_EVENT_COUNT_LIMIT = 50;
 export const EVENT_TOTAL_LIMIT = 1000;
 
 interface IProps {
+    BunqJSClient: BunqJSClient;
 }
 
 interface IState {

@@ -1,15 +1,17 @@
 import BunqJSClient from "@bunq-community/bunq-js-client";
+import { AppWindow } from "~app";
 
 import BunqErrorHandler from "~functions/BunqErrorHandler";
 import { actions } from "./index";
 import { actions as bunqMeTabsActions } from "../bunqMeTabs";
 import { actions as snackbarActions } from "../snackbar";
 
-declare let window: Window & { t: Function };
+declare let window: AppWindow;
 
-export function bunqMeTabSend(BunqJSClient: BunqJSClient, userId: number, accountId: number, description, amount, options = {}) {
+export function bunqMeTabSend(userId: number, accountId: number, description, amount, options = {}) {
     const failedMessage: string = window.t("We received the following error while creating your bunqme request");
     const successMessage: string = window.t("bunqme request created successfully!");
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
     return async (dispatch) => {
         dispatch(actions.isLoading());
@@ -22,7 +24,6 @@ export function bunqMeTabSend(BunqJSClient: BunqJSClient, userId: number, accoun
             // TODO: turn into a saga listening for updated tabs
             batchedActions.push(bunqMeTabsActions.setInfo({
                 resetOldItems: false,
-                BunqJSClient: !!BunqJSClient,
                 account_id: accountId.toString(),
             }));
         } catch (error) {
@@ -33,9 +34,10 @@ export function bunqMeTabSend(BunqJSClient: BunqJSClient, userId: number, accoun
     };
 }
 
-export function bunqMeTabPut(BunqJSClient: BunqJSClient, userId: number, accountId: number, tabId: number, status = "CANCELLED") {
+export function bunqMeTabPut(userId: number, accountId: number, tabId: number, status = "CANCELLED") {
     const failedMessage = window.t("We received the following error while updating your bunqme request");
     const successMessage = window.t("bunqme request status has been updated successfully!");
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
     return async (dispatch) => {
         dispatch(actions.isLoading());
@@ -48,7 +50,6 @@ export function bunqMeTabPut(BunqJSClient: BunqJSClient, userId: number, account
             // TODO: move into a saga
             batchedActions.push(bunqMeTabsActions.setInfo({
                 resetOldItems: false,
-                BunqJSClient: !!BunqJSClient,
                 account_id: accountId.toString(),
             }));
         } catch (error) {

@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { AppDispatch, ReduxState } from "~store/index";
 import CategoryChip from "./CategoryChip";
 import CategoryHelper from "./CategoryHelper";
 import PrioritySorter from "./PrioritySorter";
@@ -11,7 +12,13 @@ const style = {
     justifyContent: "center"
 };
 
-class CategoryChips extends React.PureComponent<any> {
+interface IState {
+}
+
+interface IProps {
+}
+
+class CategoryChips extends React.PureComponent<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
     static defaultProps = {
         chipStyle: {
             margin: 5
@@ -25,7 +32,7 @@ class CategoryChips extends React.PureComponent<any> {
         style: style
     };
 
-    state: any;
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -63,7 +70,7 @@ class CategoryChips extends React.PureComponent<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         categories: state.categories.categories,
         categories_last_udate: state.categories.last_update,
@@ -71,7 +78,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {};
 };
 

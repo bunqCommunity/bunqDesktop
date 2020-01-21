@@ -1,5 +1,4 @@
 import React, { CSSProperties } from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { translate } from "react-i18next";
 import Chip from "@material-ui/core/Chip";

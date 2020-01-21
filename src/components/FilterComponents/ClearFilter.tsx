@@ -3,12 +3,28 @@ import { connect } from "react-redux";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import ClearIcon from "@material-ui/icons/Clear";
+import { AppWindow } from "~app";
 
 import FilterDisabledChecker from "~functions/FilterDisabledChecker";
 
 import { resetFilters } from "~actions/filters";
+import { AppDispatch, ReduxState } from "~store/index";
 
-class ClearFilter extends React.PureComponent {
+interface IState {
+}
+
+interface IProps {
+    t: AppWindow['t'];
+}
+
+class ClearFilter extends React.PureComponent<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    static defaultProps = {
+        bigButton: false,
+        buttonProps: {}
+    };
+
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {};
@@ -28,7 +44,8 @@ class ClearFilter extends React.PureComponent {
             paymentVisibility,
             bunqMeTabVisibility,
             requestVisibility,
-            amountFilterAmount
+            amountFilterAmount,
+            t,
         } = this.props;
 
         if (
@@ -63,35 +80,30 @@ class ClearFilter extends React.PureComponent {
     }
 }
 
-ClearFilter.defaultProps = {
-    bigButton: false,
-    buttonProps: {}
-};
-
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         searchTerm: state.search_filter.search_term,
         paymentType: state.payment_filter.type,
         paymentVisibility: state.payment_filter.visible,
-        bunqMeTabType: state.bunq_me_tab_filter.type,
-        bunqMeTabVisibility: state.bunq_me_tab_filter.visible,
+        bunqMeTabType: state.bunqMeTabFilter.type,
+        bunqMeTabVisibility: state.bunqMeTabFilter.visible,
         requestType: state.request_filter.type,
         requestVisibility: state.request_filter.visible,
-        dateFromFilter: state.date_filter.from_date,
-        dateToFilter: state.date_filter.to_date,
+        dateFromFilter: state.dateFilter.from_date,
+        dateToFilter: state.dateFilter.to_date,
 
-        selectedCategories: state.category_filter.selected_categories,
-        toggleCategoryIds: state.category_filter.toggle,
-        selectedAccountIds: state.account_id_filter.selected_account_ids,
-        toggleAccountIds: state.account_id_filter.toggle,
-        selectedCardIds: state.card_id_filter.selected_card_ids,
-        toggleCardIds: state.card_id_filter.toggle,
+        selectedCategories: state.categoryFilter.selected_categories,
+        toggleCategoryIds: state.categoryFilter.toggle,
+        selectedAccountIds: state.accountIdFilter.selectedAccountIds,
+        toggleAccountIds: state.accountIdFilter.toggle,
+        selectedCardIds: state.cardIdFilter.selected_card_ids,
+        toggleCardIds: state.cardIdFilter.toggle,
 
-        amountFilterAmount: state.amount_filter.amount
+        amountFilterAmount: state.amountFilter.amount
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         resetFilters: () => dispatch(resetFilters())
     };

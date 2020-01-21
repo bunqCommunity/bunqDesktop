@@ -6,7 +6,6 @@ import { actions } from "./index";
 declare let window: AppWindow;
 
 export function exportInfoUpdate(
-    BunqJSClient,
     user_id,
     account_id,
     options = {

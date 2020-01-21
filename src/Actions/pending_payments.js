@@ -1,6 +1,6 @@
 export const PENDING_PAYMENTS_LOCATION = "BUNQDESKTOP_STORED_PENDING_PAYMENTS";
 
-export function loadPendingPayments(BunqJSClient) {
+export function loadPendingPayments() {
     return dispatch => {
         const BunqDesktopClient = window.BunqDesktopClient;
         BunqDesktopClient.storeDecrypt(PENDING_PAYMENTS_LOCATION)
@@ -13,53 +13,48 @@ export function loadPendingPayments(BunqJSClient) {
     };
 }
 
-export function pendingPaymentsSetPayments(BunqJSClient, pendingPayments) {
+export function pendingPaymentsSetPayments(pendingPayments) {
     return {
         type: "PENDING_PAYMENTS_SET_PAYMENTS",
         payload: {
-            BunqJSClient,
             pending_payments: pendingPayments
         }
     };
 }
 
-export function pendingPaymentsAddPayments(BunqJSClient, accountId, pendingPayments) {
+export function pendingPaymentsAddPayments(accountId, pendingPayments) {
     return {
         type: "PENDING_PAYMENTS_ADD_PAYMENTS",
         payload: {
-            BunqJSClient,
             account_id: accountId,
             pending_payments: pendingPayments
         }
     };
 }
 
-export function pendingPaymentsAddPayment(BunqJSClient, accountId, pendingPayment) {
+export function pendingPaymentsAddPayment(accountId, pendingPayment) {
     return {
         type: "PENDING_PAYMENTS_ADD_PAYMENT",
         payload: {
-            BunqJSClient,
             account_id: accountId,
             pending_payment: pendingPayment
         }
     };
 }
 
-export function pendingPaymentsClearAccount(BunqJSClient, accountId) {
+export function pendingPaymentsClearAccount(accountId) {
     return {
         type: "PENDING_PAYMENTS_CLEAR_ACCOUNT",
         payload: {
-            BunqJSClient,
             account_id: accountId
         }
     };
 }
 
-export function pendingPaymentsRemovePayment(BunqJSClient, pendingPaymentId) {
+export function pendingPaymentsRemovePayment(pendingPaymentId) {
     return {
         type: "PENDING_PAYMENTS_REMOVE_PAYMENT",
         payload: {
-            BunqJSClient,
             pending_payment_id: pendingPaymentId
         }
     };

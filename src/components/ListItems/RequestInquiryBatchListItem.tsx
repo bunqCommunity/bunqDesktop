@@ -152,7 +152,7 @@ class RequestInquiryBatchListItem extends React.Component {
         const avatarStandalone = (
             <Avatar style={styles.smallAvatar}>
                 {imageUUID ? (
-                    <LazyAttachmentImage height={50} BunqJSClient={this.props.BunqJSClient} imageUUID={imageUUID} />
+                    <LazyAttachmentImage height={50} imageUUID={imageUUID} />
                 ) : (
                     shareIcon
                 )}
@@ -240,7 +240,6 @@ class RequestInquiryBatchListItem extends React.Component {
                         return (
                             <RequestInquiryListItem
                                 requestInquiry={requestInquiry}
-                                BunqJSClient={this.props.BunqJSClient}
                             />
                         );
                     })}

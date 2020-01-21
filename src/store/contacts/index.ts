@@ -1,10 +1,11 @@
 import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import _ from "lodash";
+import { AppWindow } from "~app";
 
 import BunqDesktopClient from "~components/BunqDesktopClient";
 import { STORED_CONTACTS } from "~misc/consts";
 
-declare let window: Window & { BunqDesktopClient: BunqDesktopClient; t: Function };
+declare let window: AppWindow;
 
 export interface ISetInfoTypePayload {
     type: string;
@@ -20,7 +21,7 @@ export interface ISetInfoPayload {
 
 const setInfoAction = createAction(
     "setInfo",
-    ({ BunqJSClient = false, contacts }: ISetInfoPayload) => ({ payload: { BunqJSClient, contacts }})
+    ({ BunqJSClient = false, contacts }: ISetInfoPayload) => ({ payload: { contacts } })
 );
 const isLoadingAction = createAction("isLoading");
 const isNotLoadingAction = createAction("isNotLoading");
@@ -132,27 +133,15 @@ const slice = createSlice({
                 newState.contacts[action.payload.type] = [];
                 newState.last_update = +new Date();
 
-                // store the data if we have access to the bunqjsclient
-                if (action.payload.BunqJSClient) {
-                    const BunqDesktopClient = window.BunqDesktopClient;
-                    BunqDesktopClient.storeEncrypt(
-                        {
-                            items: newState.contacts
-                        },
-                        STORED_CONTACTS
-                    )
-                        .then();
-                }
+                window.BunqDesktopClient.storeEncrypt(
+                    {
+                        items: newState.contacts
+                    },
+                    STORED_CONTACTS
+                ).then();
             } else {
                 // remove the data completely
-                if (action.payload.BunqJSClient) {
-                    // FIXME: can't pass BunqJSClient as payload
-                    // action.payload.BunqJSClient.Session.asyncStorageRemove(STORED_CONTACTS)
-                    //     .then(() => {
-                    //     })
-                    //     .catch(() => {
-                    //     });
-                }
+                window.BunqDesktopClient.BunqJSClient.Session.asyncStorageRemove(STORED_CONTACTS).then();
             }
 
             return initialState;

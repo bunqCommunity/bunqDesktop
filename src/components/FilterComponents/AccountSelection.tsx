@@ -1,3 +1,4 @@
+import BunqJSClient from "@bunq-community/bunq-js-client";
 import React from "react";
 import { connect } from "react-redux";
 import Avatar from "@material-ui/core/Avatar";
@@ -12,6 +13,8 @@ import Tooltip from "@material-ui/core/Tooltip";
 
 import AddIcon from "@material-ui/icons/Add";
 import FilterListIcon from "@material-ui/icons/FilterList";
+import { AppWindow } from "~app";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 
@@ -28,7 +31,18 @@ const styles = {
     }
 };
 
-class AccountSelection extends React.Component {
+interface IProps {
+  BunqJSClient: BunqJSClient;
+  t: AppWindow['t'];
+}
+
+interface IState {
+  anchorEl: HTMLElement | null;
+}
+
+class AccountSelection extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -68,7 +82,6 @@ class AccountSelection extends React.Component {
                 <IconButton onClick={this.removeAccountId(account.id)}>
                     <Avatar>
                         <LazyAttachmentImage
-                            BunqJSClient={this.props.BunqJSClient}
                             imageUUID={account.avatar.image[0].attachment_public_uuid}
                             style={{ width: 40, height: 40 }}
                         />
@@ -99,7 +112,6 @@ class AccountSelection extends React.Component {
                             <Avatar style={styles.bigAvatar}>
                                 <LazyAttachmentImage
                                     height={40}
-                                    BunqJSClient={this.props.BunqJSClient}
                                     imageUUID={account.avatar.image[0].attachment_public_uuid}
                                 />
                             </Avatar>
@@ -138,16 +150,16 @@ class AccountSelection extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         accounts: state.accounts.accounts,
 
-        selectedAccountIds: state.account_id_filter.selected_account_ids,
-        toggleAccountIds: state.account_id_filter.toggle
+        selectedAccountIds: state.accountIdFilter.selectedAccountIds,
+        toggleAccountIds: state.accountIdFilter.toggle
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         addAccountIdFilter: accountId => dispatch(addAccountIdFilter(accountId)),
         removeAccountIdFilter: index => dispatch(removeAccountIdFilter(index)),

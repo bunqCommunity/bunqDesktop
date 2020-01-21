@@ -1,3 +1,4 @@
+import BunqJSClient from "@bunq-community/bunq-js-client";
 import React, { CSSProperties } from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
@@ -18,6 +19,7 @@ import NavLink from "~components/Routing/NavLink";
 import { connectGetBudget } from "~functions/ConnectGetPermissions";
 
 import { formatMoney } from "~functions/Utils";
+import { AppDispatch, ReduxState } from "~store/index";
 import AccountAvatarCircularProgress from "./AccountAvatarCircularProgress";
 
 import { actions as accountsActions } from "~store/accounts";
@@ -41,7 +43,14 @@ const styles = {
     }
 };
 
-class AccountListItem extends React.Component<any> {
+interface IState {
+}
+
+interface IProps {
+    BunqJSClient: BunqJSClient;
+}
+
+class AccountListItem extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
     static defaultProps = {
         clickable: true,
         denseMode: false,
@@ -50,7 +59,7 @@ class AccountListItem extends React.Component<any> {
         secondaryAction: false
     };
 
-    state: any;
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -150,7 +159,6 @@ class AccountListItem extends React.Component<any> {
                 <Avatar style={styles.bigAvatar}>
                     <LazyAttachmentImage
                         height={60}
-                        BunqJSClient={this.props.BunqJSClient}
                         imageUUID={account.avatar.image[0].attachment_public_uuid}
                     />
                 </Avatar>
@@ -170,19 +178,19 @@ class AccountListItem extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
         theme: state.options.theme,
         paymentsLoading: state.payments.loading,
         hideBalance: state.options.hide_balance,
 
-        selectedAccountIds: state.account_id_filter.selected_account_ids,
-        toggleAccountIds: state.account_id_filter.toggle
+        selectedAccountIds: state.accountIdFilter.selectedAccountIds,
+        toggleAccountIds: state.accountIdFilter.toggle,
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch: AppDispatch, ownProps: IProps) => {
     const { BunqJSClient } = ownProps;
     return {
         selectAccount: accountId => dispatch(accountsActions.selectAccount(accountId)),

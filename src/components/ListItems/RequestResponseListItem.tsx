@@ -78,7 +78,6 @@ class RequestResponseListItem extends React.Component {
                     <LazyAttachmentImage
                         height={50}
                         defaultImage={defaultImage}
-                        BunqJSClient={this.props.BunqJSClient}
                         imageUUID={imageUUID}
                     />
                 </Avatar>

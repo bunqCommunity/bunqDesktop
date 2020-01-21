@@ -167,10 +167,9 @@ class RequestInquiryInfo extends React.Component<any> {
                 );
             }
 
-            noteTextsForm = <NoteTextForm BunqJSClient={this.props.BunqJSClient} event={requestInquiry} />;
+            noteTextsForm = <NoteTextForm event={requestInquiry} />;
 
             const transactionHeaderProps = {
-                BunqJSClient: this.props.BunqJSClient,
                 to: requestInquiry.counterparty_alias,
                 from: requestInquiry.user_alias_created,
                 onForwardColor: "secondary",
@@ -354,9 +353,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         applicationSetPDFMode: enabled => dispatch(applicationActions.setPdfMode(enabled)),
 
         requestInquiryUpdate: (user_id, account_id, request_inquiry_id) =>
-            dispatch(requestInquiryUpdate(BunqJSClient, user_id, account_id, request_inquiry_id)),
+            dispatch(requestInquiryUpdate(user_id, account_id, request_inquiry_id)),
         requestInquiryCancel: (user_id, account_id, request_inquiry_id) =>
-            dispatch(requestInquiryCancel(BunqJSClient, user_id, account_id, request_inquiry_id))
+            dispatch(requestInquiryCancel(user_id, account_id, request_inquiry_id))
     };
 };
 

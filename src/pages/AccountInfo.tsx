@@ -86,7 +86,7 @@ const styles = {
     }
 };
 
-const PersonChip = ({ alias, BunqJSClient, ...otherProps }) => {
+const PersonChip = ({ alias, ...otherProps }) => {
     return (
         <Chip
             style={styles.chip}
@@ -94,7 +94,6 @@ const PersonChip = ({ alias, BunqJSClient, ...otherProps }) => {
                 <Avatar>
                     <LazyAttachmentImage
                         style={styles.chipImage}
-                        BunqJSClient={BunqJSClient}
                         height={32}
                         imageUUID={alias.avatar.image[0].attachment_public_uuid}
                     />
@@ -333,7 +332,7 @@ class AccountInfo extends React.Component<any> {
                         return coOwner.alias.uuid !== user.avatar.anchor_uuid;
                     })
                     .map(coOwner => {
-                        return <PersonChip BunqJSClient={this.props.BunqJSClient} alias={coOwner.alias} />;
+                        return <PersonChip alias={coOwner.alias} />;
                     });
             } else {
                 if (filteredInviteResponses.length > 0) {
@@ -346,7 +345,6 @@ class AccountInfo extends React.Component<any> {
                             return null;
                         return (
                             <PersonChip
-                                BunqJSClient={this.props.BunqJSClient}
                                 alias={filteredInviteResponse.ShareInviteMonetaryAccountResponse.counter_alias}
                                 onDelete={e => {
                                     this.props.shareInviteMonetaryAccountResponseChangeStatus(
@@ -365,7 +363,6 @@ class AccountInfo extends React.Component<any> {
                     profileIconList = filteredShareInquiries.map(filteredShareInquiry => {
                         return (
                             <PersonChip
-                                BunqJSClient={this.props.BunqJSClient}
                                 alias={filteredShareInquiry.ShareInviteMonetaryAccountInquiry.counter_user_alias}
                                 onDelete={e => {
                                     this.props.shareInviteMonetaryAccountInquiryChangeStatus(
@@ -527,7 +524,6 @@ class AccountInfo extends React.Component<any> {
 
                     <AccountCard
                         key="account-card"
-                        BunqJSClient={this.props.BunqJSClient}
                         openSnackbar={this.props.openSnackbar}
                         hideBalance={this.props.hideBalance}
                         {...accountCardProps}
@@ -537,7 +533,6 @@ class AccountInfo extends React.Component<any> {
 
                     <Paper key="combinedlist-paper" style={styles.paperList}>
                         <CombinedList
-                            BunqJSClient={this.props.BunqJSClient}
                             hiddenTypes={["ShareInviteMonetaryAccountInquiry"]}
                             accountId={accountId}
                             displayRequestPayments={false}
@@ -599,21 +594,19 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = (dispatch) => {
     return {
         openSnackbar: message => dispatch(snackbarActions.open({ message })),
 
-        accountsUpdate: userId => dispatch(accountsUpdate(BunqJSClient, userId)),
+        accountsUpdate: userId => dispatch(accountsUpdate(userId)),
         deactivateAccount: (userId, accountId, reason, accountType) =>
-            dispatch(accountsDeactivate(BunqJSClient, userId, accountId, reason, accountType)),
+            dispatch(accountsDeactivate(userId, accountId, reason, accountType)),
         updateSettings: (userId, accountId, settings, accountType) =>
-            dispatch(accountsUpdateSettings(BunqJSClient, userId, accountId, settings, accountType)),
+            dispatch(accountsUpdateSettings(userId, accountId, settings, accountType)),
 
         shareInviteMonetaryAccountResponseChangeStatus: (userId, shareInviteMonetaryAccountResponseId, status) =>
             dispatch(
                 shareInviteMonetaryAccountResponseChangeStatus(
-                    BunqJSClient,
                     userId,
                     shareInviteMonetaryAccountResponseId,
                     status
@@ -627,7 +620,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         ) =>
             dispatch(
                 shareInviteMonetaryAccountInquiryChangeStatus(
-                    BunqJSClient,
                     userId,
                     accountId,
                     shareInviteMonetaryAccountInquiryId,
@@ -636,19 +628,19 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             ),
 
         shareInviteMonetaryAccountInquiriesInfoUpdate: (userId, accountId) =>
-            dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(BunqJSClient, userId, accountId)),
+            dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(userId, accountId)),
         shareInviteMonetaryAccountResponsesInfoUpdate: (userId, accountId) =>
-            dispatch(shareInviteMonetaryAccountResponsesInfoUpdate(BunqJSClient, userId)),
-        paymentsUpdate: (userId, accountId) => dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId)),
+            dispatch(shareInviteMonetaryAccountResponsesInfoUpdate(userId)),
+        paymentsUpdate: (userId, accountId) => dispatch(paymentInfoUpdate(userId, accountId)),
         requestInquiriesUpdate: (userId, accountId) =>
-            dispatch(requestInquiriesUpdate(BunqJSClient, userId, accountId)),
+            dispatch(requestInquiriesUpdate(userId, accountId)),
         requestInquiryBatchesUpdate: (userId, accountId) =>
-            dispatch(requestInquiryBatchesUpdate(BunqJSClient, userId, accountId)),
+            dispatch(requestInquiryBatchesUpdate(userId, accountId)),
         requestResponsesUpdate: (userId, accountId) =>
-            dispatch(requestResponsesUpdate(BunqJSClient, userId, accountId)),
+            dispatch(requestResponsesUpdate(userId, accountId)),
         masterCardActionsUpdate: (userId, accountId) =>
-            dispatch(masterCardActionsUpdate(BunqJSClient, userId, accountId)),
-        bunqMeTabsUpdate: (userId, accountId) => dispatch(bunqMeTabsUpdate(BunqJSClient, userId, accountId))
+            dispatch(masterCardActionsUpdate(userId, accountId)),
+        bunqMeTabsUpdate: (userId, accountId) => dispatch(bunqMeTabsUpdate(userId, accountId))
     };
 };
 

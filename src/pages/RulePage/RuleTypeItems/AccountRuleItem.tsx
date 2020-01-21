@@ -73,7 +73,6 @@ class AccountRuleItem extends React.Component<IPropTypes, any> {
                         value={accountIndex}
                         onChange={this.handleAccountChange}
                         accounts={this.props.accounts}
-                        BunqJSClient={this.props.BunqJSClient}
                     />
                 </TableCell>
 

@@ -1,9 +1,10 @@
+import { AppWindow } from "~app";
 import BunqDesktopClient from "~components/BunqDesktopClient";
 import BunqErrorHandler from "~functions/BunqErrorHandler";
 import Card from "~models/Card";
 import { actions } from "./index";
 
-declare let window: Window & { BunqDesktopClient: BunqDesktopClient; t: Function };
+declare let window: AppWindow;
 
 export function cardsUpdate(user_id) {
     const failedMessage = window.t("We failed to load the cards overview");

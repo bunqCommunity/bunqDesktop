@@ -5,11 +5,12 @@ import { shareInviteMonetaryAccountResponsesInfoUpdate } from "./share_invite_mo
 import { actions as snackbarActions } from "~store/snackbar";
 import { accountsUpdate } from "~store/accounts/thunks";
 
-export function paySend(BunqJSClient, userId, accountId, description, amount, targets, draft = false) {
+export function paySend(userId, accountId, description, amount, targets, draft = false) {
     const failedMessage = window.t("We received the following error while sending your payment");
     const successMessage1 = window.t("Draft payment successfully created!");
     const successMessage2 = window.t("Payments sent successfully!");
     const successMessage3 = window.t("Payment sent successfully!");
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
     return dispatch => {
         dispatch(payLoading());
@@ -34,8 +35,8 @@ export function paySend(BunqJSClient, userId, accountId, description, amount, ta
                 dispatch(snackbarActions.open({ message: notification }));
 
                 // update the payments, accounts and share list
-                dispatch(shareInviteMonetaryAccountResponsesInfoUpdate(BunqJSClient, userId));
-                dispatch(accountsUpdate(BunqJSClient, userId));
+                dispatch(shareInviteMonetaryAccountResponsesInfoUpdate(userId));
+                dispatch(accountsUpdate(userId));
 
                 dispatch(payNotLoading());
             })
@@ -46,10 +47,11 @@ export function paySend(BunqJSClient, userId, accountId, description, amount, ta
     };
 }
 
-export function paySchedule(BunqJSClient, userId, accountId, description, amount, targets, schedule) {
+export function paySchedule(userId, accountId, description, amount, targets, schedule) {
     const failedMessage = window.t("We received the following error while sending your payment");
     const successMessage1 = window.t("Payment was successfully scheduled!");
     const successMessage2 = window.t("Payments were successfully scheduled!");
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
     return dispatch => {
         dispatch(payLoading());
@@ -78,10 +80,10 @@ export function paySchedule(BunqJSClient, userId, accountId, description, amount
                 dispatch(snackbarActions.open({ message: notification }));
 
                 // update the payments, accounts and share list
-                dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId));
-                dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(BunqJSClient, userId, accountId));
-                dispatch(shareInviteMonetaryAccountResponsesInfoUpdate(BunqJSClient, userId));
-                dispatch(accountsUpdate(BunqJSClient, userId));
+                dispatch(paymentInfoUpdate(userId, accountId));
+                dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(userId, accountId));
+                dispatch(shareInviteMonetaryAccountResponsesInfoUpdate( userId));
+                dispatch(accountsUpdate(userId));
 
                 dispatch(payNotLoading());
             })

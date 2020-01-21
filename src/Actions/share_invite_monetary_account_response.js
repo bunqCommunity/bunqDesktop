@@ -2,13 +2,13 @@ import { shareInviteMonetaryAccountResponsesInfoUpdate } from "./share_invite_mo
 import { actions as snackbarActions } from "~store/snackbar";
 
 export function shareInviteMonetaryAccountResponseChangeStatus(
-    BunqJSClient,
     userId,
     shareInviteMonetaryAccountResponseId,
     status
 ) {
     const failedMessage = window.t("We received the following error while updating your connect request");
     const successMessage = window.t("Connect request was updated successfully!");
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
     return dispatch => {
         dispatch(shareInviteMonetaryAccountResponseLoading());
@@ -19,7 +19,7 @@ export function shareInviteMonetaryAccountResponseChangeStatus(
                 dispatch(snackbarActions.open({ message: successMessage }));
 
                 // update the payments, accounts and share list
-                dispatch(shareInviteMonetaryAccountResponsesInfoUpdate(BunqJSClient, userId, accountId));
+                dispatch(shareInviteMonetaryAccountResponsesInfoUpdate(userId, accountId));
                 dispatch(shareInviteMonetaryAccountResponseNotLoading());
             })
             .catch(error => {

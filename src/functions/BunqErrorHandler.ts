@@ -1,3 +1,4 @@
+import { AppWindow } from "~app";
 import BunqDesktopClient from "~components/BunqDesktopClient";
 import { BatchedActions } from "~store/index";
 import Logger from "./Logger";
@@ -9,7 +10,7 @@ import { actions as applicationActions } from "~store/application";
 
 import ErrorCodes from "@bunq-community/bunq-js-client/dist/Helpers/ErrorCodes";
 
-declare let window: Window & { BunqDesktopClient: BunqDesktopClient; t: Function };
+declare let window: AppWindow;
 
 const defaultErrorMessage = (batchedActions: BatchedActions, customError: boolean | string = false) => {
     batchedActions.push(
@@ -83,9 +84,7 @@ export default (batchedActions: BatchedActions, error, customError: boolean | st
                     errorMessage = invalidAuthenticationError;
 
                     // reset to api screen if possible
-                    if (BunqJSClient) {
-                        batchedActions.push(registrationResetToApiScreen(BunqJSClient));
-                    }
+                    batchedActions.push(registrationResetToApiScreen());
                     break;
             }
 

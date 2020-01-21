@@ -1,10 +1,11 @@
 import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { AppWindow } from "~app";
 
 import { STORED_BUNQ_ME_TABS } from "~misc/consts";
 import BunqDesktopClient from "~components/BunqDesktopClient";
 import MergeApiObjects from "~functions/MergeApiObjects";
 
-declare let window: Window & { BunqDesktopClient: BunqDesktopClient };
+declare let window: AppWindow;
 
 interface ISetInfoPayload {
     BunqJSClient?: boolean;
@@ -19,7 +20,7 @@ const setInfoAction = createAction("setInfo", (
         resetOldItems = false,
         bunqMeTabs = [],
         account_id,
-    }: ISetInfoPayload) => ({ payload: { BunqJSClient, resetOldItems, bunqMeTabs, account_id } }));
+    }: ISetInfoPayload) => ({ payload: { resetOldItems, bunqMeTabs, account_id } }));
 const isLoadingAction = createAction("isLoading");
 const isNotLoadingAction = createAction("isNotLoading");
 const clearAction = createAction("clear");
@@ -76,21 +77,13 @@ const slice = createSlice({
             // limit payments to 1000 in total
             const mergedBunqMeTabs = mergedInfo.items.slice(0, 1000);
 
-            // store the data if we have access to the bunqjsclient
-            if (action.payload.BunqJSClient) {
-                const BunqDesktopClient = window.BunqDesktopClient;
-                BunqDesktopClient.storeEncrypt(
-                    {
-                        items: mergedBunqMeTabs,
-                        account_id: action.payload.account_id
-                    },
-                    STORED_BUNQ_ME_TABS
-                )
-                    .then(() => {
-                    })
-                    .catch(() => {
-                    });
-            }
+            window.BunqDesktopClient.storeEncrypt(
+                {
+                    items: mergedBunqMeTabs,
+                    account_id: action.payload.account_id
+                },
+                STORED_BUNQ_ME_TABS
+            ).then();
 
             // update newer and older id for this monetary account
             const newerIds = {

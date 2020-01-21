@@ -73,7 +73,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
         requestInquirySend: (userId, accountId, requestInquiries) =>
-            dispatch(requestInquirySend(BunqJSClient, userId, accountId, requestInquiries))
+            dispatch(requestInquirySend(userId, accountId, requestInquiries))
     };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(AddMoneyButton));

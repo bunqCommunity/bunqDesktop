@@ -1,3 +1,4 @@
+import BunqJSClient from "@bunq-community/bunq-js-client";
 import React, { CSSProperties } from "react";
 import { ipcRenderer } from "electron";
 import { translate } from "react-i18next";
@@ -14,7 +15,9 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import CheckBoxOutlinedIcon from "@material-ui/icons/CheckBoxOutlined";
+import { AppWindow } from "~app";
 import { accountsUpdate } from "~store/accounts/thunks";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import LimitedPremiumListItem from "../LimitedPremiumListItem";
 import AccountListItem from "./AccountListItem";
@@ -42,8 +45,23 @@ const styles = {
     }
 };
 
-class AccountList extends React.Component<any> {
-    state: any;
+interface IState {
+    totalBalance: number;
+    fetchedAccounts: any;
+    accountTotalSelectionMode: any;
+}
+
+interface IProps {
+    t: AppWindow['t'];
+    BunqJSClient: BunqJSClient;
+}
+
+class AccountList extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    static defaultProps = {
+        denseMode: false
+    };
+
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -181,10 +199,10 @@ class AccountList extends React.Component<any> {
         }
     };
 
-    accountExcludeFromTotal = accountId => event => {
+    accountExcludeFromTotal = accountId => () => {
         this.props.accountExcludeFromTotal(accountId);
     };
-    accountIncludeInTotal = accountId => event => {
+    accountIncludeInTotal = accountId => () => {
         this.props.accountIncludeInTotal(accountId);
     };
 
@@ -236,7 +254,6 @@ class AccountList extends React.Component<any> {
                     return (
                         <AccountListItem
                             onClick={onClickHandler}
-                            BunqJSClient={this.props.BunqJSClient}
                             denseMode={this.props.denseMode}
                             account={account}
                             isJoint={!!account.all_co_owner}
@@ -292,12 +309,7 @@ class AccountList extends React.Component<any> {
     }
 }
 
-// @ts-ignore
-AccountList.defaultProps = {
-    denseMode: false
-};
-
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
         userType: state.user.user_type,
@@ -311,9 +323,9 @@ const mapStateToProps = state => {
         registrationReady: state.registration.ready,
 
         accounts: state.accounts.accounts,
-        accountsSelectedId: state.accounts.selected_account,
+        accountsSelectedId: state.accounts.selectedAccount,
         accountsLoading: state.accounts.loading,
-        excludedAccountIds: state.accounts.excluded_account_ids,
+        excludedAccountIds: state.accounts.excludedAccountIds,
 
         shareInviteMonetaryAccountResponses:
             state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
@@ -321,34 +333,34 @@ const mapStateToProps = state => {
         shareInviteBankInquiriesLoading: state.share_invite_monetary_account_inquiries.loading,
 
         paymentsLoading: state.payments.loading,
-        bunqMeTabsLoading: state.bunq_me_tabs.loading,
+        bunqMeTabsLoading: state.bunqMeTabs.loading,
         requestResponsesLoading: state.request_responses.loading,
         requestInquiriesLoading: state.request_inquiries.loading,
         masterCardActionsLoading: state.master_card_actions.loading
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch: AppDispatch, ownProps: IProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        paymentsUpdate: (userId, accountId) => dispatch(paymentInfoUpdate(BunqJSClient, userId, accountId)),
+        paymentsUpdate: (userId, accountId) => dispatch(paymentInfoUpdate(userId, accountId)),
         requestInquiriesUpdate: (userId, accountId) =>
-            dispatch(requestInquiriesUpdate(BunqJSClient, userId, accountId)),
+            dispatch(requestInquiriesUpdate(userId, accountId)),
         requestResponsesUpdate: (userId, accountId) =>
-            dispatch(requestResponsesUpdate(BunqJSClient, userId, accountId)),
+            dispatch(requestResponsesUpdate(userId, accountId)),
         masterCardActionsUpdate: (userId, accountId) =>
-            dispatch(masterCardActionsUpdate(BunqJSClient, userId, accountId)),
-        bunqMeTabsUpdate: (userId, accountId) => dispatch(bunqMeTabsActions.setInfo({ resetOldItems: false, BunqJSClient, user_id: userId, account_id: accountId })),
+            dispatch(masterCardActionsUpdate(userId, accountId)),
+        bunqMeTabsUpdate: (userId, accountId) => dispatch(bunqMeTabsActions.setInfo({ resetOldItems: false, user_id: userId, account_id: accountId })),
 
-        accountsUpdate: userId => dispatch(accountsUpdate(BunqJSClient, userId)),
+        accountsUpdate: userId => dispatch(accountsUpdate(userId)),
 
         accountExcludeFromTotal: accountId => dispatch(accountsActions.excludeFromTotal(accountId)),
         accountIncludeInTotal: accountId => dispatch(accountsActions.includeInTotal(accountId)),
 
         shareInviteMonetaryAccountResponsesInfoUpdate: userId =>
-            dispatch(shareInviteMonetaryAccountResponsesInfoUpdate(BunqJSClient, userId)),
+            dispatch(shareInviteMonetaryAccountResponsesInfoUpdate(userId)),
         shareInviteMonetaryAccountInquiriesInfoUpdate: (userId, accountId) =>
-            dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(BunqJSClient, userId, accountId)),
+            dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(userId, accountId)),
         selectAccount: accountId => dispatch(accountsActions.selectAccount(accountId)),
 
         updateStatisticsSavingsGoals: (accounts, shareInviteMonetaryAccountResponses) =>

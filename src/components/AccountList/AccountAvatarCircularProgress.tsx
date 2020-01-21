@@ -11,7 +11,18 @@ const styles = {
         top: 7
     }
 };
-const AccountAvatarCircularProgress = ({ account, theme, selected = false, style = {} }) => {
+
+interface IState {
+}
+
+interface IProps {
+    account: any;
+    theme: any;
+    selected: boolean;
+    style: CSSProperties;
+}
+
+const AccountAvatarCircularProgress = ({ account, theme, selected = false, style = {} }: ReturnType<typeof mapStateToProps> & IProps) => {
     let isSavingsAccount = false;
     if (account.accountType === "MonetaryAccountSavings") {
         isSavingsAccount = true;
@@ -65,7 +76,7 @@ const AccountAvatarCircularProgress = ({ account, theme, selected = false, style
 
 const mapStateToProps = state => {
     return {
-        theme: state.options.theme
+        theme: state.options.theme,
     };
 };
 

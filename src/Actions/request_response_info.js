@@ -14,8 +14,9 @@ export function requestResponseSetInfo(request_response_info, account_id, reques
     };
 }
 
-export function requestResponseUpdate(BunqJSClient, user_id, account_id, request_response_id) {
+export function requestResponseUpdate(user_id, account_id, request_response_id) {
     const failedMessage = window.t("We failed to load the request information");
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
     return dispatch => {
         dispatch(requestResponseLoading());

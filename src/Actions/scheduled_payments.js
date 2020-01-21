@@ -11,7 +11,6 @@ export function scheduledPaymentsSetInfo(scheduled_payments, account_id) {
 }
 
 export function scheduledPaymentsInfoUpdate(
-    BunqJSClient,
     user_id,
     account_id,
     options = {
@@ -39,7 +38,6 @@ export function scheduledPaymentsInfoUpdate(
 }
 
 export function scheduledPaymentUpdate(
-    BunqJSClient,
     user_id,
     account_id,
     scheduled_payment_id,
@@ -47,6 +45,7 @@ export function scheduledPaymentUpdate(
     schedule_info
 ) {
     const failedMessage = window.t("We failed to update the scheduled payment for this monetary account");
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
     return dispatch => {
         dispatch(scheduledPaymentsLoading());
@@ -54,7 +53,7 @@ export function scheduledPaymentUpdate(
         BunqJSClient.api.schedulePayment
             .put(user_id, account_id, scheduled_payment_id, payment_info, schedule_info)
             .then(result => {
-                dispatch(scheduledPaymentsInfoUpdate(BunqJSClient, user_id, account_id));
+                dispatch(scheduledPaymentsInfoUpdate(user_id, account_id));
                 dispatch(scheduledPaymentsNotLoading());
             })
             .catch(error => {

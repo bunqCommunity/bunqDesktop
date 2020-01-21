@@ -2,20 +2,21 @@ import MasterCardAction from "~models/MasterCardAction";
 
 export const STORED_MASTER_CARD_ACTIONS = "BUNQDESKTOP_STORED_MASTER_CARD_ACTIONS";
 
-export function masterCardActionsSetInfo(masterCardActions, account_id, resetOldItems = false, BunqJSClient = false) {
+export function masterCardActionsSetInfo(masterCardActions, account_id, resetOldItems = false) {
     const type = resetOldItems ? "MASTER_CARD_ACTIONS_SET_INFO" : "MASTER_CARD_ACTIONS_UPDATE_INFO";
 
     return {
         type: type,
         payload: {
-            BunqJSClient,
             masterCardActions,
             account_id
         }
     };
 }
 
-export function loadStoredMasterCardActions(BunqJSClient) {
+export function loadStoredMasterCardActions() {
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
+
     return dispatch => {
         dispatch(masterCardActionsLoading());
         const BunqDesktopClient = window.BunqDesktopClient;
@@ -35,7 +36,6 @@ export function loadStoredMasterCardActions(BunqJSClient) {
 }
 
 export function masterCardActionsUpdate(
-    BunqJSClient,
     userId,
     accountId,
     options = {
@@ -48,13 +48,13 @@ export function masterCardActionsUpdate(
 
     return dispatch => {
         dispatch(masterCardActionsLoading());
-        BunqJSClient.api.masterCardAction
+        window.BunqDesktopClient.BunqJSClient.api.masterCardAction
             .list(userId, accountId, options)
             .then(masterCardActions => {
                 // turn plain objects into Model objects
                 const masterCardActionsNew = masterCardActions.map(item => new MasterCardAction(item));
 
-                dispatch(masterCardActionsSetInfo(masterCardActionsNew, accountId, false, BunqJSClient));
+                dispatch(masterCardActionsSetInfo(masterCardActionsNew, accountId, false));
                 dispatch(masterCardActionsNotLoading());
             })
             .catch(error => {

@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { actions as categoriesActions } from "~store/categories";
 import { actions as categoryRulesActions } from "~store/categoryRules";
 import { AppDispatch, ReduxState } from "~store/index";
+import RuleCollection from "~models/RuleCollection";
 
 // import typed worker
 const RuleCollectionCheckWorker = require("worker-loader!../webworkers/rule_collection_check.worker.js");
@@ -43,7 +44,8 @@ class RuleCollectionChecker extends React.Component<ReturnType<typeof mapStateTo
     handleWorkerEvent = eventResults => {
         const events = eventResults.data.result;
         const ruleCollectionId = eventResults.data.ruleCollectionId;
-        const ruleCollection = this.props.categoryRules[ruleCollectionId];
+        const ruleCollection = new RuleCollection();
+        ruleCollection.fromObject(this.props.categoryRules[ruleCollectionId]);
 
         // go through all events
         const newCategoryConnections = [];
@@ -71,11 +73,13 @@ class RuleCollectionChecker extends React.Component<ReturnType<typeof mapStateTo
         const requestInquiries = this.props.requestInquiries.map(item => item.toJSON());
         const requestResponses = this.props.requestResponses.map(item => item.toJSON());
         const masterCardActions = this.props.masterCardActions.map(item => item.toJSON());
-        const bunqMeTabs = this.props.bunqMeTabs.map(item => item.toJSON());
+        const bunqMeTabs = this.props.bunqMeTabs.map(item => JSON.stringify(item));
 
         // get results for all our rule collections
         Object.keys(this.props.categoryRules).forEach(categoryRuleId => {
-            const ruleCollection = this.props.categoryRules[categoryRuleId];
+            const ruleCollection = new RuleCollection();
+            ruleCollection.fromObject(this.props.categoryRules[categoryRuleId]);
+
             if (ruleCollection && ruleCollection.isEnabled()) {
                 this.worker.postMessage({
                     ruleCollection: ruleCollection,

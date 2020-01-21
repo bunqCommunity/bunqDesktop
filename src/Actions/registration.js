@@ -366,22 +366,21 @@ export function registrationNotLoading() {
 
 export function registrationLoadStoredData() {
     const BunqDesktopClient = window.BunqDesktopClient;
-    const BunqJSClient = BunqDesktopClient.BunqJSClient;
     return dispatch => {
         // skip if no apiKey is set
         if (!BunqDesktopClient.apiKey) return;
 
-        dispatch(loadStoredAccounts(BunqJSClient));
-        dispatch(loadStoredContacts(BunqJSClient));
-        dispatch(loadPendingPayments(BunqJSClient));
-        dispatch(loadStoredPayments(BunqJSClient));
-        dispatch(loadStoredBunqMeTabs(BunqJSClient));
-        dispatch(loadStoredMasterCardActions(BunqJSClient));
-        dispatch(loadStoredRequestInquiries(BunqJSClient));
-        dispatch(loadStoredrequestInquiryBatches(BunqJSClient));
-        dispatch(loadStoredRequestResponses(BunqJSClient));
-        dispatch(loadStoredShareInviteMonetaryAccountResponses(BunqJSClient));
-        dispatch(loadStoredShareInviteBankInquiries(BunqJSClient));
+        dispatch(loadStoredAccounts());
+        dispatch(loadStoredContacts());
+        dispatch(loadPendingPayments());
+        dispatch(loadStoredPayments());
+        dispatch(loadStoredBunqMeTabs());
+        dispatch(loadStoredMasterCardActions());
+        dispatch(loadStoredRequestInquiries());
+        dispatch(loadStoredrequestInquiryBatches());
+        dispatch(loadStoredRequestResponses());
+        dispatch(loadStoredShareInviteMonetaryAccountResponses());
+        dispatch(loadStoredShareInviteBankInquiries());
     };
 }
 

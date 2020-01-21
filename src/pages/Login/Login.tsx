@@ -419,7 +419,6 @@ class Login extends React.Component {
 
                     {this.state.tabIndex === 1 && (
                         <OAuthManagement
-                            BunqJSClient={BunqJSClient}
                             setApiKeyState={this.setApiKeyState}
                             toggleOptionVisibility={this.toggleOptionVisibility}
                             sandboxMode={this.state.sandboxMode}
@@ -484,7 +483,6 @@ class Login extends React.Component {
 
                 <SideOptions
                     t={t}
-                    BunqJSClient={BunqJSClient}
                     buttonDisabled={buttonDisabled}
                     sandboxButtonDisabled={sandboxButtonDisabled}
                     setApiKeyClassname={setApiKeyClassname}

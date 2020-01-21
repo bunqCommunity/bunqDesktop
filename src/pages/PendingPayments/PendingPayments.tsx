@@ -249,7 +249,7 @@ class PendingPayments extends React.Component<any> {
     decrementPromiseCounter = () => this.setState({ paymentPromiseCount: this.state.paymentPromiseCount - 1 });
 
     paySelected = () => {
-        const { t, BunqJSClient, user } = this.props;
+        const { t, user } = this.props;
         const failedText = t("Failed to complete some of the selected payments");
 
         this.confirmAction("Are you sure you wish to complete these payments?", () => {
@@ -274,7 +274,7 @@ class PendingPayments extends React.Component<any> {
         });
     };
     draftSelected = () => {
-        const { t, BunqJSClient, user } = this.props;
+        const { t, user } = this.props;
         const failedText = t("Failed to draft some of the selected payments");
 
         this.confirmAction("Are you sure you wish to draft these payments?", () => {
@@ -300,7 +300,7 @@ class PendingPayments extends React.Component<any> {
     };
 
     render() {
-        const { t, BunqJSClient, accounts, pendingPayments } = this.props;
+        const { t, accounts, pendingPayments } = this.props;
 
         let groupedPayments = {};
         Object.keys(pendingPayments).forEach(pendingPaymentId => {
@@ -359,7 +359,6 @@ class PendingPayments extends React.Component<any> {
                                     <Avatar style={styles.avatar}>
                                         <LazyAttachmentImage
                                             height={40}
-                                            BunqJSClient={BunqJSClient}
                                             imageUUID={imageUUID}
                                         />
                                     </Avatar>
@@ -486,9 +485,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         BunqErrorHandler: (error, message) => BunqErrorHandler(dispatch, error, message, BunqJSClient),
 
         pendingPaymentsClear: () => dispatch(pendingPaymentsClear()),
-        pendingPaymentsClearAccount: accountId => dispatch(pendingPaymentsClearAccount(BunqJSClient, accountId)),
+        pendingPaymentsClearAccount: accountId => dispatch(pendingPaymentsClearAccount(accountId)),
         pendingPaymentsRemovePayment: pendingPaymentId =>
-            dispatch(pendingPaymentsRemovePayment(BunqJSClient, pendingPaymentId))
+            dispatch(pendingPaymentsRemovePayment(pendingPaymentId))
     };
 };
 

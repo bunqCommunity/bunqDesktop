@@ -13,8 +13,10 @@ import Tooltip from "@material-ui/core/Tooltip";
 
 import AddIcon from "@material-ui/icons/Add";
 import FilterListIcon from "@material-ui/icons/FilterList";
+import { isBoolean } from "util";
 
 import { addCardIdFilter, removeCardIdFilter, toggleCardIdFilter } from "~actions/filters";
+import { AppWindow } from "~app";
 import { getCardTypeImage } from "~pages/Cards/CardListItem";
 import { getCardDescription } from "~functions/Utils";
 import { cardsUpdate } from "~store/cards/thunks";
@@ -46,7 +48,14 @@ const styles: any = {
     }
 };
 
-class CardSelection extends React.Component<any> {
+interface IState {
+}
+
+interface IProps {
+    t: AppWindow['t'];
+}
+
+class CardSelection extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
     state: any;
 
     constructor(props, context) {

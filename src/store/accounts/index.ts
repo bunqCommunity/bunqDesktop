@@ -1,13 +1,13 @@
 import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ipcRenderer } from "electron";
 import store from "store";
+import { AppWindow } from "~app";
 
 import { EXCLUDED_ACCOUNT_IDS, SELECTED_ACCOUNT_LOCATION, STORED_ACCOUNTS } from "~misc/consts";
-import BunqDesktopClient from "~components/BunqDesktopClient";
 import { formatMoney } from "~functions/Utils";
 import settings from "~importwrappers/electronSettings";
 
-declare let window: Window & { BunqDesktopClient: BunqDesktopClient };
+declare let window: AppWindow;
 
 const excludedAccountIdsStored = settings.get(EXCLUDED_ACCOUNT_IDS);
 const selectedAccountStored = store.get(SELECTED_ACCOUNT_LOCATION);
@@ -17,7 +17,6 @@ const excludedAccountIdsDefault: Array<number> = excludedAccountIdsStored !== un
 
 export interface ISetInfoPayload {
     accounts: any;
-    BunqJSClient: boolean;
 }
 
 const setInfoAction = createAction("setInfo");
@@ -34,9 +33,10 @@ const updateAccountStatusNotLoadingAction = createAction("updateAccountStatusNot
 
 // TODO: remove this dependency
 function pleaseTurnThisClearFunctionIntoASagaSubscriber(state: IAccountsState) {
-    const BunqDesktopClient = window.BunqDesktopClient;
-    BunqDesktopClient.storeRemove(SELECTED_ACCOUNT_LOCATION);
-    BunqDesktopClient.storeRemove(STORED_ACCOUNTS);
+    if (window.BunqDesktopClient) {
+        window.BunqDesktopClient.storeRemove(SELECTED_ACCOUNT_LOCATION);
+        window.BunqDesktopClient.storeRemove(STORED_ACCOUNTS);
+    }
 
     ipcRenderer.send("set-tray-accounts", false);
     ipcRenderer.send("set-tray-balance", false);
@@ -64,24 +64,17 @@ const initialState = {
 };
 
 const slice = createSlice({
-    name: "actions",
+    name: "accounts",
     initialState,
     reducers: {
         [setInfoAction.type](state, action: PayloadAction<ISetInfoPayload>) {
-            // store the data if we have access to the bunqjsclient
-            if (action.payload.BunqJSClient) {
-                const BunqDesktopClient = window.BunqDesktopClient;
-                BunqDesktopClient.storeEncrypt(
-                    {
-                        items: action.payload.accounts
-                    },
-                    STORED_ACCOUNTS
-                )
-                    .then(() => {
-                    })
-                    .catch(() => {
-                    });
-            }
+            const BunqDesktopClient = window.BunqDesktopClient;
+            BunqDesktopClient.storeEncrypt(
+                {
+                    items: action.payload.accounts
+                },
+                STORED_ACCOUNTS
+            ).then();
 
             ipcRenderer.send(
                 "set-tray-accounts",

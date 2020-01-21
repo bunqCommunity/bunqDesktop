@@ -35,7 +35,7 @@ class ScheduledPaymentItem extends React.Component {
     }
 
     render() {
-        const { scheduledPayment, BunqJSClient, key, t } = this.props;
+        const { scheduledPayment, key, t } = this.props;
         const nextPaymentTextTranslate = t("Next payment");
         const scheduleExpiredTranslate = t("Schedule expired");
 
@@ -71,7 +71,7 @@ class ScheduledPaymentItem extends React.Component {
             <>
                 <ListItem key={key} button onClick={this.props.selectScheduledPayment}>
                     <Avatar style={styles.smallAvatar}>
-                        <LazyAttachmentImage height={50} BunqJSClient={BunqJSClient} imageUUID={imageUUID} />
+                        <LazyAttachmentImage height={50} imageUUID={imageUUID} />
                     </Avatar>
 
                     <ListItemText primary={scheduleTextResult.primary} secondary={scheduleTextResult.secondary} />

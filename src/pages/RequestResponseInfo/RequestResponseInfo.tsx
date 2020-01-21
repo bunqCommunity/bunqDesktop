@@ -206,14 +206,13 @@ class RequestResponseInfo extends React.Component<any> {
                 );
             }
 
-            noteTextsForm = <NoteTextForm BunqJSClient={this.props.BunqJSClient} event={requestResponse} />;
+            noteTextsForm = <NoteTextForm event={requestResponse} />;
 
             content = (
                 <>
                     <Paper style={styles.paper}>
                         <Grid container spacing={24} align={"center"} justify={"center"}>
                             <TransactionHeader
-                                BunqJSClient={this.props.BunqJSClient}
                                 to={requestResponse.alias}
                                 from={requestResponse.counterparty_alias}
                                 user={this.props.user}
@@ -353,7 +352,6 @@ class RequestResponseInfo extends React.Component<any> {
                                             value={this.state.selectedAccount}
                                             onChange={this.handleChangeDirect("selectedAccount")}
                                             accounts={accounts}
-                                            BunqJSClient={this.props.BunqJSClient}
                                             hiddenConnectTypes={["showOnly"]}
                                         />
                                     </Grid>
@@ -459,13 +457,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         applicationSetPDFMode: enabled => dispatch(applicationActions.setPdfMode(enabled)),
 
         requestResponseUpdate: (user_id, account_id, request_response_id) =>
-            dispatch(requestResponseUpdate(BunqJSClient, user_id, account_id, request_response_id)),
+            dispatch(requestResponseUpdate(user_id, account_id, request_response_id)),
         requestResponseAccept: (user_id, account_id, request_response_id, amount_responded, options) =>
             dispatch(
-                requestResponseAccept(BunqJSClient, user_id, account_id, request_response_id, amount_responded, options)
+                requestResponseAccept(user_id, account_id, request_response_id, amount_responded, options)
             ),
         requestResponseReject: (user_id, account_id, request_response_id) =>
-            dispatch(requestResponseReject(BunqJSClient, user_id, account_id, request_response_id))
+            dispatch(requestResponseReject(user_id, account_id, request_response_id))
     };
 };
 

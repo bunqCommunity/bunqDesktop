@@ -8,8 +8,14 @@ import TranslateButton from "~components/TranslationHelpers/Button";
 
 import CategorySelector from "./CategorySelector";
 
-class CategorySelectorDialog extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class CategorySelectorDialog extends React.Component<IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);

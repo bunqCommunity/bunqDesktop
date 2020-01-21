@@ -21,7 +21,7 @@ if (savingsGoalsStored === undefined) settings.set(BUNQDESKTOP_SAVINGS_GOALS, {}
 
 // construct the default state
 export const defaultState = {
-    last_update: new Date().getTime(),
+    last_update: +new Date(),
     savings_goals: mappedSavingsGoals
 };
 
@@ -57,7 +57,7 @@ export default function reducer(state = defaultState, action) {
             storeSavingsGoalsSafe(savingsGoals);
             return {
                 ...state,
-                last_update: new Date().getTime(),
+                last_update: +new Date(),
                 savings_goals: savingsGoals
             };
 
@@ -65,7 +65,7 @@ export default function reducer(state = defaultState, action) {
             storeSavingsGoalsSafe(action.payload.savings_goals);
             return {
                 ...state,
-                last_update: new Date().getTime(),
+                last_update: +new Date(),
                 savings_goals: action.payload.savings_goals
             };
 
@@ -76,7 +76,7 @@ export default function reducer(state = defaultState, action) {
             storeSavingsGoalsSafe(savingsGoals);
             return {
                 ...state,
-                last_update: new Date().getTime(),
+                last_update: +new Date(),
                 savings_goals: savingsGoals
             };
 
@@ -92,7 +92,7 @@ export default function reducer(state = defaultState, action) {
             storeSavingsGoalsSafe(currentSavingsGoals);
             return {
                 ...state,
-                last_update: new Date().getTime(),
+                last_update: +new Date(),
                 savings_goals: currentSavingsGoals
             };
 
@@ -113,7 +113,7 @@ export default function reducer(state = defaultState, action) {
 
             return {
                 ...state,
-                last_update: new Date().getTime(),
+                last_update: +new Date(),
                 savings_goals: {
                     ...state.savings_goals,
                     ...storedSavingsGoals

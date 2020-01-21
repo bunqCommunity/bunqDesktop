@@ -83,7 +83,6 @@ class Dashboard extends React.Component {
             <Avatar style={styles.bigAvatar}>
                 <AttachmentImage
                     height={50}
-                    BunqJSClient={this.props.BunqJSClient}
                     imageUUID={user.avatar.image[0].attachment_public_uuid}
                 />
             </Avatar>
@@ -172,7 +171,7 @@ class Dashboard extends React.Component {
                         </Grid>
 
                         <Grid item xs={6} style={styles.headerButtonWrapper}>
-                            <SwitchKeysMenu history={this.props.history} BunqJSClient={this.props.BunqJSClient} />
+                            <SwitchKeysMenu history={this.props.history} />
 
                             <Tooltip id="tooltip-fab" title={t("Logout")}>
                                 <IconButton
@@ -196,9 +195,9 @@ class Dashboard extends React.Component {
 
                                 {(selectedTab === "accounts" || tabsEnabled === false) && (
                                     <Paper>
-                                        <AccountList BunqJSClient={this.props.BunqJSClient} />
+                                        <AccountList />
 
-                                        <AddMoneyButton user={this.props.user} BunqJSClient={this.props.BunqJSClient} />
+                                        <AddMoneyButton user={this.props.user} />
                                     </Paper>
                                 )}
 
@@ -232,7 +231,6 @@ class Dashboard extends React.Component {
                         <Grid item xs={12} sm={7} md={8}>
                             <Paper>
                                 <CombinedList
-                                    BunqJSClient={this.props.BunqJSClient}
                                     displayRequestPayments={false}
                                     displayAcceptedRequests={true}
                                 />

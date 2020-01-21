@@ -168,12 +168,11 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
     return {
         noteTextsUpdate: (event_type, user_id, account_id, event_id) =>
-            dispatch(noteTextsUpdate(BunqJSClient, event_type, user_id, account_id, event_id)),
+            dispatch(noteTextsUpdate(event_type, user_id, account_id, event_id)),
         notesTextsAddNote: (event_type, user_id, account_id, event_id, content) =>
-            dispatch(notesTextsAddNote(BunqJSClient, event_type, user_id, account_id, event_id, content)),
+            dispatch(notesTextsAddNote(event_type, user_id, account_id, event_id, content)),
         // notesTextsUpdateNote: (
         //     event_type,
         //     user_id,
@@ -184,7 +183,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // ) =>
         //     dispatch(
         //         notesTextsUpdateNote(
-        //             BunqJSClient,
         //             event_type,
         //             user_id,
         //             account_id,
@@ -194,7 +192,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         //         )
         //     ),
         notesTextsDeleteNote: (event_type, user_id, account_id, event_id, note_id) =>
-            dispatch(notesTextsDeleteNote(BunqJSClient, event_type, user_id, account_id, event_id, note_id))
+            dispatch(notesTextsDeleteNote(event_type, user_id, account_id, event_id, note_id))
     };
 };
 

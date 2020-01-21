@@ -545,7 +545,6 @@ class RequestInquiry extends React.Component<any> {
                             value={this.state.selectedAccount}
                             onChange={this.handleChange("selectedAccount")}
                             accounts={this.props.accounts}
-                            BunqJSClient={this.props.BunqJSClient}
                             hiddenConnectTypes={["draftOnly", "showOnly"]}
                         />
 
@@ -590,7 +589,6 @@ class RequestInquiry extends React.Component<any> {
 
                     <SplitAmountForm
                         t={t}
-                        BunqJSClient={this.props.BunqJSClient}
                         account={account}
                         targets={this.state.targets}
                         amount={this.state.amount}
@@ -657,9 +655,9 @@ const mapDispatchToProps = (dispatch, props) => {
     const { BunqJSClient } = props;
     return {
         requestInquirySend: (userId, accountId, requestInquiries) =>
-            dispatch(requestInquirySend(BunqJSClient, userId, accountId, requestInquiries)),
+            dispatch(requestInquirySend(userId, accountId, requestInquiries)),
 
-        requestInquiryUpdate: (userId, accountId) => dispatch(requestInquiriesUpdate(BunqJSClient, userId, accountId)),
+        requestInquiryUpdate: (userId, accountId) => dispatch(requestInquiriesUpdate(userId, accountId)),
 
         openSnackbar: message => dispatch(snackbarActions.open({ message }))
     };

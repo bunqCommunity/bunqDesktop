@@ -1,8 +1,9 @@
 import React from "react";
+import { AppWindow } from "~app";
 import BunqDesktopClient from "~components/BunqDesktopClient";
 import Logger from "~functions/Logger";
 
-declare let window: Window & { BunqDesktopClient: BunqDesktopClient; t: Function };
+declare let window: AppWindow;
 
 class AttachmentImage extends React.PureComponent<any> {
     state: any;
@@ -113,7 +114,7 @@ class AttachmentImage extends React.PureComponent<any> {
 
     render() {
         // exclude custom props
-        const { BunqJSClient, imageUUID, defaultImage, ...props } = this.props;
+        const { imageUUID, defaultImage, ...props } = this.props;
 
         const defaultSizes = {
             width: "auto",

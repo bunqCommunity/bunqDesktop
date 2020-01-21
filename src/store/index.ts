@@ -1,5 +1,5 @@
-import { configureStore, getDefaultMiddleware, Slice, ThunkAction } from "@reduxjs/toolkit";
-import { AnyAction, combineReducers, Dispatch } from "redux";
+import { configureStore, getDefaultMiddleware, ThunkAction } from "@reduxjs/toolkit";
+import { AnyAction, Dispatch } from "redux";
 import createSagaMiddleware from "redux-saga";
 import { reduxBatch } from "@manaflair/redux-batch";
 
@@ -8,6 +8,7 @@ import accounts from "./accounts";
 import application from "./application";
 import amountFilter from "./amountFilter";
 import bunqMeTab from "./bunqMeTab";
+import bunqMeTabFilter from "./bunqMeTabFilter";
 import bunqMeTabs from "./bunqMeTabs";
 import cardCvc2 from "./cardCvc2";
 import cardIdFilter from "./cardIdFilter";
@@ -54,14 +55,13 @@ import sidebar from "~reducers/sidebar";
 import user from "~reducers/user";
 import users from "~reducers/users";
 
-const slices: {
-    [key: string]: Slice;
-} = {
+const slices = {
     accountIdFilter,
     accounts,
     application,
     amountFilter,
     bunqMeTab,
+    bunqMeTabFilter,
     bunqMeTabs,
     cardCvc2,
     cardIdFilter,
@@ -82,6 +82,7 @@ const reducer = {
     application: application.reducer,
     amountFilter: amountFilter.reducer,
     bunqMeTab: bunqMeTab.reducer,
+    bunqMeTabFilter: bunqMeTabFilter.reducer,
     bunqMeTabs: bunqMeTabs.reducer,
     cardCvc2: cardCvc2.reducer,
     cardIdFilter: cardIdFilter.reducer,

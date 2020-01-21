@@ -3,7 +3,6 @@ import { shareInviteMonetaryAccountInquiriesInfoUpdate } from "./share_invite_mo
 import { actions as snackbarActions } from "~store/snackbar";
 
 export function shareInviteMonetaryAccountInquirySend(
-    BunqJSClient,
     userId,
     accountId,
     counterparty,
@@ -26,7 +25,7 @@ export function shareInviteMonetaryAccountInquirySend(
                 dispatch(snackbarActions.open({ message: successMessage }));
 
                 // update the payments, accounts and share list
-                dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(BunqJSClient, userId, accountId));
+                dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(userId, accountId));
                 dispatch(shareInviteMonetaryAccountInquiryNotLoading());
             })
             .catch(error => {
@@ -38,7 +37,6 @@ export function shareInviteMonetaryAccountInquirySend(
 }
 
 export function shareInviteMonetaryAccountInquiryChangeStatus(
-    BunqJSClient,
     userId,
     accountId,
     shareInviteMonetaryAccountInquiryId,
@@ -46,17 +44,18 @@ export function shareInviteMonetaryAccountInquiryChangeStatus(
 ) {
     const failedMessage = window.t("We received the following error while updating your connect request");
     const successMessage = window.t("Connect request was updated successfully!");
+    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
     return dispatch => {
         dispatch(shareInviteMonetaryAccountInquiryLoading());
 
         BunqJSClient.api.shareInviteMonetaryAccountInquiry
             .putStatus(userId, accountId, shareInviteMonetaryAccountInquiryId, status)
-            .then(result => {
-                dispatch(openSnackbar(successMessage));
+            .then(() => {
+                dispatch(snackbarActions.open({ message: successMessage }));
 
                 // update the payments, accounts and share list
-                dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(BunqJSClient, userId, accountId));
+                dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(userId, accountId));
                 dispatch(shareInviteMonetaryAccountInquiryNotLoading());
             })
             .catch(error => {

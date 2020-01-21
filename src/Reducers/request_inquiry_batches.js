@@ -33,19 +33,13 @@ export default (state = defaultState, action) => {
             // limit payments to 1000 in total
             const mergedRequestBatches = mergedInfo.items.slice(0, 1000);
 
-            // store the data if we have access to the bunqjsclient
-            if (action.payload.BunqJSClient) {
-                const BunqDesktopClient = window.BunqDesktopClient;
-                BunqDesktopClient.storeEncrypt(
-                    {
-                        items: mergedRequestBatches,
-                        account_id: action.payload.account_id
-                    },
-                    STORED_REQUEST_INQUIRY_BATCHES
-                )
-                    .then(() => {})
-                    .catch(() => {});
-            }
+            window.BunqDesktopClient.storeEncrypt(
+                {
+                    items: mergedRequestBatches,
+                    account_id: action.payload.account_id
+                },
+                STORED_REQUEST_INQUIRY_BATCHES
+            ).then();
 
             // update newer and older id for this monetary account
             const newerIds = {
