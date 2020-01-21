@@ -226,7 +226,6 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = (dispatch, props) => {
-    const { BunqJSClient } = props;
     return {
         bunqMeTabSend: (userId, accountId, description, amount, options) =>
             dispatch(bunqMeTabSend(userId, accountId, description, amount, options)),

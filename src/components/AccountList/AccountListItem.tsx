@@ -191,7 +191,6 @@ const mapStateToProps = (state: ReduxState) => {
 };
 
 const mapDispatchToProps = (dispatch: AppDispatch, ownProps: IProps) => {
-    const { BunqJSClient } = ownProps;
     return {
         selectAccount: accountId => dispatch(accountsActions.selectAccount(accountId)),
 

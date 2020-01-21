@@ -349,11 +349,14 @@ const mapStateToProps = (state: ReduxState) => {
 };
 
 const mapDispatchToProps = (dispatch: AppDispatch, ownProps: IProps) => {
-    const { BunqJSClient } = ownProps;
     return {
         openSnackbar: (message, duration = 4000) => dispatch(openSnackbar({ message, duration })),
         openModal: (message, title) => dispatch(openModal(message, title)),
-        BunqErrorHandler: (error, customError = false) => BunqErrorHandler(dispatch, error, customError),
+        BunqErrorHandler: (error, customError = false) => {
+            const actions = [];
+            BunqErrorHandler(actions, error, customError);
+            dispatch(actions);
+        },
 
         // options
         setAutomaticThemeChange: automaticThemeChange => dispatch(setAutomaticThemeChange(automaticThemeChange)),

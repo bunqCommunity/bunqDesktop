@@ -340,8 +340,7 @@ const mapStateToProps = (state: ReduxState) => {
     };
 };
 
-const mapDispatchToProps = (dispatch: AppDispatch, ownProps: IProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         paymentsUpdate: (userId, accountId) => dispatch(paymentInfoUpdate(userId, accountId)),
         requestInquiriesUpdate: (userId, accountId) =>

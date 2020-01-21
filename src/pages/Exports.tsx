@@ -30,6 +30,7 @@ import FolderIcon from "@material-ui/icons/Folder";
 import RefreshIcon from "@material-ui/icons/Refresh";
 
 import { shell } from "electron";
+import { AppWindow } from "~app";
 const remote = require("electron").remote;
 const app = remote ? remote.app : {};
 import fs from "~importwrappers/fs";
@@ -50,6 +51,8 @@ import { exportNew } from "~store/exportNew/thunks";
 import { exportInfoUpdate } from "~store/exports/thunks";
 import { AppDispatch, ReduxState } from "~store/index";
 import { actions as snackbarActions } from "~store/snackbar";
+
+declare let window: AppWindow;
 
 const escapeCsv = val => `"${val.replace('"', '"""')}"`;
 
@@ -76,6 +79,7 @@ interface IState {
 }
 
 interface IProps {
+    t: AppWindow["t"];
 }
 
 class Exports extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {

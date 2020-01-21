@@ -840,7 +840,6 @@ const mapStateToProps = (state: ReduxState) => {
 };
 
 const mapDispatchToProps = (dispatch: AppDispatch, ownProps: IProps) => {
-    const { BunqJSClient } = ownProps;
     return {
         openSnackbar: (message, duration = 4000) => dispatch(snackbarActions.open({ message, duration })),
 
@@ -851,7 +850,7 @@ const mapDispatchToProps = (dispatch: AppDispatch, ownProps: IProps) => {
         queueFinishedSync: () => dispatch(queueFinishedSync()),
         queueResetSyncState: () => dispatch(queueResetSyncState()),
 
-        paymentsSetInfo: (payments, accountId) => dispatch(paymentsSetInfo(payments, accountId, false, BunqJSClient)),
+        paymentsSetInfo: (payments, accountId) => dispatch(paymentsSetInfo(payments, accountId, false)),
         bunqMeTabsSetInfo: (bunqMeTabs, accountId) =>
             dispatch(bunqMeTabsActions.setInfo({
                 bunqMeTabs,
@@ -859,17 +858,17 @@ const mapDispatchToProps = (dispatch: AppDispatch, ownProps: IProps) => {
                 resetOldItems: false,
             })),
         masterCardActionsSetInfo: (masterCardActions, accountId) =>
-            dispatch(masterCardActionsSetInfo(masterCardActions, accountId, false, BunqJSClient)),
+            dispatch(masterCardActionsSetInfo(masterCardActions, accountId, false)),
         requestInquiriesSetInfo: (requestInquiries, accountId) =>
-            dispatch(requestInquiriesSetInfo(requestInquiries, accountId, false, BunqJSClient)),
+            dispatch(requestInquiriesSetInfo(requestInquiries, accountId, false)),
         requestInquiryBatchesSetInfo: (requestInquiryBatches, accountId) =>
-            dispatch(requestInquiryBatchesSetInfo(requestInquiryBatches, accountId, false, BunqJSClient)),
+            dispatch(requestInquiryBatchesSetInfo(requestInquiryBatches, accountId, false)),
         requestResponsesSetInfo: (requestResponses, accountId) =>
-            dispatch(requestResponsesSetInfo(requestResponses, accountId, false, BunqJSClient)),
+            dispatch(requestResponsesSetInfo(requestResponses, accountId, false)),
         shareInviteBankInquiriesSetInfo: (shareInviteBankInquiries, accountId) =>
-            dispatch(shareInviteBankInquiriesSetInfo(shareInviteBankInquiries, accountId, BunqJSClient)),
+            dispatch(shareInviteBankInquiriesSetInfo(shareInviteBankInquiries, accountId)),
         shareInviteMonetaryAccountResponsesSetInfo: shareInviteMonetaryAccountResponses =>
-            dispatch(shareInviteMonetaryAccountResponsesSetInfo(shareInviteMonetaryAccountResponses, BunqJSClient))
+            dispatch(shareInviteMonetaryAccountResponsesSetInfo(shareInviteMonetaryAccountResponses))
     };
 };
 
