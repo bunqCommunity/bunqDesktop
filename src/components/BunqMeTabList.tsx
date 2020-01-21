@@ -13,6 +13,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Visible from "@material-ui/icons/Visibility";
 import VisibleOff from "@material-ui/icons/VisibilityOff";
 import UrlIcon from "@material-ui/icons/Link";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import BunqMeTabListItem from "./ListItems/BunqMeTabListItem";
 
@@ -29,12 +30,18 @@ const styles: any = {
     }
 };
 
-class BunqMeTabList extends React.Component<any> {
+interface IState {
+}
+
+interface IProps {
+}
+
+class BunqMeTabList extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
     static defaultProps = {
         secondaryActions: null
     };
 
-    state: any;
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -105,18 +112,18 @@ class BunqMeTabList extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
         limitedPermissions: state.user.limited_permissions,
 
-        bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
-        bunqMeTabLoading: state.bunq_me_tab.loading,
-        bunqMeTabsLoading: state.bunq_me_tabs.loading
+        bunqMeTabs: state.bunqMeTabs.bunq_me_tabs,
+        bunqMeTabLoading: state.bunqMeTab.loading,
+        bunqMeTabsLoading: state.bunqMeTabs.loading
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         openSnackbar: message => dispatch(snackbarActions.open(message)),
         bunqMeTabPut: (userId, accountId, tabId, status) =>

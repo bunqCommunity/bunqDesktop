@@ -126,7 +126,7 @@ class SwitchKeysMenu extends React.Component {
             const secondaryText = `${OAuthText} ${environmentText}`;
 
             return this.state.editMode ? (
-                <ListItem dense>
+                <ListItem dense key={index}>
                     <TextField
                         style={styles.textField}
                         value={storedKeyValues[index] || storedApiKey.device_name}
@@ -136,6 +136,7 @@ class SwitchKeysMenu extends React.Component {
             ) : (
                 <ListItem
                     dense
+                    key={index}
                     button
                     onClick={this.selectApiKey(index)}
                     disabled={storedApiKey.identifier !== derivedPasswordIdentifier}

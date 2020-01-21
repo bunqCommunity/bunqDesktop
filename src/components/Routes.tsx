@@ -174,11 +174,12 @@ export default class Routes extends React.Component {
     }
 
     render() {
-        const privateRouteComponents = privateRoutes.map(route => {
+        const privateRouteComponents = privateRoutes.map((route, idx) => {
             const { component, ...props } = route;
             const Component = route.component;
             return (
                 <PrivateRoute
+                    key={idx}
                     apiKey={this.props.apiKey}
                     userType={this.props.userType}
                     derivedPassword={this.props.derivedPassword}
@@ -187,17 +188,18 @@ export default class Routes extends React.Component {
                 />
             );
         });
-        const stantardRouteComponents = standardRoutes.map(route => {
+        const stantardRouteComponents = standardRoutes.map((route, idx) => {
             const { component, ...props } = route;
             const Component = route.component;
-            return <Route render={props => <Component {...props} {...this.props.childProps} />} {...props} />;
+            return <Route key={idx} render={props => <Component {...props} {...this.props.childProps} />} {...props} />;
         });
 
-        const publicRouteComponents = publicRoutes.map(route => {
+        const publicRouteComponents = publicRoutes.map((route, idx) => {
             const { component, ...props } = route;
             const Component = route.component;
             return (
                 <PublicRoute
+                    key={idx}
                     derivedPassword={this.props.derivedPassword}
                     render={props => <Component {...props} {...this.props.childProps} />}
                     {...props}
