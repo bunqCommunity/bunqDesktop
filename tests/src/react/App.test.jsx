@@ -3,7 +3,7 @@ import React from "react";
 import enzyme from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 
-import App from "../../../src/react/App";
+import App from "~components/App";
 
 describe("<App />", () => {
     let shallow;
