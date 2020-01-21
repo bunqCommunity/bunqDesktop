@@ -133,6 +133,7 @@ class Disclaimer extends React.Component<ReturnType<typeof mapStateToProps> & Re
 
 const mapStateToProps = (state: ReduxState) => {
     return {
+        // @ts-ignore
         analyticsEnabled: state.options.analytics_enabled
     };
 };
