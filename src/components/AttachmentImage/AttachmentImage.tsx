@@ -70,6 +70,7 @@ class AttachmentImage extends React.PureComponent<any> {
 
     loadImage = async () => {
         const indexedDb = window.BunqDesktopClient.ImageIndexedDb;
+        const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
         const storageKey = `image_${this.props.imageUUID}`;
         const base64UrlStored = await indexedDb.get(storageKey);
@@ -85,7 +86,7 @@ class AttachmentImage extends React.PureComponent<any> {
 
             try {
                 // get raw image contents
-                const base64Url = await this.props.BunqJSClient.api.attachmentContent.get(this.props.imageUUID);
+                const base64Url = await BunqJSClient.api.attachmentContent.get(this.props.imageUUID);
 
                 // set the url first
                 if (this._isMounted) {

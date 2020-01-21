@@ -63,9 +63,10 @@ class ScheduledPayments extends React.Component<any> {
         this.props.scheduledPaymentsInfoUpdate(userId, accountId);
     };
     deleteScheduledPayment = scheduledPaymentInfo => event => {
+        const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
         if (this.state.deleteLoading === false) {
             this.setState({ deleteLoading: true });
-            this.props.BunqJSClient.api.schedulePayment
+            BunqJSClient.api.schedulePayment
                 .delete(this.props.user.id, this.props.accountsAccountId, scheduledPaymentInfo.id)
                 .then(result => {
                     this.updateScheduledPayments();
@@ -74,7 +75,7 @@ class ScheduledPayments extends React.Component<any> {
                 .catch(err => {
                     if (err.response && err.response.status === 404) {
                         // likely a batch payment
-                        this.props.BunqJSClient.api.schedulePaymentBatch
+                        BunqJSClient.api.schedulePaymentBatch
                             .delete(this.props.user.id, this.props.accountsAccountId, scheduledPaymentInfo.id)
                             .then(result => {
                                 this.updateScheduledPayments();

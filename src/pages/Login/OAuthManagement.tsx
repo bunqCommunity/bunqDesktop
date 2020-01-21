@@ -112,9 +112,10 @@ class OAuthManagement extends React.Component<any> {
      * @param event
      */
     openBunqConsentScreen = event => {
+        const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
         const sandboxMode = this.props.sandboxMode;
 
-        const targetUrl = this.props.BunqJSClient.formatOAuthAuthorizationRequestUrl(
+        const targetUrl = BunqJSClient.formatOAuthAuthorizationRequestUrl(
             sandboxMode ? this.props.sandboxClientId : this.props.clientId,
             "http://localhost:1234",
             false,
@@ -137,6 +138,7 @@ class OAuthManagement extends React.Component<any> {
      * @param code
      */
     exchangeBunqOAuthToken = code => {
+        const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
         const { sandboxMode, clientId, clientSecret, sandboxClientId, sandboxClientSecret } = this.props;
 
         const requestClientId = sandboxMode ? sandboxClientId : clientId;
@@ -154,7 +156,7 @@ class OAuthManagement extends React.Component<any> {
             Logger.debug(`clientSecret: ${requestClientSecret.substring(0, 8)}`);
             Logger.debug(`code: ${code.substring(0, 8)}`);
         } catch (ex) {}
-        this.props.BunqJSClient.exchangeOAuthToken(
+        BunqJSClient.exchangeOAuthToken(
             requestClientId,
             requestClientSecret,
             "http://localhost:1234",

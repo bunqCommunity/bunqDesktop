@@ -230,6 +230,7 @@ class Exports extends React.Component<any> {
     };
 
     loadExportContent = exportInfo => event => {
+        const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
         if (!this.state.exportContentLoading) {
             this.setState({ exportContentLoading: true });
 
@@ -249,7 +250,7 @@ class Exports extends React.Component<any> {
 
             const failedMessage = this.props.t("We failed to load the export content for this monetary account");
 
-            this.props.BunqJSClient.api.customerStatementExportContent
+            BunqJSClient.api.customerStatementExportContent
                 .list(this.props.user.id, this.props.selectedAccountId, exportInfo.id)
                 .then(exportContent => {
                     // create a new file reader

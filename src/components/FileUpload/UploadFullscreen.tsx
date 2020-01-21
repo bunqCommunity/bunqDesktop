@@ -71,6 +71,7 @@ class UploadFullscreen extends React.Component<ReturnType<typeof mapStateToProps
     };
 
     startUpload = () => {
+        const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
         const file = this.state.file;
 
         // close the fullscreen page on upload
@@ -92,7 +93,7 @@ class UploadFullscreen extends React.Component<ReturnType<typeof mapStateToProps
             // transform array buffer into regular buffer
             const fileBuffer = Buffer.from(fileArrayBuffer);
 
-            this.props.BunqJSClient.api.attachmentPublic
+            BunqJSClient.api.attachmentPublic
                 .post(fileBuffer, file.type)
                 .then(response => {
                     this.props.onComplete(response);
