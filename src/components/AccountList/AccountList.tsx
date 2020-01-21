@@ -92,7 +92,7 @@ class AccountList extends React.Component<ReturnType<typeof mapStateToProps> & R
                     balance: formatMoney(account.balance.value)
                 };
 
-                if (account.balance) {
+                if (account?.balance?.value) {
                     if (excludedAccountIds) {
                         const isExcluded = excludedAccountIds.some(
                             excludedAccountId => account.id === excludedAccountId

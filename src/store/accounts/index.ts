@@ -81,7 +81,7 @@ const slice = createSlice({
                     .map((account) => {
                         return {
                             description: account.description,
-                            balance: formatMoney((new MonetaryAccount(account)).getBalance())
+                            balance: formatMoney(account.balance.value)
                         };
                     })
             );
