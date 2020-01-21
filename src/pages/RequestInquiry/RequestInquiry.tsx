@@ -19,6 +19,7 @@ import TargetSelection from "~components/FormFields/TargetSelection";
 import MoneyFormatInput from "~components/FormFields/MoneyFormatInput";
 import RedirectUrl from "~components/FormFields/RedirectUrl";
 import TranslateButton from "~components/TranslationHelpers/Button";
+import { AppDispatch, ReduxState } from "~store/index";
 import ConfirmationDialog from "./ConfirmationDialog";
 
 import SplitAmountForm from "./SplitAmountForm";
@@ -50,8 +51,14 @@ const styles = {
     titleGrid: { display: "flex", alignItems: "center" }
 };
 
-class RequestInquiry extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class RequestInquiry extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -639,7 +646,7 @@ class RequestInquiry extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         requestInquiryLoading: state.request_inquiry.loading,
 
@@ -651,8 +658,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, props) => {
-    const { BunqJSClient } = props;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         requestInquirySend: (userId, accountId, requestInquiries) =>
             dispatch(requestInquirySend(userId, accountId, requestInquiries)),

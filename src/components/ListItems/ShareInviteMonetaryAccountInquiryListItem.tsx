@@ -7,6 +7,7 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Avatar from "@material-ui/core/Avatar";
 import Divider from "@material-ui/core/Divider";
 import Collapse from "@material-ui/core/Collapse";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 import TranslateButton from "../TranslationHelpers/Button";
@@ -29,7 +30,15 @@ const styles = {
     }
 };
 
-class ShareInviteMonetaryAccountInquiryListItem extends React.Component {
+interface IState {
+}
+
+interface IProps {
+}
+
+class ShareInviteMonetaryAccountInquiryListItem extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -138,15 +147,14 @@ ShareInviteMonetaryAccountInquiryListItem.defaultProps = {
     minimalDisplay: false
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
-        accountsSelectedId: state.accounts.selected_account
+        accountsSelectedId: state.accounts.selectedAccount
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         shareInviteMonetaryAccountInquiriesInfoUpdate: userId =>
             dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(userId))

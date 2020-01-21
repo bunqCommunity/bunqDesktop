@@ -12,7 +12,7 @@ import { AppDispatch, ReduxState } from "~store/index";
 
 interface IProps {
     style: CSSProperties;
-    t: AppWindow['t'];
+    t: AppWindow["t"];
 }
 
 interface IState {

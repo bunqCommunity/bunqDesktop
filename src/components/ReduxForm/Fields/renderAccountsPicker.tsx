@@ -3,10 +3,14 @@ import { connect } from "react-redux";
 import { translate } from "react-i18next";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
+import { ReduxState } from "~store/index";
 
 import AccountListItemChip from "../../AccountList/AccountListItemChip";
 
-const renderAccountsPicker = ({ t, i18n, tReady, input, label, meta: { error }, accounts, ...otherProps }) => {
+interface IProps {
+}
+
+const renderAccountsPicker = ({ t, i18n, tReady, input, label, meta: { error }, accounts, ...otherProps }: ReturnType<typeof mapStateToProps> & IProps) => {
     const inputValue = input.value;
     const inputOnChange = input.onChange;
 
@@ -73,7 +77,7 @@ const renderAccountsPicker = ({ t, i18n, tReady, input, label, meta: { error }, 
     );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         accounts: state.accounts.accounts
     };

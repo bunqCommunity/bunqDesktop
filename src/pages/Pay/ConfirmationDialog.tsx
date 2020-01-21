@@ -13,10 +13,19 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
 import { formatMoney } from "~functions/Utils";
+import { ReduxState } from "~store/index";
 
 const styles = {};
 
-class ConfirmationDialog extends React.Component {
+interface IState {
+}
+
+interface IProps {
+}
+
+class ConfirmationDialog extends React.Component<ReturnType<typeof mapStateToProps> & IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {};
@@ -107,7 +116,7 @@ class ConfirmationDialog extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         accounts: state.accounts.accounts
     };

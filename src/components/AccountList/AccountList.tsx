@@ -52,7 +52,7 @@ interface IState {
 }
 
 interface IProps {
-    t: AppWindow['t'];
+    t: AppWindow["t"];
     BunqJSClient: BunqJSClient;
 }
 

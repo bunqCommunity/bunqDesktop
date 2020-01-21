@@ -6,6 +6,7 @@ import List from "@material-ui/core/List";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import TranslateButton from "../TranslationHelpers/Button";
 import NoteTextItem from "./NoteTextItem";
@@ -30,7 +31,15 @@ const styles = {
     }
 };
 
-class NoteTextForm extends React.Component {
+interface IState {
+}
+
+interface IProps {
+}
+
+class NoteTextForm extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -157,7 +166,7 @@ class NoteTextForm extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
 
@@ -167,7 +176,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         noteTextsUpdate: (event_type, user_id, account_id, event_id) =>
             dispatch(noteTextsUpdate(event_type, user_id, account_id, event_id)),

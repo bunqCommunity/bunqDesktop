@@ -1,13 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { ReduxState } from "~store/index";
 
 import SavingsGoalListItem from "./SavingsGoalListItem";
 import SavingsGoalSmallListItem from "./SavingsGoalSmallListItem";
 
 import SavingsGoal from "~models/SavingsGoal";
 
-const SavingsGoalListItemWrapper = props => {
+interface IProps {
+}
+
+const SavingsGoalListItemWrapper = (props: ReturnType<typeof mapStateToProps> & IProps) => {
     const {
         t,
         type,
@@ -55,7 +59,7 @@ SavingsGoalListItemWrapper.propTypes = {
     savingsGoal: PropTypes.instanceOf(SavingsGoal)
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         accounts: state.accounts.accounts,
 

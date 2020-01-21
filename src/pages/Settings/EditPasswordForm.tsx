@@ -8,6 +8,7 @@ import TranslateTypography from "~components/TranslationHelpers/Typography";
 import TranslateButton from "~components/TranslationHelpers/Button";
 
 import { registrationChangePassword } from "~actions/registration";
+import { AppDispatch, ReduxState } from "~store/index";
 
 const styles = {
     textField: {
@@ -19,7 +20,15 @@ const styles = {
     }
 };
 
-class EditPasswordForm extends React.Component {
+interface IState {
+}
+
+interface IProps {
+}
+
+class EditPasswordForm extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -80,13 +89,13 @@ class EditPasswordForm extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         registrationReady: state.registration.ready
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         registrationChangePassword: newPassword => dispatch(registrationChangePassword(newPassword))
     };

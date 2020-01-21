@@ -14,6 +14,7 @@ import TranslateTypography from "~components/TranslationHelpers/Typography";
 import TranslateButton from "~components/TranslationHelpers/Button";
 
 import { actions as categoriesActions } from "~store/categories";
+import { AppDispatch, ReduxState } from "~store/index";
 import { actions as snackbarActions } from "~store/snackbar";
 
 const styles: any = {
@@ -28,8 +29,14 @@ const styles: any = {
     }
 };
 
-class CategoryDashboard extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class CategoryDashboard extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -219,7 +226,7 @@ class CategoryDashboard extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         categories: state.categories.categories,
         categories_last_udate: state.categories.last_update,
@@ -227,7 +234,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         openSnackbar: message => dispatch(snackbarActions.open({ message })),
         removeCategory: (...params) => dispatch(categoriesActions.removeCategory(...params)),

@@ -11,6 +11,7 @@ import TranslateTypography from "~components/TranslationHelpers/Typography";
 import TranslateButton from "~components/TranslationHelpers/Button";
 import MoneyFormatInput from "~components/FormFields/MoneyFormatInput";
 import { calculateTotalBalance } from "~components/SavingsGoals/Helpers";
+import { ReduxState } from "~store/index";
 
 const formSelector = formValueSelector("savingsGoal");
 
@@ -37,6 +38,9 @@ const handleChangeFormatted = onChange => valueObject => {
     onChange(onChangeValue);
 };
 
+interface IProps {
+}
+
 const renderTextField = ({
     t,
     i18n,
@@ -51,7 +55,7 @@ const renderTextField = ({
     formStyle = {},
     meta: { touched, error },
     ...custom
-}) => {
+}: ReturnType<typeof mapStateToProps> & IProps) => {
     const { onChange, onBlur, onFocus, onDrop, ...restInputProps } = input;
 
     const errorStyle = { color: error ? "#ec2616" : "" };
@@ -96,7 +100,7 @@ const renderTextField = ({
     );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         accountIds: formSelector(state, "account_ids"),
         accounts: state.accounts.accounts,

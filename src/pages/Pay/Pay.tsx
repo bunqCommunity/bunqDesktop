@@ -26,6 +26,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import EventIcon from "@material-ui/icons/Event";
 import ListIcon from "@material-ui/icons/List";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import ConfirmationDialog from "./ConfirmationDialog";
 import AccountSelectorDialog from "~components/FormFields/AccountSelectorDialog";
@@ -72,8 +73,14 @@ const styles = {
     }
 };
 
-class Pay extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class Pay extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -863,12 +870,12 @@ class Pay extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         payLoading: state.pay.loading,
 
         accounts: state.accounts.accounts,
-        selectedAccount: state.accounts.selected_account,
+        selectedAccount: state.accounts.selectedAccount,
 
         language: state.options.language,
 
@@ -882,8 +889,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, props) => {
-    const { BunqJSClient } = props;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         paySend: (userId, accountId, description, amount, targets, draft = false) =>
             dispatch(paySend(userId, accountId, description, amount, targets, draft)),

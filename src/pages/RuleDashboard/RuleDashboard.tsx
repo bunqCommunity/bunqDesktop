@@ -7,11 +7,13 @@ import Divider from "@material-ui/core/Divider";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
+import { AppWindow } from "~app";
 
 import FileUploadIcon from "~components/CustomSVG/FileUpload";
 import FileDownloadIcon from "~components/CustomSVG/FileDownload";
 import AddIcon from "@material-ui/icons/Add";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import RuleCollectionItem from "./RuleCollectionItem";
 import NavLink from "~components/Routing/NavLink";
@@ -22,9 +24,6 @@ import RuleCollection from "~types/RuleCollection";
 
 import { actions as snackbarActions } from "~store/snackbar";
 import { actions as categoryRulesActions } from "~store/categoryRules";
-import { actions as categoriesActions } from "~store/categories";
-
-import Bookmark from "@material-ui/icons/Bookmark";
 
 const styles = {
     paper: {
@@ -38,8 +37,15 @@ const styles = {
     }
 };
 
-class RuleDashboard extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+    t: AppWindow["t"];
+}
+
+class RuleDashboard extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -199,14 +205,14 @@ class RuleDashboard extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         categories: state.categories.categories,
-        categoryRules: state.category_rules.category_rules
+        categoryRules: state.categoryRules.category_rules
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         openSnackbar: message => dispatch(snackbarActions.open({ message })),
         setCategoryRule: rule_collection => dispatch(categoryRulesActions.setRule(rule_collection))

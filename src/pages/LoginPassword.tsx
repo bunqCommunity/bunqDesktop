@@ -21,6 +21,7 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import TranslateButton from "~components/TranslationHelpers/Button";
 
 import { registrationLogOut, registrationSetPassword, registrationSkipPassword } from "~actions/registration";
+import { AppDispatch, ReduxState } from "~store/index";
 
 const styles = {
     wrapperContainer: {
@@ -69,7 +70,15 @@ const styles = {
     }
 };
 
-class LoginPassword extends React.Component {
+interface IState {
+}
+
+interface IProps {
+}
+
+class LoginPassword extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -386,7 +395,7 @@ class LoginPassword extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         statusMessage: state.application.status_message,
 
@@ -403,7 +412,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         // use no password
         useNoPasswordLogin: () => dispatch(registrationSkipPassword()),

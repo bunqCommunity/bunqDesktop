@@ -19,6 +19,7 @@ import ImportDialog from "~components/ImportDialog";
 import SavingsGoal from "~models/SavingsGoal";
 
 import { setSavingsGoal } from "~actions/savings_goals";
+import { AppDispatch, ReduxState } from "~store/index";
 import { actions as snackbarActions } from "~store/snackbar";
 
 const styles = {
@@ -33,8 +34,14 @@ const styles = {
     }
 };
 
-class SavingsGoals extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class SavingsGoals extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -147,13 +154,13 @@ class SavingsGoals extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         savingsGoals: state.savings_goals.savings_goals
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         openSnackbar: message => dispatch(snackbarActions.open({ message })),
         setSavingsGoal: rule_collection => dispatch(setSavingsGoal(rule_collection))

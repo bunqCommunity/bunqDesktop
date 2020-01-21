@@ -16,6 +16,7 @@ import SchedulePaymentForm from "~components/FormFields/SchedulePaymentForm";
 import AttachmentImage from "~components/AttachmentImage/AttachmentImage";
 
 import { scheduledPaymentUpdate } from "~actions/scheduled_payments";
+import { AppDispatch, ReduxState } from "~store/index";
 
 const styles = {
     textField: {
@@ -31,7 +32,15 @@ const styles = {
     }
 };
 
-class ScheduledPaymentsEditDialog extends React.Component {
+interface IState {
+}
+
+interface IProps {
+}
+
+class ScheduledPaymentsEditDialog extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -239,19 +248,18 @@ class ScheduledPaymentsEditDialog extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
         limitedPermissions: state.user.limited_permissions,
 
         scheduledPaymentsLoading: state.scheduled_payments.loading,
         scheduledPayments: state.scheduled_payments.scheduled_payments,
-        selectedAccount: state.accounts.selected_account
+        selectedAccount: state.accounts.selectedAccount
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         scheduledPaymentUpdate: (...params) => dispatch(scheduledPaymentUpdate(...params))
     };

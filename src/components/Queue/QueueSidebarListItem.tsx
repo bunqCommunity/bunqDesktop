@@ -8,6 +8,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import SyncIcon from "@material-ui/icons/Sync";
 
 import { queueStartSync } from "~actions/queue";
+import { AppDispatch, ReduxState } from "~store/index";
 
 const styles = {
     listItemText: {
@@ -15,8 +16,14 @@ const styles = {
     }
 };
 
-class QueueSidebarListItem extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class QueueSidebarListItem extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
     updateDelay: null | number;
 
     constructor(props, context) {
@@ -102,7 +109,7 @@ class QueueSidebarListItem extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         queueMaxRequestCounter: state.queue.max_request_counter,
         queueRequestCounter: state.queue.request_counter,
@@ -111,7 +118,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         queueStartSync: () => dispatch(queueStartSync())
     };

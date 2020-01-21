@@ -13,6 +13,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import InvisibleIcon from "@material-ui/icons/VisibilityOff";
 import VisibleIcon from "@material-ui/icons/Visibility";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import ScheduledPaymentItem from "./ScheduledPaymentItem";
 import ScheduledPaymentsEditDialog from "./ScheduledPaymentsEditDialog";
@@ -36,8 +37,14 @@ const styles: any = {
     }
 };
 
-class ScheduledPayments extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class ScheduledPayments extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -181,22 +188,21 @@ class ScheduledPayments extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        user: state.user.user,
-        accountsAccountId: state.accounts.selected_account,
-
-        scheduledPaymentsLoading: state.scheduled_payments.loading,
-        scheduledPayments: state.scheduled_payments.scheduled_payments
-    };
-};
-
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         openSnackbar: message => dispatch(snackbarActions.open({ message })),
         scheduledPaymentsInfoUpdate: (userId, accountId) =>
             dispatch(scheduledPaymentsInfoUpdate(userId, accountId))
+    };
+};
+
+const mapStateToProps = (state: ReduxState) => {
+    return {
+        user: state.user.user,
+        accountsAccountId: state.accounts.selectedAccount,
+
+        scheduledPaymentsLoading: state.scheduled_payments.loading,
+        scheduledPayments: state.scheduled_payments.scheduled_payments
     };
 };
 

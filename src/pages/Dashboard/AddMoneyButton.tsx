@@ -7,8 +7,17 @@ import Typography from "@material-ui/core/Typography";
 import MoneyIcon from "@material-ui/icons/AttachMoney";
 
 import { requestInquirySend } from "~actions/request_inquiry";
+import { AppDispatch, ReduxState } from "~store/index";
 
-class AddMoneyButton extends React.Component {
+interface IState {
+}
+
+interface IProps {
+}
+
+class AddMoneyButton extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
     }
@@ -57,20 +66,19 @@ class AddMoneyButton extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         requestInquiryLoading: state.request_inquiry.loading,
 
         limitedPermissions: state.user.limited_permissions,
 
-        selectedAccount: state.accounts.selected_account,
+        selectedAccount: state.accounts.selectedAccount,
 
         environment: state.registration.environment
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         requestInquirySend: (userId, accountId, requestInquiries) =>
             dispatch(requestInquirySend(userId, accountId, requestInquiries))

@@ -13,6 +13,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import AccountList from "~components/AccountList/AccountList";
 import ClearBtn from "~components/FilterComponents/ClearFilter";
 import FilterDrawer from "~components/FilterComponents/FilterDrawer";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import ChartTitle from "./ChartTitle";
 import EventCountSection from "./EventCountSection";
@@ -31,8 +32,14 @@ const styles: any = {
     }
 };
 
-class Stats extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class Stats extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -400,18 +407,18 @@ class Stats extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
 
         payments: state.payments.payments,
-        bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
+        bunqMeTabs: state.bunqMeTabs.bunq_me_tabs,
         requestInquiries: state.request_inquiries.request_inquiries,
         requestResponses: state.request_responses.request_responses,
         masterCardActions: state.master_card_actions.master_card_actions,
 
         paymentsLoading: state.payments.loading,
-        bunqMeTabsLoading: state.bunq_me_tabs.loading,
+        bunqMeTabsLoading: state.bunqMeTabs.loading,
         requestInquiriesLoading: state.request_inquiries.loading,
         requestResponsesLoading: state.request_responses.loading,
         masterCardActionsLoading: state.master_card_actions.loading,
@@ -422,29 +429,29 @@ const mapStateToProps = state => {
         paymentType: state.payment_filter.type,
         paymentVisibility: state.payment_filter.visible,
 
-        bunqMeTabType: state.bunq_me_tab_filter.type,
-        bunqMeTabVisibility: state.bunq_me_tab_filter.visible,
+        bunqMeTabType: state.bunqMeTabFilter.type,
+        bunqMeTabVisibility: state.bunqMeTabFilter.visible,
 
         requestType: state.request_filter.type,
         requestVisibility: state.request_filter.visible,
 
-        dateFromFilter: state.date_filter.from_date,
-        dateToFilter: state.date_filter.to_date,
+        dateFromFilter: state.dateFilter.from_date,
+        dateToFilter: state.dateFilter.to_date,
         generalFilterDate: state.general_filter.date,
 
-        selectedAccountIds: state.account_id_filter.selected_account_ids,
-        toggleAccountIds: state.account_id_filter.toggle,
-        selectedCategories: state.category_filter.selected_categories,
-        toggleCategoryIds: state.category_filter.toggle,
-        selectedCardIds: state.card_id_filter.selected_card_ids,
-        toggleCardIds: state.card_id_filter.toggle,
+        selectedAccountIds: state.accountIdFilter.selected_account_ids,
+        toggleAccountIds: state.accountIdFilter.toggle,
+        selectedCategories: state.categoryFilter.selected_categories,
+        toggleCategoryIds: state.categoryFilter.toggle,
+        selectedCardIds: state.cardIdFilter.selected_card_ids,
+        toggleCardIds: state.cardIdFilter.toggle,
 
-        amountFilterAmount: state.amount_filter.amount,
-        amountFilterType: state.amount_filter.type
+        amountFilterAmount: state.amountFilter.amount,
+        amountFilterType: state.amountFilter.type
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {};
 };
 

@@ -16,9 +16,11 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Typography from "@material-ui/core/Typography";
 
 import DeleteIcon from "@material-ui/icons/Delete";
+import { AppWindow } from "~app";
 
 import LazyAttachmentImage from "~components/AttachmentImage/LazyAttachmentImage";
 import TranslateTypography from "~components/TranslationHelpers/Typography";
+import { AppDispatch, ReduxState } from "~store/index";
 import ConfirmationDialog from "./ConfirmationDialog";
 import PendingPaymentRow from "./PendingPaymentRow";
 
@@ -31,6 +33,8 @@ import {
     pendingPaymentsRemovePayment
 } from "~actions/pending_payments";
 import { actions as snackbarActions } from "~store/snackbar";
+
+declare let window: AppWindow;
 
 const styles = {
     paper: {
@@ -68,8 +72,14 @@ const styles = {
     }
 };
 
-class PendingPayments extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class PendingPayments extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -251,6 +261,7 @@ class PendingPayments extends React.Component<any> {
     paySelected = () => {
         const { t, user } = this.props;
         const failedText = t("Failed to complete some of the selected payments");
+        const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
         this.confirmAction("Are you sure you wish to complete these payments?", () => {
             const groupedParsedPayments = this.parsePendingPayments();
@@ -276,6 +287,7 @@ class PendingPayments extends React.Component<any> {
     draftSelected = () => {
         const { t, user } = this.props;
         const failedText = t("Failed to draft some of the selected payments");
+        const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
         this.confirmAction("Are you sure you wish to draft these payments?", () => {
             const groupedParsedPayments = this.parsePendingPayments();
@@ -468,7 +480,7 @@ class PendingPayments extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
         accounts: state.accounts.accounts,
@@ -478,11 +490,14 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const BunqJSClient = ownProps.BunqJSClient;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         openSnackbar: message => dispatch(snackbarActions.open({ message })),
-        BunqErrorHandler: (error, message) => BunqErrorHandler(dispatch, error, message, BunqJSClient),
+        BunqErrorHandler: (error, message) => {
+            const actions = [];
+            BunqErrorHandler(actions, error, message);
+            dispatch(actions);
+        },
 
         pendingPaymentsClear: () => dispatch(pendingPaymentsClear()),
         pendingPaymentsClearAccount: accountId => dispatch(pendingPaymentsClearAccount(accountId)),

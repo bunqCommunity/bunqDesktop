@@ -6,6 +6,7 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 
 import ReactJsonWrapper from "~components/ReactJsonWrapper";
+import { ReduxState } from "~store/index";
 
 const styles = {
     paper: {
@@ -13,7 +14,15 @@ const styles = {
     }
 };
 
-class DebugPage extends React.Component {
+interface IState {
+}
+
+interface IProps {
+}
+
+class DebugPage extends React.Component<ReturnType<typeof mapStateToProps> & IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {};
@@ -48,9 +57,9 @@ class DebugPage extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
-        reduxState: state
+        reduxState: state,
     };
 };
 

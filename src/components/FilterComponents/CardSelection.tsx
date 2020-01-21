@@ -20,6 +20,7 @@ import { AppWindow } from "~app";
 import { getCardTypeImage } from "~pages/Cards/CardListItem";
 import { getCardDescription } from "~functions/Utils";
 import { cardsUpdate } from "~store/cards/thunks";
+import { AppDispatch, ReduxState } from "~store/index";
 
 const styles: any = {
     listItem: {
@@ -52,7 +53,7 @@ interface IState {
 }
 
 interface IProps {
-    t: AppWindow['t'];
+    t: AppWindow["t"];
 }
 
 class CardSelection extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
@@ -172,7 +173,7 @@ class CardSelection extends React.Component<ReturnType<typeof mapStateToProps> &
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
 
@@ -184,7 +185,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         addCardIdFilter: cardId => dispatch(addCardIdFilter(cardId)),
         removeCardIdFilter: index => dispatch(removeCardIdFilter(index)),

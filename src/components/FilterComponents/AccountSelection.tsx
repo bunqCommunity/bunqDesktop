@@ -33,7 +33,7 @@ const styles = {
 
 interface IProps {
   BunqJSClient: BunqJSClient;
-  t: AppWindow['t'];
+  t: AppWindow["t"];
 }
 
 interface IState {

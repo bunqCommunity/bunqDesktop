@@ -35,6 +35,7 @@ import NoteTextForm from "~components/NoteTexts/NoteTextForm";
 import { setTheme } from "~actions/options";
 import { paymentsUpdate } from "~actions/payment_info";
 import { actions as applicationActions } from "~store/application";
+import { AppDispatch, ReduxState } from "~store/index";
 
 const styles = {
     btn: {},
@@ -50,8 +51,14 @@ const styles = {
     }
 };
 
-class PaymentInfo extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class PaymentInfo extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -309,7 +316,7 @@ class PaymentInfo extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
 
@@ -322,8 +329,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         applicationSetPDFMode: enabled => dispatch(applicationActions.setPdfMode(enabled)),
 

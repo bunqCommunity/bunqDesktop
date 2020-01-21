@@ -5,6 +5,7 @@ import Chip from "@material-ui/core/Chip";
 import Grid from "@material-ui/core/Grid";
 import Avatar from "@material-ui/core/Avatar";
 import TextField from "@material-ui/core/TextField";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import CustomIcon from "../CustomIcon";
 import IconPicker from "../FormFields/IconPicker";
@@ -48,7 +49,7 @@ export interface IProps {
     t: Function;
 }
 
-class CategoryEditor extends React.Component<IProps> {
+class CategoryEditor extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
     static defaultProps = {
         style: {},
     };
@@ -226,7 +227,7 @@ class CategoryEditor extends React.Component<IProps> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         categories: state.categories.categories,
         categories_last_udate: state.categories.last_update,
@@ -234,7 +235,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         setCategory: (categoryId, label, color, icon, priority) => dispatch(categoriesActions.setCategory({ id: categoryId, label, color, icon, priority })),
     };

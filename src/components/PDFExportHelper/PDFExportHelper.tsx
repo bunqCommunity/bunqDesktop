@@ -5,6 +5,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import bunqTransparantLogo from "./Base64BunqLogo";
 import { formatIban } from "~functions/Utils";
@@ -23,8 +24,14 @@ const styles = {
     }
 };
 
-class PDFExportHelper extends React.PureComponent<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class PDFExportHelper extends React.PureComponent<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -188,7 +195,7 @@ class PDFExportHelper extends React.PureComponent<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         theme: state.options.theme,
 
@@ -196,8 +203,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         openSnackbar: message => dispatch(snackbarActions.open({ message })),
 

@@ -48,6 +48,7 @@ import CategoryHelper from "~components/Categories/CategoryHelper";
 import { paymentFilter, masterCardActionFilter } from "~functions/DataFilters";
 import { exportNew } from "~store/exportNew/thunks";
 import { exportInfoUpdate } from "~store/exports/thunks";
+import { AppDispatch, ReduxState } from "~store/index";
 import { actions as snackbarActions } from "~store/snackbar";
 
 const escapeCsv = val => `"${val.replace('"', '"""')}"`;
@@ -71,8 +72,14 @@ const styles = {
     }
 };
 
-class Exports extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class Exports extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -589,23 +596,23 @@ class Exports extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
         limitedPermissions: state.user.limited_permissions,
-        exportNewLoading: state.export_new.loading,
+        exportNewLoading: state.exportNew.loading,
 
         exports: state.exports.exports,
         exportsLoading: state.exports.loading,
 
-        selectedAccountId: state.accounts.selected_account,
+        selectedAccountId: state.accounts.selectedAccount,
 
         searchTerm: state.search_filter.search_term,
-        dateFromFilter: state.date_filter.from_date,
-        dateToFilter: state.date_filter.to_date,
+        dateFromFilter: state.dateFilter.from_date,
+        dateToFilter: state.dateFilter.to_date,
 
-        selectedAccountIds: state.account_id_filter.selected_account_ids,
-        toggleAccountIds: state.account_id_filter.toggle,
+        selectedAccountIds: state.accountIdFilter.selectedAccountIds,
+        toggleAccountIds: state.accountIdFilter.toggle,
 
         categories: state.categories.categories,
         categoryConnections: state.categories.category_connections,
@@ -617,8 +624,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         openSnackbar: message => dispatch(snackbarActions.open({ message })),
         exportInfoUpdate: (userId, accountId) => dispatch(exportInfoUpdate(userId, accountId)),

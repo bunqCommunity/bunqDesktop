@@ -10,9 +10,16 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 
 import { cardGenerateCvc2, cardUpdateCvc2Codes } from "~store/cardCvc2/thunks";
+import { AppDispatch, ReduxState } from "~store/index";
 
-class CvcCodeListItem extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class CvcCodeListItem extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -67,7 +74,7 @@ class CvcCodeListItem extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
         cvcCodes: state.card_cvc2.cvc2_codes,
@@ -78,7 +85,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         cardUpdateCvc2Codes: (userId, cardId) => dispatch(cardUpdateCvc2Codes(userId, cardId)),
         cardGenerateCvc2: (userId, cardId) => dispatch(cardGenerateCvc2(userId, cardId))

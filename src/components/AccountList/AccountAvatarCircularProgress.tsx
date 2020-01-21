@@ -1,6 +1,7 @@
 import React, { CSSProperties } from "react";
 import { connect } from "react-redux";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { ReduxState } from "~store/index";
 
 const styles = {
     overlayCircular: {
@@ -74,7 +75,7 @@ const AccountAvatarCircularProgress = ({ account, theme, selected = false, style
     );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         theme: state.options.theme,
     };

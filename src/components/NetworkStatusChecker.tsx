@@ -7,8 +7,10 @@ import IconButton from "@material-ui/core/IconButton";
 import Slide from "@material-ui/core/Slide";
 
 import RefreshIcon from "@material-ui/icons/Refresh";
+import { AppWindow } from "~app";
 
 import { actions as applicationActions } from "~store/application";
+import { AppDispatch, ReduxState } from "~store/index";
 
 const Transition = props => <Slide direction={"down"} {...props} />;
 
@@ -18,8 +20,16 @@ const styles: any = {
     }
 };
 
-class NetworkStatusChecker extends React.PureComponent<any> {
-    state: any;
+interface IState {
+    loading: boolean;
+}
+
+interface IProps {
+    t: AppWindow["t"];
+}
+
+class NetworkStatusChecker extends React.PureComponent<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -90,13 +100,13 @@ class NetworkStatusChecker extends React.PureComponent<any> {
     }
 }
 
-const mapStateToProps = store => {
+const mapStateToProps = (state: ReduxState) => {
     return {
-        online: store.application.online
+        online: state.application.online
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         applicationSetOnline: () => dispatch(applicationActions.setOnline()),
         applicationSetOffline: () => dispatch(applicationActions.setOffline())

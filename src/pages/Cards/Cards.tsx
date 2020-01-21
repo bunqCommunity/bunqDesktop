@@ -16,6 +16,7 @@ import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 import DeleteIcon from "@material-ui/icons/Delete";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import CardListItem from "./CardListItem";
 import CvcCodeListItem from "./CvcCodeListItem";
@@ -51,8 +52,14 @@ const styles = {
     }
 };
 
-class Cards extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class Cards extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -435,7 +442,7 @@ class Cards extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
         limitedPermissions: state.user.limited_permissions,
@@ -447,7 +454,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         cardsUpdate: userId => dispatch(cardsUpdate(userId)),
         cardsSetCardOrder: cardOrder => dispatch(cardsActions.setOrder(cardOrder)),

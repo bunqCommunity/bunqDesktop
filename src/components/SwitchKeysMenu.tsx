@@ -14,6 +14,7 @@ import KeyIcon from "@material-ui/icons/VpnKey";
 import RemoveIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import TranslateTypography from "./TranslationHelpers/Typography";
 
@@ -55,7 +56,15 @@ const styles = {
     }
 };
 
-class SwitchKeysMenu extends React.Component {
+interface IState {
+}
+
+interface IProps {
+}
+
+class SwitchKeysMenu extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
+
     constructor(props) {
         super(props);
 
@@ -205,7 +214,7 @@ class SwitchKeysMenu extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         derivedPassword: state.registration.derived_password,
         derivedPasswordIdentifier: state.registration.identifier,
@@ -217,7 +226,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         registrationSwitchKeys: storedKeyIndex => dispatch(registrationSwitchKeys(storedKeyIndex)),
 

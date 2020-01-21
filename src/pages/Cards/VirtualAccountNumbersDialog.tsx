@@ -9,6 +9,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 
 import AccountListItem from "~components/AccountList/AccountListItem";
+import { ReduxState } from "~store/index";
 
 const styles = {
     list: {
@@ -16,7 +17,15 @@ const styles = {
     }
 };
 
-class VirtualAccountNumbersDialog extends React.Component {
+interface IState {
+}
+
+interface IProps {
+}
+
+class VirtualAccountNumbersDialog extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -73,7 +82,7 @@ class VirtualAccountNumbersDialog extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         accounts: state.accounts.accounts
     };

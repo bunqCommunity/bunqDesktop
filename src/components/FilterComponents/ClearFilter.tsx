@@ -14,7 +14,7 @@ interface IState {
 }
 
 interface IProps {
-    t: AppWindow['t'];
+    t: AppWindow["t"];
 }
 
 class ClearFilter extends React.PureComponent<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {

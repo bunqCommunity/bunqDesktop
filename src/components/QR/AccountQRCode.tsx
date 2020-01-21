@@ -1,5 +1,6 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { connect } from "react-redux";
+import { ReduxState } from "~store/index";
 import QRCode from "./QRCode";
 
 const styles = {
@@ -10,7 +11,16 @@ const styles = {
     }
 };
 
-class AccountQRCode extends React.Component {
+interface IState {
+}
+
+interface IProps {
+    style: CSSProperties;
+}
+
+class AccountQRCode extends React.Component<ReturnType<typeof mapStateToProps> & IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {};
@@ -50,10 +60,10 @@ AccountQRCode.defaultProps = {
     size: 195
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         accounts: state.accounts.accounts,
-        selectedAccount: state.accounts.selected_account
+        selectedAccount: state.accounts.selectedAccount
     };
 };
 

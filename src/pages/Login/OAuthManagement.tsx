@@ -17,6 +17,7 @@ import Logger from "~functions/Logger";
 import BunqErrorHandler from "~functions/BunqErrorHandler";
 
 import { oauthSetDetails } from "~actions/oauth";
+import { AppDispatch, ReduxState } from "~store/index";
 import { actions as snackbarActions } from "~store/snackbar";
 
 const styles = {
@@ -65,8 +66,14 @@ const styles = {
     }
 };
 
-class OAuthManagement extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class OAuthManagement extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
     isLoading: boolean;
 
     constructor(props, context) {
@@ -326,7 +333,7 @@ class OAuthManagement extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         clientId: state.oauth.client_id,
         clientSecret: state.oauth.client_secret,
@@ -339,8 +346,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         openSnackbar: message => dispatch(snackbarActions.open({ message })),
 

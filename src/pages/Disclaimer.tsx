@@ -15,11 +15,13 @@ import LockIcon from "@material-ui/icons/Lock";
 import DesktopIcon from "@material-ui/icons/DesktopMac";
 import BuildIcon from "@material-ui/icons/Edit";
 import LiveHelpIcon from "@material-ui/icons/LiveHelp";
+import { AppWindow } from "~app";
 
 import TranslateButton from "~components/TranslationHelpers/Button";
 
 import Analytics from "~functions/Analytics";
 import { setAnalyticsEnabled } from "~actions/options";
+import { AppDispatch, ReduxState } from "~store/index";
 
 const styles = {
     wrapperContainer: {
@@ -31,7 +33,16 @@ const styles = {
     buttons: { marginTop: 16 }
 };
 
-class Disclaimer extends React.Component {
+interface IState {
+}
+
+interface IProps {
+    t: AppWindow["t"];
+}
+
+class Disclaimer extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -120,13 +131,13 @@ class Disclaimer extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         analyticsEnabled: state.options.analytics_enabled
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         setAnalyticsEnabled: enabled => dispatch(setAnalyticsEnabled(enabled))
     };

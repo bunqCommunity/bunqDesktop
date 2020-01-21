@@ -10,6 +10,7 @@ import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import CompareArrowsIcon from "@material-ui/icons/CompareArrows";
 import PersonIcon from "@material-ui/icons/Person";
 import ContactsIcon from "@material-ui/icons/Contacts";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import NavLink from "../Routing/NavLink";
 import InputSuggestions from "./InputSuggestions";
@@ -34,12 +35,18 @@ const styles = {
     }
 };
 
-class TargetSelection extends React.Component<any> {
+interface IState {
+}
+
+interface IProps {
+}
+
+class TargetSelection extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
     static defaultProps = {
         disabledTypes: []
     };
 
-    state: any;
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -290,7 +297,7 @@ class TargetSelection extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         contacts: state.contacts.contacts,
         contactsLoading: state.contacts.loading,
@@ -299,7 +306,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         openSnackbar: message => dispatch(snackbarActions.open({ message }))
     };

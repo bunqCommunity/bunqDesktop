@@ -15,6 +15,7 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { accountsUpdate } from "~store/accounts/thunks";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import BudgetFields from "./BudgetFields";
 import TimeLimitFields from "./TimeLimitFields";
@@ -57,8 +58,14 @@ const styles: any = {
     }
 };
 
-class Connect extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class Connect extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -604,7 +611,7 @@ class Connect extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
         limitedPermissions: state.user.limited_permissions,
@@ -618,14 +625,13 @@ const mapStateToProps = state => {
 
         accounts: state.accounts.accounts,
         accountsLoading: state.accounts.loading,
-        selectedAccountId: state.accounts.selected_account,
+        selectedAccountId: state.accounts.selectedAccount,
 
         shareInviteMonetaryAccountInquiryLoading: state.share_invite_monetary_account_inquiry.loading
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         openSnackbar: message => dispatch(snackbarActions.open({ message })),
 

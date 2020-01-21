@@ -5,16 +5,23 @@ import Helmet from "react-helmet";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import RuleCreator from "./RuleCreator";
-import RuleCollection from "~types/RuleCollection";
+import RuleCollection from "~models/RuleCollection";
 import RuleCollectionPreview from "./RuleCollectionPreview";
 
 import { actions as categoryRulesActions } from "~store/categoryRules";
 import { actions as snackbarActions } from "~store/snackbar";
 
-class RulesPage extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class RulesPage extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -145,7 +152,7 @@ class RulesPage extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         accounts: state.accounts.accounts,
 
@@ -160,13 +167,13 @@ const mapStateToProps = state => {
 
         requestResponses: state.request_responses.request_responses,
         payments: state.payments.payments,
-        bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
+        bunqMeTabs: state.bunqMeTabs.bunq_me_tabs,
         masterCardActions: state.master_card_actions.master_card_actions,
         requestInquiries: state.request_inquiries.request_inquiries
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         openSnackbar: message => dispatch(snackbarActions.open({ message })),
         setCategoryRule: rule_collection => dispatch(categoryRulesActions.setRule(rule_collection)),

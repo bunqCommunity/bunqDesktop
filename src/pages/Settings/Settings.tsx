@@ -26,6 +26,7 @@ import HomeIcon from "@material-ui/icons/Home";
 
 import path from "~importwrappers/path";
 import { getPrettyLanguage } from "~functions/Utils";
+import { AppDispatch, ReduxState } from "~store/index";
 
 const packageInfo = require("../../../../package.json");
 const SUPPORTED_LANGUAGES = packageInfo.supported_languages;
@@ -101,8 +102,14 @@ const humanReadableThemes = {
     DarkTheme: "Dark theme"
 };
 
-class Settings extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class Settings extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -673,7 +680,7 @@ class Settings extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         syncOnStartup: state.options.sync_on_startup,
         theme: state.options.theme,
@@ -690,7 +697,7 @@ const mapStateToProps = state => {
 
         payments: state.payments.payments,
         scheduledPayments: state.scheduled_payments.scheduled_payments,
-        bunqMeTabs: state.bunq_me_tabs.bunq_me_tabs,
+        bunqMeTabs: state.bunqMeTabs.bunq_me_tabs,
         masterCardActions: state.master_card_actions.master_card_actions,
         requestInquiries: state.request_inquiries.request_inquiries,
         requestInquiryBatches: state.request_inquiry_batches.request_inquiry_batches,
@@ -707,8 +714,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         // options and options_drawer handlers
         setSyncOnStartup: syncOnStartup => dispatch(setSyncOnStartup(syncOnStartup)),

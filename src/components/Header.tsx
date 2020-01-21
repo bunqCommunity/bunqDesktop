@@ -5,6 +5,7 @@ import Hidden from "@material-ui/core/Hidden";
 
 import MenuIcon from "@material-ui/icons/Menu";
 import CloseIcon from "@material-ui/icons/Close";
+import { AppDispatch, ReduxState } from "~store/index";
 import RestoreIcon from "./CustomSVG/Restore";
 import MaximizeIcon from "./CustomSVG/Maximize";
 import MinimizeIcon from "./CustomSVG/Minimize";
@@ -71,8 +72,14 @@ const styles: any = {
     }
 };
 
-class Header extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class Header extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     mainWindow: any;
 
@@ -181,7 +188,7 @@ class Header extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         stickyMenu: state.options.sticky_menu,
         nativeFrame: state.options.native_frame,
@@ -193,7 +200,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         // opens the options drawer on the left
         toggleSidebar: () => dispatch(toggleSidebar())

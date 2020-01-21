@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { translate } from "react-i18next";
 import List from "@material-ui/core/List";
 import Grid from "@material-ui/core/Grid";
+import { ReduxState } from "~store/index";
 
 import SavingsGoalListItemWrapper from "./SavingsGoalListItemWrapper";
 
@@ -15,7 +16,10 @@ const styles = {
     }
 };
 
-const SavingsGoalList = props => {
+interface IProps {
+}
+
+const SavingsGoalList = (props: ReturnType<typeof mapStateToProps> & IProps) => {
     const { t, savingsGoals, type, hiddenTypes } = props;
 
     const savingsGoalsList = Object.keys(savingsGoals)
@@ -73,7 +77,7 @@ SavingsGoalList.defaultProps = {
     hiddenTypes: []
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         accounts: state.accounts.accounts,
 

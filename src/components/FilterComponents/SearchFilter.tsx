@@ -14,7 +14,7 @@ interface IState {
 }
 
 interface IProps {
-    t: AppWindow['t'];
+    t: AppWindow["t"];
     style: CSSProperties;
 }
 

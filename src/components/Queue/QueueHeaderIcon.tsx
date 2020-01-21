@@ -7,11 +7,18 @@ import IconButton from "@material-ui/core/IconButton";
 import SyncIcon from "@material-ui/icons/Sync";
 
 import { queueStartSync } from "~actions/queue";
+import { AppDispatch, ReduxState } from "~store/index";
 
 const styles = {};
 
-class QueueHeaderIcon extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class QueueHeaderIcon extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
     updateDelay: null | number;
 
     constructor(props, context) {
@@ -74,7 +81,7 @@ class QueueHeaderIcon extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
 
@@ -84,7 +91,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         queueStartSync: () => dispatch(queueStartSync())
     };

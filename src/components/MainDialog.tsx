@@ -7,6 +7,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
 import Slide from "@material-ui/core/Slide";
+import { AppDispatch, ReduxState } from "~store/index";
 import TranslateButton from "./TranslationHelpers/Button";
 
 const Transition = props => <Slide direction="left" {...props} />;
@@ -14,7 +15,15 @@ const Transition = props => <Slide direction="left" {...props} />;
 // redux actions
 import { closeModal } from "~actions/modal";
 
-class MainDialog extends React.Component {
+interface IState {
+}
+
+interface IProps {
+}
+
+class MainDialog extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {};
@@ -44,15 +53,15 @@ class MainDialog extends React.Component {
     }
 }
 
-const mapStateToProps = store => {
+const mapStateToProps = (state: ReduxState) => {
     return {
-        modalText: store.modal.message,
-        modalTitle: store.modal.title,
-        modalOpen: store.modal.modalOpen
+        modalText: state.modal.message,
+        modalTitle: state.modal.title,
+        modalOpen: state.modal.modalOpen
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         closeModal: () => dispatch(closeModal())
     };

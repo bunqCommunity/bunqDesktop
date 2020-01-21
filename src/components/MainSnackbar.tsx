@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import Snackbar from "@material-ui/core/Snackbar";
 import Slide from "@material-ui/core/Slide";
+import { AppDispatch, ReduxState } from "~store/index";
 
 const Transition = props => <Slide direction={"down"} {...props} />;
 
@@ -14,8 +15,14 @@ const styles: any = {
     }
 };
 
-class MainSnackbar extends React.PureComponent<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class MainSnackbar extends React.PureComponent<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -43,15 +50,15 @@ class MainSnackbar extends React.PureComponent<any> {
     }
 }
 
-const mapStateToProps = store => {
+const mapStateToProps = (state: ReduxState) => {
     return {
-        snackbarMessage: store.snackbar.message,
-        snackbarDuration: store.snackbar.duration,
-        snackbarOpen: store.snackbar.snackbarOpen
+        snackbarMessage: state.snackbar.message,
+        snackbarDuration: state.snackbar.duration,
+        snackbarOpen: state.snackbar.snackbarOpen
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         closeSnackbar: () => dispatch(snackbarActions.close())
     };

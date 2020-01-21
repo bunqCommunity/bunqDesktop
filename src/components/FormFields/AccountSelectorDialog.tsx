@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import { translate } from "react-i18next";
-import PropTypes from "prop-types";
 import Avatar from "@material-ui/core/Avatar";
 import FormControl from "@material-ui/core/FormControl";
 import List from "@material-ui/core/List";
@@ -53,10 +52,10 @@ const AccountItem = ({ account, onClick, hideBalance, shareInviteMonetaryAccount
     return (
         <ListItem button onClick={onClick}>
             <Avatar style={styles.bigAvatar}>
-                <LazyAttachmentImage
+                {account.avatar?.image[0]?.attachment_public_uuid && <LazyAttachmentImage
                     height={50}
                     imageUUID={account.avatar.image[0].attachment_public_uuid}
-                />
+                />}
             </Avatar>
             <ListItemText primary={account.description} secondary={hideBalance ? "" : formattedBalance} />
         </ListItem>

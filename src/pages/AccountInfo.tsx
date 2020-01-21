@@ -44,6 +44,7 @@ import { shareInviteMonetaryAccountInquiryChangeStatus } from "~actions/share_in
 import { connectGetPermissions } from "~functions/ConnectGetPermissions";
 import { accountsDeactivate, accountsUpdate, accountsUpdateSettings } from "~store/accounts/thunks";
 import { bunqMeTabsUpdate } from "~store/bunqMeTabs/thunks";
+import { AppDispatch, ReduxState } from "~store/index";
 import { actions as snackbarActions } from "~store/snackbar";
 
 const styles = {
@@ -105,8 +106,14 @@ const PersonChip = ({ alias, ...otherProps }) => {
     );
 };
 
-class AccountInfo extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class AccountInfo extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -575,7 +582,7 @@ class AccountInfo extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         hideBalance: state.options.hide_balance,
 
@@ -594,7 +601,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         openSnackbar: message => dispatch(snackbarActions.open({ message })),
 

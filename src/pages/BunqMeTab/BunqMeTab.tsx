@@ -13,6 +13,7 @@ import AddIcon from "@material-ui/icons/Add";
 import AccountList from "~components/AccountList/AccountList";
 import BunqMeTabList from "~components/BunqMeTabList";
 import { bunqMeTabsUpdate } from "~store/bunqMeTabs/thunks";
+import { AppDispatch, ReduxState } from "~store/index";
 import BunqMeTabForm from "./BunqMeTabForm";
 
 const styles = {
@@ -21,8 +22,14 @@ const styles = {
     }
 };
 
-class BunqMeTab extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class BunqMeTab extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -86,7 +93,7 @@ class BunqMeTab extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         accounts: state.accounts.accounts,
         selectedAccount: state.accounts.selected_account,
@@ -97,8 +104,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, props) => {
-    const { BunqJSClient } = props;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         bunqMeTabsUpdate: (userId, accountId) => dispatch(bunqMeTabsUpdate(userId, accountId))
     };

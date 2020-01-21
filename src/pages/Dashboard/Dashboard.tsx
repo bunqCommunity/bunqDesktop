@@ -15,6 +15,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import { AppWindow } from "~app";
 
 import TranslateButton from "~components/TranslationHelpers/Button";
 import CombinedList from "~components/CombinedList/CombinedList";
@@ -23,6 +24,7 @@ import NavLink from "~components/Routing/NavLink";
 import AttachmentImage from "~components/AttachmentImage/AttachmentImage";
 import SavingsGoalsList from "~components/SavingsGoals/SavingsGoalsList";
 import SwitchKeysMenu from "~components/SwitchKeysMenu";
+import { AppDispatch, ReduxState } from "~store/index";
 import AddMoneyButton from "./AddMoneyButton";
 
 import { registrationLogOut } from "~actions/registration";
@@ -61,7 +63,16 @@ const styles = {
     }
 };
 
-class Dashboard extends React.Component {
+interface IState {
+}
+
+interface IProps {
+    t: AppWindow["t"];
+}
+
+class Dashboard extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -243,7 +254,7 @@ class Dashboard extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
         userType: state.user.user_type,
@@ -264,8 +275,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         // hard-logout
         registrationLogOut: () => dispatch(registrationLogOut())

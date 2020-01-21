@@ -19,6 +19,7 @@ import RemoveIcon from "@material-ui/icons/Delete";
 import TranslateTypography from "~components/TranslationHelpers/Typography";
 
 import { registrationRemoveStoredApiKey, registrationSwitchStoredApiKey } from "~actions/registration";
+import { AppDispatch, ReduxState } from "~store/index";
 
 const styles = {
     wrapperContainer: {
@@ -36,7 +37,15 @@ const styles = {
     }
 };
 
-class SwitchApiKeys extends React.Component {
+interface IState {
+}
+
+interface IProps {
+}
+
+class SwitchApiKeys extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {};
@@ -125,7 +134,7 @@ class SwitchApiKeys extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         status_message: state.application.status_message,
 
@@ -141,7 +150,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         // attempt to load the api key with our password if one is stored
         registrationSwitchStoredApiKey: index => dispatch(registrationSwitchStoredApiKey(index)),

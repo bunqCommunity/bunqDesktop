@@ -36,7 +36,7 @@ interface IState {
 }
 
 interface IProps {
-    t: AppWindow['t'];
+    t: AppWindow["t"];
 }
 
 class CategorySelection extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {

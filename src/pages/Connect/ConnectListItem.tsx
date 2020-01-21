@@ -12,6 +12,7 @@ import { formatMoney } from "~functions/Utils";
 
 import { shareInviteMonetaryAccountInquiryChangeStatus } from "~actions/share_invite_monetary_account_inquiry";
 import { shareInviteMonetaryAccountResponseChangeStatus } from "~actions/share_invite_monetary_account_response";
+import { AppDispatch, ReduxState } from "~store/index";
 
 const styles = {
     smallAvatar: {
@@ -20,7 +21,15 @@ const styles = {
     }
 };
 
-class ConnectListItem extends React.Component {
+interface IState {
+}
+
+interface IProps {
+}
+
+class ConnectListItem extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -191,14 +200,13 @@ class ConnectListItem extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         shareInviteMonetaryAccountInquiryChangeStatus: (
             userId,

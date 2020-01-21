@@ -36,6 +36,7 @@ import { requestInquiryText } from "~functions/EventStatusTexts";
 import { requestInquiryCancel } from "~actions/request_inquiry";
 import { requestInquiryUpdate } from "~actions/request_inquiry_info";
 import { actions as applicationActions } from "~store/application";
+import { AppDispatch, ReduxState } from "~store/index";
 
 const styles = {
     btn: {},
@@ -54,8 +55,14 @@ const styles = {
     }
 };
 
-class RequestInquiryInfo extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class RequestInquiryInfo extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -333,7 +340,7 @@ class RequestInquiryInfo extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
         limitedPermissions: state.user.limited_permissions,
@@ -347,8 +354,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         applicationSetPDFMode: enabled => dispatch(applicationActions.setPdfMode(enabled)),
 

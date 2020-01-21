@@ -21,6 +21,8 @@ import ShareIcon from "@material-ui/icons/Share";
 import TimeLineIcon from "@material-ui/icons/Timeline";
 import CardIcon from "@material-ui/icons/CreditCard";
 import Bookmark from "@material-ui/icons/Bookmark";
+import { AppWindow } from "~app";
+import { AppDispatch, ReduxState } from "~store/index";
 import FileUploadIcon from "./CustomSVG/FileUpload";
 import TrophyIcon from "./CustomSVG/Trophy";
 
@@ -59,7 +61,16 @@ const styles = {
     }
 };
 
-class Sidebar extends React.Component {
+interface IState {
+}
+
+interface IProps {
+    t: AppWindow["t"];
+}
+
+class Sidebar extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -231,7 +242,7 @@ class Sidebar extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         open: state.sidebar.open,
         stickyMenu: state.options.sticky_menu,
@@ -247,7 +258,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         closeDrawer: () => dispatch(closeSidebar()),
         closeSidebar: () => dispatch(closeSidebar())

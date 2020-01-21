@@ -19,6 +19,7 @@ import UrlIcon from "@material-ui/icons/Link";
 import AliasList from "~components/AliasList";
 import UploadFullscreen from "~components/FileUpload/UploadFullscreen";
 import LazyAttachmentImage from "~components/AttachmentImage/LazyAttachmentImage";
+import { AppDispatch, ReduxState } from "~store/index";
 import NotificationFilters from "./NotificationFilters";
 import ProfileDetailsForm from "./ProfileDetailsForm";
 import BusinessInfo from "./BusinessInfo";
@@ -64,8 +65,14 @@ const styles: any = {
     }
 };
 
-class Profile extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class Profile extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -301,7 +308,7 @@ class Profile extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
         userType: state.user.user_type,
@@ -311,14 +318,17 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         openSnackbar: message => dispatch(snackbarActions.open({ message })),
         usersUpdate: updated => dispatch(usersUpdate(updated)),
         userUpdateImage: (userId, attachmentId) => dispatch(userUpdateImage(userId, attachmentId)),
 
-        BunqErrorHandler: (error, message) => BunqErrorHandler(dispatch, error, message)
+        BunqErrorHandler: (error, message) => {
+            const actions = [];
+            BunqErrorHandler(actions, error, message)
+            dispatch(actions);
+        }
     };
 };
 

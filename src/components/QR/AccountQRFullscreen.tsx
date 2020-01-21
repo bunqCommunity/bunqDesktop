@@ -7,6 +7,7 @@ import Slide from "@material-ui/core/Slide";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItem from "@material-ui/core/ListItem";
 import Avatar from "@material-ui/core/Avatar";
+import { ReduxState } from "~store/index";
 
 const Transition = props => <Slide direction={"up"} {...props} />;
 
@@ -48,8 +49,15 @@ const styles = theme => ({
     }
 });
 
-class AccountQRFullscreen extends React.PureComponent {
-    state = {
+interface IState {
+    open: boolean;
+}
+
+interface IProps {
+}
+
+class AccountQRFullscreen extends React.PureComponent<ReturnType<typeof mapStateToProps> & IProps> {
+    state: IState = {
         open: false
     };
 
@@ -143,10 +151,10 @@ AccountQRFullscreen.defaultProps = {
     mode: "ACCOUNT"
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         accounts: state.accounts.accounts,
-        selectedAccount: state.accounts.selected_account
+        selectedAccount: state.accounts.selectedAccount
     };
 };
 

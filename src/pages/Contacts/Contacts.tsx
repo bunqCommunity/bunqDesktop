@@ -11,6 +11,7 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 import TranslateTypography from "~components/TranslationHelpers/Typography";
 import TranslateButton from "~components/TranslationHelpers/Button";
+import { AppDispatch, ReduxState } from "~store/index";
 import ContactHeader from "./ContactHeader";
 
 const remote = require("electron").remote;
@@ -39,8 +40,14 @@ const styles: any = {
     }
 };
 
-class Contacts extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class Contacts extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -191,7 +198,7 @@ class Contacts extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         contacts: state.contacts.contacts,
         contactsLoading: state.contacts.loading,
@@ -199,8 +206,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, props) => {
-    const { BunqJSClient } = props;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         contactInfoUpdateGoogle: accessToken => dispatch(contactInfoUpdateGoogle(accessToken)),
         contactInfoUpdateApple: filePaths => dispatch(contactInfoUpdateApple(filePaths)),

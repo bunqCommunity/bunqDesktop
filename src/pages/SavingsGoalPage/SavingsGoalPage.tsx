@@ -10,6 +10,7 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import SavingsGoalForm from "./SavingsGoalForm";
 import ExportDialog from "~components/ExportDialog";
@@ -36,8 +37,14 @@ const styles = {
     }
 };
 
-class SavingsGoalPage extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class SavingsGoalPage extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -171,7 +178,7 @@ class SavingsGoalPage extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         savingsGoals: state.savings_goals.savings_goals,
 
@@ -183,7 +190,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         openSnackbar: message => dispatch(snackbarActions.open({ message })),
         setSavingsGoal: savingsGoal => dispatch(setSavingsGoal(savingsGoal)),

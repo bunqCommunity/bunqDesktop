@@ -20,6 +20,7 @@ import TranslateButton from "~components/TranslationHelpers/Button";
 import TranslateTypography from "~components/TranslationHelpers/Typography";
 
 import { createAccount } from "~store/accounts/thunks";
+import { AppDispatch, ReduxState } from "~store/index";
 import { actions as snackbarActions } from "~store/snackbar";
 
 const styles: any = {
@@ -46,8 +47,14 @@ const styles: any = {
     }
 };
 
-class AddAccount extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class AddAccount extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -248,18 +255,17 @@ class AddAccount extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         accounts: state.accounts.accounts,
         accountsLoading: state.accounts.loading,
-        accountsCreateLoading: state.accounts.create_loading,
+        accountsCreateLoading: state.accounts.createLoading,
 
         user: state.user.user
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         createAccount: (userId, currency, description, dailyLimit, color, savingsGoal, accountType) =>
             dispatch(

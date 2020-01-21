@@ -25,6 +25,7 @@ import TranslateTypography from "~components/TranslationHelpers/Typography";
 import { allReleases } from "~functions/VersionChecker";
 import { humanReadableDate } from "~functions/Utils";
 import Logger from "~functions/Logger";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import { actions as snackbarActions } from "~store/snackbar";
 
@@ -38,8 +39,14 @@ const styles: any = {
     }
 };
 
-class ApplicationInfo extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+}
+
+class ApplicationInfo extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -165,12 +172,11 @@ class ApplicationInfo extends React.Component<any> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {};
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         openSnackbar: message => dispatch(snackbarActions.open({ message })),
     };

@@ -11,6 +11,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import UrlIcon from "@material-ui/icons/Link";
+import { AppDispatch, ReduxState } from "~store/index";
 
 import LinkPreviewField from "./LinkPreviewField";
 import QRCode from "~components/QR/QRCode";
@@ -62,7 +63,15 @@ const styles = {
     }
 };
 
-class BunqMePersonal extends React.Component {
+interface IState {
+}
+
+interface IProps {
+}
+
+class BunqMePersonal extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -225,15 +234,14 @@ class BunqMePersonal extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
         accounts: state.accounts.accounts
     };
 };
 
-const mapDispatchToProps = (dispatch, props) => {
-    const { BunqJSClient } = props;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {};
 };
 
