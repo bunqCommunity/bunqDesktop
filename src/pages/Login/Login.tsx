@@ -20,16 +20,20 @@ import InputLabel from "@material-ui/core/InputLabel";
 
 import BuildIcon from "@material-ui/icons/Build";
 import KeyIcon from "@material-ui/icons/VpnKey";
+import { AppWindow } from "~app";
 
 import QRSvg from "~components/QR/QRSvg";
 import TranslateTypography from "~components/TranslationHelpers/Typography";
 import TranslateButton from "~components/TranslationHelpers/Button";
 import NavLink from "~components/Routing/NavLink";
+import { AppDispatch, ReduxState } from "~store/index";
 import OAuthManagement from "./OAuthManagement";
 import SideOptions from "./SideOptions";
 
 import { registrationLogOut, registrationLogin } from "~actions/registration";
 import BunqErrorHandler from "~functions/BunqErrorHandler";
+
+declare let window: AppWindow;
 
 const styles = {
     card: {
@@ -105,7 +109,15 @@ const styles = {
     }
 };
 
-class Login extends React.Component {
+interface IState {
+}
+
+interface IProps {
+}
+
+class Login extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -227,10 +239,11 @@ class Login extends React.Component {
 
     // create a new registration and display the qr code
     displayQrCode = () => {
+        const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
         if (this.state.loadingQrCode === false) {
             this.setState({ loadingQrCode: true });
 
-            this.props.BunqJSClient.createCredentials()
+            BunqJSClient.createCredentials()
                 .then(({ uuid, status, qr_base64 }) => {
                     this.setState({
                         loadingQrCode: false,
@@ -252,8 +265,9 @@ class Login extends React.Component {
 
     // create a new sandbox user
     createSandboxUser = () => {
+        const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
         this.setState({ loadingBunqUser: true });
-        this.props.BunqJSClient.api.sandboxUser
+        BunqJSClient.api.sandboxUser
             .post()
             .then(apiKey => {
                 // set the api key and update state
@@ -275,10 +289,11 @@ class Login extends React.Component {
 
     // check if the qr code has been scanned yet
     checkForScanEvent = () => {
+        const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
         this.checkerInterval = setInterval(() => {
             // only continue if requestUuid isn't set yet and the qr code is open
             if (this.state.requestUuid !== false && this.state.tabIndex === 0) {
-                this.props.BunqJSClient.checkCredentialStatus(this.state.requestUuid)
+                BunqJSClient.checkCredentialStatus(this.state.requestUuid)
                     .then(result => {
                         if (result.status === "ACCEPTED") {
                             this.setState(
@@ -364,7 +379,7 @@ class Login extends React.Component {
     };
 
     render() {
-        const { t, status_message, userLoading, usersLoading, BunqJSClient } = this.props;
+        const { t, status_message, userLoading, usersLoading } = this.props;
 
         if (this.props.derivedPassword === false && this.props.registrationLoading === false) {
             return <Redirect to="/password" />;
@@ -585,7 +600,7 @@ class Login extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: ReduxState) => {
     return {
         status_message: state.application.status_message,
 
@@ -603,16 +618,18 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const { BunqJSClient } = ownProps;
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
-        // clear api key from bunqjsclient and bunqdesktop
         logOut: () => dispatch(registrationLogOut()),
 
         registrationLogin: (apiKey, deviceName, environment, permittedIps) =>
             dispatch(registrationLogin(apiKey, deviceName, environment, permittedIps)),
 
-        handleBunqError: error => BunqErrorHandler(dispatch, error)
+        handleBunqError: (error) => {
+            const batchedActions = [];
+            BunqErrorHandler(batchedActions, error);
+            dispatch(batchedActions);
+        }
     };
 };
 

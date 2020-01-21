@@ -279,7 +279,7 @@ export function registrationResetToApiScreen(resetStoredApiKey = false) {
 
 /**
  * Log out without removing the stored apikey and go back to password screen
- * @param resetPassword
+ * @param {boolean} resetStoredApiKey
  * @returns {function(*)}
  */
 export function registrationLogOut(resetStoredApiKey = true) {

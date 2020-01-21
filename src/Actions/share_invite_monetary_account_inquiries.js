@@ -5,7 +5,6 @@ export const STORED_SHARE_INVITE_MONETARY_ACCOUNT_INQUIRIES = "BUNQDESKTOP_SHARE
 export function shareInviteBankInquiriesSetInfo(
     share_invite_monetary_account_inquiries,
     account_id,
-    BunqJSClient = false
 ) {
     return {
         type: "SHARE_INVITE_INQUIRIES_SET_INFO",
@@ -17,21 +16,20 @@ export function shareInviteBankInquiriesSetInfo(
 }
 
 export function loadStoredShareInviteBankInquiries() {
-    const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
-
-    return dispatch => {
-        dispatch(shareInviteBankInquiriesLoading());
+    return async (dispatch) => {
         const BunqDesktopClient = window.BunqDesktopClient;
-        BunqDesktopClient.storeDecrypt(STORED_SHARE_INVITE_MONETARY_ACCOUNT_INQUIRIES)
-            .then(data => {
-                if (data && data.items) {
-                    dispatch(shareInviteBankInquiriesSetInfo(data.items, data.account_id));
-                }
-                dispatch(shareInviteBankInquiriesNotLoading());
-            })
-            .catch(error => {
-                dispatch(shareInviteBankInquiriesNotLoading());
-            });
+
+        dispatch(shareInviteBankInquiriesLoading());
+
+        const batchedActions = [];
+        try {
+            const data = await BunqDesktopClient.storeDecrypt(STORED_SHARE_INVITE_MONETARY_ACCOUNT_INQUIRIES);
+            if (data && data.items) {
+                batchedActions.push(shareInviteBankInquiriesSetInfo(data.items, data.account_id));
+            }
+        } finally {
+            dispatch(batchedActions.concat([shareInviteBankInquiriesNotLoading()]));
+        }
     };
 }
 
@@ -47,19 +45,18 @@ export function shareInviteMonetaryAccountInquiriesInfoUpdate(
     const failedMessage = window.t("We failed to load the share invite inquiries for this monetary account");
     const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
-    return dispatch => {
+    return async (dispatch) => {
         dispatch(shareInviteBankInquiriesLoading());
 
-        BunqJSClient.api.shareInviteMonetaryAccountInquiry
-            .list(user_id, account_id, options)
-            .then(shareInviteBankInquiries => {
-                dispatch(shareInviteBankInquiriesSetInfo(shareInviteBankInquiries, account_id, BunqJSClient));
-                dispatch(shareInviteBankInquiriesNotLoading());
-            })
-            .catch(error => {
-                dispatch(shareInviteBankInquiriesNotLoading());
-                BunqErrorHandler(dispatch, error, failedMessage);
-            });
+        const batchedActions = [];
+        try {
+            const shareInviteBankInquiries = await BunqJSClient.api.shareInviteMonetaryAccountInquiry.list(user_id, account_id, options);
+            batchedActions.push(shareInviteBankInquiriesSetInfo(shareInviteBankInquiries, account_id, BunqJSClient));
+        } catch (error) {
+            BunqErrorHandler(batchedActions, error, failedMessage);
+        } finally {
+            dispatch(batchedActions.concat([shareInviteBankInquiriesNotLoading()]));
+        }
     };
 }
 

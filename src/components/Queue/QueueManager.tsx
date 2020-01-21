@@ -3,6 +3,7 @@ import React from "react";
 import { ipcRenderer } from "electron";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
+import { AppWindow } from "~app";
 
 import Payment from "~models/Payment";
 import BunqMeTab from "~models/BunqMeTab";
@@ -35,6 +36,8 @@ import { actions as snackbarActions } from "~store/snackbar";
 
 export const DEFAULT_EVENT_COUNT_LIMIT = 50;
 export const EVENT_TOTAL_LIMIT = 1000;
+
+declare let window: AppWindow;
 
 interface IProps {
     BunqJSClient: BunqJSClient;
@@ -391,7 +394,7 @@ class QueueManager extends React.Component<ReturnType<typeof mapStateToProps> & 
     };
 
     paymentsUpdate = (user_id, account_id, olderId = false, eventCount = 200) => {
-        const { BunqJSClient } = this.props;
+        const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
         const currentEventCount = eventCount > 200 ? 200 : eventCount;
         const nextEventCount = eventCount > 200 ? eventCount - 200 : 0;
@@ -445,7 +448,7 @@ class QueueManager extends React.Component<ReturnType<typeof mapStateToProps> & 
     };
 
     bunqMeTabsUpdate = (user_id, account_id, olderId = false, eventCount = 200) => {
-        const { BunqJSClient } = this.props;
+        const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
         const currentEventCount = eventCount > 200 ? 200 : eventCount;
         const nextEventCount = eventCount > 200 ? eventCount - 200 : 0;
@@ -499,7 +502,7 @@ class QueueManager extends React.Component<ReturnType<typeof mapStateToProps> & 
     };
 
     requestResponsesUpdate = (user_id, account_id, olderId = false, eventCount = 200) => {
-        const { BunqJSClient } = this.props;
+        const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
         const currentEventCount = eventCount > 200 ? 200 : eventCount;
         const nextEventCount = eventCount > 200 ? eventCount - 200 : 0;
@@ -554,8 +557,8 @@ class QueueManager extends React.Component<ReturnType<typeof mapStateToProps> & 
             });
     };
 
-    requestInquiriesUpdate = (user_id, account_id, olderId = false, eventCount = 200) => {
-        const { BunqJSClient } = this.props;
+    requestInquiriesUpdate = (user_id, account_id, olderId: false | number = false, eventCount = 200) => {
+        const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
         const currentEventCount = eventCount > 200 ? 200 : eventCount;
         const nextEventCount = eventCount > 200 ? eventCount - 200 : 0;
@@ -611,7 +614,7 @@ class QueueManager extends React.Component<ReturnType<typeof mapStateToProps> & 
     };
 
     requestInquiryBatchesUpdate = (user_id, account_id, olderId = false, eventCount = 200) => {
-        const { BunqJSClient } = this.props;
+        const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
         const currentEventCount = eventCount > 200 ? 200 : eventCount;
         const nextEventCount = eventCount > 200 ? eventCount - 200 : 0;
@@ -670,7 +673,7 @@ class QueueManager extends React.Component<ReturnType<typeof mapStateToProps> & 
     };
 
     masterCardActionsUpdate = (user_id, account_id, olderId = false, eventCount = 200) => {
-        const { BunqJSClient } = this.props;
+        const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
         const currentEventCount = eventCount > 200 ? 200 : eventCount;
         const nextEventCount = eventCount > 200 ? eventCount - 200 : 0;
@@ -726,7 +729,7 @@ class QueueManager extends React.Component<ReturnType<typeof mapStateToProps> & 
     };
 
     shareInviteBankInquiriesUpdate = (user_id, account_id, olderId: boolean | number = false, eventCount = 200) => {
-        const { BunqJSClient } = this.props;
+        const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
         if (olderId !== false) this.props.queueIncreaseRequestCounter();
 
@@ -778,7 +781,7 @@ class QueueManager extends React.Component<ReturnType<typeof mapStateToProps> & 
     };
 
     shareInviteMonetaryAccountResponsesUpdate = (user_id, eventCount = 200) => {
-        const { BunqJSClient } = this.props;
+        const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
 
         BunqJSClient.api.shareInviteMonetaryAccountResponse
             .list(user_id, {
@@ -854,7 +857,6 @@ const mapDispatchToProps = (dispatch: AppDispatch, ownProps: IProps) => {
                 bunqMeTabs,
                 account_id: accountId,
                 resetOldItems: false,
-                BunqJSClient
             })),
         masterCardActionsSetInfo: (masterCardActions, accountId) =>
             dispatch(masterCardActionsSetInfo(masterCardActions, accountId, false, BunqJSClient)),
