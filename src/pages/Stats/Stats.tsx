@@ -23,7 +23,7 @@ import EventHistorySection from "./EventHistorySection";
 import CategoryCountHistoryChart from "./Chart/Timeline/CategoryCountHistoryChart";
 import CategoryTransactionHistoryChart from "./Chart/Timeline/CategoryTransactionHistoryChart";
 
-const StatsWorker = require("~webworkers/stats.worker.js");
+const StatsWorker = require("worker-loader!../../webworkers/stats.worker.js");
 
 const styles: any = {
     sideBarPaper: {
