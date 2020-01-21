@@ -6,8 +6,8 @@ import MasterCardActionListItem from "../ListItems/MasterCardActionListItem";
 import RequestResponseListItem from "../ListItems/RequestResponseListItem";
 import RequestInquiryListItem from "../ListItems/RequestInquiryListItem";
 import RequestInquiryBatchListItem from "../ListItems/RequestInquiryBatchListItem";
-import ShareInviteBankInquiryListItem from "../ListItems/ShareInviteBankInquiryListItem";
-import ShareInviteBankResponseListItem from "../ListItems/ShareInviteBankResponseListItem";
+import ShareInviteMonetaryAccountInquiryListItem from "../ListItems/ShareInviteMonetaryAccountInquiryListItem";
+import ShareInviteMonetaryAccountResponseListItem from "../ListItems/ShareInviteMonetaryAccountResponseListItem";
 
 import { UTCDateToLocalDate } from "../../Functions/Utils";
 import {
@@ -17,8 +17,8 @@ import {
     requestInquiryFilter,
     requestInquiryBatchFilter,
     requestResponseFilter,
-    shareInviteBankInquiryFilter,
-    shareInviteBankResponseFilter
+    shareInviteMonetaryAccountInquiryFilter,
+    shareInviteMonetaryAccountResponseFilter
 } from "../../Functions/DataFilters";
 
 export const paymentMapper = (settings, hiddenPaymentIds = []) => {
@@ -251,41 +251,43 @@ export const requestInquiryBatchMapper = settings => {
     };
 };
 
-export const shareInviteBankInquiryMapper = settings => {
-    if (settings.hiddenTypes.includes("ShareInviteBankInquiry")) return [];
+export const shareInviteMonetaryAccountInquiryMapper = settings => {
+    if (settings.hiddenTypes.includes("ShareInviteMonetaryAccountInquiry")) return [];
 
     return settings.shareInviteBankInquiries
-        .filter(shareInviteBankInquiryFilter(settings))
-        .map(shareInviteBankInquiry => {
-            const shareInviteBankInquiryInfo = shareInviteBankInquiry.ShareInviteBankInquiry
-                ? shareInviteBankInquiry.ShareInviteBankInquiry
-                : shareInviteBankInquiry.ShareInviteBankResponse;
+        .filter(shareInviteMonetaryAccountInquiryFilter(settings))
+        .map(shareInviteMonetaryAccountInquiry => {
+            const shareInviteMonetaryAccountInquiryInfo = shareInviteMonetaryAccountInquiry.ShareInviteMonetaryAccountInquiry
+                ? shareInviteMonetaryAccountInquiry.ShareInviteMonetaryAccountInquiry
+                : shareInviteMonetaryAccountInquiry.ShareInviteMonetaryAccountResponse;
 
             return {
                 component: (
-                    <ShareInviteBankInquiryListItem
+                    <ShareInviteMonetaryAccountInquiryListItem
                         BunqJSClient={settings.BunqJSClient}
-                        shareInviteBankInquiry={shareInviteBankInquiryInfo}
+                        shareInviteMonetaryAccountInquiry={shareInviteMonetaryAccountInquiryInfo}
                         openSnackbar={settings.openSnackbar}
                         user={settings.user}
                     />
                 ),
-                filterDate: UTCDateToLocalDate(shareInviteBankInquiryInfo.created),
-                info: shareInviteBankInquiry
+                filterDate: UTCDateToLocalDate(shareInviteMonetaryAccountInquiryInfo.created),
+                info: shareInviteMonetaryAccountInquiry
             };
         });
 };
 
-export const shareInviteBankResponseMapper = settings => {
-    if (settings.hiddenTypes.includes("ShareInviteBankResponse")) return [];
+export const shareInviteMonetaryAccountResponseMapper = settings => {
+    if (settings.hiddenTypes.includes("ShareInviteMonetaryAccountResponse")) return [];
 
-    return settings.shareInviteBankResponses
-        .filter(shareInviteBankResponseFilter(settings))
-        .map(shareInviteBankResponse => {
+    return settings.shareInviteMonetaryAccountResponses
+        .filter(shareInviteMonetaryAccountResponseFilter(settings))
+        .map(shareInviteMonetaryAccountResponse => {
             return (
-                <ShareInviteBankResponseListItem
+                <ShareInviteMonetaryAccountResponseListItem
                     BunqJSClient={settings.BunqJSClient}
-                    shareInviteBankResponse={shareInviteBankResponse.ShareInviteBankResponse}
+                    shareInviteMonetaryAccountResponse={
+                        shareInviteMonetaryAccountResponse.ShareInviteMonetaryAccountResponse
+                    }
                     openSnackbar={settings.openSnackbar}
                     user={settings.user}
                 />

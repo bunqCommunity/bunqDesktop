@@ -101,7 +101,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(NetworkStatusChecker));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(NetworkStatusChecker));

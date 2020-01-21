@@ -111,7 +111,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(RuleCollectionChecker);
+export default connect(mapStateToProps, mapDispatchToProps)(RuleCollectionChecker);

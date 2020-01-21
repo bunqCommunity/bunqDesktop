@@ -124,7 +124,4 @@ BunqMeTabList.defaultProps = {
     secondaryActions: null
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(BunqMeTabList);
+export default connect(mapStateToProps, mapDispatchToProps)(BunqMeTabList);

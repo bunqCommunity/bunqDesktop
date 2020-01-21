@@ -41,6 +41,7 @@ export default class Card {
     private _status: string;
     private _sub_status: string;
     private _sub_type: string;
+    private _product_type: string;
     private _type: string;
 
     constructor(cardObject: any) {
@@ -168,6 +169,10 @@ export default class Card {
 
     get sub_type(): string {
         return this._sub_type;
+    }
+
+    get product_type(): string {
+        return this._product_type;
     }
 
     get type(): string {

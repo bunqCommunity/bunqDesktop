@@ -17,6 +17,7 @@ import registerTouchBar from "./helpers/touchbar";
 import setupTrayIcon from "./helpers/tray";
 import settingsHelper from "./helpers/settings";
 import oauth from "./helpers/oauth";
+import devTools from "./helpers/devtools";
 import env from "./env";
 
 // disable security warnings since we need cross-origin requests
@@ -88,7 +89,9 @@ log.transports.file.file = `${userDataPath}${path.sep}bunqDesktop.${env.name}.lo
 
 // hot reloading
 if (process.env.NODE_ENV === "development") {
-    require("electron-reload")(path.join(__dirname, `..${path.sep}app${path.sep}**`));
+    require("electron-reload")(path.join(__dirname, `..${path.sep}app${path.sep}**`), {
+        electron: path.join(__dirname, "../node_modules/electron")
+    });
 }
 
 // set the correct path before the app loads
@@ -124,7 +127,11 @@ app.on("ready", () => {
         mainWindow.focus();
 
         if (env.name === "development") {
-            mainWindow.openDevTools();
+            // Add React dev tools
+            devTools()
+              .catch(console.error)
+              .then(() => mainWindow.openDevTools())
+            ;
         }
     });
 

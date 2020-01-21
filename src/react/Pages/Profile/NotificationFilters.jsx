@@ -59,47 +59,45 @@ class NotificationFilters extends React.Component {
         });
     };
 
-    updateNotificationFilters = notificationsList => {
-        const { t, user, userType, BunqJSClient } = this.props;
-
-        const errorMessage = t("We failed to update your user information");
-        this.setState({ loading: true });
-
-        const userInfo = {
-            notification_filters: notificationsList
-        };
-
-        const apiHandler = userType === "UserPerson" ? BunqJSClient.api.userPerson : BunqJSClient.api.userCompany;
-
-        apiHandler
-            .put(user.id, userInfo)
-            .then(response => {
-                this.setState({ loading: false });
-                this.props.usersUpdate(true);
-            })
-            .catch(error => {
-                this.setState({ loading: false });
-                this.props.BunqErrorHandler(error, errorMessage);
-            });
-    };
-
-    deleteNotification = index => event => {
-        const notificationFilters = [...this.props.user.notification_filters];
-        notificationFilters.splice(index, 1);
-
-        this.updateNotificationFilters(notificationFilters);
-    };
-
-    addNotification = event => {
-        const notificationFilters = [...this.props.user.notification_filters];
-        notificationFilters.push({
-            notification_delivery_method: "URL",
-            category: this.state.newCallbackCategory,
-            notification_target: this.state.newCallbackUrl
-        });
-
-        this.updateNotificationFilters(notificationFilters);
-    };
+    // updateNotificationFilters = notificationsList => {
+    //     const { t, user, userType, BunqJSClient } = this.props;
+    //
+    //     const errorMessage = t("We failed to update your user information");
+    //     this.setState({ loading: true });
+    //
+    //     const userInfo = {
+    //         notification_filters: notificationsList
+    //     };
+    //
+    //     const apiHandler = userType === "UserPerson" ? BunqJSClient.api.userPerson : BunqJSClient.api.userCompany;
+    //
+    //     apiHandler
+    //         .put(user.id, userInfo)
+    //         .then(response => {
+    //             this.setState({ loading: false });
+    //             this.props.usersUpdate(true);
+    //         })
+    //         .catch(error => {
+    //             this.setState({ loading: false });
+    //             this.props.BunqErrorHandler(error, errorMessage);
+    //         });
+    // };
+    // deleteNotification = index => event => {
+    //     const notificationFilters = [...this.props.user.notification_filters];
+    //     notificationFilters.splice(index, 1);
+    //
+    //     this.updateNotificationFilters(notificationFilters);
+    // };
+    // addNotification = event => {
+    //     const notificationFilters = [...this.props.user.notification_filters];
+    //     notificationFilters.push({
+    //         notification_delivery_method: "URL",
+    //         category: this.state.newCallbackCategory,
+    //         notification_target: this.state.newCallbackUrl
+    //     });
+    //
+    //     this.updateNotificationFilters(notificationFilters);
+    // };
 
     render() {
         const { t, user } = this.props;
@@ -113,7 +111,7 @@ class NotificationFilters extends React.Component {
                         <TableCell>{t("Category")}</TableCell>
                         <TableCell>{t("Method")}</TableCell>
                         <TableCell>{t("Value")}</TableCell>
-                        <TableCell>{""}</TableCell>
+                        {/*<TableCell>{""}</TableCell>*/}
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -129,11 +127,11 @@ class NotificationFilters extends React.Component {
                                     {notificationFilter.notification_target}
                                     {/*<TextField value={notificationFilter.notification_target} />*/}
                                 </TableCell>
-                                <TableCell style={styles.rowDeleteButtonCell}>
-                                    <IconButton onClick={this.deleteNotification(index)}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </TableCell>
+                                {/*<TableCell style={styles.rowDeleteButtonCell}>*/}
+                                {/*    <IconButton onClick={this.deleteNotification(index)}>*/}
+                                {/*        <DeleteIcon />*/}
+                                {/*    </IconButton>*/}
+                                {/*</TableCell>*/}
                             </TableRow>
                         );
                     })}
@@ -172,61 +170,59 @@ class NotificationFilters extends React.Component {
                             <Typography variant="subtitle1">{t("Notification filters")}</Typography>
                         </Grid>
 
-                        <Grid item xs={4} sm={5}>
-                            <TextField
-                                style={styles.fullwidth}
-                                label="Callback URL"
-                                name="newCallbackUrl"
-                                placeholder="https://example.com/callback"
-                                value={this.state.newCallbackUrl}
-                                onChange={this.onChange("newCallbackUrl")}
-                            />
-                        </Grid>
-
-                        <Grid item xs={4} sm={5}>
-                            <FormControl style={styles.fullwidth}>
-                                <InputLabel shrink htmlFor="newCallbackCategory">
-                                    {t("Category")}
-                                </InputLabel>
-                                <Select
-                                    style={styles.fullwidth}
-                                    value={this.state.newCallbackCategory}
-                                    onChange={this.onChange("newCallbackCategory")}
-                                    input={<Input name="newCallbackCategory" id="newCallbackCategory" />}
-                                >
-                                    <MenuItem value={"MUTATION"}>MUTATION</MenuItem>
-                                    <MenuItem value={"PAYMENT"}>PAYMENT</MenuItem>
-                                    <MenuItem value={"IDEAL"}>IDEAL</MenuItem>
-                                    <MenuItem value={"SOFORT"}>SOFORT</MenuItem>
-                                    <MenuItem value={"BILLING"}>BILLING</MenuItem>
-                                    <MenuItem value={"REQUEST"}>REQUEST</MenuItem>
-                                    <MenuItem value={"CARD_TRANSACTION_SUCCESSFUL"}>
-                                        CARD_TRANSACTION_SUCCESSFUL
-                                    </MenuItem>
-                                    <MenuItem value={"CHAT"}>CHAT</MenuItem>
-                                    <MenuItem value={"DRAFT_PAYMENT"}>DRAFT_PAYMENT</MenuItem>
-                                    <MenuItem value={"SCHEDULE_RESULT"}>SCHEDULE_RESULT</MenuItem>
-                                    <MenuItem value={"SCHEDULE_STATUS"}>SCHEDULE_STATUS</MenuItem>
-                                    <MenuItem value={"SHARE"}>SHARE</MenuItem>
-                                    <MenuItem value={"TAB_RESULT"}>TAB_RESULT</MenuItem>
-                                    <MenuItem value={"BUNQME_TAB"}>BUNQME_TAB</MenuItem>
-                                    <MenuItem value={"SUPPORT"}>SUPPORT</MenuItem>
-                                    <MenuItem value={"CARD_TRANSACTION_FAILED"}>CARD_TRANSACTION_FAILED</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-
-                        <Grid item xs={4} sm={2} style={styles.addButtonWrapper}>
-                            <TranslateButton
-                                style={styles.fullwidth}
-                                disabled={this.state.loading || this.state.newCallbackUrl.length === 0}
-                                onClick={this.addNotification}
-                                variant="outlined"
-                                color="primary"
-                            >
-                                Add
-                            </TranslateButton>
-                        </Grid>
+                        {/*<Grid item xs={4} sm={5}>*/}
+                        {/*    <TextField*/}
+                        {/*        style={styles.fullwidth}*/}
+                        {/*        label="Callback URL"*/}
+                        {/*        name="newCallbackUrl"*/}
+                        {/*        placeholder="https://example.com/callback"*/}
+                        {/*        value={this.state.newCallbackUrl}*/}
+                        {/*        onChange={this.onChange("newCallbackUrl")}*/}
+                        {/*    />*/}
+                        {/*</Grid>*/}
+                        {/*<Grid item xs={4} sm={5}>*/}
+                        {/*    <FormControl style={styles.fullwidth}>*/}
+                        {/*        <InputLabel shrink htmlFor="newCallbackCategory">*/}
+                        {/*            {t("Category")}*/}
+                        {/*        </InputLabel>*/}
+                        {/*        <Select*/}
+                        {/*            style={styles.fullwidth}*/}
+                        {/*            value={this.state.newCallbackCategory}*/}
+                        {/*            onChange={this.onChange("newCallbackCategory")}*/}
+                        {/*            input={<Input name="newCallbackCategory" id="newCallbackCategory" />}*/}
+                        {/*        >*/}
+                        {/*            <MenuItem value={"MUTATION"}>MUTATION</MenuItem>*/}
+                        {/*            <MenuItem value={"PAYMENT"}>PAYMENT</MenuItem>*/}
+                        {/*            <MenuItem value={"IDEAL"}>IDEAL</MenuItem>*/}
+                        {/*            <MenuItem value={"SOFORT"}>SOFORT</MenuItem>*/}
+                        {/*            <MenuItem value={"BILLING"}>BILLING</MenuItem>*/}
+                        {/*            <MenuItem value={"REQUEST"}>REQUEST</MenuItem>*/}
+                        {/*            <MenuItem value={"CARD_TRANSACTION_SUCCESSFUL"}>*/}
+                        {/*                CARD_TRANSACTION_SUCCESSFUL*/}
+                        {/*            </MenuItem>*/}
+                        {/*            <MenuItem value={"CHAT"}>CHAT</MenuItem>*/}
+                        {/*            <MenuItem value={"DRAFT_PAYMENT"}>DRAFT_PAYMENT</MenuItem>*/}
+                        {/*            <MenuItem value={"SCHEDULE_RESULT"}>SCHEDULE_RESULT</MenuItem>*/}
+                        {/*            <MenuItem value={"SCHEDULE_STATUS"}>SCHEDULE_STATUS</MenuItem>*/}
+                        {/*            <MenuItem value={"SHARE"}>SHARE</MenuItem>*/}
+                        {/*            <MenuItem value={"TAB_RESULT"}>TAB_RESULT</MenuItem>*/}
+                        {/*            <MenuItem value={"BUNQME_TAB"}>BUNQME_TAB</MenuItem>*/}
+                        {/*            <MenuItem value={"SUPPORT"}>SUPPORT</MenuItem>*/}
+                        {/*            <MenuItem value={"CARD_TRANSACTION_FAILED"}>CARD_TRANSACTION_FAILED</MenuItem>*/}
+                        {/*        </Select>*/}
+                        {/*    </FormControl>*/}
+                        {/*</Grid>*/}
+                        {/*<Grid item xs={4} sm={2} style={styles.addButtonWrapper}>*/}
+                        {/*    <TranslateButton*/}
+                        {/*        style={styles.fullwidth}*/}
+                        {/*        disabled={this.state.loading || this.state.newCallbackUrl.length === 0}*/}
+                        {/*        onClick={this.addNotification}*/}
+                        {/*        variant="outlined"*/}
+                        {/*        color="primary"*/}
+                        {/*    >*/}
+                        {/*        Add*/}
+                        {/*    </TranslateButton>*/}
+                        {/*</Grid>*/}
 
                         <Grid item xs={12}>
                             {notificationFilterTable}

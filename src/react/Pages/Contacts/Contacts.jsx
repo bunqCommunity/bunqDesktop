@@ -208,7 +208,4 @@ const mapDispatchToProps = (dispatch, props) => {
         openSnackbar: message => dispatch(openSnackbar(message))
     };
 };
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(Contacts));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(Contacts));

@@ -5,6 +5,7 @@ matrix:
     language: node_js
     node_js: '10'
     env:
+    - HOMEBREW_NO_AUTO_UPDATE=1
     - ELECTRON_CACHE=$HOME/.cache/electron
     - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
   - os: linux

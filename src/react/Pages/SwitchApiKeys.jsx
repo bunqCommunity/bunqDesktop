@@ -150,7 +150,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(SwitchApiKeys));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(SwitchApiKeys));

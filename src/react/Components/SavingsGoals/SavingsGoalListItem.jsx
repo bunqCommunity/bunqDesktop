@@ -45,10 +45,10 @@ const styles = {
 };
 
 export default props => {
-    const { t, savingsGoal, accounts, shareInviteBankResponses } = props;
+    const { t, savingsGoal, accounts, shareInviteMonetaryAccountResponses } = props;
     const { startAmount, savedAmount, goalAmount, percentage } = savingsGoal.getStatistics(
         accounts,
-        shareInviteBankResponses
+        shareInviteMonetaryAccountResponses
     );
 
     const startAmountText = formatMoney(startAmount);

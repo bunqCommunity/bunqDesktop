@@ -104,7 +104,4 @@ const mapDispatchToProps = (dispatch, props) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(BunqMeTab));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(BunqMeTab));

@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import Chip from "@material-ui/core/Chip";
-import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -87,7 +86,7 @@ class CardSelection extends React.Component {
             // ensure card exists
             if (!card) return null;
             card = card;
-            const { cardImage, cardType } = getCardTypeImage(card.type, card.cardType);
+            const { cardImage, cardType } = getCardTypeImage(card);
 
             // display big chip or smaller icon
             return (
@@ -120,7 +119,7 @@ class CardSelection extends React.Component {
                 }
 
                 const cardDescription = getCardDescription(card);
-                const { cardImage, cardType } = getCardTypeImage(card.type, card.cardType);
+                const { cardImage, cardType } = getCardTypeImage(card);
 
                 return (
                     <MenuItem key={key} onClick={this.addCardId(card.id)}>
@@ -183,7 +182,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(CardSelection);
+export default connect(mapStateToProps, mapDispatchToProps)(CardSelection);

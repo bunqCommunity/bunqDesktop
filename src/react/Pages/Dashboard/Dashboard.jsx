@@ -109,7 +109,7 @@ class Dashboard extends React.Component {
                         color="primary"
                         indicatorColor="primary"
                         textColor="primary"
-                        variant="fullwidth"
+                        variant="fullWidth"
                     >
                         <Tab style={styles.tabItems} value="accounts" label={t("Accounts")} />
                         {displaySavingsGoals && (
@@ -273,7 +273,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         registrationLogOut: () => dispatch(registrationLogOut())
     };
 };
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(Dashboard));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(Dashboard));

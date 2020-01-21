@@ -67,8 +67,14 @@ class Layout extends React.Component {
             initialBunqJSClientRun: false
         };
 
-        this.activityTimer = null;
+        this.checkLanguageChange(this.props);
+
+        if (this.minuteTimer) {
+            clearInterval(this.minuteTimer);
+        }
         this.minuteTimer = null;
+
+        this.activityTimer = null;
 
         ipcRenderer.on("change-path", (event, path) => {
             const currentPath = this.props.history.location.pathname;
@@ -114,9 +120,7 @@ class Layout extends React.Component {
             VersionChecker().then(versionInfo => {
                 if (versionInfo.newerLink !== false) {
                     this.props.openSnackbar(
-                        `A new version (v${versionInfo.latestVersion}) is available! You are currently using ${
-                            versionInfo.currentVersion
-                        }`,
+                        `A new version (v${versionInfo.latestVersion}) is available! You are currently using ${versionInfo.currentVersion}`,
                         8000
                     );
                 }
@@ -129,14 +133,6 @@ class Layout extends React.Component {
         // setup minute timer
         this.checkTime();
         this.minuteTimer = setInterval(this.checkTime, 5000);
-    }
-
-    componentWillMount() {
-        this.checkLanguageChange(this.props);
-
-        // unset the minuteTimer when set
-        if (this.minuteTimer) clearInterval(this.minuteTimer);
-        this.minuteTimer = null;
     }
 
     componentWillUpdate(nextProps) {
@@ -358,10 +354,5 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 export default withStyles(styles, { withTheme: true })(
-    withRouter(
-        connect(
-            mapStateToProps,
-            mapDispatchToProps
-        )(translate("translations")(Layout))
-    )
+    withRouter(connect(mapStateToProps, mapDispatchToProps)(translate("translations")(Layout)))
 );
