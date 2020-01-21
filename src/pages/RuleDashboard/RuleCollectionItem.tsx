@@ -3,12 +3,22 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Divider from "@material-ui/core/Divider";
+import { AppWindow } from "~app";
 
 import NavLink from "~components/Routing/NavLink";
 import CategoryIcon from "~components/Categories/CategoryIcon";
+import RuleCollection from "~models/RuleCollection";
 
-class RuleCollectionItem extends React.Component<any> {
-    state: any;
+interface IState {
+}
+
+interface IProps {
+    ruleCollection: RuleCollection;
+    t: AppWindow["t"];
+}
+
+class RuleCollectionItem extends React.Component<IProps> {
+    state: IState;
 
     constructor(props, context) {
         super(props, context);
@@ -17,7 +27,9 @@ class RuleCollectionItem extends React.Component<any> {
 
     render() {
         const { ruleCollection, categories, t } = this.props;
-        if (!ruleCollection) return null;
+        if (!ruleCollection) {
+            return null;
+        }
 
         const categoryIds = ruleCollection.getCategories();
 

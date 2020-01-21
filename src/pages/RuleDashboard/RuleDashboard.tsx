@@ -20,7 +20,7 @@ import NavLink from "~components/Routing/NavLink";
 import ExportDialog from "~components/ExportDialog";
 import ImportDialog from "~components/ImportDialog";
 import TranslateTypography from "~components/TranslationHelpers/Typography";
-import RuleCollection from "~types/RuleCollection";
+import RuleCollection from "~models/RuleCollection";
 
 import { actions as snackbarActions } from "~store/snackbar";
 import { actions as categoryRulesActions } from "~store/categoryRules";
@@ -112,9 +112,12 @@ class RuleDashboard extends React.Component<ReturnType<typeof mapStateToProps> &
     render() {
         const { categoryRules, categories, t } = this.props;
 
-        const categoryRulesList = Object.keys(categoryRules).map(categoryRuleId => (
-            <RuleCollectionItem ruleCollection={categoryRules[categoryRuleId]} categories={categories} t={t}/>
-        ));
+        const categoryRulesList = Object.keys(categoryRules).map((categoryRuleId, idx) => {
+            const ruleCollection = new RuleCollection();
+            ruleCollection.fromObject(categoryRules[categoryRuleId]);
+
+            return <RuleCollectionItem key={idx} ruleCollection={ruleCollection} categories={categories} t={t}/>;
+        });
         const categoryRulesArray = Object.values(categoryRules);
 
         return (
