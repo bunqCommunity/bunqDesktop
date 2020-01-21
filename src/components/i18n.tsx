@@ -12,7 +12,7 @@ import path from "~importwrappers/path";
  */
 const addLocaleKey = async data => {
     // get the current localeData
-    const localeData = require("~locales/en.json");
+    const localeData = require("../locales/en.json");
 
     // go through all the missing keys for this language
     Object.keys(data).forEach(missingKey => {
@@ -52,7 +52,8 @@ const loadLocales = (url, options, callback, data) => {
 
     if (action === "LOAD") {
         try {
-            const locale = require("~locales/" + language + ".json");
+            console.log(language);
+            const locale = require("../locales/" + language + ".json");
             callback(locale, { status: "200" });
         } catch (e) {
             console.error(e);
