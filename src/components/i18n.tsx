@@ -52,7 +52,6 @@ const loadLocales = (url, options, callback, data) => {
 
     if (action === "LOAD") {
         try {
-            console.log(language);
             const locale = require("../locales/" + language + ".json");
             callback(locale, { status: "200" });
         } catch (e) {
