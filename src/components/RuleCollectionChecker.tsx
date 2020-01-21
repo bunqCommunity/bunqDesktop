@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import RequestInquiry from "~models/RequestInquiry";
 
 import { actions as categoriesActions } from "~store/categories";
 import { actions as categoryRulesActions } from "~store/categoryRules";
@@ -70,7 +71,7 @@ class RuleCollectionChecker extends React.Component<ReturnType<typeof mapStateTo
     triggerWorkerEvent = () => {
         // use json format
         const payments = this.props.payments.map(item => item.toJSON());
-        const requestInquiries = this.props.requestInquiries.map(item => item.toJSON());
+        const requestInquiries = this.props.requestInquiries.map(item => new RequestInquiry(item).toJSON());
         const requestResponses = this.props.requestResponses.map(item => item.toJSON());
         const masterCardActions = this.props.masterCardActions.map(item => item.toJSON());
         const bunqMeTabs = this.props.bunqMeTabs.map(item => JSON.stringify(item));

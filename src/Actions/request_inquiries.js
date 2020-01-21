@@ -24,7 +24,7 @@ export function loadStoredRequestInquiries() {
         BunqDesktopClient.storeDecrypt(STORED_REQUEST_INQUIRIES)
             .then(data => {
                 if (data && data.items) {
-                    const newRequestInquiries = data.items.map(item => new RequestInquiry(item));
+                    const newRequestInquiries = data.items.map(item => (new RequestInquiry(item)).toPlainObject());
                     dispatch(requestInquiriesSetInfo(newRequestInquiries, data.account_id));
                 }
                 dispatch(requestInquiriesNotLoading());
@@ -51,8 +51,8 @@ export function requestInquiriesUpdate(
         BunqJSClient.api.requestInquiry
             .list(userId, accountId, options)
             .then(requestInquiries => {
-                const newRequestInquiries = requestInquiries.map(item => new RequestInquiry(item));
-                dispatch(requestInquiriesSetInfo(newRequestInquiries, accountId, false, BunqJSClient));
+                const newRequestInquiries = requestInquiries.map(item => (new RequestInquiry(item)).toPlainObject());
+                dispatch(requestInquiriesSetInfo(newRequestInquiries, accountId, false));
                 dispatch(requestInquiriesNotLoading());
             })
             .catch(error => {

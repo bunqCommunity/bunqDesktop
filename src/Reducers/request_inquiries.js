@@ -31,7 +31,7 @@ export default (state = defaultState, action) => {
             );
 
             // limit payments to 1000 in total
-            const mergedRequestInquiries = mergedInfo.items.slice(0, 1000);
+            const mergedRequestInquiries = mergedInfo.items.slice(0, 1000).map(item => item.toPlainObject());
 
             window.BunqDesktopClient.storeEncrypt(
                 {
