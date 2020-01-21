@@ -1,4 +1,4 @@
-import RuleCollection from "~types/RuleCollection";
+import RuleCollection from "~models/RuleCollection";
 
 onmessage = e => {
     const ruleCollection = new RuleCollection();
