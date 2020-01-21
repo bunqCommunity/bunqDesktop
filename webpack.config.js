@@ -37,7 +37,7 @@ let config = {
         modules: ["node_modules", path.resolve(__dirname, "./src")]
     },
     mode: DEVELOPMENT ? "development" : "production",
-    devtool: DEVELOPMENT ? "cheap-module-eval-source-map" : "source-map",
+    devtool: DEVELOPMENT ? "eval-cheap-module-source-map" : "source-map",
     cache: DEVELOPMENT,
     performance: PRODUCTION
         ? {
