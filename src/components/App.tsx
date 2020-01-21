@@ -1,4 +1,3 @@
-import BunqJSClient from "@bunq-community/bunq-js-client";
 import React from "react";
 import { Provider } from "react-redux";
 import { HashRouter } from "react-router-dom";
@@ -14,8 +13,7 @@ import store from "~store/index";
 import "./i18n";
 
 export interface IProps {
-    analytics: boolean;
-    BunqJSClient: BunqJSClient;
+    [key: string]: any;
 }
 
 export default class App extends React.Component<IProps> {
@@ -30,10 +28,7 @@ export default class App extends React.Component<IProps> {
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <Provider store={store}>
                         <HashRouter>
-                            <Layout
-                                routesComponent={Routes}
-                                analytics={this.props.analytics}
-                            />
+                            <Layout routesComponent={Routes} />
                         </HashRouter>
                     </Provider>
                 </MuiPickersUtilsProvider>

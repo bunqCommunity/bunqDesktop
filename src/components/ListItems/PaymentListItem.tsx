@@ -1,6 +1,6 @@
 import React from "react";
 import { translate } from "react-i18next";
-import ListItem from "@material-ui/core/ListItem";
+import OrigListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Avatar from "@material-ui/core/Avatar";
@@ -14,6 +14,8 @@ import NavLink from "../Routing/NavLink";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 import MoneyAmountLabel from "../MoneyAmountLabel";
 import CategoryIcons from "../Categories/CategoryIcons";
+
+const ListItem: any = OrigListItem;
 
 const styles = {
     listItemText: {
@@ -35,7 +37,22 @@ const styles = {
     }
 };
 
-class PaymentListItem extends React.Component {
+interface IState {
+    [key: string]: any;
+}
+
+interface IProps {
+    [key: string]: any;
+}
+
+class PaymentListItem extends React.Component<IProps> {
+    static defaultProps = {
+        displayRequestPayments: true,
+        minimalDisplay: false
+    };
+
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -93,6 +110,7 @@ class PaymentListItem extends React.Component {
 
         // if transfer between personal accounts
         if (counterpartyAccountInfo) {
+            // @ts-ignore
             primaryText = accountInfo.description;
 
             // on transfers we attempt to use our own alias instead
@@ -103,15 +121,14 @@ class PaymentListItem extends React.Component {
             // format secondary text
             const connectWord = paymentAmount < 0 ? fromText : toText;
             const connectWordSecondary = paymentAmount > 0 ? fromText : toText;
-            secondaryText = `${t("Transferred")} ${connectWord} ${accountInfo.description} ${connectWordSecondary} ${
-                counterpartyAccountInfo.description
-            }`;
+            // @ts-ignore
+            secondaryText = `${t("Transferred")} ${connectWord} ${accountInfo.description} ${connectWordSecondary} ${counterpartyAccountInfo.description}`;
         }
 
         const defaultImage = defaultPaymentImage(payment);
 
         return [
-            <ListItem button to={`/payment/${payment.id}/${payment.monetary_account_id}`} component={NavLink}>
+            <ListItem button to={`/payment/${payment.id}/${payment.monetary_account_id}`} component={NavLink as any}>
                 <Avatar style={styles.smallAvatar}>
                     <LazyAttachmentImage
                         height={50}
@@ -121,7 +138,7 @@ class PaymentListItem extends React.Component {
                 </Avatar>
                 <ListItemText style={styles.listItemText} primary={primaryText} secondary={secondaryText} />
                 <ListItemSecondaryAction style={styles.listItemSecondary}>
-                    <MoneyAmountLabel style={styles.moneyAmountLabel} info={payment} type="payment">
+                    <MoneyAmountLabel style={styles.moneyAmountLabel as any} info={payment} type="payment">
                         {formattedPaymentAmount}
                     </MoneyAmountLabel>
                     <CategoryIcons style={styles.categoryIcons} type={"Payment"} id={payment.id} />
@@ -131,10 +148,5 @@ class PaymentListItem extends React.Component {
         ];
     }
 }
-
-PaymentListItem.defaultProps = {
-    displayRequestPayments: true,
-    minimalDisplay: false
-};
 
 export default translate("translations")(PaymentListItem);

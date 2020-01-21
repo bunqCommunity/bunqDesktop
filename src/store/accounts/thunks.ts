@@ -72,15 +72,16 @@ export function createAccount(
                     savingsGoal
                 );
                 break;
-            case "MonetaryAccountJoint":
-                apiPromise = BunqJSClient.api.monetaryAccountJoint.post(
-                    userId,
-                    currency,
-                    description,
-                    dailyLimit,
-                    color
-                );
-                break;
+            // TODO: figure out if this still exists
+            // case "MonetaryAccountJoint":
+            //     apiPromise = BunqJSClient.api.monetaryAccountJoint.post(
+            //         userId,
+            //         currency,
+            //         description,
+            //         dailyLimit,
+            //         color
+            //     );
+            //     break;
             case "MonetaryAccountBank":
             default:
                 apiPromise = BunqJSClient.api.monetaryAccountBank.post(

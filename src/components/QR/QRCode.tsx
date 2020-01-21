@@ -1,6 +1,5 @@
 import React from "react";
 import QRCodeReact from "qrcode.react";
-import PropTypes from "prop-types";
 
 const styles = {
     clickable: {
@@ -8,7 +7,20 @@ const styles = {
     }
 };
 
-class QRCode extends React.PureComponent {
+interface IState {
+    [key: string]: any;
+}
+
+interface IProps {
+    [key: string]: any;
+}
+
+class QRCode extends React.PureComponent<IProps> {
+    static defaultProps = {
+        size: 195,
+        style: {}
+    };
+
     render() {
         const { size, value, style, onClick, ...otherProps } = this.props;
 
@@ -23,21 +35,9 @@ class QRCode extends React.PureComponent {
                 value={value}
                 style={style}
                 onClick={qrOnClick}
-                style={onClick && styles.clickable}
             />
         );
     }
 }
-
-QRCode.defaultProps = {
-    size: 195,
-    style: {}
-};
-
-QRCode.propTypes = {
-    value: PropTypes.string.isRequired,
-    size: PropTypes.number,
-    style: PropTypes.object
-};
 
 export default QRCode;

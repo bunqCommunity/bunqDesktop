@@ -4,7 +4,15 @@ import { translate } from "react-i18next";
 
 import TranslateTypography from "~components/TranslationHelpers/Typography";
 
-class NotFound extends React.Component {
+interface IState {
+    [key: string]: any;
+}
+
+interface IProps {
+    [key: string]: any;
+}
+
+class NotFound extends React.Component<IProps> {
     constructor(props, context) {
         super(props, context);
         this.state = {};

@@ -1,5 +1,4 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React, { CSSProperties } from "react";
 import { connect } from "react-redux";
 import { translate } from "react-i18next";
 import { getFormValues } from "redux-form";
@@ -38,13 +37,19 @@ const styles = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    reduxState: ReduxState;
+    [key: string]: any;
 }
 
 class SavingsGoalPage extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
     state: IState;
+    closeImportDialog: Function;
+    importData: Function;
+    closeExportDialog: Function;
 
     constructor(props, context) {
         super(props, context);
@@ -54,12 +59,8 @@ class SavingsGoalPage extends React.Component<ReturnType<typeof mapStateToProps>
         };
     }
 
-    static contextTypes = {
-        store: PropTypes.object
-    };
-
     get formValues() {
-        return getFormValues("savingsGoal")(this.context.store.getState());
+        return getFormValues("savingsGoal")(this.props.reduxState);
     }
 
     saveSavingsGoal = data => {
@@ -131,7 +132,7 @@ class SavingsGoalPage extends React.Component<ReturnType<typeof mapStateToProps>
                     <Paper style={styles.paper}>
                         <Grid container spacing={16}>
                             <Grid item style={{ flexGrow: 1 }}>
-                                <Typography variant="h6" style={styles.subTitle}>
+                                <Typography variant="h6">
                                     {t("Savings goal")}
                                 </Typography>
                             </Grid>
@@ -180,12 +181,14 @@ class SavingsGoalPage extends React.Component<ReturnType<typeof mapStateToProps>
 
 const mapStateToProps = (state: ReduxState) => {
     return {
+        reduxState: state,
         savingsGoals: state.savings_goals.savings_goals,
 
         accounts: state.accounts.accounts,
         shareInviteMonetaryAccountResponses:
             state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
 
+        // @ts-ignore
         form: state.form.savingsGoal
     };
 };

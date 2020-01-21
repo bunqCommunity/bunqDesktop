@@ -14,10 +14,12 @@ const style = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
     style: CSSProperties;
+    [key: string]: any;
 }
 
 class CategoryIcons extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
@@ -69,7 +71,7 @@ class CategoryIcons extends React.Component<ReturnType<typeof mapStateToProps> &
             return <CategoryIcon category={category} />;
         });
 
-        return <div style={{ ...style, ...this.props.style }}>{chips}</div>;
+        return <div style={({ ...style, ...this.props.style } as any)}>{chips}</div>;
     }
 }
 

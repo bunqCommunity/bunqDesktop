@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { connect } from "react-redux";
 import { translate } from "react-i18next";
 import Dialog from "@material-ui/core/Dialog";
@@ -10,6 +10,8 @@ import { AppDispatch, ReduxState } from "~store/index";
 import FilePicker from "./FilePicker";
 
 import { actions as snackbarActions } from "~store/snackbar";
+
+declare let window: any;
 
 const Transition = props => <Slide direction={"up"} {...props} />;
 
@@ -43,9 +45,11 @@ const styles = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class UploadFullscreen extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
@@ -91,7 +95,7 @@ class UploadFullscreen extends React.Component<ReturnType<typeof mapStateToProps
             fileReader.onload = () => resolve(fileReader.result);
         }).then(fileArrayBuffer => {
             // transform array buffer into regular buffer
-            const fileBuffer = Buffer.from(fileArrayBuffer);
+            const fileBuffer = Buffer.from(fileArrayBuffer as any);
 
             BunqJSClient.api.attachmentPublic
                 .post(fileBuffer, file.type)
@@ -133,7 +137,7 @@ class UploadFullscreen extends React.Component<ReturnType<typeof mapStateToProps
                 </TranslateButton>
                 <div style={styles.content}>
                     <div style={styles.contentWrapper}>
-                        <Typography type={"headline"} style={styles.header}>
+                        <Typography /* type={"headline"} */ style={styles.header as CSSProperties}>
                             {t(this.props.headlineText)}
                         </Typography>
                         <FilePicker handleFileDrop={this.handleFileDrop} />

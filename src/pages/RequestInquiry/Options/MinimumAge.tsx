@@ -19,7 +19,15 @@ const styles = theme => ({
     }
 });
 
-class MinimumAge extends React.Component {
+interface IState {
+    [key: string]: any;
+}
+
+interface IProps {
+    [key: string]: any;
+}
+
+class MinimumAge extends React.Component<IProps> {
     render() {
         const {
             classes,

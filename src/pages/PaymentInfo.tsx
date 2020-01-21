@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { ipcRenderer } from "electron";
@@ -52,9 +52,11 @@ const styles = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class PaymentInfo extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
@@ -181,12 +183,15 @@ class PaymentInfo extends React.Component<ReturnType<typeof mapStateToProps> & R
                 )
             };
             if (paymentInfo.getDelta() < 0) {
+                // @ts-ignore
                 transactionHeaderProps.onRequest = this.onRequest;
             } else {
+                // @ts-ignore
                 transactionHeaderProps.onForward = this.onForward;
             }
 
             content = (
+                // @ts-ignore
                 <Grid container spacing={24} align={"center"} justify={"center"}>
                     <TransactionHeader {...transactionHeaderProps} />
 
@@ -198,7 +203,7 @@ class PaymentInfo extends React.Component<ReturnType<typeof mapStateToProps> & R
                     />
 
                     <Grid item xs={12}>
-                        <List style={styles.list}>
+                        <List style={styles.list as CSSProperties}>
                             <Divider />
                             <ListItem>
                                 <ListItemText primary={paymentLabel} />
@@ -236,7 +241,7 @@ class PaymentInfo extends React.Component<ReturnType<typeof mapStateToProps> & R
                             ) : null}
 
                             <Divider />
-                            <GeoLocationListItem t={t} geoLocation={paymentInfo.geolocation} />
+                            <GeoLocationListItem geoLocation={paymentInfo.geolocation} />
                         </List>
 
                         <CategoryChips type={"Payment"} id={payment.id} />

@@ -1,7 +1,9 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-export default class NavLinkHelper extends React.Component {
+type IProps = React.ComponentProps<typeof NavLink>;
+
+export default class NavLinkHelper extends React.Component<IProps> {
     render() {
         return <NavLink {...this.props} activeClassName="active" />;
     }

@@ -48,9 +48,11 @@ const styles: any = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class AddAccount extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {

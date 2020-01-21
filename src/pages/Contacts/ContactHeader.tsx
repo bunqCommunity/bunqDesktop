@@ -1,15 +1,17 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { translate } from "react-i18next";
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
+import OriginalButton from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 
 import HelpIcon from "@material-ui/icons/Help";
+import { AppWindow } from "~app";
 
 import TranslateTypography from "~components/TranslationHelpers/Typography";
 import TranslateButton from "~components/TranslationHelpers/Button";
+
+const Button: any = OriginalButton;
 
 const styles = {
     title: {
@@ -35,7 +37,26 @@ const styles = {
     }
 };
 
-const ContactHeader = props => {
+interface IProps {
+    contacts: any;
+    t: AppWindow["t"];
+    clear: any;
+
+    contactType: string;
+    login: Function;
+    import: Function;
+    loading: boolean;
+    canImport: boolean;
+    logo: string;
+    title: string;
+
+    questionLink?: string;
+
+    loginButtonText?: string;
+    importButtonText?: string;
+}
+
+const ContactHeader = (props: IProps) => {
     const { t, contacts, contactType } = props;
 
     // fallback to empty list
@@ -76,7 +97,7 @@ const ContactHeader = props => {
                         disabled={props.loading}
                         onClick={props.import}
                     >
-                        {t(props.importButtonText)}
+                        {t(props.importButtonText ?? "Import")}
                     </Button>
                 ) : (
                     <Button
@@ -86,7 +107,7 @@ const ContactHeader = props => {
                         disabled={props.loading}
                         onClick={props.login}
                     >
-                        {t(props.loginButtonText)}
+                        {t(props.loginButtonText ?? "Login")}
                     </Button>
                 )}
             </Grid>
@@ -111,27 +132,6 @@ const ContactHeader = props => {
             </Grid>
         </Grid>
     );
-};
-
-ContactHeader.propTypes = {
-    contactType: PropTypes.string.isRequired,
-    login: PropTypes.func.isRequired,
-    import: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired,
-    canImport: PropTypes.bool.isRequired,
-    logo: PropTypes.string.isRequired,
-    contactType: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-
-    questionLink: PropTypes.string,
-
-    loginButtonText: PropTypes.string,
-    importButtonText: PropTypes.string
-};
-
-ContactHeader.defaultProps = {
-    loginButtonText: "Login",
-    importButtonText: "Import"
 };
 
 export default translate("translations")(ContactHeader);

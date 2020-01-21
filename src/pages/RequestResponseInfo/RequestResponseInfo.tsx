@@ -16,7 +16,6 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import HelpIcon from "@material-ui/icons/Help";
 import SaveIcon from "@material-ui/icons/Save";
 import FilterIcon from "@material-ui/icons/FilterList";
-import { shareInviteMonetaryAccountInquiryChangeStatus } from "~actions/share_invite_monetary_account_inquiry";
 
 import FilterCreationDialog from "~components/FilterCreationDialog";
 import AccountSelectorDialog from "~components/FormFields/AccountSelectorDialog";
@@ -56,9 +55,11 @@ const styles: any = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class RequestResponseInfo extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
@@ -218,7 +219,7 @@ class RequestResponseInfo extends React.Component<ReturnType<typeof mapStateToPr
             content = (
                 <>
                     <Paper style={styles.paper}>
-                        <Grid container spacing={24} align={"center"} justify={"center"}>
+                        <Grid container spacing={24} alignContent={"center"} justify={"center"}>
                             <TransactionHeader
                                 to={requestResponse.alias}
                                 from={requestResponse.counterparty_alias}
@@ -353,7 +354,7 @@ class RequestResponseInfo extends React.Component<ReturnType<typeof mapStateToPr
                             </Paper>
                         ) : (
                             <Paper style={styles.paper}>
-                                <Grid container spacing={24} align={"center"} justify={"center"}>
+                                <Grid container spacing={24} alignContent={"center"} justify={"center"}>
                                     <Grid item xs={12}>
                                         <AccountSelectorDialog
                                             value={this.state.selectedAccount}
@@ -441,6 +442,7 @@ class RequestResponseInfo extends React.Component<ReturnType<typeof mapStateToPr
 const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
+        // @ts-ignore
         limitedPermissions: state.user.limited_permissions,
 
         pdfSaveModeEnabled: state.application.pdf_save_mode_enabled,

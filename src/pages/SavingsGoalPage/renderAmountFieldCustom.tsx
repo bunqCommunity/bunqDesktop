@@ -39,6 +39,7 @@ const handleChangeFormatted = onChange => valueObject => {
 };
 
 interface IProps {
+    [key: string]: any;
 }
 
 const renderTextField = ({

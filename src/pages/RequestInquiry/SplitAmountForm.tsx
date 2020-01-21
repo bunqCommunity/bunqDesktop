@@ -23,7 +23,17 @@ const styles = {
     titleGrid: { display: "flex", alignItems: "center" }
 };
 
-class SplitAmountForm extends React.Component {
+interface IState {
+    [key: string]: any;
+}
+
+interface IProps {
+    [key: string]: any;
+}
+
+class SplitAmountForm extends React.Component<IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {};
@@ -40,6 +50,7 @@ class SplitAmountForm extends React.Component {
         const splitAmountItems = targets.map(target => {
             return (
                 <SplitAmountItem
+                    // @ts-ignore
                     target={target}
                     amount={amount}
                     totalSplit={totalSplit}
@@ -50,6 +61,7 @@ class SplitAmountForm extends React.Component {
         });
 
         return (
+            // @ts-ignore
             <Paper style={styles.paper}>
                 <Grid container spacing={8}>
                     <Grid item xs={12} style={styles.titleGrid}>
@@ -63,6 +75,7 @@ class SplitAmountForm extends React.Component {
                             <Table style={styles.table}>
                                 <TableBody>
                                     <SplitAmountItem
+                                        // @ts-ignore
                                         account={account}
                                         amount={amount}
                                         totalSplit={totalSplit}

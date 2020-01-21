@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { connect } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
 import ListItem from "@material-ui/core/ListItem";
@@ -143,7 +143,7 @@ class CategorySelection extends React.Component<ReturnType<typeof mapStateToProp
                         {categoryMenuItems}
                     </Menu>
                 </ListSubheader>
-                <ListItem style={styles.listItem}>{categoryItems}</ListItem>
+                <ListItem style={styles.listItem as CSSProperties}>{categoryItems}</ListItem>
             </>
         );
     }

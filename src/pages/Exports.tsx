@@ -76,6 +76,7 @@ const styles = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {

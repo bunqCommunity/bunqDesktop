@@ -12,7 +12,15 @@ import { formatMoney } from "~functions/Utils";
 
 import TranslateButton from "~components/TranslationHelpers/Button";
 
-class ConfirmationDialog extends React.Component {
+interface IState {
+    [key: string]: any;
+}
+
+interface IProps {
+    [key: string]: any;
+}
+
+class ConfirmationDialog extends React.Component<IProps> {
     render() {
         const { confirmModalOpen, description, amount, t } = this.props;
 

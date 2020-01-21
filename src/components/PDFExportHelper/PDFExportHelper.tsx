@@ -25,9 +25,11 @@ const styles = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class PDFExportHelper extends React.PureComponent<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
@@ -197,6 +199,7 @@ class PDFExportHelper extends React.PureComponent<ReturnType<typeof mapStateToPr
 
 const mapStateToProps = (state: ReduxState) => {
     return {
+        // @ts-ignore
         theme: state.options.theme,
 
         pdfSaveModeEnabled: state.application.pdf_save_mode_enabled

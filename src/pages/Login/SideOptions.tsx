@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import Input from "@material-ui/core/Input";
 import Switch from "@material-ui/core/Switch";
 import Card from "@material-ui/core/Card";
@@ -72,8 +72,8 @@ export default props => {
 
     return (
         openOptions && (
-            <Card style={styles.card} className="animated fadeIn">
-                <CardContent style={styles.cardContent}>
+            <Card style={styles.card as CSSProperties} className="animated fadeIn">
+                <CardContent style={styles.cardContent as CSSProperties}>
                     <FormControl style={styles.formControl}>
                         <InputLabel style={styles.inputLabel}>API Key</InputLabel>
                         <Input

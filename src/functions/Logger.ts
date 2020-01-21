@@ -2,7 +2,7 @@
 const remote = require("electron").remote;
 const electronLog = remote ? remote.require("electron-log") : require("electron-log");
 
-const Logger = {
+export default {
     log: params => {
         console.log(params);
         electronLog.log(params);
@@ -30,14 +30,10 @@ const Logger = {
     silly: params => {
         console.debug(params);
         electronLog.silly(params);
-    }
+    },
+    transports: electronLog.transports,
+    variables: electronLog.variables,
+    default: electronLog.default,
+    hooks: electronLog.hooks,
+    isDev: electronLog.isDev,
 };
-
-Logger.catchErrors = electronLog.catchErrors;
-Logger.transports = electronLog.transports;
-Logger.variables = electronLog.variables;
-Logger.default = electronLog.default;
-Logger.hooks = electronLog.hooks;
-Logger.isDev = electronLog.isDev;
-
-export default Logger;

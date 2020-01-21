@@ -49,11 +49,13 @@ interface IState {
     totalBalance: number;
     fetchedAccounts: any;
     accountTotalSelectionMode: any;
+    [key: string]: any;
 }
 
 interface IProps {
     t: AppWindow["t"];
     BunqJSClient: BunqJSClient;
+    [key: string]: any;
 }
 
 class AccountList extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
@@ -313,10 +315,13 @@ const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
         userType: state.user.user_type,
+
+        // @ts-ignore
         limitedPermissions: state.user.limited_permissions,
 
         applicationLastAutoUpdate: state.application.last_auto_update,
 
+        // @ts-ignore
         hideBalance: state.options.hide_balance,
 
         registrationIsLoading: state.registration.loading,

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import TextField from "@material-ui/core/TextField";
@@ -44,7 +44,7 @@ export default props => {
                     </IconButton>
                 </Grid>
 
-                <Grid item xs={4} style={styles.centerPaginationDiv}>
+                <Grid item xs={4} style={styles.centerPaginationDiv as CSSProperties}>
                     <TextField
                         style={styles.pageField}
                         value={page + 1}
@@ -58,7 +58,7 @@ export default props => {
                     />
                 </Grid>
 
-                <Grid item xs={4} style={styles.centerPaginationDiv}>
+                <Grid item xs={4} style={styles.centerPaginationDiv as CSSProperties}>
                     <TextField select style={styles.pageField} value={pageSize} onChange={setPageSize}>
                         <MenuItem value={5}>5</MenuItem>
                         <MenuItem value={10}>10</MenuItem>

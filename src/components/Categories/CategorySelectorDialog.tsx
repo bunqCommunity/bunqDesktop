@@ -9,9 +9,11 @@ import TranslateButton from "~components/TranslationHelpers/Button";
 import CategorySelector from "./CategorySelector";
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class CategorySelectorDialog extends React.Component<IProps> {

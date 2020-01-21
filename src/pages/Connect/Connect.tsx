@@ -2,7 +2,7 @@ import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
-import Redirect from "react-router-dom/Redirect";
+import { Redirect } from "react-router-dom";
 import EmailValidator from "email-validator";
 import format from "date-fns/format";
 
@@ -59,9 +59,11 @@ const styles: any = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class Connect extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {

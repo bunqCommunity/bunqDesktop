@@ -5,7 +5,7 @@ const removeAction = createAction("remove");
 const toggleAction = createAction("toggle");
 const clearAction = createAction("clear");
 
-export interface IAccountIdFilterState {
+interface IAccountIdFilterState {
     selectedAccountIds: Array<number>;
     toggle: boolean;
 }

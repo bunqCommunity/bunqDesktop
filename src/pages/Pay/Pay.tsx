@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
@@ -12,7 +12,7 @@ import DateFnsUtils from "material-ui-pickers/utils/date-fns-utils";
 import MuiPickersUtilsProvider from "material-ui-pickers/MuiPickersUtilsProvider";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import Button from "@material-ui/core/Button";
+import OrigButton from "@material-ui/core/Button";
 import Switch from "@material-ui/core/Switch";
 import TextField from "@material-ui/core/TextField";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -47,6 +47,8 @@ import { filterShareInviteMonetaryAccountResponses } from "~functions/DataFilter
 import scheduleTexts from "~functions/ScheduleTexts";
 import { connectGetBudget, connectGetType, connectGetPermissions } from "~functions/ConnectGetPermissions";
 
+const Button: any = OrigButton;
+
 const styles = {
     payButton: {
         width: "100%",
@@ -74,9 +76,16 @@ const styles = {
 };
 
 interface IState {
+    target: any;
+    ibanName: any;
+    selectedAccount: any;
+    selectedTargetAccount: any;
+    targetType: any;
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class Pay extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
@@ -566,6 +575,7 @@ class Pay extends React.Component<ReturnType<typeof mapStateToProps> & ReturnTyp
             };
 
             if (scheduleEndDate) {
+                // @ts-ignore
                 schedule.time_end = format(getUTCDate(scheduleEndDate), "yyyy-MM-dd HH:mm:ss");
             }
 
@@ -631,10 +641,12 @@ class Pay extends React.Component<ReturnType<typeof mapStateToProps> & ReturnTyp
             if (filteredInviteResponses.length > 0) {
                 const connectBudget = connectGetBudget(filteredInviteResponses);
                 if (connectBudget) {
+                    // @ts-ignore
                     accountBalance = connectBudget;
                 }
             }
         }
+        // @ts-ignore
         accountBalance = formatMoney(accountBalance, true);
 
         let scheduledPaymentText = null;
@@ -678,7 +690,7 @@ class Pay extends React.Component<ReturnType<typeof mapStateToProps> & ReturnTyp
         }
 
         return (
-            <Grid container spacing={8} justify="center" align="center">
+            <Grid container spacing={8} justify="center" alignContent="center">
                 <Helmet>
                     <title>{`bunqDesktop - Pay`}</title>
                 </Helmet>
@@ -718,7 +730,7 @@ class Pay extends React.Component<ReturnType<typeof mapStateToProps> & ReturnTyp
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Paper style={styles.paper}>
+                                <Paper style={styles.paper as CSSProperties}>
                                     <Typography variant="h5">{t("New Payment")}</Typography>
 
                                     <AccountSelectorDialog
@@ -877,6 +889,7 @@ const mapStateToProps = (state: ReduxState) => {
         accounts: state.accounts.accounts,
         selectedAccount: state.accounts.selectedAccount,
 
+        // @ts-ignore
         language: state.options.language,
 
         pendingPayments: state.pending_payments.pending_payments,
@@ -885,6 +898,8 @@ const mapStateToProps = (state: ReduxState) => {
             state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
 
         user: state.user.user,
+
+        // @ts-ignore
         limitedPermissions: state.user.limited_permissions
     };
 };

@@ -13,9 +13,11 @@ import { cardGenerateCvc2, cardUpdateCvc2Codes } from "~store/cardCvc2/thunks";
 import { AppDispatch, ReduxState } from "~store/index";
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class CvcCodeListItem extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {

@@ -38,6 +38,7 @@ const styles = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
@@ -148,6 +149,7 @@ class RuleDashboard extends React.Component<ReturnType<typeof mapStateToProps> &
                                 <Button
                                     variant="contained"
                                     color="primary"
+                                    // @ts-ignore
                                     component={NavLink}
                                     to={`/rule-page/null`}
                                     style={styles.button}
@@ -161,6 +163,7 @@ class RuleDashboard extends React.Component<ReturnType<typeof mapStateToProps> &
                                 <Button
                                     variant="contained"
                                     color="primary"
+                                    // @ts-ignore
                                     component={NavLink}
                                     to="/category-dashboard"
                                     style={styles.button}

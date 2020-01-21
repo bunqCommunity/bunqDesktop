@@ -15,9 +15,11 @@ const styles = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class DebugPage extends React.Component<ReturnType<typeof mapStateToProps> & IProps> {

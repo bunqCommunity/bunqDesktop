@@ -70,6 +70,7 @@ const styles: any = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {

@@ -1,13 +1,25 @@
 import store from "store";
-const CryptoWorker = require("worker-loader!../../webworkers/crypto.worker.js");
+import { AppWindow } from "~app";
+let CryptoWorker;
+// TODO: find a solution to support Jest
+if (!process.env.JEST) {
+    require("worker-loader!../../webworkers/crypto.worker.js");
+}
 
-class CryptoWorkerQueue {
+declare let window: AppWindow;
+
+export class CryptoWorkerQueue {
+    queue: any;
+    worker: any;
+
     constructor() {
         this.queue = {};
 
         // setup a new cryptoWorker
-        this.worker = new CryptoWorker();
-        this.worker.onmessage = this.onMessage;
+        if (CryptoWorker) {
+            this.worker = new CryptoWorker();
+            this.worker.onmessage = this.onMessage;
+        }
     }
 
     addTask = task => {
@@ -95,7 +107,7 @@ export const storeEncryptString = async (data, location, encryptionKey, type = "
 
     // stringify the data
     const jsonData = JSON.stringify(data);
-    const encryptedDetails = await window.cryptoWorkerQueue.addTask({
+    const encryptedDetails: any = await window.cryptoWorkerQueue.addTask({
         type: "ENCRYPT",
         encryptionKey: encryptionKey,
         data: jsonData

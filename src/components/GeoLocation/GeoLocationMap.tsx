@@ -32,6 +32,7 @@ interface IState {
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class GeoLocationMap extends React.Component<ReturnType<typeof mapStateToProps> & IProps> {

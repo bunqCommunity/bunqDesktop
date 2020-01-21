@@ -6,7 +6,7 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Divider from "@material-ui/core/Divider";
-import Chip from "@material-ui/core/Chip";
+import OriginalChip from "@material-ui/core/Chip";
 import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
 
@@ -20,6 +20,8 @@ import BunqMeTabListItem from "./ListItems/BunqMeTabListItem";
 import { actions as snackbarActions } from "~store/snackbar";
 import { bunqMeTabPut } from "~store/bunqMeTab/thunks";
 
+const Chip: any = OriginalChip;
+
 const styles: any = {
     list: {
         textAlign: "left"
@@ -31,9 +33,11 @@ const styles: any = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class BunqMeTabList extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
@@ -62,7 +66,7 @@ class BunqMeTabList extends React.Component<ReturnType<typeof mapStateToProps> &
         const { t } = this.props;
         const loadingContent = this.props.bunqMeTabsLoading ? <LinearProgress /> : <Divider />;
 
-        const bunqMeTabs = this.props.bunqMeTabs.map(bunqMeTab => {
+        const bunqMeTabs = this.props.bunqMeTabs.map((bunqMeTab: any) => {
             if (this.state.showInactiveTabs === false && bunqMeTab.BunqMeTab.status !== "WAITING_FOR_PAYMENT") {
                 return null;
             }
@@ -115,6 +119,7 @@ class BunqMeTabList extends React.Component<ReturnType<typeof mapStateToProps> &
 const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
+        // @ts-ignore
         limitedPermissions: state.user.limited_permissions,
 
         bunqMeTabs: state.bunqMeTabs.bunq_me_tabs,

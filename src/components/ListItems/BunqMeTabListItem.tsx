@@ -44,7 +44,21 @@ const classStyles = theme => ({
     }
 });
 
-class BunqMeTabListItem extends React.Component {
+interface IState {
+    [key: string]: any;
+}
+
+interface IProps {
+    [key: string]: any;
+}
+
+class BunqMeTabListItem extends React.Component<IProps> {
+    static defaultProps = {
+        minimalDisplay: false
+    };
+
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -203,8 +217,4 @@ class BunqMeTabListItem extends React.Component {
     }
 }
 
-BunqMeTabListItem.defaultProps = {
-    minimalDisplay: false
-};
-
-export default withTheme()(translate("translations")(withStyles(classStyles)(BunqMeTabListItem)));
+export default withTheme()(translate("translations")(withStyles(classStyles)(BunqMeTabListItem as never as any)));

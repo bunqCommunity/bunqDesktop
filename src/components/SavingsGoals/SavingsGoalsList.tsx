@@ -17,10 +17,11 @@ const styles = {
 };
 
 interface IProps {
+    [key: string]: any;
 }
 
 const SavingsGoalList = (props: ReturnType<typeof mapStateToProps> & IProps) => {
-    const { t, savingsGoals, type, hiddenTypes } = props;
+    const { t, savingsGoals, type = "regular", hiddenTypes = [] } = props;
 
     const savingsGoalsList = Object.keys(savingsGoals)
         .filter(savingsGoalId => {
@@ -36,6 +37,7 @@ const SavingsGoalList = (props: ReturnType<typeof mapStateToProps> & IProps) => 
             }
             return true;
         })
+        // @ts-ignore
         .sort((savingsGoalIdA, savingsGoalIdB) => {
             const savingsGoalA = savingsGoals[savingsGoalIdA];
             const savingsGoalB = savingsGoals[savingsGoalIdB];
@@ -70,11 +72,6 @@ const SavingsGoalList = (props: ReturnType<typeof mapStateToProps> & IProps) => 
             return <List style={styles.list}>{savingsGoalsList}</List>;
     }
     return null;
-};
-
-SavingsGoalList.defaultProps = {
-    type: "regular",
-    hiddenTypes: []
 };
 
 const mapStateToProps = (state: ReduxState) => {

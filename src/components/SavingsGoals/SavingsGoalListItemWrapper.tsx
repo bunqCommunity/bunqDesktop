@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { ReduxState } from "~store/index";
 
@@ -9,6 +8,7 @@ import SavingsGoalSmallListItem from "./SavingsGoalSmallListItem";
 import SavingsGoal from "~models/SavingsGoal";
 
 interface IProps {
+    [key: string]: any;
 }
 
 const SavingsGoalListItemWrapper = (props: ReturnType<typeof mapStateToProps> & IProps) => {
@@ -22,7 +22,7 @@ const SavingsGoalListItemWrapper = (props: ReturnType<typeof mapStateToProps> & 
         ...restProps
     } = props;
 
-    switch (type) {
+    switch (type ?? "regular") {
         case "regular":
             return (
                 <SavingsGoalListItem
@@ -47,16 +47,6 @@ const SavingsGoalListItemWrapper = (props: ReturnType<typeof mapStateToProps> & 
             );
     }
     return null;
-};
-
-SavingsGoalListItemWrapper.defaultProps = {
-    type: "regular"
-};
-
-SavingsGoalListItemWrapper.propTypes = {
-    t: PropTypes.any.isRequired,
-    type: PropTypes.string.isRequired,
-    savingsGoal: PropTypes.instanceOf(SavingsGoal)
 };
 
 const mapStateToProps = (state: ReduxState) => {

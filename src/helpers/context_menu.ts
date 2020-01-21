@@ -41,16 +41,19 @@ textEditingMenu.append(paste);
 
 document.addEventListener(
     "contextmenu",
-    event => {
+    (event) => {
+        // @ts-ignore
         switch (event.target.nodeName) {
             case "TEXTAREA":
             case "INPUT":
                 event.preventDefault();
+                // @ts-ignore
                 textEditingMenu.popup(remote.getCurrentWindow());
                 break;
             default:
                 if (isAnyTextSelected()) {
                     event.preventDefault();
+                    // @ts-ignore
                     normalMenu.popup(remote.getCurrentWindow());
                 }
         }

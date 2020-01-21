@@ -90,10 +90,13 @@ export default (window, log) => {
             }
 
             // check if we received an access token
+            // @ts-ignore
             if (params.code) {
+                // @ts-ignore
                 log.debug("Received OAuth code: " + params.code.substring(0, 8));
 
                 // send data to renderer view
+                // @ts-ignore
                 window.webContents.send("received-oauth-bunq-code", params.code);
             } else {
                 window.webContents.send("received-oauth-failed");
@@ -109,6 +112,7 @@ export default (window, log) => {
             handleUrl(receivedUrl);
         });
 
+        // @ts-ignore
         consentWindow.webContents.on("did-get-redirect-request", function(event, oldUrl, newUrl) {
             handleUrl(newUrl);
         });
@@ -137,8 +141,10 @@ export default (window, log) => {
             }
 
             // check if we received an access token
+            // @ts-ignore
             if (params.access_token) {
                 // send data to renderer view
+                // @ts-ignore
                 window.webContents.send("received-oauth-google-access-token", params.access_token);
             } else {
                 window.webContents.send("received-oauth-failed");
@@ -154,6 +160,7 @@ export default (window, log) => {
             handleUrl(receivedUrl);
         });
 
+        // @ts-ignore
         consentWindow.webContents.on("did-get-redirect-request", function(event, oldUrl, newUrl) {
             handleUrl(newUrl);
         });
@@ -181,13 +188,16 @@ export default (window, log) => {
                 // Try to exchange the param values for an access token.
             }
             if (params["#access_token"]) {
+                // @ts-ignore
                 params.access_token = params["#access_token"];
                 delete params["#access_token"];
             }
 
             // check if we received an access token
+            // @ts-ignore
             if (params.access_token) {
                 // send data to renderer view
+                // @ts-ignore
                 window.webContents.send("received-oauth-office-365-access-token", params.access_token);
             } else {
                 window.webContents.send("received-oauth-failed");
@@ -203,6 +213,7 @@ export default (window, log) => {
             handleUrl(receivedUrl);
         });
 
+        // @ts-ignore
         consentWindow.webContents.on("did-get-redirect-request", function(event, oldUrl, newUrl) {
             handleUrl(newUrl);
         });

@@ -1,13 +1,12 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { translate } from "react-i18next";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
-import axios from "axios";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import Input from "@material-ui/core/Input";
-import Button from "@material-ui/core/Button";
+import OrigButton from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -34,6 +33,8 @@ import { registrationLogOut, registrationLogin } from "~actions/registration";
 import BunqErrorHandler from "~functions/BunqErrorHandler";
 
 declare let window: AppWindow;
+
+const Button: any = OrigButton;
 
 const styles = {
     card: {
@@ -110,13 +111,17 @@ const styles = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class Login extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
     state: IState;
+    displayQrCodeDelay: any;
+    checkerInterval: null | number;
 
     constructor(props, context) {
         super(props, context);
@@ -195,7 +200,7 @@ class Login extends React.Component<ReturnType<typeof mapStateToProps> & ReturnT
         if (this.displayQrCodeDelay) clearTimeout(this.displayQrCodeDelay);
     }
 
-    registrationLogin = (apiKey = false, permittedIps = false) => {
+    registrationLogin = (apiKey = false, permittedIps: false | Array<any> = false) => {
         this.props.registrationLogin(
             apiKey || false,
             this.state.deviceName,
@@ -290,7 +295,7 @@ class Login extends React.Component<ReturnType<typeof mapStateToProps> & ReturnT
     // check if the qr code has been scanned yet
     checkForScanEvent = () => {
         const BunqJSClient = window.BunqDesktopClient.BunqJSClient;
-        this.checkerInterval = setInterval(() => {
+        this.checkerInterval = +setInterval(() => {
             // only continue if requestUuid isn't set yet and the qr code is open
             if (this.state.requestUuid !== false && this.state.tabIndex === 0) {
                 BunqJSClient.checkCredentialStatus(this.state.requestUuid)
@@ -423,8 +428,8 @@ class Login extends React.Component<ReturnType<typeof mapStateToProps> & ReturnT
             this.props.registrationLoading === true;
 
         const apiKeyContent = hasNoApiKey ? (
-            <div style={styles.cardWrapper}>
-                <div style={styles.cardWrapperInner}>
+            <div style={styles.cardWrapper as CSSProperties}>
+                <div style={styles.cardWrapperInner as CSSProperties}>
                     <AppBar position="static" color="default">
                         <Tabs variant="fullWidth" value={this.state.tabIndex} onChange={this.handleTabChange}>
                             <Tab style={styles.tab} label="API key" />
@@ -442,7 +447,7 @@ class Login extends React.Component<ReturnType<typeof mapStateToProps> & ReturnT
 
                     {this.state.tabIndex === 0 && (
                         <Card style={styles.card}>
-                            <CardContent style={styles.cardContent}>
+                            <CardContent style={styles.cardContent as CSSProperties}>
                                 <div style={{ textAlign: "center" }}>
                                     {this.state.requestQrCodeBase64 === false ? (
                                         <div style={styles.qrCode}>
@@ -515,7 +520,7 @@ class Login extends React.Component<ReturnType<typeof mapStateToProps> & ReturnT
             </div>
         ) : (
             <Card style={styles.card}>
-                <CardContent style={styles.cardContent}>
+                <CardContent style={styles.cardContent as CSSProperties}>
                     <TranslateTypography variant="h5" component="h2" style={styles.text}>
                         You're logged in!
                     </TranslateTypography>
@@ -535,7 +540,7 @@ class Login extends React.Component<ReturnType<typeof mapStateToProps> & ReturnT
 
         const cardContent = this.props.registrationLoading ? (
             <Card style={styles.card}>
-                <CardContent style={styles.cardContent}>
+                <CardContent style={styles.cardContent as CSSProperties}>
                     <TranslateTypography variant="h5" component="h2" style={styles.text}>
                         Loading
                     </TranslateTypography>

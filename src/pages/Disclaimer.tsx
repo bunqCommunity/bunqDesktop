@@ -1,7 +1,7 @@
 import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
-import Redirect from "react-router-dom/Redirect";
+import { Redirect } from "react-router-dom";
 import Helmet from "react-helmet";
 import store from "store";
 import Grid from "@material-ui/core/Grid";
@@ -14,7 +14,6 @@ import Typography from "@material-ui/core/Typography";
 import LockIcon from "@material-ui/icons/Lock";
 import DesktopIcon from "@material-ui/icons/DesktopMac";
 import BuildIcon from "@material-ui/icons/Edit";
-import LiveHelpIcon from "@material-ui/icons/LiveHelp";
 import { AppWindow } from "~app";
 
 import TranslateButton from "~components/TranslationHelpers/Button";
@@ -34,6 +33,7 @@ const styles = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {

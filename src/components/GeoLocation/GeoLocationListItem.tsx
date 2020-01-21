@@ -3,7 +3,17 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import GeoLocationView from "./GeoLocationView";
 
-class GeoLocationListItem extends React.Component {
+interface IState {
+    [key: string]: any;
+}
+
+interface IProps {
+    [key: string]: any;
+}
+
+class GeoLocationListItem extends React.Component<IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {

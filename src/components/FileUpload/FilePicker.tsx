@@ -1,5 +1,4 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React, { RefObject } from "react";
 
 import FileUpload from "../CustomSVG/FileUpload";
 
@@ -37,13 +36,17 @@ const styles = {
 const allowedFileTypes = ["image/jpeg", "image/png", "image/gif"];
 
 interface IState {
+    imagePreviewUrl: false | string;
 }
 
 interface IProps {
+    handleFileDrop: Function;
+    onChange?: Function;
 }
 
 class FilePicker extends React.Component<IProps> {
     state: IState;
+    fileInput: RefObject<any>;
 
     constructor(props, context) {
         super(props, context);
@@ -96,9 +99,5 @@ class FilePicker extends React.Component<IProps> {
         );
     }
 }
-
-FilePicker.propTypes = {
-    onChange: PropTypes.func.isRequired
-};
 
 export default FilePicker;

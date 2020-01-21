@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
 import ListItem from "@material-ui/core/ListItem";
@@ -19,9 +18,11 @@ const styles = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class EmailSuggestions extends React.Component<IProps> {

@@ -1,7 +1,8 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
+import { RouterProps } from "react-router";
 import StickyBox from "react-sticky-box";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
@@ -64,10 +65,12 @@ const styles = {
 };
 
 interface IState {
+    selectedTab: string;
 }
 
 interface IProps {
     t: AppWindow["t"];
+    history: RouterProps["history"];
 }
 
 class Dashboard extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
@@ -181,7 +184,7 @@ class Dashboard extends React.Component<ReturnType<typeof mapStateToProps> & Ret
                             </div>
                         </Grid>
 
-                        <Grid item xs={6} style={styles.headerButtonWrapper}>
+                        <Grid item xs={6} style={styles.headerButtonWrapper as CSSProperties}>
                             <SwitchKeysMenu history={this.props.history} />
 
                             <Tooltip id="tooltip-fab" title={t("Logout")}>
@@ -259,10 +262,12 @@ const mapStateToProps = (state: ReduxState) => {
         user: state.user.user,
         userType: state.user.user_type,
         userLoading: state.user.loading,
+        // @ts-ignore
         limitedPermissions: state.user.limited_permissions,
         usersLoading: state.users.loading,
 
         requestInquiryLoading: state.request_inquiry.loading,
+        // @ts-ignore
         selectedAccount: state.accounts.selected_account,
 
         savingsGoals: state.savings_goals.savings_goals,

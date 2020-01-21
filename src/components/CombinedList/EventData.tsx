@@ -8,6 +8,7 @@ import Collapse from "@material-ui/core/Collapse";
 import IncomingIcon from "@material-ui/icons/KeyboardArrowDown";
 import OutgoingIcon from "@material-ui/icons/KeyboardArrowUp";
 import ChangeIcon from "@material-ui/icons/CompareArrows";
+import { AppWindow } from "~app";
 
 import { formatMoney } from "~functions/Utils";
 
@@ -27,9 +28,14 @@ const styles = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    t: AppWindow["t"];
+    theme: any;
+    events: any;
+    open: any;
 }
 
 class EventData extends React.Component<IProps> {

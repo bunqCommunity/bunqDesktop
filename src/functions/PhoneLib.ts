@@ -1,6 +1,6 @@
-import { parsePhoneNumber } from "libphonenumber-js";
+import { CountryCode, parsePhoneNumber } from "libphonenumber-js";
 
-export const isValidPhonenumber = (number, region = "NL") => {
+export const isValidPhonenumber = (number, region: CountryCode = "NL") => {
     try {
         const phoneNumber = parsePhoneNumber(number, region);
         return phoneNumber.isValid();
@@ -8,7 +8,7 @@ export const isValidPhonenumber = (number, region = "NL") => {
     return false;
 };
 
-export const getInternationalFormat = (number, region = "NL") => {
+export const getInternationalFormat = (number, region: CountryCode = "NL") => {
     try {
         const phoneNumber = parsePhoneNumber(number, region);
         const formattedPhone = phoneNumber.formatInternational();

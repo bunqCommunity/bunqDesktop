@@ -33,9 +33,11 @@ const styles = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class ScheduledPaymentsEditDialog extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
@@ -86,6 +88,7 @@ class ScheduledPaymentsEditDialog extends React.Component<ReturnType<typeof mapS
             {
                 [name]: event.target.value
             },
+            // @ts-ignore
             this.validateForm
         );
     };
@@ -97,6 +100,7 @@ class ScheduledPaymentsEditDialog extends React.Component<ReturnType<typeof mapS
             {
                 amount: amount
             },
+            // @ts-ignore
             this.validateForm
         );
     };
@@ -105,6 +109,7 @@ class ScheduledPaymentsEditDialog extends React.Component<ReturnType<typeof mapS
             {
                 [name]: value
             },
+            // @ts-ignore
             this.validateForm
         );
     };
@@ -142,6 +147,7 @@ class ScheduledPaymentsEditDialog extends React.Component<ReturnType<typeof mapS
             time_start: format(scheduleStartDate, "yyyy-MM-dd HH:mm:ss")
         };
         if (scheduleEndDate) {
+            // @ts-ignore
             scheduleInfo.time_end = format(scheduleEndDate, "yyyy-MM-dd HH:mm:ss");
         }
 
@@ -152,6 +158,7 @@ class ScheduledPaymentsEditDialog extends React.Component<ReturnType<typeof mapS
             paymentInfo,
             scheduleInfo
         );
+        // @ts-ignore
         this.closeDialog();
     };
 
@@ -251,6 +258,7 @@ class ScheduledPaymentsEditDialog extends React.Component<ReturnType<typeof mapS
 const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
+        // @ts-ignore
         limitedPermissions: state.user.limited_permissions,
 
         scheduledPaymentsLoading: state.scheduled_payments.loading,

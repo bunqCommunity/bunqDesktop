@@ -12,13 +12,20 @@ const styles = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
     style: CSSProperties;
+    [key: string]: any;
 }
 
 class AccountQRCode extends React.Component<ReturnType<typeof mapStateToProps> & IProps> {
+    static defaultProps = {
+        accountId: false,
+        size: 195
+    };
+
     state: IState;
 
     constructor(props, context) {
@@ -43,6 +50,7 @@ class AccountQRCode extends React.Component<ReturnType<typeof mapStateToProps> &
 
         if (currentAccount === false) return null;
 
+        // @ts-ignore
         const value = `https://qr.bunq.com/2/8/${currentAccount.avatar.anchor_uuid}`;
 
         return (
@@ -54,11 +62,6 @@ class AccountQRCode extends React.Component<ReturnType<typeof mapStateToProps> &
         );
     }
 }
-
-AccountQRCode.defaultProps = {
-    accountId: false,
-    size: 195
-};
 
 const mapStateToProps = (state: ReduxState) => {
     return {

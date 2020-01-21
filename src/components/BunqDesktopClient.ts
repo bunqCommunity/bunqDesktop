@@ -34,9 +34,12 @@ const sortApiKeyList = (a, b) => {
 };
 
 export class IndexedDbWrapper implements StorageInterface {
+    // @ts-ignore
     private _indexedDb: LocalForageDriver;
 
+    // @ts-ignore
     constructor(config: LocalForageOptions) {
+        // @ts-ignore
         this._indexedDb = localforage.createInstance(config);
     }
 
@@ -89,7 +92,9 @@ export class BunqDesktopClient {
         this.Logger = Logger;
         this.Store = Store;
 
+        // @ts-ignore
         const basicConfig: LocalForageOptions = {
+            // @ts-ignore
             driver: localforage.INDEXEDDB,
             name: "bunqDesktop",
             version: 1.0
@@ -186,7 +191,9 @@ export class BunqDesktopClient {
         // store the new api key in the stored api key list
         const storedApiKeyInfo: StoredApiKey = {
             identifier: this.password_identifier,
+            // @ts-ignore
             api_key: this.encrypted_api_key,
+            // @ts-ignore
             api_key_iv: this.encrypted_api_key_iv,
             permitted_ips: this.permitted_ips,
             device_name: this.device_name,
@@ -263,9 +270,11 @@ export class BunqDesktopClient {
         this.derived_password_salt = this.getStoredValue(SALT_LOCATION, false);
 
         // derive a key from the new password
+        // @ts-ignore
         const derivedPassword = await derivePasswordKey(newPassword, this.derived_password_salt, 250000);
         const derivedIdentifier = await derivePasswordKey(
             derivedPassword.key + "identifier",
+            // @ts-ignore
             this.derived_password_salt,
             100000
         );
@@ -328,7 +337,8 @@ export class BunqDesktopClient {
     /**
      * Decrypts with the current password, and returns the encrypted version with a new password
      * @param {string} newEncryptionKey
-     * @param {StoredApiKey} storedApiKey
+     * @param {string} apiKey
+     * @param {string} apiKeyIv
      * @returns {Promise}
      */
     private async updateApiKeyEncryption(newEncryptionKey: string, apiKey: string, apiKeyIv: string) {

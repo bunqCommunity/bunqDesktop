@@ -1,8 +1,27 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { withTheme } from "@material-ui/core/styles";
 
-class MoneyAmountLabel extends React.Component {
+interface IState {
+    [key: string]: any;
+}
+
+interface IProps {
+    children: any;
+    info: any; // information about this payment/request
+    type: string; // requestResponse, requestInquiry etz
+    component: any;
+    style: any;
+    [key: string]: any;
+}
+
+class MoneyAmountLabel extends React.Component<IProps> {
+    static defaultProps = {
+        style: {},
+        component: "p"
+    };
+
+    state: IState;
+
     shouldComponentUpdate(nextProps) {
         if (nextProps.theme.themeName !== this.props.theme.themeName) return true;
         if (nextProps.children !== this.props.children) return true;
@@ -160,18 +179,5 @@ class MoneyAmountLabel extends React.Component {
         return <Component style={finalStyle}>{this.props.children}</Component>;
     }
 }
-
-MoneyAmountLabel.defaultProps = {
-    style: {},
-    component: "p"
-};
-
-MoneyAmountLabel.propTypes = {
-    children: PropTypes.any.isRequired,
-    info: PropTypes.object.isRequired, // information about this payment/request
-    type: PropTypes.string.isRequired, // requestResponse, requestInquiry etz
-    component: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
-    style: PropTypes.object
-};
 
 export default withTheme()(MoneyAmountLabel);

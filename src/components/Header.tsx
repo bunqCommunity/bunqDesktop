@@ -73,9 +73,11 @@ const styles: any = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class Header extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
@@ -190,8 +192,11 @@ class Header extends React.Component<ReturnType<typeof mapStateToProps> & Return
 
 const mapStateToProps = (state: ReduxState) => {
     return {
+        // @ts-ignore
         stickyMenu: state.options.sticky_menu,
+        // @ts-ignore
         nativeFrame: state.options.native_frame,
+        // @ts-ignore
         minimizeToTray: state.options.minimize_to_tray,
 
         pdfSaveModeEnabled: state.application.pdf_save_mode_enabled,

@@ -166,8 +166,22 @@ const publicRoutes = [
     }
 ];
 
-// router react component
-export default class Routes extends React.Component {
+interface IState {
+    [key: string]: any;
+}
+
+interface IProps {
+    apiKey: false | string;
+    userType: false | string;
+    derivedPassword: false | string;
+    childProps: {
+        [key: string]: any;
+    };
+}
+
+export default class Routes extends React.Component<IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {};
@@ -191,6 +205,7 @@ export default class Routes extends React.Component {
         const stantardRouteComponents = standardRoutes.map((route, idx) => {
             const { component, ...props } = route;
             const Component = route.component;
+            // @ts-ignore
             return <Route key={idx} render={props => <Component {...props} {...this.props.childProps} />} {...props} />;
         });
 
@@ -214,8 +229,11 @@ export default class Routes extends React.Component {
                         {privateRouteComponents}
                         {stantardRouteComponents}
                         {publicRouteComponents}
-
-                        <Route render={props => <NotFound {...props} {...this.props.childProps} />} />
+                        <Route render={props => <NotFound
+                            {...props}
+                            // @ts-ignore
+                            {...this.props.childProps}
+                        />} />
                     </Switch>
                 )}
             />

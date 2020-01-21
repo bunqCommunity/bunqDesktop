@@ -9,6 +9,7 @@ export default ({ style, data, name = null, ...rest }) => {
             name={name}
             theme="monokai"
             iconStyle="square"
+            // @ts-ignore
             enableEdit={false}
             enableAdd={false}
             enabledDelete={false}

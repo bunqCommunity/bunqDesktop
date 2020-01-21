@@ -1,6 +1,10 @@
 import React from "react";
 import { Redirect, Route } from "react-router-dom";
 
+interface IProps {
+    [key: string]: any;
+}
+
 export default ({
     component: Component,
     apiKey,
@@ -9,7 +13,7 @@ export default ({
     ignoreApiKey = false,
     ignoreUserType = false,
     ...rest
-}) => {
+}: IProps) => {
     const componentHandler = rest.render ? rest.render : props => Component;
 
     // no user selected or no derived password set

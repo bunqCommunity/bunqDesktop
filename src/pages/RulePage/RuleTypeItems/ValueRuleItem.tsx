@@ -13,7 +13,7 @@ const RuleItemMenu: any = RuleItemMenu2;
 import TranslateMenuItem2 from "~components/TranslationHelpers/MenuItem";
 const TranslateMenuItem: any = TranslateMenuItem2;
 
-interface IPropTypes {
+interface IProps {
     rule: ValueRule;
     removeRule: any;
     updateRule: any;
@@ -35,8 +35,8 @@ const styles = {
     }
 };
 
-class ValueRuleItem extends React.Component<IPropTypes, any> {
-    constructor(props: IPropTypes, context: any) {
+class ValueRuleItem extends React.Component<IProps, any> {
+    constructor(props: IProps, context: any) {
         super(props, context);
         this.state = {
             rule: this.props.rule,

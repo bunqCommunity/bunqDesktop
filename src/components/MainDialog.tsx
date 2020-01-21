@@ -16,9 +16,11 @@ const Transition = props => <Slide direction="left" {...props} />;
 import { closeModal } from "~actions/modal";
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class MainDialog extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {

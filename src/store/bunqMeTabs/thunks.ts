@@ -1,6 +1,5 @@
 import { AppWindow } from "~app";
 import { STORED_BUNQ_ME_TABS } from "~misc/consts";
-import BunqDesktopClient from "~components/BunqDesktopClient";
 import BunqErrorHandler from "~functions/BunqErrorHandler";
 import BunqMeTab from "~models/BunqMeTab";
 import { actions } from "./index";
@@ -43,7 +42,7 @@ export function bunqMeTabsUpdate(
 
         const batchedActions = [];
         try {
-            const bunqMeTabs = await BunqJSClient.api.bunqMeTabs.list(user_id, accountId, options);
+            const bunqMeTabs = await BunqJSClient.api.bunqMeTabs.list(user_id, accountId, options as any);
             const bunqMeTabsNew = bunqMeTabs.map(item => new BunqMeTab(item));
             batchedActions.push(actions.setInfo({
                 bunqMeTabs: bunqMeTabsNew,

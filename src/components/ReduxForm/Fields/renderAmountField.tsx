@@ -37,7 +37,6 @@ const renderTextField = ({ t, i18n, tReady, input, formStyle = {}, label, meta: 
         <FormControl
             key="inputWrapper"
             style={styles.formControl}
-            style={formStyle}
             error={touched && !!error}
             fullWidth
         >

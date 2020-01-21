@@ -52,6 +52,7 @@ export default (window, i18n) => {
         updateQueueButton.label = `🔄 ${newEventCount} new events`;
     });
 
+    // @ts-ignore
     const bar = new TouchBar([dashboardButton, updateQueueButton, payButton, requestButton, bunqMeButton, cardsButton]);
 
     window.setTouchBar(bar);

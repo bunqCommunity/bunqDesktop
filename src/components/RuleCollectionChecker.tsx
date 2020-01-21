@@ -9,12 +9,18 @@ import { AppDispatch, ReduxState } from "~store/index";
 import RuleCollection from "~models/RuleCollection";
 
 // import typed worker
-const RuleCollectionCheckWorker = require("worker-loader!../webworkers/rule_collection_check.worker.js");
+// TODO: find a way to support Jest
+let RuleCollectionCheckWorker: any;
+if (!process.env.JEST) {
+    RuleCollectionCheckWorker = require("worker-loader!../webworkers/rule_collection_check.worker.js");
+}
 
 interface IProps {
+    [key: string]: any;
 }
 
 interface IState {
+    [key: string]: any;
 }
 
 class RuleCollectionChecker extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
@@ -25,12 +31,14 @@ class RuleCollectionChecker extends React.Component<ReturnType<typeof mapStateTo
         super(props, context);
         this.state = {};
 
-        this.worker = new RuleCollectionCheckWorker();
-        this.worker.onmessage = this.handleWorkerEvent;
+        if (RuleCollectionCheckWorker) {
+            this.worker = new RuleCollectionCheckWorker();
+            this.worker.onmessage = this.handleWorkerEvent;
+        }
     }
 
     componentWillUnmount() {
-        this.worker.terminate();
+        this.worker?.terminate().then();
     }
 
     componentDidUpdate(oldProps) {

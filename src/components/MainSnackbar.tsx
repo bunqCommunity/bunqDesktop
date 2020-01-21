@@ -16,9 +16,11 @@ const styles: any = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class MainSnackbar extends React.PureComponent<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
@@ -33,6 +35,7 @@ class MainSnackbar extends React.PureComponent<ReturnType<typeof mapStateToProps
         return (
             <Snackbar
                 ContentProps={{
+                    // @ts-ignore
                     headlineMapping: {
                         body1: "div",
                         body2: "div"

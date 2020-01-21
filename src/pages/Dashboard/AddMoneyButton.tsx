@@ -10,9 +10,12 @@ import { requestInquirySend } from "~actions/request_inquiry";
 import { AppDispatch, ReduxState } from "~store/index";
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    // TODO: create IUser interface
+    user: any;
 }
 
 class AddMoneyButton extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
@@ -70,6 +73,7 @@ const mapStateToProps = (state: ReduxState) => {
     return {
         requestInquiryLoading: state.request_inquiry.loading,
 
+        // @ts-ignore
         limitedPermissions: state.user.limited_permissions,
 
         selectedAccount: state.accounts.selectedAccount,

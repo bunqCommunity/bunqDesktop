@@ -1,13 +1,13 @@
-import BunqJSClient from "@bunq-community/bunq-js-client";
 import React from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { ipcRenderer } from "electron";
-import { withRouter } from "react-router";
+import { RouterProps, withRouter } from "react-router";
 import Grid from "@material-ui/core/Grid";
 import { withStyles } from "@material-ui/core/styles";
 import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
+
 import { AppWindow } from "~app";
 
 // custom components
@@ -26,6 +26,7 @@ import ErrorBoundary from "./ErrorBoundary";
 // themes
 import DefaultThemeConfig from "~themes/DefaultTheme";
 import DarkThemeConfig from "~themes/DarkTheme";
+
 const DefaultTheme = createMuiTheme(DefaultThemeConfig as any);
 const DarkTheme = createMuiTheme(DarkThemeConfig as any);
 const ThemeList = {
@@ -44,7 +45,7 @@ const openSnackbar = snackbarActions.open;
 
 declare let window: AppWindow;
 
-const styles = theme => ({
+const styles: any = theme => ({
     contentContainer: {
         margin: 0,
         marginLeft: 0,
@@ -67,9 +68,16 @@ const styles = theme => ({
 });
 
 interface IProps {
+    routesComponent: any;
+    history?: RouterProps["history"];
+    location?: AppWindow["location"];
+    t?: AppWindow["t"];
+    i18n?: any;
+    classes?: any;
 }
 
 interface IState {
+    [key: string]: any;
 }
 
 class Layout extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
@@ -130,8 +138,10 @@ class Layout extends React.Component<ReturnType<typeof mapStateToProps> & Return
 
     componentDidMount() {
         window.BunqDesktopClient.BunqJSClient.run(false)
-            .then(_ => {})
-            .catch(error => {});
+            .then(_ => {
+            })
+            .catch(error => {
+            });
 
         if (process.env.NODE_ENV !== "development") {
             VersionChecker().then(versionInfo => {
@@ -319,12 +329,19 @@ class Layout extends React.Component<ReturnType<typeof mapStateToProps> & Return
 
 const mapStateToProps = (state: ReduxState) => {
     return {
+        // @ts-ignore
         theme: state.options.theme,
+        // @ts-ignore
         language: state.options.language,
+        // @ts-ignore
         stickyMenu: state.options.sticky_menu,
+        // @ts-ignore
         hideBalance: state.options.hide_balance,
+        // @ts-ignore
         checkInactivity: state.options.check_inactivity,
+        // @ts-ignore
         automaticThemeChange: state.options.automatic_theme_change,
+        // @ts-ignore
         inactivityCheckDuration: state.options.inactivity_check_duration,
 
         derivedPassword: state.registration.derived_password,
@@ -348,7 +365,7 @@ const mapStateToProps = (state: ReduxState) => {
     };
 };
 
-const mapDispatchToProps = (dispatch: AppDispatch, ownProps: IProps) => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         openSnackbar: (message, duration = 4000) => dispatch(openSnackbar({ message, duration })),
         openModal: (message, title) => dispatch(openModal(message, title)),
@@ -372,6 +389,6 @@ const mapDispatchToProps = (dispatch: AppDispatch, ownProps: IProps) => {
     };
 };
 
-export default withStyles(styles as any, { withTheme: true })(
+export default withStyles(styles, { withTheme: true })(
     withRouter(connect(mapStateToProps, mapDispatchToProps)(translate("translations")(Layout)))
-);
+) as never as React.FC<IProps>;

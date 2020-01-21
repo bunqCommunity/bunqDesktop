@@ -1,6 +1,5 @@
 import { connectGetBudget } from "~functions/ConnectGetPermissions";
 import { filterShareInviteMonetaryAccountResponses } from "~functions/DataFilters";
-import { formatMoney } from "~functions/Utils";
 
 export const calculateTotalBalance = (accounts, accountIds, shareInviteMonetaryAccountResponses = []) => {
     return accounts.reduce((accumulator, account) => {
@@ -16,6 +15,7 @@ export const calculateTotalBalance = (accounts, accountIds, shareInviteMonetaryA
             if (filteredResponses.length > 0) {
                 const connectBudget = connectGetBudget(filteredResponses);
                 if (connectBudget) {
+                    // @ts-ignore
                     accountBalance = parseFloat(connectBudget);
                 }
             }

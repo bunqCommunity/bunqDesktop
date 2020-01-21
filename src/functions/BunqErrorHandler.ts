@@ -1,5 +1,4 @@
 import { AppWindow } from "~app";
-import BunqDesktopClient from "~components/BunqDesktopClient";
 import { BatchedActions } from "~store/index";
 import Logger from "./Logger";
 

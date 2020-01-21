@@ -1,7 +1,7 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import ListItem from "@material-ui/core/ListItem";
+import OriginalListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Typography from "@material-ui/core/Typography";
@@ -13,6 +13,8 @@ import LinearProgressCustom from "../LinearProgress";
 import NavLink from "../Routing/NavLink";
 
 import { formatMoney, humanReadableDate } from "~functions/Utils";
+
+const ListItem: any = OriginalListItem;
 
 const styles = {
     listItem: {
@@ -58,7 +60,7 @@ export default props => {
     const minusAmount = percentage < 10 ? 10 : 15;
     const progressLabelStyle = { ...styles.progressLabel, left: `calc(${percentage}% - ${minusAmount}px` };
 
-    let listItemProps = {
+    let listItemProps: any = {
         button: true,
         component: NavLink,
         to: `/savings-goal-page/${savingsGoal.id}`
@@ -73,7 +75,7 @@ export default props => {
                 <ListItem {...listItemProps} key={savingsGoal.id} style={styles.listItem}>
                     <Grid container>
                         <Grid item xs={12} sm={8} md={9} style={styles.headerTextsGrid}>
-                            <Typography variant="h5" style={styles.title}>
+                            <Typography variant="h5">
                                 {savingsGoal.title}
                             </Typography>
                             {savingsGoal.description && (
@@ -81,13 +83,13 @@ export default props => {
                             )}
                         </Grid>
                         <Grid item xs={12} sm={4} md={3} style={styles.currentAmountGrid}>
-                            <Typography variant="h6" style={styles.currentAmountText}>
+                            <Typography variant="h6" style={styles.currentAmountText as CSSProperties}>
                                 {savedAmountText}
                             </Typography>
                         </Grid>
 
                         <Grid item xs={4} sm={3} md={2} lg={1}>
-                            <Typography variant="body2" style={styles.progressLabels}>
+                            <Typography variant="body2" style={styles.progressLabels as CSSProperties}>
                                 {startAmountText}
                             </Typography>
                         </Grid>
@@ -99,7 +101,7 @@ export default props => {
                             />
                         </Grid>
                         <Grid item xs={4} sm={3} md={2} lg={1}>
-                            <Typography variant="body2" style={styles.progressLabels}>
+                            <Typography variant="body2" style={styles.progressLabels as CSSProperties}>
                                 {endAmountText}
                             </Typography>
                         </Grid>
@@ -107,8 +109,8 @@ export default props => {
                         {percentage < 100 && (
                             <>
                                 <Grid item xs={4} sm={3} md={2} lg={1} />
-                                <Grid item xs={4} sm={6} md={8} lg={10} style={styles.progressLabelGrid}>
-                                    <div style={progressLabelStyle}>
+                                <Grid item xs={4} sm={6} md={8} lg={10} style={styles.progressLabelGrid as CSSProperties}>
+                                    <div style={progressLabelStyle as CSSProperties}>
                                         <Typography variant="body2">{percentage.toFixed(1)}%</Typography>
                                     </div>
                                 </Grid>

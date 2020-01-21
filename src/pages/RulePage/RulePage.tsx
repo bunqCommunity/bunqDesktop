@@ -15,9 +15,11 @@ import { actions as categoryRulesActions } from "~store/categoryRules";
 import { actions as snackbarActions } from "~store/snackbar";
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class RulesPage extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {

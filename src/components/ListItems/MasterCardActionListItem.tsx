@@ -1,7 +1,7 @@
 import React from "react";
 import { translate } from "react-i18next";
 import { withTheme } from "@material-ui/core/styles";
-import ListItem from "@material-ui/core/ListItem";
+import OriginalListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Avatar from "@material-ui/core/Avatar";
@@ -15,6 +15,8 @@ import MoneyAmountLabel from "../MoneyAmountLabel";
 import { masterCardActionParser } from "~functions/EventStatusTexts";
 import { formatMoney } from "~functions/Utils";
 import { defaultMastercardImage } from "~functions/DefaultImageHandlers";
+
+const ListItem: any = OriginalListItem;
 
 const styles = {
     listItemText: {
@@ -36,7 +38,19 @@ const styles = {
     }
 };
 
-class MasterCardActionListItem extends React.Component {
+interface IState {
+    [key: string]: any;
+}
+
+interface IProps {
+    [key: string]: any;
+}
+
+class MasterCardActionListItem extends React.Component<IProps> {
+    static defaultProps = {
+        minimalDisplay: false
+    };
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -89,9 +103,5 @@ class MasterCardActionListItem extends React.Component {
         ];
     }
 }
-
-MasterCardActionListItem.defaultProps = {
-    minimalDisplay: false
-};
 
 export default withTheme()(translate("translations")(MasterCardActionListItem));

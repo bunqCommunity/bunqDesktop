@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { connect } from "react-redux";
 import { translate } from "react-i18next";
 import DatePicker from "material-ui-pickers/DatePicker";
@@ -103,11 +103,11 @@ const styles = {
 };
 
 interface IProps {
-
+    [key: string]: any;
 }
 
 interface IState {
-
+    [key: string]: any;
 }
 
 class FilterDrawer extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
@@ -191,7 +191,7 @@ class FilterDrawer extends React.Component<ReturnType<typeof mapStateToProps> & 
             this.props.dateToFilter !== null || this.props.dateFromFilter !== null || this.state.displayDateFilter;
 
         const drawerList = (
-            <List style={styles.list}>
+            <List style={styles.list as CSSProperties}>
                 <ListItem style={styles.textFieldListItem}>
                     <SearchFilter style={styles.textField} t={t} />
                 </ListItem>
@@ -216,7 +216,7 @@ class FilterDrawer extends React.Component<ReturnType<typeof mapStateToProps> & 
                     <ListItem style={styles.radioListItem}>
                         <RadioGroup
                             name="payment-type"
-                            style={styles.radioGroup}
+                            style={styles.radioGroup as CSSProperties}
                             value={paymentType}
                             onChange={this.handlePaymentTypeChange}
                         >
@@ -258,7 +258,7 @@ class FilterDrawer extends React.Component<ReturnType<typeof mapStateToProps> & 
                     <ListItem style={styles.radioListItem}>
                         <RadioGroup
                             name="request-type"
-                            style={styles.radioGroup}
+                            style={styles.radioGroup as CSSProperties}
                             value={requestType}
                             onChange={this.handleRequestTypeChange}
                         >
@@ -300,7 +300,7 @@ class FilterDrawer extends React.Component<ReturnType<typeof mapStateToProps> & 
                     <ListItem style={styles.radioListItem}>
                         <RadioGroup
                             name="bunqmetab-type"
-                            style={styles.radioGroup}
+                            style={styles.radioGroup as CSSProperties}
                             value={bunqMeTabType}
                             onChange={this.handleBunqMeTabChange}
                         >

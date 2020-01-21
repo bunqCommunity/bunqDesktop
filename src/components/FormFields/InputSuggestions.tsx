@@ -1,5 +1,4 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React, { CSSProperties } from "react";
 import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
 import ListItem from "@material-ui/core/ListItem";
@@ -21,7 +20,18 @@ const styles = {
     }
 };
 
-class InputSuggestions extends React.Component {
+interface IState {
+    [key: string]: any;
+}
+
+interface IProps {
+    [key: string]: any;
+}
+
+class InputSuggestions extends React.Component<IProps> {
+    state: IState;
+    timeOut: null | number;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -40,7 +50,7 @@ class InputSuggestions extends React.Component {
 
     onBlur = event => {
         // delay so click event can react before onBlur
-        this.timeOut = setTimeout(() => {
+        this.timeOut = +setTimeout(() => {
             if (this.state.isMounted) {
                 this.setState({ visible: false, selectedIndex: 0 });
             }
@@ -170,7 +180,7 @@ class InputSuggestions extends React.Component {
                     {...otherProps}
                 />
                 {this.state.visible ? (
-                    <Paper key="paper-wrapper" style={styles.suggestionsWrapper} square>
+                    <Paper key="paper-wrapper" style={styles.suggestionsWrapper as CSSProperties} square>
                         {filteredItems.map((filteredItem, index) => (
                             <ListItem button key={index} onClick={this.onSelectItem(filteredItem)}>
                                 {index === this.state.selectedIndex ? (
@@ -191,10 +201,5 @@ class InputSuggestions extends React.Component {
         );
     }
 }
-
-InputSuggestions.propTypes = {
-    itemSelected: PropTypes.func.isRequired,
-    InputComponent: PropTypes.node
-};
 
 export default InputSuggestions;

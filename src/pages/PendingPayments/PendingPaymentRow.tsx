@@ -39,6 +39,7 @@ export default ({ pendingPayment, selectedCheckBoxes, accounts, togglePaymentChe
     if (paymentObject.counterparty_aliases) {
         targetComponents = <TargetChipList targets={paymentObject.counterparty_aliases} accounts={accounts} />;
     } else {
+        // @ts-ignore
         targetComponents = <TargetChip target={paymentObject.counterparty_alias} accounts={accounts} />;
     }
 

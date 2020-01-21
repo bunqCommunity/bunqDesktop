@@ -1,5 +1,5 @@
 import React from "react";
-import ListItem from "@material-ui/core/ListItem";
+import OrigListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import { translate } from "react-i18next";
@@ -14,6 +14,8 @@ import NavLink from "~components/Routing/NavLink";
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
 import CategoryIcons from "../Categories/CategoryIcons";
 import MoneyAmountLabel from "../MoneyAmountLabel";
+
+const ListItem: any = OrigListItem;
 
 const styles = {
     listItemText: {
@@ -35,7 +37,22 @@ const styles = {
     }
 };
 
-class RequestResponseListItem extends React.Component {
+interface IState {
+    [key: string]: any;
+}
+
+interface IProps {
+    [key: string]: any;
+}
+
+class RequestResponseListItem extends React.Component<IProps> {
+    static defaultProps = {
+        displayAcceptedRequests: true,
+        minimalDisplay: false
+    };
+
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -93,10 +110,5 @@ class RequestResponseListItem extends React.Component {
         ];
     }
 }
-
-RequestResponseListItem.defaultProps = {
-    displayAcceptedRequests: true,
-    minimalDisplay: false
-};
 
 export default translate("translations")(RequestResponseListItem);

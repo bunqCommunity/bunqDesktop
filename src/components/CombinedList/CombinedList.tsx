@@ -1,5 +1,5 @@
-import BunqJSClient from "@bunq-community/bunq-js-client";
 import React from "react";
+
 const sessionStore = require("store/storages/sessionStorage");
 import { connect } from "react-redux";
 import { translate } from "react-i18next";
@@ -11,6 +11,7 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 
 import InfoIcon from "@material-ui/icons/Info";
+import { AppWindow } from "~app";
 import { bunqMeTabPut } from "~store/bunqMeTab/thunks";
 import { AppDispatch, ReduxState } from "~store/index";
 
@@ -63,7 +64,9 @@ const styles: any = {
 const STORED_SCROLL_POSITION = "STORED_SCROLL_POSITION";
 
 interface IProps {
-  BunqJSClient: BunqJSClient;
+    displayAcceptedRequests: any;
+    displayRequestPayments: any;
+    t: AppWindow["t"];
 }
 
 interface IState {
@@ -160,7 +163,7 @@ class CombinedList extends React.Component<ReturnType<typeof mapStateToProps> & 
             ...requestInquiryBatches,
             ...shareInviteBankInquiries,
             ...payments
-        ].sort(function(a, b) {
+        ].sort(function (a, b) {
             return +new Date(b.filterDate) - +new Date(a.filterDate);
         });
 
@@ -421,7 +424,7 @@ const mapStateToProps = (state: ReduxState) => {
         shareInviteBankInquiriesLoading: state.share_invite_monetary_account_inquiries.loading,
 
         shareInviteMonetaryAccountResponses:
-            state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
+        state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
         shareInviteMonetaryAccountResponsesLoading: state.share_invite_monetary_account_responses.loading
     };
 };

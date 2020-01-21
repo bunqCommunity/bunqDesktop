@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import Chip from "@material-ui/core/Chip";
-import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -50,6 +49,7 @@ const styles: any = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
@@ -180,8 +180,8 @@ const mapStateToProps = (state: ReduxState) => {
         cards: state.cards.cards,
         cardsLoading: state.cards.loading,
 
-        selectedCardIds: state.card_id_filter.selected_card_ids,
-        toggleCardIds: state.card_id_filter.toggle
+        selectedCardIds: state.cardIdFilter.selected_card_ids,
+        toggleCardIds: state.cardIdFilter.toggle
     };
 };
 

@@ -14,7 +14,7 @@ import TranslateMenuItem2 from "~components/TranslationHelpers/MenuItem";
 const TranslateTypography: any = TranslateTypography2;
 const TranslateMenuItem: any = TranslateMenuItem2;
 
-interface IPropTypes {
+interface IProps {
     rule: TypeRule;
     removeRule: any;
     updateRule: any;
@@ -36,8 +36,8 @@ const styles = {
     }
 };
 
-class ItemTypeRuleItem extends React.Component<IPropTypes, any> {
-    constructor(props: IPropTypes, context: any) {
+class ItemTypeRuleItem extends React.Component<IProps, any> {
+    constructor(props: IProps, context: any) {
         super(props, context);
         this.state = {
             rule: this.props.rule

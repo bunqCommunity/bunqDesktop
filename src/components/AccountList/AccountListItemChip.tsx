@@ -14,7 +14,7 @@ export default props => {
         onDelete
     } = props;
 
-    const chipProps = {
+    const chipProps: any = {
         style: style,
         label: account.description
     };

@@ -31,7 +31,7 @@ export default class SavingsGoal {
 
     private _rawData: any;
 
-    constructor(savingsGoalObject: any | undefined) {
+    constructor(savingsGoalObject?: any) {
         if (!savingsGoalObject) return this;
 
         this._rawData = savingsGoalObject;

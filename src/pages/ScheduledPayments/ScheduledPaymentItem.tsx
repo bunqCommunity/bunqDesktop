@@ -28,7 +28,15 @@ const styles = {
     }
 };
 
-class ScheduledPaymentItem extends React.Component {
+interface IState {
+    [key: string]: any;
+}
+
+interface IProps {
+    [key: string]: any;
+}
+
+class ScheduledPaymentItem extends React.Component<IProps> {
     constructor(props, context) {
         super(props, context);
         this.state = {};

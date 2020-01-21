@@ -1,7 +1,7 @@
-import React from "react";
+import React, { RefObject } from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
-import Redirect from "react-router-dom/Redirect";
+import { Redirect } from "react-router-dom";
 import Helmet from "react-helmet";
 import store from "store";
 import Grid from "@material-ui/core/Grid";
@@ -71,13 +71,17 @@ const styles = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class LoginPassword extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
     state: IState;
+    passwordInput: RefObject<any>;
+    passwordRepeatInput: RefObject<any>;
 
     constructor(props, context) {
         super(props, context);
@@ -168,17 +172,23 @@ class LoginPassword extends React.Component<ReturnType<typeof mapStateToProps> &
     toggleShowPassword = event => {
         this.setState({ showPassword: !this.state.showPassword });
         setTimeout(() => {
-            this.passwordInput.focus();
-            this.passwordInput.selectionStart = 1000;
-            this.passwordInput.selectionEnd = 1000;
+            // @ts-ignore
+            this.passwordInput.current.focus();
+            // @ts-ignore
+            this.passwordInput.current.selectionStart = 1000;
+            // @ts-ignore
+            this.passwordInput.current.selectionEnd = 1000;
         }, 300);
     };
     toggleShowPasswordRepeat = event => {
         this.setState({ showPasswordRepeat: !this.state.showPasswordRepeat });
         setTimeout(() => {
-            this.passwordRepeatInput.focus();
-            this.passwordRepeatInput.selectionStart = 1000;
-            this.passwordRepeatInput.selectionEnd = 1000;
+            // @ts-ignore
+            this.passwordRepeatInput.current.focus();
+            // @ts-ignore
+            this.passwordRepeatInput.current.selectionStart = 1000;
+            // @ts-ignore
+            this.passwordRepeatInput.current.selectionEnd = 1000;
         }, 300);
     };
 
@@ -229,7 +239,7 @@ class LoginPassword extends React.Component<ReturnType<typeof mapStateToProps> &
             registrationLoading === true;
 
         let cardContent = registrationLoading ? (
-            <CardContent style={styles.cardContent}>
+            <CardContent style={styles.cardContent as any}>
                 <Typography variant="h5" component="h2">
                     Loading
                 </Typography>
@@ -239,7 +249,7 @@ class LoginPassword extends React.Component<ReturnType<typeof mapStateToProps> &
                 </Typography>
             </CardContent>
         ) : (
-            <CardContent style={styles.cardContent}>
+            <CardContent style={styles.cardContent as any}>
                 <Typography variant="h5" component="h2" style={styles.text}>
                     {isExistingInstallation ? t("Enter your password") : t("Enter a password")}
                 </Typography>
@@ -398,7 +408,7 @@ class LoginPassword extends React.Component<ReturnType<typeof mapStateToProps> &
 const mapStateToProps = (state: ReduxState) => {
     return {
         statusMessage: state.application.status_message,
-
+        // @ts-ignore
         analyticsEnabled: state.options.analytics_enabled,
 
         storedApiKeys: state.registration.stored_api_keys,
@@ -415,9 +425,11 @@ const mapStateToProps = (state: ReduxState) => {
 const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         // use no password
+        // @ts-ignore
         useNoPasswordLogin: () => dispatch(registrationSkipPassword()),
 
         // use password
+        // @ts-ignore
         usePasswordLogin: password => dispatch(registrationSetPassword(password)),
 
         // clear api key from bunqjsclient and bunqdesktop

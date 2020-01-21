@@ -1,6 +1,6 @@
 import * as React from "react";
 import { translate } from "react-i18next";
-import Redirect from "react-router-dom/Redirect";
+import { Redirect } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Select from "@material-ui/core/Select";
@@ -35,7 +35,8 @@ import ItemTypeRuleItem from "./RuleTypeItems/ItemTypeRuleItem";
 
 import Rule from "~types/Rules/Rule";
 import { RuleTypes } from "~types/Types";
-import { default as RuleCollection, RuleCollectionMatchType } from "~types/RuleCollection";
+import { RuleCollectionMatchType } from "~types/RuleCollection";
+import RuleCollection from "~models/RuleCollection";
 
 const styles = {
     title: {

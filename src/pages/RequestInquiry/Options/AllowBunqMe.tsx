@@ -2,7 +2,17 @@ import React from "react";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 
-class AllowBunqMe extends React.Component {
+interface IState {
+    [key: string]: any;
+}
+
+interface IProps {
+    [key: string]: any;
+}
+
+class AllowBunqMe extends React.Component<IProps> {
+    state: IState;
+
     render() {
         const { targetType, allowBunqMe, handleToggle, t } = this.props;
 

@@ -1,10 +1,10 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
+import OriginalListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import TextField from "@material-ui/core/TextField";
@@ -23,6 +23,8 @@ import {
     registrationSetStoredApiKeys,
     registrationSwitchKeys
 } from "~actions/registration";
+
+const ListItem: any = OriginalListItem;
 
 const styles = {
     list: {
@@ -57,9 +59,11 @@ const styles = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class SwitchKeysMenu extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
@@ -180,7 +184,7 @@ class SwitchKeysMenu extends React.Component<ReturnType<typeof mapStateToProps> 
                         style: { top: 50 }
                     }}
                 >
-                    <List style={styles.list}>
+                    <List style={styles.list as CSSProperties}>
                         <div style={styles.textWrapper}>
                             <TranslateTypography variant="subtitle1">Stored API keys</TranslateTypography>
                             <TranslateTypography variant="body2">
@@ -228,6 +232,7 @@ const mapStateToProps = (state: ReduxState) => {
 
 const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
+        // @ts-ignore
         registrationSwitchKeys: storedKeyIndex => dispatch(registrationSwitchKeys(storedKeyIndex)),
 
         registrationSetStoredApiKeys: storedApiKeys => dispatch(registrationSetStoredApiKeys(storedApiKeys)),

@@ -7,7 +7,8 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import List from "@material-ui/core/List";
 const Paper: any = PaperWrapper;
 
-import RuleCollection, { EventObjectResult } from "~types/RuleCollection";
+import RuleCollection from "~models/RuleCollection";
+import { EventObjectResult } from "~types/RuleCollection";
 import RuleCollectionPreviewItem from "./RuleCollectionPreviewItem";
 
 // import typed worker

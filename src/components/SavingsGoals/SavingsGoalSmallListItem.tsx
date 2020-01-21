@@ -22,7 +22,7 @@ const SavingsGoalSmallListItem = props => {
     const { t, savingsGoal, accounts, shareInviteMonetaryAccountResponses } = props;
     const { percentage } = savingsGoal.getStatistics(accounts, shareInviteMonetaryAccountResponses);
 
-    let listItemProps = {
+    let listItemProps: any = {
         button: true,
         component: NavLink,
         to: `/savings-goal-page/${savingsGoal.id}`

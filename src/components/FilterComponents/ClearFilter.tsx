@@ -11,10 +11,12 @@ import { resetFilters } from "~actions/filters";
 import { AppDispatch, ReduxState } from "~store/index";
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
     t: AppWindow["t"];
+    [key: string]: any;
 }
 
 class ClearFilter extends React.PureComponent<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {

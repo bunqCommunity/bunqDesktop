@@ -1,8 +1,11 @@
 import store from "store";
+import { AppWindow } from "~app";
 import settings from "~importwrappers/electronSettings";
 import { generateGUID } from "./Utils";
 import Logger from "./Logger";
 import { ANALYTICS_ENABLED } from "~reducers/options";
+
+declare let window: AppWindow & { ga: any };
 
 export default (forceEnable = false) => {
     if (process.env.NODE_ENV === "development") {
@@ -26,14 +29,14 @@ export default (forceEnable = false) => {
                 function() {
                     (i[r].q = i[r].q || []).push(arguments);
                 }),
-                (i[r].l = 1 * new Date());
+                (i[r].l = +new Date());
             (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
             a.async = 1;
             a.src = g;
             m.parentNode.insertBefore(a, m);
         })(window, document, "script", "https://www.google-analytics.com/analytics.js", "ga");
 
-        // give global access
+        // @ts-ignore give global access
         window.ga = ga;
     }
 

@@ -9,12 +9,12 @@ import SyncIcon from "@material-ui/icons/Sync";
 import { queueStartSync } from "~actions/queue";
 import { AppDispatch, ReduxState } from "~store/index";
 
-const styles = {};
-
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class QueueHeaderIcon extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {

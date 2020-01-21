@@ -18,9 +18,11 @@ import { ReduxState } from "~store/index";
 const styles = {};
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class ConfirmationDialog extends React.Component<ReturnType<typeof mapStateToProps> & IProps> {

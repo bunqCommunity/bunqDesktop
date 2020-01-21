@@ -1,8 +1,7 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
-import PropTypes from "prop-types";
 import Drawer from "@material-ui/core/Drawer";
 import Hidden from "@material-ui/core/Hidden";
 import Avatar from "@material-ui/core/Avatar";
@@ -62,10 +61,12 @@ const styles = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
     t: AppWindow["t"];
+    [key: string]: any;
 }
 
 class Sidebar extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
@@ -165,7 +166,7 @@ class Sidebar extends React.Component<ReturnType<typeof mapStateToProps> & Retur
             );
 
         const drawerList = (
-            <List style={styles.list}>
+            <List style={styles.list as CSSProperties}>
                 <NavLink to="/application-info" style={styles.bunqLink}>
                     <ListItem button>
                         <ListItemIcon>
@@ -245,6 +246,7 @@ class Sidebar extends React.Component<ReturnType<typeof mapStateToProps> & Retur
 const mapStateToProps = (state: ReduxState) => {
     return {
         open: state.sidebar.open,
+        // @ts-ignore
         stickyMenu: state.options.sticky_menu,
 
         pendingPayments: state.pending_payments.pending_payments,
@@ -254,6 +256,7 @@ const mapStateToProps = (state: ReduxState) => {
         apiKey: state.registration.api_key,
 
         userType: state.user.user_type,
+        // @ts-ignore
         limitedPermissions: state.user.limited_permissions
     };
 };
@@ -265,10 +268,7 @@ const mapDispatchToProps = (dispatch: AppDispatch) => {
     };
 };
 
-Sidebar.propTypes = {
-    classes: PropTypes.object.isRequired
-};
-
+// @ts-ignore
 export default withStyles(styles, { withTheme: true })(
     connect(mapStateToProps, mapDispatchToProps)(translate("translations")(Sidebar))
 );

@@ -11,6 +11,7 @@ import { AppWindow } from "~app";
 import { AppDispatch, ReduxState } from "~store/index";
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {

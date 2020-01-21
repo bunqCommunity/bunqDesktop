@@ -13,8 +13,7 @@ import AccountSelectorDialog from "~components/FormFields/AccountSelectorDialog"
 import TranslateMenuItem2 from "~components/TranslationHelpers/MenuItem";
 const TranslateMenuItem: any = TranslateMenuItem2;
 
-interface IPropTypes {
-    BunqJSClient: any;
+interface IProps {
     rule: AccountRule;
     accounts: any[];
     removeRule: any;
@@ -37,8 +36,8 @@ const styles = {
     }
 };
 
-class AccountRuleItem extends React.Component<IPropTypes, any> {
-    constructor(props: IPropTypes, context: any) {
+class AccountRuleItem extends React.Component<IProps, any> {
+    constructor(props: IProps, context: any) {
         super(props, context);
         this.state = {
             rule: this.props.rule

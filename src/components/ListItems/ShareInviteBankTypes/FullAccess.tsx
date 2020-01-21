@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
@@ -14,7 +13,7 @@ const styles = {
     }
 };
 
-const FullAccess = props => {
+const FullAccess = (props: any = { secondaryActions: null }) => {
     return (
         <ListItem>
             <Avatar style={styles.smallAvatar}>
@@ -29,14 +28,6 @@ const FullAccess = props => {
             <ListItemSecondaryAction>{props.secondaryActions}</ListItemSecondaryAction>
         </ListItem>
     );
-};
-
-FullAccess.defaultProps = {
-    secondaryActions: null
-};
-
-FullAccess.requiredProps = {
-    t: PropTypes.any.isRequired
 };
 
 export default FullAccess;

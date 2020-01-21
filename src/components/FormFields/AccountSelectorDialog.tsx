@@ -63,6 +63,7 @@ const AccountItem = ({ account, onClick, hideBalance, shareInviteMonetaryAccount
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {

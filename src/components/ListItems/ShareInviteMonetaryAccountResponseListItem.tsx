@@ -7,6 +7,7 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Avatar from "@material-ui/core/Avatar";
 import Divider from "@material-ui/core/Divider";
 import Collapse from "@material-ui/core/Collapse";
+import { AppWindow } from "~app";
 import { AppDispatch, ReduxState } from "~store/index";
 
 import LazyAttachmentImage from "../AttachmentImage/LazyAttachmentImage";
@@ -16,6 +17,8 @@ import ShowOnly from "./ShareInviteBankTypes/ShowOnly";
 import FullAccess from "./ShareInviteBankTypes/FullAccess";
 import DraftAccess from "./ShareInviteBankTypes/DraftAccess";
 import { shareInviteMonetaryAccountResponsesInfoUpdate } from "~actions/share_invite_monetary_account_responses";
+
+declare let window: AppWindow;
 
 const styles = {
     listItemText: {
@@ -31,12 +34,19 @@ const styles = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class ShareInviteMonetaryAccountResponseListItem extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    static defaultProps = {
+        displayAcceptedRequests: true,
+        minimalDisplay: false
+    };
+
     state: IState;
 
     constructor(props, context) {
@@ -170,11 +180,6 @@ class ShareInviteMonetaryAccountResponseListItem extends React.Component<ReturnT
         ];
     }
 }
-
-ShareInviteMonetaryAccountResponseListItem.defaultProps = {
-    displayAcceptedRequests: true,
-    minimalDisplay: false
-};
 
 const mapStateToProps = (state: ReduxState) => {
     return {

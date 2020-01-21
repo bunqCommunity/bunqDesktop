@@ -14,6 +14,7 @@ const styles = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
@@ -77,6 +78,7 @@ const AccountAvatarCircularProgress = ({ account, theme, selected = false, style
 
 const mapStateToProps = (state: ReduxState) => {
     return {
+        // @ts-ignore
         theme: state.options.theme,
     };
 };

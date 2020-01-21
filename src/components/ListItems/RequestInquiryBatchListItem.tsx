@@ -43,7 +43,22 @@ const classStyles = theme => ({
     }
 });
 
-class RequestInquiryBatchListItem extends React.Component {
+interface IState {
+    [key: string]: any;
+}
+
+interface IProps {
+    [key: string]: any;
+}
+
+class RequestInquiryBatchListItem extends React.Component<IProps> {
+    static defaultProps = {
+        displayAcceptedRequests: true,
+        minimalDisplay: false
+    };
+
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -142,7 +157,9 @@ class RequestInquiryBatchListItem extends React.Component {
         if (monetaryAccountId) {
             // get monetary details for this batch
             monetaryAccountInfo = accounts.find(account => account.id === monetaryAccountId);
+            // @ts-ignore
             if (monetaryAccountInfo && monetaryAccountInfo.avatar) {
+                // @ts-ignore
                 imageUUID = monetaryAccountInfo.avatar.image[0].attachment_public_uuid;
             }
         }
@@ -186,6 +203,7 @@ class RequestInquiryBatchListItem extends React.Component {
                 const partString = `${requestItemCount} ${t(requestCounterType)}`;
 
                 // create a new string
+                // @ts-ignore
                 secondaryText = secondaryText === false ? partString : `${secondaryText}, ${partString}`;
             }
         });
@@ -250,9 +268,5 @@ class RequestInquiryBatchListItem extends React.Component {
     }
 }
 
-RequestInquiryBatchListItem.defaultProps = {
-    displayAcceptedRequests: true,
-    minimalDisplay: false
-};
-
+// @ts-ignore
 export default withTheme()(translate("translations")(withStyles(classStyles)(RequestInquiryBatchListItem)));

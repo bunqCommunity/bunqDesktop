@@ -6,7 +6,21 @@ import { preferedThousandSeparator, preferedDecimalSeparator } from "~functions/
 
 import { withTheme } from "@material-ui/core/styles";
 
-class MoneyFormatInputDefault extends React.Component {
+interface IState {
+    [key: string]: any;
+}
+
+interface IProps {
+    [key: string]: any;
+}
+
+class MoneyFormatInputDefault extends React.Component<IProps> {
+    state: IState;
+
+    static defaultProps = {
+        fontSize: 24
+    };
+
     NumberFormatCustom = props => {
         const { inputRef, fontSize, ...other } = props;
 
@@ -37,9 +51,5 @@ class MoneyFormatInputDefault extends React.Component {
         );
     }
 }
-
-MoneyFormatInputDefault.defaultProps = {
-    fontSize: 24
-};
 
 export default withTheme()(MoneyFormatInputDefault);

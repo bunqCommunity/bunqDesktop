@@ -1,5 +1,5 @@
 import BunqJSClient from "@bunq-community/bunq-js-client";
-import React from "react";
+import React, { CSSProperties } from "react";
 import { connect } from "react-redux";
 import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
@@ -109,7 +109,7 @@ class AccountSelection extends React.Component<ReturnType<typeof mapStateToProps
                 return (
                     <MenuItem key={key} onClick={this.addAccountId(account.id)}>
                         <ListItemIcon>
-                            <Avatar style={styles.bigAvatar}>
+                            <Avatar>
                                 <LazyAttachmentImage
                                     height={40}
                                     imageUUID={account.avatar.image[0].attachment_public_uuid}
@@ -144,7 +144,7 @@ class AccountSelection extends React.Component<ReturnType<typeof mapStateToProps
                         {accountMenuItems}
                     </Menu>
                 </ListSubheader>
-                <ListItem style={styles.listItem}>{selectedAccountChipItems}</ListItem>
+                <ListItem style={styles.listItem as CSSProperties}>{selectedAccountChipItems}</ListItem>
             </>
         );
     }

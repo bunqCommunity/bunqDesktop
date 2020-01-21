@@ -14,6 +14,7 @@ export const devMenuTemplate = {
             label: "Toggle DevTools",
             accelerator: "Alt+CmdOrCtrl+I",
             click: () => {
+                // @ts-ignore
                 BrowserWindow.getFocusedWindow().toggleDevTools();
             }
         },

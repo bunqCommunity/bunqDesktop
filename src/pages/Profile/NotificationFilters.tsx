@@ -41,7 +41,17 @@ const styles = {
     }
 };
 
-class NotificationFilters extends React.Component {
+interface IState {
+    [key: string]: any;
+}
+
+interface IProps {
+    [key: string]: any;
+}
+
+class NotificationFilters extends React.Component<IProps> {
+    state: IState;
+
     constructor(props, context) {
         super(props, context);
         this.state = {

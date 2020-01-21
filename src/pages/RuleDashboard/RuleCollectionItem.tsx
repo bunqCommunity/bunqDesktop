@@ -10,11 +10,13 @@ import CategoryIcon from "~components/Categories/CategoryIcon";
 import RuleCollection from "~models/RuleCollection";
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
     ruleCollection: RuleCollection;
     t: AppWindow["t"];
+    [key: string]: any;
 }
 
 class RuleCollectionItem extends React.Component<IProps> {
@@ -45,6 +47,7 @@ class RuleCollectionItem extends React.Component<IProps> {
         const secondaryText = `${t(enabledText)} - ${ruleCollection.getRules().length} ${t("rules")}`;
 
         return [
+            // @ts-ignore
             <ListItem button component={NavLink} to={`/rule-page/${ruleCollection.id}`}>
                 <ListItemText primary={ruleCollection.getTitle()} secondary={secondaryText} />
                 <ListItemSecondaryAction>{categoryIcons}</ListItemSecondaryAction>

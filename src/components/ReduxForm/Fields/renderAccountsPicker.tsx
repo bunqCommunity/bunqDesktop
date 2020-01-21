@@ -8,6 +8,7 @@ import { ReduxState } from "~store/index";
 import AccountListItemChip from "../../AccountList/AccountListItemChip";
 
 interface IProps {
+    [key: string]: any;
 }
 
 const renderAccountsPicker = ({ t, i18n, tReady, input, label, meta: { error }, accounts, ...otherProps }: ReturnType<typeof mapStateToProps> & IProps) => {

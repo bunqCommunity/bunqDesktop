@@ -54,9 +54,15 @@ interface IState {
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class AccountQRFullscreen extends React.PureComponent<ReturnType<typeof mapStateToProps> & IProps> {
+    static defaultProps = {
+        accountId: false,
+        mode: "ACCOUNT"
+    };
+
     state: IState = {
         open: false
     };
@@ -84,6 +90,7 @@ class AccountQRFullscreen extends React.PureComponent<ReturnType<typeof mapState
                         accountInfo = account;
                     }
                 });
+                // @ts-ignore
                 accountInfo.alias.map(alias => {
                     if (alias.type === "IBAN") {
                         IBAN = alias.value;
@@ -97,10 +104,16 @@ class AccountQRFullscreen extends React.PureComponent<ReturnType<typeof mapState
                             <Avatar className={classes.bigAvatar}>
                                 <LazyAttachmentImage
                                     height={45}
-                                    imageUUID={accountInfo.avatar.image[0].attachment_public_uuid}
+                                    imageUUID={
+                                        // @ts-ignore
+                                        accountInfo.avatar.image[0].attachment_public_uuid
+                                    }
                                 />
                             </Avatar>
-                            <ListItemText primary={accountInfo.description} secondary={formatIban(IBAN)} />
+                            <ListItemText primary={
+                                // @ts-ignore
+                                accountInfo.description
+                            } secondary={formatIban(IBAN)} />
                         </ListItem>
                     </>
                 );
@@ -146,11 +159,6 @@ class AccountQRFullscreen extends React.PureComponent<ReturnType<typeof mapState
     }
 }
 
-AccountQRFullscreen.defaultProps = {
-    accountId: false,
-    mode: "ACCOUNT"
-};
-
 const mapStateToProps = (state: ReduxState) => {
     return {
         accounts: state.accounts.accounts,
@@ -158,4 +166,5 @@ const mapStateToProps = (state: ReduxState) => {
     };
 };
 
+// @ts-ignore
 export default withStyles(styles)(connect(mapStateToProps)(AccountQRFullscreen));

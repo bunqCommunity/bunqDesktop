@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import { ipcRenderer } from "electron";
@@ -9,6 +9,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import CardContent from "@material-ui/core/CardContent";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { AppWindow } from "~app";
 
 import TranslateTypography from "~components/TranslationHelpers/Typography";
 import TranslateButton from "~components/TranslationHelpers/Button";
@@ -19,6 +20,8 @@ import BunqErrorHandler from "~functions/BunqErrorHandler";
 import { oauthSetDetails } from "~actions/oauth";
 import { AppDispatch, ReduxState } from "~store/index";
 import { actions as snackbarActions } from "~store/snackbar";
+
+declare let window: AppWindow;
 
 const styles = {
     button: {
@@ -67,9 +70,11 @@ const styles = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class OAuthManagement extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
@@ -232,6 +237,7 @@ class OAuthManagement extends React.Component<ReturnType<typeof mapStateToProps>
             () => {
                 // waited for state to update and now save the details if valid
                 if (clientSecretValid && clientIdValid) {
+                    // @ts-ignore
                     this.setOauthDetails();
                 }
             }
@@ -249,6 +255,7 @@ class OAuthManagement extends React.Component<ReturnType<typeof mapStateToProps>
             () => {
                 // waited for state to update and now save the details if valid
                 if (clientSecretValid && clientIdValid) {
+                    // @ts-ignore
                     this.setOauthDetails();
                 }
             }
@@ -264,7 +271,7 @@ class OAuthManagement extends React.Component<ReturnType<typeof mapStateToProps>
         const clientSecretValid = sandboxMode ? this.state.sandboxClientSecretValid : this.state.clientIdValid;
 
         const content = this.isLoading ? (
-            <Grid item xs={12} style={styles.cardContent}>
+            <Grid item xs={12} style={styles.cardContent as CSSProperties}>
                 <TranslateTypography variant="h5" component="h2" style={styles.text}>
                     Waiting for authorization
                 </TranslateTypography>
@@ -322,7 +329,7 @@ class OAuthManagement extends React.Component<ReturnType<typeof mapStateToProps>
         return (
             <>
                 <Card style={styles.card}>
-                    <CardContent style={styles.cardContent}>
+                    <CardContent style={styles.cardContent as CSSProperties}>
                         <Grid container spacing={8} justify={"center"}>
                             {content}
                         </Grid>
@@ -353,6 +360,7 @@ const mapDispatchToProps = (dispatch: AppDispatch) => {
         oauthSetDetails: (clientId, clientSecret, sandboxClientId, sandboxClientSecret) =>
             dispatch(oauthSetDetails(clientId, clientSecret, sandboxClientId, sandboxClientSecret)),
 
+        // @ts-ignore
         handleBunqError: (error, customError) => BunqErrorHandler(dispatch, error, customError)
     };
 };

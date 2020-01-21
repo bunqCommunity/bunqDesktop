@@ -1,9 +1,11 @@
 import React from "react";
-import SpeedDial from "@material-ui/lab/SpeedDial";
+import OriginalSpeedDial from "@material-ui/lab/SpeedDial";
 import SpeedDialIcon from "@material-ui/lab/SpeedDialIcon";
 import SpeedDialAction from "@material-ui/lab/SpeedDialAction";
 
 import CloseIcon from "@material-ui/icons/Close";
+
+const SpeedDial: any = OriginalSpeedDial;
 
 const styles = {
     speedDial: {
@@ -14,7 +16,26 @@ const styles = {
     }
 };
 
-class SpeedDialCustom extends React.Component {
+interface IState {
+    open: boolean;
+    forceOpen: boolean;
+}
+
+interface IProps {
+    [key: string]: any;
+}
+
+class SpeedDialCustom extends React.Component<IProps> {
+    state: IState;
+
+    static defaultProps = {
+        style: {},
+        actions: [],
+        ariaLabel: "More options",
+        hidden: false,
+        buttonColor: "primary"
+    };
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -24,7 +45,7 @@ class SpeedDialCustom extends React.Component {
     }
 
     handleClick = () => {
-        this.setState(state => ({
+        this.setState((state: IState) => ({
             open: !state.open,
             forceOpen: !state.forceOpen
         }));
@@ -82,12 +103,5 @@ class SpeedDialCustom extends React.Component {
         );
     }
 }
-SpeedDialCustom.defaultProps = {
-    style: {},
-    actions: [],
-    ariaLabel: "More options",
-    hidden: false,
-    buttonColor: "primary"
-};
 
 export default SpeedDialCustom;

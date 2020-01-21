@@ -19,9 +19,11 @@ const styles = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
+    [key: string]: any;
 }
 
 class GeoLocationView extends React.PureComponent<IProps> {

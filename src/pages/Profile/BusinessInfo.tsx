@@ -76,6 +76,7 @@ const BusinessInfo = ({ t, userType, totalBalance, ...props }) => {
 
                 <Grid item xs={12}>
                     <TextField
+                        // @ts-ignore
                         min={0}
                         step={0.01}
                         type="number"

@@ -40,10 +40,11 @@ export const EVENT_TOTAL_LIMIT = 1000;
 declare let window: AppWindow;
 
 interface IProps {
-    BunqJSClient: BunqJSClient;
+    [key: string]: any;
 }
 
 interface IState {
+    [key: string]: any;
 }
 
 class QueueManager extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
@@ -217,9 +218,11 @@ class QueueManager extends React.Component<ReturnType<typeof mapStateToProps> & 
             if (newestPayment) newerPaymentCount += payments.filter(payment => payment.id > newestPayment.id).length;
 
             const newestBunqMeTab = this.props.bunqMeTabs.find(
+                // @ts-ignore
                 bunqMeTab => account.id === bunqMeTab.monetary_account_id
             );
             if (newestBunqMeTab)
+                // @ts-ignore
                 newerBunqMeTabsCount += bunqMeTabs.filter(bunqMeTab => bunqMeTab.id > newestBunqMeTab.id).length;
 
             const newestRequestResponse = this.props.requestResponses.find(
@@ -400,6 +403,7 @@ class QueueManager extends React.Component<ReturnType<typeof mapStateToProps> & 
         const nextEventCount = eventCount > 200 ? eventCount - 200 : 0;
         BunqJSClient.api.payment
             .list(user_id, account_id, {
+                // @ts-ignore
                 older_id: olderId,
                 count: currentEventCount
             })
@@ -454,7 +458,7 @@ class QueueManager extends React.Component<ReturnType<typeof mapStateToProps> & 
         const nextEventCount = eventCount > 200 ? eventCount - 200 : 0;
         BunqJSClient.api.bunqMeTabs
             .list(user_id, account_id, {
-                older_id: olderId,
+                older_id: +olderId,
                 count: currentEventCount
             })
             .then(bunqMeTabs => {
@@ -508,7 +512,7 @@ class QueueManager extends React.Component<ReturnType<typeof mapStateToProps> & 
         const nextEventCount = eventCount > 200 ? eventCount - 200 : 0;
         BunqJSClient.api.requestResponse
             .list(user_id, account_id, {
-                older_id: olderId,
+                older_id: +olderId,
                 count: currentEventCount
             })
             .then(requestResponses => {
@@ -620,7 +624,7 @@ class QueueManager extends React.Component<ReturnType<typeof mapStateToProps> & 
         const nextEventCount = eventCount > 200 ? eventCount - 200 : 0;
         BunqJSClient.api.requestInquiryBatch
             .list(user_id, account_id, {
-                older_id: olderId,
+                older_id: +olderId,
                 count: currentEventCount
             })
             .then(requestInquiryBatches => {
@@ -679,7 +683,7 @@ class QueueManager extends React.Component<ReturnType<typeof mapStateToProps> & 
         const nextEventCount = eventCount > 200 ? eventCount - 200 : 0;
         BunqJSClient.api.masterCardAction
             .list(user_id, account_id, {
-                older_id: olderId,
+                older_id: +olderId,
                 count: currentEventCount
             })
             .then(masterCardActions => {
@@ -737,12 +741,14 @@ class QueueManager extends React.Component<ReturnType<typeof mapStateToProps> & 
         const nextEventCount = eventCount > 200 ? eventCount - 200 : 0;
         BunqJSClient.api.shareInviteMonetaryAccountInquiry
             .list(user_id, account_id, {
-                older_id: olderId,
+                older_id: +olderId,
                 count: currentEventCount
             })
             .then(shareInviteBankInquiries => {
                 // more shareInviteBankInquiries can be loaded for this account
+                // @ts-ignore
                 if (shareInviteBankInquiries.length === currentEventCount && nextEventCount > 0) {
+                    // @ts-ignore
                     const oldestShareInviteMonetaryAccountInquiryIndex = shareInviteBankInquiries.length - 1;
                     const oldestShareInviteMonetaryAccountInquiry =
                         shareInviteBankInquiries[oldestShareInviteMonetaryAccountInquiryIndex];
@@ -763,6 +769,7 @@ class QueueManager extends React.Component<ReturnType<typeof mapStateToProps> & 
                 // update the list for the account id
                 currentShareInviteBankInquiries[account_id] = [
                     ...accountShareInviteBankInquiries,
+                    // @ts-ignore
                     ...shareInviteBankInquiries
                 ];
 
@@ -811,16 +818,22 @@ const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
         userLoading: state.user.loading,
+        // @ts-ignore
         limitedPermissions: state.user.limited_permissions,
 
         accounts: state.accounts.accounts,
         accountsLoading: state.accounts.loading,
 
+        // @ts-ignore
         syncOnStartup: state.options.sync_on_startup,
+        // @ts-ignore
         eventCountLimit: state.options.event_count_limit,
 
+        // @ts-ignore
         automaticUpdateEnabled: state.options.automatic_update_enabled,
+        // @ts-ignore
         automaticUpdateSendNotification: state.options.automatic_update_send_notification,
+        // @ts-ignore
         automaticUpdateDuration: state.options.automatic_update_duration,
 
         queueRequestCounter: state.queue.request_counter,
@@ -839,7 +852,7 @@ const mapStateToProps = (state: ReduxState) => {
     };
 };
 
-const mapDispatchToProps = (dispatch: AppDispatch, ownProps: IProps) => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         openSnackbar: (message, duration = 4000) => dispatch(snackbarActions.open({ message, duration })),
 

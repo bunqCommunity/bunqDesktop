@@ -1,9 +1,8 @@
-import BunqJSClient from "@bunq-community/bunq-js-client";
 import React, { CSSProperties } from "react";
 import { translate } from "react-i18next";
 import { connect } from "react-redux";
 import Avatar from "@material-ui/core/Avatar";
-import IconButton from "@material-ui/core/IconButton";
+import OriginalIconButton from "@material-ui/core/IconButton";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -23,6 +22,8 @@ import { AppDispatch, ReduxState } from "~store/index";
 import AccountAvatarCircularProgress from "./AccountAvatarCircularProgress";
 
 import { actions as accountsActions } from "~store/accounts";
+
+const IconButton: any = OriginalIconButton;
 
 const styles = {
     bigAvatar: {
@@ -44,10 +45,11 @@ const styles = {
 };
 
 interface IState {
+    [key: string]: any;
 }
 
 interface IProps {
-    BunqJSClient: BunqJSClient;
+    [key: string]: any;
 }
 
 class AccountListItem extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
@@ -181,8 +183,10 @@ class AccountListItem extends React.Component<ReturnType<typeof mapStateToProps>
 const mapStateToProps = (state: ReduxState) => {
     return {
         user: state.user.user,
+        // @ts-ignore
         theme: state.options.theme,
         paymentsLoading: state.payments.loading,
+        // @ts-ignore
         hideBalance: state.options.hide_balance,
 
         selectedAccountIds: state.accountIdFilter.selectedAccountIds,
@@ -190,7 +194,7 @@ const mapStateToProps = (state: ReduxState) => {
     };
 };
 
-const mapDispatchToProps = (dispatch: AppDispatch, ownProps: IProps) => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
     return {
         selectAccount: accountId => dispatch(accountsActions.selectAccount(accountId)),
 

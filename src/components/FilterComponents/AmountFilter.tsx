@@ -16,7 +16,7 @@ interface IProps {
 }
 
 interface IState {
-
+    [key: string]: any;
 }
 
 class AmountFilter extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {

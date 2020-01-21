@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
@@ -14,7 +13,7 @@ const styles = {
     }
 };
 
-const ShowOnly = props => {
+const ShowOnly = (props: any = { secondaryActions: null }) => {
     return (
         <ListItem>
             <Avatar style={styles.smallAvatar}>
@@ -26,14 +25,6 @@ const ShowOnly = props => {
             <ListItemSecondaryAction>{props.secondaryActions}</ListItemSecondaryAction>
         </ListItem>
     );
-};
-
-ShowOnly.defaultProps = {
-    secondaryActions: null
-};
-
-ShowOnly.requiredProps = {
-    t: PropTypes.any.isRequired
 };
 
 export default ShowOnly;

@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import InputBase from "@material-ui/core/InputBase";
@@ -51,13 +50,6 @@ const LinkPreviewField = props => {
             </IconButton>
         </Paper>
     );
-};
-
-LinkPreviewField.propTypes = {
-    classes: PropTypes.object.isRequired,
-
-    value: PropTypes.string.isRequired,
-    reset: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(LinkPreviewField);

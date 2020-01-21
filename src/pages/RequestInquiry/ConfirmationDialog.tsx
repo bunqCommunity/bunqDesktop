@@ -10,7 +10,17 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { formatMoney } from "~functions/Utils";
 
-export default class ConfirmationDialog extends React.Component {
+interface IState {
+    [key: string]: any;
+}
+
+interface IProps {
+    [key: string]: any;
+}
+
+export default class ConfirmationDialog extends React.Component<IProps> {
+    state: IState;
+
     render() {
         const {
             confirmModalOpen,
@@ -55,6 +65,7 @@ export default class ConfirmationDialog extends React.Component {
         });
 
         return (
+            // @ts-ignore
             <Dialog open={confirmModalOpen} keepMounted onClose={this.closeModal}>
                 <DialogTitle>Confirm the request</DialogTitle>
                 <DialogContent>

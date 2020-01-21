@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import withTheme from "@material-ui/core/styles/withTheme";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
@@ -89,7 +89,7 @@ const TransactionHeader = props => {
         fromIsCounterparty = false;
     }
 
-    let defaultImage = false;
+    let defaultImage: any = false;
     if (props.type && props.type) {
         if (props.type === "payment") {
             defaultImage = defaultPaymentImage(props.event);
@@ -103,7 +103,7 @@ const TransactionHeader = props => {
     }
 
     const components = [
-        <Grid item xs={12} md={4} style={styles.targetWrapper}>
+        <Grid item xs={12} md={4} style={styles.targetWrapper as CSSProperties}>
             <Avatar style={styles.avatar}>
                 <LazyAttachmentImage
                     height={90}
@@ -119,9 +119,9 @@ const TransactionHeader = props => {
         </Grid>,
 
         <Hidden smDown>
-            <Grid item md={4} style={{ ...styles.arrow, marginTop: 32 }}>
+            <Grid item md={4} style={({ ...styles.arrow, marginTop: 32 } as CSSProperties)}>
                 <Grid container>
-                    <Grid item xs={12} style={{ ...styles.arrow }}>
+                    <Grid item xs={12} style={({ ...styles.arrow }) as CSSProperties}>
                         <ArrowForwardIcon style={{ color: arrowColor }} color="inherit" />
                     </Grid>
                     {props.transferAmountComponent && (
@@ -134,7 +134,7 @@ const TransactionHeader = props => {
         </Hidden>,
 
         <Hidden mdUp>
-            <Grid item xs={12} style={styles.arrow}>
+            <Grid item xs={12} style={styles.arrow as CSSProperties}>
                 <Grid container>
                     {props.transferAmountComponent && (
                         <Grid item xs={12}>
@@ -148,7 +148,7 @@ const TransactionHeader = props => {
             </Grid>
         </Hidden>,
 
-        <Grid item xs={12} md={4} style={styles.targetWrapper}>
+        <Grid item xs={12} md={4} style={styles.targetWrapper as CSSProperties}>
             <Avatar style={styles.avatar}>
                 <LazyAttachmentImage
                     height={90}
@@ -201,4 +201,5 @@ const TransactionHeader = props => {
     return components;
 };
 
+// @ts-ignore
 export default withTheme()(TransactionHeader);

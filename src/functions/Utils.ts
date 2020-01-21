@@ -1,3 +1,7 @@
+import { AppWindow } from "~app";
+
+declare let window: AppWindow;
+
 /**
  * Turn first character into uppercase
  * @param str
@@ -77,7 +81,7 @@ export const anonymizedHandlerKeys = Object.keys(anonymizedHandlers);
  * @param object
  * @returns {*}
  */
-export const anonymizeObject = (object, key = false) => {
+export const anonymizeObject = (object: any, key: any = false) => {
     // this could be an item itself
     if (key) {
         if (anonymizeKeys.includes(key)) {

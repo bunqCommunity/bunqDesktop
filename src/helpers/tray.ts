@@ -57,6 +57,7 @@ export default (mainWindow, trayIcon) => {
             }
         ];
 
+        // @ts-ignore
         const contextMenu = Menu.buildFromTemplate(menuItems);
 
         tray.setContextMenu(contextMenu);

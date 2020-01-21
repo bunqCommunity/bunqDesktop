@@ -1,7 +1,11 @@
 import React from "react";
 import { Redirect, Route } from "react-router-dom";
 
-export default ({ component: Component, derivedPassword, ...rest }) => {
+interface IProps {
+    [key: string]: any;
+}
+
+export default ({ component: Component, derivedPassword, ...rest }: IProps) => {
     const componentHandler = rest.render ? rest.render : props => Component;
 
     // no user selected

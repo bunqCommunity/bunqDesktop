@@ -12,7 +12,7 @@ describe("<App />", () => {
         // configure a react16 adapter
         enzyme.configure({ adapter: new Adapter() });
 
-        // allow shallwo renderer
+        // allow shallow renderer
         shallow = createShallow();
     });
 
