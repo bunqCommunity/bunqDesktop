@@ -1,0 +1,133 @@
+import React from "react";
+import { connect } from "react-redux";
+import Payment from "~models/Payment";
+import RequestInquiry from "~models/RequestInquiry";
+
+import { actions as categoriesActions } from "~store/categories";
+import { actions as categoryRulesActions } from "~store/categoryRules";
+import { AppDispatch, ReduxState } from "~store/index";
+import RuleCollection from "~models/RuleCollection";
+
+// import typed worker
+// TODO: find a way to support Jest
+let RuleCollectionCheckWorker: any;
+if (!process.env.JEST) {
+    RuleCollectionCheckWorker = require("worker-loader!../webworkers/rule_collection_check.worker.js");
+}
+
+interface IProps {
+    [key: string]: any;
+}
+
+interface IState {
+    [key: string]: any;
+}
+
+class RuleCollectionChecker extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IProps> {
+    state: IState;
+    worker: any;
+
+    constructor(props, context) {
+        super(props, context);
+        this.state = {};
+
+        if (RuleCollectionCheckWorker) {
+            this.worker = new RuleCollectionCheckWorker();
+            this.worker.onmessage = this.handleWorkerEvent;
+        }
+    }
+
+    componentWillUnmount() {
+        this.worker?.terminate().then();
+    }
+
+    componentDidUpdate(oldProps) {
+        const updatedToggle = oldProps.updateToggle === true && this.props.updateToggle == false;
+
+        // check if update state changed or queue finished
+        if (updatedToggle || this.props.queueFinishedSync !== oldProps.queueFinishedSync) {
+            // updateToggle went from true to false, update worker
+            this.triggerWorkerEvent();
+        }
+    }
+
+    handleWorkerEvent = eventResults => {
+        const events = eventResults.data.result;
+        const ruleCollectionId = eventResults.data.ruleCollectionId;
+        const ruleCollection = new RuleCollection();
+        ruleCollection.fromObject(this.props.categoryRules[ruleCollectionId]);
+
+        // go through all events
+        const newCategoryConnections = [];
+        events.map(event => {
+            // check if this event matched
+            if (event.matches) {
+                ruleCollection.getCategories().forEach(categoryId => {
+                    newCategoryConnections.push({
+                        category_id: categoryId,
+                        event_type: event.type,
+                        event_id: event.item.id
+                    });
+                });
+            }
+        });
+
+        if (newCategoryConnections.length > 0) {
+            this.props.setCategoryConnectionMultiple(newCategoryConnections);
+        }
+    };
+
+    triggerWorkerEvent = () => {
+        // use json format
+        const payments = this.props.payments.map(item => Payment.fromPlainObject(item).toJSON());
+        const requestInquiries = this.props.requestInquiries.map(item => RequestInquiry.fromPlainObject(item).toJSON());
+        const requestResponses = this.props.requestResponses.map(item => item.toJSON());
+        const masterCardActions = this.props.masterCardActions.map(item => item.toJSON());
+        const bunqMeTabs = this.props.bunqMeTabs.map(item => JSON.stringify(item));
+
+        // get results for all our rule collections
+        Object.keys(this.props.categoryRules).forEach(categoryRuleId => {
+            const ruleCollection = new RuleCollection();
+            ruleCollection.fromObject(this.props.categoryRules[categoryRuleId]);
+
+            if (ruleCollection && ruleCollection.isEnabled()) {
+                this.worker.postMessage({
+                    ruleCollection: ruleCollection,
+                    payments: payments,
+                    masterCardActions: masterCardActions,
+                    bunqMeTabs: bunqMeTabs,
+                    requestInquiries: requestInquiries,
+                    requestResponses: requestResponses
+                });
+            }
+        });
+    };
+
+    render() {
+        return null;
+    }
+}
+
+const mapStateToProps = (state: ReduxState) => {
+    return {
+        categories: state.categories.categories,
+        categoryRules: state.categoryRules.category_rules,
+
+        queueFinishedSync: state.queue.finished_queue,
+
+        requestResponses: state.request_responses.request_responses,
+        payments: state.payments.payments,
+        bunqMeTabs: state.bunqMeTabs.bunq_me_tabs,
+        masterCardActions: state.master_card_actions.master_card_actions,
+        requestInquiries: state.request_inquiries.request_inquiries
+    };
+};
+
+const mapDispatchToProps = (dispatch: AppDispatch) => {
+    return {
+        setCategoryConnectionMultiple: (...params) => dispatch(categoriesActions.setCategoryConnectionMultiple(...params)),
+        setCategoryRule: rule_collection => dispatch(categoryRulesActions.setRule(rule_collection))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(RuleCollectionChecker);

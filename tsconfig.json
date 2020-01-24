@@ -5,6 +5,10 @@
         "noImplicitAny": false,
         "target": "es2017",
         "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "module": "esnext",
         "jsx": "react",
         "allowJs": true,
         "lib": [
@@ -13,9 +17,33 @@
             "es2017",
             "webworker",
             "dom"
-        ]
+        ],
+        "baseUrl": "./",
+        "paths": {
+            "~actions/*": ["src/Actions/*"],
+            "~app": ["src/app"],
+            "~background": ["src/background"],
+            "~env": ["src/env"],
+            "~components/*": ["src/components/*"],
+            "~functions/*": ["src/functions/*"],
+            "~helpers/*": ["src/helpers/*"],
+            "~importwrappers/*": ["src/importwrappers/*"],
+            "~locales/*": ["src/locales/*"],
+            "~menu/*": ["src/menu/*"],
+            "~misc/*": ["src/misc/*"],
+            "~models/*": ["src/models/*"],
+            "~pages/*": ["src/pages/*"],
+            "~reducers/*": ["src/Reducers/*"],
+            "~scss/*": ["src/scss/*"],
+            "~staticdata/*": ["src/staticdata/*"],
+            "~store/*": ["src/store/*"],
+            "~themes/*": ["src/themes/*"],
+            "~types/*": ["src/types/*"],
+            "~webworkers/*": ["src/webworkers/*"]
+        }
     },
     "exclude": [
+        "node_modules",
         "**/*.test.ts"
     ],
     "jest": {
