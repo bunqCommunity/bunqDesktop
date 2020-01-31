@@ -41,13 +41,7 @@ before_script:
 script:
   - |
     if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-      docker run --rm \
-        --env-file <(env | grep -v '\r' | grep -iE 'DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|(\b(?!TRAVIS_COMMIT_MESSAGE)TRAVIS)|APPVEYOR_|CSC_|_TOKEN|_KEY|BUILD_') \
-        -v ${PWD}:/project \
-        -v ~/.cache/electron:/root/.cache/electron \
-        -v ~/.cache/electron-builder:/root/.cache/electron-builder \
-        electronuserland/builder:wine \
-        /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn run release --linux"
+      bash ${TRAVIS_BUILD_DIR}/build/docker/electron-linux/run.sh
     else
       yarn run release -- --mac --win
     fi
