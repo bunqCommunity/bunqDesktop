@@ -40,6 +40,7 @@
     "build": {
         "artifactName": "${productName}-${version}-${arch}.${ext}",
         "appId": "com.bunqdesktop",
+        "nodeVersion": "v12.4.0",
         "files": [
             "app/**/*",
             "node_modules/**/*",
