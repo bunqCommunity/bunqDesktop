@@ -20,7 +20,7 @@ class RulesPage extends React.Component {
             previewRuleCollection: null,
             previewUpdated: new Date(),
             checkedInitial: false,
-            initialRules: false,
+            initialRules: false
         };
 
         const searchParams = new URLSearchParams(this.props.location.search);
@@ -37,8 +37,8 @@ class RulesPage extends React.Component {
                         field: field,
                         matchType: "CONTAINS",
                         value: value
-                    },
-                ],
+                    }
+                ]
             };
         } else if (searchParams.has("amount")) {
             const amount = searchParams.get("amount");
@@ -51,14 +51,14 @@ class RulesPage extends React.Component {
                     {
                         ruleType: "TRANSACTION_AMOUNT",
                         matchType: match_type,
-                        amount: amount,
-                    },
-                ],
+                        amount: amount
+                    }
+                ]
             };
         } else {
             initialState = {
                 ...initialState,
-                checkedInitial: true,
+                checkedInitial: true
             };
         }
 

@@ -129,9 +129,8 @@ app.on("ready", () => {
         if (env.name === "development") {
             // Add React dev tools
             devTools()
-              .catch(console.error)
-              .then(() => mainWindow.openDevTools())
-            ;
+                .catch(console.error)
+                .then(() => mainWindow.openDevTools());
         }
     });
 

@@ -9,7 +9,7 @@ const styles = {
     cardImage: {}
 };
 
-export const getCardTypeImage = (card) => {
+export const getCardTypeImage = card => {
     const type = card.type;
     const productType = card.product_type;
     let cardType = card.cardType;
