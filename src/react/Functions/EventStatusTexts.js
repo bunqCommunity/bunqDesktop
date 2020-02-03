@@ -87,6 +87,8 @@ export const paymentTypeParser = (paymentType, t) => {
             return "SEPA credit transfer";
         case "EBA_SDD":
             return "SEPA direct debit";
+        case "CHECKOUT_MERCHANT":
+            return "top up";
     }
     return paymentType;
 };
