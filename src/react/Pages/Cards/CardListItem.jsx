@@ -23,8 +23,14 @@ export const getCardTypeImage = card => {
                     // check the different credit card types
                     switch (productType) {
                         case "MASTERCARD_GREEN":
-                            cardType = "MasterCard Green";
-                            cardImage = "images/bunq-mastercard-metal.png";
+                            if (card.founder_number) {
+                                cardType = "MasterCard Green Founder's Edition";
+                                cardImage = "images/bunq-mastercard-metal-founders.png";
+                            } else {
+                                cardType = "MasterCard Green";
+                                cardImage = "images/bunq-mastercard-metal.png";
+                            }
+
                             break;
                         default:
                         case "MASTERCARD_TRAVEL":
