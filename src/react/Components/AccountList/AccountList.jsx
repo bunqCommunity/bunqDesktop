@@ -20,7 +20,7 @@ import AccountListItem from "./AccountListItem";
 import AddAccount from "./AddAccount";
 import { formatMoney } from "../../Functions/Utils";
 import { connectGetBudget } from "../../Functions/ConnectGetPermissions";
-import { filterShareInviteBankResponses } from "../../Functions/DataFilters";
+import { filterShareInviteMonetaryAccountResponses } from "../../Functions/DataFilters";
 
 import {
     accountsSelectAccount,
@@ -34,8 +34,8 @@ import { bunqMeTabsUpdate } from "../../Actions/bunq_me_tabs";
 import { masterCardActionsUpdate } from "../../Actions/master_card_actions";
 import { requestInquiriesUpdate } from "../../Actions/request_inquiries";
 import { updateStatisticsSavingsGoals } from "../../Actions/savings_goals";
-import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_responses";
-import { shareInviteBankInquiriesInfoUpdate } from "../../Actions/share_invite_bank_inquiries";
+import { shareInviteMonetaryAccountResponsesInfoUpdate } from "../../Actions/share_invite_monetary_account_responses";
+import { shareInviteMonetaryAccountInquiriesInfoUpdate } from "../../Actions/share_invite_monetary_account_inquiries";
 
 const styles = {
     list: {
@@ -62,7 +62,7 @@ class AccountList extends React.Component {
     }
 
     componentDidUpdate(previousProps) {
-        const { excludedAccountIds, shareInviteBankResponses, accounts } = this.props;
+        const { excludedAccountIds, shareInviteMonetaryAccountResponses, accounts } = this.props;
         this.checkUpdateRequirement(this.props);
 
         const accountsTrayItems = [];
@@ -86,8 +86,8 @@ class AccountList extends React.Component {
                     }
 
                     // get responses for this account
-                    const filteredResponses = shareInviteBankResponses.filter(
-                        filterShareInviteBankResponses(account.id)
+                    const filteredResponses = shareInviteMonetaryAccountResponses.filter(
+                        filterShareInviteMonetaryAccountResponses(account.id)
                     );
 
                     // get budget from this response
@@ -110,10 +110,14 @@ class AccountList extends React.Component {
 
         if (
             (previousProps.accountsLoading && !this.props.accountsLoading) ||
-            (previousProps.shareInviteBankResponsesLoading && !this.props.shareInviteBankResponsesLoading)
+            (previousProps.shareInviteMonetaryAccountResponsesLoading &&
+                !this.props.shareInviteMonetaryAccountResponsesLoading)
         ) {
             // update the savings goals when the accounts are updated
-            this.props.updateStatisticsSavingsGoals(this.props.accounts, this.props.shareInviteBankResponses);
+            this.props.updateStatisticsSavingsGoals(
+                this.props.accounts,
+                this.props.shareInviteMonetaryAccountResponses
+            );
         }
 
         if (this.state.totalBalance !== totalBalance) {
@@ -137,10 +141,10 @@ class AccountList extends React.Component {
             this.props.limitedPermissions === false &&
             selectedAccountId
         ) {
-            this.props.shareInviteBankInquiriesInfoUpdate(userId, selectedAccountId);
+            this.props.shareInviteMonetaryAccountInquiriesInfoUpdate(userId, selectedAccountId);
         }
-        if (!this.props.shareInviteBankResponsesLoading) {
-            this.props.shareInviteBankResponsesInfoUpdate(userId);
+        if (!this.props.shareInviteMonetaryAccountResponsesLoading) {
+            this.props.shareInviteMonetaryAccountResponsesInfoUpdate(userId);
         }
     };
 
@@ -193,7 +197,7 @@ class AccountList extends React.Component {
     };
 
     render() {
-        const { t, user, shareInviteBankResponses, excludedAccountIds = [] } = this.props;
+        const { t, user, shareInviteMonetaryAccountResponses, excludedAccountIds = [] } = this.props;
         const { accountTotalSelectionMode } = this.state;
 
         let accounts = [];
@@ -206,8 +210,8 @@ class AccountList extends React.Component {
                     return true;
                 })
                 .map(account => {
-                    const filteredResponses = shareInviteBankResponses.filter(
-                        filterShareInviteBankResponses(account.id)
+                    const filteredResponses = shareInviteMonetaryAccountResponses.filter(
+                        filterShareInviteMonetaryAccountResponses(account.id)
                     );
 
                     // set external if added or default to false
@@ -238,7 +242,7 @@ class AccountList extends React.Component {
                             denseMode={this.props.denseMode}
                             account={account}
                             isJoint={!!account.all_co_owner}
-                            shareInviteBankResponses={filteredResponses}
+                            shareInviteMonetaryAccountResponses={filteredResponses}
                             secondaryAction={secondaryAction}
                         />
                     );
@@ -312,9 +316,10 @@ const mapStateToProps = state => {
         accountsLoading: state.accounts.loading,
         excludedAccountIds: state.accounts.excluded_account_ids,
 
-        shareInviteBankResponses: state.share_invite_bank_responses.share_invite_bank_responses,
-        shareInviteBankResponsesLoading: state.share_invite_bank_responses.loading,
-        shareInviteBankInquiriesLoading: state.share_invite_bank_inquiries.loading,
+        shareInviteMonetaryAccountResponses:
+            state.share_invite_monetary_account_responses.share_invite_monetary_account_responses,
+        shareInviteMonetaryAccountResponsesLoading: state.share_invite_monetary_account_responses.loading,
+        shareInviteBankInquiriesLoading: state.share_invite_monetary_account_inquiries.loading,
 
         paymentsLoading: state.payments.loading,
         bunqMeTabsLoading: state.bunq_me_tabs.loading,
@@ -341,18 +346,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         accountExcludeFromTotal: accountId => dispatch(accountExcludeFromTotal(accountId)),
         accountIncludeInTotal: accountId => dispatch(accountIncludeInTotal(accountId)),
 
-        shareInviteBankResponsesInfoUpdate: userId =>
-            dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId)),
-        shareInviteBankInquiriesInfoUpdate: (userId, accountId) =>
-            dispatch(shareInviteBankInquiriesInfoUpdate(BunqJSClient, userId, accountId)),
+        shareInviteMonetaryAccountResponsesInfoUpdate: userId =>
+            dispatch(shareInviteMonetaryAccountResponsesInfoUpdate(BunqJSClient, userId)),
+        shareInviteMonetaryAccountInquiriesInfoUpdate: (userId, accountId) =>
+            dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(BunqJSClient, userId, accountId)),
         selectAccount: acountId => dispatch(accountsSelectAccount(acountId)),
 
-        updateStatisticsSavingsGoals: (accounts, shareInviteBankResponses) =>
-            dispatch(updateStatisticsSavingsGoals(accounts, shareInviteBankResponses))
+        updateStatisticsSavingsGoals: (accounts, shareInviteMonetaryAccountResponses) =>
+            dispatch(updateStatisticsSavingsGoals(accounts, shareInviteMonetaryAccountResponses))
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(AccountList));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(AccountList));

@@ -32,8 +32,8 @@ class VirtualAccountNumbersDialog extends React.Component {
 
         if (cardInfo.type !== "MASTERCARD_VIRTUAL") return null;
 
-        const virtualCardComponents = cardInfo.primary_account_numbers_virtual ? (
-            cardInfo.primary_account_numbers_virtual
+        const virtualCardComponents = cardInfo.primary_account_numbers ? (
+            cardInfo.primary_account_numbers
                 .filter(virtualNumber => virtualNumber.status === "ACTIVE")
                 .map(virtualNumber => {
                     const accountInfo = accounts.find(account => {

@@ -15,23 +15,21 @@ import { openSnackbar } from "../../Actions/snackbar";
 class RulesPage extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {
+
+        let initialState = {
             previewRuleCollection: null,
             previewUpdated: new Date(),
-
             checkedInitial: false,
-
             initialRules: false
         };
-    }
 
-    componentWillMount() {
         const searchParams = new URLSearchParams(this.props.location.search);
         if (searchParams.has("value")) {
             const value = searchParams.get("value");
             const field = searchParams.get("field") || "DESCRIPTION";
 
-            this.setState({
+            initialState = {
+                ...initialState,
                 checkedInitial: true,
                 initialRules: [
                     {
@@ -41,12 +39,13 @@ class RulesPage extends React.Component {
                         value: value
                     }
                 ]
-            });
+            };
         } else if (searchParams.has("amount")) {
             const amount = searchParams.get("amount");
             const match_type = searchParams.get("match_type") || "EXACTLY";
 
-            this.setState({
+            initialState = {
+                ...initialState,
                 checkedInitial: true,
                 initialRules: [
                     {
@@ -55,12 +54,15 @@ class RulesPage extends React.Component {
                         amount: amount
                     }
                 ]
-            });
+            };
         } else {
-            this.setState({
+            initialState = {
+                ...initialState,
                 checkedInitial: true
-            });
+            };
         }
+
+        this.state = initialState;
     }
 
     updatePreview = ruleCollection => {
@@ -170,7 +172,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(RulesPage));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(RulesPage));

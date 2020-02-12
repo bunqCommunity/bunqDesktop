@@ -236,7 +236,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(CategoryEditor));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(CategoryEditor));

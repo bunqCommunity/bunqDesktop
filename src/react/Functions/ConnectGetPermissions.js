@@ -1,7 +1,9 @@
-import { filterShareInviteBankResponses } from "./DataFilters";
+import { filterShareInviteMonetaryAccountResponses } from "./DataFilters";
 
-const getInviteResponse = (shareInviteBankResponses, accountId) => {
-    const filteredInviteResponses = shareInviteBankResponses.filter(filterShareInviteBankResponses(accountId));
+const getInviteResponse = (shareInviteMonetaryAccountResponses, accountId) => {
+    const filteredInviteResponses = shareInviteMonetaryAccountResponses.filter(
+        filterShareInviteMonetaryAccountResponses(accountId)
+    );
 
     // no results means no checks required
     if (filteredInviteResponses.length === 0) return true;
@@ -9,11 +11,11 @@ const getInviteResponse = (shareInviteBankResponses, accountId) => {
     // get first item from the list
     const firstInviteResponse = filteredInviteResponses.pop();
 
-    return firstInviteResponse.ShareInviteBankResponse;
+    return firstInviteResponse.ShareInviteMonetaryAccountResponse;
 };
 
-export const connectGetPermissions = (shareInviteBankResponses, accountId) => {
-    const inviteResponse = getInviteResponse(shareInviteBankResponses, accountId);
+export const connectGetPermissions = (shareInviteMonetaryAccountResponses, accountId) => {
+    const inviteResponse = getInviteResponse(shareInviteMonetaryAccountResponses, accountId);
     if (!inviteResponse || inviteResponse === true) return true;
 
     if (inviteResponse.share_detail.ShareDetailPayment) return inviteResponse.share_detail.ShareDetailPayment;
@@ -23,8 +25,8 @@ export const connectGetPermissions = (shareInviteBankResponses, accountId) => {
     return {};
 };
 
-export const connectGetType = (shareInviteBankResponses, accountId) => {
-    const inviteResponse = getInviteResponse(shareInviteBankResponses, accountId);
+export const connectGetType = (shareInviteMonetaryAccountResponses, accountId) => {
+    const inviteResponse = getInviteResponse(shareInviteMonetaryAccountResponses, accountId);
     if (!inviteResponse || inviteResponse === true) return true;
 
     if (inviteResponse.share_detail.ShareDetailPayment) return "ShareDetailPayment";
@@ -34,13 +36,13 @@ export const connectGetType = (shareInviteBankResponses, accountId) => {
     return true;
 };
 
-export const connectGetBudget = (shareInviteBankResponses, accountId) => {
+export const connectGetBudget = (shareInviteMonetaryAccountResponses, accountId) => {
     let inviteResponse = null;
     if (accountId) {
-        inviteResponse = getInviteResponse(shareInviteBankResponses, accountId);
+        inviteResponse = getInviteResponse(shareInviteMonetaryAccountResponses, accountId);
     } else {
-        inviteResponse = shareInviteBankResponses.pop();
-        if (inviteResponse) inviteResponse = inviteResponse.ShareInviteBankResponse;
+        inviteResponse = shareInviteMonetaryAccountResponses.pop();
+        if (inviteResponse) inviteResponse = inviteResponse.ShareInviteMonetaryAccountResponse;
     }
     if (!inviteResponse || inviteResponse === true) return true;
 

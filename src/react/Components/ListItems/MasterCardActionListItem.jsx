@@ -58,7 +58,7 @@ class MasterCardActionListItem extends React.Component {
         const displayName = masterCardAction.counterparty_alias.display_name;
         let paymentAmount = masterCardAction.getAmount();
         paymentAmount = paymentAmount > 0 ? paymentAmount * -1 : paymentAmount;
-        const formattedPaymentAmount = formatMoney(paymentAmount, true);
+        const formattedPaymentAmount = formatMoney(paymentAmount, masterCardAction.payment_status !== "CREDIT_TRANSFER");
         const secondaryText = masterCardActionParser(masterCardAction, t);
 
         const defaultImage = defaultMastercardImage(masterCardAction);

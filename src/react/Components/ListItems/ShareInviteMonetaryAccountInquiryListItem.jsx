@@ -14,7 +14,7 @@ import TranslateButton from "../TranslationHelpers/Button";
 import ShowOnly from "./ShareInviteBankTypes/ShowOnly";
 import FullAccess from "./ShareInviteBankTypes/FullAccess";
 import DraftAccess from "./ShareInviteBankTypes/DraftAccess";
-import { shareInviteBankResponsesInfoUpdate } from "../../Actions/share_invite_bank_responses";
+import { shareInviteMonetaryAccountInquiriesInfoUpdate } from "../../Actions/share_invite_monetary_account_inquiries";
 
 const styles = {
     listItemText: {
@@ -29,7 +29,7 @@ const styles = {
     }
 };
 
-class ShareInviteBankResponseListItem extends React.Component {
+class ShareInviteMonetaryAccountInquiryListItem extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -38,45 +38,28 @@ class ShareInviteBankResponseListItem extends React.Component {
         };
     }
 
-    accept = event => {
-        const { t, BunqJSClient, user, shareInviteBankResponse } = this.props;
+    cancel = event => {
+        const { t, BunqJSClient, user, shareInviteMonetaryAccountInquiry } = this.props;
 
-        const success = t("The share request was successfully accepted");
-        const failed = t("Failed to accept the share request");
-
-        if (!this.state.loading) {
-            this.setState({ loading: true });
-
-            BunqJSClient.api.shareInviteBankResponse
-                .put(user.id, shareInviteBankResponse.id, "ACCEPTED")
-                .then(response => {
-                    // trigger an update
-                    this.props.shareInviteBankResponsesInfoUpdate(user.id);
-
-                    this.setState({ loading: false });
-                    this.props.openSnackbar(success);
-                })
-                .catch(error => {
-                    this.setState({ loading: false });
-                    this.props.openSnackbar(failed);
-                });
-        }
-    };
-
-    reject = event => {
-        const { t, BunqJSClient, user, shareInviteBankResponse } = this.props;
-
-        const success = t("The share request was successfully cancelled");
-        const failed = t("Failed to reject the share request");
+        const success = t("The share request was successfully revoked");
+        const failed = t("Failed to revoke the share request");
 
         if (!this.state.loading) {
             this.setState({ loading: true });
 
-            BunqJSClient.api.shareInviteBankResponse
-                .put(user.id, shareInviteBankResponse.id, "CANCELLED")
+            BunqJSClient.api.shareInviteMonetaryAccountInquiry
+                .putStatus(
+                    user.id,
+                    shareInviteMonetaryAccountInquiry.monetary_account_id,
+                    shareInviteMonetaryAccountInquiry.id,
+                    "REVOKED"
+                )
                 .then(response => {
                     // trigger an update
-                    this.props.shareInviteBankResponsesInfoUpdate(user.id);
+                    this.props.shareInviteMonetaryAccountInquiriesInfoUpdate(
+                        user.id,
+                        shareInviteMonetaryAccountInquiry.monetary_account_id
+                    );
 
                     this.setState({ loading: false });
                     this.props.openSnackbar(success);
@@ -89,10 +72,12 @@ class ShareInviteBankResponseListItem extends React.Component {
     };
 
     render() {
-        const { t, shareInviteBankResponse } = this.props;
-        if (!shareInviteBankResponse) return null;
+        const { t, shareInviteMonetaryAccountInquiry } = this.props;
+        if (!shareInviteMonetaryAccountInquiry) return null;
 
-        let aliasInfo = shareInviteBankResponse.counter_alias;
+        let aliasInfo = shareInviteMonetaryAccountInquiry.counter_user_alias
+            ? shareInviteMonetaryAccountInquiry.counter_user_alias
+            : shareInviteMonetaryAccountInquiry.counter_alias;
         if (!aliasInfo) return null;
 
         let imageUUID = false;
@@ -106,25 +91,16 @@ class ShareInviteBankResponseListItem extends React.Component {
                 <TranslateButton
                     style={styles.buttons}
                     variant="contained"
-                    color="primary"
-                    onClick={this.accept}
-                    disabled={this.state.loading}
-                >
-                    Accept
-                </TranslateButton>
-                <TranslateButton
-                    style={styles.buttons}
-                    variant="contained"
                     color="secondary"
-                    onClick={this.reject}
+                    onClick={this.cancel}
                     disabled={this.state.loading}
                 >
-                    Reject
+                    Cancel
                 </TranslateButton>
             </React.Fragment>
         );
 
-        const shareDetailTypes = Object.keys(shareInviteBankResponse.share_detail);
+        const shareDetailTypes = Object.keys(shareInviteMonetaryAccountInquiry.share_detail);
         const shareDetailType = shareDetailTypes[0];
 
         let shareTypeObject = null;
@@ -145,11 +121,7 @@ class ShareInviteBankResponseListItem extends React.Component {
                 <Avatar style={styles.smallAvatar}>
                     <LazyAttachmentImage height={50} BunqJSClient={this.props.BunqJSClient} imageUUID={imageUUID} />
                 </Avatar>
-                <ListItemText
-                    style={styles.listItemText}
-                    primary={displayName}
-                    secondary={t("Connect invite received")}
-                />
+                <ListItemText style={styles.listItemText} primary={displayName} secondary={t("Connect invite sent")} />
                 <ListItemSecondaryAction />
             </ListItem>,
             <Collapse in={this.state.open} unmountOnExit>
@@ -160,7 +132,7 @@ class ShareInviteBankResponseListItem extends React.Component {
     }
 }
 
-ShareInviteBankResponseListItem.defaultProps = {
+ShareInviteMonetaryAccountInquiryListItem.defaultProps = {
     displayAcceptedRequests: true,
     minimalDisplay: false
 };
@@ -175,10 +147,11 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { BunqJSClient } = ownProps;
     return {
-        shareInviteBankResponsesInfoUpdate: userId => dispatch(shareInviteBankResponsesInfoUpdate(BunqJSClient, userId))
+        shareInviteMonetaryAccountInquiriesInfoUpdate: userId =>
+            dispatch(shareInviteMonetaryAccountInquiriesInfoUpdate(BunqJSClient, userId))
     };
 };
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(translate("translations")(ShareInviteBankResponseListItem));
+)(translate("translations")(ShareInviteMonetaryAccountInquiryListItem));

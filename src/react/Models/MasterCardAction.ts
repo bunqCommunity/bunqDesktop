@@ -28,6 +28,7 @@ export default class MasterCardAction implements Event {
     private _description: string;
     private _authorisation_status: string;
     private _authorisation_type: string;
+    private _payment_status: string;
     private _pan_entry_mode_user: PanEntryModeUser;
     private _city: string;
     private _alias: PaymentAlias;
@@ -145,6 +146,9 @@ export default class MasterCardAction implements Event {
     }
     get authorisation_type(): string {
         return this._authorisation_type;
+    }
+    get payment_status(): string {
+        return this._payment_status;
     }
     get pan_entry_mode_user(): PanEntryModeUser {
         return this._pan_entry_mode_user;

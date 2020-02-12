@@ -47,7 +47,14 @@ class AccountListItem extends React.Component {
     }
 
     render() {
-        const { t, user, account, shareInviteBankResponses, selectedAccountIds, toggleAccountIds } = this.props;
+        const {
+            t,
+            user,
+            account,
+            shareInviteMonetaryAccountResponses,
+            selectedAccountIds,
+            toggleAccountIds
+        } = this.props;
 
         if (account.status !== "ACTIVE") {
             return null;
@@ -65,7 +72,7 @@ class AccountListItem extends React.Component {
                     <PeopleIcon />
                 </Avatar>
             );
-        } else if (shareInviteBankResponses.length > 0) {
+        } else if (shareInviteMonetaryAccountResponses.length > 0) {
             avatarSub = (
                 <Avatar style={styles.secondaryIcon}>
                     <LinkIcon />
@@ -74,8 +81,8 @@ class AccountListItem extends React.Component {
         }
 
         let accountBalance = account.balance ? account.balance.value : 0;
-        if (shareInviteBankResponses.length > 0) {
-            const connectBudget = connectGetBudget(shareInviteBankResponses);
+        if (shareInviteMonetaryAccountResponses.length > 0) {
+            const connectBudget = connectGetBudget(shareInviteMonetaryAccountResponses);
             if (connectBudget) {
                 accountBalance = connectBudget;
             }
@@ -179,11 +186,8 @@ AccountListItem.defaultProps = {
     clickable: true,
     denseMode: false,
     isJoint: false,
-    shareInviteBankResponses: [],
+    shareInviteMonetaryAccountResponses: [],
     secondaryAction: false
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(AccountListItem));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(AccountListItem));

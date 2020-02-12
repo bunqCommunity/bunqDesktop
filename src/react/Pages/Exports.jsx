@@ -243,9 +243,7 @@ class Exports extends React.Component {
                     fileExtension = ".pdf";
                     break;
             }
-            const fileName = `bunq-export.${exportInfo.date_start}_${exportInfo.date_end}_${
-                exportInfo.id
-            }${fileExtension}`;
+            const fileName = `bunq-export.${exportInfo.date_start}_${exportInfo.date_end}_${exportInfo.id}${fileExtension}`;
 
             const failedMessage = this.props.t("We failed to load the export content for this monetary account");
 
@@ -576,7 +574,7 @@ class Exports extends React.Component {
                                         "RequestInquiry",
                                         "RequestInquiryBatch",
                                         "RequestResponse",
-                                        "ShareInviteBankInquiry"
+                                        "ShareInviteMonetaryAccountInquiry"
                                     ]}
                                 />
                             </Paper>
@@ -625,7 +623,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(Exports));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(Exports));

@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import Chip from "@material-ui/core/Chip";
-import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -17,6 +16,7 @@ import FilterListIcon from "@material-ui/icons/FilterList";
 import { cardsUpdate } from "../../Actions/cards";
 import { addCardIdFilter, removeCardIdFilter, toggleCardIdFilter } from "../../Actions/filters";
 import { getCardTypeImage } from "../../Pages/Cards/CardListItem";
+import { getCardDescription } from "../../Functions/Utils";
 
 const styles = {
     listItem: {
@@ -86,7 +86,7 @@ class CardSelection extends React.Component {
             // ensure card exists
             if (!card) return null;
             card = card;
-            const { cardImage, cardType } = getCardTypeImage(card.type, card.cardType);
+            const { cardImage, cardType } = getCardTypeImage(card);
 
             // display big chip or smaller icon
             return (
@@ -100,12 +100,15 @@ class CardSelection extends React.Component {
         });
 
         const cardMenuItems = Object.keys(cards)
-            .filter(cardIndex => {
-                const card = cards[cardIndex];
-                if (card && card.status !== "ACTIVE") {
-                    return false;
-                }
-                return true;
+            // put inactive cards at the bottom
+            .sort((index1, index2) => {
+                const card1 = cards[index1];
+                const card2 = cards[index2];
+
+                if (card1.status !== "ACTIVE" && card2.status === "ACTIVE") return 1;
+                if (card1.status === "ACTIVE" && card2.status !== "ACTIVE") return -1;
+
+                return 0;
             })
             .map((cardIndex, key) => {
                 const card = cards[cardIndex];
@@ -114,14 +117,16 @@ class CardSelection extends React.Component {
                 if (selectedCardIds.includes(card.id)) {
                     return null;
                 }
-                const { cardImage, cardType } = getCardTypeImage(card.type, card.cardType);
+
+                const cardDescription = getCardDescription(card);
+                const { cardImage, cardType } = getCardTypeImage(card);
 
                 return (
                     <MenuItem key={key} onClick={this.addCardId(card.id)}>
                         <ListItemIcon style={styles.listItemIcon}>
                             <img style={styles.listItemImg} src={cardImage} />
                         </ListItemIcon>
-                        {card.second_line || cardType}
+                        {cardDescription || cardType}
                     </MenuItem>
                 );
             });
@@ -177,7 +182,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(CardSelection);
+export default connect(mapStateToProps, mapDispatchToProps)(CardSelection);

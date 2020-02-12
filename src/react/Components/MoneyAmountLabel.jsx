@@ -98,7 +98,7 @@ class MoneyAmountLabel extends React.Component {
         const { theme, style, info } = this.props;
 
         // switch between incoming/outgoing colors
-        const paymentColor =
+        let paymentColor =
             info.amount.value < 0 ? theme.palette.common.sentPayment : theme.palette.common.receivedPayment;
 
         return {
@@ -124,6 +124,13 @@ class MoneyAmountLabel extends React.Component {
                     ...style
                 };
             case "CLEARING_REFUND":
+                if (info.payment_status === "CREDIT_TRANSFER") {
+                    return {
+                        color: theme.palette.common.receivedPayment,
+                        ...style
+                    };
+                }
+
                 return {
                     color: theme.palette.masterCardAction.refunded,
                     ...theme.styles.masterCardAction.refunded,

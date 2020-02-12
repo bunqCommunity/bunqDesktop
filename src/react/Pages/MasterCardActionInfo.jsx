@@ -133,7 +133,7 @@ class MasterCardActionInfo extends React.Component {
             paymentAmount = paymentAmount > 0 ? paymentAmount * -1 : paymentAmount;
             const paymentDate = humanReadableDate(masterCardAction.created);
             const paymentDateUpdated = humanReadableDate(masterCardAction.updated);
-            const formattedPaymentAmount = formatMoney(paymentAmount, true);
+            const formattedPaymentAmount = formatMoney(paymentAmount, masterCardAction.payment_status !== "CREDIT_TRANSFER");
             const paymentLabel = masterCardActionText(masterCardAction, t);
 
             const settledText = t("Settled");

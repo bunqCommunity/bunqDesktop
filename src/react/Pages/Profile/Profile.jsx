@@ -323,7 +323,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(translate("translations")(Profile));
+export default connect(mapStateToProps, mapDispatchToProps)(translate("translations")(Profile));
