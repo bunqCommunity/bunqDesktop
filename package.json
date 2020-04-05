@@ -210,7 +210,7 @@
         "loglevel": "^1.6.1",
         "material-ui-pickers": "^1.0.0",
         "mini-css-extract-plugin": "^0.4.0",
-        "minimist": "^1.2.0",
+        "minimist": "^1.2.3",
         "mocha": "^5.2.0",
         "natives": "1.1.6",
         "node-forge": "^0.7.5",
