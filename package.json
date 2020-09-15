@@ -213,7 +213,7 @@
         "minimist": "^1.2.3",
         "mocha": "^5.2.0",
         "natives": "1.1.6",
-        "node-forge": "^0.7.5",
+        "node-forge": "^0.10.0",
         "node-sass": "^4.13.1",
         "prettier": "^1.14.2",
         "prop-types": "^15.6.2",
