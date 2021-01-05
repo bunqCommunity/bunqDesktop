@@ -176,7 +176,7 @@
         "@types/react-i18next": "^8.1.0",
         "animate.css": "^3.7.2",
         "awaiting": "^3.0.0",
-        "axios": "0.18.1",
+        "axios": "0.21.1",
         "babel-loader": "^8.0.6",
         "babel-plugin-dynamic-import-node": "^2.3.0",
         "babel-plugin-react-html-attrs": "^2.1.0",
