@@ -188,7 +188,7 @@
         "csv-parse": "^4.0.1",
         "date-fns": "^2.0.0-alpha.16",
         "dotenv": "^6.1.0",
-        "electron": "4.2.2",
+        "electron": "9.4.0",
         "electron-builder": "^20.38.5",
         "electron-devtools-installer": "^2.2.4",
         "electron-reload": "^1.4.0",
