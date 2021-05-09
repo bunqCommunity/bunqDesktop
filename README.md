@@ -1,3 +1,7 @@
+# Discontinued
+
+I have stopped maintaining this project, there will likely be bugs at this point so use it at your own risk.
+
 ![Screenshot of the app](https://i.gyazo.com/b33c7e40e431814be4bd0d901fca0bc2.gif)
 
 
